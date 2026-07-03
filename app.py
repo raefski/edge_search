@@ -59,6 +59,55 @@ _bootstrap_key()
 st.set_page_config(page_title="DK MLB DFS Lineups", page_icon="⚾", layout="wide",
                    initial_sidebar_state="auto")
 
+# Tight, mobile-first CSS so a full 10-man lineup fits one iPhone screen with no
+# nested scroll (the whole point — DK's own app forces scrolling).
+st.markdown("""
+<style>
+.block-container {padding-top: 2.0rem; padding-bottom: 2rem;}
+h1 {font-size: 1.55rem !important; margin-bottom: .1rem;}
+.summary {font-size: 13px; color: #9aa4b2; line-height: 1.55; margin: .1rem 0 .5rem;}
+.ph-badge {background:#4a3a00; border:1px solid #8a6a00; color:#ffd97a; border-radius:6px;
+           padding:6px 10px; font-weight:600; font-size:13px; margin:2px 0 8px;}
+.lu-tot {font-size:13px; color:#c7d0dd; margin:2px 0 6px;}
+.lu-wrap {overflow-x:auto;}
+table.lu {width:100%; border-collapse:collapse; font-size:14px;}
+table.lu th {text-align:left; color:#7f8a9c; font-weight:600; font-size:11px; text-transform:uppercase;
+             padding:2px 6px; border-bottom:1px solid rgba(255,255,255,.16);}
+table.lu td {padding:5px 6px; border-bottom:1px solid rgba(255,255,255,.07);}
+table.lu td.pos {color:#3fb079; font-weight:700; width:32px;}
+table.lu td.team {color:#9aa4b2; width:42px;}
+table.lu td.nm {white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px;}
+table.lu td.num {text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+</style>
+""", unsafe_allow_html=True)
+
+# --- PLACEHOLDER lineups (clearly labeled sample data; NOT today's slate) so the
+# on-screen layout is visible before confirmed batting orders post. ---
+PLACEHOLDER_CASH = [
+    {"slot": "P", "player": "Tarik Skubal", "team": "DET", "salary": 9500, "proj": 21.8, "ceil": 27, "own": 22},
+    {"slot": "P", "player": "Logan Webb", "team": "SF", "salary": 7400, "proj": 17.2, "ceil": 21, "own": 15},
+    {"slot": "C", "player": "Will Smith", "team": "LAD", "salary": 3900, "proj": 8.2, "ceil": 13, "own": 9},
+    {"slot": "1B", "player": "V. Pasquantino", "team": "KC", "salary": 3800, "proj": 8.0, "ceil": 12, "own": 7},
+    {"slot": "2B", "player": "Jose Altuve", "team": "HOU", "salary": 4200, "proj": 8.7, "ceil": 13, "own": 11},
+    {"slot": "3B", "player": "Manny Machado", "team": "SD", "salary": 4100, "proj": 8.3, "ceil": 12, "own": 8},
+    {"slot": "SS", "player": "G. Henderson", "team": "BAL", "salary": 4600, "proj": 9.4, "ceil": 14, "own": 12},
+    {"slot": "OF", "player": "Aaron Judge", "team": "NYY", "salary": 5000, "proj": 10.8, "ceil": 16, "own": 24},
+    {"slot": "OF", "player": "Corbin Carroll", "team": "ARI", "salary": 3900, "proj": 9.0, "ceil": 13, "own": 9},
+    {"slot": "OF", "player": "Riley Greene", "team": "DET", "salary": 3500, "proj": 8.1, "ceil": 12, "own": 6},
+]
+PLACEHOLDER_GPP = [
+    {"slot": "P", "player": "Tarik Skubal", "team": "DET", "salary": 9500, "proj": 21.8, "ceil": 27, "own": 20},
+    {"slot": "P", "player": "C. Sánchez", "team": "PHI", "salary": 7800, "proj": 18.5, "ceil": 23, "own": 12},
+    {"slot": "C", "player": "Will Smith", "team": "LAD", "salary": 3900, "proj": 8.2, "ceil": 13, "own": 14},
+    {"slot": "1B", "player": "Freddie Freeman", "team": "LAD", "salary": 4300, "proj": 8.9, "ceil": 14, "own": 16},
+    {"slot": "2B", "player": "Ketel Marte", "team": "ARI", "salary": 4200, "proj": 8.6, "ceil": 13, "own": 10},
+    {"slot": "3B", "player": "Max Muncy", "team": "LAD", "salary": 3600, "proj": 7.9, "ceil": 14, "own": 8},
+    {"slot": "SS", "player": "Elly De La Cruz", "team": "CIN", "salary": 5200, "proj": 10.4, "ceil": 17, "own": 22},
+    {"slot": "OF", "player": "T. Hernández", "team": "LAD", "salary": 4100, "proj": 8.8, "ceil": 15, "own": 11},
+    {"slot": "OF", "player": "Corbin Carroll", "team": "ARI", "salary": 4000, "proj": 9.0, "ceil": 14, "own": 9},
+    {"slot": "OF", "player": "Lawrence Butler", "team": "ATH", "salary": 3300, "proj": 7.4, "ceil": 12, "own": 6},
+]
+
 
 def make_client(live: bool) -> OddsAPIClient:
     """live=False -> dry-run + effectively infinite TTL (reads cache, spends 0).
@@ -139,6 +188,10 @@ with st.sidebar:
     iters = st.slider("Optimizer restarts", 200, 3000, 800, step=200,
                       help="More restarts = closer to optimal, a bit slower.")
 
+    preview = st.checkbox("Preview layout (placeholder)", value=False,
+                          help="Show sample CASH/GPP lineups so you can see the on-screen "
+                               "layout before real batting orders post.")
+
     rem = OddsAPIClient(cache_dir=CACHE_DIR, ledger_path=LEDGER).remaining_credits() \
         if os.environ.get("ODDS_API_KEY") else None
     if rem is not None:
@@ -173,38 +226,75 @@ if res.get("unpriced"):
                  use_container_width=True, hide_index=True)
     st.stop()
 
-c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("Salaries", res["salaries_n"])
-c2.metric("Pitchers priced", len(res["pitchers"]))
-c3.metric("Hitters (confirmed)", len(res["hitters"]))
-c4.metric("Credits spent", res["spent"])
-c5.metric("Credits left", f"{res['remaining']:,}" if res["remaining"] is not None else "—")
+# compact one-line status (giant metric cards eat the screen on mobile)
+rem_txt = f"{res['remaining']:,}" if res["remaining"] is not None else "—"
+st.markdown(
+    f"<div class='summary'>🧢 <b>{res['salaries_n']}</b> salaries · "
+    f"⚾ <b>{len(res['pitchers'])}</b> P priced · "
+    f"🧍 <b>{len(res['hitters'])}</b> hitters confirmed · "
+    f"💳 spent <b>{res['spent']}</b> · left <b>{rem_txt}</b> cr</div>",
+    unsafe_allow_html=True)
 
-if res["cash"] is None and res["gpp"] is None:
-    st.info("Confirmed lineups aren't posted yet (they land ~3–4h before first pitch), so the "
-            "hitter pool is too thin to build full lineups. Pitcher projections below are ready — "
-            "come back near lock and hit **Refresh (free)** to pull the batting orders.")
+lineups_ready = res.get("cash") is not None or res.get("gpp") is not None
+show_ph = preview or not lineups_ready
+if not lineups_ready and not preview:
+    st.info("Confirmed batting orders aren't posted yet (~3–4h before first pitch), so real lineups "
+            "can't build. Showing a **placeholder** below so you can see the layout — near lock, tap "
+            "**🔄 Refresh (free)** and real CASH + GPP lineups appear automatically.")
 
-# ── lineups ─────────────────────────────────────────────────────────────
-def render_lineup(title: str, res: dict, mode: str):
+
+def _totals(rows):
+    return (round(sum(r["proj"] for r in rows), 1),
+            round(sum(r.get("ceil", r["proj"]) for r in rows), 1),
+            sum(r["salary"] for r in rows),
+            sum(r.get("own", 0) for r in rows))
+
+
+def render_compact(rows, placeholder=False):
+    """A tight static HTML table — whole 10-man lineup on one iPhone screen, no nested scroll."""
+    if placeholder:
+        st.markdown("<div class='ph-badge'>⚠️ PLACEHOLDER — sample data, NOT today's lineup</div>",
+                    unsafe_allow_html=True)
+    proj, ceil, salary, own = _totals(rows)
+    st.markdown(f"<div class='lu-tot'>proj <b>{proj}</b> · ceil <b>{ceil}</b> · "
+                f"own <b>{own:.0f}%</b> · <b>${salary:,}</b> / 50k</div>", unsafe_allow_html=True)
+    body = "".join(
+        f"<tr><td class='pos'>{r['slot']}</td><td class='nm'>{r['player']}</td>"
+        f"<td class='team'>{r['team']}</td><td class='num'>{r['salary']:,}</td>"
+        f"<td class='num'>{r['proj']}</td></tr>" for r in rows)
+    st.markdown("<div class='lu-wrap'><table class='lu'>"
+                "<tr><th>Pos</th><th>Player</th><th>Tm</th><th>$</th><th>Pts</th></tr>"
+                f"{body}</table></div>", unsafe_allow_html=True)
+
+
+def _rows_for(mode):
     r = res.get(mode)
     if not r:
-        return
-    own = sum(p.get("own", 0) for p, _ in r["lineup"])
-    st.subheader(title)
-    st.caption(f"proj **{r['proj']}**  ·  ceiling **{r['ceil']}**  ·  total own **{own:.0f}%**  ·  "
-               f"salary **${r['salary']:,}** / $50,000")
-    st.dataframe(_lineup_rows(res, mode), use_container_width=True, hide_index=True)
+        return None
+    return [{"slot": slot, "player": p["name"], "team": p["team"], "salary": p["salary"],
+             "proj": p["proj"], "ceil": p["ceiling"], "own": p.get("own", 0)}
+            for p, slot in sorted(r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1]))]
 
 
-lc, gc = st.columns(2)
-with lc:
-    render_lineup("💵 CASH (mean / floor)", res, "cash")
-with gc:
-    st_team = res["stack_team"]
-    render_lineup(f"🚀 GPP (4-man {st_team} stack + ceiling)", res, "gpp")
+t_cash, t_gpp = st.tabs(["💵 CASH", "🚀 GPP"])
+with t_cash:
+    if show_ph:
+        render_compact(PLACEHOLDER_CASH, placeholder=True)
+    elif _rows_for("cash"):
+        render_compact(_rows_for("cash"))
+    else:
+        st.caption("Cash lineup not ready.")
+with t_gpp:
+    if show_ph:
+        st.caption("4-man stack + ceiling (sample)")
+        render_compact(PLACEHOLDER_GPP, placeholder=True)
+    elif _rows_for("gpp"):
+        st.caption(f"4-man {res.get('stack_team')} stack + ceiling")
+        render_compact(_rows_for("gpp"))
+    else:
+        st.caption("GPP lineup not ready.")
 
-if res.get("cash") or res.get("gpp"):
+if lineups_ready and not preview:
     st.download_button("⬇️ Download both lineups (CSV)", data=_lineup_csv(res),
                        file_name=f"dfs_lineups_{slate_date}.csv", mime="text/csv")
 
