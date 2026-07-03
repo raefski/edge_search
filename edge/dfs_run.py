@@ -90,7 +90,9 @@ def build_slate(client, date, draft_group=None, iters=800):
         dkp = next((b for b in pp.get("bookmakers", []) if b["key"] == "draftkings"), None)
         if not dkp:
             continue
-        for nm in {o["description"] for m in dkp["markets"] for o in m["outcomes"] if o.get("description")}:
+        # sorted() so pool order is reproducible across machines/processes (a bare
+        # set iterates in hash-randomized order, which can shift optimizer tie-breaks).
+        for nm in sorted({o["description"] for m in dkp["markets"] for o in m["outcomes"] if o.get("description")}):
             info = salaries.get(dfs.norm(nm))
             if not info or not info.get("salary") or "P" not in dfs.parse_pos(info["position"]):
                 continue
