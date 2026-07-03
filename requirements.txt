@@ -1,0 +1,7 @@
+# Core scanner + DFS pipeline have ZERO third-party deps (stdlib urllib + json)
+# so they run anywhere. streamlit is only needed for the portable app (app.py);
+# Streamlit Community Cloud installs from this file.
+streamlit>=1.36
+pytest>=8.0
+# pandas>=2.0      # optional: nicer report tables / parquet export
+# duckdb>=1.0      # optional: backtest queries over stored snapshots

@@ -1,0 +1,30 @@
+.env
+.streamlit/secrets.toml
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Paid Odds-API responses — large, ephemeral, regenerate. Kept local so the
+# repo (and Streamlit Cloud) stay small; the app defaults to reading whatever is
+# here and only spends credits when you tap "Pull fresh props".
+# To ride a props snapshot to the cloud for a $0 phone session:
+#     git add -f data/cache && git commit -m "cache snapshot"
+data/cache/
+
+# Credit ledger + personal bet history — never publish.
+data/odds_api_credits.json
+data/clv_log.csv
+
+# Ignore generated JSON caches by default...
+data/*.json
+data/*.parquet
+data/*.duckdb
+
+# ...but DO commit the free, non-sensitive model data so cloud cold-starts are
+# fast and the hitter model keeps its park factors (the strikeouts path that
+# park_runs used to read doesn't exist on Streamlit Cloud).
+!data/park_factors.json
+!data/dfs_skill_2024_2025.json
+!data/dfs_pitch_k9_2025.json
+!data/dfs_season_hitting.json
