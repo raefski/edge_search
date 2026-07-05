@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from edge.client import OddsAPIClient  # noqa: E402
-from edge import dfs, dfs_opt, dfs_run  # noqa: E402
+from edge import dfs, dfs_opt, dfs_run, dfs_swap  # noqa: E402
 
 CACHE_DIR = ROOT / "data/cache"
 LEDGER = ROOT / "data/odds_api_credits.json"
@@ -120,6 +120,12 @@ def make_client(live: bool) -> OddsAPIClient:
 @st.cache_data(ttl=300, show_spinner=False)
 def cached_slate_names(_nonce: int) -> list[tuple]:
     return dfs.list_slate_names(dfs.mlb_draft_groups())
+
+
+@st.cache_data(ttl=120, show_spinner=False)
+def cached_started(date: str, _nonce: int) -> dict:
+    """Which games have locked (first pitch passed) — for late-swap eligibility."""
+    return {str(k): v for k, v in dfs_swap.game_started_map(date).items()}
 
 
 @st.cache_data(ttl=600, show_spinner="Building slate… (salaries + lineups are free; props from cache)")
@@ -228,12 +234,19 @@ if res.get("unpriced"):
 
 # compact one-line status (giant metric cards eat the screen on mobile)
 rem_txt = f"{res['remaining']:,}" if res["remaining"] is not None else "—"
+n_proj = sum(1 for h in res["hitters"] if not h.get("confirmed", True))
+n_conf = len(res["hitters"]) - n_proj
+hit_txt = f"<b>{n_conf}</b> conf" + (f" · <b>{n_proj}</b> proj*" if n_proj else "")
 st.markdown(
     f"<div class='summary'>🧢 <b>{res['salaries_n']}</b> salaries · "
     f"⚾ <b>{len(res['pitchers'])}</b> P priced · "
-    f"🧍 <b>{len(res['hitters'])}</b> hitters confirmed · "
+    f"🧍 {hit_txt} hitters · "
     f"💳 spent <b>{res['spent']}</b> · left <b>{rem_txt}</b> cr</div>",
     unsafe_allow_html=True)
+if n_proj:
+    st.markdown("<div class='summary'>* <b>proj</b> = projected batting order (team's lineup not "
+                "posted yet). Lineups can build now; tap 🔄 Refresh as orders drop, then use "
+                "<b>Late-swap</b> below.</div>", unsafe_allow_html=True)
 
 lineups_ready = res.get("cash") is not None or res.get("gpp") is not None
 show_ph = preview or not lineups_ready
@@ -259,7 +272,8 @@ def render_compact(rows, placeholder=False):
     st.markdown(f"<div class='lu-tot'>proj <b>{proj}</b> · ceil <b>{ceil}</b> · "
                 f"own <b>{own:.0f}%</b> · <b>${salary:,}</b> / 50k</div>", unsafe_allow_html=True)
     body = "".join(
-        f"<tr><td class='pos'>{r['slot']}</td><td class='nm'>{r['player']}</td>"
+        f"<tr><td class='pos'>{r['slot']}</td>"
+        f"<td class='nm'>{r['player']}{' <span style=\"color:#ffd97a\">*</span>' if r.get('projected') else ''}</td>"
         f"<td class='team'>{r['team']}</td><td class='num'>{r['salary']:,}</td>"
         f"<td class='num'>{r['proj']}</td></tr>" for r in rows)
     st.markdown("<div class='lu-wrap'><table class='lu'>"
@@ -272,16 +286,69 @@ def _rows_for(mode):
     if not r:
         return None
     return [{"slot": slot, "player": p["name"], "team": p["team"], "salary": p["salary"],
-             "proj": p["proj"], "ceil": p["ceiling"], "own": p.get("own", 0)}
+             "proj": p["proj"], "ceil": p["ceiling"], "own": p.get("own", 0),
+             "pos": "/".join(sorted(p["pos"])), "game": p.get("game", ""),
+             "conf": p.get("conf", ""), "projected": not p.get("confirmed", True)}
             for p, slot in sorted(r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1]))]
 
 
-t_cash, t_gpp = st.tabs(["💵 CASH", "🚀 GPP"])
+def save_entry_button(mode, rows):
+    """Pin the lineup you actually entered on DK so later refreshes can late-swap it."""
+    saved = st.session_state.get(f"entry_{mode}")
+    is_saved = saved and saved.get("date") == slate_date and \
+        {r["player"] for r in saved["rows"]} == {r["player"] for r in rows}
+    label = "📌 Saved as my DK entry ✓" if is_saved else "📌 Save this as my DK entry"
+    if st.button(label, key=f"save_{mode}", use_container_width=True,
+                 help="Pin it, then tap 🔄 Refresh as lineups post — the Late-swap tab flags anyone ruled out."):
+        st.session_state[f"entry_{mode}"] = {"date": slate_date, "rows": rows}
+        st.rerun()
+
+
+def render_swaps():
+    st.caption("Pin your DK entry on the CASH/GPP tab, then tap 🔄 Refresh (free) as orders post. "
+               "Anyone whose team posts a lineup without them shows here with fitting replacements. "
+               "DK locks each player at THEIR game's first pitch.")
+    started = cached_started(slate_date, 0)
+    any_saved = False
+    for mode in ("cash", "gpp"):
+        saved = st.session_state.get(f"entry_{mode}")
+        if not saved or saved.get("date") != slate_date:
+            continue
+        any_saved = True
+        st.markdown(f"**{mode.upper()} entry**")
+        recs = dfs_swap.suggest_swaps(saved["rows"], res["hitters"], started, mode=mode, top=4)
+        outs = [r for r in recs if r["status"] == "out"]
+        holds = [r for r in recs if r["status"] == "hold"]
+        upgraded = [r for r in recs if r["status"] == "confirmed" and r.get("was_projected")]
+        if not outs:
+            st.success(f"No swaps needed — {len(upgraded)} projected pick(s) confirmed in, "
+                       f"{len(holds)} still awaiting their team's lineup.")
+        for rec in outs:
+            if rec["locked"]:
+                st.error(f"✗ {rec['player']} ({rec['team']}) is OUT and their game already locked — stuck at 0.")
+                continue
+            st.warning(f"✗ {rec['player']} ({rec['team']}, ${rec['salary']:,}) OUT of the posted order — "
+                       f"replace with ≤ ${rec['max_salary']:,}:")
+            if rec["suggestions"]:
+                st.dataframe([{"replacement": s["name"], "team": s["team"], "salary": s["salary"],
+                               mode: s["val"], "own%": s["own"], "stack": "✓" if s["same_team"] else ""}
+                              for s in rec["suggestions"]], use_container_width=True, hide_index=True)
+            else:
+                st.caption("(no eligible replacement fits the freed salary / unlocked games)")
+        if holds:
+            st.caption("Still projected (team lineup not posted): " + ", ".join(r["player"] for r in holds))
+    if not any_saved:
+        st.info("No saved entry yet. Build a lineup, tap **📌 Save this as my DK entry** on the CASH or "
+                "GPP tab, then return here after tapping 🔄 Refresh as official lineups post.")
+
+
+t_cash, t_gpp, t_swap = st.tabs(["💵 CASH", "🚀 GPP", "🔁 Late-swap"])
 with t_cash:
     if show_ph:
         render_compact(PLACEHOLDER_CASH, placeholder=True)
     elif _rows_for("cash"):
         render_compact(_rows_for("cash"))
+        save_entry_button("cash", _rows_for("cash"))
     else:
         st.caption("Cash lineup not ready.")
 with t_gpp:
@@ -291,8 +358,11 @@ with t_gpp:
     elif _rows_for("gpp"):
         st.caption(f"4-man {res.get('stack_team')} stack + ceiling")
         render_compact(_rows_for("gpp"))
+        save_entry_button("gpp", _rows_for("gpp"))
     else:
         st.caption("GPP lineup not ready.")
+with t_swap:
+    render_swaps()
 
 if lineups_ready and not preview:
     st.download_button("⬇️ Download both lineups (CSV)", data=_lineup_csv(res),

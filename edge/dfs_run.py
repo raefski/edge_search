@@ -116,9 +116,11 @@ def build_slate(client, date, draft_group=None, iters=800):
         sr = hr_season.get(nm)
         hr_rate = (sr["homeRuns"] / sr["plateAppearances"]) if sr and sr.get("plateAppearances") else 0.03
         ceil = round(proj + 10 * hr_rate * dfs.SLOT_PA.get(lu["slot"], 4.2), 1)
+        confirmed = lu.get("confirmed", True)
         pool.append({"name": lu["name"], "pos": pos, "salary": info["salary"], "proj": proj, "ceiling": ceil,
                      "team": abbr.get(str(lu["team_id"]), str(lu["team_id"])), "game": lu["game"],
-                     "slot": lu["slot"], "conf": f"H-slot{lu['slot']}"})
+                     "slot": lu["slot"], "confirmed": confirmed,
+                     "conf": f"H-slot{lu['slot']}" + ("" if confirmed else "*PROJ")})
 
     ph = [p for p in pool if "P" in p["pos"]]
     hh = [p for p in pool if "P" not in p["pos"]]

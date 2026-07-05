@@ -409,9 +409,37 @@ def project_hitter_skill(skill: float, slot: int, park: float = 1.0,
     return round(skill * pa * park * of * tf, 1)
 
 
-def lineups_for_date(date: str) -> dict:
-    """{norm name: {id, name, slot, team_id, park_team_id, opp_pitcher_id, game}}
-    from confirmed lineups (statsapi). Empty until lineups post (~3-4h pregame)."""
+def _team_recent_lineup(team_id, before_date: str) -> list:
+    """A team's most-recent posted batting order (last Final game in the prior ~2
+    weeks) -> [(player_id, name, slot)]. Naturally excludes IL players (they
+    weren't in that lineup); the residual risk is a same-day rest/scratch."""
+    import datetime as _d
+    d0 = _d.date.fromisoformat(before_date)
+    sch = _get(f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId={team_id}"
+               f"&startDate={(d0 - _d.timedelta(days=14)).isoformat()}&endDate={(d0 - _d.timedelta(days=1)).isoformat()}")
+    games = [(g.get("gameDate", ""), g["gamePk"]) for dd in sch.get("dates", []) for g in dd.get("games", [])
+             if g.get("status", {}).get("abstractGameState") == "Final"]
+    if not games:
+        return []
+    try:
+        box = _get(f"https://statsapi.mlb.com/api/v1/game/{max(games)[1]}/boxscore")
+    except Exception:
+        return []
+    for side in ("home", "away"):
+        t = box["teams"][side]
+        if str(t["team"]["id"]) == str(team_id):
+            starters = [(pl["person"]["id"], pl["person"]["fullName"], int(pl["battingOrder"]) // 100)
+                        for pl in t["players"].values()
+                        if pl.get("battingOrder") and int(pl["battingOrder"]) % 100 == 0]
+            return sorted(starters, key=lambda x: x[2])
+    return []
+
+
+def lineups_for_date(date: str, project: bool = True) -> dict:
+    """{norm name: {id, name, slot, team_id, park_team_id, opp_pitcher_id, game, confirmed}}.
+    Confirmed starters from statsapi; if a team's lineup isn't posted yet and
+    project=True, fill a PROJECTED order from its most-recent game (confirmed=False),
+    so you can target a team before its official lineup drops."""
     s = _get(f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&date={date}&hydrate=lineups,probablePitcher")
     out = {}
     for d in s.get("dates", []):
@@ -421,12 +449,19 @@ def lineups_for_date(date: str) -> dict:
             away_id = g["teams"]["away"]["team"]["id"]
             hpp = (g["teams"]["home"].get("probablePitcher") or {}).get("id")
             app = (g["teams"]["away"].get("probablePitcher") or {}).get("id")
-            for players, team_id, opp_pid in ((lu.get("homePlayers") or [], home_id, app),
-                                              (lu.get("awayPlayers") or [], away_id, hpp)):
-                for i, pl in enumerate(players[:9]):
-                    out[norm(pl["fullName"])] = {"id": pl["id"], "name": pl["fullName"], "slot": i + 1,
-                                                 "team_id": team_id, "park_team_id": home_id,
-                                                 "opp_pitcher_id": opp_pid, "game": g["gamePk"]}
+            for key, team_id, opp_pid in (("homePlayers", home_id, app), ("awayPlayers", away_id, hpp)):
+                players = lu.get(key) or []
+                if players:
+                    for i, pl in enumerate(players[:9]):
+                        out[norm(pl["fullName"])] = {"id": pl["id"], "name": pl["fullName"], "slot": i + 1,
+                                                     "team_id": team_id, "park_team_id": home_id,
+                                                     "opp_pitcher_id": opp_pid, "game": g["gamePk"], "confirmed": True}
+                elif project:
+                    for pid, name, slot in _team_recent_lineup(team_id, date):
+                        if norm(name) not in out:
+                            out[norm(name)] = {"id": pid, "name": name, "slot": slot, "team_id": team_id,
+                                               "park_team_id": home_id, "opp_pitcher_id": opp_pid,
+                                               "game": g["gamePk"], "confirmed": False}
     return out
 
 

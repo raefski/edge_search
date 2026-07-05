@@ -47,6 +47,15 @@ streamlit run app.py            # local
 
 The app defaults to cache mode and never spends a credit without that explicit tap.
 
+**Projected lineups + late-swap.** Lineups build even before official orders post:
+teams whose lineup isn't out yet get a PROJECTED batting order from their most
+recent game (flagged with `*`), so you can stack a team before its lineup drops.
+On the **🔁 Late-swap** tab, tap *📌 Save this as my DK entry*, then keep tapping
+🔄 Refresh (free) as orders post — anyone whose team posts a lineup **without**
+them is flagged with fitting same-position replacements (salary that frees up,
+confirmed starter, game not yet locked). Same logic on the CLI:
+`python3 scripts/dfs_swap.py --date <ISO>` (reads `data/dfs_lineups_<date>.csv`).
+
 ### Deploy (same as strikeouts → Streamlit Community Cloud)
 1. Push this repo to GitHub:
    ```bash

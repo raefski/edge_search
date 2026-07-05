@@ -56,7 +56,9 @@ def main():
 
     print(f"{res['salaries_n']} salaries | {res['skill_n']} skill | {res['lineup_hitters_n']} lineup hitters | rem {c.remaining_credits()}")
     ph, hh = res["pitchers"], res["hitters"]
-    print(f"pool: {len(ph)} pitchers, {len(hh)} hitters | spent {c.spent_this_session} cr")
+    nproj = sum(1 for h in hh if not h.get("confirmed", True))
+    tag = f" ({len(hh) - nproj} confirmed, {nproj} PROJECTED*)" if nproj else " (all confirmed)"
+    print(f"pool: {len(ph)} pitchers, {len(hh)} hitters{tag} | spent {c.spent_this_session} cr")
     _log_and_optimize(args, res)
     print(f"remaining {c.remaining_credits()} cr")
 
@@ -99,10 +101,12 @@ def _log_and_optimize(args, res):
         show(f"GPP (4-man {stack_team} stack + ceiling)", gpp)
     fname = f"data/dfs_lineups_{date}.csv" if is_main else f"data/dfs_lineups_{date}_g{gid}.csv"
     with (ROOT / fname).open("w", newline="") as fh:
-        w = csv.writer(fh); w.writerow(["mode", "slot", "player", "team", "salary", "proj", "ceiling", "own"])
+        w = csv.writer(fh)
+        w.writerow(["mode", "slot", "player", "team", "salary", "proj", "ceiling", "own", "pos", "game", "conf"])
         for mode, r in (("cash", cash), ("gpp", gpp)):
             for p, slot in sorted(r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1])) if r else []:
-                w.writerow([mode, slot, p["name"], p["team"], p["salary"], p["proj"], p["ceiling"], p.get("own")])
+                w.writerow([mode, slot, p["name"], p["team"], p["salary"], p["proj"], p["ceiling"],
+                            p.get("own"), "/".join(sorted(p["pos"])), p.get("game", ""), p.get("conf", "")])
     print(f"\nlineups -> {fname}")
 
 

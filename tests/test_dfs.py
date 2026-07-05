@@ -74,3 +74,44 @@ def test_gpp_stack_is_consecutive():
     stack_slots = [p["slot"] for p, _ in res["lineup"] if p["team"] == "AAA"]
     assert len(stack_slots) >= 4
     assert _cyclic_consecutive(sorted(stack_slots)[:4]) or _cyclic_consecutive(stack_slots)
+
+
+def _swap_pool():
+    # confirmed hitters on team AAA (posted) + BBB replacements (posted), game g1/g2 not locked
+    hh = []
+    for s in range(1, 10):
+        hh.append({"name": f"AAA{s}", "team": "AAA", "pos": {"OF"}, "salary": 4000,
+                   "proj": 6.0 + 0.2 * s, "ceiling": 9.0, "own": 5.0, "game": "g1", "confirmed": True})
+    for s in range(1, 6):
+        hh.append({"name": f"BBB{s}", "team": "BBB", "pos": {"OF"}, "salary": 3500 + 100 * s,
+                   "proj": 5.0 + 0.5 * s, "ceiling": 8.0, "own": 3.0, "game": "g2", "confirmed": True})
+    return hh
+
+
+def test_swap_out_suggests_fitting_replacements():
+    from edge.dfs_swap import suggest_swaps
+    hh = _swap_pool()
+    # entered a projected player "Ghost" on AAA who is NOT in the posted AAA order -> OUT
+    entered = [{"player": "Ghost", "team": "AAA", "salary": 4000, "pos": "OF", "game": "gX", "conf": "H-slot6*PROJ"}]
+    started = {"g1": False, "g2": False, "gX": False}
+    recs = suggest_swaps(entered, hh, started, mode="cash", cap=50000, top=3)
+    assert len(recs) == 1 and recs[0]["status"] == "out" and not recs[0]["locked"]
+    sug = recs[0]["suggestions"]
+    assert sug and all(s["salary"] <= recs[0]["max_salary"] for s in sug)
+    assert sug[0]["val"] >= sug[-1]["val"]                 # ranked best-first
+    assert not any(s["name"] == "Ghost" for s in sug)      # never suggests an entered player
+
+
+def test_swap_confirmed_and_hold_and_locked():
+    from edge.dfs_swap import suggest_swaps
+    hh = _swap_pool()
+    entered = [
+        {"player": "AAA3", "team": "AAA", "salary": 4000, "pos": "OF", "game": "g1", "conf": "H-slot3*PROJ"},  # confirmed in
+        {"player": "Zzz",  "team": "CCC", "salary": 4000, "pos": "OF", "game": "g3", "conf": "H-slot4*PROJ"},  # CCC not posted -> hold
+        {"player": "Ghost","team": "AAA", "salary": 4000, "pos": "OF", "game": "g1", "conf": "H-slot6*PROJ"},  # OUT but own game locked
+    ]
+    started = {"g1": True, "g2": False, "g3": False}
+    recs = {r["player"]: r for r in suggest_swaps(entered, hh, started, mode="cash")}
+    assert recs["AAA3"]["status"] == "confirmed"
+    assert recs["Zzz"]["status"] == "hold"
+    assert recs["Ghost"]["status"] == "out" and recs["Ghost"]["locked"] and recs["Ghost"]["suggestions"] == []
