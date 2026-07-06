@@ -158,6 +158,41 @@ def _lineup_csv(res: dict) -> bytes:
     return buf.getvalue().encode()
 
 
+# ── pinned DK entry: saved to DISK (not session_state) so it survives the
+# browser closing and can be read back for late-swap or next-day grading.
+# CAVEAT: Streamlit Community Cloud's disk is ephemeral — if the app sleeps
+# from inactivity and wakes back up, it restarts from the last git commit and
+# this file is gone. That's fine within one sitting (build -> swap through
+# lock); for guaranteed next-day grading, also tap the download button.
+def _entry_path(date: str, mode: str) -> Path:
+    return ROOT / f"data/dfs_entries_{date}_{mode}.csv"
+
+
+def _entry_csv_bytes(rows: list[dict]) -> bytes:
+    import csv
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow(["player", "team", "salary", "pos", "game", "conf"])
+    for r in rows:
+        w.writerow([r["player"], r["team"], r["salary"], r.get("pos", ""), r.get("game", ""), r.get("conf", "")])
+    return buf.getvalue().encode()
+
+
+def _load_entry(date: str, mode: str):
+    import csv
+    p = _entry_path(date, mode)
+    if not p.exists():
+        return None
+    rows = list(csv.DictReader(open(p)))
+    return {"date": date, "rows": rows} if rows else None
+
+
+def _save_entry(date: str, mode: str, rows: list[dict]) -> None:
+    p = _entry_path(date, mode)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_bytes(_entry_csv_bytes(rows))
+
+
 # ── sidebar ───────────────────────────────────────────────────────────────
 with st.sidebar:
     st.header("⚾ DK MLB DFS")
@@ -293,15 +328,23 @@ def _rows_for(mode):
 
 
 def save_entry_button(mode, rows):
-    """Pin the lineup you actually entered on DK so later refreshes can late-swap it."""
-    saved = st.session_state.get(f"entry_{mode}")
-    is_saved = saved and saved.get("date") == slate_date and \
-        {r["player"] for r in saved["rows"]} == {r["player"] for r in rows}
+    """Pin the lineup you actually entered on DK (saved to disk) so later
+    refreshes/sessions can late-swap it and it can be graded tomorrow."""
+    saved = _load_entry(slate_date, mode)
+    is_saved = saved and {r["player"] for r in saved["rows"]} == {r["player"] for r in rows}
     label = "📌 Saved as my DK entry ✓" if is_saved else "📌 Save this as my DK entry"
-    if st.button(label, key=f"save_{mode}", use_container_width=True,
-                 help="Pin it, then tap 🔄 Refresh as lineups post — the Late-swap tab flags anyone ruled out."):
-        st.session_state[f"entry_{mode}"] = {"date": slate_date, "rows": rows}
-        st.rerun()
+    col1, col2 = st.columns([3, 2])
+    with col1:
+        if st.button(label, key=f"save_{mode}", use_container_width=True,
+                     help="Saved to disk. Tap 🔄 Refresh as lineups post — Late-swap flags anyone ruled out."):
+            _save_entry(slate_date, mode, rows)
+            st.rerun()
+    with col2:
+        st.download_button("⬇️ backup copy", data=_entry_csv_bytes(rows), key=f"dl_entry_{mode}",
+                           file_name=f"dfs_entry_{slate_date}_{mode}.csv", mime="text/csv",
+                           use_container_width=True,
+                           help="The saved copy above can be lost if the app sleeps overnight — "
+                                "keep this file too if you want guaranteed next-day grading.")
 
 
 def render_swaps():
@@ -311,8 +354,8 @@ def render_swaps():
     started = cached_started(slate_date, 0)
     any_saved = False
     for mode in ("cash", "gpp"):
-        saved = st.session_state.get(f"entry_{mode}")
-        if not saved or saved.get("date") != slate_date:
+        saved = _load_entry(slate_date, mode)
+        if not saved:
             continue
         any_saved = True
         st.markdown(f"**{mode.upper()} entry**")

@@ -16,6 +16,9 @@ data/cache/
 data/odds_api_credits.json
 data/clv_log.csv
 
+# Pinned "my DK entry" CSVs (app.py Save button) — personal, per-day, ephemeral.
+data/dfs_entries_*.csv
+
 # Ignore generated JSON caches by default...
 data/*.json
 data/*.parquet
