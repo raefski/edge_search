@@ -148,3 +148,34 @@ def test_log_forward_test_writes_proj_log_and_lineups(tmp_path):
     before = plog.read_text()
     log_forward_test(tmp_path, "2026-07-08", False, 999, pool, None, None)
     assert plog.read_text() == before
+
+
+def test_lineups_for_date_doubleheader_prefers_unfinished_game(monkeypatch):
+    # Regression: a finished game 1 of a doubleheader must not leak its
+    # (correctly) confirmed lineup into a still-upcoming game 2 for the same
+    # team/date — game 2 can start someone completely different (e.g. a rested
+    # catcher). Caught live 2026-07-07: Brewers/Cardinals DH had William
+    # Contreras (game 1, Final) wrongly shown as game 2's confirmed catcher
+    # instead of Gary Sanchez (game 2's actual starter).
+    from edge import dfs
+
+    def game(pk, state, hour, away_starter):
+        filler = [{"id": 900 + i, "fullName": f"Filler{i}"} for i in range(8)]
+        return {
+            "gamePk": pk, "status": {"abstractGameState": state},
+            "gameDate": f"2026-07-07T{hour}:00:00Z",
+            "teams": {"home": {"team": {"id": 100}, "probablePitcher": {"id": 1}},
+                     "away": {"team": {"id": 200}, "probablePitcher": {"id": 2}}},
+            "lineups": {"awayPlayers": [{"id": 10, "fullName": away_starter}] + filler,
+                       "homePlayers": [{"id": 300 + i, "fullName": f"Home{i}"} for i in range(9)]},
+        }
+
+    fake_schedule = {"dates": [{"date": "2026-07-07", "games": [
+        game(1001, "Final", 18, "William Contreras"),
+        game(1002, "Preview", 23, "Gary Sanchez"),
+    ]}]}
+    monkeypatch.setattr(dfs, "_get", lambda url: fake_schedule)
+
+    out = dfs.lineups_for_date("2026-07-07", project=False)
+    assert dfs.norm("gary sanchez") in out and out[dfs.norm("gary sanchez")]["game"] == 1002
+    assert dfs.norm("william contreras") not in out

@@ -441,27 +441,49 @@ def lineups_for_date(date: str, project: bool = True) -> dict:
     project=True, fill a PROJECTED order from its most-recent game (confirmed=False),
     so you can target a team before its official lineup drops."""
     s = _get(f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&date={date}&hydrate=lineups,probablePitcher")
+    games = [g for d in s.get("dates", []) for g in d.get("games", [])]
+
+    # Doubleheaders: a team can appear in 2 games the same date. Without this,
+    # a finished game 1's CONFIRMED lineup gets keyed by player name same as
+    # game 2's, and once game 1 is Final its stale entry wins (and blocks the
+    # projected-fallback dedup guard below) even though game 2 hasn't posted
+    # yet and may start someone else. Pick one authoritative game per team:
+    # whichever isn't Final yet, so a still-relevant game is never shadowed by
+    # an already-completed earlier one; if both are Final, use the later one.
+    by_team = {}
+    for g in games:
+        state = g.get("status", {}).get("abstractGameState", "")
+        for side in ("home", "away"):
+            tid = g["teams"][side]["team"]["id"]
+            by_team.setdefault(tid, []).append((g.get("gameDate", ""), state, g["gamePk"]))
+    authoritative = {}
+    for tid, lst in by_team.items():
+        lst.sort()
+        not_final = [x for x in lst if x[1] != "Final"]
+        authoritative[tid] = (not_final[0][2] if not_final else lst[-1][2])
+
     out = {}
-    for d in s.get("dates", []):
-        for g in d.get("games", []):
-            lu = g.get("lineups", {})
-            home_id = g["teams"]["home"]["team"]["id"]
-            away_id = g["teams"]["away"]["team"]["id"]
-            hpp = (g["teams"]["home"].get("probablePitcher") or {}).get("id")
-            app = (g["teams"]["away"].get("probablePitcher") or {}).get("id")
-            for key, team_id, opp_pid in (("homePlayers", home_id, app), ("awayPlayers", away_id, hpp)):
-                players = lu.get(key) or []
-                if players:
-                    for i, pl in enumerate(players[:9]):
-                        out[norm(pl["fullName"])] = {"id": pl["id"], "name": pl["fullName"], "slot": i + 1,
-                                                     "team_id": team_id, "park_team_id": home_id,
-                                                     "opp_pitcher_id": opp_pid, "game": g["gamePk"], "confirmed": True}
-                elif project:
-                    for pid, name, slot in _team_recent_lineup(team_id, date):
-                        if norm(name) not in out:
-                            out[norm(name)] = {"id": pid, "name": name, "slot": slot, "team_id": team_id,
-                                               "park_team_id": home_id, "opp_pitcher_id": opp_pid,
-                                               "game": g["gamePk"], "confirmed": False}
+    for g in games:
+        lu = g.get("lineups", {})
+        home_id = g["teams"]["home"]["team"]["id"]
+        away_id = g["teams"]["away"]["team"]["id"]
+        hpp = (g["teams"]["home"].get("probablePitcher") or {}).get("id")
+        app = (g["teams"]["away"].get("probablePitcher") or {}).get("id")
+        for key, team_id, opp_pid in (("homePlayers", home_id, app), ("awayPlayers", away_id, hpp)):
+            if authoritative.get(team_id) != g["gamePk"]:
+                continue
+            players = lu.get(key) or []
+            if players:
+                for i, pl in enumerate(players[:9]):
+                    out[norm(pl["fullName"])] = {"id": pl["id"], "name": pl["fullName"], "slot": i + 1,
+                                                 "team_id": team_id, "park_team_id": home_id,
+                                                 "opp_pitcher_id": opp_pid, "game": g["gamePk"], "confirmed": True}
+            elif project:
+                for pid, name, slot in _team_recent_lineup(team_id, date):
+                    if norm(name) not in out:
+                        out[norm(name)] = {"id": pid, "name": name, "slot": slot, "team_id": team_id,
+                                           "park_team_id": home_id, "opp_pitcher_id": opp_pid,
+                                           "game": g["gamePk"], "confirmed": False}
     return out
 
 
