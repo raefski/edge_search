@@ -134,6 +134,11 @@ def build_slate(client, date, draft_group=None, iters=800):
             pp = client.get_event_odds(SPORT, ev["id"], dfs.P_MARKETS, "us")
         except DryRunBlocked:
             continue
+        except Exception:
+            # A single event's odds call failing (the Odds API 404s an event with
+            # no markets posted yet, or a transient 429/500/timeout) must not take
+            # down the whole build — skip that one event and keep going.
+            continue
         dkp = next((b for b in pp.get("bookmakers", []) if b["key"] == "draftkings"), None)
         if not dkp:
             continue
