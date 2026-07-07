@@ -18,12 +18,59 @@ which is exactly what you want for the freshest lineups before lock.
 """
 from __future__ import annotations
 
+import csv
 from collections import defaultdict
+from pathlib import Path
 
 from edge.client import DryRunBlocked
 from edge import dfs, dfs_opt
 
 SPORT = "baseball_mlb"
+
+
+def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
+                     cash: dict | None, gpp: dict | None) -> dict:
+    """Persist a build to disk for forward-testing, regardless of whether the
+    CLI or the phone app produced it — a single source of truth so scripts/dfs_grade.py
+    always has something to grade.
+
+    * data/dfs_proj_log.csv: every hitter/pitcher projection for `date` (only for
+      the MAIN slate — a sub-slate like Turbo/Night must not clobber it with a
+      smaller player set). Re-running for the same date overwrites that date's
+      rows in place; other dates are untouched.
+    * data/dfs_lineups_<date>[_g<gid>].csv: the built CASH/GPP lineups, if any.
+
+    Returns {"logged_projections": bool, "n": int, "lineup_file": str|None}.
+    """
+    result = {"logged_projections": False, "n": 0, "lineup_file": None}
+    (root / "data").mkdir(parents=True, exist_ok=True)
+
+    if is_main:
+        plog = root / "data/dfs_proj_log.csv"
+        prior = [r for r in csv.DictReader(open(plog))] if plog.exists() else []
+        with plog.open("w", newline="") as fh:
+            w = csv.writer(fh)
+            w.writerow(["date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf"])
+            for r in prior:
+                if r["date"] != date:
+                    w.writerow([r[k] for k in ("date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf")])
+            for p in pool:
+                w.writerow([date, p["name"], p["team"], "/".join(sorted(p["pos"])), p["salary"],
+                            p["proj"], p.get("ceiling"), p.get("own", ""), p["conf"]])
+        result["logged_projections"] = True
+        result["n"] = len(pool)
+
+    if cash or gpp:
+        fname = f"data/dfs_lineups_{date}.csv" if is_main else f"data/dfs_lineups_{date}_g{gid}.csv"
+        with (root / fname).open("w", newline="") as fh:
+            w = csv.writer(fh)
+            w.writerow(["mode", "slot", "player", "team", "salary", "proj", "ceiling", "own", "pos", "game", "conf"])
+            for mode, r in (("cash", cash), ("gpp", gpp)):
+                for p, slot in sorted(r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1])) if r else []:
+                    w.writerow([mode, slot, p["name"], p["team"], p["salary"], p["proj"], p["ceiling"],
+                                p.get("own"), "/".join(sorted(p["pos"])), p.get("game", ""), p.get("conf", "")])
+        result["lineup_file"] = fname
+    return result
 
 
 def team_abbrev_map() -> dict[str, str]:

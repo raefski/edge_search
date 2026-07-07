@@ -14,7 +14,6 @@ The pipeline itself lives in edge/dfs_run.build_slate so the Streamlit app
 forward-test CSV logs.
 """
 import argparse
-import csv
 import datetime
 import sys
 from pathlib import Path
@@ -66,24 +65,14 @@ def main():
 def _log_and_optimize(args, res):
     date = args.date
     pool, is_main, gid = res["pool"], res["is_main"], res["gid"]
-    # only the main slate writes the forward-test log; a sub-slate (--draft-group)
-    # must not clobber it with its smaller player set.
-    if is_main:
-        plog = ROOT / "data/dfs_proj_log.csv"
-        prior = [r for r in csv.DictReader(open(plog))] if plog.exists() else []
-        with plog.open("w", newline="") as fh:
-            w = csv.writer(fh); w.writerow(["date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf"])
-            for r in prior:
-                if r["date"] != date:
-                    w.writerow([r[k] for k in ("date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf")])
-            for p in pool:
-                w.writerow([date, p["name"], p["team"], "/".join(sorted(p["pos"])), p["salary"],
-                            p["proj"], p.get("ceiling"), p.get("own", ""), p["conf"]])
-        print(f"logged {len(pool)} projections -> data/dfs_proj_log.csv")
+    cash, gpp, stack_team = res["cash"], res["gpp"], res["stack_team"]
+
+    logged = dfs_run.log_forward_test(ROOT, date, is_main, gid, pool, cash, gpp)
+    if logged["logged_projections"]:
+        print(f"logged {logged['n']} projections -> data/dfs_proj_log.csv")
     else:
         print(f"(sub-slate draft group {gid}: not overwriting the main forward-test log)")
 
-    cash, gpp, stack_team = res["cash"], res["gpp"], res["stack_team"]
     if cash is None and gpp is None:
         print("pool too thin to build lineups (lineups not posted yet?) — pitchers logged; re-run near lock.")
         return
@@ -99,15 +88,7 @@ def _log_and_optimize(args, res):
         show("CASH (mean / floor)", cash)
     if gpp:
         show(f"GPP (4-man {stack_team} stack + ceiling)", gpp)
-    fname = f"data/dfs_lineups_{date}.csv" if is_main else f"data/dfs_lineups_{date}_g{gid}.csv"
-    with (ROOT / fname).open("w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(["mode", "slot", "player", "team", "salary", "proj", "ceiling", "own", "pos", "game", "conf"])
-        for mode, r in (("cash", cash), ("gpp", gpp)):
-            for p, slot in sorted(r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1])) if r else []:
-                w.writerow([mode, slot, p["name"], p["team"], p["salary"], p["proj"], p["ceiling"],
-                            p.get("own"), "/".join(sorted(p["pos"])), p.get("game", ""), p.get("conf", "")])
-    print(f"\nlineups -> {fname}")
+    print(f"\nlineups -> {logged['lineup_file']}")
 
 
 if __name__ == "__main__":

@@ -158,39 +158,22 @@ def _lineup_csv(res: dict) -> bytes:
     return buf.getvalue().encode()
 
 
-# ── pinned DK entry: saved to DISK (not session_state) so it survives the
-# browser closing and can be read back for late-swap or next-day grading.
+# ── pinned DK entry: saved to DISK via edge.dfs_swap (not session_state), the
+# SAME file scripts/dfs_swap.py reads/writes with --pin — so pinning from the
+# phone and pinning from the computer are visible to each other.
 # CAVEAT: Streamlit Community Cloud's disk is ephemeral — if the app sleeps
 # from inactivity and wakes back up, it restarts from the last git commit and
 # this file is gone. That's fine within one sitting (build -> swap through
-# lock); for guaranteed next-day grading, also tap the download button.
-def _entry_path(date: str, mode: str) -> Path:
-    return ROOT / f"data/dfs_entries_{date}_{mode}.csv"
-
-
+# lock); for guaranteed next-day grading, also tap the download button, or
+# run scripts/dfs_swap.py --pin on your computer as a second copy.
 def _entry_csv_bytes(rows: list[dict]) -> bytes:
     import csv
     buf = io.StringIO()
     w = csv.writer(buf)
-    w.writerow(["player", "team", "salary", "pos", "game", "conf"])
+    w.writerow(list(dfs_swap.ENTRY_COLS))
     for r in rows:
-        w.writerow([r["player"], r["team"], r["salary"], r.get("pos", ""), r.get("game", ""), r.get("conf", "")])
+        w.writerow([r.get(c, "") for c in dfs_swap.ENTRY_COLS])
     return buf.getvalue().encode()
-
-
-def _load_entry(date: str, mode: str):
-    import csv
-    p = _entry_path(date, mode)
-    if not p.exists():
-        return None
-    rows = list(csv.DictReader(open(p)))
-    return {"date": date, "rows": rows} if rows else None
-
-
-def _save_entry(date: str, mode: str, rows: list[dict]) -> None:
-    p = _entry_path(date, mode)
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_bytes(_entry_csv_bytes(rows))
 
 
 # ── sidebar ───────────────────────────────────────────────────────────────
@@ -267,6 +250,14 @@ if res.get("unpriced"):
                  use_container_width=True, hide_index=True)
     st.stop()
 
+# log to disk so scripts/dfs_grade.py always has something to grade, whether
+# this build came from the CLI or the app. Fingerprint-guarded so a rerun that
+# reuses the same cached_build result doesn't rewrite the file every widget click.
+_fp = (res["gid"], res["salaries_n"], len(res["hitters"]), res["spent"])
+if st.session_state.get("_logged_fp") != _fp:
+    dfs_run.log_forward_test(ROOT, slate_date, res["is_main"], res["gid"], res["pool"], res.get("cash"), res.get("gpp"))
+    st.session_state["_logged_fp"] = _fp
+
 # compact one-line status (giant metric cards eat the screen on mobile)
 rem_txt = f"{res['remaining']:,}" if res["remaining"] is not None else "—"
 n_proj = sum(1 for h in res["hitters"] if not h.get("confirmed", True))
@@ -328,16 +319,17 @@ def _rows_for(mode):
 
 
 def save_entry_button(mode, rows):
-    """Pin the lineup you actually entered on DK (saved to disk) so later
-    refreshes/sessions can late-swap it and it can be graded tomorrow."""
-    saved = _load_entry(slate_date, mode)
-    is_saved = saved and {r["player"] for r in saved["rows"]} == {r["player"] for r in rows}
+    """Pin the lineup you actually entered on DK (saved to disk, shared with
+    scripts/dfs_swap.py --pin on your computer) so later refreshes/sessions
+    can late-swap it and it can be graded tomorrow."""
+    saved = dfs_swap.load_pinned_entry(ROOT, slate_date, mode)
+    is_saved = saved and {r["player"] for r in saved} == {r["player"] for r in rows}
     label = "📌 Saved as my DK entry ✓" if is_saved else "📌 Save this as my DK entry"
     col1, col2 = st.columns([3, 2])
     with col1:
         if st.button(label, key=f"save_{mode}", use_container_width=True,
                      help="Saved to disk. Tap 🔄 Refresh as lineups post — Late-swap flags anyone ruled out."):
-            _save_entry(slate_date, mode, rows)
+            dfs_swap.save_pinned_entry(ROOT, slate_date, mode, rows)
             st.rerun()
     with col2:
         st.download_button("⬇️ backup copy", data=_entry_csv_bytes(rows), key=f"dl_entry_{mode}",
@@ -354,12 +346,12 @@ def render_swaps():
     started = cached_started(slate_date, 0)
     any_saved = False
     for mode in ("cash", "gpp"):
-        saved = _load_entry(slate_date, mode)
+        saved = dfs_swap.load_pinned_entry(ROOT, slate_date, mode)
         if not saved:
             continue
         any_saved = True
         st.markdown(f"**{mode.upper()} entry**")
-        recs = dfs_swap.suggest_swaps(saved["rows"], res["hitters"], started, mode=mode, top=4)
+        recs = dfs_swap.suggest_swaps(saved, res["hitters"], started, mode=mode, top=4)
         outs = [r for r in recs if r["status"] == "out"]
         holds = [r for r in recs if r["status"] == "hold"]
         upgraded = [r for r in recs if r["status"] == "confirmed" and r.get("was_projected")]
@@ -382,7 +374,8 @@ def render_swaps():
             st.caption("Still projected (team lineup not posted): " + ", ".join(r["player"] for r in holds))
     if not any_saved:
         st.info("No saved entry yet. Build a lineup, tap **📌 Save this as my DK entry** on the CASH or "
-                "GPP tab, then return here after tapping 🔄 Refresh as official lineups post.")
+                "GPP tab, then return here after tapping 🔄 Refresh as official lineups post. (Pinning from "
+                "`scripts/dfs_swap.py --pin` on your computer works too — same file, either device sees it.)")
 
 
 t_cash, t_gpp, t_swap = st.tabs(["💵 CASH", "🚀 GPP", "🔁 Late-swap"])

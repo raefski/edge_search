@@ -115,3 +115,36 @@ def test_swap_confirmed_and_hold_and_locked():
     assert recs["AAA3"]["status"] == "confirmed"
     assert recs["Zzz"]["status"] == "hold"
     assert recs["Ghost"]["status"] == "out" and recs["Ghost"]["locked"] and recs["Ghost"]["suggestions"] == []
+
+
+def test_pinned_entry_round_trip(tmp_path):
+    from edge.dfs_swap import save_pinned_entry, load_pinned_entry, entry_path
+    rows = [{"player": "AAA1", "team": "AAA", "salary": 4000, "pos": "OF", "game": "g1", "conf": "H-slot1"}]
+    assert load_pinned_entry(tmp_path, "2026-07-06", "cash") is None
+    p = save_pinned_entry(tmp_path, "2026-07-06", "cash", rows)
+    assert p == entry_path(tmp_path, "2026-07-06", "cash") and p.exists()
+    loaded = load_pinned_entry(tmp_path, "2026-07-06", "cash")
+    assert loaded and loaded[0]["player"] == "AAA1" and loaded[0]["salary"] == "4000"
+    # a different mode/date is untouched
+    assert load_pinned_entry(tmp_path, "2026-07-06", "gpp") is None
+    assert load_pinned_entry(tmp_path, "2026-07-07", "cash") is None
+
+
+def test_log_forward_test_writes_proj_log_and_lineups(tmp_path):
+    from edge.dfs_run import log_forward_test
+    pool = [{"name": "AAA1", "team": "AAA", "pos": {"OF"}, "salary": 4000, "proj": 8.0,
+            "ceiling": 12.0, "own": 5.0, "conf": "H-slot1"}]
+    cash = {"lineup": [(pool[0], "OF")], "proj": 8.0, "ceil": 12.0, "salary": 4000}
+    logged = log_forward_test(tmp_path, "2026-07-06", True, 123, pool, cash, None)
+    assert logged["logged_projections"] and logged["n"] == 1
+    plog = tmp_path / "data/dfs_proj_log.csv"
+    assert plog.exists() and "AAA1" in plog.read_text()
+    lf = tmp_path / logged["lineup_file"]
+    assert lf.exists() and "cash" in lf.read_text() and "AAA1" in lf.read_text()
+    # re-running for a later date preserves the earlier date's row
+    log_forward_test(tmp_path, "2026-07-07", True, 123, [], None, None)
+    assert "2026-07-06" in plog.read_text() and "AAA1" in plog.read_text()
+    # a sub-slate (is_main=False) must not touch the main proj log
+    before = plog.read_text()
+    log_forward_test(tmp_path, "2026-07-08", False, 999, pool, None, None)
+    assert plog.read_text() == before

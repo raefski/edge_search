@@ -6,9 +6,44 @@ posted order, suggest the best same-position replacement that fits the salary
 freed up and whose game hasn't locked. Pure functions — no network except the
 optional game_started_map helper — so the classification is unit-testable.
 """
+import csv
+from pathlib import Path
+
 from edge import dfs
 
 CAP = 50000
+
+ENTRY_COLS = ("player", "team", "salary", "pos", "game", "conf")
+
+
+# ── pinned "my DK entry" — the single canonical location both the CLI and the
+# phone app read/write, so pinning from either device is visible to the other.
+# CAVEAT: on Streamlit Community Cloud this disk is ephemeral — if the app
+# sleeps from inactivity and the container restarts, the file resets to
+# whatever's in the last git commit. It survives a closed tab or a refresh,
+# but not a guaranteed overnight sleep/wake. The CLI, run on your own machine,
+# has no such limit.
+def entry_path(root: Path, date: str, mode: str) -> Path:
+    return root / f"data/dfs_entries_{date}_{mode}.csv"
+
+
+def load_pinned_entry(root: Path, date: str, mode: str) -> list[dict] | None:
+    p = entry_path(root, date, mode)
+    if not p.exists():
+        return None
+    rows = [r for r in csv.DictReader(open(p))]
+    return rows or None
+
+
+def save_pinned_entry(root: Path, date: str, mode: str, rows: list[dict]) -> Path:
+    p = entry_path(root, date, mode)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with p.open("w", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(list(ENTRY_COLS))
+        for r in rows:
+            w.writerow([r.get(c, "") for c in ENTRY_COLS])
+    return p
 
 
 def game_started_map(date: str) -> dict:
