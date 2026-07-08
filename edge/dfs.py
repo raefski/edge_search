@@ -469,7 +469,8 @@ def lineups_for_date(date: str, project: bool = True) -> dict:
         away_id = g["teams"]["away"]["team"]["id"]
         hpp = (g["teams"]["home"].get("probablePitcher") or {}).get("id")
         app = (g["teams"]["away"].get("probablePitcher") or {}).get("id")
-        for key, team_id, opp_pid in (("homePlayers", home_id, app), ("awayPlayers", away_id, hpp)):
+        for key, team_id, opp_pid, opp_team_id in (("homePlayers", home_id, app, away_id),
+                                                    ("awayPlayers", away_id, hpp, home_id)):
             if authoritative.get(team_id) != g["gamePk"]:
                 continue
             players = lu.get(key) or []
@@ -477,13 +478,14 @@ def lineups_for_date(date: str, project: bool = True) -> dict:
                 for i, pl in enumerate(players[:9]):
                     out[norm(pl["fullName"])] = {"id": pl["id"], "name": pl["fullName"], "slot": i + 1,
                                                  "team_id": team_id, "park_team_id": home_id,
-                                                 "opp_pitcher_id": opp_pid, "game": g["gamePk"], "confirmed": True}
+                                                 "opp_pitcher_id": opp_pid, "opp_team_id": opp_team_id,
+                                                 "game": g["gamePk"], "confirmed": True}
             elif project:
                 for pid, name, slot in _team_recent_lineup(team_id, date):
                     if norm(name) not in out:
                         out[norm(name)] = {"id": pid, "name": name, "slot": slot, "team_id": team_id,
                                            "park_team_id": home_id, "opp_pitcher_id": opp_pid,
-                                           "game": g["gamePk"], "confirmed": False}
+                                           "opp_team_id": opp_team_id, "game": g["gamePk"], "confirmed": False}
     return out
 
 

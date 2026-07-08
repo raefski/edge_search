@@ -185,24 +185,31 @@ def test_optimizer_never_rosters_pitcher_against_own_hitters():
     # Regression: caught live 2026-07-08 — a build stacked White Sox hitters
     # while also rostering the opposing Boston starter, i.e. betting the Red
     # Sox pitcher dominates AND that the White Sox hitters he faces do well.
-    # Force the scenario by making the opposing pitcher (facing the stack
-    # team) clearly the best play at the position, so a flawed optimizer would
-    # pick him anyway if nothing stopped it.
+    # NOTE the match field is "opp_team" (a team abbreviation), not "game":
+    # pitcher pool entries carry a DK/Odds-API game id and hitter entries carry
+    # a statsapi gamePk, two id spaces that never coincide even for the same
+    # real matchup, so "game" can't detect this (an earlier version of this
+    # test used matching "game" strings and passed without exercising the real
+    # bug at all — this version mirrors the real pool shape from
+    # edge/dfs_run.py, where only team/opp_team line up across the two sources).
     from edge import dfs_opt
     flex = {"C", "1B", "2B", "3B", "SS", "OF"}
     pool = []
-    for s in range(1, 10):                       # stack team CWS, game g1 vs BOS
-        pool.append({"name": f"CWS{s}", "team": "CWS", "pos": set(flex), "salary": 3000,
+    for s in range(1, 10):                       # stack team CWS, statsapi game g1 vs BOS
+        pool.append({"name": f"CWS{s}", "team": "CWS", "opp_team": "BOS", "pos": set(flex), "salary": 3000,
                      "proj": 7.0 + 0.3 * s, "ceiling": 9.0 + 0.3 * s, "slot": s, "game": "g1"})
-    for s in range(1, 10):                       # filler team, different game
-        pool.append({"name": f"BBB{s}", "team": "BBB", "pos": set(flex), "salary": 2800,
+    for s in range(1, 10):                       # filler team, different statsapi game
+        pool.append({"name": f"BBB{s}", "team": "BBB", "opp_team": "CCC", "pos": set(flex), "salary": 2800,
                      "proj": 6.0, "ceiling": 7.0, "slot": s, "game": "g2"})
-    # BOS pitcher is in the SAME game as the CWS stack (he's pitching against them)
-    # and is projected far better than any alternative, so he'd be picked if the
-    # opposing-matchup constraint weren't enforced.
-    pool.append({"name": "BOS_ace", "team": "BOS", "pos": {"P"}, "salary": 9000, "proj": 30.0, "game": "g1"})
-    pool.append({"name": "P_other1", "team": "T1", "pos": {"P"}, "salary": 7000, "proj": 15.0, "game": "pg1"})
-    pool.append({"name": "P_other2", "team": "T2", "pos": {"P"}, "salary": 7000, "proj": 14.0, "game": "pg2"})
+    # BOS pitcher's own pool "game" is a DK/Odds-API id (never equal to a statsapi
+    # gamePk), and he's projected far better than any alternative, so he'd be
+    # picked if the opposing-matchup constraint weren't enforced correctly.
+    pool.append({"name": "BOS_ace", "team": "BOS", "opp_team": "CWS", "pos": {"P"}, "salary": 9000,
+                "proj": 30.0, "game": "dk-competition-1"})
+    pool.append({"name": "P_other1", "team": "T1", "opp_team": "T2", "pos": {"P"}, "salary": 7000,
+                "proj": 15.0, "game": "dk-competition-2"})
+    pool.append({"name": "P_other2", "team": "T2", "opp_team": "T1", "pos": {"P"}, "salary": 7000,
+                "proj": 14.0, "game": "dk-competition-3"})
 
     res = dfs_opt.optimize(pool, mode="gpp", stack_team="CWS", stack_n=4, iters=400)
     assert res is not None

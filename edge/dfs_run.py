@@ -125,6 +125,13 @@ def build_slate(client, date, draft_group=None, iters=800):
     hr_season = dfs.season_hitting(cache_path=str(root / "data/dfs_season_hitting.json"))
     lineups = dfs.lineups_for_date(date)
     abbr = team_abbrev_map()
+    # pitcher pool entries come from Odds-API events (no statsapi gamePk), so we
+    # can't match pitcher-vs-hitter matchups by game id across the two sources.
+    # Team abbreviation is the one thing both sides share -- build team -> opponent
+    # abbreviation from the hitters' data (which already knows real matchups) and
+    # apply it to pitchers by their own team, so _valid() can compare on teams.
+    team_opp_abbr = {abbr.get(str(lu["team_id"])): abbr.get(str(lu["opp_team_id"]))
+                     for lu in lineups.values() if lu.get("opp_team_id")}
 
     pool = []
 
@@ -152,7 +159,8 @@ def build_slate(client, date, draft_group=None, iters=800):
             if proj is None:
                 continue
             pool.append({"name": nm, "pos": {"P"}, "salary": info["salary"], "proj": proj,
-                         "ceiling": proj, "team": info["team"], "game": info["game"], "conf": "P-prop"})
+                         "ceiling": proj, "team": info["team"], "game": info["game"],
+                         "opp_team": team_opp_abbr.get(info["team"]), "conf": "P-prop"})
 
     # --- hitters: skill model over confirmed lineups (FREE) ---
     for nm, lu in lineups.items():
@@ -171,6 +179,7 @@ def build_slate(client, date, draft_group=None, iters=800):
         confirmed = lu.get("confirmed", True)
         pool.append({"name": lu["name"], "pos": pos, "salary": info["salary"], "proj": proj, "ceiling": ceil,
                      "team": abbr.get(str(lu["team_id"]), str(lu["team_id"])), "game": lu["game"],
+                     "opp_team": abbr.get(str(lu.get("opp_team_id")), None),
                      "slot": lu["slot"], "confirmed": confirmed,
                      "conf": f"H-slot{lu['slot']}" + ("" if confirmed else "*PROJ")})
 
