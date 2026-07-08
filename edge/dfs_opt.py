@@ -53,6 +53,13 @@ def _valid(lineup):
         return False
     if len({p["game"] for p in lineup}) < 2:
         return False
+    # never roster a pitcher against a hitter he's facing (same game, opposing
+    # teams) -- their good outcomes are directly anti-correlated: the pitcher's
+    # Ks/scoreless innings ARE that hitter's bad at-bats, and vice versa.
+    pitchers = [p for p in lineup if "P" in p["pos"]]
+    hitters = [p for p in lineup if "P" not in p["pos"]]
+    if any(h["game"] == pit["game"] and h["team"] != pit["team"] for pit in pitchers for h in hitters):
+        return False
     # assignable to slots (greedy by scarcity)
     return _assign(lineup) is not None
 

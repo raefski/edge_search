@@ -179,3 +179,34 @@ def test_lineups_for_date_doubleheader_prefers_unfinished_game(monkeypatch):
     out = dfs.lineups_for_date("2026-07-07", project=False)
     assert dfs.norm("gary sanchez") in out and out[dfs.norm("gary sanchez")]["game"] == 1002
     assert dfs.norm("william contreras") not in out
+
+
+def test_optimizer_never_rosters_pitcher_against_own_hitters():
+    # Regression: caught live 2026-07-08 — a build stacked White Sox hitters
+    # while also rostering the opposing Boston starter, i.e. betting the Red
+    # Sox pitcher dominates AND that the White Sox hitters he faces do well.
+    # Force the scenario by making the opposing pitcher (facing the stack
+    # team) clearly the best play at the position, so a flawed optimizer would
+    # pick him anyway if nothing stopped it.
+    from edge import dfs_opt
+    flex = {"C", "1B", "2B", "3B", "SS", "OF"}
+    pool = []
+    for s in range(1, 10):                       # stack team CWS, game g1 vs BOS
+        pool.append({"name": f"CWS{s}", "team": "CWS", "pos": set(flex), "salary": 3000,
+                     "proj": 7.0 + 0.3 * s, "ceiling": 9.0 + 0.3 * s, "slot": s, "game": "g1"})
+    for s in range(1, 10):                       # filler team, different game
+        pool.append({"name": f"BBB{s}", "team": "BBB", "pos": set(flex), "salary": 2800,
+                     "proj": 6.0, "ceiling": 7.0, "slot": s, "game": "g2"})
+    # BOS pitcher is in the SAME game as the CWS stack (he's pitching against them)
+    # and is projected far better than any alternative, so he'd be picked if the
+    # opposing-matchup constraint weren't enforced.
+    pool.append({"name": "BOS_ace", "team": "BOS", "pos": {"P"}, "salary": 9000, "proj": 30.0, "game": "g1"})
+    pool.append({"name": "P_other1", "team": "T1", "pos": {"P"}, "salary": 7000, "proj": 15.0, "game": "pg1"})
+    pool.append({"name": "P_other2", "team": "T2", "pos": {"P"}, "salary": 7000, "proj": 14.0, "game": "pg2"})
+
+    res = dfs_opt.optimize(pool, mode="gpp", stack_team="CWS", stack_n=4, iters=400)
+    assert res is not None
+    names = {p["name"] for p, _ in res["lineup"]}
+    assert "BOS_ace" not in names, "rostered the opposing team's pitcher against its own stacked hitters"
+    stack_team_hitters = {p["name"] for p, _ in res["lineup"] if p.get("team") == "CWS"}
+    assert len(stack_team_hitters) >= 4     # the stack itself is still built
