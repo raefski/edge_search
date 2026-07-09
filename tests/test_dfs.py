@@ -217,3 +217,75 @@ def test_optimizer_never_rosters_pitcher_against_own_hitters():
     assert "BOS_ace" not in names, "rostered the opposing team's pitcher against its own stacked hitters"
     stack_team_hitters = {p["name"] for p, _ in res["lineup"] if p.get("team") == "CWS"}
     assert len(stack_team_hitters) >= 4     # the stack itself is still built
+
+
+def test_bullpen_k9_excludes_starter_and_starters():
+    from edge.dfs import bullpen_k9, LG_K9
+    stats = [
+        {"pid": 1, "ip": 150.0, "k": 150, "gs": 28, "g": 28},   # a starter -> excluded (gs/g >= 0.5)
+        {"pid": 2, "ip": 60.0, "k": 72, "gs": 0, "g": 60},      # reliever, high K9 (=10.8)
+        {"pid": 3, "ip": 50.0, "k": 40, "gs": 0, "g": 55},      # reliever, lower K9 (=7.2)
+        {"pid": 4, "ip": 5.0, "k": 8, "gs": 0, "g": 5},         # too few IP (<15) -> excluded
+    ]
+    k9 = bullpen_k9(stats, exclude_pid=1)
+    # pooled from pid 2+3 only: (72+40) K over (60+50) IP -> 9*112/110
+    assert approx(k9, 9 * 112 / 110)
+
+
+def test_bullpen_k9_empty_or_all_excluded_falls_back_to_league_average():
+    from edge.dfs import bullpen_k9, LG_K9
+    assert bullpen_k9([], exclude_pid=None) == LG_K9
+    stats = [{"pid": 1, "ip": 100.0, "k": 100, "gs": 20, "g": 20}]  # only a starter, no relievers
+    assert bullpen_k9(stats, exclude_pid=None) == LG_K9
+
+
+def test_pitcher_k9_pools_multiple_seasons(monkeypatch, tmp_path):
+    from edge import dfs
+
+    def fake_get(url):
+        season = url.split("season=")[1].split("&")[0]
+        ip_by_season = {"2024": "100.0", "2025": "50.0"}
+        return {"stats": [{"splits": [{"player": {"id": 999},
+                "stat": {"inningsPitched": ip_by_season[season], "strikeOuts": 100 if season == "2024" else 60}}]}]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    out = dfs.pitcher_k9((2024, 2025))
+    # pooled: (100+60) K over (100+50) IP -> 9*160/150
+    assert approx(out["999"], 9 * 160 / 150)
+
+
+def test_pitcher_k9_single_season_int_still_works(monkeypatch):
+    from edge import dfs
+
+    monkeypatch.setattr(dfs, "_get", lambda url: {"stats": [{"splits": [
+        {"player": {"id": 1}, "stat": {"inningsPitched": "60.0", "strikeOuts": 60}}]}]})
+    out = dfs.pitcher_k9(2024)
+    assert approx(out["1"], 9.0)
+
+
+def test_pooled_skill_rates_max_age_forces_refresh(tmp_path, monkeypatch):
+    import json
+    import time
+    from edge import dfs
+
+    cache_path = tmp_path / "skill.json"
+    cache_path.write_text(json.dumps({"rates": {"1": 1.0}, "lg": 1.5}))
+    old_time = time.time() - 1000
+    import os
+    os.utime(cache_path, (old_time, old_time))
+
+    called = []
+
+    def fake_get(url):
+        called.append(url)
+        return {"stats": [{"splits": []}]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    # max_age shorter than the cache's actual age -> must refetch, not read stale cache
+    dfs.pooled_skill_rates((2024,), cache_path=str(cache_path), max_age=10)
+    assert called, "stale cache (past max_age) should have triggered a refetch"
+
+    called.clear()
+    os.utime(cache_path, (time.time(), time.time()))
+    dfs.pooled_skill_rates((2024,), cache_path=str(cache_path), max_age=10000)
+    assert not called, "fresh cache (within max_age) should be reused, not refetched"

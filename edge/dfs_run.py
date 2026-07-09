@@ -119,9 +119,17 @@ def build_slate(client, date, draft_group=None, iters=800):
 
     from pathlib import Path
     root = Path(__file__).resolve().parents[1]
-    rates, lg = dfs.pooled_skill_rates((2024, 2025), cache_path=str(root / "data/dfs_skill_2024_2025.json"))
-    park = dfs.park_runs(int(date[:4]))
-    k9 = dfs.pitcher_k9(2025, cache_path=str(root / "data/dfs_pitch_k9_2025.json"))
+    yr = int(date[:4])
+    # include the CURRENT season (not just prior completed ones) -- backtested
+    # 2026-07-08 on 5,146 held-out 2025 hitter-games: MAE 5.604->5.577, corr
+    # +0.166->+0.181 vs freezing on the two seasons before the current one.
+    # max_age so the cache actually refreshes as the season progresses instead
+    # of freezing on whatever was true the first time it was pulled.
+    skill_seasons = (yr - 2, yr - 1, yr)
+    rates, lg = dfs.pooled_skill_rates(skill_seasons, cache_path=str(root / f"data/dfs_skill_{'_'.join(map(str, skill_seasons))}.json"),
+                                       max_age=21600)
+    park = dfs.park_runs(yr)
+    k9 = dfs.pitcher_k9((yr - 1, yr), cache_path=str(root / f"data/dfs_pitch_k9_{yr-1}_{yr}.json"), max_age=21600)
     hr_season = dfs.season_hitting(cache_path=str(root / "data/dfs_season_hitting.json"))
     lineups = dfs.lineups_for_date(date)
     abbr = team_abbrev_map()
@@ -163,6 +171,16 @@ def build_slate(client, date, draft_group=None, iters=800):
                          "opp_team": team_opp_abbr.get(info["team"]), "conf": "P-prop"})
 
     # --- hitters: skill model over confirmed lineups (FREE) ---
+    bullpen_cache_dir = root / "data/bullpen_cache"
+    bullpen_cache_dir.mkdir(parents=True, exist_ok=True)
+    _bullpen_memo = {}
+
+    def bullpen_for(team_id):
+        if team_id not in _bullpen_memo:
+            _bullpen_memo[team_id] = dfs.team_pitcher_stats(
+                team_id, (yr - 1, yr), cache_path=str(bullpen_cache_dir / f"{team_id}.json"), max_age=21600)
+        return _bullpen_memo[team_id]
+
     for nm, lu in lineups.items():
         info = salaries.get(nm)
         if not info or not info.get("salary"):
@@ -172,7 +190,14 @@ def build_slate(client, date, draft_group=None, iters=800):
             continue
         skill = rates.get(str(lu["id"]), lg)
         pk = park.get(str(lu["park_team_id"]), 1.0)
-        proj = dfs.project_hitter_skill(skill, lu["slot"], pk, k9.get(str(lu["opp_pitcher_id"])))
+        # matchup = 60% opposing starter's K9, 40% opposing bullpen's K9 (a hitter
+        # sees roughly the back third of the game against relief pitching) --
+        # backtested 2026-07-08, MAE 5.577->5.547 with correlation unchanged.
+        starter_k9 = k9.get(str(lu["opp_pitcher_id"]), dfs.LG_K9)
+        opp_team_id = lu.get("opp_team_id")
+        bp_k9 = dfs.bullpen_k9(bullpen_for(opp_team_id), exclude_pid=lu.get("opp_pitcher_id")) if opp_team_id else dfs.LG_K9
+        matchup_k9 = 0.6 * starter_k9 + 0.4 * bp_k9
+        proj = dfs.project_hitter_skill(skill, lu["slot"], pk, matchup_k9)
         sr = hr_season.get(nm)
         hr_rate = (sr["homeRuns"] / sr["plateAppearances"]) if sr and sr.get("plateAppearances") else 0.03
         ceil = round(proj + 10 * hr_rate * dfs.SLOT_PA.get(lu["slot"], 4.2), 1)

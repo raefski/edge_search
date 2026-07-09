@@ -328,11 +328,17 @@ SLOT_PA = {1: 4.65, 2: 4.55, 3: 4.45, 4: 4.35, 5: 4.25, 6: 4.15, 7: 4.05, 8: 3.9
 LG_K9 = 8.6
 
 
-def pooled_skill_rates(seasons=(2024, 2025), min_pa: int = 120, cache_path: str | None = None) -> tuple[dict, float]:
-    """Leakage-safe skill: pooled DK-pts-per-PA over PRIOR seasons. Pool PA across
-    years for stability; players below min_pa fall back to league average."""
+def pooled_skill_rates(seasons=(2024, 2025), min_pa: int = 120, cache_path: str | None = None,
+                       max_age: float | None = None) -> tuple[dict, float]:
+    """Pooled DK-pts-per-PA over `seasons` (PA-weighted, so a partial current
+    season naturally gets proportionally less weight). Pass the CURRENT season
+    in the tuple to keep this from going stale as the year progresses (backtest
+    2026-07-08: MAE 5.604->5.577, corr +0.166->+0.181 including current-season
+    data vs frozen prior-seasons-only) -- then pass max_age so the disk cache
+    actually refreshes as more games are played, instead of freezing forever."""
     if cache_path and _os.path.exists(cache_path):
-        d = json.load(open(cache_path)); return d["rates"], d["lg"]
+        if max_age is None or _time.time() - _os.path.getmtime(cache_path) < max_age:
+            d = json.load(open(cache_path)); return d["rates"], d["lg"]
     pts, pa = {}, {}
     for yr in seasons:
         try:
@@ -372,27 +378,90 @@ def park_runs(year: int) -> dict:
             for v in pf.get(str(year), []) if v.get("index_runs")}
 
 
-def pitcher_k9(season: int, cache_path: str | None = None) -> dict:
-    """{pid(str): K/9} for opposing-SP matchup."""
+def pitcher_k9(seasons, cache_path: str | None = None, max_age: float | None = None) -> dict:
+    """{pid(str): K/9} for opposing-SP matchup, pooled (IP-weighted) across
+    `seasons`. Accepts a single season int (back-compat) or a tuple/list --
+    pass the current season alongside the prior one so this doesn't go stale
+    (see pooled_skill_rates for the validated backtest behind this)."""
+    seasons = (seasons,) if isinstance(seasons, int) else tuple(seasons)
     if cache_path and _os.path.exists(cache_path):
-        return json.load(open(cache_path))
-    out = {}
-    try:
-        sp = _get(f"https://statsapi.mlb.com/api/v1/stats?stats=season&season={season}"
-                  "&group=pitching&sportId=1&limit=2000&playerPool=All")["stats"][0]["splits"]
-    except Exception:
-        return out
-    for s in sp:
-        st = s["stat"]
+        if max_age is None or _time.time() - _os.path.getmtime(cache_path) < max_age:
+            return json.load(open(cache_path))
+    k, outs = {}, {}
+    for season in seasons:
         try:
-            ipf = float(st.get("inningsPitched"))
-        except (TypeError, ValueError):
+            sp = _get(f"https://statsapi.mlb.com/api/v1/stats?stats=season&season={season}"
+                     "&group=pitching&sportId=1&limit=2000&playerPool=All")["stats"][0]["splits"]
+        except Exception:
             continue
-        if ipf >= 30:
-            out[str(s["player"]["id"])] = 9 * (st.get("strikeOuts", 0) or 0) / ipf
+        for s in sp:
+            st = s["stat"]
+            try:
+                ipf = float(st.get("inningsPitched"))
+            except (TypeError, ValueError):
+                continue
+            pid = str(s["player"]["id"])
+            k[pid] = k.get(pid, 0) + (st.get("strikeOuts", 0) or 0)
+            outs[pid] = outs.get(pid, 0) + ipf * 3
+    out = {pid: 9 * k[pid] / (outs[pid] / 3.0) for pid in k if outs[pid] / 3.0 >= 30}
     if cache_path:
         json.dump(out, open(cache_path, "w"))
     return out
+
+
+def team_pitcher_stats(team_id, seasons, cache_path: str | None = None, max_age: float | None = None) -> list:
+    """[{pid, ip, k, gs, g}] for every pitcher on a team's 40-man roster, IP/K
+    pooled across `seasons`. One roster + N per-pitcher calls, cached per team
+    so the (expensive) pull happens once, then bullpen_k9() below can be
+    recomputed cheaply in-memory for whatever starter each matchup excludes."""
+    seasons = (seasons,) if isinstance(seasons, int) else tuple(seasons)
+    if cache_path and _os.path.exists(cache_path):
+        if max_age is None or _time.time() - _os.path.getmtime(cache_path) < max_age:
+            return json.load(open(cache_path))
+    try:
+        roster = _get(f"https://statsapi.mlb.com/api/v1/teams/{team_id}/roster?rosterType=40Man")["roster"]
+    except Exception:
+        return []
+    out = []
+    for p in roster:
+        if p["position"]["type"] != "Pitcher":
+            continue
+        pid = p["person"]["id"]
+        ip = k = gs = g = 0.0
+        for season in seasons:
+            try:
+                st = _get(f"https://statsapi.mlb.com/api/v1/people/{pid}/stats?stats=season"
+                         f"&group=pitching&season={season}")["stats"][0]["splits"][0]["stat"]
+            except Exception:
+                continue
+            try:
+                ip += float(st.get("inningsPitched") or 0)
+            except (TypeError, ValueError):
+                continue
+            k += st.get("strikeOuts", 0) or 0
+            gs += st.get("gamesStarted", 0) or 0
+            g += st.get("gamesPitched", 0) or 0
+        if ip:
+            out.append({"pid": pid, "ip": ip, "k": k, "gs": gs, "g": g})
+    if cache_path:
+        json.dump(out, open(cache_path, "w"))
+    return out
+
+
+def bullpen_k9(pitcher_stats: list, exclude_pid=None) -> float:
+    """K/9 pooled across a team's RELIEVERS (gamesStarted/gamesPitched < 0.5),
+    excluding tonight's actual/probable starter. Backtested 2026-07-08: blending
+    the opposing SP's K9 60/40 with this (a hitter sees the bullpen for roughly
+    the back third of a game) reduced hitter MAE 5.577->5.547 with correlation
+    flat (0.181->0.179) on 5,146 held-out 2025 hitter-games -- unlike the
+    platoon signal tested the same way, this one didn't cost ranking quality."""
+    tot_k = tot_outs = 0.0
+    for p in pitcher_stats:
+        if p["pid"] == exclude_pid or p["ip"] < 15:
+            continue
+        if p["gs"] / (p["g"] or 1) < 0.5:
+            tot_k += p["k"]; tot_outs += p["ip"] * 3
+    return (9 * tot_k / (tot_outs / 3.0)) if tot_outs else LG_K9
 
 
 def project_hitter_skill(skill: float, slot: int, park: float = 1.0,
