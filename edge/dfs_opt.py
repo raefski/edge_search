@@ -135,7 +135,10 @@ def optimize(players, mode="cash", stack_team=None, stack_n=4, iters=3000, seed=
     for p in players:
         p.setdefault("ceiling", p["proj"])
         p.setdefault("lev", p["ceiling"])
-    obj = "lev" if mode == "gpp" else "proj"   # cash=mean; gpp=ceiling faded by ownership
+        p.setdefault("floor", p["proj"])
+    # cash = mean nudged toward consistency (walk-rate floor signal, edge/dfs.py
+    # BB_FLOOR_WEIGHT); gpp = ceiling faded by ownership
+    obj = "lev" if mode == "gpp" else "floor"
     runs = _consecutive_runs(players, stack_team, stack_n) if (mode == "gpp" and stack_team) else []
     runs.sort(key=lambda r: -sum(p.get("ceiling", p["proj"]) for p in r))
     fallback = [p for p in players if mode == "gpp" and stack_team and p["team"] == stack_team

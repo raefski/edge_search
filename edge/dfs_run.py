@@ -168,7 +168,8 @@ def build_slate(client, date, draft_group=None, iters=800):
             if proj is None:
                 continue
             pool.append({"name": nm, "pos": {"P"}, "salary": info["salary"], "proj": proj,
-                         "ceiling": proj, "team": info["team"], "game": info["game"],
+                         "ceiling": proj, "floor": proj,  # no validated pitcher-specific floor signal yet
+                         "team": info["team"], "game": info["game"],
                          "opp_team": team_opp_abbr.get(info["team"]), "conf": "P-prop",
                          "dk_fppg": info.get("dk_fppg")})
 
@@ -201,10 +202,19 @@ def build_slate(client, date, draft_group=None, iters=800):
         matchup_k9 = 0.6 * starter_k9 + 0.4 * bp_k9
         proj = dfs.project_hitter_skill(skill, lu["slot"], pk, matchup_k9)
         sr = hr_season.get(nm)
+        pa_slot = dfs.SLOT_PA.get(lu["slot"], 4.2)
         hr_rate = (sr["homeRuns"] / sr["plateAppearances"]) if sr and sr.get("plateAppearances") else 0.03
-        ceil = round(proj + 10 * hr_rate * dfs.SLOT_PA.get(lu["slot"], 4.2), 1)
+        bb_rate = (sr["baseOnBalls"] / sr["plateAppearances"]) if sr and sr.get("plateAppearances") else 0.08
+        ceil = round(proj + 10 * hr_rate * pa_slot, 1)
+        # CASH-mode selection nudge, not a changed point estimate: walk rate
+        # predicts real-game consistency beyond what mean skill already
+        # implies (see BB_FLOOR_WEIGHT's comment). Only the optimizer's cash
+        # objective reads this -- proj/ceiling (display, logging, calibration)
+        # are untouched.
+        floor = round(proj + dfs.BB_FLOOR_WEIGHT * bb_rate * pa_slot, 1)
         confirmed = lu.get("confirmed", True)
         pool.append({"name": lu["name"], "pos": pos, "salary": info["salary"], "proj": proj, "ceiling": ceil,
+                     "floor": floor,
                      "team": abbr.get(str(lu["team_id"]), str(lu["team_id"])), "game": lu["game"],
                      "opp_team": abbr.get(str(lu.get("opp_team_id")), None),
                      "slot": lu["slot"], "confirmed": confirmed,

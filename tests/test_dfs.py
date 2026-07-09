@@ -416,3 +416,55 @@ def test_fetch_draftables_handles_dash_fppg(monkeypatch):
     out = dfs.fetch_draftables(123)
     assert out[dfs.norm("Rookie Guy")]["dk_fppg"] is None
     assert out[dfs.norm("Vet Guy")]["dk_fppg"] == 12.3
+
+
+def _floor_test_pool(low_floor_ceiling=8.0, low_floor_floor=8.0):
+    # LowFloor/HighFloor are BOTH the only two "C" (catcher)-eligible players
+    # in the pool -- only 1 catcher slot exists, so the optimizer is forced to
+    # pick exactly one of them, never both and never neither. Every other
+    # slot is filled by a clearly-lower-value, non-catcher-eligible filler so
+    # the C decision is the only thing in play.
+    flex = {"1B", "2B", "3B", "SS", "OF"}
+    pool = [
+        {"name": "LowFloor", "team": "AAA", "pos": {"C"}, "salary": 4000,
+         "proj": 8.0, "ceiling": low_floor_ceiling, "floor": low_floor_floor, "game": "g1"},
+        {"name": "HighFloor", "team": "AAA", "pos": {"C"}, "salary": 4000,
+         "proj": 8.0, "ceiling": 8.0, "floor": 8.8, "game": "g1"},
+    ]
+    for s in range(7):  # fills 1B/2B/3B/SS/OF/OF/OF -- exactly the 7 non-catcher hitter slots
+        pool.append({"name": f"F{s}", "team": "BBB", "pos": set(flex), "salary": 3000,
+                     "proj": 5.0, "ceiling": 5.0, "floor": 5.0, "game": "g2"})
+    for i in range(2):
+        pool.append({"name": f"P{i}", "team": f"T{i}", "pos": {"P"}, "salary": 7000,
+                     "proj": 15.0, "ceiling": 15.0, "floor": 15.0, "game": f"pg{i}"})
+    return pool
+
+
+def test_cash_mode_prefers_floor_over_raw_proj_on_a_tie():
+    # Regression: cash mode's optimizer objective is "floor" (proj nudged by
+    # walk-rate consistency signal), not raw "proj" -- when two players have
+    # identical proj but different floor, cash should pick the higher-floor one.
+    from edge import dfs_opt
+    pool = _floor_test_pool()  # both proj=8.0, HighFloor has the better floor (8.8 vs 8.0)
+    res = dfs_opt.optimize(pool, mode="cash", iters=400)
+    names = {p["name"] for p, _ in res["lineup"]}
+    assert "HighFloor" in names and "LowFloor" not in names
+
+
+def test_gpp_mode_unaffected_by_floor_differences():
+    # GPP's objective is "lev" (ceiling faded by ownership) -- floor must not
+    # influence GPP selection at all.
+    from edge import dfs_opt
+    # LowFloor has a strictly higher ceiling despite a lower floor -- GPP should take it
+    pool = _floor_test_pool(low_floor_ceiling=9.0, low_floor_floor=6.0)
+    res = dfs_opt.optimize(pool, mode="gpp", iters=400)
+    names = {p["name"] for p, _ in res["lineup"]}
+    assert "LowFloor" in names and "HighFloor" not in names
+
+
+def test_bb_floor_weight_constant_is_documented_and_modest():
+    # BB_FLOOR_WEIGHT should stay a deliberately small nudge -- guards against
+    # someone cranking it up without re-validating on a bigger sample (see the
+    # comment in edge/dfs.py for the n=60 validation this rests on).
+    from edge.dfs import BB_FLOOR_WEIGHT
+    assert 0 < BB_FLOOR_WEIGHT <= 5.0

@@ -357,6 +357,24 @@ def skill_rates(season: int, min_pa: int = 80, cache_path: str | None = None) ->
 SLOT_PA = {1: 4.65, 2: 4.55, 3: 4.45, 4: 4.35, 5: 4.25, 6: 4.15, 7: 4.05, 8: 3.95, 9: 3.85}
 LG_K9 = 8.6
 
+# CASH-mode floor nudge (2026-07-09): a candidate "HR-rate = boom/bust" floor
+# metric was tested against real 2025 game logs (60 qualified hitters) and
+# FAILED -- raw std(game pts) vs hr_rate looked strong (+0.847) but that's
+# confounded by mean (power hitters simply score more); once normalized to
+# coefficient-of-variation the relationship vanished (-0.010), and bust-rate
+# (games <=1 pt) was mildly NEGATIVE (-0.21) -- the opposite of the boom/bust
+# hypothesis. Mean skill level alone strongly predicts consistency
+# (corr -0.55 CV, -0.67 bust-rate: better hitters are already more consistent,
+# which is why cash's existing pure proj-max isn't starting from zero). Walk
+# rate adds REAL signal beyond that: incremental_baseline_test(bust_rate,
+# mean_pts, bb_rate) -> incremental R2 +0.067, t=-2.80, significant at 5%
+# (n=60). A guaranteed way to reach base without contact (2 DK pts, plus
+# downstream run chances) is a genuine floor mechanism a low-BB hitter lacks.
+# Small, deliberately modest weight -- this is a real but secondary signal,
+# not a primary driver; do not raise this without re-validating on a bigger
+# game-log sample first.
+BB_FLOOR_WEIGHT = 2.0
+
 
 def pooled_skill_rates(seasons=(2024, 2025), min_pa: int = 120, cache_path: str | None = None,
                        max_age: float | None = None) -> tuple[dict, float]:
