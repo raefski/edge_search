@@ -24,6 +24,7 @@ data/*.json
 data/*.parquet
 data/*.duckdb
 data/bullpen_cache/
+data/actuals_cache/
 
 # ...but DO commit the free, non-sensitive model data so cloud cold-starts are
 # fast and the hitter model keeps its park factors (the strikeouts path that
