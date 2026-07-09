@@ -17,27 +17,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from edge.dfs_validate import cross_slate_summary  # noqa: E402
+
 OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "data/dfs_calibration.html"
-
-
-def pearson(xs, ys):
-    n = len(xs)
-    if n < 2:
-        return float("nan")
-    mx, my = statistics.mean(xs), statistics.mean(ys)
-    cov = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / n
-    sx, sy = statistics.pstdev(xs), statistics.pstdev(ys)
-    return cov / (sx * sy) if sx and sy else float("nan")
-
-
-def stats_for(rows, pred_key, act_key):
-    pairs = [(r[pred_key], r[act_key]) for r in rows if r.get(pred_key) is not None and r.get(act_key) is not None]
-    if not pairs:
-        return {"n": 0, "corr": None, "mae": None, "points": []}
-    preds = [p for p, a in pairs]
-    acts = [a for p, a in pairs]
-    mae = statistics.mean(abs(a - p) for p, a in pairs)
-    return {"n": len(pairs), "corr": round(pearson(preds, acts), 3), "mae": round(mae, 2), "points": pairs}
 
 
 def main():
@@ -64,13 +47,22 @@ def main():
     for key, c in charts.items():
         pairs = [(r[c["pk"]], r[c["ak"]], r["player"], r["date"]) for r in c["rows"]
                  if r.get(c["pk"]) is not None and r.get(c["ak"]) is not None]
-        preds = [p[0] for p in pairs]
-        acts = [p[1] for p in pairs]
         mae = round(statistics.mean(abs(a - p) for p, a, *_ in pairs), 2) if pairs else None
-        corr = round(pearson(preds, acts), 3) if len(pairs) >= 2 else None
+
+        # per-slate + pooled, BOTH Pearson (what most DFS write-ups report) and
+        # Spearman (robust to the skew that inflates Pearson on ownership data --
+        # an external review caught the pooled pitcher-ownership Pearson of 0.89
+        # collapsing to 0.33 once restricted to the sub-15%-owned range that
+        # actually matters for leverage decisions; Spearman doesn't hide that).
+        rows_for_stats = [{"date": r["date"], "x": r[c["pk"]], "y": r[c["ak"]]} for r in c["rows"]]
+        pearson_summary = cross_slate_summary(rows_for_stats, "date", "x", "y", method="pearson")
+        spearman_summary = cross_slate_summary(rows_for_stats, "date", "x", "y", method="spearman")
+
         chart_data[key] = {
-            "title": c["title"], "axis": c["axis"], "n": len(pairs),
-            "corr": corr, "mae": mae,
+            "title": c["title"], "axis": c["axis"], "n": len(pairs), "mae": mae,
+            "pearson": pearson_summary["pooled_corr"], "spearman": spearman_summary["pooled_corr"],
+            "n_slates": pearson_summary["n_slates"],
+            "cross_slate_se": pearson_summary.get("cross_slate_se"),
             "points": [{"x": p, "y": a, "name": nm, "date": d} for p, a, nm, d in pairs],
         }
 
@@ -79,7 +71,9 @@ def main():
     OUT.write_text(html)
     print(f"wrote {OUT}")
     for key, c in chart_data.items():
-        print(f"  {c['title']:24} n={c['n']:4} corr={c['corr']} mae={c['mae']}")
+        se_str = f" (cross-slate SE {c['cross_slate_se']})" if c.get("cross_slate_se") is not None else ""
+        print(f"  {c['title']:24} n={c['n']:4} n_slates={c['n_slates']}  "
+              f"pearson={c['pearson']}  spearman={c['spearman']}{se_str}  mae={c['mae']}")
 
 
 def _render(chart_data, dates, n_own_dates):
@@ -214,8 +208,11 @@ function buildChart(key, c) {{
     </g>`;
   }});
 
-  const statLine = c.corr !== null
-    ? `n=<b>${{c.n}}</b> &middot; corr=<b>${{c.corr >= 0 ? '+' : ''}}${{c.corr}}</b> &middot; MAE=<b>${{c.mae}}</b>`
+  const seStr = c.cross_slate_se !== null && c.cross_slate_se !== undefined
+    ? ` &plusmn;${{c.cross_slate_se}} (cross-slate SE, ${{c.n_slates}} slates)` : '';
+  const statLine = c.pearson !== null
+    ? `n=<b>${{c.n}}</b> &middot; Pearson=<b>${{c.pearson >= 0 ? '+' : ''}}${{c.pearson}}</b> &middot; `
+      + `Spearman=<b>${{c.spearman >= 0 ? '+' : ''}}${{c.spearman}}</b>${{seStr}} &middot; MAE=<b>${{c.mae}}</b>`
     : `n=<b>${{c.n}}</b>`;
 
   const tableRows = c.points.slice().sort((a, b) => b.y - a.y).map(p =>
@@ -229,6 +226,7 @@ function buildChart(key, c) {{
       ${{gridlines}}
       <line class="refline" x1="${{sx(lo)}}" y1="${{sy(lo)}}" x2="${{sx(hi)}}" y2="${{sy(hi)}}"/>
       ${{dots}}
+      ${{axisLabels}}
       <text class="axis-label" x="${{W/2}}" y="${{H - 2}}" text-anchor="middle">predicted ${{c.axis}}</text>
       <text class="axis-label" x="${{-H/2}}" y="12" text-anchor="middle" transform="rotate(-90)">actual ${{c.axis}}</text>
     </svg>

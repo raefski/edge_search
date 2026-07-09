@@ -289,3 +289,130 @@ def test_pooled_skill_rates_max_age_forces_refresh(tmp_path, monkeypatch):
     os.utime(cache_path, (time.time(), time.time()))
     dfs.pooled_skill_rates((2024,), cache_path=str(cache_path), max_age=10000)
     assert not called, "fresh cache (within max_age) should be reused, not refetched"
+
+
+def test_validate_pearson_spearman_agree_on_linear_data():
+    from edge.dfs_validate import pearson, spearman
+    xs = [1, 2, 3, 4, 5]
+    ys = [2, 4, 6, 8, 10]
+    assert approx(pearson(xs, ys), 1.0, tol=0.01)
+    assert approx(spearman(xs, ys), 1.0, tol=0.01)
+
+
+def test_validate_spearman_robust_to_outlier_pearson_is_not():
+    from edge.dfs_validate import pearson, spearman
+    # a monotonic relationship with one huge outlier that Pearson overweights
+    xs = [1, 2, 3, 4, 5]
+    ys = [1, 2, 3, 4, 100]
+    # still perfectly monotonic -> spearman is exactly 1.0 regardless of the outlier's size
+    assert approx(spearman(xs, ys), 1.0, tol=0.01)
+
+
+def test_validate_fisher_ci_widens_with_smaller_n():
+    from edge.dfs_validate import fisher_ci
+    lo_big, hi_big = fisher_ci(0.5, 1000)
+    lo_small, hi_small = fisher_ci(0.5, 20)
+    assert (hi_small - lo_small) > (hi_big - lo_big)
+
+
+def test_validate_cross_slate_summary_separates_pooled_from_per_slate():
+    from edge.dfs_validate import cross_slate_summary
+    # two slates, each with a real relationship, but different slopes/noise
+    rows = []
+    for i in range(20):
+        rows.append({"date": "d1", "x": i, "y": i + 1})
+    for i in range(20):
+        rows.append({"date": "d2", "x": i, "y": -i})   # inverted relationship
+    out = cross_slate_summary(rows, "date", "x", "y")
+    assert out["n_slates"] == 2 and out["n_rows"] == 40
+    assert out["per_slate"]["d1"]["corr"] > 0.9
+    assert out["per_slate"]["d2"]["corr"] < -0.9
+    # pooled masks the per-slate signal since slopes cancel
+    assert abs(out["pooled_corr"]) < 0.5
+
+
+def test_validate_incremental_baseline_test_detects_real_signal():
+    from edge.dfs_validate import incremental_baseline_test
+    import random
+    rng = random.Random(0)
+    baseline = [rng.uniform(0, 10) for _ in range(200)]
+    model = [rng.uniform(0, 10) for _ in range(200)]   # independent of baseline
+    # y depends on BOTH baseline and model with real coefficients
+    y = [2 * b + 3 * m + rng.gauss(0, 0.5) for b, m in zip(baseline, model)]
+    out = incremental_baseline_test(y, baseline, model)
+    assert out["significant_at_5pct"]
+    assert out["incremental_r2"] > 0.1
+
+
+def test_validate_incremental_baseline_test_detects_no_signal():
+    from edge.dfs_validate import incremental_baseline_test
+    import random
+    rng = random.Random(0)
+    baseline = [rng.uniform(0, 10) for _ in range(200)]
+    model = [rng.uniform(0, 10) for _ in range(200)]   # pure noise, no relationship to y
+    y = [2 * b + rng.gauss(0, 0.5) for b in baseline]   # y depends only on baseline
+    out = incremental_baseline_test(y, baseline, model)
+    assert not out["significant_at_5pct"]
+    assert out["incremental_r2"] < 0.02
+
+
+def test_project_ownership_defaults_match_swept_values():
+    # Regression: guards the gamma defaults against silent drift back to the
+    # pre-fix values (gamma=3.5, pitcher_gamma=6.0), which an external review
+    # + out-of-sample sweep (scripts/dfs_ownership_gamma_sweep.py) found were
+    # measurably worse on real contest ownership -- see project_ownership's
+    # docstring/comment for the numbers.
+    import inspect
+    from edge.dfs import project_ownership
+    params = inspect.signature(project_ownership).parameters
+    assert params["gamma"].default == 1.5
+    assert params["pitcher_gamma"].default == 7.0
+
+
+def test_project_ownership_normalizes_within_position():
+    # salaries/proj kept away from the punt-chalk (<=3500) and stud (>=9000)
+    # salary-tier bonuses so nobody hits the 65% chalk cap and clips the sum.
+    from edge.dfs import project_ownership, _OWN_SLOTS
+    pool = [{"proj": 6.0 + i * 0.3, "salary": 4000 + i * 300, "pos": {"OF"}} for i in range(5)]
+    project_ownership(pool, team_proj=None)
+    total = sum(p["own"] for p in pool)
+    assert approx(total, _OWN_SLOTS["OF"] * 100, tol=1.0)  # 3 OF slots -> sums to ~300%
+
+
+def test_project_ownership_pitchers_concentrate_more_than_hitters():
+    # pitcher_gamma > gamma: the SAME shape of value spread should produce a
+    # more concentrated (higher-variance-of-ownership) distribution for
+    # pitchers than for hitters, since the field jams the top 1-2 arms harder.
+    from edge.dfs import project_ownership
+    def make_pool(pos, n_slots_key):
+        return [{"proj": 5.0 + i * 2, "salary": 3000 + i * 800, "pos": {pos}} for i in range(6)]
+
+    pitchers = make_pool("P", "P")
+    hitters = make_pool("OF", "OF")
+    project_ownership(pitchers, team_proj=None)
+    project_ownership(hitters, team_proj=None)
+    # same underlying value spread -> pitcher ownership should spread out MORE
+    # (top pitcher owns a much bigger share than top OF, proportionally)
+    pit_top_share = max(p["own"] for p in pitchers) / sum(p["own"] for p in pitchers)
+    hit_top_share = max(p["own"] for p in hitters) / sum(p["own"] for p in hitters)
+    assert pit_top_share > hit_top_share
+
+
+def test_fetch_draftables_handles_dash_fppg(monkeypatch):
+    # Regression: DK returns the literal string "-" for dk_fppg (id 408) on
+    # players with no game history yet (rookies/callups) -- float("-") crashed
+    # the entire draftables pull, not just that one player's row.
+    from edge import dfs
+
+    def fake_get(url):
+        return {"draftables": [
+            {"displayName": "Rookie Guy", "salary": 3000, "position": "OF", "teamAbbreviation": "AAA",
+             "competition": {}, "draftStatAttributes": [{"id": 408, "value": "-"}]},
+            {"displayName": "Vet Guy", "salary": 5000, "position": "OF", "teamAbbreviation": "AAA",
+             "competition": {}, "draftStatAttributes": [{"id": 408, "value": "12.3"}]},
+        ]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    out = dfs.fetch_draftables(123)
+    assert out[dfs.norm("Rookie Guy")]["dk_fppg"] is None
+    assert out[dfs.norm("Vet Guy")]["dk_fppg"] == 12.3

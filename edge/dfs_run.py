@@ -48,15 +48,16 @@ def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
     if is_main:
         plog = root / "data/dfs_proj_log.csv"
         prior = [r for r in csv.DictReader(open(plog))] if plog.exists() else []
+        cols = ("date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf", "dk_fppg")
         with plog.open("w", newline="") as fh:
             w = csv.writer(fh)
-            w.writerow(["date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf"])
+            w.writerow(list(cols))
             for r in prior:
                 if r["date"] != date:
-                    w.writerow([r[k] for k in ("date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf")])
+                    w.writerow([r.get(k, "") for k in cols])
             for p in pool:
                 w.writerow([date, p["name"], p["team"], "/".join(sorted(p["pos"])), p["salary"],
-                            p["proj"], p.get("ceiling"), p.get("own", ""), p["conf"]])
+                            p["proj"], p.get("ceiling"), p.get("own", ""), p["conf"], p.get("dk_fppg", "")])
         result["logged_projections"] = True
         result["n"] = len(pool)
 
@@ -168,7 +169,8 @@ def build_slate(client, date, draft_group=None, iters=800):
                 continue
             pool.append({"name": nm, "pos": {"P"}, "salary": info["salary"], "proj": proj,
                          "ceiling": proj, "team": info["team"], "game": info["game"],
-                         "opp_team": team_opp_abbr.get(info["team"]), "conf": "P-prop"})
+                         "opp_team": team_opp_abbr.get(info["team"]), "conf": "P-prop",
+                         "dk_fppg": info.get("dk_fppg")})
 
     # --- hitters: skill model over confirmed lineups (FREE) ---
     bullpen_cache_dir = root / "data/bullpen_cache"
@@ -206,7 +208,8 @@ def build_slate(client, date, draft_group=None, iters=800):
                      "team": abbr.get(str(lu["team_id"]), str(lu["team_id"])), "game": lu["game"],
                      "opp_team": abbr.get(str(lu.get("opp_team_id")), None),
                      "slot": lu["slot"], "confirmed": confirmed,
-                     "conf": f"H-slot{lu['slot']}" + ("" if confirmed else "*PROJ")})
+                     "conf": f"H-slot{lu['slot']}" + ("" if confirmed else "*PROJ"),
+                     "dk_fppg": info.get("dk_fppg")})
 
     ph = [p for p in pool if "P" in p["pos"]]
     hh = [p for p in pool if "P" not in p["pos"]]

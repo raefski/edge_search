@@ -43,17 +43,27 @@ def mlb_draft_groups() -> list[dict]:
 
 
 def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
-    """{normalized name: {name, salary, position, team}} for a draft group."""
+    """{normalized name: {name, salary, position, team, dk_fppg}} for a draft group.
+    dk_fppg = DK's own "Fantasy Points Per Game" (draftStatAttributes id 408) --
+    a free, always-available baseline: the validation methodology should always
+    check incremental value over this (and over salary) before trusting a corr
+    number in isolation. Not backfillable for past slates (DK only serves
+    current/upcoming draftables), so this only accumulates going forward."""
     url = f"https://api.draftkings.com/draftgroups/v1/draftgroups/{draft_group_id}/draftables"
     out = {}
     for p in _get(url).get("draftables", []):
         k = norm(p["displayName"])
         if k not in out:  # dedupe multi-slot rows
             comp = p.get("competition") or {}
+            fppg = next((a.get("value") for a in (p.get("draftStatAttributes") or []) if a.get("id") == 408), None)
+            try:
+                dk_fppg = float(fppg)
+            except (TypeError, ValueError):
+                dk_fppg = None  # "-" for players with no game history yet (rookies/callups)
             out[k] = {"name": p["displayName"], "salary": p.get("salary"),
                       "position": p.get("position"), "team": p.get("teamAbbreviation"),
                       "game": comp.get("competitionId"), "matchup": comp.get("name"),
-                      "start": comp.get("startTime")}
+                      "start": comp.get("startTime"), "dk_fppg": dk_fppg}
     return out
 
 
@@ -234,11 +244,31 @@ def allocate_hitter(sr: dict, team_total: float | None, pa: float = 4.3) -> dict
 _OWN_SLOTS = {"P": 2, "C": 1, "1B": 1, "2B": 1, "3B": 1, "SS": 1, "OF": 3}
 
 
-def project_ownership(pool: list[dict], team_proj: dict | None = None, gamma: float = 3.5,
-                      pitcher_gamma: float = 6.0, bo_exp: float = 3.0) -> list[dict]:
+def project_ownership(pool: list[dict], team_proj: dict | None = None, gamma: float = 1.5,
+                      pitcher_gamma: float = 7.0, bo_exp: float = 3.0) -> list[dict]:
     # pitcher_gamma > gamma: on a full slate the field jams the top 1-2 arms far
     # harder than it clusters hitters. Calibrated to real 6/30 ownership (elite SP
     # hit ~36-48%, which a hitter-level gamma badly under-predicted).
+    #
+    # CORRECTED 2026-07-09 after an external review found the hitter softmax was
+    # "too hot" (every one of the top-8 predicted-ownership hitters was over-
+    # predicted, e.g. 65%->12% actual). Re-swept both gammas via
+    # scripts/dfs_ownership_gamma_sweep.py, out-of-sample, against every date
+    # with real contest ownership (6 dates for hitters, 5 for pitchers -- not
+    # just the 2 checked in the first pass):
+    #   hitter gamma 3.5->1.5: MAE improved on ALL 6 dates (e.g. 7/7: 4.42->3.69),
+    #   rank correlation FLAT throughout (Spearman unaffected -- softmax
+    #   temperature only changes concentration, not who's ranked ahead of whom,
+    #   so this was a pure calibration fix with no ranking cost).
+    #   pitcher_gamma: mixed by date (7/1, 7/2 prefer LOWER gamma; 6/30, 7/3, 7/7
+    #   prefer higher) -- the n-weighted pooled MAE across all 5 dates picks
+    #   7.0 (was 6.0), a smaller and less clean win than the hitter fix. Do not
+    #   re-tune pitcher_gamma off pooled Pearson alone -- it keeps climbing well
+    #   past the true MAE minimum because it's inflated by the single most-owned
+    #   pitcher each slate (see the external review's sub-15%-owned-only test,
+    #   the honest read for leverage decisions). Re-run the sweep script as
+    #   more slates accumulate -- this parameter is on thinner evidence than
+    #   the hitter gamma.
     avg_team = (sum(team_proj.values()) / len(team_proj)) if team_proj else None
     for p in pool:
         val = p["proj"] / (p["salary"] / 1000.0) if p.get("salary") else 0.0
