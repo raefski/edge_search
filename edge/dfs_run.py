@@ -247,6 +247,27 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
     if exclude_teams:
         pool = [p for p in pool if p["team"] not in exclude_teams]
 
+    # Drop anyone not on their team's active roster (IL, optioned, etc) --
+    # catches the case where a stale PROJECTED lineup fallback (today's real
+    # lineup not posted yet) reuses a player's last game slot even though
+    # they've since gone on IL. See dfs.inactive_players for the validated
+    # active-vs-40Man signal (the roster `status` field alone can't be trusted).
+    inactive_cache_dir = root / "data/inactive_cache"
+    inactive_cache_dir.mkdir(parents=True, exist_ok=True)
+    _inactive_memo = {}
+    id_by_abbr = {v: k for k, v in abbr.items()}
+
+    def inactive_for_team(team_abbr):
+        team_id = id_by_abbr.get(team_abbr)
+        if not team_id:
+            return set()
+        if team_id not in _inactive_memo:
+            _inactive_memo[team_id] = dfs.inactive_players(
+                team_id, cache_path=str(inactive_cache_dir / f"{team_id}.json"), max_age=21600)
+        return _inactive_memo[team_id]
+
+    pool = [p for p in pool if dfs.norm(p["name"]) not in inactive_for_team(p["team"])]
+
     ph = [p for p in pool if "P" in p["pos"]]
     hh = [p for p in pool if "P" not in p["pos"]]
 

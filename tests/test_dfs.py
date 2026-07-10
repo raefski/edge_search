@@ -291,6 +291,77 @@ def test_pooled_skill_rates_max_age_forces_refresh(tmp_path, monkeypatch):
     assert not called, "fresh cache (within max_age) should be reused, not refetched"
 
 
+def test_inactive_players_flags_40man_not_active(monkeypatch):
+    from edge import dfs
+
+    def fake_get(url):
+        if "rosterType=active" in url:
+            return {"roster": [{"person": {"id": 1, "fullName": "Active Guy"}}]}
+        return {"roster": [
+            {"person": {"id": 1, "fullName": "Active Guy"}},
+            {"person": {"id": 2, "fullName": "Hurt Guy"}},
+        ]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    out = dfs.inactive_players(118)
+    assert out == {dfs.norm("Hurt Guy")}
+
+
+def test_inactive_players_ignores_stale_status_field(monkeypatch):
+    # Regression: MLB's own roster `status` text field can say "Active" for
+    # a player who is genuinely not on the active roster -- membership in
+    # the active-roster id set (not the status field) is the source of truth.
+    from edge import dfs
+
+    def fake_get(url):
+        if "rosterType=active" in url:
+            return {"roster": []}
+        return {"roster": [{"person": {"id": 5, "fullName": "Stale Status Guy"},
+                            "status": {"code": "A", "description": "Active"}}]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    out = dfs.inactive_players(118)
+    assert dfs.norm("Stale Status Guy") in out
+
+
+def test_inactive_players_cache_respects_max_age(tmp_path, monkeypatch):
+    import json
+    import os
+    import time
+    from edge import dfs
+
+    cache_path = tmp_path / "inactive.json"
+    cache_path.write_text(json.dumps(["stale name"]))
+    old_time = time.time() - 1000
+    os.utime(cache_path, (old_time, old_time))
+
+    called = []
+
+    def fake_get(url):
+        called.append(url)
+        return {"roster": []}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    dfs.inactive_players(118, cache_path=str(cache_path), max_age=10)
+    assert called, "stale cache (past max_age) should have triggered a refetch"
+
+    called.clear()
+    os.utime(cache_path, (time.time(), time.time()))
+    out = dfs.inactive_players(118, cache_path=str(cache_path), max_age=10000)
+    assert not called, "fresh cache (within max_age) should be reused, not refetched"
+    assert out == set()  # first call's refetch already overwrote the cache with a fresh (empty) result
+
+
+def test_inactive_players_survives_api_failure(monkeypatch):
+    from edge import dfs
+
+    def fake_get(url):
+        raise Exception("network error")
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    assert dfs.inactive_players(118) == set()
+
+
 def test_validate_pearson_spearman_agree_on_linear_data():
     from edge.dfs_validate import pearson, spearman
     xs = [1, 2, 3, 4, 5]

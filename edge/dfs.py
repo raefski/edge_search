@@ -496,6 +496,38 @@ def team_pitcher_stats(team_id, seasons, cache_path: str | None = None, max_age:
     return out
 
 
+def inactive_players(team_id, cache_path: str | None = None, max_age: float | None = None) -> set:
+    """{norm(name)} for every player on a team's 40-man roster who is NOT on
+    the active roster right now -- IL (any duration), optioned to minors,
+    restricted, etc. Confirmed live 2026-07-10 against five real cases
+    (Judge D10, Rodon D15, Holmes/Estevez/Marsh D60, several RM = Reassigned
+    to Minors): all correctly on 40Man but absent from active. The roster
+    `status` text field can NOT be trusted at face value -- checked live
+    against a player specifically reported to be on IL and it still read
+    {"code": "A", "description": "Active"} (status can lag reality) -- so
+    this checks SET MEMBERSHIP (40Man minus active) instead, which is the
+    signal that actually held up across the five confirmed real examples.
+
+    This is what actually needs filtering out of build_slate's pool: when
+    today's real lineup isn't posted yet, lineups_for_date's projected
+    fallback (_team_recent_lineup) reuses a player's most recent lineup slot
+    -- if that player has since gone on IL or been optioned, the projection
+    doesn't know and still includes them."""
+    if cache_path and _os.path.exists(cache_path):
+        if max_age is None or _time.time() - _os.path.getmtime(cache_path) < max_age:
+            return set(json.load(open(cache_path)))
+    try:
+        active_ids = {p["person"]["id"] for p in _get(
+            f"https://statsapi.mlb.com/api/v1/teams/{team_id}/roster?rosterType=active")["roster"]}
+        full = _get(f"https://statsapi.mlb.com/api/v1/teams/{team_id}/roster?rosterType=40Man")["roster"]
+    except Exception:
+        return set()
+    out = {norm(p["person"]["fullName"]) for p in full if p["person"]["id"] not in active_ids}
+    if cache_path:
+        json.dump(sorted(out), open(cache_path, "w"))
+    return out
+
+
 def bullpen_k9(pitcher_stats: list, exclude_pid=None) -> float:
     """K/9 pooled across a team's RELIEVERS (gamesStarted/gamesPitched < 0.5),
     excluding tonight's actual/probable starter. Backtested 2026-07-08: blending
