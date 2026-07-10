@@ -588,16 +588,27 @@ def team_game_status(date: str) -> dict:
         return out
     for d in s.get("dates", []):
         for g in d.get("games", []):
-            detail = g.get("status", {}).get("detailedState", "")
-            flag = "" if detail in _NORMAL_GAME_STATES else detail
-            for side in ("home", "away"):
-                abbr = g["teams"][side]["team"].get("abbreviation")
-                if not abbr:
+            try:
+                # regular season only -- an All-Star/exhibition entry (gameType
+                # "A" etc, confirmed real: 2026-07-14) has "AL"/"NL" in place of
+                # a real team abbreviation, which isn't a crash but would
+                # pollute this dict with bogus non-DK-team keys.
+                if g.get("gameType", "R") != "R":
                     continue
-                abbr = _STATSAPI_TO_DK_ABBR.get(abbr, abbr)
-                # if a team's already flagged from another game that date, keep the flag
-                if flag or abbr not in out:
-                    out[abbr] = flag
+                detail = g.get("status", {}).get("detailedState", "")
+                flag = "" if detail in _NORMAL_GAME_STATES else detail
+                for side in ("home", "away"):
+                    abbr = (g.get("teams", {}).get(side, {}).get("team", {}) or {}).get("abbreviation")
+                    if not abbr:
+                        continue
+                    abbr = _STATSAPI_TO_DK_ABBR.get(abbr, abbr)
+                    # if a team's already flagged from another game that date, keep the flag
+                    if flag or abbr not in out:
+                        out[abbr] = flag
+            except Exception:
+                # one malformed game entry (any unexpected schedule shape)
+                # must not take down the whole function -- skip it and keep going.
+                continue
     return out
 
 
@@ -607,7 +618,10 @@ def lineups_for_date(date: str, project: bool = True) -> dict:
     project=True, fill a PROJECTED order from its most-recent game (confirmed=False),
     so you can target a team before its official lineup drops."""
     s = _get(f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&date={date}&hydrate=lineups,probablePitcher")
-    games = [g for d in s.get("dates", []) for g in d.get("games", [])]
+    # regular season only -- an All-Star/exhibition entry (gameType "A" etc,
+    # confirmed real: 2026-07-14) uses "AL"/"NL" pseudo-teams that won't
+    # collide with real team ids, but there's no reason to process it at all.
+    games = [g for d in s.get("dates", []) for g in d.get("games", []) if g.get("gameType", "R") == "R"]
 
     # Doubleheaders: a team can appear in 2 games the same date. Without this,
     # a finished game 1's CONFIRMED lineup gets keyed by player name same as

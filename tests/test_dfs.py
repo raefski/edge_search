@@ -500,3 +500,56 @@ def test_team_game_status_flags_postponed_not_normal_states(monkeypatch):
     out = dfs.team_game_status("2026-07-09")
     assert out["ARI"] == "Postponed" and out["BOS"] == "Postponed"  # normalized + flagged
     assert out["NYM"] == "" and out["ATL"] == ""                    # normal, unflagged
+
+
+def test_team_game_status_survives_malformed_game_entry(monkeypatch):
+    # Regression: a game entry missing "teams" (or home/away/team within it)
+    # used to raise an uncaught KeyError from direct dict indexing, crashing
+    # the whole function instead of just skipping that one game.
+    from edge import dfs
+
+    def fake_get(url):
+        return {"dates": [{"games": [
+            {"status": {"detailedState": "Final"}},  # missing "teams" entirely
+            {"status": {"detailedState": "Final"}, "teams": {"home": {}}},  # missing "team" under home
+            {"status": {"detailedState": "Final"},
+             "teams": {"home": {"team": {"abbreviation": "NYM"}}, "away": {"team": {"abbreviation": "ATL"}}}},
+        ]}]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    out = dfs.team_game_status("2026-07-09")  # must not raise
+    assert out["NYM"] == "" and out["ATL"] == ""
+
+
+def test_team_game_status_skips_non_regular_season_games(monkeypatch):
+    # Regression: confirmed real 2026-07-14 -- an All-Star/exhibition entry
+    # (gameType != "R") uses "AL"/"NL" pseudo-teams instead of real ones and
+    # should never show up in this dict.
+    from edge import dfs
+
+    def fake_get(url):
+        return {"dates": [{"games": [
+            {"gameType": "A", "status": {"detailedState": "Final"},
+             "teams": {"home": {"team": {"abbreviation": "AL"}}, "away": {"team": {"abbreviation": "NL"}}}},
+            {"gameType": "R", "status": {"detailedState": "Final"},
+             "teams": {"home": {"team": {"abbreviation": "NYM"}}, "away": {"team": {"abbreviation": "ATL"}}}},
+        ]}]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    out = dfs.team_game_status("2026-07-14")
+    assert "AL" not in out and "NL" not in out
+    assert out["NYM"] == "" and out["ATL"] == ""
+
+
+def test_lineups_for_date_skips_non_regular_season_games(monkeypatch):
+    from edge import dfs
+
+    def fake_get(url):
+        return {"dates": [{"games": [
+            {"gamePk": 1, "gameType": "A", "status": {"abstractGameState": "Final"},
+             "teams": {"home": {"team": {"id": 999}}, "away": {"team": {"id": 998}}}, "lineups": {}},
+        ]}]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    out = dfs.lineups_for_date("2026-07-14", project=False)
+    assert out == {}
