@@ -75,8 +75,16 @@ def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
 
 
 def team_abbrev_map() -> dict[str, str]:
+    """{team_id: DK-style abbreviation}. Normalized via dfs._STATSAPI_TO_DK_ABBR
+    -- caught live 2026-07-09: statsapi says "AZ" for Arizona, DK's draftables
+    say "ARI". Hitters' pool "team" came from this function (statsapi-based)
+    while pitchers' came directly from DK draftables, so Arizona hitters and
+    Arizona's own pitcher silently never matched on team string -- which
+    quietly broke the pitcher-vs-own-hitters constraint (edge/dfs_opt.py
+    _valid()) for this one team specifically, since opp_team lookups keyed
+    on the DK spelling never found the statsapi-spelled entry."""
     t = dfs._get("https://statsapi.mlb.com/api/v1/teams?sportId=1")["teams"]
-    return {str(x["id"]): x["abbreviation"] for x in t}
+    return {str(x["id"]): dfs._STATSAPI_TO_DK_ABBR.get(x["abbreviation"], x["abbreviation"]) for x in t}
 
 
 def resolve_slate(draft_group, groups=None):
@@ -100,14 +108,26 @@ def resolve_slate(draft_group, groups=None):
     }
 
 
-def build_slate(client, date, draft_group=None, iters=800):
+def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
     """Run the full pipeline for one slate and return a structured result dict.
 
+    exclude_teams: optional set/list of team abbreviations (e.g. {"BAL","CHC"})
+    to drop from the pool entirely -- for when DK voids/doesn't count specific
+    games (postponement, suspension, a contest-scoring exclusion that doesn't
+    necessarily show up as a game-status change). Caught live 2026-07-09: DK
+    told the user BAL@CHC wouldn't count for a contest, but the generator had
+    no way to know and used those players anyway.
+
     Keys: gid, is_main, meta, salaries_n, skill_n, lineup_hitters_n, pool,
-    pitchers, hitters, stack_team, cash, gpp, spent, remaining. When the slate
-    isn't priced yet: {'unpriced': True, 'upcoming': [...]}. On a bad slate name:
-    {'error': ..., 'available': [...]}.
+    pitchers, hitters, stack_team, cash, gpp, spent, remaining, all_teams
+    (every team in the slate before exclusion, with a game_status_flag per
+    team -- "" for normal, else the game's detailedState, e.g. "Postponed" --
+    so the caller can show an informed warning even when DK's own "won't
+    count" designation isn't visible from the game's status alone).
+    When the slate isn't priced yet: {'unpriced': True, 'upcoming': [...]}.
+    On a bad slate name: {'error': ..., 'available': [...]}.
     """
+    exclude_teams = set(exclude_teams or ())
     groups = dfs.mlb_draft_groups()
     gid, is_main, meta = resolve_slate(draft_group, groups)
     if gid is None:
@@ -117,6 +137,9 @@ def build_slate(client, date, draft_group=None, iters=800):
     if not salaries:
         return {"unpriced": True, "gid": gid, "is_main": is_main, "meta": meta,
                 "upcoming": dfs.list_slate_names(groups)[:12]}
+
+    all_teams = sorted({info["team"] for info in salaries.values() if info.get("team")})
+    team_status = dfs.team_game_status(date)  # {team_abbr: "" or e.g. "Postponed"}
 
     from pathlib import Path
     root = Path(__file__).resolve().parents[1]
@@ -221,6 +244,9 @@ def build_slate(client, date, draft_group=None, iters=800):
                      "conf": f"H-slot{lu['slot']}" + ("" if confirmed else "*PROJ"),
                      "dk_fppg": info.get("dk_fppg")})
 
+    if exclude_teams:
+        pool = [p for p in pool if p["team"] not in exclude_teams]
+
     ph = [p for p in pool if "P" in p["pos"]]
     hh = [p for p in pool if "P" not in p["pos"]]
 
@@ -239,5 +265,6 @@ def build_slate(client, date, draft_group=None, iters=800):
     return {"gid": gid, "is_main": is_main, "meta": meta,
             "salaries_n": len(salaries), "skill_n": len(rates), "lineup_hitters_n": len(lineups),
             "pool": pool, "pitchers": ph, "hitters": hh, "stack_team": stack_team,
-            "cash": cash, "gpp": gpp,
+            "cash": cash, "gpp": gpp, "all_teams": all_teams, "team_status": team_status,
+            "excluded_teams": sorted(exclude_teams),
             "spent": client.spent_this_session, "remaining": client.remaining_credits()}

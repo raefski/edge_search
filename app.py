@@ -129,10 +129,16 @@ def cached_started(date: str, _nonce: int) -> dict:
 
 
 @st.cache_data(ttl=600, show_spinner="Building slate… (salaries + lineups are free; props from cache)")
-def cached_build(date: str, draft_group, iters: int, live: bool, key_fingerprint: str) -> dict:
+def cached_build(date: str, draft_group, iters: int, live: bool, key_fingerprint: str,
+                 exclude_teams: tuple = ()) -> dict:
     """key_fingerprint is only in the signature so changing the API key busts the
-    cache; the client reads the real key from the environment."""
-    return dfs_run.build_slate(make_client(live), date, draft_group=draft_group, iters=iters)
+    cache; the client reads the real key from the environment. exclude_teams is
+    part of the cache key (a tuple, not a set, so it hashes) -- excluding a team
+    is a manual override for when DK voids/doesn't count specific games (caught
+    live 2026-07-09: BAL@CHC didn't count for a contest and the generator had no
+    way to know), since that's a DK contest-scoring rule no free API exposes."""
+    return dfs_run.build_slate(make_client(live), date, draft_group=draft_group, iters=iters,
+                               exclude_teams=set(exclude_teams))
 
 
 def _lineup_rows(res: dict, mode: str) -> list[dict]:
@@ -212,6 +218,19 @@ with st.sidebar:
     iters = st.slider("Optimizer restarts", 200, 3000, 800, step=200,
                       help="More restarts = closer to optimal, a bit slower.")
 
+    # populated after each successful build (see below) -- empty on the very
+    # first load of a session, since we haven't built anything yet to learn
+    # the team list from.
+    _known_teams = st.session_state.get("all_teams", [])
+    _team_status = st.session_state.get("team_status", {})
+    exclude_teams = st.multiselect(
+        "Exclude teams (voided/postponed games)", options=_known_teams,
+        format_func=lambda t: f"{t}  ⚠ {_team_status[t]}" if _team_status.get(t) else t,
+        help="DK sometimes doesn't count specific games for a contest (postponement, or a "
+             "contest-scoring rule) -- there's no free API that exposes DK's own rule, so this "
+             "is a manual override. A ⚠ next to a team means its actual MLB game looked "
+             "non-normal (e.g. Postponed) the last time this slate was built.")
+
     preview = st.checkbox("Preview layout (placeholder)", value=False,
                           help="Show sample CASH/GPP lineups so you can see the on-screen "
                                "layout before real batting orders post.")
@@ -235,14 +254,28 @@ st.caption(f"Mode: **{mode_label}**  ·  slate date {slate_date}")
 
 try:
     res = cached_build(slate_date, draft_group, iters, live,
-                       key_fingerprint=(os.environ.get("ODDS_API_KEY", "")[-6:]))
+                       key_fingerprint=(os.environ.get("ODDS_API_KEY", "")[-6:]),
+                       exclude_teams=tuple(sorted(exclude_teams)))
 finally:
     # only spend once; any later manual refresh falls back to the disk cache.
     st.session_state.live = False
 
+if res.get("all_teams"):
+    # feeds the sidebar multiselect's options on the NEXT rerun -- empty on
+    # the very first load, since nothing's been built yet to learn this from.
+    st.session_state["all_teams"] = res["all_teams"]
+    st.session_state["team_status"] = res["team_status"]
+
 if res.get("error"):
     st.error(f"{res['error']}. Available now: {', '.join(res.get('available', [])) or '—'}")
     st.stop()
+
+if exclude_teams:
+    st.caption(f"🚫 Excluding: {', '.join(exclude_teams)}")
+flagged = {t: s for t, s in res.get("team_status", {}).items() if s and t not in exclude_teams}
+if flagged:
+    st.warning("⚠ Non-normal game status detected — consider excluding: " +
+              ", ".join(f"{t} ({s})" for t, s in flagged.items()))
 
 if res.get("unpriced"):
     st.warning("This slate isn't priced yet (no salaries). Upcoming slates:")

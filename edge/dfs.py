@@ -552,6 +552,55 @@ def _team_recent_lineup(team_id, before_date: str) -> list:
     return []
 
 
+_NORMAL_GAME_STATES = {"Final", "In Progress", "Pre-Game", "Completed Early", "Scheduled",
+                      "Warmup", "Manager Challenge", "Review"}
+# statsapi's team.abbreviation doesn't always match DK's teamAbbreviation --
+# confirmed live 2026-07-09: statsapi says "AZ" for Arizona, DK says "ARI".
+# team_game_status()'s output is keyed to match DK (all_teams/pool "team"
+# field), since that's what callers cross-reference it against.
+_STATSAPI_TO_DK_ABBR = {"AZ": "ARI"}
+
+
+def team_game_status(date: str) -> dict:
+    """{team_abbr: "" or the game's detailedState} for every team playing on
+    `date`. Empty string = normal (final/in-progress/upcoming as expected).
+    Anything else (e.g. "Postponed", "Suspended") is a real signal worth a
+    warning before building around that team.
+
+    CAUGHT LIVE 2026-07-09: a postponed game's abstractGameState is
+    misleadingly "Final" (matches a normal completed game) -- only
+    detailedState actually says "Postponed". Checking abstractGameState alone
+    (as the doubleheader-authoritative-game logic does) would silently miss
+    this, so this function checks detailedState specifically. Allowlist, not
+    denylist -- an unrecognized detailedState is a signal we haven't seen
+    before and should still be surfaced, not silently treated as normal.
+
+    This does NOT know about a DK-specific "won't count for this contest"
+    designation -- that's a contest-scoring rule DK doesn't expose via any
+    free API, so it can only be a manual override (see build_slate's
+    exclude_teams). This catches the more common real-world cause (the game
+    itself was postponed/suspended), not the DK-contest-rules case
+    specifically."""
+    out = {}
+    try:
+        s = _get(f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&date={date}")
+    except Exception:
+        return out
+    for d in s.get("dates", []):
+        for g in d.get("games", []):
+            detail = g.get("status", {}).get("detailedState", "")
+            flag = "" if detail in _NORMAL_GAME_STATES else detail
+            for side in ("home", "away"):
+                abbr = g["teams"][side]["team"].get("abbreviation")
+                if not abbr:
+                    continue
+                abbr = _STATSAPI_TO_DK_ABBR.get(abbr, abbr)
+                # if a team's already flagged from another game that date, keep the flag
+                if flag or abbr not in out:
+                    out[abbr] = flag
+    return out
+
+
 def lineups_for_date(date: str, project: bool = True) -> dict:
     """{norm name: {id, name, slot, team_id, park_team_id, opp_pitcher_id, game, confirmed}}.
     Confirmed starters from statsapi; if a team's lineup isn't posted yet and

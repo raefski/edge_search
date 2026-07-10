@@ -468,3 +468,35 @@ def test_bb_floor_weight_constant_is_documented_and_modest():
     # comment in edge/dfs.py for the n=60 validation this rests on).
     from edge.dfs import BB_FLOOR_WEIGHT
     assert 0 < BB_FLOOR_WEIGHT <= 5.0
+
+
+def test_team_abbrev_map_normalizes_arizona(monkeypatch):
+    # Regression: statsapi says "AZ" for Arizona, DK's draftables say "ARI".
+    # team_abbrev_map() feeds hitters' pool "team" field while pitchers get
+    # DK's abbreviation directly -- without normalizing, Arizona hitters and
+    # Arizona's own pitcher never matched on team string, silently breaking
+    # the pitcher-vs-own-hitters constraint for this one team.
+    from edge import dfs_run, dfs
+
+    monkeypatch.setattr(dfs, "_get", lambda url: {"teams": [
+        {"id": 109, "abbreviation": "AZ"}, {"id": 111, "abbreviation": "BOS"}]})
+    out = dfs_run.team_abbrev_map()
+    assert out["109"] == "ARI"   # normalized to DK's spelling
+    assert out["111"] == "BOS"   # unaffected teams pass through unchanged
+
+
+def test_team_game_status_flags_postponed_not_normal_states(monkeypatch):
+    from edge import dfs
+
+    def fake_get(url):
+        return {"dates": [{"games": [
+            {"status": {"detailedState": "Postponed"},
+             "teams": {"home": {"team": {"abbreviation": "AZ"}}, "away": {"team": {"abbreviation": "BOS"}}}},
+            {"status": {"detailedState": "Final"},
+             "teams": {"home": {"team": {"abbreviation": "NYM"}}, "away": {"team": {"abbreviation": "ATL"}}}},
+        ]}]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    out = dfs.team_game_status("2026-07-09")
+    assert out["ARI"] == "Postponed" and out["BOS"] == "Postponed"  # normalized + flagged
+    assert out["NYM"] == "" and out["ATL"] == ""                    # normal, unflagged

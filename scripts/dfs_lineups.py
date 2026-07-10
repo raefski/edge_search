@@ -32,6 +32,14 @@ def main():
     ap.add_argument("--date", default=datetime.date.today().isoformat())
     ap.add_argument("--draft-group", default=None,
                     help="slate NAME (Main/Early/Turbo/Night/Afternoon) or a numeric id; default = main slate")
+    ap.add_argument("--exclude-teams", default=None,
+                    help="comma-separated team abbreviations to drop entirely (e.g. BAL,CHC) -- "
+                         "for when DK voids/doesn't count specific games. Not detectable "
+                         "automatically (DK's contest-scoring rules aren't exposed via any free "
+                         "API), so this is a manual override; --list-teams shows what's in the "
+                         "slate plus a game-status flag for anything that looks postponed/suspended.")
+    ap.add_argument("--list-teams", action="store_true",
+                    help="print every team in the slate (with a game-status warning if applicable) and exit")
     args = ap.parse_args()
     load_env()
     c = OddsAPIClient(cache_dir=ROOT / "data/cache", ledger_path=ROOT / "data/odds_api_credits.json",
@@ -43,7 +51,9 @@ def main():
             sys.exit(f"slate {args.draft_group!r} not found. Available now: {meta.get('available')}")
         print(f"slate {meta['label']}  start {meta.get('start','')}Z  games {meta.get('games')}")
 
-    res = dfs_run.build_slate(c, args.date, draft_group=args.draft_group, iters=args.iters)
+    exclude_teams = {t.strip().upper() for t in args.exclude_teams.split(",")} if args.exclude_teams else None
+    res = dfs_run.build_slate(c, args.date, draft_group=args.draft_group, iters=args.iters,
+                              exclude_teams=exclude_teams)
 
     if res.get("error"):
         sys.exit(f"{res['error']}. Available now: {res.get('available')}")
@@ -52,6 +62,21 @@ def main():
         for n, i, s, gc in res["upcoming"]:
             print(f"   {n:10} {s}Z  {gc} games  (--draft-group {n})")
         return
+
+    if args.list_teams:
+        print("\nteams in this slate:")
+        for t in res["all_teams"]:
+            flag = res["team_status"].get(t, "")
+            excluded = " [EXCLUDED]" if t in res.get("excluded_teams", []) else ""
+            warn = f"  ⚠ {flag}" if flag else ""
+            print(f"  {t}{warn}{excluded}")
+        return
+    if res.get("excluded_teams"):
+        print(f"excluded: {', '.join(res['excluded_teams'])}")
+    flagged = {t: s for t, s in res["team_status"].items() if s and t not in (res.get("excluded_teams") or [])}
+    if flagged:
+        print(f"⚠ teams with a non-normal game status (consider --exclude-teams): "
+              f"{', '.join(f'{t} ({s})' for t, s in flagged.items())}")
 
     print(f"{res['salaries_n']} salaries | {res['skill_n']} skill | {res['lineup_hitters_n']} lineup hitters | rem {c.remaining_credits()}")
     ph, hh = res["pitchers"], res["hitters"]
