@@ -580,10 +580,26 @@ def team_game_status(date: str) -> dict:
     free API, so it can only be a manual override (see build_slate's
     exclude_teams). This catches the more common real-world cause (the game
     itself was postponed/suspended), not the DK-contest-rules case
-    specifically."""
+    specifically.
+
+    CAUGHT LIVE 2026-07-10, prompted by the user asking "is it because the
+    slate is over": the plain (unhydrated) /schedule response's embedded
+    team objects have NO "abbreviation" field at all -- confirmed for every
+    team, every game, that date (only id/name/link). Extracting abbreviation
+    straight from the schedule response (even defensively) silently returned
+    "" for every team, every time -- this function had never actually worked.
+    Fixed by resolving team ID -> abbreviation via the separate, reliable
+    /teams endpoint (the same one team_abbrev_map() in dfs_run.py already
+    uses for exactly this reason) instead of trusting the schedule payload
+    to carry it."""
     out = {}
     try:
         s = _get(f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&date={date}")
+    except Exception:
+        return out
+    try:
+        id_to_abbr = {str(t["id"]): t["abbreviation"] for t in _get(
+            "https://statsapi.mlb.com/api/v1/teams?sportId=1")["teams"]}
     except Exception:
         return out
     for d in s.get("dates", []):
@@ -598,7 +614,8 @@ def team_game_status(date: str) -> dict:
                 detail = g.get("status", {}).get("detailedState", "")
                 flag = "" if detail in _NORMAL_GAME_STATES else detail
                 for side in ("home", "away"):
-                    abbr = (g.get("teams", {}).get(side, {}).get("team", {}) or {}).get("abbreviation")
+                    team_id = str((g.get("teams", {}).get(side, {}).get("team", {}) or {}).get("id", ""))
+                    abbr = id_to_abbr.get(team_id)
                     if not abbr:
                         continue
                     abbr = _STATSAPI_TO_DK_ABBR.get(abbr, abbr)

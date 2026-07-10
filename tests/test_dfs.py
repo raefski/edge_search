@@ -485,16 +485,31 @@ def test_team_abbrev_map_normalizes_arizona(monkeypatch):
     assert out["111"] == "BOS"   # unaffected teams pass through unchanged
 
 
+_FAKE_TEAMS_ENDPOINT = {"teams": [
+    {"id": 109, "abbreviation": "AZ"}, {"id": 111, "abbreviation": "BOS"},
+    {"id": 121, "abbreviation": "NYM"}, {"id": 144, "abbreviation": "ATL"},
+]}
+
+
+def _fake_schedule_and_teams(schedule_response):
+    """Real /schedule responses carry only team id (no abbreviation) --
+    confirmed live 2026-07-10, every team, every game. team_game_status now
+    resolves id -> abbreviation via a SEPARATE /teams call, so tests must
+    mock both endpoints, keyed by team id like the real payload."""
+    def fake_get(url):
+        return _FAKE_TEAMS_ENDPOINT if "/teams?" in url else schedule_response
+    return fake_get
+
+
 def test_team_game_status_flags_postponed_not_normal_states(monkeypatch):
     from edge import dfs
 
-    def fake_get(url):
-        return {"dates": [{"games": [
-            {"status": {"detailedState": "Postponed"},
-             "teams": {"home": {"team": {"abbreviation": "AZ"}}, "away": {"team": {"abbreviation": "BOS"}}}},
-            {"status": {"detailedState": "Final"},
-             "teams": {"home": {"team": {"abbreviation": "NYM"}}, "away": {"team": {"abbreviation": "ATL"}}}},
-        ]}]}
+    fake_get = _fake_schedule_and_teams({"dates": [{"games": [
+        {"status": {"detailedState": "Postponed"},
+         "teams": {"home": {"team": {"id": 109}}, "away": {"team": {"id": 111}}}},
+        {"status": {"detailedState": "Final"},
+         "teams": {"home": {"team": {"id": 121}}, "away": {"team": {"id": 144}}}},
+    ]}]})
 
     monkeypatch.setattr(dfs, "_get", fake_get)
     out = dfs.team_game_status("2026-07-09")
@@ -508,13 +523,12 @@ def test_team_game_status_survives_malformed_game_entry(monkeypatch):
     # the whole function instead of just skipping that one game.
     from edge import dfs
 
-    def fake_get(url):
-        return {"dates": [{"games": [
-            {"status": {"detailedState": "Final"}},  # missing "teams" entirely
-            {"status": {"detailedState": "Final"}, "teams": {"home": {}}},  # missing "team" under home
-            {"status": {"detailedState": "Final"},
-             "teams": {"home": {"team": {"abbreviation": "NYM"}}, "away": {"team": {"abbreviation": "ATL"}}}},
-        ]}]}
+    fake_get = _fake_schedule_and_teams({"dates": [{"games": [
+        {"status": {"detailedState": "Final"}},  # missing "teams" entirely
+        {"status": {"detailedState": "Final"}, "teams": {"home": {}}},  # missing "team" under home
+        {"status": {"detailedState": "Final"},
+         "teams": {"home": {"team": {"id": 121}}, "away": {"team": {"id": 144}}}},
+    ]}]})
 
     monkeypatch.setattr(dfs, "_get", fake_get)
     out = dfs.team_game_status("2026-07-09")  # must not raise
@@ -527,18 +541,36 @@ def test_team_game_status_skips_non_regular_season_games(monkeypatch):
     # should never show up in this dict.
     from edge import dfs
 
-    def fake_get(url):
-        return {"dates": [{"games": [
-            {"gameType": "A", "status": {"detailedState": "Final"},
-             "teams": {"home": {"team": {"abbreviation": "AL"}}, "away": {"team": {"abbreviation": "NL"}}}},
-            {"gameType": "R", "status": {"detailedState": "Final"},
-             "teams": {"home": {"team": {"abbreviation": "NYM"}}, "away": {"team": {"abbreviation": "ATL"}}}},
-        ]}]}
+    fake_get = _fake_schedule_and_teams({"dates": [{"games": [
+        {"gameType": "A", "status": {"detailedState": "Final"},
+         "teams": {"home": {"team": {"id": 9001}}, "away": {"team": {"id": 9002}}}},  # AL/NL, not real teams
+        {"gameType": "R", "status": {"detailedState": "Final"},
+         "teams": {"home": {"team": {"id": 121}}, "away": {"team": {"id": 144}}}},
+    ]}]})
 
     monkeypatch.setattr(dfs, "_get", fake_get)
     out = dfs.team_game_status("2026-07-14")
-    assert "AL" not in out and "NL" not in out
+    assert 9001 not in out and 9002 not in out
     assert out["NYM"] == "" and out["ATL"] == ""
+
+
+def test_team_game_status_missing_abbreviation_in_schedule_payload(monkeypatch):
+    # Regression: confirmed live 2026-07-10 -- the plain /schedule response's
+    # embedded team objects carry ONLY id/name/link, never "abbreviation".
+    # Extracting abbreviation straight from the schedule payload (even
+    # defensively) silently returned "" for every team, every time -- this
+    # function had never actually worked. Must resolve by id instead.
+    from edge import dfs
+
+    fake_get = _fake_schedule_and_teams({"dates": [{"games": [
+        {"status": {"detailedState": "Final"}, "teams": {
+            "home": {"team": {"id": 121, "name": "New York Mets", "link": "/api/v1/teams/121"}},
+            "away": {"team": {"id": 144, "name": "Atlanta Braves", "link": "/api/v1/teams/144"}}}},
+    ]}]})
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    out = dfs.team_game_status("2026-07-10")
+    assert out == {"NYM": "", "ATL": ""}
 
 
 def test_lineups_for_date_skips_non_regular_season_games(monkeypatch):
