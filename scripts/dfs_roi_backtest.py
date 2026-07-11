@@ -113,10 +113,13 @@ def load_proj_log_actuals(date):
         if p.exists():
             raw = json.loads(p.read_text())
         else:
-            from scripts.dfs_grade import actuals_for_date
+            from scripts.dfs_grade import actuals_for_date, date_all_final
             raw, _ = actuals_for_date(date)
-            p.parent.mkdir(parents=True, exist_ok=True)
-            p.write_text(json.dumps(raw))
+            # never persist a mid-slate stub (see cached_actuals in
+            # dfs_calibration.py for the 2026-07-08 incident)
+            if date_all_final(date):
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(json.dumps(raw))
         _actuals_cache[date] = raw
     return _actuals_cache[date]
 

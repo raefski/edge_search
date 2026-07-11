@@ -73,7 +73,12 @@ def cached_actuals(date):
     if p.exists():
         return json.loads(p.read_text())
     act, finals = actuals_for_date(date)
-    p.write_text(json.dumps(act))
+    # only persist a COMPLETE slate -- a cache written mid-slate (see the
+    # 2026-07-08 stub: 1 final game, 25 players) would silently serve partial
+    # actuals forever after. Incomplete slates are returned but not cached.
+    from scripts.dfs_grade import date_all_final
+    if date_all_final(date):
+        p.write_text(json.dumps(act))
     return act
 
 

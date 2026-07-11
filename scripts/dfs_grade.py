@@ -44,6 +44,18 @@ def actuals_for_date(date: str) -> dict:
     return out, finals
 
 
+def date_all_final(date: str) -> bool:
+    """True only when every regular-season game that date is Final -- callers
+    that persist actuals to disk must check this first. Found the hard way:
+    2026-07-08's actuals cache was written mid-slate (1 final game, 25 players)
+    and silently served that stub forever after, zeroing every lineup score
+    computed from it."""
+    sched = dfs._get(f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&date={date}")
+    games = [g for d in sched.get("dates", []) for g in d.get("games", [])
+             if g.get("gameType", "R") == "R"]
+    return bool(games) and all(g.get("status", {}).get("abstractGameState") == "Final" for g in games)
+
+
 def pearson(a, b):
     n = len(a)
     if n < 3:

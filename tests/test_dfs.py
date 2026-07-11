@@ -57,6 +57,56 @@ def test_consecutive_runs_cyclic():
     assert all(_cyclic_consecutive([p["slot"] for p in r]) for r in runs)
 
 
+def test_max_five_hitters_per_team_enforced():
+    # DK MLB rule: max 5 hitters from one team (pitchers don't count). Built to
+    # FAIL pre-fix: team AAA's hitters are strictly better than everyone else's,
+    # so an unconstrained optimizer rosters 8 of them.
+    from edge import dfs_opt
+    flex = {"C", "1B", "2B", "3B", "SS", "OF"}
+    pool = []
+    for s in range(1, 10):
+        pool.append({"name": f"AAA{s}", "team": "AAA", "pos": set(flex), "salary": 3000,
+                     "proj": 20.0, "ceiling": 22.0, "slot": s, "game": "g1"})
+    for s in range(1, 10):
+        pool.append({"name": f"BBB{s}", "team": "BBB", "pos": set(flex), "salary": 2800,
+                     "proj": 5.0, "ceiling": 6.0, "slot": s, "game": "g2"})
+    for i in range(3):
+        pool.append({"name": f"P{i}", "team": f"T{i}", "pos": {"P"}, "salary": 7000,
+                     "proj": 15.0, "ceiling": 15.0, "game": f"pg{i % 2}"})
+    for mode in ("cash", "gpp"):
+        res = dfs_opt.optimize(pool, mode=mode, stack_team="AAA" if mode == "gpp" else None, iters=400)
+        assert res is not None
+        n_aaa = sum(1 for p, _ in res["lineup"] if p["team"] == "AAA" and "P" not in p["pos"])
+        assert n_aaa <= dfs_opt.MAX_HITTERS_PER_TEAM, f"{mode}: {n_aaa} hitters from one team"
+
+
+def test_gpp_secondary_stack():
+    # 5-3 double stack: primary consecutive 5 from AAA + >=2 correlated hitters
+    # from the secondary team BBB, never breaking the max-5 rule.
+    from edge import dfs_opt
+    flex = {"C", "1B", "2B", "3B", "SS", "OF"}
+    pool = []
+    for s in range(1, 10):
+        pool.append({"name": f"AAA{s}", "team": "AAA", "pos": set(flex), "salary": 3000,
+                     "proj": 7.0 + 0.3 * s, "ceiling": 9.0 + 0.3 * s, "slot": s, "game": "g1"})
+    for s in range(1, 10):
+        pool.append({"name": f"BBB{s}", "team": "BBB", "pos": set(flex), "salary": 2800,
+                     "proj": 6.0, "ceiling": 7.0, "slot": s, "game": "g2"})
+    for s in range(1, 10):
+        pool.append({"name": f"CCC{s}", "team": "CCC", "pos": set(flex), "salary": 2700,
+                     "proj": 5.0, "ceiling": 6.0, "slot": s, "game": "g3"})
+    for i in range(3):
+        pool.append({"name": f"P{i}", "team": f"T{i}", "pos": {"P"}, "salary": 7000,
+                     "proj": 15.0, "ceiling": 15.0, "game": f"pg{i % 2}"})
+    res = dfs_opt.optimize(pool, mode="gpp", stack_team="AAA", stack_n=5,
+                           stack2_team="BBB", stack2_n=3, iters=400)
+    assert res is not None
+    n_aaa = sum(1 for p, _ in res["lineup"] if p["team"] == "AAA")
+    n_bbb = sum(1 for p, _ in res["lineup"] if p["team"] == "BBB")
+    assert n_aaa == 5, f"primary stack size {n_aaa}"
+    assert n_bbb >= 2, f"secondary stack size {n_bbb}"
+
+
 def test_gpp_stack_is_consecutive():
     from edge import dfs_opt
     flex = {"C", "1B", "2B", "3B", "SS", "OF"}
@@ -291,6 +341,88 @@ def test_pooled_skill_rates_max_age_forces_refresh(tmp_path, monkeypatch):
     assert not called, "fresh cache (within max_age) should be reused, not refetched"
 
 
+def test_pooled_skill_rates_shrinkage(monkeypatch):
+    # shrink_k: every player gets an EB-shrunk rate instead of the min_pa
+    # cutoff -- a 40-PA player lands most of the way toward league average,
+    # a high-PA player keeps nearly his raw rate, and nobody is dropped.
+    from edge import dfs
+
+    def fake_get(url):
+        return {"stats": [{"splits": [
+            {"player": {"id": 1}, "stat": {"plateAppearances": 600, "hits": 180, "doubles": 30,
+                                           "triples": 2, "homeRuns": 30, "rbi": 100, "runs": 100,
+                                           "baseOnBalls": 60, "hitByPitch": 5, "stolenBases": 10}},
+            {"player": {"id": 2}, "stat": {"plateAppearances": 40, "hits": 20, "doubles": 10,
+                                           "triples": 0, "homeRuns": 5, "rbi": 15, "runs": 15,
+                                           "baseOnBalls": 5, "hitByPitch": 0, "stolenBases": 0}},
+        ]}]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    rates_cut, lg = dfs.pooled_skill_rates((2025,), min_pa=120)
+    assert "2" not in rates_cut                      # cutoff behavior: small sample dropped
+    rates_eb, lg2 = dfs.pooled_skill_rates((2025,), shrink_k=60)
+    assert "2" in rates_eb                           # shrinkage keeps everyone
+    raw2 = dfs.actual_hitter_points(fake_get("")["stats"][0]["splits"][1]["stat"]) / 40
+    assert lg2 < rates_eb["2"] < raw2                # shrunk BETWEEN league avg and raw
+    # high-PA player barely moves
+    raw1 = dfs.actual_hitter_points(fake_get("")["stats"][0]["splits"][0]["stat"]) / 600
+    assert abs(rates_eb["1"] - raw1) < abs(rates_eb["2"] - raw2)
+
+
+def test_project_hitter_skill_home_away_and_era():
+    from edge import dfs
+    # away lineups get more PA than home at every slot -> higher projection
+    p_home = dfs.project_hitter_skill(2.0, 1, home=True)
+    p_away = dfs.project_hitter_skill(2.0, 1, home=False)
+    p_legacy = dfs.project_hitter_skill(2.0, 1)
+    assert p_away > p_home
+    assert p_legacy == round(2.0 * dfs.SLOT_PA[1], 1)   # back-compat: None keeps flat table
+    # opposing starter's ERA: facing a bad (high-ERA) pitcher raises the projection
+    p_bad = dfs.project_hitter_skill(2.0, 1, opp_era=6.0)
+    p_good = dfs.project_hitter_skill(2.0, 1, opp_era=2.5)
+    assert p_bad > p_legacy > p_good
+    # clamped
+    assert dfs.project_hitter_skill(2.0, 1, opp_era=99.0) <= round(2.0 * dfs.SLOT_PA[1] * 1.15, 1)
+
+
+def test_actual_pitcher_points_hbp_and_cg():
+    from edge.dfs import actual_pitcher_points
+    base = {"inningsPitched": "9.0", "strikeOuts": 10, "earnedRuns": 0, "hits": 3, "baseOnBalls": 1}
+    # DK: -0.6 per hit batsman; +2.5 CG and +2.5 CG-shutout stack
+    no_extras = actual_pitcher_points(dict(base))
+    hbp = actual_pitcher_points(dict(base, hitBatsmen=2))
+    assert approx(no_extras - hbp, 1.2)
+    cgso = actual_pitcher_points(dict(base, completeGames=1, shutouts=1))
+    assert approx(cgso - no_extras, 5.0)
+
+
+def test_date_all_final_rejects_midslate(monkeypatch):
+    # Regression for the 2026-07-08 stale-actuals-cache bug: a cache written
+    # while games were still in progress served a 25-player stub forever.
+    # date_all_final must be False while any game is unfinished.
+    import scripts.dfs_grade as grade
+    from edge import dfs
+
+    def fake_get(url):
+        return {"dates": [{"games": [
+            {"gameType": "R", "status": {"abstractGameState": "Final"}},
+            {"gameType": "R", "status": {"abstractGameState": "Live"}},
+        ]}]}
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    assert grade.date_all_final("2026-07-08") is False
+
+    def fake_get_done(url):
+        return {"dates": [{"games": [
+            {"gameType": "R", "status": {"abstractGameState": "Final"}},
+            {"gameType": "A", "status": {"abstractGameState": "Preview"}},  # All-Star game ignored
+        ]}]}
+    monkeypatch.setattr(dfs, "_get", fake_get_done)
+    assert grade.date_all_final("2026-07-08") is True
+
+    monkeypatch.setattr(dfs, "_get", lambda url: {"dates": []})
+    assert grade.date_all_final("2026-11-01") is False  # no games at all != complete
+
+
 def test_inactive_players_flags_40man_not_active(monkeypatch):
     from edge import dfs
 
@@ -503,7 +635,9 @@ def _floor_test_pool(low_floor_ceiling=8.0, low_floor_floor=8.0):
          "proj": 8.0, "ceiling": 8.0, "floor": 8.8, "game": "g1"},
     ]
     for s in range(7):  # fills 1B/2B/3B/SS/OF/OF/OF -- exactly the 7 non-catcher hitter slots
-        pool.append({"name": f"F{s}", "team": "BBB", "pos": set(flex), "salary": 3000,
+        # spread fillers over 2 teams: DK's max-5-hitters-per-team rule (now
+        # enforced by the optimizer) makes a 7-hitter single-team pool illegal
+        pool.append({"name": f"F{s}", "team": "BBB" if s % 2 else "CCC", "pos": set(flex), "salary": 3000,
                      "proj": 5.0, "ceiling": 5.0, "floor": 5.0, "game": "g2"})
     for i in range(2):
         pool.append({"name": f"P{i}", "team": f"T{i}", "pos": {"P"}, "salary": 7000,

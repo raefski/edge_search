@@ -320,9 +320,15 @@ def actual_hitter_points(b: dict) -> float:
 
 
 def actual_pitcher_points(p: dict, won: bool = False) -> float:
+    # DK MLB pitcher scoring: +2.25/IP, +2/K, +4 W, -2/ER, -0.6 per hit, BB AND
+    # hit batsman, +2.5 CG, +2.5 CG shutout (stacks with CG). The HBP-against
+    # term was missing until 2026-07-10 -- every graded pitcher actual ran
+    # ~0.2 pts/start high on average. (No-hitter +5 not computable from the
+    # boxscore stat dict; ~0 frequency.)
     g = lambda k: p.get(k, 0) or 0
     return (0.75 * ip_to_outs(p.get("inningsPitched", "0")) + 2 * g("strikeOuts")
-            + (4 if won else 0) - 2 * g("earnedRuns") - 0.6 * g("hits") - 0.6 * g("baseOnBalls"))
+            + (4 if won else 0) - 2 * g("earnedRuns") - 0.6 * g("hits") - 0.6 * g("baseOnBalls")
+            - 0.6 * g("hitBatsmen") + 2.5 * g("completeGames") + 2.5 * g("shutouts"))
 
 
 # === SKILL RATES (leakage-safe: prior-season DK pts per PA, the differentiator) ===
@@ -355,7 +361,21 @@ def skill_rates(season: int, min_pa: int = 80, cache_path: str | None = None) ->
 # vs the flat prop-only model's 0.02. Skill is the dominant signal; matchup/park/total
 # are smaller multipliers. team_total is production-only (not backtestable from cache).
 SLOT_PA = {1: 4.65, 2: 4.55, 3: 4.45, 4: 4.35, 5: 4.25, 6: 4.15, 7: 4.05, 8: 3.95, 9: 3.85}
+# Empirical starter PA by batting slot, HOME vs AWAY -- measured on 2,782
+# complete 2025 team-games (Apr 15-Jul 31, scripts/dfs_stack_shape_backtest.py).
+# Two real effects the flat SLOT_PA table missed: (1) away lineups get ~0.15-0.2
+# more PA per slot (the home team skips the bottom 9th when leading); (2) the
+# old table ran ~0.2-0.5 PA hot at every slot (it ignored pinch-hit truncation).
+# Backtested 2026-07-10 on 13,801 held-out 2025 hitter-games: switching the
+# projection's opportunity term to these tables cut MAE 5.565->5.467 and raised
+# corr 0.166->0.168, improving MAE on 56 of 57 test dates. SLOT_PA (above) is
+# retained for the OWNERSHIP model's batting-order term -- that term was
+# calibrated against real contest ownership with SLOT_PA's scale, and the field
+# doesn't think in home/away PA anyway.
+SLOT_PA_HOME = {1: 4.42, 2: 4.28, 3: 4.22, 4: 4.15, 5: 3.99, 6: 3.86, 7: 3.69, 8: 3.58, 9: 3.37}
+SLOT_PA_AWAY = {1: 4.59, 2: 4.50, 3: 4.41, 4: 4.32, 5: 4.17, 6: 4.02, 7: 3.88, 8: 3.69, 9: 3.54}
 LG_K9 = 8.6
+LG_ERA = 4.10
 
 # CASH-mode floor nudge (2026-07-09): a candidate "HR-rate = boom/bust" floor
 # metric was tested against real 2025 game logs (60 qualified hitters) and
@@ -377,13 +397,22 @@ BB_FLOOR_WEIGHT = 2.0
 
 
 def pooled_skill_rates(seasons=(2024, 2025), min_pa: int = 120, cache_path: str | None = None,
-                       max_age: float | None = None) -> tuple[dict, float]:
+                       max_age: float | None = None, shrink_k: int | None = None) -> tuple[dict, float]:
     """Pooled DK-pts-per-PA over `seasons` (PA-weighted, so a partial current
     season naturally gets proportionally less weight). Pass the CURRENT season
     in the tuple to keep this from going stale as the year progresses (backtest
     2026-07-08: MAE 5.604->5.577, corr +0.166->+0.181 including current-season
     data vs frozen prior-seasons-only) -- then pass max_age so the disk cache
-    actually refreshes as more games are played, instead of freezing forever."""
+    actually refreshes as more games are played, instead of freezing forever.
+
+    shrink_k: empirical-Bayes alternative to the min_pa hard cutoff -- EVERY
+    player gets rate = (pts + lg*K) / (pa + K), so a 40-PA rookie is shrunk
+    most of the way to league average instead of being thrown away entirely,
+    and a 1,500-PA veteran is barely touched. Backtested 2026-07-10 (13,801
+    held-out 2025 hitter-games): K=60 with the home/away PA + opp-ERA factors
+    gave the best test corr (0.177 vs 0.174 cutoff-based) at equal MAE; K was
+    picked on a separate April-May train window, not the test window. Passing
+    shrink_k=None keeps the legacy cutoff behavior (other callers/backtests)."""
     if cache_path and _os.path.exists(cache_path):
         if max_age is None or _time.time() - _os.path.getmtime(cache_path) < max_age:
             d = json.load(open(cache_path)); return d["rates"], d["lg"]
@@ -401,8 +430,11 @@ def pooled_skill_rates(seasons=(2024, 2025), min_pa: int = 120, cache_path: str 
             pid = str(s["player"]["id"])
             pts[pid] = pts.get(pid, 0) + actual_hitter_points(st); pa[pid] = pa.get(pid, 0) + a
     tot_p = sum(pts.values()); tot_a = sum(pa.values())
-    rates = {pid: pts[pid] / pa[pid] for pid in pts if pa[pid] >= min_pa}
     lg = tot_p / tot_a if tot_a else 1.7
+    if shrink_k:
+        rates = {pid: (pts[pid] + lg * shrink_k) / (pa[pid] + shrink_k) for pid in pts}
+    else:
+        rates = {pid: pts[pid] / pa[pid] for pid in pts if pa[pid] >= min_pa}
     if cache_path:
         json.dump({"rates": rates, "lg": lg}, open(cache_path, "w"))
     return rates, lg
@@ -452,6 +484,37 @@ def pitcher_k9(seasons, cache_path: str | None = None, max_age: float | None = N
             k[pid] = k.get(pid, 0) + (st.get("strikeOuts", 0) or 0)
             outs[pid] = outs.get(pid, 0) + ipf * 3
     out = {pid: 9 * k[pid] / (outs[pid] / 3.0) for pid in k if outs[pid] / 3.0 >= 30}
+    if cache_path:
+        json.dump(out, open(cache_path, "w"))
+    return out
+
+
+def pitcher_era(seasons, cache_path: str | None = None, max_age: float | None = None) -> dict:
+    """{pid(str): ERA} pooled (IP-weighted) across `seasons`, min 30 IP -- the
+    opposing starter's run-prevention beyond what K/9 captures. Backtested
+    2026-07-10 (w_era=0.2 in project_hitter_skill): MAE 5.467->5.458 and corr
+    0.168->0.174 both improved on 13,801 held-out 2025 hitter-games."""
+    seasons = (seasons,) if isinstance(seasons, int) else tuple(seasons)
+    if cache_path and _os.path.exists(cache_path):
+        if max_age is None or _time.time() - _os.path.getmtime(cache_path) < max_age:
+            return json.load(open(cache_path))
+    er, outs = {}, {}
+    for season in seasons:
+        try:
+            sp = _get(f"https://statsapi.mlb.com/api/v1/stats?stats=season&season={season}"
+                     "&group=pitching&sportId=1&limit=2000&playerPool=All")["stats"][0]["splits"]
+        except Exception:
+            continue
+        for s in sp:
+            st = s["stat"]
+            try:
+                ipf = float(st.get("inningsPitched"))
+            except (TypeError, ValueError):
+                continue
+            pid = str(s["player"]["id"])
+            er[pid] = er.get(pid, 0) + (st.get("earnedRuns", 0) or 0)
+            outs[pid] = outs.get(pid, 0) + ipf * 3
+    out = {pid: 9 * er[pid] / (outs[pid] / 3.0) for pid in er if outs[pid] / 3.0 >= 30}
     if cache_path:
         json.dump(out, open(cache_path, "w"))
     return out
@@ -546,16 +609,32 @@ def bullpen_k9(pitcher_stats: list, exclude_pid=None) -> float:
 
 def project_hitter_skill(skill: float, slot: int, park: float = 1.0,
                          opp_k9: float | None = None, team_total: float | None = None,
-                         w_match: float = 0.3) -> float:
-    """DK fantasy points = skill(DKpts/PA) x PA(slot) x park x matchup x team-env."""
-    pa = SLOT_PA.get(slot, 4.2)
+                         w_match: float = 0.3, home: bool | None = None,
+                         opp_era: float | None = None, w_era: float = 0.2) -> float:
+    """DK fantasy points = skill(DKpts/PA) x PA(slot,home/away) x park x matchup x team-env.
+
+    home=True/False selects the empirical home/away PA table (see SLOT_PA_HOME
+    comment for the backtest); None keeps the legacy flat table (back-compat
+    for callers that don't know venue). opp_era adds the opposing starter's
+    run-prevention to the matchup beyond K/9 -- backtested 2026-07-10 on the
+    same 13,801 held-out hitter-games: MAE 5.467->5.458 AND corr 0.168->0.174
+    both improved at w_era=0.2 (train-window pick; 0.3 bought MAE but not corr)."""
+    if home is True:
+        pa = SLOT_PA_HOME.get(slot, 4.0)
+    elif home is False:
+        pa = SLOT_PA_AWAY.get(slot, 4.1)
+    else:
+        pa = SLOT_PA.get(slot, 4.2)
     of = 1.0
     if opp_k9:
         of = min(1.18, max(0.82, 1 - w_match * (opp_k9 / LG_K9 - 1)))
+    rf = 1.0
+    if opp_era:
+        rf = min(1.15, max(0.85, 1 + w_era * (opp_era / LG_ERA - 1)))
     tf = 1.0
     if team_total:
         tf = min(1.30, max(0.75, team_total / TEAM_TOTAL_AVG))
-    return round(skill * pa * park * of * tf, 1)
+    return round(skill * pa * park * of * rf * tf, 1)
 
 
 def _team_recent_lineup(team_id, before_date: str) -> list:

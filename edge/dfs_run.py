@@ -150,10 +150,15 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
     # max_age so the cache actually refreshes as the season progresses instead
     # of freezing on whatever was true the first time it was pulled.
     skill_seasons = (yr - 2, yr - 1, yr)
-    rates, lg = dfs.pooled_skill_rates(skill_seasons, cache_path=str(root / f"data/dfs_skill_{'_'.join(map(str, skill_seasons))}.json"),
+    # shrink_k=60: EB shrinkage toward league average instead of the min-120-PA
+    # cutoff (see pooled_skill_rates docstring for the 2026-07-10 backtest).
+    # Versioned cache filename so a pre-shrinkage cache is never misread.
+    rates, lg = dfs.pooled_skill_rates(skill_seasons, shrink_k=60,
+                                       cache_path=str(root / f"data/dfs_skill_{'_'.join(map(str, skill_seasons))}_eb60.json"),
                                        max_age=21600)
     park = dfs.park_runs(yr)
     k9 = dfs.pitcher_k9((yr - 1, yr), cache_path=str(root / f"data/dfs_pitch_k9_{yr-1}_{yr}.json"), max_age=21600)
+    era = dfs.pitcher_era((yr - 1, yr), cache_path=str(root / f"data/dfs_pitch_era_{yr-1}_{yr}.json"), max_age=21600)
     hr_season = dfs.season_hitting(cache_path=str(root / "data/dfs_season_hitting.json"))
     lineups = dfs.lineups_for_date(date)
     abbr = team_abbrev_map()
@@ -223,9 +228,16 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
         opp_team_id = lu.get("opp_team_id")
         bp_k9 = dfs.bullpen_k9(bullpen_for(opp_team_id), exclude_pid=lu.get("opp_pitcher_id")) if opp_team_id else dfs.LG_K9
         matchup_k9 = 0.6 * starter_k9 + 0.4 * bp_k9
-        proj = dfs.project_hitter_skill(skill, lu["slot"], pk, matchup_k9)
+        # home/away PA table + opposing starter's ERA -- both backtested
+        # 2026-07-10 (13,801 held-out 2025 hitter-games): together with the
+        # EB-shrunk skill rates, MAE 5.565->5.456 (better on 56/57 test dates)
+        # and corr 0.166->0.177 vs the previous production shape.
+        is_home = str(lu["team_id"]) == str(lu["park_team_id"])
+        starter_era = era.get(str(lu["opp_pitcher_id"]))
+        proj = dfs.project_hitter_skill(skill, lu["slot"], pk, matchup_k9,
+                                        home=is_home, opp_era=starter_era)
         sr = hr_season.get(nm)
-        pa_slot = dfs.SLOT_PA.get(lu["slot"], 4.2)
+        pa_slot = (dfs.SLOT_PA_HOME if is_home else dfs.SLOT_PA_AWAY).get(lu["slot"], 4.0)
         hr_rate = (sr["homeRuns"] / sr["plateAppearances"]) if sr and sr.get("plateAppearances") else 0.03
         bb_rate = (sr["baseOnBalls"] / sr["plateAppearances"]) if sr and sr.get("plateAppearances") else 0.08
         ceil = round(proj + 10 * hr_rate * pa_slot, 1)
@@ -276,12 +288,30 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
         team_proj = defaultdict(float)
         for h in hh:
             team_proj[h["team"]] += h["proj"]
-        stack_team = max(team_proj, key=team_proj.get)
         dfs.project_ownership(pool, team_proj)
+        # GPP construction, replay-backtested 2026-07-10 over the 8 logged
+        # slates x 5 optimizer seeds (plus a 2,782-team-game 2025 stack-shape
+        # backtest for the mechanism -- scripts/dfs_stack_shape_backtest.py):
+        #   * ownership fade 0.1 -> 0.3 and stack team picked by LEVERAGE
+        #     (sum ceiling - 0.3*own) instead of raw projection (= chalk);
+        #   * primary stack 4 -> 5 (5-stacks gave P95 79 vs 76, P99 97 vs 96
+        #     per 2025 team-game at ~1 pt of mean); DK's own max-5 rule caps it;
+        #   * secondary 3-stack from the next-best team (correlated 3 beats 3
+        #     scattered one-offs: P99 137.0 vs 131.2, same mean, on 2025 data).
+        #   Replay percentile-in-real-field: 59.6% (old shape) -> 74-78% (new),
+        #   consistent across all 5 seeds; n=8 slates, so directional evidence
+        #   corroborated by the 2025 mechanism tests, not proof on its own.
         for p in pool:
-            p["lev"] = round(p.get("ceiling", p["proj"]) - 0.1 * p.get("own", 0), 1)
+            p["lev"] = round(p.get("ceiling", p["proj"]) - 0.3 * p.get("own", 0), 1)
+        team_lev = defaultdict(float)
+        for h in hh:
+            team_lev[h["team"]] += h.get("ceiling", h["proj"]) - 0.3 * h.get("own", 0)
+        rank = sorted(team_lev, key=team_lev.get, reverse=True)
+        stack_team = rank[0]
+        stack2_team = rank[1] if len(rank) > 1 else None
         cash = dfs_opt.optimize(pool, mode="cash", iters=iters)
-        gpp = dfs_opt.optimize(pool, mode="gpp", stack_team=stack_team, stack_n=4, iters=iters)
+        gpp = dfs_opt.optimize(pool, mode="gpp", stack_team=stack_team, stack_n=5, iters=iters,
+                               stack2_team=stack2_team, stack2_n=3)
 
     return {"gid": gid, "is_main": is_main, "meta": meta,
             "salaries_n": len(salaries), "skill_n": len(rates), "lineup_hitters_n": len(lineups),

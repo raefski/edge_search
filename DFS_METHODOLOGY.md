@@ -1,0 +1,769 @@
+# DK MLB DFS System — Methodology Writeup
+
+Prepared for external review. This is a straight account of what was built, what was
+measured, what got thrown out, and what's sitting in the code unused — with the reasoning
+behind each call. Numbers are from real backtests and forward-tested contest results, not
+projections of projections.
+
+## 1. Premise
+
+DraftKings salaries are **frozen for the whole slate** — no live re-pricing the way a
+sportsbook line moves. Sportsbook player props, by contrast, are near-real-time and sharp.
+The thesis: price players off the props/skill data (which updates), and look for salary
+that hasn't caught up. We are not trying to out-project Vegas — we're trying to exploit a
+stale DK salary using inputs the field mostly also has, plus construction edges (ownership
+leverage, stacking, contest selection) that don't depend on the projection being brilliant.
+
+This followed a full sports-betting phase (WNBA props, niche leagues, internal consistency,
+SGP correlation, a forecasting model) that was **exhaustively falsified** — DraftKings is
+sharp on every angle we tried; the only durable +EV there is promos/boosts, not pricing. DFS
+was the pivot because salary staleness is a structural crack that betting lines don't have.
+
+**Update, §10:** this premise has now been directly tested (`actual ~ salary + model_proj`)
+and a real-field rank backtest run, both for the first time. Neither currently supports the
+premise as demonstrated — see §10 before treating anything above as a proven edge.
+
+## 2. Architecture
+
+- `edge/dfs_run.py::build_slate()` is the single pipeline both interfaces call — the CLI
+  (`scripts/dfs_lineups.py`) and a Streamlit phone app (`app.py`), so they never diverge in
+  logic (only in randomized-search outcome — see §7).
+- Pitchers: projected from **live sportsbook props** (K's, outs, ER, hits, BB, win prob),
+  converted line→implied mean→DK points.
+- Hitters: projected from a **prop-free structural model** (see §3) — batter props were
+  tried first and performed far worse (§4).
+- Ownership: a heuristic power-softmax model, tuned against real contest exports (§3).
+- Optimizer: randomized greedy + hill-climb, CASH (maximize mean) and GPP (forced
+  consecutive-batting-order stack + ceiling faded by modeled ownership).
+- Forward-test loop: every build logs its own projections (`data/dfs_proj_log.csv`); after
+  games finish, `scripts/dfs_grade.py` pulls real box scores (free, statsapi) and grades
+  proj vs actual. This is the primary validation method — see §8 on why backtesting was
+  abandoned for hitters specifically.
+
+## 3. What Works (in production, measured)
+
+**Pitcher projection (props-based).** Backtest: 1,002 cached 2025 starts, corr **+0.35**,
+MAE 7.18 (naive baseline 7.60). Forward-tested corr has ranged 0.29–0.62 slate to slate
+(small-n, high variance — anchor on the 0.35 backtest, not any single slate). Honest read:
+this is **field parity, not an edge** — everyone building off Vegas props gets roughly the
+same number. The projection isn't the edge; the construction is.
+
+**Hitter projection**, `skill × opportunity × park × matchup`:
+- `skill` = pooled DK-pts-per-PA over prior completed seasons **plus the current
+  in-progress season** (fixed 2026-07-08 — was frozen on the two seasons *before* the
+  current one, silently missing all of this year's form; see §6).
+- `opportunity` = expected PA from batting-order slot (leadoff 4.65 → 9-hole 3.85).
+- `park` = 3-year rolling park run-index.
+- `matchup` = 60% opposing starter's K/9, 40% opposing bullpen's K/9 (bullpen blend added
+  2026-07-08; see §6).
+- Backtest (19,332 cached 2025 hitter-games): corr **+0.16** vs the old prop-based model's
+  0.02, monotonic ranking by projection quintile. Forward-tested clean (near-lock, full
+  pool) slates: 0.114 / 0.185 / 0.253 — averaging right around the 0.16 backtest. One slate
+  (7/2) hit −0.119, but that build was built early with a contaminated partial pool
+  (72 of ~160 hitters) — discounted, not a real signal.
+- Honest verdict: **modest**, and it should be — single-game hitter outcomes are genuinely
+  high-variance. 0.15–0.20 corr is real signal, not noise, but nobody should expect it to
+  feel like a strong predictive model in any one lineup.
+
+**Ownership model** — power-softmax over projected value, normalized to (roster
+slots × 100%), tuned against 5 real DK contest exports:
+- `pitcher_gamma=7.0`, hitter `gamma=1.5` (pitchers concentrate ownership far harder than
+  hitters at the same value gap — field jams 1–2 arms). Both re-tuned in §11 after the
+  hitter softmax was found running too hot; see §11 for current values and evidence.
+- Batting-order term (`(SLOT_PA[slot]/4.2)^3`) — the field orders a stack by *batting
+  slot*, not by our value estimate; without this the model had the ownership order of a
+  stack's hitters backwards. Cross-validated on held-out 6/30 data, then confirmed
+  out-of-sample twice more (7/2: corr 0.385→0.600; 7/3: corr 0.474→0.595). This is the
+  single most validated piece of the whole system — 3-for-3 out-of-sample.
+- Net: ownership corr lands **~0.5–0.6** against real contests — meaningfully better
+  signal than either projection model, and the part of the system I'd trust most.
+  **Correction (see §10):** those 0.5–0.6 numbers came from an earlier, unsaved ad-hoc
+  calculation, not the calibration pipeline described above. The pipeline's numbers,
+  computed the same way every time and reproducible, are lower — pooled hitter-ownership
+  corr 0.351, and even the *same date* (7/3) recomputes to 0.444 rather than the claimed 0.595.
+  The pipeline's number is now the one to trust. Pitcher ownership corr (0.892 pooled)
+  also doesn't hold up under closer inspection — see §11.
+
+**Optimizer.** Cash = maximize mean. GPP = force a consecutive-batting-order 4-stack
+(measured real but small: matched-mean comparison shows +4% ceiling std, +1 P95, +3 P99 —
+kept because it's free, not because it's a big lever), fade by modeled ownership for
+leverage. **Superseded 2026-07-11 (§18):** GPP now forces a 5-stack + secondary 3-stack
+with the stack team picked by leverage rather than raw projection, and the optimizer
+enforces DK's max-5-hitters-per-team rule it previously didn't know about. Fixed this session: the optimizer had **no concept of which side of a game a
+player is on** — nothing stopped it from stacking a team's hitters while also rostering
+that same game's *opposing* pitcher (caught live: a White Sox stack + the Boston starter
+facing them). Now a hard constraint. Worth flagging precisely because the *first* fix I
+shipped for this didn't actually work (§9) — the corrected version is verified against live
+data, not just its own unit test.
+
+**Bullpen blend.** Backtested leak-free on 5,146 held-out 2025 hitter-games: adding 40%
+weight on the opposing bullpen's K/9 (vs 100% starter-only) dropped hitter MAE 5.577→5.547
+with correlation unchanged (0.181→0.179 — no ranking cost). Real, if modest.
+
+**Season freshness.** Same backtest: including the current season alongside priors (vs
+freezing on the two seasons before it) dropped MAE 5.604→5.577 *and* raised corr
+0.166→0.181 — both metrics improved together, the cleanest possible signal. This was a
+staleness bug, not a design choice, and it went unnoticed for a while — see §9.
+
+**Infrastructure that's now solid:** projected-lineup fallback for teams whose batting
+order hasn't posted yet (fixes an early-poster stacking bias); a late-swap tool that
+detects when a projected player gets ruled OUT and suggests same-position replacements;
+doubleheader handling (a finished game 1 was leaking its lineup into game 2's build);
+crash resilience (one bad Odds-API event used to kill the entire live build); two-way
+pinned-entry + forward-test-log redundancy between the CLI and phone app; and, as of this
+session, a **calibration dashboard** joining real contest %Drafted/FPTS against our own
+logged predictions — closing a loop that previously relied on manually pasted screenshots.
+
+## 4. What Was Tried and Failed (rejected, with reasons)
+
+**Original prop-based hitter model.** Projected hitters from batter props the same way
+pitchers are projected. Backtest corr: **0.02** — statistically no signal. Diagnosis:
+single-game batter prop lines barely spread player-to-player, so the projection was
+structurally flat (proj std 1.16 vs actual std 6.31). Replaced entirely by the skill model
+in §3. The old functions (`project_hitter`, `allocate_hitter`, `player_markets` for
+hitters) still exist in `edge/dfs.py` — dead code, not called anywhere in the pipeline
+(§5).
+
+**Stronger ownership team-stack multiplier.** After round-2 ownership analysis found
+stacks under-modeled (~4x actual concentration vs ~1.3x modeled), a stronger team-level
+exponent was tried. It **failed verification** — MAE on held-out 6/30 anchors got *worse*
+(4.3→7.7). Root cause: the multiplier amplified within-stack ordering by our own *value*
+estimate, but the field orders a stack by batting slot/name (a real slate: field owned the
+2-3 hitters more than the 8-9 hitters even when our model liked the 8-9 guys' matchup
+better). Reverted; the batting-order term (which *did* work) replaced it.
+
+**Platoon signal** (batter/pitcher handedness). Backtested leak-free, same 5,146-game
+harness as bullpen: MAE improved a lot (5.577→5.436) but **correlation got worse**
+(0.181→0.155, below even the frozen-season baseline). That divergence is the tell — a
+50/50 blend with a single-season, 40-PA-minimum split rate is noisy enough to mostly
+shrink outliers toward the mean (which lowers MAE mechanically) without adding real
+ranking signal (which would raise corr too). A real platoon effect should improve both.
+Dropped rather than shipped on a metric that doesn't match the failure mode. This doesn't
+mean platoons don't matter for real hitters — it means *this specific* implementation
+(small sample, too-heavy blend weight) wasn't disciplined enough to trust. Worth
+re-attempting with a larger PA floor and a much smaller/shrunk blend weight if this
+matters to you.
+
+**Umpire zone-tendency signal.** Collected real HP-umpire assignment + strikeout/walk data
+across 1,624 games (May–Aug 2025) specifically to test this. The raw effect is real —
+umpires span roughly ±6–10% in K-rate at n≈20 games each. But shrunk properly for that
+small per-umpire sample size and threaded through the projection chain, the effect on
+hitter MAE/corr was **negligible** (Δ < 0.002 on both). Not shipped — the data-collection
+burden (one boxscore call per game, no bulk endpoint) isn't worth carrying for zero
+measured benefit at this scale. The collection script is kept (§6) in case a larger sample
+or a different application of the signal is worth trying later.
+
+**team_total factor** (Vegas-implied team run total as a hitter multiplier). Measured on
+2,000 credits / 3,501 hitter-games: best-case lift was **+0.003 corr** (statistically zero
+at that n, SE≈0.017) — park + matchup already absorb most of the run-environment signal.
+Not wired in. The parameter still exists in `project_hitter_skill`'s signature
+(unit-tested, unused) — see §5.
+
+## 5. Kept, But Benign (harmless, not worth removing)
+
+- **Old prop-based hitter functions** (`project_hitter`, `allocate_hitter`,
+  `player_markets` used for hitters) in `edge/dfs.py` — dead code, zero call sites in the
+  production pipeline. Kept for reference in case anyone wants to see what the failed
+  approach looked like.
+- **`team_total` parameter** in `project_hitter_skill()` — implemented, unit-tested,
+  never called with a real value in production. Harmless surface area.
+- **Orphaned season-specific cache files** (`data/dfs_skill_2024_2025.json`,
+  `data/dfs_pitch_k9_2025.json`) — superseded by season-aware filenames
+  (`dfs_skill_2024_2025_2026.json` etc.) after the staleness fix. Nothing reads the old
+  files anymore; they just sit there.
+
+## 6. Built, But Not Wired Into Production (with rationale)
+
+- **`scripts/dfs_hitter_backtest.py`** — the leak-free backtest harness built this
+  session (per-player game-log date-cutting, no lookahead) that validated/rejected
+  season-freshness, platoon, bullpen, and umpire. Kept as reusable infrastructure for
+  testing future signal ideas, not a production dependency.
+- **`scripts/collect_umpire_data.py`** — the umpire boxscore collector. Kept for the same
+  reason; the *signal* wasn't worth shipping, but the *collection tooling* is real and
+  reusable if a bigger sample or different framing is worth trying later.
+- **Platoon-adjustment code path** — built and backtested inside the harness above, not
+  ported into `edge/dfs.py`'s production model, per the §4 rejection.
+
+## 7. Known, Accepted Limitations
+
+- **Hitter correlation is inherently modest** (~0.15–0.20). This is not a bug to fix — DFS
+  hitter outcomes in a single game are genuinely high-variance, and no projection model at
+  this level of effort is going to feel like a strong predictor game-to-game. The edge this
+  system is actually chasing is structural (salary staleness, ownership leverage, stacking,
+  contest selection), not projection quality.
+- **Bullpen wiring costs ~135 seconds on a cold cache** (once per ~6-hour window) — free
+  (no API credits), but real wall-clock latency the first time a slate is built in a fresh
+  window. Verified warm-cache rebuilds are back to ~3 seconds.
+- **CASH and GPP builds can legitimately differ between the phone app and desktop CLI on
+  the same slate** — not a bug. GPP's mandatory stack is chosen via randomized search among
+  several similarly-strong consecutive-order candidates; a single extra/missing player
+  anywhere in the pool (confirmed lineups refresh live, timing differs build to build)
+  shifts the exact random-number trajectory across all 800 search iterations. CASH has no
+  such randomized commitment and reliably converges to the same top-value picks regardless.
+- **Ownership calibration currently has less data than points calibration** — ownership is
+  only logged when a full lineup successfully builds that day (`project_ownership` doesn't
+  run on a partial/early pitcher-only build); of 6 usable historical slates, only 2 have
+  ownership data logged. This will fill in naturally as more slates get built to completion
+  near lock.
+- **Two contest files couldn't be used for calibration at all** (7/4, 7/5) — no
+  projections were ever logged those days (pre-existing gaps in when the app/CLI was run
+  vs when it logged; both fixed going forward, see the forward-test-logger fix below).
+
+## 8. Why Backtesting Was Abandoned for Hitters (in favor of forward-testing)
+
+A proper leakage-free hitter backtest requires historical batter prop odds, which cost
+real credits per event (~30cr/event → an estimated 9,000–18,000 credits for a usable
+sample). Rather than spend that, the call was made to **forward-test**: log every real
+build's projections, grade them against real outcomes once games finish, and accumulate
+slates over time. This is slower to reach statistical confidence but costs nothing, and it
+tests the *actual* deployed pipeline rather than a backtest proxy. The signals validated
+this session (season-freshness, bullpen) used a different, free technique — leak-free
+backtesting on 2025 data using free box-score history rather than paid historical odds,
+which sidesteps the original cost problem for structural (non-prop) signals.
+
+## 9. Bugs Found and Fixed This Session (for the record)
+
+- **Doubleheader leak**: a completed game 1's confirmed lineup was leaking into game 2's
+  build for the same team/date, because both games' data was written into the same dict
+  keyed only by player name. Fixed by picking one "authoritative" game per team per date
+  (whichever isn't Final yet).
+- **Pitcher-vs-own-hitters constraint didn't actually work.** The first fix compared
+  `game` id between pitcher and hitter pool entries — but pitcher entries carry a
+  DK/Odds-API competition id and hitter entries carry a statsapi gamePk, two id spaces
+  that never coincide even for the same real matchup. It passed its own unit test (which
+  used contrived matching ids) but silently never fired in production. Caught by checking
+  real field values in an actual entered lineup, not by re-reading the code. Refixed to
+  match on team abbreviation instead, and re-verified against live data (30 teams,
+  correctly symmetric).
+- **Live build crash**: a single failed Odds-API event call (a 404/429/500 on one event)
+  crashed the *entire* build in live mode — only the cache-mode-blocked case was caught.
+  Now skips the one bad event and continues.
+- **Forward-test logging gap**: only the CLI wrote to `data/dfs_proj_log.csv`; builds done
+  through the phone app were never logged, silently losing forward-test data (this is
+  exactly what happened to the 7/5 slate). Fixed by moving the logger into the shared
+  `build_slate` pipeline so both interfaces log identically.
+
+## 10. External Review — Independently Verified, Not Taken on Faith
+
+An outside DFS-literate reviewer read this document and the calibration dashboard and
+produced a detailed critique, benchmarking this system against commercial tools
+(SaberSim, Stokastic) that run full correlated game simulation and field-simulated
+ownership rather than mean-point optimization plus a subtraction term. Rather than accept
+or wave off the critique, every checkable empirical claim was recomputed directly against
+`data/dfs_calibration.json`. Results:
+
+**Confirmed as stated:**
+- **Hitter projections are still severely under-dispersed.** std(predicted)=1.37 vs
+  std(actual)=7.56 — actual spreads **5.5x** wider. That's essentially the *same* ratio as
+  the original prop-based model this doc declared fixed (5.44x). The skill-model rebuild
+  reduced the absolute error, but the compression diagnosis that killed the old model was
+  never actually resolved.
+- **Pitcher forward MAE (10.31) is consistently worse than the 7.18 backtest across every
+  one of 5 dates individually** (9.56–14.24), not one bad slate dragging an average. A real
+  gap between backtest and live conditions, not slate variance.
+- **Pitcher ownership corr is mostly a leverage-point artifact.** Pearson 0.892 → Spearman
+  0.654. Restricted to the sub-15%-owned pitchers (where leverage decisions actually get
+  made), Pearson drops to **0.332**, 95% CI **[-0.04, 0.62]** — not distinguishable from
+  zero at this sample size.
+- **Ownership MAE is close to the size of ownership itself.** Hitter ownership MAE (3.88)
+  vs mean hitter ownership (4.03%) — the error is 96% of the thing being predicted.
+- **Hitter ownership softmax is too hot.** Every one of the top-8 predicted-ownership
+  hitters was over-predicted, several badly (65%→12% actual, 37%→15%, 33%→12%).
+- **§3's "0.5–0.6" ownership corr claim doesn't reconcile with the calibration pipeline**
+  even on the same date — corrected in §3 above; the pipeline's number is authoritative
+  going forward because it's reproducible code, not an ad-hoc calculation.
+
+**Partially correct, precision-corrected:**
+- **"No HR term anywhere"** — not quite. `proj` has HR baked into the historical skill
+  rate (no forward-looking adjustment); `ceiling` has an explicit separate term
+  (`proj + 10 × hr_rate × PA`). The substantive point survives correction though: neither
+  term creates *correlation* across teammates, which is the actual mechanism stacking pays
+  through in reality (one HR simultaneously boosting several players' R/RBI). That's the
+  real reason the measured stacking lift (§3, "+4% ceiling std") is small — the model has
+  no mechanism for a stack to pay off together, independent per-player HR rate or not.
+- **OLS-slope compression diagnostic** — a slope <1 regressing actual~predicted (measured:
+  0.75) is ordinary attenuation from a noisy, weakly-correlated regressor, not evidence
+  against compression specifically. The raw std ratio (5.5x, above) is the correct
+  diagnostic and it confirms the critique's underlying point regardless.
+
+**The load-bearing test — run for the first time, on this reviewer's suggestion:**
+`actual ~ salary + model_proj`, testing whether the model adds anything DK's own salary
+doesn't already contain (the entire premise in §1):
+
+| | coef on `proj` | t-stat | incremental R² over salary-only |
+|---|---|---|---|
+| Hitters (n=816) | +0.296 | 1.16 (not significant) | **+0.0016** |
+| Pitchers (n=82) | +0.817 | 1.38 (not significant) | +0.0216 |
+
+For hitters, incremental R² is functionally zero. **On this sample, the model does not
+carry information about outcomes beyond what salary already contains** — the direct test
+of §1's premise does not currently support it. Six slates is a small sample for this test,
+but the *effect size* for hitters, not just its significance, is tiny — this isn't purely
+a power problem. This is the most important open question in the whole system and the
+next thing that should move, not projection tuning.
+
+**ROI/rank backtest** (built in response to the critique's #1-ranked gap:
+`scripts/dfs_roi_backtest.py`) — where would our built lineups have actually finished in
+the real contest fields the user played? Both CASH- and GPP-mode builds graded against the
+*same* real contest each date (both are our own construction strategies tested against one
+real field, not two contest types):
+
+| | avg percentile | range | n |
+|---|---|---|---|
+| CASH-mode | 62.7% | 40.7%–92.4% | 6 |
+| GPP-mode | 58.4% | 7.7%–97.1% | 6 |
+| **Overall** | **60.5%** | 7.7%–97.1% | 12 |
+
+Modestly above median, with real slate-to-slate spread. Only 4 of 12 finishes clear a
+typical large-field-GPP cash line (~top 15–20%); the other 8 would not have cashed.
+**Dollar ROI is not computable from DK's standings export** — it has Rank and Points but no
+entry fee or payout curve, so this reports percentile-in-field, the honest ceiling of what
+these files support. Six dates is too small to prove the system loses money, but it gives
+**no evidence of a beat-the-rake edge** either — consistent with the salary-regression
+result immediately above, not a contradiction of it.
+
+**Net read:** the projection and ownership layers have real, if modest, signal (§3), but
+two independent tests this section ran for the first time — salary-conditioned
+significance and real-field rank — both come back not supporting a demonstrated edge yet.
+That doesn't mean the premise in §1 is wrong; it means it hasn't been *shown* right, on the
+data collected so far, and the next priority should be resolving that question rather than
+refining models whose incremental value over salary is currently unmeasurable from noise.
+
+## 11. Acting On The Review: Validation Methodology + Ownership Fix
+
+Two concrete fixes came out of §10, done in the order the evidence justified — formalize
+honest measurement first, then use it to validate any model change, rather than trust a
+single pooled number the way the ownership 0.5–0.6 claim did.
+
+**Validation module (`edge/dfs_validate.py`).** Every future calibration number should run
+through this rather than get re-derived ad-hoc: `pearson`/`spearman`, Fisher-z confidence
+intervals, `cross_slate_summary` (per-slate correlation *and* pooled, plus the cross-slate
+standard error — the honest way to say "6 slates isn't 816 independent data points"), and
+`incremental_baseline_test` (the salary-conditioned regression from §10, generalized so it
+can be re-run for any model/baseline pair). Also wired in DK's own **FPPG** stat
+(`draftStatAttributes` id 408 — free, sitting unused in the same draftables call the
+pipeline already makes) as a second baseline going forward; it can't be backfilled for the
+6 historical slates (DK only serves current/upcoming draftables), so it accumulates from
+here on rather than retroactively.
+
+**Dashboard axis-tick bug.** The reviewer said they couldn't read a single value off the
+four panels. That wasn't a design nitpick — the code built a string of tick-value `<text>`
+elements (`axisLabels`) and then never inserted it into the returned SVG template. Fixed;
+verified the template now references it. The dashboard also now reports per-slate Spearman
+and cross-slate SE alongside pooled Pearson, not pooled Pearson alone.
+
+**Hitter projection dispersion — investigated, not fixed, and here's why.** Checked
+whether std(predicted)=1.37 vs std(actual)=7.56 is an independently fixable bug: for a
+well-calibrated `E[Y|X]` estimator, `std(pred)/std(actual)` should approximately equal
+`|corr|`. Measured ratio 0.181 vs corr 0.136 — they match. The compression **is** the weak
+correlation, restated in a different unit; it is not a separate flaw sitting on top of it.
+Artificially widening the predictions (multiplying by a scale factor) would be a linear
+rescale, and a linear rescale changes no player's rank relative to any other — it would
+have **zero effect** on which players the optimizer selects, only cosmetic effect on how
+the scatter plot looks. That would be dishonest theater, not a fix, so it wasn't done. The
+real lever is the same one §10 already named: better underlying signal (§10's simulation
+gap), not a parameter tweak here.
+
+**Ownership gamma — genuinely fixed, out-of-sample, across every available slate (not
+just the 2 checked in §10).** `scripts/dfs_ownership_gamma_sweep.py` reconstructs each
+date's pool from `data/dfs_proj_log.csv` and sweeps `project_ownership`'s softmax
+temperature against real contest ownership:
+- **Hitter `gamma`: 3.5 → 1.5.** MAE improved on **all 6 dates** with real ownership data
+  (e.g. 7/7: 4.42→3.69); Spearman rank correlation was flat throughout every date tested —
+  softmax temperature only changes *concentration*, not *who's ranked ahead of whom*, so
+  this was a pure calibration win with no ranking cost. Confirmed live: max predicted
+  hitter ownership on a fresh real build dropped from routinely hitting the 65% chalk cap
+  to a top value of 17.0%.
+- **Pitcher `pitcher_gamma`: 6.0 → 7.0.** Messier evidence — 3 of 5 available dates
+  preferred *higher* gamma (the original 6.0 was still under-concentrated, not over), but
+  2 dates preferred lower. The n-weighted pooled MAE across all 5 picks 7.0. Flagged in the
+  code comment as resting on thinner, more mixed evidence than the hitter fix, with a
+  pointer to re-run the sweep as more slates accumulate.
+
+**A bug caught along the way, not by the review:** wiring in DK's FPPG crashed the entire
+draftables pull the first time it ran live — DK returns the literal string `"-"` for
+players with no game history yet (rookies/callups), and `float("-")` doesn't fail
+gracefully. Fixed and regression-tested before it could reach the phone app.
+
+## 12. Cash-Game Investigation: A Floor Metric, Tested Before Trusted
+
+Following §10's advice (cash games are the more tractable near-term validation target),
+two gaps surfaced: no real cash/double-up contest data exists (every export so far is a
+large-field GPP tournament, 475–1,189 entries), and CASH mode's construction had no concept
+of *consistency* — it maximized mean projection only, treating a steady contact hitter and
+an equally-projected boom/bust slugger identically, when a cash game (pay ~50% of the
+field, flat payout) rewards the former and a GPP rewards the latter.
+
+**The obvious hypothesis — falsified with real data before writing any code.** The
+intuitive idea: HR-heavy hitters are boom/bust, so dock their score for cash-mode
+selection. Tested directly against real 2025 game logs (60 qualified hitters, ≥400 PA):
+raw std(game points) vs. season HR rate looked strong (**+0.847**) — but that's confounded
+by mean (power hitters simply score more points on average, so their absolute swings are
+bigger too). Normalized to coefficient-of-variation, the relationship **vanished** (−0.010).
+Checked against bust-rate (fraction of games ≤1 DK point): **−0.21**, the *opposite* sign
+from the boom/bust hypothesis. This idea does not survive contact with data and was not
+implemented — the same discipline that killed platoon and team_total earlier in this doc.
+
+**A more interesting, unplanned finding:** mean skill level *alone* strongly predicts
+consistency (corr −0.55 with CV, −0.67 with bust-rate) — better hitters are already more
+consistent hitters, largely because more ways to reach base is itself a floor mechanism.
+This means CASH mode's existing pure proj-maximization was never starting from zero on
+consistency; it was already leaning floor-ward as a side effect of maximizing skill.
+
+**What did add real, incremental signal:** walk rate. `incremental_baseline_test(bust_rate,
+mean_skill, bb_rate)` → incremental R² **+0.067**, coefficient t=**−2.80** (n=60,
+significant at 5% even controlling for mean skill). A guaranteed way to reach base without
+needing a hit (2 DK points, plus downstream run chances) is a genuine floor mechanism a
+low-walk hitter lacks, and it isn't just riding on the same "better hitters are more
+consistent" effect.
+
+**Shipped:** `edge/dfs.py::BB_FLOOR_WEIGHT = 2.0`. Hitters get a new `floor` field
+(`proj + BB_FLOOR_WEIGHT * bb_rate * PA_for_slot`) computed from season walk rate — data
+already being pulled for the existing HR-rate ceiling term, so no new API calls. CASH
+mode's optimizer objective changed from `proj` to `floor` (`edge/dfs_opt.py`); GPP is
+untouched (still `lev` = ceiling faded by ownership). Pitchers get `floor == proj` — no
+validated pitcher-specific signal exists yet, so this deliberately does nothing for them.
+Displayed/logged `proj` and `ceiling` are unchanged; `floor` only steers which players the
+cash optimizer selects, not what gets reported or calibrated against.
+
+**Honest limitation, stated plainly:** this cannot be backtested the way the season-
+freshness or bullpen fixes were — those needed only player-level projections, but this
+changes *lineup construction*, which needs real historical DK salaries, and DK doesn't
+serve those for past slates. This can only be forward-tested, exactly like the rest of the
+hitter model. The weight (2.0) is deliberately modest and should not be raised without
+re-validating on a bigger game-log sample — n=60 is a real, significant effect, but not a
+large one to lean on heavily.
+
+## 13. Team Exclusion — DK Voids a Game, the Generator Didn't Know
+
+Caught live 2026-07-09: DK notified the user that BAL@CHC wouldn't count for a specific
+contest (postponement, or a contest-scoring rule — DK doesn't expose which via any free
+API), but the lineup generator had no way to know and built lineups using those players
+anyway. Two mechanisms now address this, one automatic and one manual, because they catch
+different causes:
+
+**Automatic: `edge.dfs.team_game_status(date)`.** Cross-references every team against its
+real MLB game status. A genuine gotcha found while building this: a postponed game's
+`abstractGameState` is misleadingly **`"Final"`** (matches a normal completed game) — only
+`detailedState` actually says `"Postponed"`. Checking `abstractGameState` alone (the way
+the doubleheader-authoritative-game logic elsewhere in this codebase does) would silently
+miss this entirely. Built as an allowlist of known-normal `detailedState` values (Final,
+In Progress, Pre-Game, Completed Early, Scheduled, Warmup, and a couple of in-game states),
+not a denylist — an unrecognized state should surface as a warning, not be silently waved
+through. This catches real postponements/suspensions; it does **not** know about a
+DK-specific "won't count for this contest" designation that isn't a change in the game's
+actual status — that's a business rule DK doesn't expose.
+
+**Manual: `exclude_teams` on `build_slate`.** A set of team abbreviations dropped from the
+pool entirely, for exactly the DK-contest-rule case automatic detection can't see. Exposed
+as `--exclude-teams BAL,CHC` and `--list-teams` (prints every team with its status flag) on
+the CLI, and as a sidebar multiselect in the phone app — populated progressively via
+`st.session_state` after each successful build (empty on the very first load of a session,
+since there's nothing to learn the team list from yet) rather than a separate discovery
+build, so this doesn't double the cost of every build just to learn the team list.
+
+**A real, separate bug found while wiring this up, not by looking for it:** statsapi's
+`team.abbreviation` for Arizona is `"AZ"`; DK's own draftables field says `"ARI"`. Hitters'
+pool `team` field came from `team_abbrev_map()` (statsapi-based); pitchers' came directly
+from DK's draftables. The result: an Arizona hitter and Arizona's own pitcher never matched
+on team string, which silently broke the pitcher-vs-own-hitters constraint (§9) for this
+one team specifically — an Arizona pitcher could in principle have been rostered against
+Arizona's own hitters (or vice versa) without the safety check ever firing, because
+`opp_team` lookups keyed on one spelling never found the entry filed under the other. Fixed
+by normalizing at the source (`team_abbrev_map()` now maps through the same
+`_STATSAPI_TO_DK_ABBR` table `team_game_status` uses), verified live (team 109 now resolves
+to `"ARI"` everywhere), and regression-tested. This predates this session's other pitcher-
+vs-hitter work entirely — it was just never exercised by a build that happened to roster
+an Arizona pitcher against Arizona's own hitters until this investigation went looking at
+team abbreviations for an unrelated reason.
+
+## 14. A Phone Crash This Doc Can't Fully Explain — Said Plainly
+
+The day after §13 shipped, the user hit a crash on the phone app pointing into
+`cached_build` → `build_slate`. The pasted traceback cut off exactly at the call into
+`build_slate` — Streamlit Cloud's error view doesn't scroll on mobile, so no further frames
+or exception message were recoverable.
+
+**What I could not do: reproduce it.** Ran the exact call path (`exclude_teams=()`) in both
+cache mode and a real live props pull (35 credits spent) for the reported date. Both clean.
+Then found why: that date fell on the last day before the All-Star break, and by the time
+this investigation happened, MLB had moved into the break itself (July 10–16, confirmed
+zero regular-season games scheduled) — the specific moment of the crash wasn't
+reproducible after the fact, full stop.
+
+**What I found and fixed anyway, because it's real regardless of whether it's *the*
+cause:**
+- `team_game_status`'s per-game loop used **unguarded direct dict indexing**
+  (`g["teams"][side]["team"]`) — inconsistent with the defensive `.get()`-chained style used
+  everywhere else in this codebase, and a genuine crash risk: any game entry with an
+  unexpected shape raises an uncaught `KeyError`, and this specific loop had no per-game
+  try/except (only the initial schedule fetch was guarded). Fixed: defensive `.get()` chains
+  throughout, plus a try/except per game so one malformed entry can't take down the whole
+  function.
+- **Confirmed real, not hypothetical:** an All-Star Game entry (`gameType: "A"`) exists on
+  2026-07-14, using `"AL"`/`"NL"` in place of real team abbreviations. Not a crash by itself
+  (this specific entry had a complete structure), but it would have polluted
+  `team_game_status`'s output with bogus non-DK-team keys, and there's no reason to process
+  an exhibition game at all. Filtered to `gameType == "R"` in both `team_game_status` and
+  `lineups_for_date` (the latter had the same unfiltered game list, though real team IDs
+  don't collide with the All-Star pseudo-team IDs there, so the exposure was lower).
+
+**Net honest read:** I can't tell you with certainty this was the exact bug, because the
+traceback needed to confirm that was never recoverable. What I can say: the code now
+defends against a real crash class (malformed schedule entries) it didn't defend against
+before, and against a real non-hypothetical seasonal event (the All-Star break) that was
+about to hit this exact code path within days. If the phone app crashes again after this
+ships, that's a genuine "still broken" signal worth a fresh traceback, not a sign this fix
+was wrong — they may simply be different bugs.
+
+## 15. A Real Bug the Crash Investigation Found, But Not the Crash Itself
+
+The user asked a good, testable question about §14's unreproduced crash: *"is it because the
+slate is over?"* Investigating it directly didn't confirm that hypothesis, but surfaced a
+genuinely different bug along the way — one that had been silently broken since §13 shipped.
+
+**What was actually wrong:** the plain (unhydrated) `/schedule` endpoint's embedded team
+objects carry only `id`/`name`/`link` — **never `abbreviation`**, confirmed for every team,
+every game, on a full real slate day. `team_game_status` (§13) extracted abbreviation
+straight from that payload. Even with the defensive `.get()` chains from §14's hardening,
+this meant the field was simply never present — so the function silently returned `""` for
+every team, every time, regardless of whether a game was actually postponed. The
+postponement-detection feature had never worked, not even once, and nothing about how it
+failed looked like a bug from the outside — it just never had anything to warn about.
+
+**Fixed** by resolving team ID → abbreviation via the separate, already-reliable `/teams`
+endpoint (the exact approach `team_abbrev_map()` already used, for the exact same reason)
+instead of trusting the schedule payload to carry it. Verified live: `team_game_status`
+now correctly resolves all 30 teams with proper DK-style abbreviations on a real slate day,
+where it previously returned nothing at all.
+
+**Said plainly: this does not explain §14's `TypeError`.** Four combinations (cache/live ×
+empty/non-empty `exclude_teams`) all ran clean before and after this fix. The crash
+investigation is still open — this section fixes a real bug the question led to, not the
+bug the question was actually about.
+
+## 16. Injured-List Players Slipping Into the Pool
+
+The user caught a real, concrete bug from actual use: Carter Jensen (KC) was on the injured
+list but still showed up in a real cash lineup the app built. Their question was direct —
+*"Is there a way to search MLB for the IL players?"*
+
+**Checked and ruled out, in order:**
+- **DK's own draftables data.** `status`, `isDisabled`, `newsStatus`, `draftAlerts` on
+  Jensen's entry: `"None"`, `false`, `"Recent"`, `[]`. Nothing usable — DK doesn't expose
+  IL status through the free draftables feed.
+- **MLB's roster `status` text field.** Pulled Jensen's `40Man`/`fullRoster` entries live:
+  `{"code": "A", "description": "Active"}`. Also checked recent Royals transactions
+  (7/1–7/10 window, 23 transactions) — none involved Jensen. **As of this check, MLB's own
+  public data does not corroborate that Jensen is on the IL.** This is a genuine,
+  unresolved discrepancy with the user's real-world report, not a case I could quietly wave
+  away — either the injury is too recent to be reflected anywhere in MLB's systems yet, or
+  the user's source is simply ahead of statsapi's own refresh cycle. Said plainly rather
+  than assumed away.
+
+**What did validate, checked against real examples on other teams:** comparing a team's
+`rosterType=active` player-ID set against its `rosterType=40Man` set. Confirmed against five
+real, currently-injured/optioned players across three teams — Alec Marsh (D60), Carlos
+Estévez (D60), Aaron Judge (D10), Carlos Rodón (D15), Austin Warren (D15), Clay Holmes
+(D60), plus several `RM` (Reassigned to Minors) — every one of them present on `40Man` but
+correctly absent from `active`. The roster's own `status` text field can't be trusted at
+face value (it's what said Jensen was "Active"); set membership is the signal that actually
+held up.
+
+**Likely mechanism for how this happens at all:** when a team's real lineup for the day
+isn't posted yet, `lineups_for_date`'s projected fallback reuses that player's most recent
+game's batting slot. If the player has gone on IL or been optioned since that last game, the
+projection has no way to know — it just carries the stale slot forward.
+
+**Fix**: `dfs.inactive_players(team_id)` returns `{norm(name)}` for every player on the
+40-man roster not present on the active roster, cached per team (6hr `max_age`, same pattern
+as `bullpen_k9`'s per-team cache). `build_slate` now filters the full pool (hitters and
+pitchers) against this set, keyed by team abbreviation, right after the existing
+`exclude_teams` filter.
+
+**Live-verified**: re-ran a real build against today's slate. The general mechanism runs
+clean against live data with no regressions (213-player pool, no crash). Jensen specifically
+is *still* included — consistent with MLB's own data still showing him active as of this
+check. This isn't a failure of the fix; it's the fix correctly reflecting what MLB's public
+data currently says, which is the honest limit of what any API-based filter can do.
+
+## 17. Does Strategy Change With Slate Size? Investigated Directly, Not Assumed
+
+The user asked whether a small night slate (2-4 games) should be approached differently than a
+large main slate (12-15 games) — a common DFS-community heuristic that had never actually been
+tested against anything in this system. Two separate tests were run: a large, well-powered
+backtest of the *projection model* across a stratified sample of 2025 slates, and an honest look
+at what the 6 real contest slates already collected (§10) show about *ownership/construction*.
+
+**Projection accuracy does not meaningfully change with slate size — tested, not assumed.**
+`scripts/dfs_slate_size_backtest.py` reused the exact leak-free "+2025-to-date" model shape from
+§3/§9 (the closest free proxy to current production) across 72 stratified 2025 dates chosen to
+cover the full range of real slate sizes (3-17 games/day), oversampling the rare small-slate days
+(only 17 exist all season with ≤8 games) rather than a plain contiguous window that would be
+~90% 15-game main slates by default:
+
+| slate size | games/day | hitter-games | corr | MAE |
+|---|---|---|---|---|
+| small | 3-8 | 1,872 | **0.210** | 5.613 |
+| medium | 9-13 | 5,775 | 0.181 | 5.508 |
+| large | 15-17 | 6,838 | 0.181 | 5.547 |
+
+Small slates show a slightly higher correlation (0.210 vs 0.181), but a Fisher z-test on the
+small-vs-large difference gives **z=1.16, p=0.246** — not statistically significant on 1,872 vs
+6,838 rows. Honest read: **no evidence the projection model needs a slate-size-specific
+adjustment.** The std(pred)/std(actual)-vs-|corr| compression check from §11 also holds
+identically in every bucket (ratio 0.187–0.199 vs corr 0.18–0.21) — no differential dispersion
+problem on small slates either.
+
+**Ownership concentration plausibly changes with slate size — directionally, but too thin to
+confirm.** Pitcher pool size scales roughly with game count in our own logged builds (11 SP at 6
+games, 23 SP at 12 games — about 2/game, as expected). On the 6 real contest slates with
+ownership data (§10):
+
+| date | games | SP pool | max pitcher own% |
+|---|---|---|---|
+| 7/6 | 5 | 0 (partial build, pitcher props never logged that day) | — |
+| 7/2 | 6 | 11 | 67.0% |
+| 7/1 | 7 | 12 | 57.3% |
+| 7/7 | 9 | 15 | 64.9% |
+| 7/3 | 11 | 22 | 39.9% |
+| 6/30 | 12 | 23 | 47.8% |
+
+Directionally consistent with the fewer-arms-means-more-chalk intuition (the two smallest pools
+show two of the three highest peaks) but not clean — 7/7 (9 games, 15 arms) also spiked to 65%,
+and n=6 is nowhere near enough to fit a real trend. Flagged as an open, plausible-but-unconfirmed
+hypothesis, not a shipped model change, per the standard set in §4/§12: a plausible intuition
+doesn't get to steer construction just because it's plausible.
+
+**Real ROI percentile: directionally favors small slates, at a sample size that can't support the
+claim.** Splitting the 6-date ROI backtest (§10) by slate size: the 3 smallest-slate dates (5-7
+games) averaged 76.8% cash-mode percentile and 62.4% GPP-mode; the 3 largest (9-12 games)
+averaged 48.6% cash and 54.4% GPP. One of the small-slate dates (7/2) is the same build flagged
+in §3 as built from a contaminated partial pool — excluding it, small-slate cash percentile rises
+further to 72.1% (n=2). Stated for completeness, not as evidence of anything — 3 dates against 3
+dates is not a result.
+
+**Net read:** the one claim that could actually be tested at scale (does the *projection* need to
+change with slate size) came back clean — no, on 14,485 hitter-games across 72 dates it doesn't.
+The plausible construction-side effects (pitcher chalk concentration, whole-slate outcome
+correlation when a lineup's fate rides on fewer independent games) are real mechanisms
+structurally — a 5-game slate literally has half the arms and half the games of a 10-game slate,
+that's not in question — but this system doesn't yet have enough real contest data at each slate
+size to *measure* whether that structural fact should change GPP pitcher leverage or cash-mode
+game selection. Worth revisiting once more real contest exports accumulate across a wider spread
+of slate sizes; not worth shipping a model change on 6 data points.
+
+## 18. Full-System Review: Model + Construction Overhaul (2026-07-11)
+
+An 8-hour unattended review session: audit the whole methodology for holes, research
+current MLB DFS strategy, and backtest candidate improvements. Everything below was
+measured before it was shipped; two candidate ideas were re-killed by the same
+discipline that killed platoon/team_total/umpire earlier.
+
+**A DK rule the optimizer never knew: max 5 hitters per team.** DK's own editorial
+site states it verbatim ("a maximum of five hitters from the same team"; pitchers
+don't count). Nothing in `_valid()` enforced it — a chalky enough team could produce
+a 6+-hitter lineup DK's entry validator would reject at upload. No logged lineup ever
+actually violated it (checked all of them), but the new GPP construction below forces
+5-stacks, which sits exactly at the cap — shipped as a hard constraint plus
+team-cap-aware candidate filtering inside `_fill` (without which a dominant team's
+leftovers made most fill iterations die at final validation). Regression test built
+to fail pre-fix.
+
+**Hitter model: three upgrades, backtested leak-free on 25,086 2025 hitter-games**
+(Apr 15–Jul 31 boxscores; hyperparameters tuned on an April–May train window, all
+reported numbers from the 13,801-row June–July test window; harness:
+`scripts/dfs_model_lab_collect.py` + `dfs_model_lab_eval.py`):
+
+| change | MAE | corr |
+|---|---|---|
+| production shape (baseline) | 5.565 | 0.166 |
+| + empirical home/away PA tables | 5.467 | 0.168 |
+| + opposing starter ERA (w=0.2) | 5.458 | 0.174 |
+| + EB-shrunk skill rates (K=60) | **5.456** | **0.177** |
+
+The combined change improves MAE on **56 of 57 test dates** (incremental-over-baseline
+t=7.23). Shipped: `SLOT_PA_HOME/AWAY` (measured on 2,782 complete 2025 team-games —
+the old flat table ran ~0.2–0.5 PA hot every slot and missed that away lineups get
+~0.15–0.2 more PA because home teams skip the bottom 9th when leading),
+`pitcher_era()` + a `w_era=0.2` matchup term, and `pooled_skill_rates(shrink_k=60)`
+(empirical-Bayes shrinkage toward league average instead of the min-120-PA hard
+cutoff — keeps 242 more real players in the skill table instead of flattening them
+to league average). Sanity-checked end-to-end on the real 2026-07-09 slate:
+MAE 5.631→5.537 vs the logged build.
+
+**Platoon: killed a second time, same failure mode.** Re-attempted per §4's own
+suggestion (bigger PA floor, shrunk weight, tuned on train): every configuration
+lowered MAE but *also lowered correlation* on test (0.171→0.167 at the best setting) —
+still a shrink-toward-the-mean artifact, not ranking signal. Not shipped, again.
+
+**GPP construction: 4-stack chalk → 5-stack + secondary 3, leverage-picked.** Three
+independent lines of evidence, weakest to strongest n:
+- *Replay backtest* (`scripts/dfs_construction_replay.py`, rebuilds the exact logged
+  pools for the 8 replayable slates and scores variants with real DK points +
+  percentile in the real contest fields, 5 optimizer seeds each): old shape averaged
+  **59.6%** percentile-in-field (range 56.5–64.7 across seeds); 5-stack leverage-picked
+  **77.8%** (71.9–85.5); 5-3 double stack **74.3%** (66.1–82.3). No seed overlap with
+  the old shape. n=8 slates — directional, not proof.
+- *Stack-shape backtest on 2,782 real 2025 team-games* (`scripts/dfs_stack_shape_backtest.py`):
+  teammate DK-point correlation is real and monotonic in batting-order distance
+  (+0.167 adjacent → +0.107 at distance 4 — the §10 correlation mechanism, now
+  measured); a 5-stack beats a 4-stack+one-off at the same five roster slots in the
+  tails (P95 79 vs 76, P99 97.2 vs 96.2) for ~1 pt of mean; and a *correlated*
+  secondary 3-stack beats three scattered one-offs at identical mean (P99 137.0 vs
+  131.2). GPPs pay at the tails.
+- *Published consensus* (Stokastic, DK Network, RotoGrinders, SaberSim): primary
+  4–5 + secondary 2–3 is the standard winning shape; DK Network's own data note says
+  the 5-cap binds ("four and five about the same… a good deal less upside than six").
+Shipped in `build_slate`: stack team picked by **leverage** (Σ ceiling − 0.3×own,
+was: raw projected chalk), `stack_n=5`, secondary 3-stack from the next team by the
+same metric, player-level ownership fade 0.1→0.3. Cash construction unchanged — a
+forced cash 3-stack was tested in the replay and was not better (55.3% vs 57.4%).
+
+**Pitcher "live vs backtest MAE gap" (§10) resolved — it's sample hardness, not
+model decay.** On the same 82 calibration rows: actual pitcher scores have std 13.36,
+so a constant-mean predictor gets MAE **11.0** and salary-only regression gets
+**10.34**. The model's 10.31 therefore sits where "field parity" should sit; the 7.18
+backtest number came from a lower-variance sample, and chasing it with parameter
+tuning would be fitting noise. (Bias is only +1.1 — the projections aren't
+systematically high.)
+
+**Grading bug: DK pitcher scoring includes −0.6 per hit batsman** (and +2.5 CG/+2.5
+CG-shutout bonuses). `actual_pitcher_points` had none of these — every graded pitcher
+actual ran ~0.2 pts/start high on average. Fixed with a regression test. Hitter
+scoring was verified correct (no CS penalty on DK).
+
+**Also checked, no action:** the randomized optimizer's optimality gap vs an exact
+MILP solve on all 9 logged slates is ≤0.3 proj pts (0.0 on 7 of 9) — the heuristic
+is not the bottleneck, no solver dependency needed. Name-collision risk in the
+norm-name pool keying (two active players with identical names would cross-wire) was
+checked live: none on the current slate; latent, low priority. A stale actuals-cache
+bug surfaced during the replay (2026-07-08's cache had been written mid-slate with
+25 players and never invalidated — `cached_actuals`/`load_proj_log_actuals` cache
+without checking games went final); refreshed manually here, worth a real fix later.
+
+**Not done, deliberately:** ownership-vs-Vegas-totals and totals-driven stack
+selection would need historical game odds (credits) to validate against only 6
+ownership slates — too thin to justify shipping untested logic; noted as the next
+thing worth credits once more contest exports accumulate. The 2025 feature/boxscore
+caches (`data/bt_boxscores/`, `data/model_lab_rows.json`, ~16MB) are kept as reusable
+backtest infrastructure alongside the new scripts.
+
+## 19. Verifiable, Not Just Asserted
+
+- **Test suite**: 70 tests, all passing (`pytest -q`), including regression tests for
+  every bug in §9, §11, §12, §13, §14, §16, and §18 — each constructed to fail against the pre-fix code and pass
+  against the fix, not just exercise the happy path.
+- **Calibration dashboard** (live, updates as new contest data comes in):
+  actual-vs-predicted scatter plots for points and ownership, pitchers and hitters
+  separately, built directly from DK contest exports joined against logged predictions —
+  https://claude.ai/code/artifact/7ef69d33-1ccd-49a6-bd2c-48337f6c3de7
+- Every backtest number in §3/§4 came from either cached free box-score data (statsapi,
+  no cost) or real DK contest exports the user downloaded — nothing here is simulated or
+  assumed.
+
+---
+
+*Everything above is measured against real data — backtests on cached box scores, or
+forward tests against actual DK contest results — not modeled expectations. Where a number
+is small-sample and noisy, that's said explicitly rather than rounded up.*
