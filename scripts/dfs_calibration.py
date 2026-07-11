@@ -35,6 +35,41 @@ from edge.dfs import norm  # noqa: E402
 from scripts.dfs_grade import actuals_for_date  # noqa: E402
 
 ACTUALS_CACHE_DIR = ROOT / "data/actuals_cache"
+CONTEST_META_PATH = ROOT / "data/contest_meta.json"
+
+
+def load_contest_type(path) -> str:
+    """'cash' | 'gpp' | 'unknown', from data/contest_meta.json keyed by the
+    numeric contest id in the filename (contest-standings-<id>.csv). No
+    programmatic way to detect this from the export itself (DK's standings
+    CSV carries no contest-type/entry-fee field -- see dfs_roi_backtest.py's
+    docstring on the same limitation), so this is a small manually-maintained
+    manifest. Added 2026-07-11 per user request: cash-game fields concentrate
+    ownership differently than GPP fields (no incentive to differentiate), so
+    ownership-gamma fitting (dfs_ownership_gamma_sweep.py) should only use GPP
+    dates. Untagged files default to 'unknown' and are excluded from gamma
+    fitting rather than silently assumed to be GPP."""
+    meta = json.loads(CONTEST_META_PATH.read_text()) if CONTEST_META_PATH.exists() else {}
+    cid = Path(path).stem.replace("contest-standings-", "")
+    return meta.get(cid, "unknown")
+
+
+def games_for_date(pool_rows: list[dict]) -> int | None:
+    """Slate size (game count) for one date's logged pool. Prefers the 'games'
+    column log_forward_test started writing 2026-07-11 (DK's own declared
+    GameCount for the resolved draft group -- exact); falls back to distinct
+    team count / 2 for rows logged before that column existed (a same-slate
+    proxy, off by one per doubleheader and undercounts a known-partial pool
+    like 7/2's -- good enough to bucket by slate size, not exact)."""
+    for r in pool_rows:
+        g = r.get("games")
+        if g:
+            try:
+                return int(g)
+            except ValueError:
+                pass
+    teams = {r["team"] for r in pool_rows if r.get("team")}
+    return len(teams) // 2 if teams else None
 
 
 def parse_contest_file(path):
@@ -121,6 +156,8 @@ def main():
             print(f"  {Path(f).name}: no confident date match (best={date} @ {match_frac:.0%}), skipping")
             continue
         pool = by_date[date]
+        games = games_for_date(list(pool.values()))
+        contest_type = load_contest_type(f)
         n = 0
         for key, act in contest.items():
             proj_row = pool.get(key)
@@ -137,10 +174,13 @@ def main():
                 "date": date, "player": act["name"], "team": proj_row["team"], "is_pitcher": is_pitcher,
                 "pred_proj": pred_proj, "actual_pts": act["fpts"],
                 "pred_own": pred_own, "actual_own": act["pct_drafted"],
+                "games": games, "contest_type": contest_type,
             })
             n += 1
+        type_flag = "" if contest_type != "unknown" else "  ⚠ untagged in data/contest_meta.json"
         print(f"  {Path(f).name}: date {date} ({match_frac:.0%} ground-truth match, "
-              f"runner-up {runner_up[0]} @ {runner_up[1][0]:.0%}), {n} joined players")
+              f"runner-up {runner_up[0]} @ {runner_up[1][0]:.0%}), {n} joined players, "
+              f"{games} games, type={contest_type}{type_flag}")
 
     out_path = ROOT / "data/dfs_calibration.json"
     out_path.write_text(json.dumps(rows))

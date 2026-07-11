@@ -288,7 +288,8 @@ if res.get("unpriced"):
 # reuses the same cached_build result doesn't rewrite the file every widget click.
 _fp = (res["gid"], res["salaries_n"], len(res["hitters"]), res["spent"])
 if st.session_state.get("_logged_fp") != _fp:
-    dfs_run.log_forward_test(ROOT, slate_date, res["is_main"], res["gid"], res["pool"], res.get("cash"), res.get("gpp"))
+    dfs_run.log_forward_test(ROOT, slate_date, res["is_main"], res["gid"], res["pool"], res.get("cash"), res.get("gpp"),
+                             games=res.get("games"))
     st.session_state["_logged_fp"] = _fp
 
 # compact one-line status (giant metric cards eat the screen on mobile)
@@ -310,9 +311,27 @@ if n_proj:
 lineups_ready = res.get("cash") is not None or res.get("gpp") is not None
 show_ph = preview or not lineups_ready
 if not lineups_ready and not preview:
-    st.info("Confirmed batting orders aren't posted yet (~3–4h before first pitch), so real lineups "
-            "can't build. Showing a **placeholder** below so you can see the layout — near lock, tap "
-            "**🔄 Refresh (free)** and real CASH + GPP lineups appear automatically.")
+    # build_slate needs >=2 pitchers AND >=8 hitters to build at all -- name
+    # whichever side is actually short, instead of always blaming "batting
+    # orders." Found live 2026-07-11: a morning build showed the placeholder
+    # because DraftKings hadn't posted the FULL pitcher prop set (outs/ER/
+    # hits/BB/win -- not just strikeouts) for most of that day's starters yet,
+    # not because of hitter lineups at all; the old message pointed at the
+    # wrong cause every time pitchers were the actual blocker.
+    n_p, n_h = len(res["pitchers"]), len(res["hitters"])
+    reasons = []
+    if n_p < 2:
+        reasons.append(f"only **{n_p} pitcher(s)** have a full prop board posted by DraftKings so far "
+                       "(needs pitcher_outs + pitcher_strikeouts both live, not just one) — sportsbooks "
+                       "stagger which starters get props posted through the morning/afternoon")
+    if n_h < 8:
+        reasons.append(f"only **{n_h} hitter(s)** have a confirmed or projectable batting order "
+                       "(confirmed orders post ~3–4h before first pitch)")
+    why = " and ".join(reasons) if reasons else "the pool is otherwise too thin to build a valid roster"
+    st.info(f"Lineups can't build yet — {why}. Showing a **placeholder** below so you can see the "
+            "layout. Tap **🔄 Refresh (free)** periodically; if pitchers are the blocker, spending "
+            "credits again won't help until DK posts more props (this is disk-cached free once it's "
+            "up), only time will.")
 
 
 def _totals(rows):
@@ -425,7 +444,9 @@ with t_gpp:
         st.caption("4-man stack + ceiling (sample)")
         render_compact(PLACEHOLDER_GPP, placeholder=True)
     elif _rows_for("gpp"):
-        st.caption(f"4-man {res.get('stack_team')} stack + ceiling")
+        stack2 = res.get("stack2_team")
+        cap = f"5-man {res.get('stack_team')} stack" + (f" + 3-man {stack2} stack" if stack2 else "")
+        st.caption(cap)
         render_compact(_rows_for("gpp"))
         save_entry_button("gpp", _rows_for("gpp"))
     else:

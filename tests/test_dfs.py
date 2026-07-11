@@ -1,3 +1,5 @@
+import csv
+
 from edge.dfs import project_hitter_skill, actual_hitter_points, actual_pitcher_points, SLOT_PA, LG_K9
 
 
@@ -198,6 +200,79 @@ def test_log_forward_test_writes_proj_log_and_lineups(tmp_path):
     before = plog.read_text()
     log_forward_test(tmp_path, "2026-07-08", False, 999, pool, None, None)
     assert plog.read_text() == before
+
+
+def test_log_forward_test_games_column(tmp_path):
+    # Regression for the 2026-07-11 slate-size tracking addition: the "games"
+    # column must round-trip through a rewrite (an earlier date's row without
+    # a games value must not error, and a later logged date's games value
+    # must persist alongside it).
+    from edge.dfs_run import log_forward_test
+    pool = [{"name": "AAA1", "team": "AAA", "pos": {"OF"}, "salary": 4000, "proj": 8.0,
+            "ceiling": 12.0, "own": 5.0, "conf": "H-slot1"}]
+    log_forward_test(tmp_path, "2026-07-06", True, 123, pool, None, None, games=None)
+    log_forward_test(tmp_path, "2026-07-07", True, 123, pool, None, None, games=12)
+    plog = tmp_path / "data/dfs_proj_log.csv"
+    rows = list(csv.DictReader(open(plog)))
+    by_date = {r["date"]: r for r in rows}
+    assert by_date["2026-07-06"]["games"] == ""
+    assert by_date["2026-07-07"]["games"] == "12"
+
+
+def test_resolve_slate_auto_main_includes_games(monkeypatch):
+    # Bug fix: the auto "Main (auto)" path (draft_group=None, the app's
+    # default) never populated meta["games"]/meta["start"] -- only the
+    # explicit-name path did -- so build_slate's "games" key silently stayed
+    # None for the common case, breaking slate-size tracking before it started.
+    from edge import dfs_run, dfs
+    groups = [
+        {"DraftGroupId": 1, "ContestStartTimeSuffix": "", "StartDate": "2026-07-11T17:05:00", "GameCount": 12},
+        {"DraftGroupId": 2, "ContestStartTimeSuffix": "(Turbo)", "StartDate": "2026-07-11T17:05:00", "GameCount": 3},
+    ]
+    monkeypatch.setattr(dfs, "main_slate_group", lambda gs: 1)
+    gid, is_main, meta = dfs_run.resolve_slate(None, groups=groups)
+    assert gid == 1 and is_main and meta.get("games") == 12
+
+
+def test_games_for_date_prefers_logged_column_then_team_count():
+    from scripts.dfs_calibration import games_for_date
+    assert games_for_date([{"games": "12", "team": "AAA"}, {"games": "12", "team": "BBB"}]) == 12
+    # no games column logged (pre-2026-07-11 rows) -> fall back to distinct
+    # team count / 2
+    rows = [{"team": t} for t in ("AAA", "BBB", "CCC", "DDD")]
+    assert games_for_date(rows) == 2
+    assert games_for_date([]) is None
+
+
+def test_load_contest_type_manifest(tmp_path, monkeypatch):
+    import json
+    import scripts.dfs_calibration as cal
+    manifest = tmp_path / "contest_meta.json"
+    manifest.write_text(json.dumps({"12345": "cash"}))
+    monkeypatch.setattr(cal, "CONTEST_META_PATH", manifest)
+    assert cal.load_contest_type("data/contest-standings-12345.csv") == "cash"
+    assert cal.load_contest_type("data/contest-standings-99999.csv") == "unknown"
+
+
+def test_gamma_sweep_excludes_cash_contests(tmp_path, monkeypatch):
+    # Regression: a cash-contest date's real ownership must never enter the
+    # GPP ownership-gamma fit -- cash fields have no incentive to differentiate
+    # and would bias the fit toward over-concentration.
+    import json
+    import scripts.dfs_ownership_gamma_sweep as sweep
+    (tmp_path / "data").mkdir()
+    proj_log = tmp_path / "data" / "dfs_proj_log.csv"
+    proj_log.write_text("date,player,team,pos,salary,proj,ceiling,own,conf,dk_fppg,games\n"
+                        "2026-07-10,X,AAA,OF,4000,8.0,10.0,5.0,H-slot1,,3\n")
+    cal_json = tmp_path / "data" / "dfs_calibration.json"
+    cal_json.write_text(json.dumps([
+        {"date": "2026-07-10", "player": "X", "is_pitcher": False, "actual_own": 90.0, "contest_type": "cash"},
+        {"date": "2026-07-09", "player": "Y", "is_pitcher": False, "actual_own": 10.0, "contest_type": "gpp"},
+    ]))
+    monkeypatch.setattr(sweep, "ROOT", tmp_path)
+    _, actual_own = sweep.load_pools_and_actuals()
+    assert ("2026-07-10", "x", False) not in actual_own
+    assert ("2026-07-09", "y", False) in actual_own
 
 
 def test_lineups_for_date_doubleheader_prefers_unfinished_game(monkeypatch):

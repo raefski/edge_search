@@ -29,7 +29,7 @@ SPORT = "baseball_mlb"
 
 
 def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
-                     cash: dict | None, gpp: dict | None) -> dict:
+                     cash: dict | None, gpp: dict | None, games: int | None = None) -> dict:
     """Persist a build to disk for forward-testing, regardless of whether the
     CLI or the phone app produced it — a single source of truth so scripts/dfs_grade.py
     always has something to grade.
@@ -40,6 +40,14 @@ def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
       rows in place; other dates are untouched.
     * data/dfs_lineups_<date>[_g<gid>].csv: the built CASH/GPP lineups, if any.
 
+    games: DK's own declared GameCount for the resolved draft group (from
+    resolve_slate's meta) -- logged per row so dfs_calibration.py can track
+    slate size going forward (2026-07-11, per user request, to eventually
+    test whether ownership concentration/gamma should vary with slate size --
+    see DFS_METHODOLOGY.md §17). None for callers that don't have it; rows
+    logged before this existed are blank, not backfilled here (dfs_calibration.py
+    falls back to counting distinct teams in the pool for those).
+
     Returns {"logged_projections": bool, "n": int, "lineup_file": str|None}.
     """
     result = {"logged_projections": False, "n": 0, "lineup_file": None}
@@ -48,7 +56,7 @@ def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
     if is_main:
         plog = root / "data/dfs_proj_log.csv"
         prior = [r for r in csv.DictReader(open(plog))] if plog.exists() else []
-        cols = ("date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf", "dk_fppg")
+        cols = ("date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf", "dk_fppg", "games")
         with plog.open("w", newline="") as fh:
             w = csv.writer(fh)
             w.writerow(list(cols))
@@ -57,7 +65,8 @@ def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
                     w.writerow([r.get(k, "") for k in cols])
             for p in pool:
                 w.writerow([date, p["name"], p["team"], "/".join(sorted(p["pos"])), p["salary"],
-                            p["proj"], p.get("ceiling"), p.get("own", ""), p["conf"], p.get("dk_fppg", "")])
+                            p["proj"], p.get("ceiling"), p.get("own", ""), p["conf"], p.get("dk_fppg", ""),
+                            games if games is not None else ""])
         result["logged_projections"] = True
         result["n"] = len(pool)
 
@@ -97,7 +106,17 @@ def resolve_slate(draft_group, groups=None):
     groups = groups if groups is not None else dfs.mlb_draft_groups()
     is_main = draft_group is None or str(draft_group).strip().lower() in ("main", "classic", "full")
     if draft_group is None:
-        return dfs.main_slate_group(groups), True, {"label": "Main (auto)"}
+        gid = dfs.main_slate_group(groups)
+        # bug fix: this path never populated games/start (only the named-slate
+        # path below did) -- meant the auto "Main (auto)" build (the app's
+        # default) never carried slate size, which the calibration pipeline
+        # now needs (see build_slate's "games" key).
+        g = next((x for x in groups if x.get("DraftGroupId") == gid), None)
+        meta = {"label": "Main (auto)"}
+        if g:
+            meta["start"] = g.get("StartDate", "")[:16]
+            meta["games"] = g.get("GameCount")
+        return gid, True, meta
     g = dfs.resolve_draft_group(draft_group)
     if not g:
         names = sorted({n for n, *_ in dfs.list_slate_names(groups)})
@@ -283,7 +302,7 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
     ph = [p for p in pool if "P" in p["pos"]]
     hh = [p for p in pool if "P" not in p["pos"]]
 
-    stack_team, cash, gpp = None, None, None
+    stack_team, stack2_team, cash, gpp = None, None, None, None
     if len(ph) >= 2 and len(hh) >= 8:
         team_proj = defaultdict(float)
         for h in hh:
@@ -313,9 +332,10 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
         gpp = dfs_opt.optimize(pool, mode="gpp", stack_team=stack_team, stack_n=5, iters=iters,
                                stack2_team=stack2_team, stack2_n=3)
 
-    return {"gid": gid, "is_main": is_main, "meta": meta,
+    return {"gid": gid, "is_main": is_main, "meta": meta, "games": meta.get("games"),
             "salaries_n": len(salaries), "skill_n": len(rates), "lineup_hitters_n": len(lineups),
             "pool": pool, "pitchers": ph, "hitters": hh, "stack_team": stack_team,
+            "stack2_team": stack2_team,
             "cash": cash, "gpp": gpp, "all_teams": all_teams, "team_status": team_status,
             "excluded_teams": sorted(exclude_teams),
             "spent": client.spent_this_session, "remaining": client.remaining_credits()}

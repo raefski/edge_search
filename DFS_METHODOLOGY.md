@@ -749,10 +749,87 @@ thing worth credits once more contest exports accumulate. The 2025 feature/boxsc
 caches (`data/bt_boxscores/`, `data/model_lab_rows.json`, ~16MB) are kept as reusable
 backtest infrastructure alongside the new scripts.
 
-## 19. Verifiable, Not Just Asserted
+## 19. Phone-App "Placeholder" Bug, a Real Small-Slate Ownership Data Point, and Slate-Size Tracking
 
-- **Test suite**: 70 tests, all passing (`pytest -q`), including regression tests for
-  every bug in §9, §11, §12, §13, §14, §16, and §18 — each constructed to fail against the pre-fix code and pass
+The user reported the phone app still showing "PLACEHOLDER — sample data" after spending Odds-API
+credits on pitcher props for that morning's slate, and asked whether that's expected this early or
+a bug. Diagnosed live rather than guessed: pulled real event odds for today's earliest game (Pirates
+@ Brewers, first pitch ~3h out) and found DraftKings had posted only `pitcher_strikeouts` for that
+game — not `pitcher_outs`, which `project_pitcher()` requires alongside K's before it'll return any
+projection at all (§3's "core markets" design). Checking a mid-afternoon and a night game confirmed
+both already had the full 6-market board. **Verdict: not a bug.** Sportsbooks stagger which starters
+get full prop boards posted through the morning, exactly the way batting orders stagger through the
+afternoon (already documented) — pitchers just never had an equivalent message. A live full build
+minutes later (10 pitchers, 108 hitters) confirmed the pipeline works correctly once enough props
+post; no credit/dry-run logic was at fault.
+
+**Fixed:** the placeholder message named only "batting orders aren't posted yet" unconditionally,
+even when pitchers were the actual blocker (as they were this morning) — a genuinely wrong diagnosis
+shown to the user every time this specific case happened. Now checks `len(pitchers) < 2` and
+`len(hitters) < 8` independently and names whichever is actually short, with a note that re-spending
+credits won't help the pitcher case — only time will, since it's DK's own posting cadence.
+
+**Also fixed while in this code:** the GPP construction changed to 5-stack + secondary 3-stack in
+§18, but the CLI and app's on-screen labels still hardcoded "4-man stack" — stale display text left
+over from the change, not caught by any test since nothing asserts on display strings. Both now show
+the real construction, and `build_slate` now returns `stack2_team` so it's actually displayable.
+
+**A real small-slate contest, and a concrete ownership finding.** The user played a 3-game night
+slate for cash (`contest-standings-192176856.csv`, 23-entry field, 2026-07-10) — exactly the small-
+slate case §17 flagged as "plausible but unconfirmed." Our logged cash build that night scored 85.30,
+essentially identical to the user's actual entry (85.35, rank 16/23 — no cash), so the model's cash
+pick matched what was actually played. The striking result is ownership: every one of the 11 rostered
+players' predicted ownership came in under actual, by up to 3x —
+
+| player | predicted own | actual own |
+|---|---|---|
+| Robbie Ray (P) | 65.0 (hit the hard cap) | **91.3%** |
+| Shane Bieber (P) | 11.7 | 47.8% |
+| Andy Pages | 12.3 | 52.2% |
+| Ketel Marte | 16.2 | 47.8% |
+
+MAE 22.05 across the 11 players (bias −19), versus ~3.9 MAE on normal-size slates. Robbie Ray's real
+91.3% ownership **exceeded `project_ownership`'s hard 65% cap** — on a 3-game slate there simply aren't
+enough viable arms, so the field piles on far harder than a softmax tuned on 10-15 game slates expects.
+This is now 2 real small slates (this one; 7/2's 6-game slate in §17) pointing the same direction, with
+this one far more extreme. **Not shipped as a gamma change** — n=2 small slates is thin evidence for a
+shape claim, same discipline as every other rejected-on-thin-evidence idea in this doc. The 65% cap
+being empirically breachable, independent of the slate-size question, is flagged as a cleaner
+standalone candidate fix once more data confirms it's not a one-off.
+
+**Slate-size + contest-type tracking added to the calibration pipeline (per user request), so this
+question can be answered from accumulating data instead of one-off manual digs like the table above:**
+- `resolve_slate()` had a real bug: the auto "Main (auto)" path (the app's default) never populated
+  `meta["games"]`/`meta["start"]` — only the explicit-named-slate path did — so slate size was silently
+  unavailable for the common case. Fixed; `build_slate()` now returns `games` (DK's own declared
+  `GameCount`), and `log_forward_test` writes it to a new `games` column in `dfs_proj_log.csv`.
+- `data/contest_meta.json`: a small manually-maintained manifest (contest id → `"cash"`/`"gpp"`) — DK's
+  standings export carries no contest-type or entry-fee field, so this can't be detected
+  programmatically (same limitation `dfs_roi_backtest.py` already documented for dollar ROI). All 8
+  prior exports confirmed as GPP fields (475–1,189 entries, matching §12's existing claim); the new
+  file tagged `cash`. Untagged future files default to `"unknown"`, not silently assumed `"gpp"`.
+- `dfs_calibration.py` now stamps every row with `games` (from the new column, falling back to
+  distinct-team-count/2 for rows logged before it existed) and `contest_type`.
+- `dfs_ownership_gamma_sweep.py` now excludes `contest_type == "cash"` dates from the gamma fit
+  entirely — per the user's own point: cash fields have no incentive to differentiate, so their
+  ownership concentration isn't the thing GPP leverage gamma should be fit to, and mixing it in would
+  bias the fit rather than just add noise.
+
+**Known gap, stated plainly:** the 7/10 cash slate above still couldn't enter `dfs_calibration.json`
+automatically — it was a sub-slate (Night) build, and `log_forward_test` only writes the shared
+`dfs_proj_log.csv` for the **main** slate (by design, so a smaller sub-slate pool never clobbers the
+main log). `dfs_calibration.py`'s date-matching only considers dates present in that file, so this
+slate was invisible to it even after the tracking fixes above — the same class of gap as the 7/4/7/5
+dates already noted missing in §7, now hit by a sub-slate instead of a missed run entirely. The table
+above was computed by hand against the sub-slate's own lineup file. Not fixed here — would need a
+per-draft-group projection log (mirroring the existing per-draft-group lineup log) and a calibration-
+pipeline change to scan it, which is more scope than "start tracking slate size" asked for. Worth doing
+if small/cash slates are going to be a regular source of data going forward.
+
+## 20. Verifiable, Not Just Asserted
+
+- **Test suite**: 76 tests, all passing (`pytest -q`), including regression tests for
+  every bug in §9, §11, §12, §13, §14, §16, §18, and §19 — each constructed to fail against the pre-fix code and pass
   against the fix, not just exercise the happy path.
 - **Calibration dashboard** (live, updates as new contest data comes in):
   actual-vs-predicted scatter plots for points and ownership, pitchers and hitters

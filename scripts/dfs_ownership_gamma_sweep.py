@@ -36,6 +36,15 @@ def load_pools_and_actuals():
     for r in csv.DictReader(open(ROOT / "data/dfs_proj_log.csv")):
         by_date_log[r["date"]].append(r)
     cal = json.loads((ROOT / "data/dfs_calibration.json").read_text())
+    # Ownership gamma is fit to predict a GPP field's incentive to differentiate.
+    # A cash-game field has no such incentive (everyone just plays who they think
+    # is best), so cash-contest ownership concentrates differently and would bias
+    # this fit -- excluded, not just discounted. (2026-07-11, per user request,
+    # after a real cash-slate export made the distinction concrete.)
+    cash_dates = {r["date"] for r in cal if r.get("contest_type") == "cash"}
+    if cash_dates:
+        print(f"excluding cash-contest date(s) from gamma fitting: {sorted(cash_dates)}\n")
+    cal = [r for r in cal if r.get("contest_type") != "cash"]
     actual_own = {(r["date"], norm(r["player"]), r["is_pitcher"]): r["actual_own"] for r in cal}
     return by_date_log, actual_own
 

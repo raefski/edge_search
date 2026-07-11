@@ -33,3 +33,11 @@ data/actuals_cache/
 !data/dfs_skill_2024_2025.json
 !data/dfs_pitch_k9_2025.json
 !data/dfs_season_hitting.json
+!data/dfs_skill_2024_2025_2026_eb60.json
+!data/dfs_pitch_era_2025_2026.json
+!data/dfs_pitch_k9_2025_2026.json
+
+# Hand-maintained (not generated) — cash/gpp tag per contest export, needed by
+# dfs_ownership_gamma_sweep.py. Would silently reset to "unknown" on a fresh
+# clone/deploy without this, breaking the cash-exclusion logic it feeds.
+!data/contest_meta.json

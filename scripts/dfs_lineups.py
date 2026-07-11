@@ -92,7 +92,7 @@ def _log_and_optimize(args, res):
     pool, is_main, gid = res["pool"], res["is_main"], res["gid"]
     cash, gpp, stack_team = res["cash"], res["gpp"], res["stack_team"]
 
-    logged = dfs_run.log_forward_test(ROOT, date, is_main, gid, pool, cash, gpp)
+    logged = dfs_run.log_forward_test(ROOT, date, is_main, gid, pool, cash, gpp, games=res.get("games"))
     if logged["logged_projections"]:
         print(f"logged {logged['n']} projections -> data/dfs_proj_log.csv")
     else:
@@ -112,7 +112,9 @@ def _log_and_optimize(args, res):
     if cash:
         show("CASH (mean / floor)", cash)
     if gpp:
-        show(f"GPP (4-man {stack_team} stack + ceiling)", gpp)
+        stack2 = res.get("stack2_team")
+        label = f"GPP (5-man {stack_team} stack" + (f" + 3-man {stack2} stack" if stack2 else "") + ", leverage-picked)"
+        show(label, gpp)
     print(f"\nlineups -> {logged['lineup_file']}")
 
 
