@@ -444,9 +444,15 @@ with t_gpp:
         st.caption("4-man stack + ceiling (sample)")
         render_compact(PLACEHOLDER_GPP, placeholder=True)
     elif _rows_for("gpp"):
-        stack2 = res.get("stack2_team")
-        cap = f"5-man {res.get('stack_team')} stack" + (f" + 3-man {stack2} stack" if stack2 else "")
-        st.caption(cap)
+        # Report the lineup's ACTUAL team composition, not the construction
+        # target -- found live 2026-07-11 that the secondary stack can fall
+        # short of its target n (position conflicts with the primary stack),
+        # and a caption asserting "3-man X stack" when only 1 X hitter made
+        # the final lineup would be actively misleading, not just imprecise.
+        import collections
+        teams = collections.Counter(r["team"] for r in _rows_for("gpp") if "P" not in r["pos"])
+        parts = [f"{n}-man {t}" for t, n in sorted(teams.items(), key=lambda kv: -kv[1]) if n > 1]
+        st.caption(" + ".join(parts) + " stack" if parts else "no multi-team stack this build")
         render_compact(_rows_for("gpp"))
         save_entry_button("gpp", _rows_for("gpp"))
     else:

@@ -109,6 +109,42 @@ def test_gpp_secondary_stack():
     assert n_bbb >= 2, f"secondary stack size {n_bbb}"
 
 
+def test_gpp_secondary_stack_degrades_on_salary_infeasibility():
+    # Regression, found live 2026-07-11 running the real app: a secondary
+    # stack can be POSITION-legal (fits open slots) yet SALARY-infeasible (not
+    # enough cap left for 2 real pitchers). The first fix attempt degraded
+    # per-ITERATION and regressed every date that COULD reach the full
+    # secondary stack (a lucky unconstrained lineup from one iteration beat
+    # an achievable full-stack lineup from another, since raw "lev" doesn't
+    # reward stack completeness on its own). The correct fix tries the full
+    # secondary_k for the WHOLE iteration budget first, only shrinking when
+    # that size is proven unreachable across every iteration.
+    from edge import dfs_opt
+    pool = []
+    for name, pos, slot in [("AAA_C", "C", 1), ("AAA_1B", "1B", 2), ("AAA_2B", "2B", 3),
+                            ("AAA_3B", "3B", 4), ("AAA_SS", "SS", 5)]:
+        pool.append({"name": name, "team": "AAA", "pos": {pos}, "salary": 3000, "proj": 8.0,
+                     "ceiling": 8.0, "lev": 8.0, "slot": slot, "game": "g1"})
+    # BBB's best 3 (by lev) are all OF-only and, together with AAA's 5-stack
+    # (which needs 3 OF slots too via the filler below), too expensive to
+    # leave $10,000 for 2 real pitchers -- position-legal, salary-infeasible.
+    for name, lev in [("BBB1", 20.0), ("BBB2", 19.0), ("BBB3", 18.0)]:
+        pool.append({"name": name, "team": "BBB", "pos": {"OF"}, "salary": 9000, "proj": lev,
+                     "ceiling": lev, "lev": lev, "game": "g2"})
+    pool.append({"name": "CCC_OF", "team": "CCC", "pos": {"OF"}, "salary": 2000, "proj": 5.0,
+                "ceiling": 5.0, "lev": 5.0, "game": "g3"})
+    for i in range(2):
+        pool.append({"name": f"P{i}", "team": f"PT{i}", "pos": {"P"}, "salary": 5000, "proj": 15.0,
+                     "ceiling": 15.0, "lev": 15.0, "game": f"pg{i}"})
+    res = dfs_opt.optimize(pool, mode="gpp", stack_team="AAA", stack_n=5,
+                           stack2_team="BBB", stack2_n=3, iters=200)
+    assert res is not None, "must degrade to a smaller secondary stack, not fail outright"
+    import collections
+    teams = collections.Counter(p["team"] for p, _ in res["lineup"] if "P" not in p["pos"])
+    assert teams["AAA"] == 5
+    assert 0 < teams.get("BBB", 0) < 3, f"expected a degraded (not full, not zero) BBB stack: {dict(teams)}"
+
+
 def test_gpp_stack_is_consecutive():
     from edge import dfs_opt
     flex = {"C", "1B", "2B", "3B", "SS", "OF"}

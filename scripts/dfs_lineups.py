@@ -112,8 +112,13 @@ def _log_and_optimize(args, res):
     if cash:
         show("CASH (mean / floor)", cash)
     if gpp:
-        stack2 = res.get("stack2_team")
-        label = f"GPP (5-man {stack_team} stack" + (f" + 3-man {stack2} stack" if stack2 else "") + ", leverage-picked)"
+        # Actual composition, not construction target -- see app.py's caption
+        # for why (the secondary stack can fall short of n=3 on position
+        # conflicts with the primary stack; found live 2026-07-11).
+        import collections
+        teams = collections.Counter(p["team"] for p, _ in gpp["lineup"] if "P" not in p["pos"])
+        parts = [f"{n}-man {t}" for t, n in sorted(teams.items(), key=lambda kv: -kv[1]) if n > 1]
+        label = f"GPP ({' + '.join(parts) if parts else 'no multi-team stack'}, leverage-picked)"
         show(label, gpp)
     print(f"\nlineups -> {logged['lineup_file']}")
 

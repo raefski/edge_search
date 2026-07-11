@@ -826,10 +826,77 @@ per-draft-group projection log (mirroring the existing per-draft-group lineup lo
 pipeline change to scan it, which is more scope than "start tracking slate size" asked for. Worth doing
 if small/cash slates are going to be a regular source of data going forward.
 
-## 20. Verifiable, Not Just Asserted
+## 20. A Local Dev Loop, and a Real Construction Bug It Caught Immediately
 
-- **Test suite**: 76 tests, all passing (`pytest -q`), including regression tests for
-  every bug in §9, §11, §12, §13, §14, §16, §18, and §19 — each constructed to fail against the pre-fix code and pass
+The user asked to stop relaying phone screenshots through email for every app error, and to
+make the dev loop autonomous. Built `.claude/skills/run-dfs-app/`: a Python-Playwright driver
+that runs the real `streamlit run app.py` server + a headless Chromium against it, so app
+errors and Streamlit's crashed-app box are caught directly — same fidelity as the phone,
+without the phone, and with **unredacted** tracebacks (Streamlit Cloud's error box explicitly
+redacts messages; the local server's own stdout does not).
+
+**First use immediately paid for itself.** The reported crash (`log_forward_test() got an
+unexpected keyword argument`) turned out to be timing, not a bug — the user tested it before
+Streamlit Cloud finished redeploying the just-pushed fix; reproducing locally against the
+already-correct code confirmed this cleanly. But driving the GPP tab in the same session
+surfaced a real, live construction bug the crash report never would have: the caption read
+"5-man LAD stack + 3-man CHC stack" while the actual lineup had only **1** CHC hitter.
+
+**Root cause, and why it's systemic, not a one-off:** `_secondary_stack()`'s original design
+picked a *random* n-of-top-5 by leverage with no position awareness, then trimmed from the tail
+if the combined group couldn't fill distinct slots. Checked against **every one of the 9 real
+logged slates** (not just today's): the secondary stack **never once reached its target n=3**
+in production — when the secondary team's best hitters were mostly OF (common) and the primary
+5-stack had already claimed all 3 OF slots (also common), the random draw collapsed to 0-1
+survivors. This means §18's shipped "5-3 double stack" wasn't actually forming as a real
+correlated stack in real builds — closer to the "B" comparison arm that backtest measured as
+*worse* (P99 131.2 vs 137.0), not the "A" arm that was shipped.
+
+**First fix attempt (position-aware, still wrong):** rewrote `_secondary_stack` to greedily
+build the best FEASIBLE combination in value order instead of a random slice. Re-checked
+against all 9 slates: fixed 5 of 9 to hit a clean 3-man stack, but **completely failed** a 6th
+(2026-07-08) — returned no lineup at all. Diagnosed directly: that date's true best secondary
+group (Soto/Benge/Alvarez from NYM) was position-legal but **salary-infeasible** — $40,500 on 8
+forced hitters left only $9,500 for 2 pitchers, and the cheapest real pair cost $12,700.
+
+**Second fix attempt (per-iteration salary degradation, also wrong, caught by re-testing all 9
+slates again):** tried the full secondary group first, degrading one player at a time within
+the SAME iteration until something fit budget. This fixed 2026-07-08 but **regressed 5 of the 6
+previously-fixed dates** — they degraded to scattered 1-2 one-offs instead of the achievable
+3-stack. Root cause: raw "lev" doesn't reward stack completeness, so whenever an unconstrained
+degraded lineup from one iteration happened to score higher than a full-stack lineup from
+another, the plain `if score > best_score` comparison picked the higher-scoring but less-
+correlated lineup — exactly the failure mode that's the entire reason primary-stack players are
+locked against hill-climb swaps in the first place.
+
+**Correct fix, shipped:** two-phase search. Try the FULL secondary target for the whole
+`iters` budget first; only if that size is proven unreachable across every iteration does the
+search restart at one size smaller. This never trades an achievable full stack for a
+higher-scoring partial one, and still degrades gracefully when the full size is genuinely
+infeasible. Re-verified against all 9 real slates a third time: **7 of 9 now hit the clean
+5-3, the other 2 degrade to 5-2-1** (both confirmed genuinely salary-constrained, not a search
+failure) — and confirmed live in the actual running app via the driver (2026-07-11: "5-man LAD
++ 2-man CHC stack", matching the real built lineup exactly). A synthetic regression test
+(`test_gpp_secondary_stack_degrades_on_salary_infeasibility`) locks in the specific
+salary-infeasible-but-position-legal scenario that broke the first fix attempt.
+
+**Display fix, needed regardless of construction quality:** both the CLI and app captions now
+report the lineup's ACTUAL team composition (counted directly from the built lineup) instead of
+the construction *target* — a caption that can overclaim a stack that didn't fully form would
+be actively misleading, not just imprecise, independent of how good the construction algorithm
+gets.
+
+**Also fixed in the same pass, unrelated:** the placeholder message always blamed "batting
+orders aren't posted yet," even when the actual blocker was DraftKings not having posted the
+full pitcher prop board yet (confirmed live: the earliest game that morning had only
+`pitcher_strikeouts` posted, not `pitcher_outs`, which `project_pitcher()` requires alongside
+K's). The message now checks pitcher and hitter counts independently and names whichever is
+actually short.
+
+## 21. Verifiable, Not Just Asserted
+
+- **Test suite**: 77 tests, all passing (`pytest -q`), including regression tests for
+  every bug in §9, §11, §12, §13, §14, §16, §18, §19, and §20 — each constructed to fail against the pre-fix code and pass
   against the fix, not just exercise the happy path.
 - **Calibration dashboard** (live, updates as new contest data comes in):
   actual-vs-predicted scatter plots for points and ownership, pitchers and hitters
