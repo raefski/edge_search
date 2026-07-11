@@ -891,7 +891,25 @@ orders aren't posted yet," even when the actual blocker was DraftKings not havin
 full pitcher prop board yet (confirmed live: the earliest game that morning had only
 `pitcher_strikeouts` posted, not `pitcher_outs`, which `project_pitcher()` requires alongside
 K's). The message now checks pitcher and hitter counts independently and names whichever is
-actually short.
+actually short; and the slate-picker dropdown now shows each slate's start time in ET alongside
+the raw UTC value it already had (`Main 23:05Z (7:05 PM ET)`) — the user asked directly whether
+those times were ET or UTC, a real point of confusion nothing on screen had answered before.
+
+**Debug-log capture, added the same day a stale-deploy version of the log_forward_test bug
+resurfaced (Streamlit Cloud hadn't redeployed yet when the user re-tested — not a new bug, but
+a real reminder that its OWN crash box is actively unhelpful for diagnosing anything):**
+Streamlit Cloud's crash screen explicitly redacts the exception message ("to prevent data
+leaks"), which is exactly the box the user had been screenshotting and emailing. `app.py` now
+wraps its whole render path in `render_app()` and catches any exception itself, before it ever
+reaches that redacted handler — rendering the full unredacted traceback plus context (slate
+date, live/cache mode, key presence, iters, excluded teams, Python/Streamlit versions) inside
+an `st.code()` block, which Streamlit gives a one-click copy button for free. Verified end-to-end
+by deliberately injecting the exact bug class this session started with (`log_forward_test(...,
+totally_bogus_kwarg=True)`) via the local driver (§20) and confirming the rendered box carries
+the real message — `TypeError: log_forward_test() got an unexpected keyword argument
+'totally_bogus_kwarg'` — not a redacted one. `st.stop()`/`st.rerun()` are Streamlit's own
+control-flow signals (subclass `BaseException`, not `Exception`) and pass through this wrapper
+untouched, confirmed by checking their actual class hierarchy rather than assuming.
 
 ## 21. Verifiable, Not Just Asserted
 

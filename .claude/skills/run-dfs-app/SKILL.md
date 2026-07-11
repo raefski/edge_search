@@ -75,6 +75,14 @@ kills the streamlit subprocess cleanly), then `tmux kill-session -t dfsapp`.
   and Python's own unredacted traceback are strictly more informative than
   what the user's phone will ever show. Prefer reproducing locally over
   asking for another phone screenshot.
+- **app.py now catches its own crashes** (`render_app()` wrapped in try/except
+  at the bottom of the file) and renders the full unredacted traceback +
+  context inside an `st.code()` block with a built-in copy button, so the
+  user can copy-paste that directly instead of screenshotting Streamlit's
+  redacted box. If you need to verify this path still works after touching
+  app.py, inject a deliberate bug (e.g. an unexpected kwarg on some call) and
+  confirm via `errors`/`text` that the real message shows up, not a generic
+  one -- don't just trust that the try/except is still in the right place.
 - **`--no-sandbox`** is required for Chromium under this container (no
   `CAP_SYS_ADMIN` / user namespaces) -- baked into the driver already.
 

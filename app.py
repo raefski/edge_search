@@ -20,8 +20,11 @@ from __future__ import annotations
 import datetime
 import io
 import os
+import platform
 import sys
+import traceback
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import streamlit as st
 
@@ -107,6 +110,24 @@ PLACEHOLDER_GPP = [
     {"slot": "OF", "player": "Corbin Carroll", "team": "ARI", "salary": 4000, "proj": 9.0, "ceil": 14, "own": 9},
     {"slot": "OF", "player": "Lawrence Butler", "team": "ATH", "salary": 3300, "proj": 7.4, "ceil": 12, "own": 6},
 ]
+
+
+def _et_label(date_str: str, hhmm: str) -> str:
+    """'23:05' UTC on `date_str` -> '7:05 PM ET' for display. DK's draft-group
+    StartDate (and this app's own slate list) is UTC -- the user asked
+    directly whether the slide-list times were ET or UTC (2026-07-11), a real
+    point of confusion since nothing on screen said either way. Anchored to
+    the picked slate date rather than "today" so this stays correct even if
+    a listed slate's own date differs slightly (late games rolling past
+    midnight UTC); zoneinfo handles the EDT/EST switch automatically."""
+    try:
+        h, m = (int(x) for x in hhmm.split(":"))
+        dt_utc = datetime.datetime.fromisoformat(date_str).replace(
+            hour=h, minute=m, tzinfo=ZoneInfo("UTC"))
+        dt_et = dt_utc.astimezone(ZoneInfo("America/New_York"))
+        return dt_et.strftime("%-I:%M %p ET")
+    except Exception:
+        return "?"
 
 
 def make_client(live: bool) -> OddsAPIClient:
@@ -211,7 +232,7 @@ with st.sidebar:
         names = cached_slate_names(0)
     except Exception as e:
         st.caption(f"(couldn't list slates: {e})")
-    labels = ["Main (auto)"] + [f"{n}  {s}Z  {gc}g" for n, i, s, gc in names]
+    labels = ["Main (auto)"] + [f"{n}  {s}Z ({_et_label(slate_date, s)})  {gc}g" for n, i, s, gc in names]
     choice = st.selectbox("Slate", labels, index=0)
     draft_group = None if choice == "Main (auto)" else names[labels.index(choice) - 1][0]
 
@@ -241,243 +262,279 @@ with st.sidebar:
         st.metric("Odds-API credits remaining", f"{rem:,}")
 
 
+# ── debug log ────────────────────────────────────────────────────────────
+# Streamlit Cloud's own crash box explicitly REDACTS the error message ("to
+# prevent data leaks") -- exactly the box the user has to screenshot, email,
+# and repaste here. This catches the same exception ourselves, before it
+# ever reaches that redacted handler, and renders the FULL unredacted
+# traceback + enough context to diagnose it inside an st.code() block, which
+# Streamlit gives a one-click copy button for free -- the "copy to clipboard
+# and paste into email" the user asked for, without the email step.
+def _render_debug_error() -> None:
+    lines = [f"=== DFS app crash report — {datetime.datetime.now(datetime.timezone.utc).isoformat()} ==="]
+    for label, get in (
+        ("slate_date", lambda: slate_date),
+        ("draft_group (sidebar choice)", lambda: draft_group),
+        ("live/cache mode", lambda: "LIVE" if st.session_state.get("live", False) else "CACHE"),
+        ("ODDS_API_KEY set", lambda: bool(os.environ.get("ODDS_API_KEY"))),
+        ("iters", lambda: iters),
+        ("exclude_teams", lambda: sorted(exclude_teams)),
+        ("preview mode", lambda: preview),
+        ("python", lambda: platform.python_version()),
+        ("streamlit", lambda: st.__version__),
+        ("platform", lambda: platform.platform()),
+    ):
+        try:
+            lines.append(f"{label}: {get()}")
+        except Exception as e:  # a context value itself failing must not blank the whole report
+            lines.append(f"{label}: <unavailable: {e}>")
+    lines.append("")
+    lines.append(traceback.format_exc())
+    blob = "\n".join(lines)
+    print(blob, flush=True)   # also lands in `streamlit run` stdout / Cloud's own (unredacted) app logs
+    st.error("The app hit an error. Full details below — tap the copy icon in the top-right "
+             "corner of the box, then paste that here (no email round-trip needed).")
+    st.code(blob, language="text")
+
+
 # ── main ─────────────────────────────────────────────────────────────────
-st.title("DK MLB DFS Lineup Generator")
+def render_app() -> None:
+    st.title("DK MLB DFS Lineup Generator")
 
-if not os.environ.get("ODDS_API_KEY"):
-    st.warning("No ODDS_API_KEY set. Salaries + confirmed lineups (free) still work; "
-               "pitcher projections need a key or a warm cache.")
+    if not os.environ.get("ODDS_API_KEY"):
+        st.warning("No ODDS_API_KEY set. Salaries + confirmed lineups (free) still work; "
+                   "pitcher projections need a key or a warm cache.")
 
-live = st.session_state.get("live", False)
-mode_label = "LIVE — spending credits on props" if live else "CACHE — 0 credits (props from disk)"
-st.caption(f"Mode: **{mode_label}**  ·  slate date {slate_date}")
+    live = st.session_state.get("live", False)
+    mode_label = "LIVE — spending credits on props" if live else "CACHE — 0 credits (props from disk)"
+    st.caption(f"Mode: **{mode_label}**  ·  slate date {slate_date}")
+
+    try:
+        res = cached_build(slate_date, draft_group, iters, live,
+                           key_fingerprint=(os.environ.get("ODDS_API_KEY", "")[-6:]),
+                           exclude_teams=tuple(sorted(exclude_teams)))
+    finally:
+        # only spend once; any later manual refresh falls back to the disk cache.
+        st.session_state.live = False
+
+    if res.get("all_teams"):
+        # feeds the sidebar multiselect's options on the NEXT rerun -- empty on
+        # the very first load, since nothing's been built yet to learn this from.
+        st.session_state["all_teams"] = res["all_teams"]
+        st.session_state["team_status"] = res["team_status"]
+
+    if res.get("error"):
+        st.error(f"{res['error']}. Available now: {', '.join(res.get('available', [])) or '—'}")
+        st.stop()
+
+    if exclude_teams:
+        st.caption(f"🚫 Excluding: {', '.join(exclude_teams)}")
+    flagged = {t: s for t, s in res.get("team_status", {}).items() if s and t not in exclude_teams}
+    if flagged:
+        st.warning("⚠ Non-normal game status detected — consider excluding: " +
+                  ", ".join(f"{t} ({s})" for t, s in flagged.items()))
+
+    if res.get("unpriced"):
+        st.warning("This slate isn't priced yet (no salaries). Upcoming slates:")
+        st.dataframe([{"slate": n, "start": s, "games": gc} for n, i, s, gc in res["upcoming"]],
+                     use_container_width=True, hide_index=True)
+        st.stop()
+
+    # log to disk so scripts/dfs_grade.py always has something to grade, whether
+    # this build came from the CLI or the app. Fingerprint-guarded so a rerun that
+    # reuses the same cached_build result doesn't rewrite the file every widget click.
+    _fp = (res["gid"], res["salaries_n"], len(res["hitters"]), res["spent"])
+    if st.session_state.get("_logged_fp") != _fp:
+        dfs_run.log_forward_test(ROOT, slate_date, res["is_main"], res["gid"], res["pool"], res.get("cash"), res.get("gpp"),
+                                 games=res.get("games"))
+        st.session_state["_logged_fp"] = _fp
+
+    # compact one-line status (giant metric cards eat the screen on mobile)
+    rem_txt = f"{res['remaining']:,}" if res["remaining"] is not None else "—"
+    n_proj = sum(1 for h in res["hitters"] if not h.get("confirmed", True))
+    n_conf = len(res["hitters"]) - n_proj
+    hit_txt = f"<b>{n_conf}</b> conf" + (f" · <b>{n_proj}</b> proj*" if n_proj else "")
+    st.markdown(
+        f"<div class='summary'>🧢 <b>{res['salaries_n']}</b> salaries · "
+        f"⚾ <b>{len(res['pitchers'])}</b> P priced · "
+        f"🧍 {hit_txt} hitters · "
+        f"💳 spent <b>{res['spent']}</b> · left <b>{rem_txt}</b> cr</div>",
+        unsafe_allow_html=True)
+    if n_proj:
+        st.markdown("<div class='summary'>* <b>proj</b> = projected batting order (team's lineup not "
+                    "posted yet). Lineups can build now; tap 🔄 Refresh as orders drop, then use "
+                    "<b>Late-swap</b> below.</div>", unsafe_allow_html=True)
+
+    lineups_ready = res.get("cash") is not None or res.get("gpp") is not None
+    show_ph = preview or not lineups_ready
+    if not lineups_ready and not preview:
+        # build_slate needs >=2 pitchers AND >=8 hitters to build at all -- name
+        # whichever side is actually short, instead of always blaming "batting
+        # orders." Found live 2026-07-11: a morning build showed the placeholder
+        # because DraftKings hadn't posted the FULL pitcher prop set (outs/ER/
+        # hits/BB/win -- not just strikeouts) for most of that day's starters yet,
+        # not because of hitter lineups at all; the old message pointed at the
+        # wrong cause every time pitchers were the actual blocker.
+        n_p, n_h = len(res["pitchers"]), len(res["hitters"])
+        reasons = []
+        if n_p < 2:
+            reasons.append(f"only **{n_p} pitcher(s)** have a full prop board posted by DraftKings so far "
+                           "(needs pitcher_outs + pitcher_strikeouts both live, not just one) — sportsbooks "
+                           "stagger which starters get props posted through the morning/afternoon")
+        if n_h < 8:
+            reasons.append(f"only **{n_h} hitter(s)** have a confirmed or projectable batting order "
+                           "(confirmed orders post ~3–4h before first pitch)")
+        why = " and ".join(reasons) if reasons else "the pool is otherwise too thin to build a valid roster"
+        st.info(f"Lineups can't build yet — {why}. Showing a **placeholder** below so you can see the "
+                "layout. Tap **🔄 Refresh (free)** periodically; if pitchers are the blocker, spending "
+                "credits again won't help until DK posts more props (this is disk-cached free once it's "
+                "up), only time will.")
+
+    def _totals(rows):
+        return (round(sum(r["proj"] for r in rows), 1),
+                round(sum(r.get("ceil", r["proj"]) for r in rows), 1),
+                sum(r["salary"] for r in rows),
+                sum(r.get("own", 0) for r in rows))
+
+    def render_compact(rows, placeholder=False):
+        """A tight static HTML table — whole 10-man lineup on one iPhone screen, no nested scroll."""
+        if placeholder:
+            st.markdown("<div class='ph-badge'>⚠️ PLACEHOLDER — sample data, NOT today's lineup</div>",
+                        unsafe_allow_html=True)
+        proj, ceil, salary, own = _totals(rows)
+        st.markdown(f"<div class='lu-tot'>proj <b>{proj}</b> · ceil <b>{ceil}</b> · "
+                    f"own <b>{own:.0f}%</b> · <b>${salary:,}</b> / 50k</div>", unsafe_allow_html=True)
+        body = "".join(
+            f"<tr><td class='pos'>{r['slot']}</td>"
+            f"<td class='nm'>{r['player']}{' <span style=\"color:#ffd97a\">*</span>' if r.get('projected') else ''}</td>"
+            f"<td class='team'>{r['team']}</td><td class='num'>{r['salary']:,}</td>"
+            f"<td class='num'>{r['proj']}</td></tr>" for r in rows)
+        st.markdown("<div class='lu-wrap'><table class='lu'>"
+                    "<tr><th>Pos</th><th>Player</th><th>Tm</th><th>$</th><th>Pts</th></tr>"
+                    f"{body}</table></div>", unsafe_allow_html=True)
+
+    def _rows_for(mode):
+        r = res.get(mode)
+        if not r:
+            return None
+        return [{"slot": slot, "player": p["name"], "team": p["team"], "salary": p["salary"],
+                 "proj": p["proj"], "ceil": p["ceiling"], "own": p.get("own", 0),
+                 "pos": "/".join(sorted(p["pos"])), "game": p.get("game", ""),
+                 "conf": p.get("conf", ""), "projected": not p.get("confirmed", True)}
+                for p, slot in sorted(r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1]))]
+
+    def save_entry_button(mode, rows):
+        """Pin the lineup you actually entered on DK (saved to disk, shared with
+        scripts/dfs_swap.py --pin on your computer) so later refreshes/sessions
+        can late-swap it and it can be graded tomorrow."""
+        saved = dfs_swap.load_pinned_entry(ROOT, slate_date, mode)
+        is_saved = saved and {r["player"] for r in saved} == {r["player"] for r in rows}
+        label = "📌 Saved as my DK entry ✓" if is_saved else "📌 Save this as my DK entry"
+        col1, col2 = st.columns([3, 2])
+        with col1:
+            if st.button(label, key=f"save_{mode}", use_container_width=True,
+                         help="Saved to disk. Tap 🔄 Refresh as lineups post — Late-swap flags anyone ruled out."):
+                dfs_swap.save_pinned_entry(ROOT, slate_date, mode, rows)
+                st.rerun()
+        with col2:
+            st.download_button("⬇️ backup copy", data=_entry_csv_bytes(rows), key=f"dl_entry_{mode}",
+                               file_name=f"dfs_entry_{slate_date}_{mode}.csv", mime="text/csv",
+                               use_container_width=True,
+                               help="The saved copy above can be lost if the app sleeps overnight — "
+                                    "keep this file too if you want guaranteed next-day grading.")
+
+    def render_swaps():
+        st.caption("Pin your DK entry on the CASH/GPP tab, then tap 🔄 Refresh (free) as orders post. "
+                   "Anyone whose team posts a lineup without them shows here with fitting replacements. "
+                   "DK locks each player at THEIR game's first pitch.")
+        started = cached_started(slate_date, 0)
+        any_saved = False
+        for mode in ("cash", "gpp"):
+            saved = dfs_swap.load_pinned_entry(ROOT, slate_date, mode)
+            if not saved:
+                continue
+            any_saved = True
+            st.markdown(f"**{mode.upper()} entry**")
+            recs = dfs_swap.suggest_swaps(saved, res["hitters"], started, mode=mode, top=4)
+            outs = [r for r in recs if r["status"] == "out"]
+            holds = [r for r in recs if r["status"] == "hold"]
+            upgraded = [r for r in recs if r["status"] == "confirmed" and r.get("was_projected")]
+            if not outs:
+                st.success(f"No swaps needed — {len(upgraded)} projected pick(s) confirmed in, "
+                           f"{len(holds)} still awaiting their team's lineup.")
+            for rec in outs:
+                if rec["locked"]:
+                    st.error(f"✗ {rec['player']} ({rec['team']}) is OUT and their game already locked — stuck at 0.")
+                    continue
+                st.warning(f"✗ {rec['player']} ({rec['team']}, ${rec['salary']:,}) OUT of the posted order — "
+                           f"replace with ≤ ${rec['max_salary']:,}:")
+                if rec["suggestions"]:
+                    st.dataframe([{"replacement": s["name"], "team": s["team"], "salary": s["salary"],
+                                   mode: s["val"], "own%": s["own"], "stack": "✓" if s["same_team"] else ""}
+                                  for s in rec["suggestions"]], use_container_width=True, hide_index=True)
+                else:
+                    st.caption("(no eligible replacement fits the freed salary / unlocked games)")
+            if holds:
+                st.caption("Still projected (team lineup not posted): " + ", ".join(r["player"] for r in holds))
+        if not any_saved:
+            st.info("No saved entry yet. Build a lineup, tap **📌 Save this as my DK entry** on the CASH or "
+                    "GPP tab, then return here after tapping 🔄 Refresh as official lineups post. (Pinning from "
+                    "`scripts/dfs_swap.py --pin` on your computer works too — same file, either device sees it.)")
+
+    t_cash, t_gpp, t_swap = st.tabs(["💵 CASH", "🚀 GPP", "🔁 Late-swap"])
+    with t_cash:
+        if show_ph:
+            render_compact(PLACEHOLDER_CASH, placeholder=True)
+        elif _rows_for("cash"):
+            render_compact(_rows_for("cash"))
+            save_entry_button("cash", _rows_for("cash"))
+        else:
+            st.caption("Cash lineup not ready.")
+    with t_gpp:
+        if show_ph:
+            st.caption("5-man stack + 3-man secondary stack (sample)")
+            render_compact(PLACEHOLDER_GPP, placeholder=True)
+        elif _rows_for("gpp"):
+            # Report the lineup's ACTUAL team composition, not the construction
+            # target -- found live 2026-07-11 that the secondary stack can fall
+            # short of its target n (position conflicts with the primary stack),
+            # and a caption asserting "3-man X stack" when only 1 X hitter made
+            # the final lineup would be actively misleading, not just imprecise.
+            import collections
+            teams = collections.Counter(r["team"] for r in _rows_for("gpp") if "P" not in r["pos"])
+            parts = [f"{n}-man {t}" for t, n in sorted(teams.items(), key=lambda kv: -kv[1]) if n > 1]
+            st.caption(" + ".join(parts) + " stack" if parts else "no multi-team stack this build")
+            render_compact(_rows_for("gpp"))
+            save_entry_button("gpp", _rows_for("gpp"))
+        else:
+            st.caption("GPP lineup not ready.")
+    with t_swap:
+        render_swaps()
+
+    if lineups_ready and not preview:
+        st.download_button("⬇️ Download both lineups (CSV)", data=_lineup_csv(res),
+                           file_name=f"dfs_lineups_{slate_date}.csv", mime="text/csv")
+
+    # ── pitcher value board ──────────────────────────────────────────────────
+    with st.expander("Pitcher value board", expanded=res["cash"] is None):
+        prows = sorted(
+            ({"pitcher": p["name"], "team": p["team"], "salary": p["salary"], "proj": p["proj"],
+              "val/1k": round(p["proj"] / (p["salary"] / 1000.0), 2) if p.get("salary") else None}
+             for p in res["pitchers"]),
+            key=lambda r: -(r["val/1k"] or 0))
+        st.dataframe(prows, use_container_width=True, hide_index=True)
+
+    # ── full pool ────────────────────────────────────────────────────────────
+    with st.expander("Full player pool"):
+        pool_rows = sorted(
+            ({"player": p["name"], "team": p["team"], "pos": "/".join(sorted(p["pos"])),
+              "salary": p["salary"], "proj": p["proj"], "ceil": p["ceiling"],
+              "own%": round(p.get("own", 0), 1), "src": p["conf"]} for p in res["pool"]),
+            key=lambda r: -(r["proj"] or 0))
+        st.dataframe(pool_rows, use_container_width=True, hide_index=True)
+
 
 try:
-    res = cached_build(slate_date, draft_group, iters, live,
-                       key_fingerprint=(os.environ.get("ODDS_API_KEY", "")[-6:]),
-                       exclude_teams=tuple(sorted(exclude_teams)))
-finally:
-    # only spend once; any later manual refresh falls back to the disk cache.
-    st.session_state.live = False
-
-if res.get("all_teams"):
-    # feeds the sidebar multiselect's options on the NEXT rerun -- empty on
-    # the very first load, since nothing's been built yet to learn this from.
-    st.session_state["all_teams"] = res["all_teams"]
-    st.session_state["team_status"] = res["team_status"]
-
-if res.get("error"):
-    st.error(f"{res['error']}. Available now: {', '.join(res.get('available', [])) or '—'}")
-    st.stop()
-
-if exclude_teams:
-    st.caption(f"🚫 Excluding: {', '.join(exclude_teams)}")
-flagged = {t: s for t, s in res.get("team_status", {}).items() if s and t not in exclude_teams}
-if flagged:
-    st.warning("⚠ Non-normal game status detected — consider excluding: " +
-              ", ".join(f"{t} ({s})" for t, s in flagged.items()))
-
-if res.get("unpriced"):
-    st.warning("This slate isn't priced yet (no salaries). Upcoming slates:")
-    st.dataframe([{"slate": n, "start": s, "games": gc} for n, i, s, gc in res["upcoming"]],
-                 use_container_width=True, hide_index=True)
-    st.stop()
-
-# log to disk so scripts/dfs_grade.py always has something to grade, whether
-# this build came from the CLI or the app. Fingerprint-guarded so a rerun that
-# reuses the same cached_build result doesn't rewrite the file every widget click.
-_fp = (res["gid"], res["salaries_n"], len(res["hitters"]), res["spent"])
-if st.session_state.get("_logged_fp") != _fp:
-    dfs_run.log_forward_test(ROOT, slate_date, res["is_main"], res["gid"], res["pool"], res.get("cash"), res.get("gpp"),
-                             games=res.get("games"))
-    st.session_state["_logged_fp"] = _fp
-
-# compact one-line status (giant metric cards eat the screen on mobile)
-rem_txt = f"{res['remaining']:,}" if res["remaining"] is not None else "—"
-n_proj = sum(1 for h in res["hitters"] if not h.get("confirmed", True))
-n_conf = len(res["hitters"]) - n_proj
-hit_txt = f"<b>{n_conf}</b> conf" + (f" · <b>{n_proj}</b> proj*" if n_proj else "")
-st.markdown(
-    f"<div class='summary'>🧢 <b>{res['salaries_n']}</b> salaries · "
-    f"⚾ <b>{len(res['pitchers'])}</b> P priced · "
-    f"🧍 {hit_txt} hitters · "
-    f"💳 spent <b>{res['spent']}</b> · left <b>{rem_txt}</b> cr</div>",
-    unsafe_allow_html=True)
-if n_proj:
-    st.markdown("<div class='summary'>* <b>proj</b> = projected batting order (team's lineup not "
-                "posted yet). Lineups can build now; tap 🔄 Refresh as orders drop, then use "
-                "<b>Late-swap</b> below.</div>", unsafe_allow_html=True)
-
-lineups_ready = res.get("cash") is not None or res.get("gpp") is not None
-show_ph = preview or not lineups_ready
-if not lineups_ready and not preview:
-    # build_slate needs >=2 pitchers AND >=8 hitters to build at all -- name
-    # whichever side is actually short, instead of always blaming "batting
-    # orders." Found live 2026-07-11: a morning build showed the placeholder
-    # because DraftKings hadn't posted the FULL pitcher prop set (outs/ER/
-    # hits/BB/win -- not just strikeouts) for most of that day's starters yet,
-    # not because of hitter lineups at all; the old message pointed at the
-    # wrong cause every time pitchers were the actual blocker.
-    n_p, n_h = len(res["pitchers"]), len(res["hitters"])
-    reasons = []
-    if n_p < 2:
-        reasons.append(f"only **{n_p} pitcher(s)** have a full prop board posted by DraftKings so far "
-                       "(needs pitcher_outs + pitcher_strikeouts both live, not just one) — sportsbooks "
-                       "stagger which starters get props posted through the morning/afternoon")
-    if n_h < 8:
-        reasons.append(f"only **{n_h} hitter(s)** have a confirmed or projectable batting order "
-                       "(confirmed orders post ~3–4h before first pitch)")
-    why = " and ".join(reasons) if reasons else "the pool is otherwise too thin to build a valid roster"
-    st.info(f"Lineups can't build yet — {why}. Showing a **placeholder** below so you can see the "
-            "layout. Tap **🔄 Refresh (free)** periodically; if pitchers are the blocker, spending "
-            "credits again won't help until DK posts more props (this is disk-cached free once it's "
-            "up), only time will.")
-
-
-def _totals(rows):
-    return (round(sum(r["proj"] for r in rows), 1),
-            round(sum(r.get("ceil", r["proj"]) for r in rows), 1),
-            sum(r["salary"] for r in rows),
-            sum(r.get("own", 0) for r in rows))
-
-
-def render_compact(rows, placeholder=False):
-    """A tight static HTML table — whole 10-man lineup on one iPhone screen, no nested scroll."""
-    if placeholder:
-        st.markdown("<div class='ph-badge'>⚠️ PLACEHOLDER — sample data, NOT today's lineup</div>",
-                    unsafe_allow_html=True)
-    proj, ceil, salary, own = _totals(rows)
-    st.markdown(f"<div class='lu-tot'>proj <b>{proj}</b> · ceil <b>{ceil}</b> · "
-                f"own <b>{own:.0f}%</b> · <b>${salary:,}</b> / 50k</div>", unsafe_allow_html=True)
-    body = "".join(
-        f"<tr><td class='pos'>{r['slot']}</td>"
-        f"<td class='nm'>{r['player']}{' <span style=\"color:#ffd97a\">*</span>' if r.get('projected') else ''}</td>"
-        f"<td class='team'>{r['team']}</td><td class='num'>{r['salary']:,}</td>"
-        f"<td class='num'>{r['proj']}</td></tr>" for r in rows)
-    st.markdown("<div class='lu-wrap'><table class='lu'>"
-                "<tr><th>Pos</th><th>Player</th><th>Tm</th><th>$</th><th>Pts</th></tr>"
-                f"{body}</table></div>", unsafe_allow_html=True)
-
-
-def _rows_for(mode):
-    r = res.get(mode)
-    if not r:
-        return None
-    return [{"slot": slot, "player": p["name"], "team": p["team"], "salary": p["salary"],
-             "proj": p["proj"], "ceil": p["ceiling"], "own": p.get("own", 0),
-             "pos": "/".join(sorted(p["pos"])), "game": p.get("game", ""),
-             "conf": p.get("conf", ""), "projected": not p.get("confirmed", True)}
-            for p, slot in sorted(r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1]))]
-
-
-def save_entry_button(mode, rows):
-    """Pin the lineup you actually entered on DK (saved to disk, shared with
-    scripts/dfs_swap.py --pin on your computer) so later refreshes/sessions
-    can late-swap it and it can be graded tomorrow."""
-    saved = dfs_swap.load_pinned_entry(ROOT, slate_date, mode)
-    is_saved = saved and {r["player"] for r in saved} == {r["player"] for r in rows}
-    label = "📌 Saved as my DK entry ✓" if is_saved else "📌 Save this as my DK entry"
-    col1, col2 = st.columns([3, 2])
-    with col1:
-        if st.button(label, key=f"save_{mode}", use_container_width=True,
-                     help="Saved to disk. Tap 🔄 Refresh as lineups post — Late-swap flags anyone ruled out."):
-            dfs_swap.save_pinned_entry(ROOT, slate_date, mode, rows)
-            st.rerun()
-    with col2:
-        st.download_button("⬇️ backup copy", data=_entry_csv_bytes(rows), key=f"dl_entry_{mode}",
-                           file_name=f"dfs_entry_{slate_date}_{mode}.csv", mime="text/csv",
-                           use_container_width=True,
-                           help="The saved copy above can be lost if the app sleeps overnight — "
-                                "keep this file too if you want guaranteed next-day grading.")
-
-
-def render_swaps():
-    st.caption("Pin your DK entry on the CASH/GPP tab, then tap 🔄 Refresh (free) as orders post. "
-               "Anyone whose team posts a lineup without them shows here with fitting replacements. "
-               "DK locks each player at THEIR game's first pitch.")
-    started = cached_started(slate_date, 0)
-    any_saved = False
-    for mode in ("cash", "gpp"):
-        saved = dfs_swap.load_pinned_entry(ROOT, slate_date, mode)
-        if not saved:
-            continue
-        any_saved = True
-        st.markdown(f"**{mode.upper()} entry**")
-        recs = dfs_swap.suggest_swaps(saved, res["hitters"], started, mode=mode, top=4)
-        outs = [r for r in recs if r["status"] == "out"]
-        holds = [r for r in recs if r["status"] == "hold"]
-        upgraded = [r for r in recs if r["status"] == "confirmed" and r.get("was_projected")]
-        if not outs:
-            st.success(f"No swaps needed — {len(upgraded)} projected pick(s) confirmed in, "
-                       f"{len(holds)} still awaiting their team's lineup.")
-        for rec in outs:
-            if rec["locked"]:
-                st.error(f"✗ {rec['player']} ({rec['team']}) is OUT and their game already locked — stuck at 0.")
-                continue
-            st.warning(f"✗ {rec['player']} ({rec['team']}, ${rec['salary']:,}) OUT of the posted order — "
-                       f"replace with ≤ ${rec['max_salary']:,}:")
-            if rec["suggestions"]:
-                st.dataframe([{"replacement": s["name"], "team": s["team"], "salary": s["salary"],
-                               mode: s["val"], "own%": s["own"], "stack": "✓" if s["same_team"] else ""}
-                              for s in rec["suggestions"]], use_container_width=True, hide_index=True)
-            else:
-                st.caption("(no eligible replacement fits the freed salary / unlocked games)")
-        if holds:
-            st.caption("Still projected (team lineup not posted): " + ", ".join(r["player"] for r in holds))
-    if not any_saved:
-        st.info("No saved entry yet. Build a lineup, tap **📌 Save this as my DK entry** on the CASH or "
-                "GPP tab, then return here after tapping 🔄 Refresh as official lineups post. (Pinning from "
-                "`scripts/dfs_swap.py --pin` on your computer works too — same file, either device sees it.)")
-
-
-t_cash, t_gpp, t_swap = st.tabs(["💵 CASH", "🚀 GPP", "🔁 Late-swap"])
-with t_cash:
-    if show_ph:
-        render_compact(PLACEHOLDER_CASH, placeholder=True)
-    elif _rows_for("cash"):
-        render_compact(_rows_for("cash"))
-        save_entry_button("cash", _rows_for("cash"))
-    else:
-        st.caption("Cash lineup not ready.")
-with t_gpp:
-    if show_ph:
-        st.caption("4-man stack + ceiling (sample)")
-        render_compact(PLACEHOLDER_GPP, placeholder=True)
-    elif _rows_for("gpp"):
-        # Report the lineup's ACTUAL team composition, not the construction
-        # target -- found live 2026-07-11 that the secondary stack can fall
-        # short of its target n (position conflicts with the primary stack),
-        # and a caption asserting "3-man X stack" when only 1 X hitter made
-        # the final lineup would be actively misleading, not just imprecise.
-        import collections
-        teams = collections.Counter(r["team"] for r in _rows_for("gpp") if "P" not in r["pos"])
-        parts = [f"{n}-man {t}" for t, n in sorted(teams.items(), key=lambda kv: -kv[1]) if n > 1]
-        st.caption(" + ".join(parts) + " stack" if parts else "no multi-team stack this build")
-        render_compact(_rows_for("gpp"))
-        save_entry_button("gpp", _rows_for("gpp"))
-    else:
-        st.caption("GPP lineup not ready.")
-with t_swap:
-    render_swaps()
-
-if lineups_ready and not preview:
-    st.download_button("⬇️ Download both lineups (CSV)", data=_lineup_csv(res),
-                       file_name=f"dfs_lineups_{slate_date}.csv", mime="text/csv")
-
-# ── pitcher value board ──────────────────────────────────────────────────
-with st.expander("Pitcher value board", expanded=res["cash"] is None):
-    prows = sorted(
-        ({"pitcher": p["name"], "team": p["team"], "salary": p["salary"], "proj": p["proj"],
-          "val/1k": round(p["proj"] / (p["salary"] / 1000.0), 2) if p.get("salary") else None}
-         for p in res["pitchers"]),
-        key=lambda r: -(r["val/1k"] or 0))
-    st.dataframe(prows, use_container_width=True, hide_index=True)
-
-# ── full pool ────────────────────────────────────────────────────────────
-with st.expander("Full player pool"):
-    pool_rows = sorted(
-        ({"player": p["name"], "team": p["team"], "pos": "/".join(sorted(p["pos"])),
-          "salary": p["salary"], "proj": p["proj"], "ceil": p["ceiling"],
-          "own%": round(p.get("own", 0), 1), "src": p["conf"]} for p in res["pool"]),
-        key=lambda r: -(r["proj"] or 0))
-    st.dataframe(pool_rows, use_container_width=True, hide_index=True)
+    render_app()
+except Exception:
+    _render_debug_error()
