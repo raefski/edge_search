@@ -96,12 +96,21 @@ def team_abbrev_map() -> dict[str, str]:
     return {str(x["id"]): dfs._STATSAPI_TO_DK_ABBR.get(x["abbreviation"], x["abbreviation"]) for x in t}
 
 
-def resolve_slate(draft_group, groups=None):
+def resolve_slate(draft_group, groups=None, date=None):
     """Return (gid, is_main, meta). meta carries a human label / error info.
 
     draft_group=None -> auto main slate. A name (Main/Early/Turbo/Night/...) or a
     numeric id resolves via edge.dfs. On a bad name, meta['error'] is set and
     meta['available'] lists slates open now.
+
+    date, when given, is forwarded to dfs.resolve_draft_group so a NAMED
+    slate (e.g. "Early") only considers TODAY's Early group, not whichever
+    same-named group across every date sorts soonest. Bug found live
+    2026-07-11: this was previously dropped entirely -- build_slate HAD the
+    real date but never passed it here -- so if DK's lobby already listed a
+    same-named slate for a different date, name resolution could silently
+    grab the wrong one. Confirmed live: STL/LAD (not part of that day's
+    Early window) turned up in an "Early" build's player pool.
     """
     groups = groups if groups is not None else dfs.mlb_draft_groups()
     is_main = draft_group is None or str(draft_group).strip().lower() in ("main", "classic", "full")
@@ -117,7 +126,7 @@ def resolve_slate(draft_group, groups=None):
             meta["start"] = g.get("StartDate", "")[:16]
             meta["games"] = g.get("GameCount")
         return gid, True, meta
-    g = dfs.resolve_draft_group(draft_group)
+    g = dfs.resolve_draft_group(draft_group, date=date)
     if not g:
         names = sorted({n for n, *_ in dfs.list_slate_names(groups)})
         return None, is_main, {"error": f"slate {draft_group!r} not found", "available": names}
@@ -148,7 +157,7 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
     """
     exclude_teams = set(exclude_teams or ())
     groups = dfs.mlb_draft_groups()
-    gid, is_main, meta = resolve_slate(draft_group, groups)
+    gid, is_main, meta = resolve_slate(draft_group, groups, date=date)
     if gid is None:
         return {"error": meta.get("error"), "available": meta.get("available", [])}
 
@@ -159,6 +168,21 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
 
     all_teams = sorted({info["team"] for info in salaries.values() if info.get("team")})
     team_status = dfs.team_game_status(date)  # {team_abbr: "" or e.g. "Postponed"}
+    # Defensive cross-check: the resolved slate's OWN declared GameCount vs
+    # how many teams actually showed up in its salaries. Not a fix for any
+    # specific root cause (DK's draftables were confirmed correctly scoped in
+    # every case checked directly) -- it's a safety net so a wrong-slate
+    # resolution (see resolve_slate's date fix, and the "Main" duplicate
+    # tie-break fix) surfaces as a visible warning instead of a silently
+    # contaminated pool the user has to spot and exclude by hand, which is
+    # exactly what happened live 2026-07-11 with an "Early" build that
+    # included STL/LAD.
+    slate_mismatch = None
+    expected_games = meta.get("games")
+    if expected_games and abs(len(all_teams) // 2 - expected_games) >= 1:
+        slate_mismatch = (f"resolved slate claims {expected_games} game(s) but salaries cover "
+                          f"{len(all_teams)} teams (~{len(all_teams) // 2} games) -- double-check "
+                          f"the Slate picker matches what you're actually entering on DK")
 
     from pathlib import Path
     root = Path(__file__).resolve().parents[1]
@@ -192,7 +216,20 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
     pool = []
 
     # --- pitchers: from props (PAID; skipped when uncached in dry-run) ---
-    for ev in client.get_events(SPORT):
+    try:
+        events = client.get_events(SPORT)
+    except Exception:
+        # get_events() is a real network call even in CACHE/dry-run mode (it's
+        # cost=0, so dry_run doesn't gate it) -- a missing/invalid API key or a
+        # transient network failure here used to crash the ENTIRE build,
+        # including the free salary/hitter data that never needed a key at
+        # all. Found live 2026-07-11: a Streamlit Cloud reboot lost the key
+        # (only ever pasted into the sidebar, not a persistent secret) and
+        # every mode broke, not just the paid one. Same principle as the
+        # per-event handling just below -- one missing/failed piece degrades
+        # to "no pitcher props this build," not a dead page.
+        events = []
+    for ev in events:
         try:
             pp = client.get_event_odds(SPORT, ev["id"], dfs.P_MARKETS, "us")
         except DryRunBlocked:
@@ -337,5 +374,5 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
             "pool": pool, "pitchers": ph, "hitters": hh, "stack_team": stack_team,
             "stack2_team": stack2_team,
             "cash": cash, "gpp": gpp, "all_teams": all_teams, "team_status": team_status,
-            "excluded_teams": sorted(exclude_teams),
+            "excluded_teams": sorted(exclude_teams), "slate_mismatch": slate_mismatch,
             "spent": client.spent_this_session, "remaining": client.remaining_credits()}

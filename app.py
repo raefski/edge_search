@@ -215,9 +215,16 @@ with st.sidebar:
 
     if st.button("💰 Pull fresh pitcher props (spends credits)", use_container_width=True,
                  help="One paid live pull of sportsbook props for the projections, then cached."):
-        st.cache_data.clear()
-        st.session_state.live = True
-        st.rerun()
+        if not os.environ.get("ODDS_API_KEY"):
+            # A missing key here used to fail silently (build_slate would just
+            # come back with 0 pitchers, no explanation of why) -- clear
+            # upfront instead, since the whole point of tapping this button is
+            # to spend credits on a real pull, not sit at 0.
+            st.error("No ODDS_API_KEY set — paste your key in the box below first, then tap this again.")
+        else:
+            st.cache_data.clear()
+            st.session_state.live = True
+            st.rerun()
 
     st.divider()
     api_key = st.text_input("ODDS_API_KEY", value=os.environ.get("ODDS_API_KEY", ""),
@@ -302,8 +309,18 @@ def render_app() -> None:
     st.title("DK MLB DFS Lineup Generator")
 
     if not os.environ.get("ODDS_API_KEY"):
+        # This used to be a promise the code didn't keep -- a missing key
+        # crashed the ENTIRE app (edge/client.py raised in __init__, before
+        # anything free-tier ever ran). Fixed 2026-07-11: the key is now only
+        # checked at the point of an actual network call, so this message is
+        # finally accurate. Also: pasting the key into the box below is
+        # SESSION-ONLY and won't survive a Streamlit Cloud reboot -- add it
+        # as a permanent secret (Manage app -> Settings -> Secrets ->
+        # ODDS_API_KEY = "...") so a reboot doesn't lose it again.
         st.warning("No ODDS_API_KEY set. Salaries + confirmed lineups (free) still work; "
-                   "pitcher projections need a key or a warm cache.")
+                   "pitcher projections need a key or a warm cache. Pasting one below only "
+                   "lasts this session — add it as a permanent Streamlit Cloud secret "
+                   "(Settings → Secrets → `ODDS_API_KEY`) so a reboot doesn't lose it.")
 
     live = st.session_state.get("live", False)
     mode_label = "LIVE — spending credits on props" if live else "CACHE — 0 credits (props from disk)"
@@ -326,6 +343,14 @@ def render_app() -> None:
     if res.get("error"):
         st.error(f"{res['error']}. Available now: {', '.join(res.get('available', [])) or '—'}")
         st.stop()
+
+    if res.get("slate_mismatch"):
+        # Found live 2026-07-11: an "Early" build silently included STL/LAD,
+        # teams not in that slate, and the user had to notice and hand-
+        # exclude them. This can't reliably tell WHY a mismatch happened (a
+        # wrong-slate resolution, a DK data quirk, a doubleheader...), only
+        # THAT one exists -- said plainly rather than guessed at.
+        st.error(f"⚠️ Slate mismatch: {res['slate_mismatch']}")
 
     if exclude_teams:
         st.caption(f"🚫 Excluding: {', '.join(exclude_teams)}")

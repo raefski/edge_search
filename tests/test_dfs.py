@@ -255,6 +255,43 @@ def test_log_forward_test_games_column(tmp_path):
     assert by_date["2026-07-07"]["games"] == "12"
 
 
+def test_resolve_slate_threads_date_to_resolve_draft_group(monkeypatch):
+    # Regression, live 2026-07-11: build_slate HAD the real slate date but
+    # never forwarded it into resolve_draft_group -- a named slate (e.g.
+    # "Early") could resolve to a same-named group on a DIFFERENT date if one
+    # happened to be posted and sort as "soonest." Confirmed live: an "Early"
+    # build included STL/LAD, teams not in that day's actual Early window.
+    from edge import dfs_run
+
+    captured = {}
+
+    def fake_resolve_draft_group(spec, date=None):
+        captured["date"] = date
+        return {"DraftGroupId": 42, "StartDate": "2026-07-11T20:05:00", "GameCount": 6}
+
+    monkeypatch.setattr(dfs_run.dfs, "resolve_draft_group", fake_resolve_draft_group)
+    gid, is_main, meta = dfs_run.resolve_slate("Early", groups=[], date="2026-07-11")
+    assert gid == 42
+    assert captured["date"] == "2026-07-11", "date must be forwarded, not dropped"
+
+
+def test_resolve_draft_group_prefers_more_games_on_tied_start_time(monkeypatch):
+    # DK sometimes posts a same-name/same-time duplicate with FEWER games
+    # (confirmed live 2026-07-11: two "Main" groups at the identical
+    # StartDate, 6g vs 14g) -- the tie-break must prefer the larger one,
+    # mirroring main_slate_group's existing logic, not whatever order the API
+    # happened to return.
+    from edge import dfs
+
+    groups = [
+        {"DraftGroupId": 1, "ContestStartTimeSuffix": "", "StartDate": "2026-07-11T23:05:00", "GameCount": 6},
+        {"DraftGroupId": 2, "ContestStartTimeSuffix": "", "StartDate": "2026-07-11T23:05:00", "GameCount": 14},
+    ]
+    monkeypatch.setattr(dfs, "mlb_draft_groups", lambda: groups)
+    g = dfs.resolve_draft_group("main", date="2026-07-11")
+    assert g["DraftGroupId"] == 2, "must prefer the 14-game group over the 6-game duplicate"
+
+
 def test_resolve_slate_auto_main_includes_games(monkeypatch):
     # Bug fix: the auto "Main (auto)" path (draft_group=None, the app's
     # default) never populated meta["games"]/meta["start"] -- only the
@@ -532,6 +569,87 @@ def test_date_all_final_rejects_midslate(monkeypatch):
 
     monkeypatch.setattr(dfs, "_get", lambda url: {"dates": []})
     assert grade.date_all_final("2026-11-01") is False  # no games at all != complete
+
+
+def test_build_slate_survives_get_events_failure(monkeypatch):
+    # Regression, live 2026-07-11: a missing/invalid ODDS_API_KEY (lost across
+    # a Streamlit Cloud reboot) made client.get_events() raise -- and since
+    # that call sat OUTSIDE any try/except in build_slate, it crashed the
+    # ENTIRE build, including free salary/hitter data that never needed the
+    # key at all. Must now degrade to "0 pitchers," not propagate.
+    from edge import dfs, dfs_run
+
+    class FakeClient:
+        spent_this_session = 0
+
+        def get_events(self, sport):
+            raise RuntimeError("no ODDS_API_KEY configured")
+
+        def remaining_credits(self):
+            return None
+
+    monkeypatch.setattr(dfs, "mlb_draft_groups", lambda: [
+        {"DraftGroupId": 1, "ContestStartTimeSuffix": "", "StartDate": "2026-07-11T20:00:00", "GameCount": 1}])
+    monkeypatch.setattr(dfs, "fetch_draftables", lambda gid: {
+        "aaa1": {"name": "AAA1", "salary": 4000, "position": "OF", "team": "AAA",
+                "game": "g1", "matchup": "", "start": "", "dk_fppg": None}})
+    monkeypatch.setattr(dfs, "team_game_status", lambda date: {})
+    monkeypatch.setattr(dfs, "pooled_skill_rates", lambda *a, **k: ({}, 1.7))
+    monkeypatch.setattr(dfs, "park_runs", lambda yr: {})
+    monkeypatch.setattr(dfs, "pitcher_k9", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "pitcher_era", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "season_hitting", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "lineups_for_date", lambda date: {})
+    monkeypatch.setattr(dfs_run, "team_abbrev_map", lambda: {})
+
+    res = dfs_run.build_slate(FakeClient(), "2026-07-11", iters=50)
+    assert res.get("error") is None
+    assert res["pitchers"] == []          # degraded, not crashed
+    assert res["salaries_n"] == 1
+
+
+def test_build_slate_flags_team_count_mismatch(monkeypatch):
+    # Safety net for the same 2026-07-11 incident, independent of root cause:
+    # if the resolved slate's OWN declared GameCount doesn't match how many
+    # teams actually showed up in its salaries, surface a visible warning
+    # instead of silently building a lineup with wrong teams the user has to
+    # notice and hand-exclude.
+    from edge import dfs, dfs_run
+
+    class FakeClient:
+        spent_this_session = 0
+
+        def get_events(self, sport):
+            return []
+
+        def remaining_credits(self):
+            return None
+
+    # declares 1 game (~2 teams) but salaries actually cover 4 teams (~2 games)
+    monkeypatch.setattr(dfs, "mlb_draft_groups", lambda: [
+        {"DraftGroupId": 1, "ContestStartTimeSuffix": "", "StartDate": "2026-07-11T20:00:00", "GameCount": 1}])
+    monkeypatch.setattr(dfs, "fetch_draftables", lambda gid: {
+        "a1": {"name": "A1", "salary": 4000, "position": "OF", "team": "AAA", "game": "g1",
+              "matchup": "", "start": "", "dk_fppg": None},
+        "b1": {"name": "B1", "salary": 4000, "position": "OF", "team": "BBB", "game": "g1",
+              "matchup": "", "start": "", "dk_fppg": None},
+        "c1": {"name": "C1", "salary": 4000, "position": "OF", "team": "CCC", "game": "g2",
+              "matchup": "", "start": "", "dk_fppg": None},
+        "d1": {"name": "D1", "salary": 4000, "position": "OF", "team": "DDD", "game": "g2",
+              "matchup": "", "start": "", "dk_fppg": None},
+    })
+    monkeypatch.setattr(dfs, "team_game_status", lambda date: {})
+    monkeypatch.setattr(dfs, "pooled_skill_rates", lambda *a, **k: ({}, 1.7))
+    monkeypatch.setattr(dfs, "park_runs", lambda yr: {})
+    monkeypatch.setattr(dfs, "pitcher_k9", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "pitcher_era", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "season_hitting", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "lineups_for_date", lambda date: {})
+    monkeypatch.setattr(dfs_run, "team_abbrev_map", lambda: {})
+
+    res = dfs_run.build_slate(FakeClient(), "2026-07-11", iters=50)
+    assert res["slate_mismatch"] is not None
+    assert "1 game" in res["slate_mismatch"]
 
 
 def test_inactive_players_flags_40man_not_active(monkeypatch):

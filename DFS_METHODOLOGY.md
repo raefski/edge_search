@@ -911,10 +911,76 @@ the real message — `TypeError: log_forward_test() got an unexpected keyword ar
 control-flow signals (subclass `BaseException`, not `Exception`) and pass through this wrapper
 untouched, confirmed by checking their actual class hierarchy rather than assuming.
 
-## 21. Verifiable, Not Just Asserted
+## 21. Two Real Bugs the Debug Log Made Diagnosable, Fixed Like Production Incidents
 
-- **Test suite**: 77 tests, all passing (`pytest -q`), including regression tests for
-  every bug in §9, §11, §12, §13, §14, §16, §18, §19, and §20 — each constructed to fail against the pre-fix code and pass
+The debug-log feature (§20) paid for itself again immediately: the user hit the exact same
+`log_forward_test` `TypeError` a second time, but with the full traceback in hand this time
+instead of a redacted box. Checking GitHub's raw source directly (not trusting the local repo)
+confirmed the fix WAS correctly on `main` — so this was Streamlit Cloud serving a stale build,
+not a code regression. Separately, the user reported a real, concrete incident from actual play:
+an "Early" slate build (2 hours before lock) silently included STL and LAD, teams that weren't
+part of that slate, forcing a manual workaround; then later that same session, after the app
+"stopped working" and needed a reboot, it crashed outright with `ODDS_API_KEY not set` even in
+CACHE mode. Both investigated and fixed as real incidents, not guessed at.
+
+**Bug 1 — wrong-slate resolution (the STL/LAD leak).** Reading the resolution path end to end:
+`build_slate(client, date, draft_group, ...)` has the real slate date, but its call to
+`resolve_slate(draft_group, groups)` never forwarded it — and `resolve_slate` itself didn't even
+accept a `date` parameter. For a NAMED slate (the user had picked "Early" from the dropdown),
+this fell through to `dfs.resolve_draft_group(draft_group)` with no date filter, meaning it
+considered every same-named group across every date DK's lobby currently lists, not just today's.
+Live-checked whether DK actually posts name-duplicate groups: confirmed yes — the same dropdown
+session had shown two identical "Main 23:05Z" entries with different game counts (6g vs 14g).
+`resolve_draft_group`'s tie-break for same-time candidates had no preference between them at all
+(sorted only by start time; a true tie fell to whatever order the API happened to return) — unlike
+`main_slate_group`, which already tie-breaks toward more games for the exact same reason. **Fixed
+both:** threaded `date` through `resolve_slate` → `resolve_draft_group` (verified the specific
+scoped-fetch for a live 3-game sub-slate today returned exactly 6 teams, confirming DK's
+draftables endpoint itself is correctly scoped — the resolution layer was the gap, not the data);
+and gave `resolve_draft_group` the same games-count tie-break `main_slate_group` already had.
+**Added regardless of root cause, as a safety net:** `build_slate` now cross-checks the resolved
+slate's own declared `GameCount` against how many teams actually showed up in its fetched
+salaries, and surfaces a visible `st.error` if they don't roughly match — so a wrong-slate
+resolution (from this cause or any other) shows up as an explicit warning instead of a silently
+contaminated pool the user has to notice and hand-exclude, which is exactly what happened here.
+
+**Bug 2 — a missing API key crashed the ENTIRE app, including free data.** `OddsAPIClient.__init__`
+unconditionally raised `RuntimeError("ODDS_API_KEY not set")` if no key was present — before ever
+checking cache, before any free endpoint ran. The user's key had only ever been pasted into the
+sidebar each session (never configured as a persistent Streamlit Cloud secret), so a reboot lost
+it, and the very next build crashed outright — in CACHE mode, which the sidebar's own text
+explicitly promises works without a key ("Salaries + confirmed lineups (free) still work"). That
+promise was never actually kept in code. **Fixed:** the key check moved from construction time to
+the point of an actual network call (a new `NoApiKey` exception, parallel to the existing
+`DryRunBlocked`), so a cache hit or a free endpoint never needs one at all. `build_slate`'s
+`client.get_events(SPORT)` call — the ONE call outside the existing per-event try/except — is now
+itself wrapped the same way the per-event loop already was (§9's own precedent, one level up):
+a failure degrades to zero pitchers for that build, not a dead page. Verified directly: with the
+key genuinely absent from every source (env, `.env`, Streamlit secrets), a full `build_slate` call
+completed in 3.3s with 199 real hitters and 0 pitchers, no exception. Also fixed the "Pull fresh
+pitcher props" button to check for a key upfront and say so plainly, instead of silently doing
+nothing productive, and strengthened the sidebar's own warning to recommend a permanent Streamlit
+Cloud secret (`Settings → Secrets → ODDS_API_KEY`) so a reboot can't lose it again.
+
+**A red herring worth recording:** mid-investigation, a `build_slate` call appeared to hang for
+75+ seconds inside `team_game_status` (two statsapi calls that normally take under 0.2s each).
+Re-timed each call in isolation immediately after — both fast. Re-timed the full build with
+nothing else competing for the machine's resources — 3.3s, clean. The likely cause was this
+session's own test rig (a live Streamlit server, a headless Chromium, and a diagnostic script all
+contending for the same container's CPU/network at once), not a bug in the function — worth
+naming explicitly so a future session doesn't chase a phantom performance regression here.
+
+Both fixes verified end-to-end via the local driver (§20): a clean build with a real key shows no
+errors and a normal lineup; a build with the key removed from every source shows the strengthened
+warning text and still produces real hitters. 86 tests pass (up from 77), including regression
+tests for the date-threading bug, the game-count tie-break, the slate/salary mismatch check, and
+`OddsAPIClient`'s full construct-without-a-key / cache-needs-no-key / uncached-call-needs-a-key /
+dry-run-still-blocks-paid-calls / credit-floor-still-enforced matrix.
+
+## 22. Verifiable, Not Just Asserted
+
+- **Test suite**: 86 tests, all passing (`pytest -q`), including regression tests for
+  every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, and §21 — each constructed to fail against the pre-fix code and pass
   against the fix, not just exercise the happy path.
 - **Calibration dashboard** (live, updates as new contest data comes in):
   actual-vs-predicted scatter plots for points and ownership, pitchers and hitters

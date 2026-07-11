@@ -46,7 +46,7 @@ def main():
                       dry_run=args.from_cache, live_ttl=10**9 if args.from_cache else 600)
 
     if args.draft_group is not None:
-        gid, is_main, meta = dfs_run.resolve_slate(args.draft_group)
+        gid, is_main, meta = dfs_run.resolve_slate(args.draft_group, date=args.date)
         if gid is None:
             sys.exit(f"slate {args.draft_group!r} not found. Available now: {meta.get('available')}")
         print(f"slate {meta['label']}  start {meta.get('start','')}Z  games {meta.get('games')}")

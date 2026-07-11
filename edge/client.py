@@ -39,6 +39,21 @@ class DryRunBlocked(RuntimeError):
     """Raised when a paid call is attempted while dry_run is on."""
 
 
+class NoApiKey(RuntimeError):
+    """Raised when a real network call is attempted with no API key configured.
+
+    The constructor used to raise this unconditionally, which meant a missing
+    key broke the ENTIRE app -- including free salary/lineup data that never
+    touches the Odds API at all, and even a warm cache hit that would have
+    needed no network call whatsoever. Found live 2026-07-11: a Streamlit
+    Cloud reboot lost the key (it was only ever pasted into the sidebar each
+    session, not a persistent secret) and every mode, including CACHE, hard
+    crashed. Deferred to the point of an actual network call instead, so
+    build_slate's existing per-event handling (it already tolerates
+    DryRunBlocked the same way -- see edge/dfs_run.py) degrades to "no
+    pitcher props this build" rather than killing the whole page."""
+
+
 class OddsAPIClient:
     def __init__(
         self,
@@ -49,9 +64,11 @@ class OddsAPIClient:
         dry_run: bool = True,
         live_ttl: int = 600,  # seconds; live odds re-used within this window cost 0
     ):
+        # No longer raises here -- see NoApiKey's docstring. self.api_key can
+        # legitimately be None; every call site that actually needs it checks
+        # at the point of use (_request), where a cache hit can still avoid
+        # ever needing a key at all.
         self.api_key = api_key or os.environ.get("ODDS_API_KEY")
-        if not self.api_key:
-            raise RuntimeError("ODDS_API_KEY not set (env or .env)")
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.ledger_path = Path(ledger_path)
@@ -117,6 +134,13 @@ class OddsAPIClient:
         cached = self._read_cache(cp, ttl)
         if cached is not None:
             return cached  # 0 credits
+
+        if not self.api_key:
+            # Deferred from __init__ (see NoApiKey docstring) -- a cache hit
+            # above never needed to reach this line. Applies even to cost=0
+            # endpoints (get_events/get_sports): they're free of CREDITS but
+            # the real Odds API still requires the key on every request.
+            raise NoApiKey(f"no ODDS_API_KEY configured; can't make a live call to {path}")
 
         if cost > 0:
             if self.dry_run:

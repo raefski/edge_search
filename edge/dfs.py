@@ -817,7 +817,13 @@ def list_slate_names(groups: list[dict], date: str | None = None) -> list[tuple]
 
 def resolve_draft_group(spec, date: str | None = None) -> dict | None:
     """Resolve a draft group from a numeric id OR a slate name (Main/Early/Turbo/
-    Night/Afternoon). Among same-name slates picks the soonest UPCOMING one."""
+    Night/Afternoon). Among same-name slates picks the soonest UPCOMING one;
+    among THOSE tied on start time, prefers the one with MORE games -- DK
+    sometimes posts a same-named/same-time duplicate with a smaller game
+    count (confirmed live 2026-07-11: two "Main" groups at the identical
+    StartDate, 6 games vs 14), and without this the tie-break was whatever
+    order the API happened to return, not a principled choice. Mirrors
+    main_slate_group's existing tie-break for the same reason."""
     groups = mlb_draft_groups()
     if str(spec).strip().isdigit():
         return next((g for g in groups if g.get("DraftGroupId") == int(spec)), None)
@@ -835,4 +841,5 @@ def resolve_draft_group(spec, date: str | None = None) -> dict | None:
         return None
     now = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
     future = [g for g in cands if (g.get("StartDate") or "") >= now]
-    return sorted(future or cands, key=lambda g: (g.get("StartDate") or ""))[0]
+    return sorted(future or cands,
+                  key=lambda g: (g.get("StartDate") or "", -(g.get("GameCount") or 0)))[0]
