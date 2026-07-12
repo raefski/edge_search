@@ -171,9 +171,9 @@ def season_hitting(season: int = 2026, cache_path: str | None = None, max_age=86
     if cache_path and _os.path.exists(cache_path) and _time.time() - _os.path.getmtime(cache_path) < max_age:
         return json.load(open(cache_path))
     out = {}
-    for t in _get("https://statsapi.mlb.com/api/v1/teams?sportId=1")["teams"]:
+    for team_id in team_id_to_abbr():
         try:
-            r = _get(f"https://statsapi.mlb.com/api/v1/teams/{t['id']}/roster?rosterType=active"
+            r = _get(f"https://statsapi.mlb.com/api/v1/teams/{team_id}/roster?rosterType=active"
                      f"&hydrate=person(stats(group=[hitting],type=[season],season={season}))")
         except Exception:
             continue
@@ -671,6 +671,30 @@ _NORMAL_GAME_STATES = {"Final", "In Progress", "Pre-Game", "Completed Early", "S
 # field), since that's what callers cross-reference it against.
 _STATSAPI_TO_DK_ABBR = {"AZ": "ARI"}
 
+_team_abbr_cache: dict[str, str] | None = None
+
+
+def team_id_to_abbr() -> dict[str, str]:
+    """{team_id(str): DK-style abbreviation} for all 30 MLB teams -- already
+    normalized through _STATSAPI_TO_DK_ABBR. Effectively static for the life
+    of a running process (teams don't get renamed mid-season), so this is
+    memoized in-process rather than given cache_path/max_age disk-cache
+    plumbing like the other statsapi fetchers here -- the data's cheap and
+    doesn't need to survive a process restart the way skill rates etc. do.
+
+    Found auditing this module for redundant network calls: team_abbrev_map()
+    (edge/dfs_run.py) and team_game_status() below each independently
+    fetched /teams?sportId=1 on EVERY single build_slate() call, for a
+    resource that never changes intra-build. season_hitting() also used to
+    re-fetch it (guarded by its own day-long disk cache, so a lower-priority
+    duplicate, but still redundant on a cold cache). All three now share
+    this one in-process fetch."""
+    global _team_abbr_cache
+    if _team_abbr_cache is None:
+        _team_abbr_cache = {str(t["id"]): _STATSAPI_TO_DK_ABBR.get(t["abbreviation"], t["abbreviation"])
+                            for t in _get("https://statsapi.mlb.com/api/v1/teams?sportId=1")["teams"]}
+    return _team_abbr_cache
+
 
 def team_game_status(date: str) -> dict:
     """{team_abbr: "" or the game's detailedState} for every team playing on
@@ -700,17 +724,16 @@ def team_game_status(date: str) -> dict:
     straight from the schedule response (even defensively) silently returned
     "" for every team, every time -- this function had never actually worked.
     Fixed by resolving team ID -> abbreviation via the separate, reliable
-    /teams endpoint (the same one team_abbrev_map() in dfs_run.py already
-    uses for exactly this reason) instead of trusting the schedule payload
-    to carry it."""
+    /teams endpoint (team_id_to_abbr() above, shared with team_abbrev_map()
+    in dfs_run.py for exactly this reason) instead of trusting the schedule
+    payload to carry it."""
     out = {}
     try:
         s = _get(f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&date={date}")
     except Exception:
         return out
     try:
-        id_to_abbr = {str(t["id"]): t["abbreviation"] for t in _get(
-            "https://statsapi.mlb.com/api/v1/teams?sportId=1")["teams"]}
+        id_to_abbr = team_id_to_abbr()
     except Exception:
         return out
     for d in s.get("dates", []):
@@ -726,10 +749,10 @@ def team_game_status(date: str) -> dict:
                 flag = "" if detail in _NORMAL_GAME_STATES else detail
                 for side in ("home", "away"):
                     team_id = str((g.get("teams", {}).get(side, {}).get("team", {}) or {}).get("id", ""))
+                    # already DK-normalized by team_id_to_abbr()
                     abbr = id_to_abbr.get(team_id)
                     if not abbr:
                         continue
-                    abbr = _STATSAPI_TO_DK_ABBR.get(abbr, abbr)
                     # if a team's already flagged from another game that date, keep the flag
                     if flag or abbr not in out:
                         out[abbr] = flag

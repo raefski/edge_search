@@ -20,6 +20,35 @@ def _eligible(players, slot):
     return [p for p in players if slot in p["pos"]]
 
 
+def _bipartite_assign(players, slots):
+    """Can `players` each be assigned a distinct slot from `slots` (a multiset,
+    e.g. ["OF","OF","OF"]), one they're individually eligible for? Small
+    backtracking match, <=10 players. Shared by _assign, _hitter_slots_assignable,
+    and _fill's forced-group slot removal -- each used to reimplement this same
+    ~10-line recursion independently (found while auditing the module for
+    duplication). Returns [(player, slot), ...] using one slot per player, or
+    None if no full assignment of `players` exists; leftover unused slots are
+    fine -- callers that need an exact 1:1 match (_assign) only ever pass
+    len(players) == len(slots), where "every player placed" and "every slot
+    used" are the same fact by pigeonhole, so this single success condition
+    covers both the strict and permissive callers correctly."""
+    order = sorted(players, key=lambda p: len(p["pos"]))   # fewest options first
+
+    def bt(ps, remaining):
+        if not ps:
+            return []
+        p = ps[0]
+        for s in list(dict.fromkeys(remaining)):
+            if s in p["pos"]:
+                rest = remaining[:]; rest.remove(s)
+                sub = bt(ps[1:], rest)
+                if sub is not None:
+                    return [(p, s)] + sub
+        return None
+
+    return bt(order, list(slots))
+
+
 def _fill(players, rng, forced=None, obj="proj"):
     """One randomized, salary-feasible fill. `forced` = list of pre-placed players."""
     used = set(p["name"] for p in (forced or []))
@@ -30,21 +59,13 @@ def _fill(players, rng, forced=None, obj="proj"):
         # first-match can strand a large forced group (e.g. a 5+3 double stack
         # where a 1B/OF player grabs 1B and blocks a 1B-only teammate) even
         # though a valid assignment exists.
-        def _take(players, slots):
-            if not players:
-                return slots
-            p = players[0]
-            for s in list(dict.fromkeys(slots)):
-                if s in p["pos"]:
-                    rest = slots[:]; rest.remove(s)
-                    sub = _take(players[1:], rest)
-                    if sub is not None:
-                        return sub
+        pairs = _bipartite_assign(lineup, slots_left)
+        if pairs is None:
             return None
-        taken = _take(sorted(lineup, key=lambda p: len(p["pos"])), slots_left)
-        if taken is None:
-            return None
-        slots_left = taken
+        remaining = slots_left[:]
+        for _, s in pairs:
+            remaining.remove(s)
+        slots_left = remaining
     # cheapest eligible per slot, for budget feasibility
     cheapest = {s: min((p["salary"] for p in _eligible(players, s)), default=CAP) for s in set(slots_left)}
     team_h = {}
@@ -110,21 +131,7 @@ def _valid(lineup):
 
 def _assign(lineup):
     """Check the 10 players fill the 10 distinct slots; return assignment or None."""
-    slots = SLOTS[:]
-    # backtracking assignment (small)
-    def bt(players, slots):
-        if not players:
-            return [] if not slots else None
-        p = players[0]
-        for s in list(dict.fromkeys(slots)):
-            if s in p["pos"]:
-                rest = slots[:]; rest.remove(s)
-                sub = bt(players[1:], rest)
-                if sub is not None:
-                    return [(p, s)] + sub
-        return None
-    order = sorted(lineup, key=lambda p: len(p["pos"]))   # fewest options first
-    return bt(order, slots)
+    return _bipartite_assign(lineup, SLOTS)
 
 
 def _consecutive_runs(players, team, n):
@@ -172,17 +179,7 @@ def _hill_climb(lineup, players, rng, locked=frozenset(), obj="proj"):
 def _hitter_slots_assignable(hitters):
     """Can these hitters simultaneously occupy distinct hitter slots?"""
     slots = HITTER_SLOTS[:] + ["OF", "OF"]  # C,1B,2B,3B,SS,OF,OF,OF
-    def bt(players, slots):
-        if not players:
-            return True
-        p = players[0]
-        for s in list(dict.fromkeys(slots)):
-            if s in p["pos"]:
-                rest = slots[:]; rest.remove(s)
-                if bt(players[1:], rest):
-                    return True
-        return False
-    return bt(sorted(hitters, key=lambda p: len(p["pos"])), slots)
+    return _bipartite_assign(hitters, slots) is not None
 
 
 def _secondary_stack(forced_primary, players, team, n, exclude_names, obj):

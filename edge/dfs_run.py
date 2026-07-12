@@ -91,9 +91,14 @@ def team_abbrev_map() -> dict[str, str]:
     Arizona's own pitcher silently never matched on team string -- which
     quietly broke the pitcher-vs-own-hitters constraint (edge/dfs_opt.py
     _valid()) for this one team specifically, since opp_team lookups keyed
-    on the DK spelling never found the statsapi-spelled entry."""
-    t = dfs._get("https://statsapi.mlb.com/api/v1/teams?sportId=1")["teams"]
-    return {str(x["id"]): dfs._STATSAPI_TO_DK_ABBR.get(x["abbreviation"], x["abbreviation"]) for x in t}
+    on the DK spelling never found the statsapi-spelled entry.
+
+    Thin wrapper: this used to fetch /teams?sportId=1 itself, independently
+    of team_game_status()'s own identical fetch -- both ran on every single
+    build_slate() call for a resource that never changes intra-build. Both
+    now share dfs.team_id_to_abbr()'s in-process memo. Kept as a named
+    function (not inlined at call sites) since tests target it directly."""
+    return dfs.team_id_to_abbr()
 
 
 def resolve_slate(draft_group, groups=None, date=None):

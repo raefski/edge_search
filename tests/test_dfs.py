@@ -929,7 +929,17 @@ def _fake_schedule_and_teams(schedule_response):
     """Real /schedule responses carry only team id (no abbreviation) --
     confirmed live 2026-07-10, every team, every game. team_game_status now
     resolves id -> abbreviation via a SEPARATE /teams call, so tests must
-    mock both endpoints, keyed by team id like the real payload."""
+    mock both endpoints, keyed by team id like the real payload.
+
+    dfs.team_id_to_abbr() memoizes its result for the life of the process
+    (see edge/dfs.py) -- fine in production (teams don't change intra-run),
+    but it means the FIRST test in this file to populate it would otherwise
+    "poison" every later test with a stale cached value instead of using
+    that test's own mocked /teams response. Reset here so each test using
+    this helper gets a fresh fetch through its own fake_get."""
+    from edge import dfs
+    dfs._team_abbr_cache = None
+
     def fake_get(url):
         return _FAKE_TEAMS_ENDPOINT if "/teams?" in url else schedule_response
     return fake_get
