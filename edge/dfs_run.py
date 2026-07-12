@@ -273,9 +273,20 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
                 team_id, (yr - 1, yr), cache_path=str(bullpen_cache_dir / f"{team_id}.json"), max_age=21600)
         return _bullpen_memo[team_id]
 
-    for nm, lu in lineups.items():
+    for (team_id, nm), lu in lineups.items():
+        team_abbr = abbr.get(str(team_id), str(team_id))
         info = salaries.get(nm)
         if not info or not info.get("salary"):
+            continue
+        # Name collision guard: two different active players can share a
+        # normalized name (confirmed live 2026-07-12 -- LAD's and ATH's Max
+        # Muncy, both real). salaries is keyed by name alone, so it may hold
+        # a DIFFERENT team's player under this same key than the one
+        # lineups_for_date resolved for THIS team_id -- if DK's own team for
+        # that salary entry doesn't match, this isn't a real match, skip it
+        # rather than merge one player's price with another's team/opponent/
+        # batting-slot/skill data.
+        if info.get("team") != team_abbr:
             continue
         pos = dfs.parse_pos(info["position"])
         if not pos or "P" in pos:
@@ -297,7 +308,7 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
         starter_era = era.get(str(lu["opp_pitcher_id"]))
         proj = dfs.project_hitter_skill(skill, lu["slot"], pk, matchup_k9,
                                         home=is_home, opp_era=starter_era)
-        sr = hr_season.get(nm)
+        sr = hr_season.get((team_id, nm))
         pa_slot = (dfs.SLOT_PA_HOME if is_home else dfs.SLOT_PA_AWAY).get(lu["slot"], 4.0)
         hr_rate = (sr["homeRuns"] / sr["plateAppearances"]) if sr and sr.get("plateAppearances") else 0.03
         bb_rate = (sr["baseOnBalls"] / sr["plateAppearances"]) if sr and sr.get("plateAppearances") else 0.08
@@ -311,7 +322,7 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
         confirmed = lu.get("confirmed", True)
         pool.append({"name": lu["name"], "pos": pos, "salary": info["salary"], "proj": proj, "ceiling": ceil,
                      "floor": floor,
-                     "team": abbr.get(str(lu["team_id"]), str(lu["team_id"])), "game": lu["game"],
+                     "team": team_abbr, "game": lu["game"],
                      "opp_team": abbr.get(str(lu.get("opp_team_id")), None),
                      "slot": lu["slot"], "confirmed": confirmed,
                      "conf": f"H-slot{lu['slot']}" + ("" if confirmed else "*PROJ"),

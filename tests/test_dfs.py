@@ -375,8 +375,9 @@ def test_lineups_for_date_doubleheader_prefers_unfinished_game(monkeypatch):
     monkeypatch.setattr(dfs, "_get", lambda url: fake_schedule)
 
     out = dfs.lineups_for_date("2026-07-07", project=False)
-    assert dfs.norm("gary sanchez") in out and out[dfs.norm("gary sanchez")]["game"] == 1002
-    assert dfs.norm("william contreras") not in out
+    # keyed by (team_id, name) since 2026-07-12 -- see the name-collision fix
+    assert (200, dfs.norm("gary sanchez")) in out and out[(200, dfs.norm("gary sanchez"))]["game"] == 1002
+    assert (200, dfs.norm("william contreras")) not in out
 
 
 def test_optimizer_never_rosters_pitcher_against_own_hitters():
@@ -650,6 +651,62 @@ def test_build_slate_flags_team_count_mismatch(monkeypatch):
     res = dfs_run.build_slate(FakeClient(), "2026-07-11", iters=50)
     assert res["slate_mismatch"] is not None
     assert "1 game" in res["slate_mismatch"]
+
+
+def test_build_slate_disambiguates_same_name_different_team(monkeypatch):
+    # Regression, confirmed live 2026-07-12: two different REAL active
+    # players are both named "Max Muncy" (LAD and ATH on that date). Only
+    # ATH's is priced in this (Main) slate; LAD's plays in a different
+    # sub-slate entirely. lineups_for_date() pulls ALL of that day's games
+    # league-wide (not slate-scoped) -- pre-fix, its bare-name key meant
+    # whichever team's entry was iterated LAST silently overwrote the other,
+    # so build_slate's name-only join against slate-scoped salaries could
+    # merge the WRONG team's data onto the RIGHT (correctly-priced) player:
+    # displayed team, batting slot, and skill rate all came from the team
+    # that isn't even in this slate. Must now resolve to exactly one pool
+    # entry, with ATH's own data throughout, not LAD's.
+    from edge import dfs, dfs_run
+
+    class FakeClient:
+        spent_this_session = 0
+
+        def get_events(self, sport):
+            return []
+
+        def remaining_credits(self):
+            return None
+
+    monkeypatch.setattr(dfs, "mlb_draft_groups", lambda: [
+        {"DraftGroupId": 1, "ContestStartTimeSuffix": "", "StartDate": "2026-07-12T20:00:00", "GameCount": 1}])
+    # only the ATH player is priced in THIS slate's salaries -- the LAD one
+    # (team_id=3 below) is not in this slate at all
+    monkeypatch.setattr(dfs, "fetch_draftables", lambda gid: {
+        "maxmuncy": {"name": "Max Muncy", "salary": 3200, "position": "3B", "team": "AAA",
+                    "game": "dk1", "matchup": "", "start": "", "dk_fppg": None},
+    })
+    monkeypatch.setattr(dfs, "team_game_status", lambda date: {})
+    monkeypatch.setattr(dfs, "pooled_skill_rates", lambda *a, **k: ({"111": 10.0, "333": 0.1}, 1.7))
+    monkeypatch.setattr(dfs, "park_runs", lambda yr: {})
+    monkeypatch.setattr(dfs, "pitcher_k9", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "pitcher_era", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "season_hitting", lambda *a, **k: {})
+    # LAST in iteration order -- exactly what a bare-name dict would have let
+    # win pre-fix, even though it's the WRONG team for this slate
+    monkeypatch.setattr(dfs, "lineups_for_date", lambda date: {
+        (1, "maxmuncy"): {"id": 111, "name": "Max Muncy", "slot": 3, "team_id": 1, "park_team_id": 1,
+                         "opp_pitcher_id": 501, "opp_team_id": 2, "game": 9001, "confirmed": True},
+        (3, "maxmuncy"): {"id": 333, "name": "Max Muncy", "slot": 5, "team_id": 3, "park_team_id": 3,
+                         "opp_pitcher_id": 502, "opp_team_id": 4, "game": 9002, "confirmed": True},
+    })
+    monkeypatch.setattr(dfs_run, "team_abbrev_map", lambda: {"1": "AAA", "2": "BBB", "3": "CCC", "4": "DDD"})
+
+    res = dfs_run.build_slate(FakeClient(), "2026-07-12", iters=50)
+    hitters = [h for h in res["hitters"] if h["name"] == "Max Muncy"]
+    assert len(hitters) == 1, f"expected exactly one Max Muncy in the pool, got {len(hitters)}"
+    h = hitters[0]
+    assert h["team"] == "AAA", "must show the team of the player actually priced in THIS slate"
+    assert h["slot"] == 3, "must use the batting slot of the priced player's own game, not the other team's"
+    assert h["proj"] > 5.0, "must use the priced player's own (high) skill rate, not the other team's (low) one"
 
 
 def test_inactive_players_flags_40man_not_active(monkeypatch):

@@ -977,10 +977,66 @@ tests for the date-threading bug, the game-count tie-break, the slate/salary mis
 `OddsAPIClient`'s full construct-without-a-key / cache-needs-no-key / uncached-call-needs-a-key /
 dry-run-still-blocks-paid-calls / credit-floor-still-enforced matrix.
 
-## 22. Verifiable, Not Just Asserted
+## 22. A Real Player-Identity Bug: Two "Max Muncy"s, One Silently Overwriting the Other
 
-- **Test suite**: 86 tests, all passing (`pytest -q`), including regression tests for
-  every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, and §21 — each constructed to fail against the pre-fix code and pass
+The user asked for a fresh architecture read of the whole codebase ("think like a senior engineer
+who just joined"), which surfaced a "latent, low priority" name-collision risk in the pool-keying
+logic — norm-name is the join key between DK salaries and statsapi lineup data everywhere in this
+codebase, with no tie-break if two different real players ever share one. Two fixes into that same
+review (the duplicated backtracking functions, the double team-list fetch), the user hit exactly
+that risk live: **Max Muncy of the LAD showed up in a Main-slate build, but he wasn't in the Main
+slate at all** — he plays the Afternoon slate that day. They correctly guessed the cause before I
+even looked: a second, different, real "Max Muncy" (Athletics, $3,200 3B) exists this season.
+
+**Confirmed directly, not assumed:** DK's own draftables for the Main slate that day price a real
+"Max Muncy" at $3,200 for ATH (`ATH @ CWS`); the Afternoon slate separately prices a different real
+"Max Muncy" at $5,600 for LAD (`ARI @ LAD`) — two distinct, correctly-DK-priced players who happen
+to share a name. `lineups_for_date()` pulls every one of that day's games LEAGUE-WIDE (never
+slate-scoped) and keyed its output by `norm(name)` alone — so when both real players' games got
+processed, whichever ran later in the loop silently overwrote the other's entry. The survivor was
+LAD's (a *projected*, unconfirmed fallback entry, at that). `build_slate()` then joined that
+single squashed entry against the Main slate's *own* salaries by name only, producing a pool entry
+with ATH's correct $3,200 salary but LAD's team, opponent, batting slot, and skill rate stitched
+onto it — a real Frankenstein identity, not a display glitch. The `"team"` field came from
+`lu["team_id"]` (LAD), never cross-checked against the DK salary entry's own `"team"` field (ATH),
+so nothing in the code ever had a chance to notice the two didn't match.
+
+**Fixed at the source, not patched at the display:** `lineups_for_date()` and `season_hitting()`
+(which had the identical bare-name-key structure and could exhibit the same failure independently)
+now key their output by `(team_id, norm_name)` instead of name alone, so two same-named real
+players never collide in the same dict slot. `build_slate()`'s hitter loop now unpacks that pair
+and verifies DK's own `salaries` entry actually belongs to the same team the lineup entry claims
+(`info["team"] == team_abbr`) before merging anything — a mismatch (the ATH/LAD case exactly) is
+skipped rather than stitched together. `season_hitting`'s on-disk cache had to be regenerated (JSON
+has no tuple keys, so the composite key is packed as `"team_id|name"` on disk); the stale
+old-format file would have raised on first read after this shipped, so it was force-regenerated
+and verified before commit, not left to fail in production.
+
+**Verified against the real live data that exposed the bug, not just synthetic tests:** the Main
+slate now shows zero "Muncy" entries at all — ATH's Max Muncy has no confirmed or projectable
+lineup entry of his own today (a separate, pre-existing, unrelated gap: he simply has no batting-
+order data available yet, so he correctly can't be projected), and LAD's is correctly excluded as
+belonging to the wrong team for this slate. The Afternoon slate — which the user had confirmed was
+already showing LAD's Max Muncy correctly — still does, unchanged (`team=LAD, $5,600, slot 5`),
+confirming the fix didn't regress the working case while fixing the broken one. A new regression
+test locks in the exact scenario (two same-team-id-collision players, one priced in the slate, one
+not, the wrong one positioned to "win" a bare-name dict) and checks the resulting pool entry uses
+the priced player's own team, slot, and skill rate throughout, not the other's.
+
+**Pitcher side checked, not changed:** the pitcher pool's `"team"` field is sourced directly from
+DK's own salary entry (`info["team"]`), never merged in from a separate statsapi lookup the way the
+hitter side was — so the exact "wrong team displayed" failure mode isn't structurally possible
+there today. A theoretical adjacent risk (two same-named pitchers, one's DK entry matching under a
+different real player's props) hasn't been observed and wasn't chased further without evidence,
+consistent with this project's own standard of fixing what's demonstrated, not what's merely
+conceivable.
+
+87 tests pass (up from 86).
+
+## 23. Verifiable, Not Just Asserted
+
+- **Test suite**: 87 tests, all passing (`pytest -q`), including regression tests for
+  every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, and §22 — each constructed to fail against the pre-fix code and pass
   against the fix, not just exercise the happy path.
 - **Calibration dashboard** (live, updates as new contest data comes in):
   actual-vs-predicted scatter plots for points and ownership, pitchers and hitters

@@ -167,9 +167,20 @@ _LG = {"hits": 0.24, "totalBases": 0.40, "rbi": 0.115, "runs": 0.125,
 
 
 def season_hitting(season: int = 2026, cache_path: str | None = None, max_age=86400) -> dict:
-    """{norm name: season hitting totals} from MLB statsapi (free). Cached to disk."""
+    """{(team_id, norm_name): season hitting totals} from MLB statsapi (free).
+    Cached to disk. Keyed by (team_id, name), not name alone -- same
+    real-collision reason as lineups_for_date (two different active players
+    can share a name; confirmed live 2026-07-12, two "Max Muncy"s). JSON has
+    no tuple keys, so the on-disk form packs the pair as "team_id|name"
+    (norm() names are alnum-only, so "|" can never collide with real name
+    content) and unpacks it back to a tuple on read."""
     if cache_path and _os.path.exists(cache_path) and _time.time() - _os.path.getmtime(cache_path) < max_age:
-        return json.load(open(cache_path))
+        raw = json.load(open(cache_path))
+        out = {}
+        for k, v in raw.items():
+            tid, name = k.split("|", 1)
+            out[(int(tid), name)] = v
+        return out
     out = {}
     for team_id in team_id_to_abbr():
         try:
@@ -183,11 +194,11 @@ def season_hitting(season: int = 2026, cache_path: str | None = None, max_age=86
                 sp = s.get("splits", [])
                 if sp and "plateAppearances" in sp[0]["stat"]:
                     x = sp[0]["stat"]
-                    out[norm(per["fullName"])] = {k: x.get(k, 0) for k in
+                    out[(int(team_id), norm(per["fullName"]))] = {k: x.get(k, 0) for k in
                         ("plateAppearances", "homeRuns", "totalBases", "hits", "rbi", "runs", "baseOnBalls", "stolenBases")}
                     break
     if cache_path:
-        json.dump(out, open(cache_path, "w"))
+        json.dump({f"{tid}|{name}": v for (tid, name), v in out.items()}, open(cache_path, "w"))
     return out
 
 
@@ -764,10 +775,21 @@ def team_game_status(date: str) -> dict:
 
 
 def lineups_for_date(date: str, project: bool = True) -> dict:
-    """{norm name: {id, name, slot, team_id, park_team_id, opp_pitcher_id, game, confirmed}}.
-    Confirmed starters from statsapi; if a team's lineup isn't posted yet and
-    project=True, fill a PROJECTED order from its most-recent game (confirmed=False),
-    so you can target a team before its official lineup drops."""
+    """{(team_id, norm_name): {id, name, slot, team_id, park_team_id, opp_pitcher_id,
+    game, confirmed}}. Confirmed starters from statsapi; if a team's lineup isn't
+    posted yet and project=True, fill a PROJECTED order from its most-recent game
+    (confirmed=False), so you can target a team before its official lineup drops.
+
+    Keyed by (team_id, name), not name alone -- confirmed live 2026-07-12: two
+    different real active MLB players are both named "Max Muncy" (LAD and
+    ATH) on the same date. A bare-name key meant whichever team's entry was
+    processed last silently overwrote the other in this dict; build_slate()
+    then joined that squashed entry against a SLATE-SCOPED salaries dict by
+    name alone, producing a pool entry with the correct DK-priced player's
+    salary but the WRONG player's team/opponent/batting-slot/skill data
+    merged in. Team-scoping the key lets build_slate cross-check team
+    consistency at the join instead of trusting a 1:1 name correspondence
+    that doesn't always hold."""
     s = _get(f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&date={date}&hydrate=lineups,probablePitcher")
     # regular season only -- an All-Star/exhibition entry (gameType "A" etc,
     # confirmed real: 2026-07-14) uses "AL"/"NL" pseudo-teams that won't
@@ -807,14 +829,14 @@ def lineups_for_date(date: str, project: bool = True) -> dict:
             players = lu.get(key) or []
             if players:
                 for i, pl in enumerate(players[:9]):
-                    out[norm(pl["fullName"])] = {"id": pl["id"], "name": pl["fullName"], "slot": i + 1,
+                    out[(team_id, norm(pl["fullName"]))] = {"id": pl["id"], "name": pl["fullName"], "slot": i + 1,
                                                  "team_id": team_id, "park_team_id": home_id,
                                                  "opp_pitcher_id": opp_pid, "opp_team_id": opp_team_id,
                                                  "game": g["gamePk"], "confirmed": True}
             elif project:
                 for pid, name, slot in _team_recent_lineup(team_id, date):
-                    if norm(name) not in out:
-                        out[norm(name)] = {"id": pid, "name": name, "slot": slot, "team_id": team_id,
+                    if (team_id, norm(name)) not in out:
+                        out[(team_id, norm(name))] = {"id": pid, "name": name, "slot": slot, "team_id": team_id,
                                            "park_team_id": home_id, "opp_pitcher_id": opp_pid,
                                            "opp_team_id": opp_team_id, "game": g["gamePk"], "confirmed": False}
     return out
