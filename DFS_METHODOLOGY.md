@@ -1033,7 +1033,46 @@ conceivable.
 
 87 tests pass (up from 86).
 
-## 23. Verifiable, Not Just Asserted
+## 23. First Real Forward-Test Since the §18/§21/§22 Fixes — Projection Holds, Placement Doesn't
+
+2026-07-12 is the first fully graded slate since the model/construction overhaul (§18), the
+app/data-integrity fixes (§21), and the name-collision fix (§22) — the first real read on whether
+any of it changed real-world outcomes, not just backtests.
+
+**Projection: matches or beats the backtest, encouragingly.** Forward grade (`scripts/dfs_grade.py`,
+n=213 matched players): hitters corr **+0.185** MAE **4.82** (n=196) vs the §18 backtest's test-window
+target of corr 0.177 / MAE 5.456 — this slate came in *better* than the backtest on both axes, a good
+sign the shipped model changes are real and not just backtest artifacts. Pitchers corr **+0.514** MAE
+**7.37** (n=17) — MAE is now close to the 7.18 backtest anchor (§10 had flagged forward pitcher MAE
+running consistently near 10.31 across 5 earlier dates; this one slate lands right back near the
+anchor, though n=17 is too small on its own to say the earlier gap is resolved). Bias −0.94 (actual
+ran under projection) — worth watching, not alarming at n=1.
+
+**Ownership gamma re-swept with this as the 7th real GPP-ownership date** (`dfs_ownership_gamma_sweep.py`,
+correctly auto-excluding 7/12's *cash* file per §19's fix, including only its *gpp* file): pooled,
+n-weighted MAE confirms `pitcher_gamma=7.0` is still the minimum (4.728, vs 4.792 at 6.0 and 4.802 at
+8.0) — the shipped default holds. Hitter `gamma` shows a small, consistent-direction signal toward
+lower than 1.5 (pooled MAE 3.662 at gamma=1.0 vs 3.691 at 1.5, and 1.0 beats 1.5 on every individual
+date) — but 1.0 is the *edge* of what's been swept, so this isn't shipped: the responsible next step
+is sweeping below 1.0 before committing to a change, not extrapolating past the tested range.
+
+**Real-field placement: the first true cash-field data point, and it's below the historical proxy.**
+2026-07-12 is the first date with BOTH a real cash contest and a real GPP contest for the same slate
+— previously, "cash-mode" placement could only ever be checked against a GPP-sized field (no real
+cash field existed yet), an imperfect proxy §10 used for lack of anything better. This slate's actual
+cash-mode-vs-cash-field result: **30.4th percentile** (23-entry field) — did not cash, and materially
+below the 62.7% average the GPP-field proxy had shown across the prior 6 dates. The properly-matched
+GPP-mode-vs-GPP-field running average also moved from 58.4% (6 dates) to **54.3%** (7 dates) with this
+slate's 31.0% pulling it down. Both builds underperformed the field this slate.
+
+**Net read, stated plainly:** better projection accuracy this slate did not translate into better
+field placement — the same tension §10 already named (ranking quality and construction/leverage are
+different problems). One slate is not enough to say whether the identity/construction fixes helped,
+hurt, or are neutral for real placement; it IS enough to say the projection layer itself is behaving
+as backtested, which was the open question after so much model surgery in one sitting. Keep
+accumulating dates before drawing a construction-quality conclusion from percentile alone.
+
+## 24. Verifiable, Not Just Asserted
 
 - **Test suite**: 87 tests, all passing (`pytest -q`), including regression tests for
   every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, and §22 — each constructed to fail against the pre-fix code and pass
