@@ -1166,10 +1166,56 @@ measured mismatch (5/10, 0/10).
 
 94 tests pass (up from 89).
 
-## 26. Verifiable, Not Just Asserted
+## 26. The Slate Mismatch Warning Caught a Real DK Data Bug, Live — Not a Resolution Bug
 
-- **Test suite**: 94 tests, all passing (`pytest -q`), including regression tests for
-  every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, §22, §24, and §25 — each constructed to fail against the pre-fix code and pass
+Minutes after the §25 fixes shipped, the user pushed, rebooted the app, pulled fresh pitcher props,
+and hit the `slate_mismatch` warning again on the AUTO-resolved Main slate ("claims 7 game(s) but
+salaries cover 16 teams"), plus a new, clear error from the §24 fix: "all 15 event odds calls failed,
+e.g. HTTPError: HTTP Error 404: Not Found."
+
+**Reproduced live, immediately, on the real current slate.** `main_slate_group()`'s auto-resolution
+(the `draft_group=None` default — a completely different code path from §25's dropdown-id fix, which
+only applies to named sub-slates) resolved to a real draft group declaring 7 games, whose own
+draftables response showed 16 teams. This was NOT the dropdown/resolution bug from §25 — it reproduced
+identically via the plain auto-default path.
+
+**Root-caused precisely, not assumed.** The group's declared `GameCount: 7` and its actual matchups
+(`matchup` field on each draftable) agreed perfectly: exactly 7 real games, 14 teams, fully internally
+consistent. The extra 2 teams (NYM, PHI) were a **DK-side data bleed** — checked against the real MLB
+schedule: NYM @ PHI was a genuine game that day, just in a completely different time window (3:05 PM ET)
+than this slate's actual games (4:10 PM ET + a doubleheader nightcap). DK's draftables response for
+this specific draft group had somehow included the two unrelated teams' full active rosters — every
+single one of ~90 NYM/PHI entries (from Bryce Harper and Juan Soto down to bench players) carried
+`matchup: None`, while every single one of the 14 real-slate-team entries had a populated matchup.
+A perfect, exact discriminator — not a heuristic guess.
+
+**Fixed at the source.** `fetch_draftables()` now skips any entry with no `matchup` (`competition.name`)
+at all. Verified against the exact same live, contaminated draft group: teams dropped from 16 to the
+correct 14, entry count from 641+ to 641 clean ones, and a full `build_slate()` re-run came back with
+`slate_mismatch: None`.
+
+**The pitcher-props 404s were not reproducible and are believed transient.** Directly tested all 13
+real events for this exact slate live, immediately after the report: every single one succeeded (some
+simply had no DK book posted yet, the normal case already handled gracefully). Whatever caused a
+uniform 404 across all 15 calls at that exact moment did not persist minutes later — most likely a
+brief Odds-API-side hiccup, not something in this codebase to fix. Worth stating plainly: the §24
+error-surfacing fix did exactly its job here — instead of a silent empty pitcher pool, the user got a
+specific, actionable message, which is what made this transient issue distinguishable from a real,
+persistent problem in the first place.
+
+**Verified live, end to end:** relaunched the app after the fix — "Main (auto)" now builds cleanly,
+641 correctly-filtered salaries, no mismatch warning, real players from only the 14 legitimate teams.
+One new test locks in the exact contaminated shape found live (a real entry with a matchup alongside
+a bled-in entry with none), and the existing `dk_fppg`-dash regression test was updated to include a
+real matchup (it had been using an empty `competition: {}` for legitimate players, which this fix
+would now have — correctly — excluded).
+
+95 tests pass (up from 94).
+
+## 27. Verifiable, Not Just Asserted
+
+- **Test suite**: 95 tests, all passing (`pytest -q`), including regression tests for
+  every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, §22, §24, §25, and §26 — each constructed to fail against the pre-fix code and pass
   against the fix, not just exercise the happy path.
 - **Calibration dashboard** (live, updates as new contest data comes in):
   actual-vs-predicted scatter plots for points and ownership, pitchers and hitters

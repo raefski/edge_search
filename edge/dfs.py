@@ -48,13 +48,27 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
     a free, always-available baseline: the validation methodology should always
     check incremental value over this (and over salary) before trusting a corr
     number in isolation. Not backfillable for past slates (DK only serves
-    current/upcoming draftables), so this only accumulates going forward."""
+    current/upcoming draftables), so this only accumulates going forward.
+
+    Skips any entry with no `matchup` (competition.name) at all. Confirmed
+    live 2026-07-18: a real "Main" draft group correctly declared 7 games/14
+    teams but its own draftables response also included the FULL active
+    rosters of two entirely unrelated teams (NYM, PHI -- whose only game that
+    day was a totally different time window, not one of this slate's 7 real
+    matchups) -- a DK-side data bleed, not a resolution bug on this end
+    (confirmed: the group's declared GameCount and its real 7 matchups were
+    internally consistent; only the extra two teams' entries were wrong).
+    Checked cleanly on that real data: every legitimate player had a matchup
+    populated, every erroneous cross-contaminated one had none -- a safe,
+    exact discriminator, not a heuristic."""
     url = f"https://api.draftkings.com/draftgroups/v1/draftgroups/{draft_group_id}/draftables"
     out = {}
     for p in _get(url).get("draftables", []):
         k = norm(p["displayName"])
         if k not in out:  # dedupe multi-slot rows
             comp = p.get("competition") or {}
+            if not comp.get("name"):
+                continue
             fppg = next((a.get("value") for a in (p.get("draftStatAttributes") or []) if a.get("id") == 408), None)
             try:
                 dk_fppg = float(fppg)

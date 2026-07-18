@@ -1077,15 +1077,43 @@ def test_fetch_draftables_handles_dash_fppg(monkeypatch):
     def fake_get(url):
         return {"draftables": [
             {"displayName": "Rookie Guy", "salary": 3000, "position": "OF", "teamAbbreviation": "AAA",
-             "competition": {}, "draftStatAttributes": [{"id": 408, "value": "-"}]},
+             "competition": {"name": "AAA @ BBB"}, "draftStatAttributes": [{"id": 408, "value": "-"}]},
             {"displayName": "Vet Guy", "salary": 5000, "position": "OF", "teamAbbreviation": "AAA",
-             "competition": {}, "draftStatAttributes": [{"id": 408, "value": "12.3"}]},
+             "competition": {"name": "AAA @ BBB"}, "draftStatAttributes": [{"id": 408, "value": "12.3"}]},
         ]}
 
     monkeypatch.setattr(dfs, "_get", fake_get)
     out = dfs.fetch_draftables(123)
     assert out[dfs.norm("Rookie Guy")]["dk_fppg"] is None
     assert out[dfs.norm("Vet Guy")]["dk_fppg"] == 12.3
+
+
+def test_fetch_draftables_skips_entries_with_no_matchup(monkeypatch):
+    # Regression, confirmed live 2026-07-18: a real "Main" draft group
+    # correctly declared 7 games/14 teams, but DK's own draftables response
+    # for that SAME group also bled in the full active rosters of two
+    # entirely unrelated teams (NYM, PHI) whose only game that day was a
+    # different time window, not one of this slate's real matchups -- a
+    # DK-side data bug, not a resolution bug on this end (the group's
+    # declared GameCount and its 7 real matchups were internally
+    # consistent). Checked on that real data: every legitimate player had a
+    # matchup populated; every contaminated one had none. This is what
+    # produced a live slate_mismatch report ("claims 7 games but salaries
+    # cover 16 teams").
+    from edge import dfs
+
+    def fake_get(url):
+        return {"draftables": [
+            {"displayName": "Real Player", "salary": 4000, "position": "OF", "teamAbbreviation": "AAA",
+             "competition": {"name": "AAA @ BBB", "competitionId": 1}},
+            {"displayName": "Bled In Player", "salary": 9000, "position": "SP", "teamAbbreviation": "NYM",
+             "competition": {}},   # no "name" -- exactly the real contaminated shape found live
+        ]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    out = dfs.fetch_draftables(123)
+    assert dfs.norm("Real Player") in out
+    assert dfs.norm("Bled In Player") not in out
 
 
 def _floor_test_pool(low_floor_ceiling=8.0, low_floor_floor=8.0):
