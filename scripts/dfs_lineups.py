@@ -94,9 +94,8 @@ def _log_and_optimize(args, res):
 
     logged = dfs_run.log_forward_test(ROOT, date, is_main, gid, pool, cash, gpp, games=res.get("games"))
     if logged["logged_projections"]:
-        print(f"logged {logged['n']} projections -> data/dfs_proj_log.csv")
-    else:
-        print(f"(sub-slate draft group {gid}: not overwriting the main forward-test log)")
+        dest = "data/dfs_proj_log.csv" if is_main else f"data/dfs_proj_log_{date}_g{gid}.csv"
+        print(f"logged {logged['n']} projections -> {dest}")
 
     if res.get("pitcher_fetch_error"):
         print(f"⚠ pitcher props pull FAILED: {res['pitcher_fetch_error']}  "

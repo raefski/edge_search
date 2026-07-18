@@ -848,15 +848,39 @@ _NONCLASSIC = ("snake", "tiers", "home runs", "@")
 
 
 def list_slate_names(groups: list[dict], date: str | None = None) -> list[tuple]:
-    """(name, id, startZ, games) for priced-ish Classic slates, optionally for a date."""
+    """(name, id, startZ, games) for priced-ish Classic slates, optionally for
+    a date. `date` is matched against the slate's ET (America/New_York)
+    calendar date, not a naive UTC StartDate string prefix -- a late slate
+    (Night/Late Night) commonly starts after 8pm ET, which is already
+    tomorrow in UTC. A naive `StartDate[:10] == date` comparison would
+    silently drop that slate from "today"'s listing even though it's
+    unambiguously tonight's slate to the person building it. Found live
+    2026-07-18 investigating a real slate-mismatch report, alongside the
+    app's dropdown passing a bare slate NAME instead of its numeric id (see
+    app.py) -- together those meant two same-named slates at different
+    times (or even different days) were functionally indistinguishable no
+    matter which one got clicked."""
+    from zoneinfo import ZoneInfo
+    import datetime as _dt2
     out = []
     for g in groups:
         suf = (g.get("ContestStartTimeSuffix") or "").strip().strip("()")
         if any(k in suf.lower() for k in _NONCLASSIC):
             continue
-        if date and (g.get("StartDate") or "")[:10] != date:
-            continue
-        out.append((suf or "Main", g.get("DraftGroupId"), (g.get("StartDate") or "")[11:16], g.get("GameCount")))
+        start = g.get("StartDate") or ""
+        if date:
+            if len(start) < 16:
+                continue
+            try:
+                y, mo, d = int(start[0:4]), int(start[5:7]), int(start[8:10])
+                h, mi = int(start[11:13]), int(start[14:16])
+                dt_utc = _dt2.datetime(y, mo, d, h, mi, tzinfo=ZoneInfo("UTC"))
+                et_date = dt_utc.astimezone(ZoneInfo("America/New_York")).date().isoformat()
+            except (ValueError, IndexError):
+                et_date = start[:10]
+            if et_date != date:
+                continue
+        out.append((suf or "Main", g.get("DraftGroupId"), start[11:16], g.get("GameCount")))
     return sorted(out, key=lambda x: x[2])
 
 

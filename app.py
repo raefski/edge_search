@@ -139,8 +139,11 @@ def make_client(live: bool) -> OddsAPIClient:
 
 # ── cached wrappers (Streamlit session cache; the "Refresh" button clears it) ─
 @st.cache_data(ttl=300, show_spinner=False)
-def cached_slate_names(_nonce: int) -> list[tuple]:
-    return dfs.list_slate_names(dfs.mlb_draft_groups())
+def cached_slate_names(date: str, _nonce: int) -> list[tuple]:
+    # Filtered to `date` (ET-aware, see list_slate_names) -- previously showed
+    # every upcoming slate across every date mixed together with no way to
+    # tell them apart, since the label only ever showed a bare HH:MM.
+    return dfs.list_slate_names(dfs.mlb_draft_groups(), date=date)
 
 
 @st.cache_data(ttl=120, show_spinner=False)
@@ -248,12 +251,19 @@ with st.sidebar:
 
     names = []
     try:
-        names = cached_slate_names(0)
+        names = cached_slate_names(slate_date, 0)
     except Exception as e:
         st.caption(f"(couldn't list slates: {e})")
     labels = ["Main (auto)"] + [f"{n}  {s}Z ({_et_label(slate_date, s)})  {gc}g" for n, i, s, gc in names]
     choice = st.selectbox("Slate", labels, index=0)
-    draft_group = None if choice == "Main (auto)" else names[labels.index(choice) - 1][0]
+    # the numeric draft-group id, NOT the bare name -- found live 2026-07-18:
+    # DK can post two same-named slates (e.g. two "Turbo"s at different
+    # times, or even different dates before the date filter above existed).
+    # Passing the NAME made every option in this dropdown resolve through
+    # build_slate's own independent "soonest future, most games" tie-break,
+    # completely ignoring which specific row was actually clicked -- the
+    # dropdown looked precise but wasn't. The id pins the EXACT slate chosen.
+    draft_group = None if choice == "Main (auto)" else names[labels.index(choice) - 1][1]
 
     iters = st.slider("Optimizer restarts", 200, 3000, 800, step=200,
                       help="More restarts = closer to optimal, a bit slower.")

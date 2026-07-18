@@ -1109,10 +1109,67 @@ too; a normal slate with just some early/marketless events does NOT falsely trig
 
 89 tests pass (up from 87).
 
-## 25. Verifiable, Not Just Asserted
+## 25. Two Recurring Gaps, Both Closed: Sub-Slate Forward-Testing and the Slate Picker's Real Bug
 
-- **Test suite**: 89 tests, all passing (`pytest -q`), including regression tests for
-  every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, §22, and §24 — each constructed to fail against the pre-fix code and pass
+The user shared real Night-slate contest results (cash + GPP, 2026-07-17) and separately reported a
+live `slate_mismatch` error trying to build a Turbo slate ("resolved slate claims 7 game(s) but
+salaries cover 16 teams") plus a phone build that didn't pull pitcher props. Both threads led
+somewhere real.
+
+**Sub-slate builds were never logged anywhere — the second time this has cost real data.** A named
+sub-slate (Turbo/Night/Afternoon, `is_main=False`) only ever wrote its lineup file, never its
+projections — §19 already lost a cash slate's data to this exact gap on 2026-07-10, flagged as
+"worth doing if small/cash slates are going to be a regular source of data." They are: the 2026-07-17
+Night slate (cash 8.1st percentile, GPP 84.0th — a real, useful split result) hit the identical wall.
+Fixed: `log_forward_test` now writes sub-slate projections to `data/dfs_proj_log_<date>_g<gid>.csv`;
+`dfs_calibration.py::load_proj_log()` merges these in alongside the main log. This doesn't recover
+7/10 or 7/17 (the fix is forward-only), but no future played sub-slate should lose its data again.
+
+**Found and fixed while wiring that in: a stray verification build could contaminate real ROI
+numbers.** A Main-slate build logged from local testing on 2026-07-17 sat under the same date the
+user's real Night slate was later played and contested. `dfs_roi_backtest.py`'s ground-truth date
+matching correctly found *a* date match — but silently scored the wrong slate's players against the
+Night contest's real leaderboard, since nothing checked that the "matching date" lineup was actually
+for the *same slate* as the contest. Checked empirically against every date already on record: a
+genuinely correct match always shows 9/10 or 10/10 player overlap with the contest's own ownership
+board; the wrong-slate case measured 5/10 and 0/10. Added `lineup_matches_contest()` — anything below
+"at most one player missing" is now skipped with a clear message instead of silently printing a
+meaningless score.
+
+**The `slate_mismatch` warning did its job — investigating it surfaced the real, deeper bug.** Couldn't
+reproduce the user's exact historical numbers (DK's lobby had already moved on by the time this was
+investigated), but building today's actual current Turbo slate directly (by numeric id) came back
+completely clean — correct team count, a real live pull, no mismatch. That pointed at the picker
+itself, not the resolution logic: `app.py`'s slate dropdown built its options from `(name, id, time,
+games)` tuples but passed **the bare name** to `build_slate`, not the id. DK can post two same-named
+slates (confirmed same-day duplicates exist right now: two real "Turbo" slates today). The dropdown
+*looked* like it was letting you pick a specific slate — each row showed a distinct time — but every
+row resolved through `build_slate`'s own independent "soonest future, most games" tie-break,
+completely ignoring which one was actually clicked. Fixed: the dropdown now passes the numeric id.
+
+**A second, compounding bug in the same picker, found while fixing the first:** the dropdown's own
+slate list was never filtered by the selected date at all — it mixed every upcoming slate across
+every date together, distinguishable only by a bare `HH:MM` with no date shown. `list_slate_names()`
+now filters by date, but naively (`StartDate[:10] == date`) would have silently hidden a real slate
+from "today"'s list: anything starting after ~8pm ET is already tomorrow in UTC (confirmed live: a
+"Late Night" slate at 02:05 UTC is unambiguously tonight's slate in ET, but a UTC-string-prefix
+filter would exclude it from today entirely). Fixed with a proper ET (`America/New_York`) calendar-
+date comparison instead of a raw string match.
+
+**Verified live, not just unit-tested:** relaunched the app after all four fixes. The dropdown for
+today now shows exactly the real, distinct, currently-open slates (Night, Late Night, Turbo, Main —
+no cross-date mixing, no duplicate ambiguity); selecting the Turbo option built cleanly with the
+correct 6 teams / 3 games, no `slate_mismatch`, no errors. Six new tests cover the ET-aware date
+filter, same-day duplicate slates staying distinct and selectable, the sub-slate proj-log write/merge,
+and the ROI backtest's wrong-slate detection at both a real match (10/10, 9/10) and the actual
+measured mismatch (5/10, 0/10).
+
+94 tests pass (up from 89).
+
+## 26. Verifiable, Not Just Asserted
+
+- **Test suite**: 94 tests, all passing (`pytest -q`), including regression tests for
+  every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, §22, §24, and §25 — each constructed to fail against the pre-fix code and pass
   against the fix, not just exercise the happy path.
 - **Calibration dashboard** (live, updates as new contest data comes in):
   actual-vs-predicted scatter plots for points and ownership, pitchers and hitters

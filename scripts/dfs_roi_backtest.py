@@ -42,16 +42,42 @@ def parse_leaderboard(path):
 
 
 def load_our_lineup(date):
-    """-> {"cash": [(player, salary)], "gpp": [...]} from data/dfs_lineups_<date>.csv"""
+    """-> {"cash": [(player, salary)], "gpp": [...]} from data/dfs_lineups_<date>.csv,
+    falling back to a sub-slate's data/dfs_lineups_<date>_g<gid>.csv if no main-slate
+    build was ever logged for this date -- added 2026-07-18 after a real played Night
+    slate had no main-slate file at all, so its ROI could never be checked. Ambiguous
+    if multiple different sub-slates were built the same date (rare); picks the first
+    found rather than guessing which one was actually entered."""
     p = ROOT / f"data/dfs_lineups_{date}.csv"
     if not p.exists():
-        return None
+        subs = sorted(glob.glob(str(ROOT / f"data/dfs_lineups_{date}_g*.csv")))
+        if not subs:
+            return None
+        p = Path(subs[0])
     out = {"cash": [], "gpp": []}
     for row in csv.DictReader(open(p)):
         mode = row.get("mode")
         if mode in out:
             out[mode].append(row["player"])
     return out
+
+
+def lineup_matches_contest(names, contest) -> bool:
+    """Is `names` (our built lineup for some mode) actually plausible for
+    THIS contest, or a different slate that happens to share the same date?
+
+    Found live 2026-07-18: load_our_lineup can return a REAL lineup file that
+    exists for a date but belongs to a DIFFERENT slate (a Main-slate
+    verification build sitting under the same date a Night slate was
+    actually played and contested) -- ground-truth date matching alone can't
+    catch this, since it's the right DATE, just the wrong SLATE. Checked
+    empirically across every genuinely-matching date on record: overlap
+    between our lineup and the contest's own ownership board is always 9/10
+    or 10/10 (one real near-miss from a name-normalization edge case). The
+    wrong-slate case measured 5/10 and 0/10 -- cleanly separable. Anything
+    below "at most one missing" is treated as a mismatch."""
+    overlap = sum(1 for n in names if norm(n) in contest)
+    return overlap >= len(names) - 1
 
 
 def rank_for_score(score, leaderboard):
@@ -93,6 +119,11 @@ def main():
         for mode in ("cash", "gpp"):
             names = our[mode]
             if not names:
+                continue
+            if not lineup_matches_contest(names, contest):
+                overlap = sum(1 for n in names if norm(n) in contest)
+                print(f"{date:12} {mode:5} -- lineup file matches this date but only {overlap}/{len(names)} "
+                      "players appear in this contest's own board (likely a different slate that day) -- skipping")
                 continue
             act = load_proj_log_actuals(date)
             score = sum(act.get(norm(n), 0.0) for n in names)

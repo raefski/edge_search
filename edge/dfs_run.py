@@ -38,6 +38,14 @@ def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
       the MAIN slate — a sub-slate like Turbo/Night must not clobber it with a
       smaller player set). Re-running for the same date overwrites that date's
       rows in place; other dates are untouched.
+    * data/dfs_proj_log_<date>_g<gid>.csv: the SAME projections for a sub-slate
+      build, instead of just being dropped. Found live 2026-07-10 (a cash
+      Night slate) and again 2026-07-17 (a Night slate the user actually
+      played, GPP finish 84th percentile / cash finish 8th) -- both times a
+      real forward-test opportunity was lost because sub-slate projections
+      were never logged anywhere at all, only main-slate ones. dfs_calibration.py
+      now scans these files too, so any played sub-slate can be graded like a
+      main slate going forward (it just can't recover the two dates above).
     * data/dfs_lineups_<date>[_g<gid>].csv: the built CASH/GPP lineups, if any.
 
     games: DK's own declared GameCount for the resolved draft group (from
@@ -52,21 +60,35 @@ def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
     """
     result = {"logged_projections": False, "n": 0, "lineup_file": None}
     (root / "data").mkdir(parents=True, exist_ok=True)
+    cols = ("date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf", "dk_fppg", "games")
+
+    def _write_rows(fh, rows):
+        w = csv.writer(fh)
+        w.writerow(list(cols))
+        for r in rows:
+            w.writerow([r.get(k, "") for k in cols])
+
+    def _pool_rows():
+        for p in pool:
+            yield {"date": date, "player": p["name"], "team": p["team"],
+                  "pos": "/".join(sorted(p["pos"])), "salary": p["salary"], "proj": p["proj"],
+                  "ceiling": p.get("ceiling"), "own": p.get("own", ""), "conf": p["conf"],
+                  "dk_fppg": p.get("dk_fppg", ""), "games": games if games is not None else ""}
 
     if is_main:
         plog = root / "data/dfs_proj_log.csv"
         prior = [r for r in csv.DictReader(open(plog))] if plog.exists() else []
-        cols = ("date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf", "dk_fppg", "games")
         with plog.open("w", newline="") as fh:
-            w = csv.writer(fh)
-            w.writerow(list(cols))
-            for r in prior:
-                if r["date"] != date:
-                    w.writerow([r.get(k, "") for k in cols])
-            for p in pool:
-                w.writerow([date, p["name"], p["team"], "/".join(sorted(p["pos"])), p["salary"],
-                            p["proj"], p.get("ceiling"), p.get("own", ""), p["conf"], p.get("dk_fppg", ""),
-                            games if games is not None else ""])
+            _write_rows(fh, [r for r in prior if r["date"] != date] + list(_pool_rows()))
+        result["logged_projections"] = True
+        result["n"] = len(pool)
+    else:
+        # sub-slate: a fixed per-(date,gid) file, so re-running the SAME
+        # sub-slate build overwrites in place (like the main log does per
+        # date) without clobbering a DIFFERENT sub-slate or the main log.
+        splog = root / f"data/dfs_proj_log_{date}_g{gid}.csv"
+        with splog.open("w", newline="") as fh:
+            _write_rows(fh, list(_pool_rows()))
         result["logged_projections"] = True
         result["n"] = len(pool)
 

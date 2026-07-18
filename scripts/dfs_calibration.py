@@ -94,11 +94,21 @@ def parse_contest_file(path):
 
 
 def load_proj_log():
-    """-> {date: {norm_name: row_dict}}"""
+    """-> {date: {norm_name: row_dict}}. Reads the shared main-slate log PLUS
+    any per-(date,gid) sub-slate logs (data/dfs_proj_log_<date>_g<gid>.csv) --
+    added 2026-07-18 after a sub-slate (Night) build the user actually played
+    was invisible to calibration entirely, the same gap that had already lost
+    a cash slate's data on 2026-07-10. Sub-slate rows merge in per player;
+    since a sub-slate's games essentially never overlap the main slate's on
+    the same date, this is a plain union in practice, not a real conflict."""
     by_date = defaultdict(dict)
     with open(ROOT / "data/dfs_proj_log.csv", newline="") as fh:
         for row in csv.DictReader(fh):
             by_date[row["date"]][norm(row["player"])] = row
+    for f in sorted(glob.glob(str(ROOT / "data/dfs_proj_log_*_g*.csv"))):
+        with open(f, newline="") as fh:
+            for row in csv.DictReader(fh):
+                by_date[row["date"]].setdefault(norm(row["player"]), row)
     return by_date
 
 

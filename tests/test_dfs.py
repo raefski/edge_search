@@ -232,10 +232,17 @@ def test_log_forward_test_writes_proj_log_and_lineups(tmp_path):
     # re-running for a later date preserves the earlier date's row
     log_forward_test(tmp_path, "2026-07-07", True, 123, [], None, None)
     assert "2026-07-06" in plog.read_text() and "AAA1" in plog.read_text()
-    # a sub-slate (is_main=False) must not touch the main proj log
+    # a sub-slate (is_main=False) must not touch the main proj log...
     before = plog.read_text()
-    log_forward_test(tmp_path, "2026-07-08", False, 999, pool, None, None)
+    logged_sub = log_forward_test(tmp_path, "2026-07-08", False, 999, pool, None, None)
     assert plog.read_text() == before
+    # ...but its own projections must still be logged SOMEWHERE (2026-07-18
+    # fix: a sub-slate build the user actually played -- a Night slate --
+    # was invisible to calibration entirely, since sub-slates used to not
+    # log projections at all, only lineups).
+    assert logged_sub["logged_projections"] and logged_sub["n"] == 1
+    splog = tmp_path / "data/dfs_proj_log_2026-07-08_g999.csv"
+    assert splog.exists() and "AAA1" in splog.read_text()
 
 
 def test_log_forward_test_games_column(tmp_path):
@@ -292,6 +299,41 @@ def test_resolve_draft_group_prefers_more_games_on_tied_start_time(monkeypatch):
     assert g["DraftGroupId"] == 2, "must prefer the 14-game group over the 6-game duplicate"
 
 
+def test_list_slate_names_date_filter_is_et_aware():
+    # Regression, live 2026-07-18: a naive `StartDate[:10] == date` comparison
+    # would silently drop a late-night slate from "today"'s listing, since a
+    # slate starting after 8pm ET is already tomorrow in UTC. A Night slate
+    # at 01:00 UTC on July 19 is unambiguously "July 18 night" in ET and must
+    # still show up when the user has 2026-07-18 selected.
+    from edge import dfs
+
+    groups = [
+        {"DraftGroupId": 1, "ContestStartTimeSuffix": "(Night)", "StartDate": "2026-07-19T01:00:00.0000000Z", "GameCount": 4},
+        {"DraftGroupId": 2, "ContestStartTimeSuffix": "(Turbo)", "StartDate": "2026-07-18T18:20:00.0000000Z", "GameCount": 3},
+        {"DraftGroupId": 3, "ContestStartTimeSuffix": "(Turbo)", "StartDate": "2026-07-19T18:20:00.0000000Z", "GameCount": 3},
+    ]
+    names = dfs.list_slate_names(groups, date="2026-07-18")
+    ids = {n[1] for n in names}
+    assert 1 in ids, "the UTC-crossing Night slate belongs to July 18 in ET and must be included"
+    assert 2 in ids, "today's own Turbo slate must be included"
+    assert 3 not in ids, "tomorrow's same-named Turbo slate must NOT be included"
+
+
+def test_list_slate_names_distinguishes_same_name_same_day():
+    # Companion to the app-level fix (app.py now passes the numeric id from
+    # this list, not the bare name) -- list_slate_names itself must still
+    # expose BOTH same-named same-day slates as distinct rows so there's an
+    # id to pick between in the first place.
+    from edge import dfs
+
+    groups = [
+        {"DraftGroupId": 10, "ContestStartTimeSuffix": "(Turbo)", "StartDate": "2026-07-18T18:10:00.0000000Z", "GameCount": 4},
+        {"DraftGroupId": 11, "ContestStartTimeSuffix": "(Turbo)", "StartDate": "2026-07-18T18:20:00.0000000Z", "GameCount": 3},
+    ]
+    names = dfs.list_slate_names(groups, date="2026-07-18")
+    assert {n[1] for n in names} == {10, 11}, "both same-day Turbo slates must remain distinct, separately-selectable rows"
+
+
 def test_resolve_slate_auto_main_includes_games(monkeypatch):
     # Bug fix: the auto "Main (auto)" path (draft_group=None, the app's
     # default) never populated meta["games"]/meta["start"] -- only the
@@ -325,6 +367,60 @@ def test_load_contest_type_manifest(tmp_path, monkeypatch):
     monkeypatch.setattr(cal, "CONTEST_META_PATH", manifest)
     assert cal.load_contest_type("data/contest-standings-12345.csv") == "cash"
     assert cal.load_contest_type("data/contest-standings-99999.csv") == "unknown"
+
+
+def test_load_proj_log_merges_subslate_files(tmp_path, monkeypatch):
+    # Regression, 2026-07-18: a sub-slate build (Night) the user actually
+    # played was invisible to calibration entirely, since sub-slate
+    # projections were never logged anywhere. load_proj_log must now merge
+    # in any data/dfs_proj_log_<date>_g<gid>.csv alongside the main log.
+    import scripts.dfs_calibration as cal
+    monkeypatch.setattr(cal, "ROOT", tmp_path)
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "dfs_proj_log.csv").write_text(
+        "date,player,team,pos,salary,proj,ceiling,own,conf,dk_fppg,games\n"
+        "2026-07-17,MainPlayer,AAA,OF,4000,8.0,10.0,5.0,H-slot1,,8\n")
+    (tmp_path / "data" / "dfs_proj_log_2026-07-17_g999.csv").write_text(
+        "date,player,team,pos,salary,proj,ceiling,own,conf,dk_fppg,games\n"
+        "2026-07-17,NightPlayer,BBB,OF,3000,6.0,8.0,4.0,H-slot2,,4\n")
+
+    by_date = cal.load_proj_log()
+    names = set(by_date["2026-07-17"].keys())
+    assert "mainplayer" in names and "nightplayer" in names
+
+
+def test_lineup_matches_contest_catches_wrong_slate(monkeypatch):
+    # Regression, live 2026-07-18: a lineup file existing for the right DATE
+    # but the WRONG SLATE (a Main-slate test build scored against a Night
+    # slate's real contest) got silently scored as if it were meaningful --
+    # 0/10 and 5/10 real overlap in the actual incident. Real matching dates
+    # measured 9/10-10/10 on record; the cutoff sits between the two.
+    from scripts.dfs_roi_backtest import lineup_matches_contest
+    contest = {"a": {}, "b": {}, "c": {}, "d": {}, "e": {},
+              "f": {}, "g": {}, "h": {}, "i": {}, "j": {}}
+    ten_of_ten = list("abcdefghij")
+    nine_of_ten = list("abcdefghix")   # 1 miss -- still a real match (name variant etc.)
+    five_of_ten = list("abcdexxxxx")   # the actual wrong-slate case measured
+    zero_of_ten = list("xxxxxxxxxx")
+    assert lineup_matches_contest(ten_of_ten, contest) is True
+    assert lineup_matches_contest(nine_of_ten, contest) is True
+    assert lineup_matches_contest(five_of_ten, contest) is False
+    assert lineup_matches_contest(zero_of_ten, contest) is False
+
+
+def test_load_our_lineup_falls_back_to_subslate(tmp_path, monkeypatch):
+    # Companion fix in dfs_roi_backtest.py: ROI checking must also find a
+    # sub-slate's lineup file when no main-slate build was ever logged for
+    # that date.
+    import scripts.dfs_roi_backtest as roi
+    monkeypatch.setattr(roi, "ROOT", tmp_path)
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "dfs_lineups_2026-07-17_g999.csv").write_text(
+        "mode,slot,player,team,salary,proj,ceiling,own,pos,game,conf\n"
+        "cash,OF,NightPlayer,BBB,3000,6.0,8.0,4.0,OF,g1,H-slot2\n")
+
+    out = roi.load_our_lineup("2026-07-17")
+    assert out is not None and out["cash"] == ["NightPlayer"]
 
 
 def test_gamma_sweep_excludes_cash_contests(tmp_path, monkeypatch):
