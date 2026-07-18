@@ -1,0 +1,21 @@
+mode,slot,player,team,salary,proj,ceiling,own,pos,game,conf
+cash,P,Chris Sale,ATL,10000,25.7,25.7,65.0,P,6157198,P-prop
+cash,P,Sandy Alcantara,MIA,7800,15.8,15.8,15.4,P,6158788,P-prop
+cash,C,Iván Herrera,STL,3900,9.3,10.5,11.3,C,825060,H-slot2
+cash,1B,Jonathan Aranda,TB,4200,8.7,10.2,6.2,1B,824737,H-slot2
+cash,2B,JJ Wetherholt,STL,4400,9.1,10.6,11.7,2B,825060,H-slot1
+cash,3B,Manny Machado,SD,4500,8.5,10.6,6.4,3B,824090,H-slot4
+cash,SS,Geraldo Perdomo,ARI,3800,9.1,9.8,12.5,SS,825060,H-slot2
+cash,OF,Esmerlyn Valdez,PIT,3700,9.1,13.2,6.7,OF,824414,H-slot4*PROJ
+cash,OF,Corbin Carroll,ARI,5000,10.1,11.5,7.5,OF,825060,H-slot3
+cash,OF,Lourdes Gurriel Jr.,ARI,2700,7.4,7.8,12.1,OF,825060,H-slot6
+gpp,P,Seth Lugo,KC,6600,12.8,12.8,11.3,P,6158408,P-prop
+gpp,P,Cal Quantrill,TEX,5700,9.3,9.3,3.4,P,6157198,P-prop
+gpp,C,Adley Rutschman,BAL,4200,6.9,8.2,5.4,C,824170,H-slot2
+gpp,1B,Pete Alonso,BAL,5900,8.0,10.2,2.5,1B,824170,H-slot4
+gpp,2B,Jackson Holliday,BAL,3700,5.5,6.7,2.5,2B,824170,H-slot9
+gpp,3B,Joey Ortiz,MIL,2400,5.3,5.7,6.4,3B/SS,823766,H-slot9
+gpp,SS,Gunnar Henderson,BAL,5800,8.7,10.5,5.5,SS,824170,H-slot1
+gpp,OF,Taylor Ward,BAL,4800,7.4,8.0,4.0,OF,824170,H-slot3
+gpp,OF,Jackson Chourio,MIL,5700,8.7,10.7,4.8,OF,823766,H-slot2
+gpp,OF,Jake Bauers,MIL,5100,7.8,9.9,2.9,1B/OF,823766,H-slot5
