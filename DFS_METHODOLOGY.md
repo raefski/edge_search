@@ -1072,10 +1072,47 @@ hurt, or are neutral for real placement; it IS enough to say the projection laye
 as backtested, which was the open question after so much model surgery in one sitting. Keep
 accumulating dates before drawing a construction-quality conclusion from percentile alone.
 
-## 24. Verifiable, Not Just Asserted
+## 24. "I Had My Key Entered" — A Silent Failure With No Way to Tell Which of Four Causes It Was
 
-- **Test suite**: 87 tests, all passing (`pytest -q`), including regression tests for
-  every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, and §22 — each constructed to fail against the pre-fix code and pass
+The user reported trying to build lineups from the phone with their API key entered, and getting no
+prop data and no lineups. Tested the reported key directly against the live Odds API at the same
+time: it worked fine (28 real events came back), ruling out an expired key or an Odds-API outage.
+
+**Root cause 1 — a real UI ordering bug.** The sidebar rendered the "Pull fresh pitcher props" button
+*before* the `ODDS_API_KEY` text input that actually commits a typed key into `os.environ`. Across two
+separate Streamlit reruns this doesn't matter (`os.environ` persists between them), but it's exactly
+the kind of interaction-ordering hazard a mobile browser can hit if a key-entry and a button-tap don't
+resolve into two cleanly separate reruns. Fixed by moving the key input above both action buttons —
+correct regardless of whether this was the exact mechanism this time.
+
+**Root cause 2, the more important one — every possible failure degraded identically.** `build_slate`
+caught `get_events()` failures and per-event `get_event_odds()` failures with a bare `except Exception`
+and silently produced an empty pitcher pool either way. That means "no key," "a key that's present but
+rejected by the API (401)," "credit floor hit," and "a real network outage" were **all indistinguishable
+from each other and from the completely normal 'DK hasn't posted props yet' case** — exactly the
+scenario the user hit: a key that looked entered, with zero way for the app (or the user, or this
+investigation) to tell what actually went wrong.
+
+**Fixed:** `build_slate` now captures the real exception from `get_events()` and — separately — tracks
+whether *every single* per-event odds call failed (a systematic signal: a normal slate always has SOME
+events without markets posted yet, so 100% failure is qualitatively different from "some events are
+early"). Either case populates a new `pitcher_fetch_error` string in the result, and both the app and
+CLI now show it as a distinct, specific error — "pitcher props pull failed: `<real reason>`" — instead
+of folding it into the generic timing-based placeholder message.
+
+**Verified live, not just unit-tested:** relaunched the app via the local driver (§20) with the
+reordered sidebar, confirmed CACHE mode still shows the correct benign placeholder (no false
+`pitcher_fetch_error`), then clicked "Pull fresh pitcher props" for real — 8 pitchers priced, 82 real
+credits spent, a complete lineup built, no errors. Three new tests lock in the distinction: a
+get_events-level failure surfaces its real message; a systematic (100%) per-event failure surfaces
+too; a normal slate with just some early/marketless events does NOT falsely trigger the new error path.
+
+89 tests pass (up from 87).
+
+## 25. Verifiable, Not Just Asserted
+
+- **Test suite**: 89 tests, all passing (`pytest -q`), including regression tests for
+  every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, §22, and §24 — each constructed to fail against the pre-fix code and pass
   against the fix, not just exercise the happy path.
 - **Calibration dashboard** (live, updates as new contest data comes in):
   actual-vs-predicted scatter plots for points and ownership, pitchers and hitters

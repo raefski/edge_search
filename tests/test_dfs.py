@@ -607,6 +607,91 @@ def test_build_slate_survives_get_events_failure(monkeypatch):
     assert res.get("error") is None
     assert res["pitchers"] == []          # degraded, not crashed
     assert res["salaries_n"] == 1
+    # Regression, live 2026-07-17: a user reported a key entered but no props
+    # pulled -- "no key," "bad key," and "API outage" all used to degrade
+    # identically with zero way to tell which happened. The real reason must
+    # now be captured, not just silently swallowed.
+    assert "no ODDS_API_KEY configured" in res["pitcher_fetch_error"]
+
+
+def test_build_slate_reports_systematic_event_odds_failure(monkeypatch):
+    # Distinct from the get_events-level failure above: get_events() itself
+    # succeeds (real events come back), but EVERY per-event odds call fails
+    # -- e.g. a key that's present but rejected (401), not merely absent.
+    # This must surface as pitcher_fetch_error too, not just an empty pool
+    # indistinguishable from "props haven't posted yet."
+    from edge import dfs, dfs_run
+
+    class FakeClient:
+        spent_this_session = 0
+
+        def get_events(self, sport):
+            return [{"id": "ev1"}, {"id": "ev2"}]
+
+        def get_event_odds(self, sport, event_id, markets, regions):
+            raise RuntimeError("401 Unauthorized")
+
+        def remaining_credits(self):
+            return None
+
+    monkeypatch.setattr(dfs, "mlb_draft_groups", lambda: [
+        {"DraftGroupId": 1, "ContestStartTimeSuffix": "", "StartDate": "2026-07-17T20:00:00", "GameCount": 1}])
+    monkeypatch.setattr(dfs, "fetch_draftables", lambda gid: {
+        "aaa1": {"name": "AAA1", "salary": 4000, "position": "OF", "team": "AAA",
+                "game": "g1", "matchup": "", "start": "", "dk_fppg": None}})
+    monkeypatch.setattr(dfs, "team_game_status", lambda date: {})
+    monkeypatch.setattr(dfs, "pooled_skill_rates", lambda *a, **k: ({}, 1.7))
+    monkeypatch.setattr(dfs, "park_runs", lambda yr: {})
+    monkeypatch.setattr(dfs, "pitcher_k9", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "pitcher_era", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "season_hitting", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "lineups_for_date", lambda date: {})
+    monkeypatch.setattr(dfs_run, "team_abbrev_map", lambda: {})
+
+    res = dfs_run.build_slate(FakeClient(), "2026-07-17", iters=50)
+    assert res["pitchers"] == []
+    assert res["pitcher_fetch_error"] is not None
+    assert "401" in res["pitcher_fetch_error"]
+
+
+def test_build_slate_no_error_when_some_events_lack_markets(monkeypatch):
+    # The normal, benign case (a slate where SOME events just don't have
+    # props posted yet) must NOT be flagged as pitcher_fetch_error -- only
+    # a systematic (all-events) failure should be.
+    from edge import dfs, dfs_run
+
+    class FakeClient:
+        spent_this_session = 0
+        _calls = [0]
+
+        def get_events(self, sport):
+            return [{"id": "ev1"}, {"id": "ev2"}]
+
+        def get_event_odds(self, sport, event_id, markets, regions):
+            self._calls[0] += 1
+            if self._calls[0] == 1:
+                raise RuntimeError("404 no markets posted yet")
+            return {"bookmakers": []}   # no draftkings book -- also a normal, benign miss
+
+        def remaining_credits(self):
+            return None
+
+    monkeypatch.setattr(dfs, "mlb_draft_groups", lambda: [
+        {"DraftGroupId": 1, "ContestStartTimeSuffix": "", "StartDate": "2026-07-17T20:00:00", "GameCount": 1}])
+    monkeypatch.setattr(dfs, "fetch_draftables", lambda gid: {
+        "aaa1": {"name": "AAA1", "salary": 4000, "position": "OF", "team": "AAA",
+                "game": "g1", "matchup": "", "start": "", "dk_fppg": None}})
+    monkeypatch.setattr(dfs, "team_game_status", lambda date: {})
+    monkeypatch.setattr(dfs, "pooled_skill_rates", lambda *a, **k: ({}, 1.7))
+    monkeypatch.setattr(dfs, "park_runs", lambda yr: {})
+    monkeypatch.setattr(dfs, "pitcher_k9", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "pitcher_era", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "season_hitting", lambda *a, **k: {})
+    monkeypatch.setattr(dfs, "lineups_for_date", lambda date: {})
+    monkeypatch.setattr(dfs_run, "team_abbrev_map", lambda: {})
+
+    res = dfs_run.build_slate(FakeClient(), "2026-07-17", iters=50)
+    assert res["pitcher_fetch_error"] is None
 
 
 def test_build_slate_flags_team_count_mismatch(monkeypatch):

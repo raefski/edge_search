@@ -98,6 +98,10 @@ def _log_and_optimize(args, res):
     else:
         print(f"(sub-slate draft group {gid}: not overwriting the main forward-test log)")
 
+    if res.get("pitcher_fetch_error"):
+        print(f"⚠ pitcher props pull FAILED: {res['pitcher_fetch_error']}  "
+              "(not the normal \"DK hasn't posted yet\" case -- check your API key/credits)")
+
     if cash is None and gpp is None:
         print("pool too thin to build lineups (lineups not posted yet?) — pitchers logged; re-run near lock.")
         return

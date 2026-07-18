@@ -207,6 +207,23 @@ def _entry_csv_bytes(rows: list[dict]) -> bytes:
 with st.sidebar:
     st.header("⚾ DK MLB DFS")
 
+    # Key input BEFORE the action buttons -- found 2026-07-17: a user reported
+    # "I had my API key entered" but a live pull still didn't spend credits or
+    # pull props. Tested that exact key directly against the real Odds API at
+    # the same time: it worked fine (28 real events), ruling out an expired/
+    # bad key or an API outage. The most likely remaining explanation is a
+    # mobile-browser interaction race -- this code used to check
+    # os.environ["ODDS_API_KEY"] in the "Pull fresh props" button (rendered
+    # FIRST) before the text_input that actually sets it (rendered AFTER),
+    # so a key typed and a button tapped in a way the phone browser merges
+    # into a single interaction could see the button's check run against a
+    # not-yet-committed value. Reordering removes that window entirely,
+    # regardless of whether it was the actual cause this time.
+    api_key = st.text_input("ODDS_API_KEY", value=os.environ.get("ODDS_API_KEY", ""),
+                            type="password", help="Stored only for this session.")
+    if api_key:
+        os.environ["ODDS_API_KEY"] = api_key
+
     if st.button("🔄 Refresh (free)", use_container_width=True,
                  help="Re-fetch salaries + confirmed lineups (0 credits). Props stay from cache."):
         st.cache_data.clear()
@@ -220,18 +237,13 @@ with st.sidebar:
             # come back with 0 pitchers, no explanation of why) -- clear
             # upfront instead, since the whole point of tapping this button is
             # to spend credits on a real pull, not sit at 0.
-            st.error("No ODDS_API_KEY set — paste your key in the box below first, then tap this again.")
+            st.error("No ODDS_API_KEY set — paste your key above first, then tap this again.")
         else:
             st.cache_data.clear()
             st.session_state.live = True
             st.rerun()
 
     st.divider()
-    api_key = st.text_input("ODDS_API_KEY", value=os.environ.get("ODDS_API_KEY", ""),
-                            type="password", help="Stored only for this session.")
-    if api_key:
-        os.environ["ODDS_API_KEY"] = api_key
-
     slate_date = st.date_input("Slate date", value=datetime.date.today()).isoformat()
 
     names = []
@@ -389,6 +401,18 @@ def render_app() -> None:
         st.markdown("<div class='summary'>* <b>proj</b> = projected batting order (team's lineup not "
                     "posted yet). Lineups can build now; tap 🔄 Refresh as orders drop, then use "
                     "<b>Late-swap</b> below.</div>", unsafe_allow_html=True)
+
+    if res.get("pitcher_fetch_error"):
+        # Distinct from the generic "props haven't posted yet" placeholder
+        # below -- this means the live pull actually FAILED (bad/rejected
+        # key, credit floor, network/API error), not just "too early."
+        # Found live 2026-07-17: a user reported a key entered but no props
+        # pulled, and every possible cause (no key, bad key, API outage)
+        # used to degrade identically to a silent empty pitcher pool with no
+        # way to tell which one happened.
+        st.error(f"⚠️ Pitcher props pull failed: `{res['pitcher_fetch_error']}` — this is not the "
+                 "normal \"DK hasn't posted props yet\" case. If you just entered your key, verify "
+                 "it's correct (no extra spaces) and tap **💰 Pull fresh pitcher props** again.")
 
     lineups_ready = res.get("cash") is not None or res.get("gpp") is not None
     show_ph = preview or not lineups_ready

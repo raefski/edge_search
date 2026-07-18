@@ -219,11 +219,18 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
                      for lu in lineups.values() if lu.get("opp_team_id")}
 
     pool = []
+    # Surfaced to the caller (not just swallowed) so "why are there 0
+    # pitchers" is answerable without re-deriving it by hand every time --
+    # found 2026-07-17: a user reported a key entered but no props pulled,
+    # and there was no way to tell from the app whether that meant "no key,"
+    # "key rejected," "network failure," or something else -- every one of
+    # those degraded identically to a silent empty pitcher pool.
+    pitcher_fetch_error = None
 
     # --- pitchers: from props (PAID; skipped when uncached in dry-run) ---
     try:
         events = client.get_events(SPORT)
-    except Exception:
+    except Exception as e:
         # get_events() is a real network call even in CACHE/dry-run mode (it's
         # cost=0, so dry_run doesn't gate it) -- a missing/invalid API key or a
         # transient network failure here used to crash the ENTIRE build,
@@ -234,15 +241,23 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
         # per-event handling just below -- one missing/failed piece degrades
         # to "no pitcher props this build," not a dead page.
         events = []
+        pitcher_fetch_error = f"{type(e).__name__}: {e}"
+    event_errors = 0
+    last_event_error = None
     for ev in events:
         try:
             pp = client.get_event_odds(SPORT, ev["id"], dfs.P_MARKETS, "us")
         except DryRunBlocked:
             continue
-        except Exception:
+        except Exception as e:
             # A single event's odds call failing (the Odds API 404s an event with
             # no markets posted yet, or a transient 429/500/timeout) must not take
-            # down the whole build — skip that one event and keep going.
+            # down the whole build — skip that one event and keep going. Tracked
+            # (not just swallowed) so a SYSTEMATIC failure (bad key, credit floor,
+            # network outage) is distinguishable from the normal "this one event
+            # just doesn't have markets yet" case.
+            event_errors += 1
+            last_event_error = f"{type(e).__name__}: {e}"
             continue
         dkp = next((b for b in pp.get("bookmakers", []) if b["key"] == "draftkings"), None)
         if not dkp:
@@ -261,6 +276,12 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
                          "team": info["team"], "game": info["game"],
                          "opp_team": team_opp_abbr.get(info["team"]), "conf": "P-prop",
                          "dk_fppg": info.get("dk_fppg")})
+
+    # every single event failing (not just some -- a normal day has SOME
+    # events with no markets posted yet) is the systematic-failure signal:
+    # bad/rejected key, credit floor hit, or a real network/API outage.
+    if events and event_errors == len(events) and pitcher_fetch_error is None:
+        pitcher_fetch_error = f"all {event_errors} event odds calls failed, e.g. {last_event_error}"
 
     # --- hitters: skill model over confirmed lineups (FREE) ---
     bullpen_cache_dir = root / "data/bullpen_cache"
@@ -391,4 +412,5 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
             "stack2_team": stack2_team,
             "cash": cash, "gpp": gpp, "all_teams": all_teams, "team_status": team_status,
             "excluded_teams": sorted(exclude_teams), "slate_mismatch": slate_mismatch,
+            "pitcher_fetch_error": pitcher_fetch_error,
             "spent": client.spent_this_session, "remaining": client.remaining_credits()}
