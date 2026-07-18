@@ -152,6 +152,14 @@ def cached_started(date: str, _nonce: int) -> dict:
     return {str(k): v for k, v in dfs_swap.game_started_map(date).items()}
 
 
+@st.cache_data(ttl=300, show_spinner=False)
+def cached_team_list(date: str, draft_group, _nonce: int) -> tuple[list, dict]:
+    """Cheap, exclude_teams-independent team discovery for the sidebar's
+    "Exclude teams" multiselect -- see edge.dfs_run.team_list_for_slate."""
+    all_teams, team_status, _error = dfs_run.team_list_for_slate(date, draft_group)
+    return all_teams, team_status
+
+
 @st.cache_data(ttl=600, show_spinner="Building slate… (salaries + lineups are free; props from cache)")
 def cached_build(date: str, draft_group, iters: int, live: bool, key_fingerprint: str,
                  exclude_teams: tuple = ()) -> dict:
@@ -268,11 +276,14 @@ with st.sidebar:
     iters = st.slider("Optimizer restarts", 200, 3000, 800, step=200,
                       help="More restarts = closer to optimal, a bit slower.")
 
-    # populated after each successful build (see below) -- empty on the very
-    # first load of a session, since we haven't built anything yet to learn
-    # the team list from.
-    _known_teams = st.session_state.get("all_teams", [])
-    _team_status = st.session_state.get("team_status", {})
+    # Learned fresh THIS run (see cached_team_list) rather than from
+    # st.session_state written by the previous build -- that used to leave
+    # this widget with "No options to select" on the very first build of a
+    # session, since nothing had run yet to populate session_state.
+    try:
+        _known_teams, _team_status = cached_team_list(slate_date, draft_group, 0)
+    except Exception:
+        _known_teams, _team_status = [], {}
     exclude_teams = st.multiselect(
         "Exclude teams (voided/postponed games)", options=_known_teams,
         format_func=lambda t: f"{t}  ⚠ {_team_status[t]}" if _team_status.get(t) else t,
@@ -355,12 +366,6 @@ def render_app() -> None:
     finally:
         # only spend once; any later manual refresh falls back to the disk cache.
         st.session_state.live = False
-
-    if res.get("all_teams"):
-        # feeds the sidebar multiselect's options on the NEXT rerun -- empty on
-        # the very first load, since nothing's been built yet to learn this from.
-        st.session_state["all_teams"] = res["all_teams"]
-        st.session_state["team_status"] = res["team_status"]
 
     if res.get("error"):
         st.error(f"{res['error']}. Available now: {', '.join(res.get('available', [])) or '—'}")

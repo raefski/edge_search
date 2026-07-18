@@ -163,6 +163,31 @@ def resolve_slate(draft_group, groups=None, date=None):
     }
 
 
+def team_list_for_slate(date, draft_group=None, groups=None) -> tuple[list[str], dict, str | None]:
+    """Cheap (free-endpoints-only, no optimizer) team discovery for a slate --
+    -> (all_teams, team_status, error). Lets a caller learn which teams are in
+    play (and their game-status flags) WITHOUT running the full paid/optimizer
+    build_slate pipeline, and without exclude_teams as an input (this answers
+    "what teams exist", not "build with these excluded").
+
+    Added 2026-07-18: the app's "Exclude teams" sidebar widget used to only
+    learn its options from st.session_state, written by the PREVIOUS build --
+    empty (and un-clickable, "No options to select") on the very first build
+    of a session, since nothing had run yet to populate it. This gives the
+    sidebar a same-run answer instead of a one-run-stale one.
+    """
+    groups = groups if groups is not None else dfs.mlb_draft_groups()
+    gid, is_main, meta = resolve_slate(draft_group, groups, date=date)
+    if gid is None:
+        return [], {}, meta.get("error")
+    salaries = dfs.fetch_draftables(gid)
+    if not salaries:
+        return [], {}, None
+    all_teams = sorted({info["team"] for info in salaries.values() if info.get("team")})
+    team_status = dfs.team_game_status(date)
+    return all_teams, team_status, None
+
+
 def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
     """Run the full pipeline for one slate and return a structured result dict.
 

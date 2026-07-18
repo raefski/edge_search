@@ -1212,11 +1212,48 @@ would now have — correctly — excluded).
 
 95 tests pass (up from 94).
 
-## 27. Verifiable, Not Just Asserted
+## 27. The Exclude-Teams Widget Had No Options On The First Build Of A Session
 
-- **Test suite**: 95 tests, all passing (`pytest -q`), including regression tests for
-  every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, §22, §24, §25, and §26 — each constructed to fail against the pre-fix code and pass
-  against the fix, not just exercise the happy path.
+The user reported two things after a slate with a PIT@CLE doubleheader and a live NYM@PHI game: they
+couldn't pick any team to exclude in the app, and thought PIT/CLE and NYM/PHI might be rained out.
+
+**The rainout read was checked directly against the real schedule and wasn't right.** PIT@CLE that day
+was a plain doubleheader (game 1 already `Final`, game 2 `Scheduled` later — both normal states, so
+correctly un-flagged). NYM@PHI was `In Progress` at the time, not postponed. The only two teams the
+app's own game-status check actually had reason to flag that day were BOS and TB (`Delayed Start`,
+weather) — exactly what the sidebar's warning banner showed.
+
+**The exclude-teams bug was real, though, and reproduced immediately** via the local Playwright driver.
+The sidebar's "Exclude teams" multiselect read its `options` from `st.session_state["all_teams"]`,
+written only at the END of `render_app()` — i.e. from the PREVIOUS build. On the very first build of a
+fresh session (the exact case the user hit: open the app, look at tonight's slate for the first time),
+that session-state key doesn't exist yet, so the widget rendered with zero options and the literal
+placeholder text "No options to select" — not a subtle bug, just genuinely un-clickable on first load.
+
+**Root cause: the multiselect's options depended on a full `build_slate()` run that hadn't happened yet
+in the CURRENT script execution**, and Streamlit session state only carries data forward from a run that
+already finished. The fix factors the cheap part of that dependency — which teams are in the slate, and
+their game-status flags — out of `build_slate()` into a new `dfs_run.team_list_for_slate()`: same free
+statsapi + DK-draftables calls, no Odds-API cost, no optimizer. The app calls this (wrapped in its own
+5-minute `st.cache_data`, same pattern as `cached_slate_names`) BEFORE rendering the multiselect, so the
+widget's options come from THIS run, not the last one. `st.session_state["all_teams"]`/`["team_status"]`
+were dead code after the change (nothing else read them) and were removed rather than left stale.
+
+**Verified live, end to end**, via the local driver on a completely fresh app process (no prior build in
+that session): the "Exclude teams" dropdown listed real teams (ARI, ATL, BAL, BOS ⚠ Delayed Start, CLE,
+HOU, ...) with the game-status warning icon already attached, on the very first build — before this fix,
+that same first-load state showed "No options to select."
+
+Three new regression tests cover the happy path, the unpriced-slate case (empty options, no crash), and
+a bad slate name (returns an error string, not an exception) for `team_list_for_slate` directly.
+
+98 tests pass (up from 95).
+
+## 28. Verifiable, Not Just Asserted
+
+- **Test suite**: 98 tests, all passing (`pytest -q`), including regression tests for
+  every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, §22, §24, §25, §26, and §27 — each
+  constructed to fail against the pre-fix code and pass against the fix, not just exercise the happy path.
 - **Calibration dashboard** (live, updates as new contest data comes in):
   actual-vs-predicted scatter plots for points and ownership, pitchers and hitters
   separately, built directly from DK contest exports joined against logged predictions —

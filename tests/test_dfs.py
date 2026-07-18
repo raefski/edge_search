@@ -1295,3 +1295,52 @@ def test_lineups_for_date_skips_non_regular_season_games(monkeypatch):
     monkeypatch.setattr(dfs, "_get", fake_get)
     out = dfs.lineups_for_date("2026-07-14", project=False)
     assert out == {}
+
+
+def test_team_list_for_slate_returns_teams_and_status(monkeypatch):
+    # Regression, found live 2026-07-18: the app's "Exclude teams" sidebar
+    # widget used to learn its options only from st.session_state written by
+    # the PREVIOUS build -- "No options to select" on the very first build of
+    # a session. team_list_for_slate gives the same answer build_slate would,
+    # without running the full (paid/optimizer) pipeline, so the sidebar can
+    # call it same-run instead of one-run-stale.
+    from edge import dfs, dfs_run
+
+    monkeypatch.setattr(dfs, "mlb_draft_groups", lambda: [
+        {"DraftGroupId": 1, "ContestStartTimeSuffix": "", "StartDate": "2026-07-18T20:00:00", "GameCount": 1}])
+    monkeypatch.setattr(dfs, "fetch_draftables", lambda gid: {
+        "aaa1": {"name": "AAA1", "salary": 4000, "position": "OF", "team": "BOS",
+                "game": "g1", "matchup": "m", "start": "", "dk_fppg": None},
+        "bbb1": {"name": "BBB1", "salary": 4000, "position": "OF", "team": "TB",
+                "game": "g1", "matchup": "m", "start": "", "dk_fppg": None}})
+    monkeypatch.setattr(dfs, "team_game_status", lambda date: {"BOS": "Delayed Start", "TB": "Delayed Start"})
+
+    all_teams, team_status, error = dfs_run.team_list_for_slate("2026-07-18")
+    assert all_teams == ["BOS", "TB"]
+    assert team_status == {"BOS": "Delayed Start", "TB": "Delayed Start"}
+    assert error is None
+
+
+def test_team_list_for_slate_unpriced_returns_empty(monkeypatch):
+    from edge import dfs, dfs_run
+
+    monkeypatch.setattr(dfs, "mlb_draft_groups", lambda: [
+        {"DraftGroupId": 1, "ContestStartTimeSuffix": "", "StartDate": "2026-07-18T20:00:00", "GameCount": 1}])
+    monkeypatch.setattr(dfs, "fetch_draftables", lambda gid: {})
+
+    all_teams, team_status, error = dfs_run.team_list_for_slate("2026-07-18")
+    assert all_teams == []
+    assert team_status == {}
+    assert error is None
+
+
+def test_team_list_for_slate_bad_slate_returns_error(monkeypatch):
+    from edge import dfs, dfs_run
+
+    monkeypatch.setattr(dfs, "mlb_draft_groups", lambda: [])
+    monkeypatch.setattr(dfs, "resolve_draft_group", lambda spec, date=None: None)
+
+    all_teams, team_status, error = dfs_run.team_list_for_slate("2026-07-18", draft_group="Turbo")
+    assert all_teams == []
+    assert team_status == {}
+    assert "not found" in error
