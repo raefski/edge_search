@@ -38,6 +38,15 @@ def main():
                          "automatically (DK's contest-scoring rules aren't exposed via any free "
                          "API), so this is a manual override; --list-teams shows what's in the "
                          "slate plus a game-status flag for anything that looks postponed/suspended.")
+    ap.add_argument("--gpp-sim-ev", action="store_true",
+                    help="OPT-IN: also build a GPP lineup by simulated contest EV (diverse "
+                         "construction candidates ranked against a simulated field; replay-"
+                         "validated directionally, +11 mean percentile on 8 slates, but NOT "
+                         "yet significant -- the default GPP construction is unchanged)")
+    ap.add_argument("--sim", action="store_true",
+                    help="after building, run the correlated field simulator (edge/dfs_sim) "
+                         "and print each lineup's finish-percentile distribution vs a "
+                         "modeled field (free, no API calls)")
     ap.add_argument("--list-teams", action="store_true",
                     help="print every team in the slate (with a game-status warning if applicable) and exit")
     args = ap.parse_args()
@@ -124,6 +133,31 @@ def _log_and_optimize(args, res):
         label = f"GPP ({' + '.join(parts) if parts else 'no multi-team stack'}, leverage-picked)"
         show(label, gpp)
     print(f"\nlineups -> {logged['lineup_file']}")
+
+    if args.gpp_sim_ev and res.get("gpp"):
+        ev_r = dfs_run.gpp_sim_ev_lineup(res, seed=1)
+        if ev_r.get("error"):
+            print(f"[gpp-sim-ev] {ev_r['error']}")
+        else:
+            import collections
+            teams = collections.Counter(p["team"] for p, _ in ev_r["lineup"] if "P" not in p["pos"])
+            parts = [f"{n}-man {t}" for t, n in sorted(teams.items(), key=lambda kv: -kv[1]) if n > 1]
+            show(f"GPP by SIM-EV ({' + '.join(parts) if parts else 'no stack'}; "
+                 f"EV ${ev_r['ev']:.2f}/entry proxy, {ev_r['n_cands']} candidates)", ev_r)
+
+    if args.sim:
+        for mode, r in (("cash", cash), ("gpp", gpp)):
+            if not r:
+                continue
+            eq = dfs_run.simulate_lineup_vs_field(res, mode=mode, log_date=date)
+            if eq.get("error"):
+                print(f"[sim:{mode}] {eq['error']}")
+                continue
+            print(f"\n=== FIELD SIM ({mode}, {eq['n_sims']} worlds x {eq['field_n']} field lineups) ===")
+            print(f"  finish percentile: mean {eq['mean_pct']}%  median {eq['median_pct']}%")
+            print(f"  P(beat a ~44% cash line): {eq['p_cash']:.0%}   P(top 1%): {eq['p_top']:.1%}")
+            print(f"  our score: mean {eq['our_mean']}  P95 {eq['our_p95']}")
+            print(f"  field quantiles: p50 {eq['field_q'][50]}  p90 {eq['field_q'][90]}  p99 {eq['field_q'][99]}")
 
 
 if __name__ == "__main__":

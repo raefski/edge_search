@@ -56,6 +56,9 @@ same number. The projection isn't the edge; the construction is.
 - `park` = 3-year rolling park run-index.
 - `matchup` = 60% opposing starter's K/9, 40% opposing bullpen's K/9 (bullpen blend added
   2026-07-08; see §6).
+- **Since 2026-07-18 (§28), also:** Marcel season decay (two-back year at half weight),
+  a home/away per-PA quality pair, and league-average platoon by batter-side × SP-hand
+  cell — jointly validated (incremental t=3.48), shipped together.
 - Backtest (19,332 cached 2025 hitter-games): corr **+0.16** vs the old prop-based model's
   0.02, monotonic ranking by projection quintile. Forward-tested clean (near-lock, full
   pool) slates: 0.114 / 0.185 / 0.253 — averaging right around the 0.16 backtest. One slate
@@ -1249,11 +1252,193 @@ a bad slate name (returns an error string, not an exception) for `team_list_for_
 
 98 tests pass (up from 95).
 
-## 28. Verifiable, Not Just Asserted
+## 28. Hitter-Model Audit: Every Candidate Signal Tested, Three Shipped, Five Killed (2026-07-18)
 
-- **Test suite**: 98 tests, all passing (`pytest -q`), including regression tests for
+A full "did we miss any key stats or available data?" audit of the hitter model, run with the
+same leak-free 2025 harness as §18 (train = Apr 15–May 31, every reported number from the
+13,801-row June–July test window; hyperparameters frozen on train). New infrastructure built
+for it, reused by the simulator in §29: `scripts/dfs_component_collect.py` extends the 25,086
+lab rows with per-player EVENT-level to-date components (1B/2B/3B/HR/BB/HBP/SB/K, from the
+already-cached game logs — zero new API cost), batter handedness (602/602 resolved via bulk
+`/people` calls), opposing-SP HR/BB-allowed components, and `scripts/dfs_weather_collect.py`
+pulled real temp/wind for all 1,394 cached games from the free statsapi boxscore `info` block.
+
+**Shipped (jointly validated, then refit on the full 104-date window per standard practice —
+TEST: MAE 5.456→5.390, corr 0.177→0.179, incremental regression over the §18 baseline
+t=3.48, p<.001):**
+- **Marcel-style season decay** (`pooled_skill_rates(season_weights=(0.5, 1.0, 1.0))`): the
+  two-seasons-back year at half weight. Tiny alone (MAE −0.006) but consistent.
+- **Home/away per-PA quality pair** (`HOME_QUALITY`): home ≈ neutral (0.999) but away hitters
+  were over-projected 3.4% — §18's away-PA table gives them more trips; this pairs it with
+  the real per-PA cost of batting on the road. Mostly a calibration win (MAE −0.041).
+- **League-average platoon by (batter side × SP hand) cell** (`PLATOON_CELL`) — the fix for
+  the twice-killed per-player platoon (§4, §18): six POPULATION cells, no per-player split
+  noise. The lefty swing is textbook (LvL 0.939, LvR 1.020); the righty cells are nearly flat
+  precisely because managers already platoon (selection), and S-vs-L is genuinely weak
+  (0.944 — many switch hitters are better left-handed). Batter sides + SP throwing hands now
+  flow through production via a new bulk-fetched, permanently-cached `player_hands()`.
+
+**Tested and killed, same discipline as ever:**
+- **Full component decomposition** (per-event EB rates, park routed to HR/runs, SP HR/BB-allowed
+  matchup terms): TEST MAE +0.025, corr −0.001, incremental t=1.3 (n.s.). The scalar skill
+  pool is not the bottleneck at this data scale. (The component RATES themselves are still
+  used — by the §29 simulator, where they belong.)
+- **Odds-ratio K matchup** (hitter K% × SP K%, zero free parameters): corr flat on test, worse
+  at higher weights on train. The uniform K9 factor already captures what's capturable.
+- **PA-vs-opponent-quality** (more PA vs bad starters): fitted γ=0.03 ≈ zero. Nothing.
+- **Recent form / "hot hand"** (last-15/30-day rate blended in): corr WORSE on train at every
+  weight tried (−0.001 to −0.007) — never even reached the test window. The third
+  recency-flavored signal this project has killed with data.
+- **Weather** (temp + wind out/in, per-slate-centered): REAL but below the ship bar — within-
+  slate corr +0.001, incremental t=3.24 (significant, so the physics is detectable at n=13,801)
+  but the same Δ<0.002 bucket the umpire signal died in (§4), and shipping it would add a live
+  forecast dependency (Open-Meteo per venue) to a mean model that gains a rounding error.
+  Where weather DOES belong is the simulator's team-run environments (§29 future work), where
+  the aggregate effect is the point rather than a per-player re-rank. The 1,394-game weather
+  file (`data/bt_weather.json`) and collector are kept.
+
+**Net honest read:** after this sweep, the mean-projection model has no known untapped signal
+of consequential size in free data. Corr ~0.18 on single-game hitter outcomes is where this
+model family tops out (§7 said this; the audit now demonstrates it against eight more
+candidates). The remaining lever was never projection accuracy — it's construction against
+the field, which is what §29 finally builds directly.
+
+## 29. The Field Simulator: Correlated Worlds, a Modeled Field, and Real-Contest Validation
+
+The "modern DFS" layer the §10 reviewer benchmarked against commercial tools (SaberSim,
+Stokastic): stop optimizing a lineup's MEAN and start asking **how does this lineup finish
+against the actual field?** That needs three things none of the mean model provides: joint
+(correlated) player score distributions, a model of what the field's lineups look like, and
+a per-world finish-percentile calculation. All three now exist in `edge/dfs_sim.py`, and all
+three were CALIBRATED to measured reality, not assumed:
+
+**Correlated slate simulation.** Every hitter's game is generated from per-PA event rates
+(1B/2B/3B/HR/BB/SB — real season shapes, EB-blended, scaled so the sim's mean equals the
+shipped §28 projection: the validated mean model stays the authority on means; the sim adds
+shape and correlation). Teammate correlation comes from two mechanisms, both real: a shared
+per-team-game hot/cold factor, and R/RBI allocated from the TEAM's simulated run total with
+weights driven by each world's REALIZED neighbor events (your R chance rises when the batters
+behind you actually hit in that world). Pitchers' entire lines (outs, K, hits, ER) couple to
+the opposing team's factor and simulated runs. Calibration targets, all hit:
+
+| target | real (measured) | simulated |
+|---|---|---|
+| team runs/game mean, std | 4.33, 2.78 | 4.37, 2.80 |
+| hitter score std by proj bucket | 6.25 / 7.57 / 9.08 | 6.33 / 7.57 / 8.96 |
+| teammate corr by batting distance 1→4 | .167 / .144 / .122 / .107 | .166 / .129 / .116 / .109 |
+| SP vs opposing-lineup total corr | **−0.672** (n=2,736 team-games) | −0.698 |
+
+That −0.672 was measured from the cached 2025 logs during this build — the initial guess
+("roughly −0.3 to −0.5") was WRONG in the conservative direction, and an independent-draws
+pitcher sim only reached −0.52; coupling the pitcher's full line to the opposing team factor
+was required to match reality. Also note the marginals row: the §10 critique that the
+PROJECTIONS are 5.5x under-dispersed is now answered in the layer where dispersion actually
+matters — the sim's score distributions carry the real spread.
+
+**Field model.** Ownership-weighted sampling under full DK legality (positions, $50k cap,
+max-5-per-team) with the primary-stack-size distribution measured from **7,215 real entries**
+across all 15 contest exports on record: 1/2/3/4/5-stacks = 8/25/20/18/29% — nearly half the
+real field runs 3-or-fewer, and 5-stacks are the largest single bucket. (`STACK_DIST`.)
+
+**Validated against every replayable real contest** (`scripts/dfs_sim_validate.py`, using each
+contest's own actual ownership so field-shape error is isolated from ownership-model error, and
+with the pool restricted to that contest's own board — §25's wrong-slate lesson applied):
+across 10 replayable 2026 contests, the simulated field's **median score bias is +0.0 points**
+(p90 +3.8). Slate-to-slate spread is real (a hot slate like 6/30 beats the sim's median by 20+;
+a cold one undershoots) — the sim is unconditional on that day's run environment, so this is
+expected variance, not bias. Our own entries' simulated finish percentile vs realized, on the 7
+contests with a matching logged lineup: unbiased direction overall but wide (e.g. 63.3% sim vs
+61.8% real on 7/3, 64.2% vs 67.4% on 6/30, while 7/2 — the §3 contaminated-pool build — sim'd
+59% and finished 7.7%). One realized draw per contest cannot validate a distribution tightly;
+what matters is the field quantiles are centered and the correlation structure is measured-real.
+
+**Wired into production, free:** `dfs_run.simulate_lineup_vs_field()` runs post-build with no
+API calls (event shapes from the season_hitting cache the build already refreshed; pitcher
+outs/K prop means now carried through the pool). CLI: `--sim` prints each lineup's mean/median
+finish percentile, P(beat a ~44% cash line), P(top 1%), and field score quantiles. Phone app:
+a "🎲 Field simulation" expander with the same numbers — verified end-to-end via the local
+driver (§20): a real cache-mode build simulated 3,000 worlds × 800 field lineups in a few
+seconds on the app with no errors.
+
+**Limitations, stated plainly:** the field model samples marginal ownership + stack sizes but
+not the field's salary-inefficiency patterns or duplicate-lineup mass (percentiles are
+computed against distinct sampled lineups; true GPP payouts care about ties on duplicated
+chalk builds). Pitcher outs/K props are approximated when a build has no live props (defaults,
+mean-anchored to the logged projection). Sub-slate contests whose projections were never
+logged (7/17 Night) still can't be replayed — same data gap as §25, forward-only. And the sim
+EVALUATES lineups; it does not yet drive the optimizer's search (sim-EV-driven construction is
+the natural next step, now that the equity layer exists and is calibrated).
+
+## 30. Executing the Improvement Plan: Flywheel Closed, Dupes Measured, Sim-EV Construction Validated (2026-07-19)
+
+First execution pass against DFS_IMPROVEMENT_PLAN.md, in its own priority order.
+
+**Data flywheel (§1 of the plan) — closed.** Pitcher prop-implied `outs_mean`/`k_mean` now
+logged per row in the proj log (so past slates can be re-simulated faithfully); every sim run
+from the CLI/app logs its pre-lock prediction to `data/dfs_sim_log.csv` (upsert on
+date/gid/mode — the simulator's own forward-test loop); `contest_meta.json` accepts an
+extended per-contest form (`{"type", "entry_fee", "field", "payouts": [[from, to, $], ...]}`,
+legacy strings still valid) that turns equity numbers into dollars wherever it's filled in —
+DK's export carries none of this, so it's a manual copy from the contest page (documented in
+DFS_COMMANDS.md). The §18 stale-actuals-cache concern was re-checked and found already fixed.
+
+**A self-inflicted data-integrity incident, fixed properly.** A `--date <yesterday>`
+verification rebuild during this session silently REPLACED the real 7/18 Main-slate forward-
+test rows (134 rows, 8 pitchers) with a thinner pitcher-less pool — past-date rebuilds always
+produce a different pool (DK's events/draftables move on), and the main log's per-date
+overwrite had no defense. Restored from git; `log_forward_test` now refuses to write for any
+date before today (ET), with a regression test. Same contamination class as §25's stray
+same-date build, now structurally closed.
+
+**Duplicate-lineup mass (plan §3) — measured across all 15 exports, 9,448 real entries:**
+4.3% of entries are exact duplicates of another entry (order-independent player sets), up to
+13.2% in mid-size fields and 14 copies of one lineup in a 475-field — and in BOTH of the
+7/18 contests the winning lineup was itself duplicated (top prize split ×2). Real but modest
+at these field sizes; the payout-EV layer can now price it once per-contest payout metadata
+accumulates. (`scripts/dfs_dupe_measure.py`.)
+
+**Sim-EV-driven GPP construction (plan §4, the big lever) — built, replay-validated, shipped
+OPT-IN only.** `dfs_sim.pick_by_sim_ev` ranks diverse candidate lineups (stack team ×
+ownership-fade × stack shape — optimizer seeds turned out to be nearly deterministic per
+construction, measured directly: 5 seeds, 1 unique lineup per stack team) by expected payout
+under ONE shared simulated world-set and field sample, using a synthetic top-heavy GPP curve
+(`synthetic_gpp_payouts`) sized to the real contest until real payout metadata exists.
+Validated on all 8 replayable GPP slates × 3 seeds (`scripts/dfs_sim_ev_replay.py`), scored
+by REAL points in the REAL contest fields:
+
+| | mean pctile | median | slates won |
+|---|---|---|---|
+| incumbent (5-3 leverage, §18) | 42.3% | 25.1% | 2 |
+| sim-EV pick | 53.6% | 39.0% | 5 (1 tie) |
+
++11.3 mean percentile and 16/24 (date×seed) wins — but the paired per-slate test is
+**t=0.80 (n=8), not significant**, and the two losing slates are exactly the ones where the
+incumbent's single lineup spiked (99.3rd and 79.2nd percentile monsters — one realized draw
+per arm guarantees occasional losses even for a better-in-expectation selector). Per §7 of
+the plan (written before the result was known), that does NOT clear the bar for changing the
+default. **Shipped as opt-in**: CLI `--gpp-sim-ev` prints the alternative lineup alongside
+the incumbent; the app's Field-simulation expander gets a "🧪 GPP by sim-EV (experimental)"
+button (renders the lineup + the normal save-as-entry flow). Every use logs its prediction,
+so the forward-test record accrues real evidence toward (or against) making it the default.
+Also noted: the selector's pick is somewhat unstable to sim sampling noise at 2,500 worlds
+(different seeds occasionally pick different candidates on the same slate) — production uses
+4,000 worlds; more accumulating slates, not more tuning, is the answer here too.
+
+115 tests pass (up from 107): payout-curve shape, dollar-EV equity, dominant-candidate
+selection, contest-meta both-forms parsing, sim-log upsert, proj-log pitcher anchors,
+past-date log guard, and end-to-end sim-EV lineup validity/determinism. App re-verified
+via the local driver after the button wiring (clean load, correct thin-slate placeholder).
+
+## 31. Verifiable, Not Just Asserted
+
+- **Test suite**: 115 tests, all passing (`pytest -q`), including regression tests for
   every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, §22, §24, §25, §26, and §27 — each
-  constructed to fail against the pre-fix code and pass against the fix, not just exercise the happy path.
+  constructed to fail against the pre-fix code and pass against the fix, not just exercise the happy
+  path — plus §28's model constants (platoon-cell direction/magnitude, home-quality pair, Marcel
+  weighting, hand-lookup caching), §29's simulator (determinism, mean anchoring, correlation
+  structure signs, field-lineup DK-legality, equity output shape), and §30's additions (payout
+  curves, dollar EV, sim-EV selection, contest-meta schema, sim-prediction logging, and the
+  past-date forward-log guard).
 - **Calibration dashboard** (live, updates as new contest data comes in):
   actual-vs-predicted scatter plots for points and ownership, pitchers and hitters
   separately, built directly from DK contest exports joined against logged predictions —

@@ -579,6 +579,48 @@ def render_app() -> None:
         st.download_button("⬇️ Download both lineups (CSV)", data=_lineup_csv(res),
                            file_name=f"dfs_lineups_{slate_date}.csv", mime="text/csv")
 
+    # ── field simulation (free -- no API calls; correlated slate sim) ───────
+    if lineups_ready and not preview:
+        with st.expander("🎲 Field simulation (how do these lineups fare vs the field?)"):
+            st.caption("Simulates the whole slate with real teammate/stack correlation and an "
+                       "ownership-modeled field (edge/dfs_sim, calibrated on 2025 data + real "
+                       "DK contests). Free — no credits.")
+            if st.button("Run simulation", key="run_sim"):
+                with st.spinner("Simulating 3,000 worlds…"):
+                    for _mode, _label in (("cash", "💵 CASH"), ("gpp", "🚀 GPP")):
+                        eq = dfs_run.simulate_lineup_vs_field(res, mode=_mode, log_date=slate_date)
+                        if eq.get("error"):
+                            st.caption(f"{_label}: {eq['error']}")
+                            continue
+                        c1, c2, c3 = st.columns(3)
+                        c1.metric(f"{_label} median finish", f"{eq['median_pct']:.0f}th pctile")
+                        c2.metric("P(beat ~44% cash line)", f"{eq['p_cash']:.0%}")
+                        c3.metric("P(top 1%)", f"{eq['p_top']:.1%}")
+                        st.caption(f"{_label}: score mean {eq['our_mean']} · P95 {eq['our_p95']} · "
+                                   f"field p50/p90/p99 {eq['field_q'][50]}/{eq['field_q'][90]}/{eq['field_q'][99]} "
+                                   f"({eq['n_sims']} worlds × {eq['field_n']} field lineups)")
+            if res.get("gpp") and st.button("🧪 GPP by sim-EV (experimental)", key="run_sim_ev",
+                                            help="Ranks ~16 alternative constructions (stack team × fade × "
+                                                 "shape) by expected payout against a simulated field. "
+                                                 "Replay-validated +11 mean percentile over 8 real slates but "
+                                                 "NOT yet statistically significant — the GPP tab's default "
+                                                 "lineup is unchanged."):
+                with st.spinner("Ranking candidate lineups across simulated worlds…"):
+                    ev_r = dfs_run.gpp_sim_ev_lineup(res, seed=1)
+                if ev_r.get("error"):
+                    st.caption(f"sim-EV: {ev_r['error']}")
+                else:
+                    st.caption(f"picked from {ev_r['n_cands']} candidates · EV ${ev_r['ev']:.2f}/entry "
+                               f"(synthetic $5 GPP curve) · sim mean finish {ev_r['mean_pct']:.0f}th pctile "
+                               f"· P(top 1%) {ev_r['p_top1']:.1%}")
+                    ev_rows = [{"slot": slot, "player": p["name"], "team": p["team"], "salary": p["salary"],
+                                "proj": p["proj"], "ceil": p["ceiling"], "own": p.get("own", 0),
+                                "pos": "/".join(sorted(p["pos"])), "game": p.get("game", ""),
+                                "conf": p.get("conf", ""), "projected": not p.get("confirmed", True)}
+                               for p, slot in sorted(ev_r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1]))]
+                    render_compact(ev_rows)
+                    save_entry_button("gpp", ev_rows)
+
     # ── pitcher value board ──────────────────────────────────────────────────
     with st.expander("Pitcher value board", expanded=res["cash"] is None):
         prows = sorted(

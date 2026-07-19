@@ -164,7 +164,10 @@ def project_pitcher(pmkts: dict) -> dict:
     comp["win"] = round(P_SCORE["win"] * pw, 1)
 
     return {"proj": round(sum(comp.values()), 1), "components": comp,
-            "have": [x for x in comp if x not in imputed], "imputed": imputed}
+            "have": [x for x in comp if x not in imputed], "imputed": imputed,
+            # prop-implied distribution anchors for the field simulator
+            # (edge/dfs_sim.py): the sim draws outings around these means
+            "outs_mean": round(outs, 1), "k_mean": round(Km, 1)}
 
 
 # === HITTERS ================================================================
@@ -420,9 +423,32 @@ LG_ERA = 4.10
 # game-log sample first.
 BB_FLOOR_WEIGHT = 2.0
 
+# Platoon by (batter side x opposing-starter hand) CELL -- league-average
+# calibration multipliers, NOT per-player splits. The per-player version was
+# killed twice (§4, §18: small-sample splits shrink outliers, lowering MAE
+# while HURTING corr). This version has no per-player noise: six population
+# cells, fit as actual/projected ratios residual to the home/away quality
+# pair below, on all 104 dates x 25,086 hitter-games of the 2025 lab window
+# (validated first on the held-out June-July test window as part of the combo:
+# MAE 5.456->5.390, corr 0.177->0.179, incremental t=3.48; then refit on the
+# full window for the shipped constants, standard post-validation practice).
+# The lefty swing is the textbook effect (LvL -6%, LvR +2%); the R cells are
+# nearly flat BECAUSE managers already platoon (population selection), and
+# S-vs-L is genuinely weak (many switch hitters are better from the left).
+# Unknown hand / missing cell -> 1.0 (neutral), so this degrades gracefully.
+PLATOON_CELL = {("L", "L"): 0.939, ("L", "R"): 1.020, ("R", "L"): 0.992,
+                ("R", "R"): 0.998, ("S", "L"): 0.944, ("S", "R"): 1.017}
+# Per-PA QUALITY by venue side, residual to the home/away PA tables (which
+# handle opportunity): home hitters project essentially clean (0.999) but away
+# hitters were over-projected 3.4% -- the away PA table gives them more trips
+# (home team skips the bottom 9th when leading) and this pairs that with the
+# real per-PA cost of batting on the road. Same fit/validation as above.
+HOME_QUALITY = {True: 0.999, False: 0.966}
+
 
 def pooled_skill_rates(seasons=(2024, 2025), min_pa: int = 120, cache_path: str | None = None,
-                       max_age: float | None = None, shrink_k: int | None = None) -> tuple[dict, float]:
+                       max_age: float | None = None, shrink_k: int | None = None,
+                       season_weights=None) -> tuple[dict, float]:
     """Pooled DK-pts-per-PA over `seasons` (PA-weighted, so a partial current
     season naturally gets proportionally less weight). Pass the CURRENT season
     in the tuple to keep this from going stale as the year progresses (backtest
@@ -437,10 +463,18 @@ def pooled_skill_rates(seasons=(2024, 2025), min_pa: int = 120, cache_path: str 
     held-out 2025 hitter-games): K=60 with the home/away PA + opp-ERA factors
     gave the best test corr (0.177 vs 0.174 cutoff-based) at equal MAE; K was
     picked on a separate April-May train window, not the test window. Passing
-    shrink_k=None keeps the legacy cutoff behavior (other callers/backtests)."""
+    shrink_k=None keeps the legacy cutoff behavior (other callers/backtests).
+
+    season_weights: Marcel-style decay aligned with `seasons` (e.g. (0.5, 1.0,
+    1.0) to half-weight the two-seasons-back year). Backtested 2026-07-18 on
+    the 13,801-row held-out test window: w=(0.5, 1.0, 1.0) MAE 5.456->5.450,
+    corr flat -- small but consistent, and it ships as part of the combo that
+    was jointly significant (incremental t=3.48 over the §18 baseline).
+    None keeps flat PA-pooling."""
     if cache_path and _os.path.exists(cache_path):
         if max_age is None or _time.time() - _os.path.getmtime(cache_path) < max_age:
             d = json.load(open(cache_path)); return d["rates"], d["lg"]
+    weights = dict(zip(seasons, season_weights)) if season_weights else {}
     pts, pa = {}, {}
     for yr in seasons:
         try:
@@ -448,12 +482,13 @@ def pooled_skill_rates(seasons=(2024, 2025), min_pa: int = 120, cache_path: str 
                       "&group=hitting&sportId=1&limit=3000&playerPool=All")["stats"][0]["splits"]
         except Exception:
             continue
+        w = weights.get(yr, 1.0)
         for s in sp:
             st = s["stat"]; a = st.get("plateAppearances", 0) or 0
             if a < 1:
                 continue
             pid = str(s["player"]["id"])
-            pts[pid] = pts.get(pid, 0) + actual_hitter_points(st); pa[pid] = pa.get(pid, 0) + a
+            pts[pid] = pts.get(pid, 0) + w * actual_hitter_points(st); pa[pid] = pa.get(pid, 0) + w * a
     tot_p = sum(pts.values()); tot_a = sum(pa.values())
     lg = tot_p / tot_a if tot_a else 1.7
     if shrink_k:
@@ -616,6 +651,34 @@ def inactive_players(team_id, cache_path: str | None = None, max_age: float | No
     return out
 
 
+def player_hands(pids, cache_path: str | None = None) -> dict:
+    """{pid(str): {"bat": "L|R|S", "throw": "L|R"}} via bulk /people calls,
+    disk-cached additively and permanently (handedness doesn't change).
+    Feeds the PLATOON_CELL factor in project_hitter_skill: batter side for
+    hitters, throwing hand for opposing starters. Unknown ids resolve to {}
+    entries so they're not refetched every build."""
+    cached = {}
+    if cache_path and _os.path.exists(cache_path):
+        try:
+            cached = json.load(open(cache_path))
+        except Exception:
+            cached = {}
+    todo = sorted({str(p) for p in pids if p and str(p) not in cached})
+    for i in range(0, len(todo), 100):
+        chunk = todo[i:i + 100]
+        try:
+            ppl = _get("https://statsapi.mlb.com/api/v1/people?personIds=" + ",".join(chunk))["people"]
+        except Exception:
+            continue
+        got = {str(p["id"]): {"bat": (p.get("batSide") or {}).get("code"),
+                              "throw": (p.get("pitchHand") or {}).get("code")} for p in ppl}
+        for pid in chunk:
+            cached[pid] = got.get(pid, {})
+    if cache_path and todo:
+        json.dump(cached, open(cache_path, "w"))
+    return cached
+
+
 def bullpen_k9(pitcher_stats: list, exclude_pid=None) -> float:
     """K/9 pooled across a team's RELIEVERS (gamesStarted/gamesPitched < 0.5),
     excluding tonight's actual/probable starter. Backtested 2026-07-08: blending
@@ -635,15 +698,22 @@ def bullpen_k9(pitcher_stats: list, exclude_pid=None) -> float:
 def project_hitter_skill(skill: float, slot: int, park: float = 1.0,
                          opp_k9: float | None = None, team_total: float | None = None,
                          w_match: float = 0.3, home: bool | None = None,
-                         opp_era: float | None = None, w_era: float = 0.2) -> float:
+                         opp_era: float | None = None, w_era: float = 0.2,
+                         bhand: str | None = None, opp_hand: str | None = None) -> float:
     """DK fantasy points = skill(DKpts/PA) x PA(slot,home/away) x park x matchup x team-env.
 
     home=True/False selects the empirical home/away PA table (see SLOT_PA_HOME
-    comment for the backtest); None keeps the legacy flat table (back-compat
-    for callers that don't know venue). opp_era adds the opposing starter's
-    run-prevention to the matchup beyond K/9 -- backtested 2026-07-10 on the
-    same 13,801 held-out hitter-games: MAE 5.467->5.458 AND corr 0.168->0.174
-    both improved at w_era=0.2 (train-window pick; 0.3 bought MAE but not corr)."""
+    comment for the backtest) AND applies the HOME_QUALITY per-PA calibration
+    pair; None keeps the legacy flat table (back-compat for callers that don't
+    know venue). opp_era adds the opposing starter's run-prevention to the
+    matchup beyond K/9 -- backtested 2026-07-10 on the same 13,801 held-out
+    hitter-games: MAE 5.467->5.458 AND corr 0.168->0.174 both improved at
+    w_era=0.2 (train-window pick; 0.3 bought MAE but not corr).
+
+    bhand/opp_hand (batter side, opposing starter's throwing hand) apply the
+    PLATOON_CELL league-average multiplier -- see its comment for the backtest;
+    either side missing means neutral 1.0, so callers without hand data get
+    exactly the old behavior."""
     if home is True:
         pa = SLOT_PA_HOME.get(slot, 4.0)
     elif home is False:
@@ -659,7 +729,9 @@ def project_hitter_skill(skill: float, slot: int, park: float = 1.0,
     tf = 1.0
     if team_total:
         tf = min(1.30, max(0.75, team_total / TEAM_TOTAL_AVG))
-    return round(skill * pa * park * of * rf * tf, 1)
+    hq = HOME_QUALITY[home] if home is not None else 1.0
+    pf = PLATOON_CELL.get((bhand, opp_hand), 1.0) if bhand and opp_hand else 1.0
+    return round(skill * pa * park * of * rf * tf * hq * pf, 1)
 
 
 def _team_recent_lineup(team_id, before_date: str) -> list:

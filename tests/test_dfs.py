@@ -1,4 +1,5 @@
 import csv
+import json
 
 from edge.dfs import project_hitter_skill, actual_hitter_points, actual_pitcher_points, SLOT_PA, LG_K9
 
@@ -223,25 +224,25 @@ def test_log_forward_test_writes_proj_log_and_lineups(tmp_path):
     pool = [{"name": "AAA1", "team": "AAA", "pos": {"OF"}, "salary": 4000, "proj": 8.0,
             "ceiling": 12.0, "own": 5.0, "conf": "H-slot1"}]
     cash = {"lineup": [(pool[0], "OF")], "proj": 8.0, "ceil": 12.0, "salary": 4000}
-    logged = log_forward_test(tmp_path, "2026-07-06", True, 123, pool, cash, None)
+    logged = log_forward_test(tmp_path, "2099-07-06", True, 123, pool, cash, None)
     assert logged["logged_projections"] and logged["n"] == 1
     plog = tmp_path / "data/dfs_proj_log.csv"
     assert plog.exists() and "AAA1" in plog.read_text()
     lf = tmp_path / logged["lineup_file"]
     assert lf.exists() and "cash" in lf.read_text() and "AAA1" in lf.read_text()
     # re-running for a later date preserves the earlier date's row
-    log_forward_test(tmp_path, "2026-07-07", True, 123, [], None, None)
-    assert "2026-07-06" in plog.read_text() and "AAA1" in plog.read_text()
+    log_forward_test(tmp_path, "2099-07-07", True, 123, [], None, None)
+    assert "2099-07-06" in plog.read_text() and "AAA1" in plog.read_text()
     # a sub-slate (is_main=False) must not touch the main proj log...
     before = plog.read_text()
-    logged_sub = log_forward_test(tmp_path, "2026-07-08", False, 999, pool, None, None)
+    logged_sub = log_forward_test(tmp_path, "2099-07-08", False, 999, pool, None, None)
     assert plog.read_text() == before
     # ...but its own projections must still be logged SOMEWHERE (2026-07-18
     # fix: a sub-slate build the user actually played -- a Night slate --
     # was invisible to calibration entirely, since sub-slates used to not
     # log projections at all, only lineups).
     assert logged_sub["logged_projections"] and logged_sub["n"] == 1
-    splog = tmp_path / "data/dfs_proj_log_2026-07-08_g999.csv"
+    splog = tmp_path / "data/dfs_proj_log_2099-07-08_g999.csv"
     assert splog.exists() and "AAA1" in splog.read_text()
 
 
@@ -253,13 +254,13 @@ def test_log_forward_test_games_column(tmp_path):
     from edge.dfs_run import log_forward_test
     pool = [{"name": "AAA1", "team": "AAA", "pos": {"OF"}, "salary": 4000, "proj": 8.0,
             "ceiling": 12.0, "own": 5.0, "conf": "H-slot1"}]
-    log_forward_test(tmp_path, "2026-07-06", True, 123, pool, None, None, games=None)
-    log_forward_test(tmp_path, "2026-07-07", True, 123, pool, None, None, games=12)
+    log_forward_test(tmp_path, "2099-07-06", True, 123, pool, None, None, games=None)
+    log_forward_test(tmp_path, "2099-07-07", True, 123, pool, None, None, games=12)
     plog = tmp_path / "data/dfs_proj_log.csv"
     rows = list(csv.DictReader(open(plog)))
     by_date = {r["date"]: r for r in rows}
-    assert by_date["2026-07-06"]["games"] == ""
-    assert by_date["2026-07-07"]["games"] == "12"
+    assert by_date["2099-07-06"]["games"] == ""
+    assert by_date["2099-07-07"]["games"] == "12"
 
 
 def test_resolve_slate_threads_date_to_resolve_draft_group(monkeypatch):
@@ -1344,3 +1345,307 @@ def test_team_list_for_slate_bad_slate_returns_error(monkeypatch):
     assert all_teams == []
     assert team_status == {}
     assert "not found" in error
+
+
+def test_platoon_cell_lefty_swing_direction():
+    # The shipped cells must preserve the validated direction: LHB worse vs LHP
+    # than vs RHP, and the swing must stay league-plausible (a few percent,
+    # not a rewrite of the projection).
+    from edge.dfs import PLATOON_CELL
+    assert PLATOON_CELL[("L", "L")] < 1.0 < PLATOON_CELL[("L", "R")]
+    assert PLATOON_CELL[("L", "R")] - PLATOON_CELL[("L", "L")] < 0.15
+
+
+def test_project_hitter_skill_platoon_applies_only_with_both_hands():
+    from edge.dfs import project_hitter_skill, PLATOON_CELL
+    base = project_hitter_skill(1.7, 3, home=True)
+    lvl = project_hitter_skill(1.7, 3, home=True, bhand="L", opp_hand="L")
+    assert lvl < base                          # LvL is a penalty cell
+    # one side unknown -> neutral (exactly old behavior)
+    assert project_hitter_skill(1.7, 3, home=True, bhand="L") == base
+    assert project_hitter_skill(1.7, 3, home=True, opp_hand="L") == base
+    # unknown combination -> neutral, not KeyError
+    assert project_hitter_skill(1.7, 3, home=True, bhand="X", opp_hand="Z") == base
+    assert ("X", "Z") not in PLATOON_CELL
+
+
+def test_project_hitter_skill_home_quality_pair():
+    # Same slot, same skill: the away projection must reflect BOTH the away PA
+    # table (more trips) and the away quality penalty (fewer points per trip).
+    from edge.dfs import SLOT_PA_HOME, SLOT_PA_AWAY, HOME_QUALITY
+    from edge.dfs import project_hitter_skill
+    h = project_hitter_skill(2.0, 1, home=True)
+    a = project_hitter_skill(2.0, 1, home=False)
+    exp_h = round(2.0 * SLOT_PA_HOME[1] * HOME_QUALITY[True], 1)
+    exp_a = round(2.0 * SLOT_PA_AWAY[1] * HOME_QUALITY[False], 1)
+    assert (h, a) == (exp_h, exp_a)
+    # legacy callers (home=None) get no quality factor at all
+    assert project_hitter_skill(2.0, 1) == round(2.0 * 4.65, 1)
+
+
+def test_pooled_skill_rates_season_weights(tmp_path, monkeypatch):
+    # Marcel decay: the two-seasons-back year at half weight must pull a
+    # player's pooled rate toward the more recent season.
+    from edge import dfs
+
+    def fake_get(url):
+        season = "2024" if "season=2024" in url else "2025"
+        if season == "2024":   # cold year: 100 PA, 100 pts (rate 1.0)
+            st = {"plateAppearances": 100, "hits": 0, "doubles": 0, "triples": 0,
+                  "homeRuns": 0, "rbi": 0, "runs": 50, "baseOnBalls": 0,
+                  "hitByPitch": 0, "stolenBases": 0}
+        else:                  # hot year: 100 PA, 300 pts (rate 3.0)
+            st = {"plateAppearances": 100, "hits": 0, "doubles": 0, "triples": 0,
+                  "homeRuns": 0, "rbi": 0, "runs": 150, "baseOnBalls": 0,
+                  "hitByPitch": 0, "stolenBases": 0}
+        return {"stats": [{"splits": [{"stat": st, "player": {"id": 1}}]}]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    flat, _ = dfs.pooled_skill_rates((2024, 2025))
+    dec, _ = dfs.pooled_skill_rates((2024, 2025), season_weights=(0.5, 1.0), min_pa=100)
+    assert abs(flat["1"] - 2.0) < 1e-6               # (100+300)/(100+100)
+    assert abs(dec["1"] - (50 + 300) / 150) < 1e-6   # weighted toward 2025
+    assert dec["1"] > flat["1"]
+
+
+def test_player_hands_bulk_fetch_and_cache(tmp_path, monkeypatch):
+    from edge import dfs
+    calls = []
+
+    def fake_get(url):
+        calls.append(url)
+        return {"people": [{"id": 10, "batSide": {"code": "L"}, "pitchHand": {"code": "R"}},
+                           {"id": 11, "batSide": {"code": "S"}, "pitchHand": {"code": "L"}}]}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    cp = str(tmp_path / "hands.json")
+    hands = dfs.player_hands([10, 11], cache_path=cp)
+    assert hands["10"] == {"bat": "L", "throw": "R"}
+    assert hands["11"]["bat"] == "S"
+    assert len(calls) == 1
+    # second call: fully cached, no network
+    hands2 = dfs.player_hands([10, 11], cache_path=cp)
+    assert hands2 == hands and len(calls) == 1
+
+
+def _sim_pool():
+    # two teams, 9 hitters each + a pitcher per side (opposing each other)
+    slot_pos = {1: "C", 2: "1B", 3: "2B", 4: "3B", 5: "SS",
+                6: "OF", 7: "OF", 8: "OF", 9: "OF"}
+    pool = []
+    for team, opp, home in (("AAA", "BBB", True), ("BBB", "AAA", False)):
+        for slot in range(1, 10):
+            pool.append({"name": f"{team}h{slot}", "pos": {slot_pos[slot]}, "team": team,
+                         "opp_team": opp, "slot": slot, "home": home,
+                         "proj": 8.0 - 0.3 * slot, "salary": 2200 + 200 * slot})
+        pool.append({"name": f"{team}P", "pos": {"P"}, "team": team, "opp_team": opp,
+                     "proj": 15.0, "salary": 7800, "outs_mean": 17.0, "k_mean": 5.5})
+    return pool
+
+
+def test_sim_scores_are_deterministic_and_mean_anchored():
+    from edge import dfs_sim
+    pool = _sim_pool()
+    s1, _ = dfs_sim.simulate_slate(pool, n_sims=1500, seed=42)
+    s2, _ = dfs_sim.simulate_slate(pool, n_sims=1500, seed=42)
+    assert (s1 == s2).all()                      # same seed, same worlds
+    # hitter means track the projection they were anchored to (loose: 1500 sims)
+    for i, p in enumerate(pool):
+        if "P" in p["pos"]:
+            continue
+        assert abs(s1[:, i].mean() - p["proj"]) < 1.2, (p["name"], s1[:, i].mean(), p["proj"])
+    # pitcher mean anchored exactly by construction
+    pi = next(i for i, p in enumerate(pool) if p["name"] == "AAAP")
+    assert abs(s1[:, pi].mean() - 15.0) < 1e-6
+
+
+def test_sim_correlation_structure():
+    from edge import dfs_sim
+    import numpy as np
+    pool = _sim_pool()
+    s, _ = dfs_sim.simulate_slate(pool, n_sims=4000, seed=7)
+    ix = {p["name"]: i for i, p in enumerate(pool)}
+    # teammates correlate positively; adjacent more than distant
+    c_adj = np.corrcoef(s[:, ix["AAAh1"]], s[:, ix["AAAh2"]])[0, 1]
+    c_far = np.corrcoef(s[:, ix["AAAh1"]], s[:, ix["AAAh5"]])[0, 1]
+    assert c_adj > 0.05
+    assert c_adj > c_far - 0.02
+    # opposing pitcher anti-correlates with the stack he faces
+    stack = s[:, [ix[f"AAAh{k}"] for k in range(1, 10)]].sum(1)
+    c_p = np.corrcoef(s[:, ix["BBBP"]], stack)[0, 1]
+    assert c_p < -0.3
+    # players in different games are (near) uncorrelated -- here same slate,
+    # opposite teams of the SAME game are correlated via runs; so use the two
+    # pitchers, whose own-team runs oppose each other's opponents
+    c_pp = np.corrcoef(s[:, ix["AAAP"]], s[:, ix["BBBP"]])[0, 1]
+    assert abs(c_pp) < 0.35   # loosely bounded; they share one game's runs
+
+
+def test_sim_field_generation_is_legal():
+    from edge import dfs_sim
+    import numpy as np
+    pool = _sim_pool()
+    # give everyone an ownership number so the field sampler has weights
+    for p in pool:
+        p["own"] = 20.0 if "P" in p["pos"] else 10.0
+    field = dfs_sim.generate_field(pool, 120, rng=np.random.default_rng(3))
+    assert len(field) >= 100
+    for lu in field:
+        assert len(lu) == 10
+        assert len(set(lu)) == 10
+        ps = [i for i in lu if "P" in pool[i]["pos"]]
+        assert len(ps) == 2
+        salary = sum(pool[i]["salary"] for i in lu)
+        assert salary <= 50000
+        from collections import Counter
+        tc = Counter(pool[i]["team"] for i in lu if "P" not in pool[i]["pos"])
+        assert all(v <= 5 for v in tc.values())
+
+
+def test_contest_equity_shape():
+    from edge import dfs_sim
+    import numpy as np
+    pool = _sim_pool()
+    for p in pool:
+        p["own"] = 15.0
+    s, _ = dfs_sim.simulate_slate(pool, n_sims=800, seed=5)
+    field = dfs_sim.generate_field(pool, 80, rng=np.random.default_rng(5))
+    our = field[0]
+    eq = dfs_sim.contest_equity(s, our, field)
+    assert 0 <= eq["p_cash"] <= 1 and 0 <= eq["p_top"] <= 1
+    assert 0 <= eq["mean_pct"] <= 100
+    assert eq["field_q"][99] >= eq["field_q"][50]
+
+
+def test_synthetic_gpp_payouts_shape():
+    from edge.dfs_sim import synthetic_gpp_payouts, payout_for_rank
+    pays = synthetic_gpp_payouts(200, entry_fee=5.0, rake=0.15)
+    total = sum((hi - lo + 1) * amt for lo, hi, amt in pays)
+    assert abs(total - 200 * 5.0 * 0.85) < 1.0          # pays out the pool
+    assert payout_for_rank(1, pays) > payout_for_rank(10, pays) > 0   # top-heavy
+    n_paid = sum(hi - lo + 1 for lo, hi, _ in pays)
+    assert 30 <= n_paid <= 60                            # ~22% of 200
+    assert payout_for_rank(n_paid, pays) >= 5.0          # min-cash >= entry
+    assert payout_for_rank(n_paid + 1, pays) == 0.0      # below the line: nothing
+
+
+def test_contest_equity_dollar_ev():
+    from edge import dfs_sim
+    import numpy as np
+    pool = _sim_pool()
+    for p in pool:
+        p["own"] = 15.0
+    s, _ = dfs_sim.simulate_slate(pool, n_sims=600, seed=9)
+    field = dfs_sim.generate_field(pool, 60, rng=np.random.default_rng(9))
+    pays = dfs_sim.synthetic_gpp_payouts(142, entry_fee=5.0)
+    eq = dfs_sim.contest_equity(s, field[0], field, payouts=pays, field_size=142, entry_fee=5.0)
+    assert "ev_dollars" in eq and eq["ev_dollars"] >= 0
+    assert abs(eq["roi"] - (eq["ev_dollars"] / 5.0 - 1)) < 1e-6
+
+
+def test_pick_by_sim_ev_prefers_dominant_lineup():
+    from edge import dfs_sim
+    import numpy as np
+    # 3 "players": A strictly outscores B in every world; C is the field filler
+    scores = np.array([[30.0, 10.0, 15.0]] * 50 + [[40.0, 5.0, 15.0]] * 50)
+    field = [[2]]                     # field lineups: just player C
+    pays = [(1, 1, 10.0)]             # winner-take-all, 2-entry contest
+    best, evs = dfs_sim.pick_by_sim_ev(scores, [[1], [0]], field, pays, field_size=2)
+    assert best == 1                  # candidate [0] (player A) dominates
+    assert evs[1]["ev"] > evs[0]["ev"]
+
+
+def test_load_contest_meta_both_forms(tmp_path, monkeypatch):
+    import scripts.dfs_calibration as cal
+    meta_file = tmp_path / "contest_meta.json"
+    meta_file.write_text(json.dumps({
+        "111": "gpp",
+        "222": {"type": "cash", "entry_fee": 10.0, "field": 23,
+                "payouts": [[1, 10, 18.0]]},
+    }))
+    monkeypatch.setattr(cal, "CONTEST_META_PATH", meta_file)
+    legacy = cal.load_contest_meta("data/contest-standings-111.csv")
+    assert legacy == {"type": "gpp", "entry_fee": None, "field": None, "payouts": None}
+    ext = cal.load_contest_meta("data/contest-standings-222.csv")
+    assert ext["type"] == "cash" and ext["entry_fee"] == 10.0 and ext["payouts"] == [[1, 10, 18.0]]
+    assert cal.load_contest_type("data/contest-standings-222.csv") == "cash"
+    assert cal.load_contest_type("data/contest-standings-999.csv") == "unknown"
+
+
+def test_log_sim_prediction_upserts(tmp_path):
+    from edge import dfs_run
+    eq = {"n_sims": 100, "field_n": 50, "mean_pct": 60.0, "median_pct": 62.0,
+          "p_cash": 0.55, "p_top": 0.03, "our_mean": 90.0, "our_p95": 130.0,
+          "field_q": {50: 80.0, 90: 110.0, 99: 140.0}}
+    (tmp_path / "data").mkdir()
+    dfs_run.log_sim_prediction(tmp_path, "2026-07-19", 1, "gpp", eq)
+    eq2 = dict(eq, mean_pct=70.0)
+    dfs_run.log_sim_prediction(tmp_path, "2026-07-19", 1, "gpp", eq2)   # overwrite
+    dfs_run.log_sim_prediction(tmp_path, "2026-07-19", 1, "cash", eq)   # distinct mode
+    import csv as _csv
+    rows = list(_csv.DictReader(open(tmp_path / "data/dfs_sim_log.csv")))
+    assert len(rows) == 2
+    gpp_row = next(r for r in rows if r["mode"] == "gpp")
+    assert gpp_row["mean_pct"] == "70.0" and gpp_row["field_p99"] == "140.0"
+
+
+def test_proj_log_carries_pitcher_sim_anchors(tmp_path):
+    from edge import dfs_run
+    pool = [{"name": "Ace", "team": "BAL", "pos": {"P"}, "salary": 9000, "proj": 18.0,
+             "ceiling": 18.0, "conf": "P-prop", "outs_mean": 18.3, "k_mean": 6.1},
+            {"name": "Bat", "team": "KC", "pos": {"OF"}, "salary": 4000, "proj": 8.0,
+             "ceiling": 10.0, "conf": "H-slot2"}]
+    dfs_run.log_forward_test(tmp_path, "2099-07-19", True, 5, pool, None, None, games=3)
+    import csv as _csv
+    rows = {r["player"]: r for r in _csv.DictReader(open(tmp_path / "data/dfs_proj_log.csv"))}
+    assert rows["Ace"]["outs_mean"] == "18.3" and rows["Ace"]["k_mean"] == "6.1"
+    assert rows["Bat"]["outs_mean"] == ""      # hitters: blank, not garbage
+
+
+def test_log_forward_test_refuses_past_dates(tmp_path):
+    # A past-date rebuild always has a thinner pool than what was really
+    # buildable pre-lock (DK's feeds move on) -- it must never overwrite the
+    # forward-test log. Real incident 2026-07-19: a --date <yesterday>
+    # verification build replaced the real slate's 134 logged rows (8
+    # pitchers) with 144 pitcher-less ones; restored from git.
+    from edge import dfs_run
+    pool = [{"name": "Bat", "team": "KC", "pos": {"OF"}, "salary": 4000, "proj": 8.0,
+             "ceiling": 10.0, "conf": "H-slot2"}]
+    res = dfs_run.log_forward_test(tmp_path, "2020-01-01", True, 1, pool, None, None)
+    assert res["logged_projections"] is False
+    assert res.get("skipped_past_date") is True
+    assert not (tmp_path / "data/dfs_proj_log.csv").exists()
+
+
+def test_gpp_sim_ev_lineup_returns_valid_lineup():
+    # needs >=2 games: with a single game, both rosterable pitchers oppose one
+    # of the two teams' hitters, so the anti-stack constraint correctly makes
+    # EVERY stacked lineup infeasible (verified directly -- a 2-team pool
+    # returns zero candidates by design, not by bug)
+    from edge import dfs_run, dfs_opt
+    slot_pos = {1: "C", 2: "1B", 3: "2B", 4: "3B", 5: "SS",
+                6: "OF", 7: "OF", 8: "OF", 9: "OF"}
+    pool = []
+    for team, opp, home, game in (("AAA", "BBB", True, 1), ("BBB", "AAA", False, 1),
+                                  ("CCC", "DDD", True, 2), ("DDD", "CCC", False, 2)):
+        for slot in range(1, 10):
+            pool.append({"name": f"{team}h{slot}", "pos": {slot_pos[slot]}, "team": team,
+                         "opp_team": opp, "slot": slot, "home": home, "game": game,
+                         "proj": 8.0 - 0.3 * slot, "salary": 2200 + 200 * slot,
+                         "ceiling": 10.0 - 0.3 * slot, "own": 8.0, "conf": "x"})
+        pool.append({"name": f"{team}P", "pos": {"P"}, "team": team, "opp_team": opp,
+                     "proj": 15.0, "salary": 7800, "outs_mean": 17.0, "k_mean": 5.5,
+                     "ceiling": 15.0, "own": 20.0, "conf": "P", "game": game})
+    for p in pool:
+        p["lev"] = p["ceiling"]
+    gpp = dfs_opt.optimize(pool, mode="gpp", iters=200, seed=0)
+    res = {"pool": pool, "gpp": gpp}
+    out = dfs_run.gpp_sim_ev_lineup(res, n_sims=400, seed=3, field_size=120)
+    assert not out.get("error"), out
+    lu = out["lineup"]
+    assert len(lu) == 10 and len({p["name"] for p, _s in lu}) == 10
+    assert sum(p["salary"] for p, _s in lu) <= 50000
+    assert out["n_cands"] >= 2 and "ev" in out and "p_top1" in out
+    # deterministic under the same seed
+    out2 = dfs_run.gpp_sim_ev_lineup(res, n_sims=400, seed=3, field_size=120)
+    assert {p["name"] for p, _s in out["lineup"]} == {p["name"] for p, _s in out2["lineup"]}

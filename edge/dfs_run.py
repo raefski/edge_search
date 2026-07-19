@@ -60,7 +60,31 @@ def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
     """
     result = {"logged_projections": False, "n": 0, "lineup_file": None}
     (root / "data").mkdir(parents=True, exist_ok=True)
-    cols = ("date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf", "dk_fppg", "games")
+    # A build for a PAST date must never overwrite the forward-test log: DK's
+    # events/draftables have moved on by then, so a past-date rebuild always
+    # produces a thinner/different pool than what was really buildable pre-lock
+    # -- and the main log's per-date overwrite would silently replace REAL
+    # forward-test data with it. This exact incident happened 2026-07-19 (a
+    # --date 2026-07-18 verification rebuild clobbered the user's real 7/18
+    # Main-slate rows, 134 rows w/ 8 pitchers -> 144 rows w/ 0; restored from
+    # git). Same contamination class as §25's stray same-date build.
+    import datetime as _dt
+    from zoneinfo import ZoneInfo as _ZI
+    try:
+        today_et = _dt.datetime.now(_ZI("America/New_York")).date().isoformat()
+    except Exception:
+        today_et = _dt.date.today().isoformat()
+    if date < today_et:
+        result["skipped_past_date"] = True
+        return result
+    # outs_mean/k_mean (pitchers only): the prop-implied distribution anchors
+    # the field simulator draws around -- logged so PAST slates can be
+    # re-simulated faithfully instead of falling back to generic defaults
+    # (added 2026-07-19 per DFS_IMPROVEMENT_PLAN §1; blank for hitters and for
+    # rows logged before this existed -- readers use DictReader, so the new
+    # columns are backward/forward compatible in both directions).
+    cols = ("date", "player", "team", "pos", "salary", "proj", "ceiling", "own", "conf", "dk_fppg", "games",
+            "outs_mean", "k_mean")
 
     def _write_rows(fh, rows):
         w = csv.writer(fh)
@@ -73,7 +97,8 @@ def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
             yield {"date": date, "player": p["name"], "team": p["team"],
                   "pos": "/".join(sorted(p["pos"])), "salary": p["salary"], "proj": p["proj"],
                   "ceiling": p.get("ceiling"), "own": p.get("own", ""), "conf": p["conf"],
-                  "dk_fppg": p.get("dk_fppg", ""), "games": games if games is not None else ""}
+                  "dk_fppg": p.get("dk_fppg", ""), "games": games if games is not None else "",
+                  "outs_mean": p.get("outs_mean", ""), "k_mean": p.get("k_mean", "")}
 
     if is_main:
         plog = root / "data/dfs_proj_log.csv"
@@ -248,8 +273,13 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
     # shrink_k=60: EB shrinkage toward league average instead of the min-120-PA
     # cutoff (see pooled_skill_rates docstring for the 2026-07-10 backtest).
     # Versioned cache filename so a pre-shrinkage cache is never misread.
+    # season_weights: Marcel-style decay -- the two-seasons-back year at half
+    # weight (backtested 2026-07-18 as part of the marcel+home+platoon combo,
+    # incremental t=3.48 over the §18 baseline on 13,801 held-out hitter-games).
+    # Versioned cache name (_mw) so a flat-pooled cache is never misread.
     rates, lg = dfs.pooled_skill_rates(skill_seasons, shrink_k=60,
-                                       cache_path=str(root / f"data/dfs_skill_{'_'.join(map(str, skill_seasons))}_eb60.json"),
+                                       season_weights=(0.5, 1.0, 1.0),
+                                       cache_path=str(root / f"data/dfs_skill_{'_'.join(map(str, skill_seasons))}_eb60_mw.json"),
                                        max_age=21600)
     park = dfs.park_runs(yr)
     k9 = dfs.pitcher_k9((yr - 1, yr), cache_path=str(root / f"data/dfs_pitch_k9_{yr-1}_{yr}.json"), max_age=21600)
@@ -315,14 +345,17 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
             info = salaries.get(dfs.norm(nm))
             if not info or not info.get("salary") or "P" not in dfs.parse_pos(info["position"]):
                 continue
-            proj = dfs.project_pitcher(dfs.player_markets(dkp, nm))["proj"]
+            pp_proj = dfs.project_pitcher(dfs.player_markets(dkp, nm))
+            proj = pp_proj["proj"]
             if proj is None:
                 continue
             pool.append({"name": nm, "pos": {"P"}, "salary": info["salary"], "proj": proj,
                          "ceiling": proj, "floor": proj,  # no validated pitcher-specific floor signal yet
                          "team": info["team"], "game": info["game"],
                          "opp_team": team_opp_abbr.get(info["team"]), "conf": "P-prop",
-                         "dk_fppg": info.get("dk_fppg")})
+                         "dk_fppg": info.get("dk_fppg"),
+                         # prop-implied anchors for the field simulator
+                         "outs_mean": pp_proj.get("outs_mean"), "k_mean": pp_proj.get("k_mean")})
 
     # every single event failing (not just some -- a normal day has SOME
     # events with no markets posted yet) is the systematic-failure signal:
@@ -340,6 +373,13 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
             _bullpen_memo[team_id] = dfs.team_pitcher_stats(
                 team_id, (yr - 1, yr), cache_path=str(bullpen_cache_dir / f"{team_id}.json"), max_age=21600)
         return _bullpen_memo[team_id]
+
+    # Handedness for the PLATOON_CELL factor: batter sides + opposing starters'
+    # throwing hands, one bulk /people call per ~100 uncached ids, disk-cached
+    # permanently (hands don't change). Missing entries degrade to neutral.
+    _hand_ids = [lu["id"] for lu in lineups.values()] + \
+                [lu.get("opp_pitcher_id") for lu in lineups.values() if lu.get("opp_pitcher_id")]
+    hands = dfs.player_hands(_hand_ids, cache_path=str(root / "data/dfs_hands.json"))
 
     for (team_id, nm), lu in lineups.items():
         team_abbr = abbr.get(str(team_id), str(team_id))
@@ -374,8 +414,11 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
         # and corr 0.166->0.177 vs the previous production shape.
         is_home = str(lu["team_id"]) == str(lu["park_team_id"])
         starter_era = era.get(str(lu["opp_pitcher_id"]))
+        bhand = (hands.get(str(lu["id"])) or {}).get("bat")
+        opp_hand = (hands.get(str(lu.get("opp_pitcher_id"))) or {}).get("throw")
         proj = dfs.project_hitter_skill(skill, lu["slot"], pk, matchup_k9,
-                                        home=is_home, opp_era=starter_era)
+                                        home=is_home, opp_era=starter_era,
+                                        bhand=bhand, opp_hand=opp_hand)
         sr = hr_season.get((team_id, nm))
         pa_slot = (dfs.SLOT_PA_HOME if is_home else dfs.SLOT_PA_AWAY).get(lu["slot"], 4.0)
         hr_rate = (sr["homeRuns"] / sr["plateAppearances"]) if sr and sr.get("plateAppearances") else 0.03
@@ -392,7 +435,7 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
                      "floor": floor,
                      "team": team_abbr, "game": lu["game"],
                      "opp_team": abbr.get(str(lu.get("opp_team_id")), None),
-                     "slot": lu["slot"], "confirmed": confirmed,
+                     "slot": lu["slot"], "home": is_home, "confirmed": confirmed,
                      "conf": f"H-slot{lu['slot']}" + ("" if confirmed else "*PROJ"),
                      "dk_fppg": info.get("dk_fppg")})
 
@@ -461,3 +504,185 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
             "excluded_teams": sorted(exclude_teams), "slate_mismatch": slate_mismatch,
             "pitcher_fetch_error": pitcher_fetch_error,
             "spent": client.spent_this_session, "remaining": client.remaining_credits()}
+
+
+def log_sim_prediction(root: Path, date: str, gid, mode: str, eq: dict) -> None:
+    """Append/refresh one row in data/dfs_sim_log.csv -- the simulator's own
+    forward-test log (DFS_IMPROVEMENT_PLAN §1.3): every pre-lock sim prediction
+    for an entered lineup gets recorded so realized finishes can later be
+    checked against the predicted distribution (the exact mechanism that
+    validated the mean model). Upserts on (date, gid, mode) like the proj log
+    does on date, so re-simming the same build overwrites in place."""
+    p = root / "data/dfs_sim_log.csv"
+    cols = ("date", "gid", "mode", "n_sims", "field_n", "mean_pct", "median_pct",
+            "p_cash", "p_top", "our_mean", "our_p95", "field_p50", "field_p90", "field_p99")
+    row = {"date": date, "gid": gid, "mode": mode,
+           "n_sims": eq.get("n_sims", ""), "field_n": eq.get("field_n", ""),
+           "mean_pct": eq.get("mean_pct"), "median_pct": eq.get("median_pct"),
+           "p_cash": eq.get("p_cash"), "p_top": eq.get("p_top"),
+           "our_mean": eq.get("our_mean"), "our_p95": eq.get("our_p95"),
+           "field_p50": eq.get("field_q", {}).get(50), "field_p90": eq.get("field_q", {}).get(90),
+           "field_p99": eq.get("field_q", {}).get(99)}
+    prior = [r for r in csv.DictReader(open(p))] if p.exists() else []
+    prior = [r for r in prior
+             if not (r.get("date") == date and str(r.get("gid")) == str(gid) and r.get("mode") == mode)]
+    with p.open("w", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(list(cols))
+        for r in prior + [row]:
+            w.writerow([r.get(k, "") for k in cols])
+
+
+def simulate_lineup_vs_field(result, mode="gpp", n_sims=3000, field_size=800, seed=1,
+                             log_date: str | None = None):
+    """Field-equity layer over a finished build_slate() result: simulate the
+    whole slate jointly (edge/dfs_sim: correlated hitters, pitcher-vs-stack
+    anti-correlation), sample a plausible ownership-driven FIELD, and score
+    this build's lineup against it world by world.
+
+    Returns the contest_equity dict (mean/median finish percentile, P(cash),
+    P(top 1%), field score quantiles) plus sim disposition data, or an
+    {"error": ...} dict when the build has no usable lineup/pool. Free (no
+    API calls): player event shapes come from the season_hitting disk cache
+    the build already refreshed."""
+    from edge import dfs_sim
+
+    lu = (result.get(mode) or {}).get("lineup")
+    pool = result.get("pool") or []
+    if not lu or not pool:
+        return {"error": "no lineup/pool to simulate"}
+    ix_by_name = {p["name"]: i for i, p in enumerate(pool)}
+    our_ix = []
+    for entry in lu:
+        # optimize() lineups are (player_dict, slot) pairs
+        p = entry[0] if isinstance(entry, (list, tuple)) else entry
+        nm = p["name"] if isinstance(p, dict) else str(p)
+        if nm in ix_by_name:
+            our_ix.append(ix_by_name[nm])
+    if len(our_ix) < 9:
+        return {"error": f"lineup only matched {len(our_ix)}/10 pool entries"}
+
+    root = Path(__file__).resolve().parents[1]
+    season_rates = {}
+    try:
+        import json as _json
+        raw = _json.loads((root / "data/dfs_season_hitting.json").read_text())
+        by_norm = {}
+        for k, v in raw.items():
+            if isinstance(v, dict) and "|" in k:
+                by_norm[k.split("|", 1)[1]] = v
+        for p in pool:
+            if "P" not in p["pos"]:
+                sr = by_norm.get(dfs.norm(p["name"]))
+                if sr:
+                    season_rates[p["name"]] = sr
+    except Exception:
+        pass  # league-shape fallback inside the sim is fine
+
+    scores, _meta = dfs_sim.simulate_slate(pool, n_sims=n_sims, seed=seed,
+                                           season_rates=season_rates)
+    import numpy as _np
+    field = dfs_sim.generate_field(pool, field_size, rng=_np.random.default_rng(seed))
+    if len(field) < 50:
+        return {"error": f"field generation produced only {len(field)} lineups"}
+    eq = dfs_sim.contest_equity(scores, our_ix, field)
+    eq["n_sims"] = n_sims
+    eq["field_n"] = len(field)
+    if log_date:
+        try:
+            log_sim_prediction(root, log_date, result.get("gid"), mode, eq)
+        except Exception:
+            pass  # logging must never take down the sim result itself
+    return eq
+
+
+def gpp_candidates(pool, meta_seed=0, n_teams=4, iters=500):
+    """Diverse GPP candidate lineups for the sim-EV selector: stack team x
+    ownership-fade x stack shape (optimizer seeds are nearly deterministic per
+    construction on real pool sizes -- measured 2026-07-19, 5 seeds produced 1
+    unique lineup per stack team -- so diversity must come from construction
+    parameters). Restores the production fade (0.3) on every pool entry before
+    returning, so callers' later optimize() runs see unchanged state."""
+    from collections import defaultdict
+    team_lev = defaultdict(float)
+    for h in pool:
+        if "P" not in h["pos"]:
+            team_lev[h["team"]] += h.get("ceiling", h["proj"]) - 0.3 * h.get("own", 0.0)
+    rank = sorted(team_lev, key=team_lev.get, reverse=True)
+    cands, seen = [], set()
+    for ti in range(min(n_teams, len(rank))):
+        stack_team = rank[ti]
+        stack2 = rank[ti + 1] if len(rank) > ti + 1 else (rank[0] if ti else None)
+        for fade in (0.1, 0.3):
+            for stack_n, s2n in ((5, 3), (4, 0)):
+                for p in pool:
+                    p["lev"] = round(p.get("ceiling", p["proj"]) - fade * p.get("own", 0.0), 1)
+                r = dfs_opt.optimize(pool, mode="gpp", stack_team=stack_team,
+                                     stack_n=stack_n, iters=iters,
+                                     seed=meta_seed + 17 * ti,
+                                     stack2_team=stack2 if s2n else None, stack2_n=s2n)
+                if not r:
+                    continue
+                key = tuple(sorted(p["name"] for p, _s in r["lineup"]))
+                if key not in seen:
+                    seen.add(key)
+                    cands.append(r)
+    for p in pool:
+        p["lev"] = round(p.get("ceiling", p["proj"]) - 0.3 * p.get("own", 0.0), 1)
+    return cands
+
+
+def gpp_sim_ev_lineup(result, n_sims=4000, seed=1, field_size=800,
+                      contest_entries=None, payouts=None, entry_fee=5.0):
+    """OPT-IN sim-EV GPP construction (DFS_IMPROVEMENT_PLAN §4): generate
+    diverse candidate lineups, simulate ONE shared world-set + field, pick the
+    candidate with the best expected payout under a top-heavy GPP curve.
+
+    Replay-validated 2026-07-19 vs the incumbent 5-3 leverage builder on 8 real
+    contest slates x 3 seeds: sim-EV mean percentile-in-real-field 53.6% vs
+    42.3%, wins 5 slates / loses 2 / ties 1 -- directionally positive but
+    paired t=0.80 at n=8, NOT significant, so this does NOT replace the
+    default GPP construction; it's an opt-in whose forward results accumulate
+    via log_sim_prediction. Returns the winning optimize()-shaped dict with
+    ev/mean_pct/p_top1/n_cands added, or {"error": ...}."""
+    from edge import dfs_sim
+    import numpy as _np
+
+    pool = result.get("pool") or []
+    if sum(1 for p in pool if "P" in p["pos"]) < 2:
+        return {"error": "need >=2 pitchers in pool"}
+    cands = gpp_candidates(pool, meta_seed=seed)
+    if not cands:
+        return {"error": "no candidate lineups could be built"}
+    gpp = result.get("gpp")
+    if gpp:
+        keys = {tuple(sorted(p["name"] for p, _s in c["lineup"])) for c in cands}
+        if tuple(sorted(p["name"] for p, _s in gpp["lineup"])) not in keys:
+            cands.append(gpp)
+
+    root = Path(__file__).resolve().parents[1]
+    season_rates = {}
+    try:
+        import json as _json
+        raw = _json.loads((root / "data/dfs_season_hitting.json").read_text())
+        by_norm = {dfs.norm(k.split("|", 1)[1]): v for k, v in raw.items()
+                   if isinstance(v, dict) and "|" in k}
+        season_rates = {p["name"]: by_norm.get(dfs.norm(p["name"]))
+                        for p in pool if "P" not in p["pos"]}
+    except Exception:
+        pass
+
+    scores, _m = dfs_sim.simulate_slate(pool, n_sims=n_sims, seed=seed,
+                                        season_rates=season_rates)
+    field = dfs_sim.generate_field(pool, field_size, rng=_np.random.default_rng(seed + 11))
+    if len(field) < 50:
+        return {"error": f"field generation produced only {len(field)} lineups"}
+    entries = contest_entries or max(2 * field_size, 200)
+    pays = payouts or dfs_sim.synthetic_gpp_payouts(entries, entry_fee=entry_fee)
+    ix_by_name = {p["name"]: i for i, p in enumerate(pool)}
+    cand_ix = [[ix_by_name[p["name"]] for p, _s in c["lineup"]] for c in cands]
+    best_i, evs = dfs_sim.pick_by_sim_ev(scores, cand_ix, field, pays, entries)
+    out = dict(cands[best_i])
+    out.update(evs[best_i])
+    out["n_cands"] = len(cands)
+    return out

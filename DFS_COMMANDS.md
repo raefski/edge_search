@@ -88,7 +88,46 @@ python3 scripts/dfs_roi_backtest.py
 
 # Re-tune the ownership softmax against real held-out contest ownership
 python3 scripts/dfs_ownership_gamma_sweep.py
+
+# Re-validate the field simulator against every contest export on record
+python3 scripts/dfs_sim_validate.py            # add --skip-lab for just the contest layer
+
+# How duplicated are real fields' lineups? (prize-splitting risk)
+python3 scripts/dfs_dupe_measure.py
+
+# Sim-EV construction vs the incumbent 5-3 leverage builder, replayed on real slates
+python3 scripts/dfs_sim_ev_replay.py
 ```
+
+**Field sim on a build:** add `--sim` to `dfs_lineups.py` (or use the app's
+"🎲 Field simulation" expander) — free, no credits; each run also logs its
+prediction to `data/dfs_sim_log.csv` so realized finishes can be checked
+against predicted distributions later.
+
+**Sim-EV GPP lineup (experimental, opt-in):** add `--gpp-sim-ev` (CLI) or tap
+"🧪 GPP by sim-EV" inside the app's Field-simulation expander. Ranks ~16
+alternative constructions by expected payout against a simulated field.
+Replay-validated at +11 mean percentile over the incumbent across 8 real
+slates (wins 5, loses 2, ties 1) — directionally good but NOT yet
+statistically significant (t=0.80, n=8), so the default GPP lineup is
+unchanged; using this on some entries is exactly how the forward evidence
+accumulates.
+
+**After every contest you enter** (the data flywheel — DFS_IMPROVEMENT_PLAN §1):
+
+1. Download the contest standings CSV into `data/` (same night; it's the single
+   most valuable file the system gets).
+2. Tag it in `data/contest_meta.json`. Plain `"gpp"`/`"cash"` still works, but
+   the extended form is what unlocks dollar-EV everywhere:
+
+```json
+"192447828": {"type": "gpp", "entry_fee": 5.0, "field": 142,
+              "payouts": [[1, 1, 100.0], [2, 5, 40.0], [6, 30, 10.0]]}
+```
+
+   `payouts` rows are `[rank_from, rank_to, dollars_per_entry]`, copied from the
+   DK contest page. DK's own export contains none of this, so it's manual.
+3. `python3 scripts/dfs_grade.py <date>` once games are final.
 
 ## Bonus: when the deployed app's live props pull fails
 

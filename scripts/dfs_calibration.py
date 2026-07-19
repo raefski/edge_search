@@ -38,20 +38,32 @@ ACTUALS_CACHE_DIR = ROOT / "data/actuals_cache"
 CONTEST_META_PATH = ROOT / "data/contest_meta.json"
 
 
-def load_contest_type(path) -> str:
-    """'cash' | 'gpp' | 'unknown', from data/contest_meta.json keyed by the
-    numeric contest id in the filename (contest-standings-<id>.csv). No
-    programmatic way to detect this from the export itself (DK's standings
-    CSV carries no contest-type/entry-fee field -- see dfs_roi_backtest.py's
-    docstring on the same limitation), so this is a small manually-maintained
-    manifest. Added 2026-07-11 per user request: cash-game fields concentrate
-    ownership differently than GPP fields (no incentive to differentiate), so
-    ownership-gamma fitting (dfs_ownership_gamma_sweep.py) should only use GPP
-    dates. Untagged files default to 'unknown' and are excluded from gamma
-    fitting rather than silently assumed to be GPP."""
+def load_contest_meta(path) -> dict:
+    """Full metadata dict for one contest export, from data/contest_meta.json
+    keyed by the numeric contest id in the filename. Two value forms are
+    accepted (both live in the same file):
+      legacy string:  "gpp" | "cash"
+      extended dict:  {"type": "gpp", "entry_fee": 5.0, "field": 142,
+                       "payouts": [[1, 1, 400.0], [2, 3, 150.0], ...]}
+    The extended form (DFS_IMPROVEMENT_PLAN §1.2) is what unlocks DOLLAR EV --
+    DK's standings export carries no entry-fee/payout data, so these are
+    manually copied from the DK contest page when the user plays. `payouts`
+    rows are [rank_from, rank_to, dollars_per_entry]. Anything missing
+    normalizes to None; unknown contests to {"type": "unknown"}."""
     meta = json.loads(CONTEST_META_PATH.read_text()) if CONTEST_META_PATH.exists() else {}
     cid = Path(path).stem.replace("contest-standings-", "")
-    return meta.get(cid, "unknown")
+    v = meta.get(cid, "unknown")
+    if isinstance(v, str):
+        return {"type": v, "entry_fee": None, "field": None, "payouts": None}
+    return {"type": v.get("type", "unknown"), "entry_fee": v.get("entry_fee"),
+            "field": v.get("field"), "payouts": v.get("payouts")}
+
+
+def load_contest_type(path) -> str:
+    """'cash' | 'gpp' | 'unknown' -- thin back-compat wrapper over
+    load_contest_meta (see it for the schema; every prior caller of this
+    function keeps working unchanged with either metadata form)."""
+    return load_contest_meta(path)["type"]
 
 
 def games_for_date(pool_rows: list[dict]) -> int | None:
