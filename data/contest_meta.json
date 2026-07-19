@@ -1,17 +1,121 @@
 {
-  "191859592": "gpp",
-  "191896248": "gpp",
-  "191898385": "gpp",
-  "191925550": "gpp",
-  "191955104": "gpp",
-  "191981810": "gpp",
-  "192014021": "gpp",
-  "192052642": "gpp",
-  "192176856": "cash",
-  "192195285": "cash",
-  "192200473": "gpp",
-  "192344226": "cash",
-  "192424301": "gpp",
-  "192445191": "cash",
-  "192447828": "gpp"
+ "191859592": {
+  "type": "gpp",
+  "entry_fee": 0.25,
+  "field": 475,
+  "places_paid": 109,
+  "prize_pool": 100.0
+ },
+ "191896248": {
+  "type": "gpp",
+  "entry_fee": 1.0,
+  "field": 1189,
+  "places_paid": 285,
+  "prize_pool": 1000.0
+ },
+ "191898385": {
+  "type": "gpp",
+  "entry_fee": 0.25,
+  "field": 475,
+  "places_paid": 109,
+  "prize_pool": 100.0
+ },
+ "191925550": {
+  "type": "gpp",
+  "entry_fee": 1.0,
+  "field": 1189,
+  "places_paid": 285,
+  "prize_pool": 1000.0
+ },
+ "191955104": {
+  "type": "gpp",
+  "entry_fee": 1.0,
+  "field": 891,
+  "places_paid": 204,
+  "prize_pool": 750.0
+ },
+ "191981810": {
+  "type": "gpp",
+  "entry_fee": 1.0,
+  "field": 1189,
+  "places_paid": 285,
+  "prize_pool": 1000.0
+ },
+ "192014021": {
+  "type": "gpp",
+  "entry_fee": 1.0,
+  "field": 1189,
+  "places_paid": 285,
+  "prize_pool": 1000.0
+ },
+ "192052642": {
+  "type": "gpp",
+  "entry_fee": 1.0,
+  "field": 1189,
+  "places_paid": 285,
+  "prize_pool": 1000.0
+ },
+ "192176856": {
+  "type": "cash",
+  "entry_fee": 1.0,
+  "field": 23,
+  "places_paid": 10,
+  "prize_pool": 20.0
+ },
+ "192195285": {
+  "type": "cash",
+  "entry_fee": 1.0,
+  "field": 23,
+  "places_paid": 10,
+  "prize_pool": 20.0
+ },
+ "192200473": {
+  "type": "gpp",
+  "entry_fee": 1.0,
+  "field": 1189,
+  "places_paid": 285,
+  "prize_pool": 1000.0
+ },
+ "192344226": {
+  "type": "cash",
+  "entry_fee": 1.0,
+  "field": 62,
+  "places_paid": 27,
+  "prize_pool": 54.0
+ },
+ "192424301": {
+  "type": "gpp",
+  "entry_fee": 0.25,
+  "field": 237,
+  "places_paid": 55,
+  "prize_pool": 50.0
+ },
+ "192445191": {
+  "type": "cash",
+  "entry_fee": 1.0,
+  "field": 23,
+  "places_paid": 10,
+  "prize_pool": 20.0
+ },
+ "192447828": {
+  "type": "gpp",
+  "entry_fee": 0.25,
+  "field": 142,
+  "places_paid": 33,
+  "prize_pool": 30.0
+ },
+ "192454729": {
+  "type": "cash",
+  "field": 23,
+  "entry_fee": 1.0,
+  "places_paid": 10,
+  "prize_pool": 20.0
+ },
+ "192414140": {
+  "type": "gpp",
+  "field": 1136,
+  "entry_fee": 1.0,
+  "places_paid": 285,
+  "prize_pool": 1000.0
+ }
 }

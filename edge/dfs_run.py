@@ -534,7 +534,7 @@ def log_sim_prediction(root: Path, date: str, gid, mode: str, eq: dict) -> None:
 
 
 def simulate_lineup_vs_field(result, mode="gpp", n_sims=3000, field_size=800, seed=1,
-                             log_date: str | None = None):
+                             log_date: str | None = None, cash_line_pct: float | None = None):
     """Field-equity layer over a finished build_slate() result: simulate the
     whole slate jointly (edge/dfs_sim: correlated hitters, pitcher-vs-stack
     anti-correlation), sample a plausible ownership-driven FIELD, and score
@@ -585,9 +585,15 @@ def simulate_lineup_vs_field(result, mode="gpp", n_sims=3000, field_size=800, se
     field = dfs_sim.generate_field(pool, field_size, rng=_np.random.default_rng(seed))
     if len(field) < 50:
         return {"error": f"field generation produced only {len(field)} lineups"}
-    eq = dfs_sim.contest_equity(scores, our_ix, field)
+    # mode-appropriate payout line: a double-up pays ~44% of the field, a GPP
+    # pays ~18-25% (user-confirmed vs real contests, e.g. 285/1136 = 25% on the
+    # 7/18 $1K Daily Dollar; 10/23 = 43% on the $1 double-up)
+    if cash_line_pct is None:
+        cash_line_pct = 0.44 if mode == "cash" else 0.22
+    eq = dfs_sim.contest_equity(scores, our_ix, field, cash_line_pct=cash_line_pct)
     eq["n_sims"] = n_sims
     eq["field_n"] = len(field)
+    eq["cash_line_pct"] = cash_line_pct
     if log_date:
         try:
             log_sim_prediction(root, log_date, result.get("gid"), mode, eq)

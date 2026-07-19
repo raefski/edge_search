@@ -1429,6 +1429,49 @@ selection, contest-meta both-forms parsing, sim-log upsert, proj-log pitcher anc
 past-date log guard, and end-to-end sim-EV lineup validity/determinism. App re-verified
 via the local driver after the button wiring (clean load, correct thin-slate placeholder).
 
+**Update, same day — the 7/18 Main-slate results landed, and with them two real lessons
+plus the project's first dollar accounting:**
+- **DK voided two games for the user's GPP contest** (NYM@PHI and PIT@CLE game 2, rain) and
+  scored every player in them 0.00. The user's lineup carried PIT bats — one hard zero plus
+  one player the rest of the 1,136-entry field had almost entirely avoided (0.35% ownership:
+  the field read DK's pre-lock exclusion notice; nothing in a free API exposes it, which is
+  exactly why §13 built `--exclude-teams`). Finish: 906/1136. The cash entry (same slate's
+  $1 double-up, our build) went 91.05 for 11th of 23 — one place off the 10-paid line.
+  Grading integrity held on its own: the voided-game contest matched real actuals at only
+  84%, below the 85% ground-truth bar, so `dfs_calibration` auto-excluded it from every
+  model-calibration number rather than learning from DK's zeros.
+- **The user's DK entry-history export** (`data/draftkings-contest-entry-history.csv`) is
+  now parsed by `scripts/dfs_entry_history.py`, which auto-fills `contest_meta.json` with
+  real entry fees / field sizes / places-paid / prize pools (17 contests backfilled — the
+  manual-payout-table step from §1 of the plan is now mostly automated; rank-by-rank tables
+  remain optional refinement) and prints the ROI report the whole system ultimately answers
+  to. **First honest dollar ground truth: since the project started (2026-06-28), 30 real
+  entries, $19.25 in, $13.50 out — net −$5.75 (−29.9%), cash-rate 23%.** At $1 stakes and
+  n=30 with GPP-shaped payout variance this is statistically indistinguishable from
+  rake-only (~−13 to −18%) AND from a modest positive edge — it neither confirms nor
+  refutes; it's the baseline the §6 monthly re-runs now track in dollars instead of
+  percentiles. Lifetime MLB history (265 entries, mostly pre-model): +6.1%, carried by a
+  big-field score; sub-$1 contests run −44% lifetime — consistent with the known fact that
+  micro-stakes fields are rake-heavy relative to payout, which is contest-selection signal
+  (§5 of the plan) as much as model signal.
+
+**Two real bugs the user caught within minutes of using the shipped features, both fixed
+same-day:**
+- **The GPP cash-line assumption was wrong.** The simulator hard-coded "beat a ~44% line"
+  for both modes — 44% is correct for a double-up but the user pointed out real GPPs pay
+  roughly 18-23%, confirmed exactly by that night's own contest (285 of 1,136 paid = 25%).
+  `simulate_lineup_vs_field` now defaults the pay line to 44% for cash / 22% for GPP
+  (overridable), and both the CLI and app labels display whichever line was actually used
+  instead of a hard-coded "~44%" regardless of mode.
+- **The sim-EV button crashed on first real use**: `StreamlitDuplicateElementKey` on
+  `save_gpp`, because the new sim-EV panel's save button and the GPP tab's save button both
+  hardcoded the same Streamlit widget key while rendering in the same page load -- two
+  DIFFERENT saveable lineups sharing one save button's identity. `save_entry_button` now
+  takes an explicit `widget_key` override; the sim-EV panel uses `save_gpp_simev`. Re-verified
+  live via the local driver against a REAL props-pulled slate (yesterday's thin morning slate
+  couldn't reach this code path at all -- a real lineup with a working save button is now
+  confirmed end-to-end, not just import-clean).
+
 ## 31. Verifiable, Not Just Asserted
 
 - **Test suite**: 115 tests, all passing (`pytest -q`), including regression tests for

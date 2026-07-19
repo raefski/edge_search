@@ -117,16 +117,21 @@ accumulates.
 
 1. Download the contest standings CSV into `data/` (same night; it's the single
    most valuable file the system gets).
-2. Tag it in `data/contest_meta.json`. Plain `"gpp"`/`"cash"` still works, but
-   the extended form is what unlocks dollar-EV everywhere:
+2. Refresh your DK **entry history** export (`data/draftkings-contest-entry-history.csv`)
+   every so often, then run:
 
-```json
-"192447828": {"type": "gpp", "entry_fee": 5.0, "field": 142,
-              "payouts": [[1, 1, 100.0], [2, 5, 40.0], [6, 30, 10.0]]}
+```bash
+python3 scripts/dfs_entry_history.py
 ```
 
-   `payouts` rows are `[rank_from, rank_to, dollars_per_entry]`, copied from the
-   DK contest page. DK's own export contains none of this, so it's manual.
+   This auto-fills `data/contest_meta.json` with each contest's real entry fee,
+   field size, places paid, and prize pool — and prints your actual dollar ROI
+   (overall / since project start / by type / by fee / by field size). The only
+   thing still manual is the optional rank-by-rank `payouts` table
+   (`[[rank_from, rank_to, dollars]]`, from the DK contest page) — pool +
+   places-paid already pin the payout curve well enough for EV ranking. New
+   contests only need their `"type"` (`"cash"`/`"gpp"`) confirmed if the name
+   doesn't say Double Up / 50-50.
 3. `python3 scripts/dfs_grade.py <date>` once games are final.
 
 ## Bonus: when the deployed app's live props pull fails

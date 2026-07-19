@@ -1649,3 +1649,59 @@ def test_gpp_sim_ev_lineup_returns_valid_lineup():
     # deterministic under the same seed
     out2 = dfs_run.gpp_sim_ev_lineup(res, n_sims=400, seed=3, field_size=120)
     assert {p["name"] for p, _s in out["lineup"]} == {p["name"] for p, _s in out2["lineup"]}
+
+
+def test_simulate_lineup_vs_field_mode_appropriate_cash_line():
+    # GPP and cash use different real pay lines (~22% vs ~44%) -- a hard-coded
+    # 44% for both was a real bug the user caught live 2026-07-19 (that
+    # night's own GPP contest paid 285/1136 = 25%, nowhere near 44%).
+    from edge import dfs_run, dfs_opt
+    slot_pos = {1: "C", 2: "1B", 3: "2B", 4: "3B", 5: "SS", 6: "OF", 7: "OF", 8: "OF", 9: "OF"}
+    pool = []
+    for team, opp, home, game in (("AAA", "BBB", True, 1), ("BBB", "AAA", False, 1),
+                                  ("CCC", "DDD", True, 2), ("DDD", "CCC", False, 2)):
+        for slot in range(1, 10):
+            pool.append({"name": f"{team}h{slot}", "pos": {slot_pos[slot]}, "team": team,
+                         "opp_team": opp, "slot": slot, "home": home, "game": game,
+                         "proj": 8.0 - 0.3 * slot, "salary": 2200 + 200 * slot,
+                         "ceiling": 10.0 - 0.3 * slot, "own": 8.0, "conf": "x", "confirmed": True})
+        pool.append({"name": f"{team}P", "pos": {"P"}, "team": team, "opp_team": opp,
+                     "proj": 15.0, "salary": 7800, "outs_mean": 17.0, "k_mean": 5.5,
+                     "ceiling": 15.0, "own": 20.0, "conf": "P", "game": game, "confirmed": True})
+    for p in pool:
+        p["lev"] = p["ceiling"]
+    # seed 0 doesn't converge on this tiny synthetic pool (randomized greedy,
+    # not every seed fills); seed 2 does -- verified directly, unrelated to
+    # what this test checks (the cash-line default, not construction success)
+    r = dfs_opt.optimize(pool, mode="gpp", iters=800, seed=2)
+    assert r, "test pool failed to build a lineup -- fixture issue, not the code under test"
+    res = {"pool": pool, "gpp": r, "cash": r}
+    eq_gpp = dfs_run.simulate_lineup_vs_field(res, mode="gpp", n_sims=300, field_size=100, seed=1)
+    eq_cash = dfs_run.simulate_lineup_vs_field(res, mode="cash", n_sims=300, field_size=100, seed=1)
+    assert eq_gpp["cash_line_pct"] == 0.22
+    assert eq_cash["cash_line_pct"] == 0.44
+    # explicit override still wins
+    eq_custom = dfs_run.simulate_lineup_vs_field(res, mode="gpp", n_sims=300, field_size=100,
+                                                 seed=1, cash_line_pct=0.10)
+    assert eq_custom["cash_line_pct"] == 0.10
+
+
+def test_save_entry_button_widget_key_override():
+    # StreamlitDuplicateElementKey, hit live 2026-07-19: the sim-EV panel and
+    # the GPP tab both save into pinned-entry mode "gpp" but must use DIFFERENT
+    # Streamlit widget keys since both can render in the same page load.
+    import ast
+    src = ast.parse(open("app.py").read())
+    calls = [n for n in ast.walk(src) if isinstance(n, ast.Call)
+             and getattr(n.func, "id", None) == "save_entry_button"]
+    assert len(calls) >= 3
+    # every call site must be distinguishable: either a distinct positional
+    # mode+something or an explicit widget_key kwarg
+    keys = set()
+    for c in calls:
+        kw = {k.arg: k.value for k in c.keywords}
+        if "widget_key" in kw and isinstance(kw["widget_key"], ast.Constant):
+            keys.add(kw["widget_key"].value)
+        elif c.args and isinstance(c.args[0], ast.Constant):
+            keys.add(c.args[0].value)  # falls back to f"save_{mode}"
+    assert len(keys) == len(calls), "two save_entry_button call sites resolve to the same widget key"

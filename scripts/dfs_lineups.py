@@ -155,7 +155,7 @@ def _log_and_optimize(args, res):
                 continue
             print(f"\n=== FIELD SIM ({mode}, {eq['n_sims']} worlds x {eq['field_n']} field lineups) ===")
             print(f"  finish percentile: mean {eq['mean_pct']}%  median {eq['median_pct']}%")
-            print(f"  P(beat a ~44% cash line): {eq['p_cash']:.0%}   P(top 1%): {eq['p_top']:.1%}")
+            print(f"  P(beat a ~{eq['cash_line_pct']:.0%} pay line): {eq['p_cash']:.0%}   P(top 1%): {eq['p_top']:.1%}")
             print(f"  our score: mean {eq['our_mean']}  P95 {eq['our_p95']}")
             print(f"  field quantiles: p50 {eq['field_q'][50]}  p90 {eq['field_q'][90]}  p99 {eq['field_q'][99]}")
 

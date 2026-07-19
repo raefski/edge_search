@@ -487,16 +487,21 @@ def render_app() -> None:
                  "conf": p.get("conf", ""), "projected": not p.get("confirmed", True)}
                 for p, slot in sorted(r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1]))]
 
-    def save_entry_button(mode, rows):
+    def save_entry_button(mode, rows, widget_key=None):
         """Pin the lineup you actually entered on DK (saved to disk, shared with
         scripts/dfs_swap.py --pin on your computer) so later refreshes/sessions
-        can late-swap it and it can be graded tomorrow."""
+        can late-swap it and it can be graded tomorrow.
+
+        widget_key: override the Streamlit element key when the SAME pinned-entry
+        mode gets a second save button in one render (the sim-EV panel saves as
+        the "gpp" entry too) -- two buttons may share a MODE but never a KEY
+        (StreamlitDuplicateElementKey, hit live on the phone 2026-07-19)."""
         saved = dfs_swap.load_pinned_entry(ROOT, slate_date, mode)
         is_saved = saved and {r["player"] for r in saved} == {r["player"] for r in rows}
         label = "📌 Saved as my DK entry ✓" if is_saved else "📌 Save this as my DK entry"
         col1, col2 = st.columns([3, 2])
         with col1:
-            if st.button(label, key=f"save_{mode}", use_container_width=True,
+            if st.button(label, key=widget_key or f"save_{mode}", use_container_width=True,
                          help="Saved to disk. Tap 🔄 Refresh as lineups post — Late-swap flags anyone ruled out."):
                 dfs_swap.save_pinned_entry(ROOT, slate_date, mode, rows)
                 st.rerun()
@@ -594,7 +599,7 @@ def render_app() -> None:
                             continue
                         c1, c2, c3 = st.columns(3)
                         c1.metric(f"{_label} median finish", f"{eq['median_pct']:.0f}th pctile")
-                        c2.metric("P(beat ~44% cash line)", f"{eq['p_cash']:.0%}")
+                        c2.metric(f"P(beat ~{eq['cash_line_pct']:.0%} pay line)", f"{eq['p_cash']:.0%}")
                         c3.metric("P(top 1%)", f"{eq['p_top']:.1%}")
                         st.caption(f"{_label}: score mean {eq['our_mean']} · P95 {eq['our_p95']} · "
                                    f"field p50/p90/p99 {eq['field_q'][50]}/{eq['field_q'][90]}/{eq['field_q'][99]} "
@@ -619,7 +624,7 @@ def render_app() -> None:
                                 "conf": p.get("conf", ""), "projected": not p.get("confirmed", True)}
                                for p, slot in sorted(ev_r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1]))]
                     render_compact(ev_rows)
-                    save_entry_button("gpp", ev_rows)
+                    save_entry_button("gpp", ev_rows, widget_key="save_gpp_simev")
 
     # ── pitcher value board ──────────────────────────────────────────────────
     with st.expander("Pitcher value board", expanded=res["cash"] is None):
