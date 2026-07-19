@@ -487,26 +487,32 @@ def render_app() -> None:
                  "conf": p.get("conf", ""), "projected": not p.get("confirmed", True)}
                 for p, slot in sorted(r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1]))]
 
-    def save_entry_button(mode, rows, widget_key=None):
+    def save_entry_button(mode, rows, key_suffix=None):
         """Pin the lineup you actually entered on DK (saved to disk, shared with
         scripts/dfs_swap.py --pin on your computer) so later refreshes/sessions
         can late-swap it and it can be graded tomorrow.
 
-        widget_key: override the Streamlit element key when the SAME pinned-entry
-        mode gets a second save button in one render (the sim-EV panel saves as
-        the "gpp" entry too) -- two buttons may share a MODE but never a KEY
-        (StreamlitDuplicateElementKey, hit live on the phone 2026-07-19)."""
+        key_suffix: override the Streamlit element-key SUFFIX (default: `mode`)
+        when the SAME pinned-entry mode gets a second save block in one render
+        (the sim-EV panel saves as the "gpp" entry too) -- two blocks may share
+        a MODE but every widget inside must still get a unique key. Both the
+        button AND the download_button below derive from this one suffix so a
+        future third widget can't repeat the first fix's mistake of updating
+        only one of the two hardcoded keys (StreamlitDuplicateElementKey hit
+        LIVE TWICE on the phone 2026-07-19 -- first on the button, then again
+        on the download_button once the button's own key was fixed)."""
+        tag = key_suffix or mode
         saved = dfs_swap.load_pinned_entry(ROOT, slate_date, mode)
         is_saved = saved and {r["player"] for r in saved} == {r["player"] for r in rows}
         label = "📌 Saved as my DK entry ✓" if is_saved else "📌 Save this as my DK entry"
         col1, col2 = st.columns([3, 2])
         with col1:
-            if st.button(label, key=widget_key or f"save_{mode}", use_container_width=True,
+            if st.button(label, key=f"save_{tag}", use_container_width=True,
                          help="Saved to disk. Tap 🔄 Refresh as lineups post — Late-swap flags anyone ruled out."):
                 dfs_swap.save_pinned_entry(ROOT, slate_date, mode, rows)
                 st.rerun()
         with col2:
-            st.download_button("⬇️ backup copy", data=_entry_csv_bytes(rows), key=f"dl_entry_{mode}",
+            st.download_button("⬇️ backup copy", data=_entry_csv_bytes(rows), key=f"dl_entry_{tag}",
                                file_name=f"dfs_entry_{slate_date}_{mode}.csv", mime="text/csv",
                                use_container_width=True,
                                help="The saved copy above can be lost if the app sleeps overnight — "
@@ -624,7 +630,7 @@ def render_app() -> None:
                                 "conf": p.get("conf", ""), "projected": not p.get("confirmed", True)}
                                for p, slot in sorted(ev_r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1]))]
                     render_compact(ev_rows)
-                    save_entry_button("gpp", ev_rows, widget_key="save_gpp_simev")
+                    save_entry_button("gpp", ev_rows, key_suffix="gpp_simev")
 
     # ── pitcher value board ──────────────────────────────────────────────────
     with st.expander("Pitcher value board", expanded=res["cash"] is None):

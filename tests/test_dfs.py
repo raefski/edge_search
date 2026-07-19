@@ -1686,22 +1686,57 @@ def test_simulate_lineup_vs_field_mode_appropriate_cash_line():
     assert eq_custom["cash_line_pct"] == 0.10
 
 
-def test_save_entry_button_widget_key_override():
-    # StreamlitDuplicateElementKey, hit live 2026-07-19: the sim-EV panel and
-    # the GPP tab both save into pinned-entry mode "gpp" but must use DIFFERENT
-    # Streamlit widget keys since both can render in the same page load.
+def test_save_entry_button_every_widget_key_derives_from_tag():
+    # StreamlitDuplicateElementKey, hit LIVE TWICE 2026-07-19: first on the
+    # save button (fixed by adding a key_suffix param), then AGAIN on the
+    # download_button two lines below it, which still hardcoded key=f"dl_entry_
+    # {mode}" independent of the new suffix -- the first fix's own regression
+    # test only checked call-site distinctness, never looked inside the
+    # function body, so it couldn't have caught this. This test inspects the
+    # function DEFINITION instead: every Streamlit widget call inside
+    # save_entry_button must build its key from the SAME local variable, so a
+    # future third widget structurally can't repeat the mistake.
+    import ast
+    src = ast.parse(open("app.py").read())
+    fn = next(n for n in ast.walk(src) if isinstance(n, ast.FunctionDef) and n.name == "save_entry_button")
+    # the function's first statement (after the docstring) must assign the
+    # single local variable every widget key derives from
+    body = fn.body[1:] if isinstance(fn.body[0], ast.Expr) else fn.body  # skip docstring
+    first = body[0]
+    assert isinstance(first, ast.Assign) and len(first.targets) == 1 \
+        and isinstance(first.targets[0], ast.Name), \
+        "expected save_entry_button's first statement to assign one local tag variable"
+    tag_var = first.targets[0].id
+    widget_calls = [n for n in ast.walk(fn) if isinstance(n, ast.Call)
+                    and getattr(n.func, "attr", None) in ("button", "download_button")]
+    assert len(widget_calls) >= 2, "expected both the save button and the backup download_button"
+    for c in widget_calls:
+        key_kw = next((k for k in c.keywords if k.arg == "key"), None)
+        assert key_kw is not None, f"widget call at line {c.lineno} has no key= at all"
+        assert isinstance(key_kw.value, ast.JoinedStr), \
+            f"widget call at line {c.lineno}: key must be an f-string built from {tag_var!r}"
+        names_used = {n.id for part in key_kw.value.values if isinstance(part, ast.FormattedValue)
+                      for n in ast.walk(part.value) if isinstance(n, ast.Name)}
+        assert tag_var in names_used, \
+            f"widget call at line {c.lineno} does not derive its key from {tag_var!r} -- " \
+            f"two call sites with the same mode but different key_suffix would collide"
+
+
+def test_save_entry_button_call_sites_use_distinct_tags():
+    # Structural check above guarantees every widget follows `tag`; this
+    # confirms the actual call sites also pass distinguishable tags (the sim-EV
+    # panel and the GPP tab both save mode="gpp" and MUST differ here).
     import ast
     src = ast.parse(open("app.py").read())
     calls = [n for n in ast.walk(src) if isinstance(n, ast.Call)
              and getattr(n.func, "id", None) == "save_entry_button"]
     assert len(calls) >= 3
-    # every call site must be distinguishable: either a distinct positional
-    # mode+something or an explicit widget_key kwarg
-    keys = set()
+    tags = []
     for c in calls:
         kw = {k.arg: k.value for k in c.keywords}
-        if "widget_key" in kw and isinstance(kw["widget_key"], ast.Constant):
-            keys.add(kw["widget_key"].value)
+        if "key_suffix" in kw and isinstance(kw["key_suffix"], ast.Constant):
+            tags.append(kw["key_suffix"].value)
         elif c.args and isinstance(c.args[0], ast.Constant):
-            keys.add(c.args[0].value)  # falls back to f"save_{mode}"
-    assert len(keys) == len(calls), "two save_entry_button call sites resolve to the same widget key"
+            tags.append(c.args[0].value)   # falls back to `mode` as the tag
+    assert len(tags) == len(calls), "every call site must resolve to a static tag for this test to check"
+    assert len(set(tags)) == len(tags), f"duplicate save_entry_button tags would collide: {tags}"
