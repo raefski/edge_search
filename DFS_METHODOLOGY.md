@@ -1472,16 +1472,66 @@ same-day:**
   couldn't reach this code path at all -- a real lineup with a working save button is now
   confirmed end-to-end, not just import-clean).
 
-## 31. Verifiable, Not Just Asserted
+## 31. A Real Grading Bug Found By Chasing Down One Player's "Wrong" Score
 
-- **Test suite**: 115 tests, all passing (`pytest -q`), including regression tests for
+The user sent two new played contests (2026-07-19) plus a fresh full DK entry-history
+export. The GPP lineup's graded score matched their real DK score exactly (102.0 vs 102),
+but CASH did not (our grading said 81.8; their real score was 96.25) — a ~15-point gap too
+large to hand-wave as noise, so it got chased down rather than reported as-is.
+
+**Root cause, confirmed precisely.** `Tyler Tolbert` — rostered and scored in our lineup as
+a hitter, correctly 0-for-4 — mop-up pitched 1 inning (6 ER) in a real MLB blowout that day.
+`actuals_for_date()` (`scripts/dfs_grade.py`) summed BOTH his batting line (0.0, correct) AND
+his incidental pitching line (−14.55, DK's pitcher formula has no floor) onto one player,
+because the function unconditionally added pitching points whenever a box-score entry had
+*any* non-trivial pitching stats, regardless of which role the player was actually being
+graded under. DK itself never does this — a player is scored under the single role they were
+rostered as for a given entry, not "everything they did in the game." Fixed: a player with
+real plate appearances is now scored as a hitter only, full stop; **81.80 + 14.55 = 96.35 vs
+the real 96.25** — the whole "mismatch" was this one bug, not a different lineup being played.
+
+**Blast radius, measured rather than assumed.** A crude first pass (any cached actual < −3)
+flagged 107 entries across 15 dates — almost all false positives, since a real bad relief
+outing is legitimately very negative under DK scoring and looks identical to this bug from
+the outside. Re-scanned properly (cross-referencing real plate-appearances against a
+pitching line, game by game, across every cached date): **13 genuine double-counted
+instances**, swings from −16.3 to +20.1 points on the single affected player. Notably
+**Shohei Ohtani himself** (2026-07-03) was wrongly credited +20.1 pitching points on top of a
+hitter-rostered 0.0 — confirming this isn't just a mop-up-reliever edge case, it's the general
+"player has stats in two roles the same day" case, two-way stars included.
+
+**Fixed and propagated, not just patched forward.** All 15 cached `data/actuals_cache/*.json`
+files were regenerated with the corrected function (free — statsapi, no credits). Several
+dates also picked up previously-missing players as a side effect (a handful of box-score
+fetches had silently failed on first caching and were never retried; full regeneration
+retried them). Re-grading 2026-07-19 post-fix: CASH 81.8→96.3 (now matches real), and as an
+unplanned bonus, that slate's **hitter correlation improved 0.130→0.180** — right back at
+the model's ~0.18 backtest anchor — purely from removing this one source of noise, which is
+a good sign the fix is real signal recovery, not a coincidence. The calibration dashboard and
+`dfs_calibration.json` were regenerated from the corrected caches. One regression test locks
+in the exact bug shape (a player with both real PA and a nonzero pitching line must score as
+a hitter only) against a synthetic box score built to fail on the pre-fix code. 119 tests pass
+(up from 117).
+
+**Also shipped this pass:** `scripts/dfs_entry_history.py` now merges every
+`data/draftkings-contest-entry-history*.csv` on disk (deduped by `Entry_Key`, the export's
+real per-entry primary key) instead of reading one hardcoded filename — a fresh re-export
+(confirmed a strict superset of the prior file) or a small incremental delta both work
+correctly, and `--new-contests` lists exactly which contest ids are newly seen in the latest
+file, which is how the two 2026-07-19 contests were identified for this session without
+re-processing everything already known.
+
+## 32. Verifiable, Not Just Asserted
+
+- **Test suite**: 119 tests, all passing (`pytest -q`), including regression tests for
   every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, §22, §24, §25, §26, and §27 — each
   constructed to fail against the pre-fix code and pass against the fix, not just exercise the happy
   path — plus §28's model constants (platoon-cell direction/magnitude, home-quality pair, Marcel
   weighting, hand-lookup caching), §29's simulator (determinism, mean anchoring, correlation
-  structure signs, field-lineup DK-legality, equity output shape), and §30's additions (payout
-  curves, dollar EV, sim-EV selection, contest-meta schema, sim-prediction logging, and the
-  past-date forward-log guard).
+  structure signs, field-lineup DK-legality, equity output shape), §30's additions (payout
+  curves, dollar EV, sim-EV selection, contest-meta schema, sim-prediction logging, the
+  past-date forward-log guard, both save-button widget-key collisions, and the mode-appropriate
+  cash-line default), and §31's actuals double-counting fix.
 - **Calibration dashboard** (live, updates as new contest data comes in):
   actual-vs-predicted scatter plots for points and ownership, pitchers and hitters
   separately, built directly from DK contest exports joined against logged predictions —

@@ -18,6 +18,29 @@ from edge import dfs  # noqa: E402
 
 
 def actuals_for_date(date: str) -> dict:
+    """{norm(name): real DK fantasy points} for every Final game on `date`.
+
+    A player's box-score entry can carry BOTH a batting AND a pitching stat
+    sub-dict on the same day -- a position player mop-up-pitching a blowout,
+    or a true two-way player (Ohtani) -- and this used to add BOTH scores
+    together unconditionally. DK does not do that: a player is scored under
+    whichever single role they were actually rostered/drafted as for the
+    slate, and this function has no per-entry positional info to know which
+    that was. The defensible default (batting stats win when both exist) is
+    right for the overwhelmingly common case -- an incidental mop-up pitching
+    appearance by a rostered hitter -- since DFS players are essentially never
+    drafted as a pitcher purely on the strength of relief innings they weren't
+    expected to throw. Confirmed live 2026-07-19: Tyler Tolbert (rostered/
+    scored as a hitter, correctly 0-for-4) mop-up pitched 1 IP/6 ER in a
+    blowout; the old code added his -14.55 pitching line on TOP of his 0.0
+    batting line, and that single player's wrong score fully explained an
+    apparent ~15-point gap between our logged cash lineup's grade and the
+    user's real DK score (81.80 -> corrected 96.35 vs real 96.25, essentially
+    exact). A full scan of every cached actuals date found 13 such real
+    double-counted instances total (including Ohtani himself on 2026-07-03,
+    wrongly credited +20.1 pitching pts on top of a hitter-rostered 0.0) --
+    rare, but large enough per occurrence to meaningfully distort a single
+    date's calibration numbers when it lands on a graded player."""
     sched = dfs._get(f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&date={date}&hydrate=decisions")
     out, finals = {}, 0
     for d in sched.get("dates", []):
@@ -33,14 +56,19 @@ def actuals_for_date(date: str) -> dict:
             for side in ("home", "away"):
                 for pl in box["teams"][side]["players"].values():
                     st = pl.get("stats", {})
-                    pts = 0.0
-                    if st.get("batting", {}).get("plateAppearances"):
-                        pts += dfs.actual_hitter_points(st["batting"])
+                    bat = st.get("batting", {})
                     pit = st.get("pitching", {})
-                    if pit and pit.get("inningsPitched", "0.0") not in ("0.0", "-", None):
-                        pts += dfs.actual_pitcher_points(pit, won=(pl["person"]["id"] == win))
-                    if st.get("batting") or pit:
-                        out[dfs.norm(pl["person"]["fullName"])] = round(pts, 1)
+                    has_pa = (bat.get("plateAppearances") or 0) > 0
+                    has_ip = pit and pit.get("inningsPitched", "0.0") not in ("0.0", "-", None)
+                    if has_pa:
+                        pts = dfs.actual_hitter_points(bat)
+                    elif has_ip:
+                        pts = dfs.actual_pitcher_points(pit, won=(pl["person"]["id"] == win))
+                    elif bat or pit:
+                        pts = 0.0
+                    else:
+                        continue
+                    out[dfs.norm(pl["person"]["fullName"])] = round(pts, 1)
     return out, finals
 
 

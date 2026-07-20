@@ -3,7 +3,12 @@
 contest metadata and (b) the real-money ROI report the whole system answers to
 (DFS_IMPROVEMENT_PLAN §5: contest selection is the cheapest durable lever).
 
-Input:  data/draftkings-contest-entry-history.csv (user-downloaded from DK)
+Input:  every data/draftkings-contest-entry-history*.csv on disk (user-downloaded
+        from DK; a fresh re-export is a numbered file like ...history2.csv,
+        ...history3.csv -- rows are merged and deduped by Entry_Key, the
+        export's real per-entry primary key, so this is safe whether a new
+        file is a full re-export (a strict superset, confirmed 2026-07-20) or
+        just a small incremental delta).
 Effects:
   * data/contest_meta.json gains/updates entry_fee, field, places_paid,
     prize_pool for every contest id present in the history (type preserved;
@@ -16,6 +21,7 @@ Usage: python3 scripts/dfs_entry_history.py [--since 2026-06-28]
 """
 import argparse
 import csv
+import glob
 import json
 import sys
 from collections import defaultdict
@@ -24,7 +30,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-HIST = ROOT / "data/draftkings-contest-entry-history.csv"
+HIST_GLOB = str(ROOT / "data/draftkings-contest-entry-history*.csv")
 META = ROOT / "data/contest_meta.json"
 PROJECT_START = "2026-06-28"
 
@@ -44,24 +50,34 @@ def classify(name: str) -> str:
 
 
 def load_entries():
-    rows = []
-    with open(HIST, newline="", encoding="utf-8-sig") as fh:
-        for r in csv.DictReader(fh):
-            if (r.get("Sport") or "").upper() != "MLB":
-                continue
-            rows.append({
-                "contest_id": str(r.get("Contest_Key", "")).strip(),
-                "name": r.get("Entry", ""),
-                "date": (r.get("Contest_Date_EST") or "")[:10],
-                "place": int(r["Place"]) if (r.get("Place") or "").strip().isdigit() else None,
-                "points": dollars(r.get("Points")),
-                "win": dollars(r.get("Winnings_Non_Ticket")) + dollars(r.get("Winnings_Ticket")),
-                "entries": int(dollars(r.get("Contest_Entries"))),
-                "fee": dollars(r.get("Entry_Fee")),
-                "pool": dollars(r.get("Prize_Pool")),
-                "paid": int(dollars(r.get("Places_Paid"))),
-            })
-    return rows
+    """Merge every history export on disk, deduped by Entry_Key (each real DK
+    entry's stable primary key -- so re-running after downloading a fresh
+    ...history2.csv, ...history3.csv, etc. never double-counts an entry that
+    appears in more than one export)."""
+    by_key = {}
+    files = sorted(glob.glob(HIST_GLOB))
+    for f in files:
+        with open(f, newline="", encoding="utf-8-sig") as fh:
+            for r in csv.DictReader(fh):
+                if (r.get("Sport") or "").upper() != "MLB":
+                    continue
+                ek = r.get("Entry_Key")
+                if not ek or ek in by_key:
+                    continue
+                by_key[ek] = {
+                    "contest_id": str(r.get("Contest_Key", "")).strip(),
+                    "name": r.get("Entry", ""),
+                    "date": (r.get("Contest_Date_EST") or "")[:10],
+                    "place": int(r["Place"]) if (r.get("Place") or "").strip().isdigit() else None,
+                    "points": dollars(r.get("Points")),
+                    "win": dollars(r.get("Winnings_Non_Ticket")) + dollars(r.get("Winnings_Ticket")),
+                    "entries": int(dollars(r.get("Contest_Entries"))),
+                    "fee": dollars(r.get("Entry_Fee")),
+                    "pool": dollars(r.get("Prize_Pool")),
+                    "paid": int(dollars(r.get("Places_Paid"))),
+                }
+    print(f"  ({len(files)} history file(s) on disk: {[Path(f).name for f in files]})")
+    return list(by_key.values())
 
 
 def update_meta(rows):
@@ -112,12 +128,29 @@ def report(rows, since):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--since", default=PROJECT_START)
+    ap.add_argument("--new-contests", action="store_true",
+                    help="also list contest ids that appear for the first time "
+                         "in the newest history file on disk vs all older ones")
     args = ap.parse_args()
     rows = load_entries()
     print(f"{len(rows)} MLB entries in history")
     changed = update_meta(rows)
     print(f"contest_meta.json: {changed} contest(s) updated with fee/field/places/pool")
     report(rows, args.since)
+
+    if args.new_contests:
+        files = sorted(glob.glob(HIST_GLOB))
+        if len(files) < 2:
+            print("\n(only one history file on disk -- nothing to diff)")
+        else:
+            def ids_in(f):
+                with open(f, newline="", encoding="utf-8-sig") as fh:
+                    return {str(r.get("Contest_Key", "")).strip() for r in csv.DictReader(fh)
+                            if (r.get("Sport") or "").upper() == "MLB"}
+            newest = ids_in(files[-1])
+            older = set().union(*(ids_in(f) for f in files[:-1]))
+            fresh = newest - older
+            print(f"\ncontest ids newly seen in {Path(files[-1]).name}: {sorted(fresh) or 'none'}")
 
 
 if __name__ == "__main__":

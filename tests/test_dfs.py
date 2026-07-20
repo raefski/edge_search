@@ -669,6 +669,40 @@ def test_date_all_final_rejects_midslate(monkeypatch):
     assert grade.date_all_final("2026-11-01") is False  # no games at all != complete
 
 
+def test_actuals_for_date_does_not_double_count_incidental_pitching(monkeypatch):
+    # Real bug caught live 2026-07-19: Tyler Tolbert, rostered/scored as a
+    # hitter (0-for-4), mop-up pitched 1 IP/6 ER in a blowout. The old code
+    # summed BOTH his batting (0.0) AND his pitching (-14.55) lines, wrongly
+    # tanking his real actual by 14.5 pts -- which alone fully explained an
+    # apparent ~15pt gap between a logged cash lineup's grade and the user's
+    # real DK score. DK only ever scores a player under the ONE role they were
+    # rostered as; a player who had real plate appearances must be scored as
+    # a hitter ONLY, batting stats alone, even if they also have a nonzero
+    # pitching sub-dict that game.
+    import scripts.dfs_grade as grade
+    from edge import dfs
+
+    def fake_get(url):
+        if "hydrate=decisions" in url:
+            return {"dates": [{"games": [
+                {"status": {"abstractGameState": "Final"}, "gamePk": 1, "decisions": {}}]}]}
+        assert "boxscore" in url
+        return {"teams": {"home": {"players": {
+            "ID1": {"person": {"id": 1, "fullName": "Mop Up Hitter"},
+                   "stats": {"batting": {"plateAppearances": 4, "hits": 0},
+                            "pitching": {"inningsPitched": "1.0", "earnedRuns": 6,
+                                        "hits": 6, "baseOnBalls": 1, "strikeOuts": 0}}},
+            "ID2": {"person": {"id": 2, "fullName": "Real Pitcher"},
+                   "stats": {"batting": {}, "pitching": {"inningsPitched": "6.0",
+                            "earnedRuns": 1, "hits": 4, "baseOnBalls": 1, "strikeOuts": 8}}},
+        }}, "away": {"players": {}}}}
+
+    monkeypatch.setattr(dfs, "_get", fake_get)
+    out, finals = grade.actuals_for_date("2026-07-19")
+    assert out[dfs.norm("Mop Up Hitter")] == 0.0     # batting only, NOT 0.0 + (-14.55)
+    assert out[dfs.norm("Real Pitcher")] > 0          # a true pitcher (no PA) still scores as one
+
+
 def test_build_slate_survives_get_events_failure(monkeypatch):
     # Regression, live 2026-07-11: a missing/invalid ODDS_API_KEY (lost across
     # a Streamlit Cloud reboot) made client.get_events() raise -- and since
