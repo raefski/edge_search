@@ -41,3 +41,11 @@ data/actuals_cache/
 # dfs_ownership_gamma_sweep.py. Would silently reset to "unknown" on a fresh
 # clone/deploy without this, breaking the cash-exclusion logic it feeds.
 !data/contest_meta.json
+
+# Your DK entry history is your real financial/contest activity, not a public
+# leaderboard like contest-standings-*.csv (those are DK's own public per-
+# contest exports; this is your personal record across all of them) -- this
+# repo is public, so it never gets committed. scripts/dfs_entry_history.py
+# reads it locally regardless of git status. Matches any numbered re-export
+# (...history2.csv, ...history3.csv, etc).
+data/draftkings-contest-entry-history*.csv
