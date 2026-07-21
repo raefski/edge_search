@@ -1521,7 +1521,62 @@ correctly, and `--new-contests` lists exactly which contest ids are newly seen i
 file, which is how the two 2026-07-19 contests were identified for this session without
 re-processing everything already known.
 
-## 32. Verifiable, Not Just Asserted
+## 32. Cash-Mode Sim Predictions Look Overconfident — Flagged, Not Yet Fixed
+
+The user pushed back directly: "another loser even though the simulator says I should be
+winning cash games nearly 70%." That deserved a real investigation, not reassurance.
+
+**First: the sim-prediction forward-test log has never actually accumulated data — an
+architectural gap, not a code bug.** `data/dfs_sim_log.csv` (§30) had never been created.
+Tested the write path directly (`simulate_lineup_vs_field` + `log_sim_prediction` against a
+synthetic pool): it works correctly and writes a clean row. The real reason it's empty:
+the user's own sim usage happens through the deployed Streamlit Cloud app on their phone,
+whose local filesystem is ephemeral per-container and never syncs back to this repo — any
+real prediction logged there is genuine but permanently invisible from here. My own local
+CLI builds (which DO persist) simply haven't been run with `--sim` on the actual real
+production builds. Both gaps needed naming plainly rather than left implicit: going forward,
+local real builds should pass `--sim` so at least that half of the loop accumulates; the
+phone app's half has no fix available (Streamlit Community Cloud doesn't offer persistent
+storage), so it will always depend on the user separately reporting outcomes.
+
+**Second, and more serious: the limited real evidence that DOES exist points the same
+direction — cash predictions running hot.** Two independent lines, checked properly rather
+than eyeballed:
+- **Backtested replay** (`dfs_sim_validate.py`, re-run against every real contest on file):
+  the only two real cash contests with a matched logged lineup both show the sim badly
+  overpredicting our finish — 7/12: predicted 62.7%, realized **26.1%**; 7/18: predicted
+  62.0%, realized **13.0%**. Both misses, same direction, no counterexample in either
+  direction.
+- **Live real-money play**: 9 real cash entries since the project started, 2 cashed (22%).
+  If the true per-entry win probability really were as high as the sim's own cash-line
+  figures have shown (roughly 56–70% across various builds), getting 2-or-fewer cashes out
+  of 9 by chance would happen only **4.4% of the time at 56% true**, **1.3% at 64%**. That's
+  not comfortably inside normal variance.
+
+**Honest read, not oversold either direction.** Two backtested contests and nine live
+entries is still a thin sample — not enough to declare a proven, quantified bias the way
+§4/§12/§18's killed-signal findings were (each of those had 60–25,000+ rows). But two
+*independent* pieces of evidence (one backtested, one live-money, non-overlapping data)
+landing the same direction is more than coincidence deserves credit for. The honest
+conclusion: **cash-mode P(cash) is probably optimistic right now, and should not be treated
+as a literal, bankable probability** — useful for comparing one candidate lineup against
+another, not for sizing real confidence in a specific slate.
+
+**Not fixed, on purpose, and here's why:** the same discipline that killed platoon/
+team_total/umpire on inadequate n applies here too — patching `cash_line_pct` or the field
+model with an ad hoc discount now, off 2 real contests, would be fitting noise, not signal
+(and would repeat the exact mistake called out in §11: "artificially widening the
+predictions would be dishonest theater, not a fix"). A concrete, checkable hypothesis for
+*why* cash specifically might run hot, worth testing once more real cash-field data exists:
+`generate_field()` uses the same `STACK_DIST`/ownership sampling for cash and GPP alike,
+pooled overwhelmingly from large-GPP contests (only 4 real cash exports exist in the whole
+dataset, all tiny 23-entry double-ups) — a small real cash field plausibly behaves
+differently (less differentiation incentive, more convergent value-chasing) than a
+scaled-down large-GPP field, and nothing in the field model currently lets it. Worth a
+dedicated cash-only field calibration once enough real small-cash-field contests
+accumulate; not worth shipping on 2.
+
+## 33. Verifiable, Not Just Asserted
 
 - **Test suite**: 119 tests, all passing (`pytest -q`), including regression tests for
   every bug in §9, §11, §12, §13, §14, §16, §18, §19, §20, §21, §22, §24, §25, §26, and §27 — each
