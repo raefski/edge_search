@@ -1576,6 +1576,31 @@ scaled-down large-GPP field, and nothing in the field model currently lets it. W
 dedicated cash-only field calibration once enough real small-cash-field contests
 accumulate; not worth shipping on 2.
 
+**Update 2026-07-21 — a third real cash contest, and the picture loosens (not resolves).**
+A real cash entry that night actually cashed (11th of 39, 17 paid). Re-running the replay
+against all three real cash contests now on file:
+
+| date | sim predicted | realized | diff |
+|---|---|---|---|
+| 7/12 | 62.5% | 26.1% | −36.4 |
+| 7/18 | 61.9% | 13.0% | −48.9 |
+| 7/21 | 61.1% | **71.8%** | **+10.7** |
+
+The first real instance landing on the SAME side of a pay line as predicted, not the
+opposite — the two prior misses were not, in fact, a perfectly one-sided bias. Live dollar
+record moved with it: 3 cashes in 10 real entries (30%, up from 2/9). Redoing the binomial
+check from the original write-up with the updated n: P(≤3 wins in 10) is **28.8% at a 44%
+true rate** (was 16.4% at n=9) and **9.1% at 56%** (was 4.4%) — no longer the "1-in-a-hundred"
+territory the earlier 2-for-2 same-direction miss implied. **Honest read: this is real
+evidence the situation is less alarming than it looked two days ago, not evidence the
+concern was wrong to raise.** The pooled backtested gap is still substantial (61.8% average
+predicted vs. 37.0% average realized across the 3 real comparisons) — a meaningful average
+miss survives even with the correction toward the middle. Conclusion unchanged from the
+original flag: still don't treat cash P(cash) as literal, still not enough real data (n=3
+backtested, n=10 live) to fit a correction, still the right move is keep accumulating and
+recheck this table as it grows — but the direction of travel this update is reassuring, and
+that deserves recording as honestly as the concern itself was.
+
 ## 33. Verifiable, Not Just Asserted
 
 - **Test suite**: 119 tests, all passing (`pytest -q`), including regression tests for

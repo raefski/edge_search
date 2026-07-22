@@ -117,5 +117,19 @@
   "entry_fee": 1.0,
   "places_paid": 285,
   "prize_pool": 1000.0
+ },
+ "192584629": {
+  "type": "cash",
+  "entry_fee": 1.0,
+  "field": 39,
+  "places_paid": 17,
+  "prize_pool": 34.0
+ },
+ "192549456": {
+  "type": "gpp",
+  "entry_fee": 1.0,
+  "field": 1189,
+  "places_paid": 285,
+  "prize_pool": 1000.0
  }
 }
