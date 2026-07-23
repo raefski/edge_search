@@ -1601,6 +1601,28 @@ backtested, n=10 live) to fit a correction, still the right move is keep accumul
 recheck this table as it grows — but the direction of travel this update is reassuring, and
 that deserves recording as honestly as the concern itself was.
 
+**Update 2026-07-22 — a fourth real cash contest, and the picture tightens back up.** A bad
+cash night (58th of 62, nowhere near the 27 paid places). Updated table:
+
+| date | sim predicted | realized | diff |
+|---|---|---|---|
+| 7/12 | 62.5% | 26.1% | −36.4 |
+| 7/18 | 61.9% | 13.0% | −48.9 |
+| 7/21 | 61.1% | 71.8% | +10.7 |
+| 7/22 | 60.9% | **6.5%** | **−54.4** |
+
+Three of four real comparisons now show the same large, same-direction miss (average −46.6
+on those three); one hit. Pooled: **61.6% average predicted vs. 29.4% average realized** —
+wider than the 7/21 update's 61.8/37.0, not narrower. Live dollar record: 3 cashes in 11
+entries (27%, down from 30%). Binomial: P(≤3 wins in 11) is **21.0% at a 44% true rate**,
+just **5.3% at 56%**, **2.5% at 61%** — back near where it was before the 7/21 hit loosened
+it. Net honest read across all four: this looks less like "the 7/21 result resolved the
+concern" and more like **normal noise around a real, still-present optimistic bias** — one
+hit does not overturn three misses of similar size in the same direction. Conclusion
+unchanged, now on firmer footing than either single update alone: don't treat cash P(cash)
+as literal; keep this table growing rather than anchoring on whichever entry happened most
+recently.
+
 ## 33. Verifiable, Not Just Asserted
 
 - **Test suite**: 119 tests, all passing (`pytest -q`), including regression tests for
