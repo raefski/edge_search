@@ -332,6 +332,32 @@ That doesn't mean the premise in §1 is wrong; it means it hasn't been *shown* r
 data collected so far, and the next priority should be resolving that question rather than
 refining models whose incremental value over salary is currently unmeasurable from noise.
 
+**Update 2026-07-23 — re-run with nearly triple the data, and the answer flips.** Same test
+(`actual ~ salary + model_proj`), now on 11 real forward-tested slates instead of 6:
+
+| | n | coef on `proj` | t-stat | incremental R² |
+|---|---|---|---|---|
+| Hitters | 1,778 (was 816) | +0.470 | **2.98, significant** | +0.0048 |
+| Pitchers | 183 (was 82) | +1.042 | **2.79, significant** | +0.0401 |
+
+Both now clear the bar §10 said was missing — the model carries real, statistically
+distinguishable information beyond DK's own salary, for the first time since this test was
+invented. **Checked for robustness before trusting it** (split the 11 dates in half
+chronologically): the first-half subsample alone reproduces §10's original null result
+almost exactly (coef 0.312, t=1.11, not significant) — the newly-significant pooled result
+is concentrated in the more recent slates (second half: coef 0.582, t=3.02, significant),
+not uniform across the whole period. Honest read: this is genuine, welcome progress — more
+real data is what turned "can't tell" into "can tell" — but it isn't yet evidence of a
+stable, settled effect size across all conditions; it's evidence the null result was more
+plausibly a power problem than a true zero, which is exactly what §10 flagged as the open
+question. The magnitude is still modest (well under 1% and 4% incremental R² respectively) —
+real information exists, but this is not "the model explains outcomes," and it does not by
+itself imply real dollar ROI improves (that is a separate, construction-and-contest-
+selection question — see §12/§18's ROI backtest and the ongoing cash-calibration tracking
+in §32). Re-run this specific test as a standing check every time enough new slates
+accumulate to matter (every 5-10 dates is a reasonable cadence) — it is the single most
+direct answer to "is any of this actually working," and it should never be left stale.
+
 ## 11. Acting On The Review: Validation Methodology + Ownership Fix
 
 Two concrete fixes came out of §10, done in the order the evidence justified — formalize
