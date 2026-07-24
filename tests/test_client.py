@@ -59,3 +59,19 @@ def test_credit_floor_error_still_raised_with_a_key(tmp_path, monkeypatch):
                       dry_run=False, credits_floor=5000, live_ttl=10**9)
     with pytest.raises(CreditFloorError):
         c.get_event_odds("baseball_mlb", "ev1", ["pitcher_outs"], "us")
+
+
+def test_default_credits_floor_does_not_lock_out_a_small_budget_key(tmp_path, monkeypatch):
+    # Regression, 2026-07-24: the OLD default (5000) exceeded a real ~500/mo
+    # key's ENTIRE budget, so every single live call raised CreditFloorError
+    # unconditionally (remaining - cost < floor always holds when floor >
+    # the whole account) -- there is no cost small enough to pass. A key
+    # with a modest budget must still be able to make real calls under the
+    # DEFAULT floor (no explicit credits_floor override), not just when the
+    # caller happens to pass a smaller one manually.
+    monkeypatch.delenv("EDGE_CREDITS_FLOOR", raising=False)
+    ledger = tmp_path / "ledger.json"
+    ledger.write_text(json.dumps({"remaining": 500, "used": 0, "last": 0, "updated_at": 0}))
+    c = OddsAPIClient(api_key="fake-key", cache_dir=tmp_path / "cache", ledger_path=ledger,
+                      dry_run=False, live_ttl=10**9)  # no credits_floor override -> default
+    assert c.credits_floor < 500, "default floor must fit under a realistic small-key budget"

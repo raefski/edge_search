@@ -12,6 +12,17 @@ __pycache__/
 #     git add -f data/cache && git commit -m "cache snapshot"
 data/cache/
 
+# Historical NFL/NBA player-prop pulls (2026-07-24, spent an expiring paid key's
+# remaining ~90k credits on these -- see data/HISTORICAL_COLLECTION_README.md).
+# ~70MB raw, same "large + paid + regenerate-if-ever-needed" logic as data/cache/
+# above -- NOT regenerable for free though (that key is gone), so this is the
+# only copy; back it up somewhere durable outside git, don't rely on this repo.
+data/nfl_historical_props_*/
+data/nfl_historical_events_*.json
+data/nba_historical_props_*/
+data/nba_historical_fantasypts_*/
+data/nba_historical_events_*.json
+
 # Credit ledger + personal bet history — never publish.
 data/odds_api_credits.json
 data/clv_log.csv

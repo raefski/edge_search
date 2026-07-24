@@ -72,10 +72,15 @@ class OddsAPIClient:
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.ledger_path = Path(ledger_path)
+        # A hard floor much larger than the real account budget silently
+        # blocks every live call forever (remaining - cost < floor always
+        # holds) rather than acting as a safety margin -- keep this small
+        # relative to a modest monthly allowance, not sized for a one-off
+        # large credit grant.
         self.credits_floor = (
             credits_floor
             if credits_floor is not None
-            else int(os.environ.get("EDGE_CREDITS_FLOOR", "5000"))
+            else int(os.environ.get("EDGE_CREDITS_FLOOR", "50"))
         )
         self.dry_run = dry_run
         self.live_ttl = live_ttl
