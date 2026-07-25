@@ -23,6 +23,16 @@ data/nba_historical_props_*/
 data/nba_historical_fantasypts_*/
 data/nba_historical_events_*.json
 
+# Free ground truth (nflverse / stats.nba.com) + the joined props+truth model
+# rows -- UNLIKE the paid props above, these ARE regenerable for free anytime
+# (scripts/nfl_ground_truth_collect.py, nba_ground_truth_collect.py,
+# nfl_ingest.py, nba_ingest.py all stay committed) -- gitignored purely for
+# size (59MB+15MB raw), same call as MLB's own data/model_lab_rows.json.
+data/nfl_ground_truth/
+data/nba_ground_truth/
+data/nfl_model_rows_*.json
+data/nba_model_rows_*.json
+
 # Credit ledger + personal bet history — never publish.
 data/odds_api_credits.json
 data/clv_log.csv

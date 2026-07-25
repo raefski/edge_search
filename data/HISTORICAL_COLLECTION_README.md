@@ -6,6 +6,37 @@ deliberately unspent as a reserve, not drained to zero. **This data lives ONLY o
 disk (gitignored, ~69MB — see repo .gitignore) — it is NOT regenerable** (the key that
 fetched it expires today), so back it up somewhere durable outside this machine/repo.
 
+**Update, same day — ground truth collected, scoring formulas built and validated, both
+seasons ingested into real joined datasets.** See `edge/nfl.py`, `edge/nba.py`,
+`edge/names.py`, and `scripts/{nfl,nba}_{ground_truth_collect,ingest}.py` (all committed —
+real, reusable code, unlike the raw data directories). Summary:
+
+- **Ground truth**: `data/nfl_ground_truth/` (nflverse, free, 59MB — 2024 season complete;
+  2025's detailed player-level stats aren't published by nflverse yet, only game
+  scores are, see that collector's own docstring) and `data/nba_ground_truth/`
+  (stats.nba.com, free, 15MB — full 2024-25 season, one bulk call).
+- **DK scoring formulas** validated against independent cross-checks before trusting them:
+  NFL offense vs. nflverse's own `fantasy_points_ppr` (corr 0.995, hand-verified on a real
+  58.4-point Ja'Marr Chase game); NBA vs. stats.nba.com's own `FANTASY_PTS` (corr 0.994,
+  hand-verified on a real 63.25-point triple-double). NFL DST scoring built from team-level
+  defensive stats + real game scores — **known gap, stated plainly**: nflverse's schema has
+  no "blocked kick caused" column, so that scoring category (+2, genuinely rare) is not
+  captured; a real, modest, permanent undercount until a better source is found.
+- **Joined model-ready datasets**: `data/nfl_model_rows_2024.json` (3,572 rows, 96.5% of
+  real player-prop lines matched to real ground truth) and
+  `data/nba_model_rows_2024-25.json` (7,329 rows, 98.2% matched). Both match rates started
+  meaningfully lower (92.1% / 93.5%) until two real, systematic join bugs got found and
+  fixed rather than accepted as noise: (1) player names with diacritics ("Nikola Jokić" vs
+  "Nikola Jokic") and generational suffixes ("Travis Etienne Jr." vs "Travis Etienne")
+  disagreeing between the Odds API and the free ground-truth sources — fixed once, shared,
+  in `edge/names.py`, the first real cross-sport extraction since the "duplicate first,
+  abstract later" call in DFS_MULTISPORT_PLAN.md §2; (2) NFL's schedule join initially used
+  a UTC-vs-ET date-string match that failed on 100% of games until switched to matching on
+  the (unique-within-season) home/away team pair instead.
+- **Not yet done** (real next step, not urgent): actually RUN the props-vs-skill-model
+  backtest these rows exist for — the datasets are built, the test itself (mirroring
+  MLB's own pitcher/hitter prop test) hasn't been run yet.
+
 Collected in one session while a paid Odds API key (91,742 credits) was about to expire.
 See DFS_MULTISPORT_PLAN.md for the plan this feeds; nothing downstream has been built yet
 (no scoring/projection/backtest code) — this is raw material, not a working model.
