@@ -1,88 +1,69 @@
-"""Free, keyless live NFL spreads for pick'em -- ESPN's public scoreboard API.
+"""Live NFL spreads for pick'em -- via The Odds API (edge/client.py), the
+same paid, ToS-sanctioned source every other sport in this repo already uses.
 
-Deliberately NOT the Odds API: pick'em doesn't need multi-book consensus or
-prop markets, just one current game spread per matchup, and ESPN's endpoint
-gives that for free with no key and no credit cost -- so the deployed
-Streamlit page can refresh live market lines on every page load at zero
-cost, the same "free public data refreshes live" shape as app.py's DK
-salaries/confirmed-lineups pull (see edge/client.py's module docstring for
-why that split matters: free vs. paid data get very different refresh
-philosophies here).
+History: this originally hit ESPN's public scoreboard endpoint for free, no
+key. That got blocked in production -- 403, `Server: AkamaiGHost` -- and it
+reproduced on the actual deployed Streamlit Cloud app, not just a sandbox
+quirk (confirmed 2026-08-21: fuller browser-style headers didn't help
+either, meaning it's an IP-reputation block, not a fixable header issue).
+Continuing to probe for a way around a bot-detection wall isn't the right
+call regardless of the cause -- The Odds API is the legitimate path this
+account already pays for, and edge/client.py already has the caching,
+credit-ledger, and dry-run guardrails this needs.
 
-Sign convention matches edge.pickem: home-team spread, negative = home
-favored. ESPN reports `odds.details` as e.g. "SEA -3.5" or "PICK" -- parsed
-against the event's own home/away abbreviations so the sign is never guessed
-from string order.
+Cost: get_featured_odds('americanfootball_nfl', ['spreads'], 'us') is
+markets x regions = 1 credit for the WHOLE week's slate in a single call
+(edge/client.py's cost model -- one call covers every game), then free for
+`live_ttl` seconds (default 600) via the client's own on-disk cache.
 """
 from __future__ import annotations
 
-import json
-import urllib.request
 from dataclasses import dataclass
 
-SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
+from edge.client import OddsAPIClient
+from edge.nfl import TEAM_NAME_TO_ABBR  # shared team-name->abbr map, not re-derived
 
 
 @dataclass
 class LiveGame:
-    away: str          # full team name, e.g. "New England Patriots"
+    away: str
     home: str
-    away_abbr: str      # e.g. "NE" -- for matching against a CBS-line CSV
+    away_abbr: str
     home_abbr: str
-    kickoff: str        # ISO 8601 UTC, as ESPN reports it
-    live_line: float | None   # home-team spread; None if no market posted yet
+    kickoff: str               # ISO 8601 UTC, as the API reports it
+    live_line: float | None    # home-team spread, mean across books; None if no market posted
 
 
-def _parse_spread(details: str, home_abbr: str, away_abbr: str) -> float | None:
-    """'SEA -3.5' -> +3.5 if SEA is away, -3.5 if SEA is home. 'PICK'/'' -> 0.0."""
-    if not details:
-        return None
-    details = details.strip()
-    if details.upper() in ("PICK", "PK", "EVEN"):
-        return 0.0
-    parts = details.rsplit(" ", 1)
-    if len(parts) != 2:
-        return None
-    fav_abbr, num = parts
-    try:
-        pts = abs(float(num))
-    except ValueError:
-        return None
-    if fav_abbr == home_abbr:
-        return -pts
-    if fav_abbr == away_abbr:
-        return pts
-    return None  # ESPN abbreviation didn't match either side -- don't guess
-
-
-def fetch_week(week: int, season_type: int = 2, timeout: int = 15) -> list[LiveGame]:
-    """season_type: 1=preseason, 2=regular, 3=postseason (ESPN's own enum)."""
-    url = f"{SCOREBOARD_URL}?seasontype={season_type}&week={week}"
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        payload = json.loads(r.read())
-
+def _parse_events(events: list[dict]) -> list[LiveGame]:
+    """Pure parsing, split out from fetch_week so it's testable without a
+    live client/key -- same shape as edge.clv's _dk_sides, one JSON-shape
+    assumption in one place. home-team spread = mean of every book's point
+    for the outcome named after the home team (a simple, low-noise
+    consensus; not weighted toward any single "sharp" book -- see
+    PICKEM_STATUS.md if that ever needs revisiting)."""
     games = []
-    for event in payload.get("events", []):
-        comp = event["competitions"][0]
-        teams = {c["homeAway"]: c["team"] for c in comp["competitors"]}
-        if "home" not in teams or "away" not in teams:
-            continue
-        odds = comp.get("odds", [{}])
-        details = odds[0].get("details", "") if odds else ""
-        home_abbr, away_abbr = teams["home"]["abbreviation"], teams["away"]["abbreviation"]
+    for ev in events:
+        home, away = ev.get("home_team", ""), ev.get("away_team", "")
+        points = [
+            float(o["point"])
+            for bm in ev.get("bookmakers", [])
+            for mk in bm.get("markets", [])
+            if mk.get("key") == "spreads"
+            for o in mk.get("outcomes", [])
+            if o.get("name") == home and o.get("point") is not None
+        ]
         games.append(LiveGame(
-            away=teams["away"]["displayName"], home=teams["home"]["displayName"],
-            away_abbr=away_abbr, home_abbr=home_abbr,
-            kickoff=event.get("date", ""),
-            live_line=_parse_spread(details, home_abbr, away_abbr),
+            away=away, home=home,
+            away_abbr=TEAM_NAME_TO_ABBR.get(away, away[:3].upper()),
+            home_abbr=TEAM_NAME_TO_ABBR.get(home, home[:3].upper()),
+            kickoff=ev.get("commence_time", ""),
+            live_line=(sum(points) / len(points)) if points else None,
         ))
     return games
 
 
-if __name__ == "__main__":
-    import sys
-    wk = int(sys.argv[1]) if len(sys.argv) > 1 else 1
-    for g in fetch_week(wk):
-        line = f"{g.live_line:+.1f}" if g.live_line is not None else "no line yet"
-        print(f"{g.away_abbr:>3} @ {g.home_abbr:<3}  {line:>10}   {g.kickoff}")
+def fetch_week(client: OddsAPIClient, sport: str = "americanfootball_nfl") -> list[LiveGame]:
+    """Raises NoApiKey / DryRunBlocked / CreditFloorError exactly as
+    edge.client does -- callers handle those the same way app.py already
+    does for MLB (degrade gracefully, don't crash the page)."""
+    return _parse_events(client.get_featured_odds(sport, ["spreads"], "us"))

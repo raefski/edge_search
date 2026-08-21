@@ -8,13 +8,17 @@ real NFL/NBA DFS lineup pages, a different game (salary-cap rosters) from
 this one (spread picks) despite the shared "NFL" word.
 
 Two data sources, matching app.py's own free-vs-manual split:
-  * Live market line: edge.pickem_live.fetch_week -- ESPN's public
-    scoreboard, free, no key, refreshed on every tap of "Refresh live lines".
+  * Live market line: edge.pickem_live.fetch_week, via edge.client's Odds
+    API (dry-run/cache by default, ~1 credit for the WHOLE week's slate in
+    one call when you explicitly tap "Pull fresh lines"). Originally free
+    via ESPN's public scoreboard -- that got blocked in production (403,
+    Akamai) and DraftKings' own sportsbook endpoint hits the identical wall
+    (same Akamai infrastructure sits in front of both), so this is the
+    legitimate path, not a workaround. See edge/pickem_live.py's docstring.
   * CBS's frozen pool line: CANNOT be fetched here -- it's behind CBS's
     login, so no server can pull it. Comes from data/pickem_current_week.csv,
     committed each time the pool's numbers are captured (by screenshot) and
-    pushed. This is the one piece of the whole app that needs a human, same
-    as pitcher props needing a paid pull before every refresh is free.
+    pushed. This is the one piece of the whole app that needs a human.
 
 Deliberately does NOT read data/pickem/ (tracker.csv, standings.csv) -- that
 directory holds the TOO-GOODE pool's real opponents, standings, and $ splits
@@ -24,6 +28,7 @@ shows this week's matchups and the model's picks, nothing personal.
 from __future__ import annotations
 
 import csv
+import os
 import sys
 from pathlib import Path
 
@@ -32,10 +37,38 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from edge.client import CreditFloorError, DryRunBlocked, NoApiKey, OddsAPIClient  # noqa: E402
 from edge.pickem import make_pick  # noqa: E402
 from edge.pickem_live import fetch_week  # noqa: E402
 
 CURRENT_WEEK_CSV = ROOT / "data" / "pickem_current_week.csv"
+CACHE_DIR = ROOT / "data" / "cache"
+LEDGER = ROOT / "data" / "odds_api_credits.json"
+
+
+def _bootstrap_key() -> None:
+    """Same precedence as app.py's own bootstrap: env, then Streamlit Cloud
+    secrets, then a local .env -- duplicated rather than imported, since
+    app.py's version only runs when app.py itself is the active page, and a
+    session that lands directly on Pickem would otherwise never see it."""
+    if os.environ.get("ODDS_API_KEY"):
+        return
+    try:
+        if "ODDS_API_KEY" in st.secrets:
+            os.environ["ODDS_API_KEY"] = st.secrets["ODDS_API_KEY"]
+            return
+    except Exception:
+        pass
+    for p in (ROOT / ".env",):
+        if p.exists():
+            for line in p.read_text().splitlines():
+                line = line.strip()
+                if line.startswith("ODDS_API_KEY") and "=" in line:
+                    os.environ["ODDS_API_KEY"] = line.split("=", 1)[1].strip().strip('"').strip("'")
+                    return
+
+
+_bootstrap_key()
 
 st.set_page_config(page_title="Pick'em — TOO-GOODE", page_icon="🎯", layout="wide")
 
@@ -74,19 +107,23 @@ st.markdown(
     unsafe_allow_html=True)
 
 
-@st.cache_data(ttl=180, show_spinner="Pulling live NFL lines (free, ESPN)…")
-def cached_live(week: int, _nonce: int):
-    return fetch_week(week)
-
-
 with st.sidebar:
     st.header("🎯 Pick'em")
     week = st.number_input("Week", min_value=1, max_value=18, value=1, step=1)
-    if st.button("🔄 Refresh live lines (free)", use_container_width=True,
-                 help="Re-pulls current market spreads from ESPN's public API. "
-                      "CBS's frozen line only updates when a new capture is committed."):
-        st.cache_data.clear()
-        st.rerun()
+
+    api_key = st.text_input("ODDS_API_KEY", value=os.environ.get("ODDS_API_KEY", ""),
+                            type="password", help="Stored only for this session.")
+    if api_key:
+        os.environ["ODDS_API_KEY"] = api_key
+
+    _remaining = OddsAPIClient(cache_dir=CACHE_DIR, ledger_path=LEDGER).remaining_credits()
+    if _remaining is not None:
+        st.caption(f"Odds API: {_remaining} credits remaining this cycle")
+
+    pull_fresh = st.button(
+        "💰 Pull fresh lines (~1 credit)", use_container_width=True,
+        help="One call covers the whole week's slate (markets × regions = 1), "
+             "then free for 10 minutes. Nothing spends unless you tap this.")
 
 if not CURRENT_WEEK_CSV.exists():
     st.warning(f"No {CURRENT_WEEK_CSV.name} committed yet for this week.")
@@ -99,12 +136,21 @@ if not cbs_rows:
     st.info(f"No Week {week} lines captured yet.")
     st.stop()
 
+client = OddsAPIClient(cache_dir=CACHE_DIR, ledger_path=LEDGER, dry_run=not pull_fresh)
+live_by_abbr = {}
 try:
-    live_games = cached_live(week, 0)
+    live_games = fetch_week(client)
     live_by_abbr = {g.home_abbr: g for g in live_games}
+except NoApiKey:
+    st.warning("No ODDS_API_KEY set — paste your key in the sidebar, then tap "
+               "**Pull fresh lines**. Showing CBS lines only until then.")
+except DryRunBlocked:
+    st.info("No live lines cached yet this week — tap **💰 Pull fresh lines** "
+            "in the sidebar (~1 credit for the whole slate). Showing CBS lines only.")
+except CreditFloorError as e:
+    st.error(f"Skipped the live pull to protect your credit floor: {e}")
 except Exception as e:
-    st.error(f"Couldn't reach ESPN's live odds ({e}) — showing CBS lines only, no edge computed.")
-    live_by_abbr = {}
+    st.error(f"Couldn't reach the Odds API ({e}) — showing CBS lines only, no edge computed.")
 
 TIER_CLASS = {"STRONG": "strong", "SOLID": "solid", "LEAN": "lean", "COIN FLIP": ""}
 

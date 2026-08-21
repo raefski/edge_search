@@ -93,17 +93,45 @@ live performance tracks the 55.7% backtest or comes in under it per caveat #2 ab
 
 `pages/4_🎯_Pickem.py` — Streamlit multi-page (added to the sidebar automatically
 alongside the MLB DFS home page in `app.py`, no shared code, per
-`DFS_MULTISPORT_PLAN.md §2`'s "duplicate first, abstract later" call). Live market line:
-`edge/pickem_live.py`, ESPN's public scoreboard API, free, no key, refreshed on tap —
-verified working directly (see commit). CBS's frozen line: cannot be fetched
-server-side (login-gated) — comes from `data/pickem_current_week.csv`, committed each
-time a screenshot is captured and parsed. **The page's rendering itself has NOT been
-visually verified** — the session that built it had no `streamlit` or `playwright`
-installed and no way to add them (no `pip`), so only the underlying data/model logic
-was dry-run tested (matches the backtest's numbers exactly) and the file was
-`py_compile`d clean. Run it for real (`streamlit run app.py`, or
-`.claude/skills/run-dfs-app/`, pointed at this repo's actual path) before trusting the
-UI renders as intended.
+`DFS_MULTISPORT_PLAN.md §2`'s "duplicate first, abstract later" call). Deployed at
+https://edgesearch-h2dkcwvywzteys8e7tjk6v.streamlit.app/ — **visually verified live**
+via a real headless-Chromium drive of the actual deployed URL (2026-08-21), sidebar nav
+and page render both confirmed correct with screenshots.
+
+**Live market line went through two data sources before landing on the right one:**
+1. ESPN's public scoreboard API (free, no key) -- worked in isolated testing, then hit
+   `403 Forbidden` / `Server: AkamaiGHost` in production, confirmed on the real deployed
+   app (Adam saw the exact error banner live, not just in a sandbox).
+2. DraftKings' own sportsbook eventgroups endpoint (also free/keyless when reachable) --
+   tried as a direct alternative; hit the **identical** `AkamaiGHost` 403. Akamai is
+   shared security infrastructure sitting in front of both ESPN and DraftKings, so this
+   reads as one structural block, not two independent ones. Did not attempt to route
+   around either (header changes tried once for ESPN, didn't help, an IP-reputation
+   block isn't fixable by request-shaping and repeatedly trying isn't the right move
+   regardless of the target).
+3. **Landed on The Odds API** (`edge/client.py`, the same paid source every other sport
+   in this repo already uses) -- `get_featured_odds('americanfootball_nfl',
+   ['spreads'], 'us')` costs `markets x regions` = **1 credit for the entire week's
+   slate in one call**, cached free for `live_ttl` (600s) after. Adam is on the Odds API
+   free tier (500 credits/month, shared with MLB/WNBA use) -- at ~1 credit/pull this is
+   a small fraction of that budget even checked several times a week all season.
+   Dry-run/cache-first by default, matching app.py's MLB pattern exactly: nothing
+   spends unless the sidebar's "💰 Pull fresh lines" button is explicitly tapped.
+   `edge/pickem_live.py::_parse_events` (the JSON-parsing logic, independently testable,
+   `tests/test_pickem_live.py`) means the home-team spread across bookmakers,
+   a simple unweighted consensus -- revisit if that ever looks too noisy in practice.
+
+CBS's frozen line: still cannot be fetched server-side (login-gated) -- comes from
+`data/pickem_current_week.csv`, committed each time a screenshot is captured and parsed.
+
+**Lesson learned the hard way**: adding a brand-new file to `pages/` needs an explicit
+**Reboot** from the Streamlit Cloud dashboard after pushing -- a plain git push
+successfully pulls the code and hot-updates the running app (confirmed in the deploy
+log), but the sidebar's page list is discovered once at process startup and a hot
+update doesn't reliably re-scan it. Editing an *existing* page or an `edge/*.py` module
+it imports does NOT have this problem (confirmed: the Odds API fix above shipped via a
+normal push+hot-update, no reboot needed). Only new files under `pages/` need the
+manual reboot step.
 
 ## Quick facts easy to forget
 
