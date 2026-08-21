@@ -72,6 +72,20 @@ confirmed starter, game not yet locked). Same logic on the CLI:
    For a fully $0 phone session, snapshot props before you leave:
    `git add -f data/cache && git commit -m "cache snapshot" && git push`.
 
+## NFL pick'em (TOO-GOODE pool) — sidebar page, not DFS
+
+`pages/4_🎯_Pickem.py`, added to the app's sidebar automatically by Streamlit's
+multi-page mechanism (no shared code with the MLB app or the NFL/NBA *DFS* build in
+`DFS_MULTISPORT_PLAN.md` — pick'em is a spread contest, not a salary-cap lineup game,
+despite both saying "NFL"). Full status, backtest numbers, and open questions:
+**`PICKEM_STATUS.md`** — start there for anything pick'em-related.
+
+One-line summary: pool operators freeze a spread and never update it; the market keeps
+moving all week. `edge/pickem.py::make_pick` scores that gap, backtested 55.7% ATS
+out-of-sample on 543 held-out 2023–24 games (`scripts/pickem_backtest.py`). Live market
+line is free (ESPN, no key); CBS's frozen line is login-gated and has to be captured by
+hand into `data/pickem_current_week.csv`. Zero Odds-API credits used.
+
 ## Layout
 | Path | Role |
 |---|---|
@@ -79,8 +93,11 @@ confirmed starter, game not yet locked). Same logic on the CLI:
 | `edge/client.py` | Odds API client: cache, credit ledger, dry-run guard |
 | `edge/fairodds.py` | consensus fair prob, excluding the target book |
 | `edge/scanner.py` | normalise payloads, de-vig, flag +EV vs consensus |
+| `edge/pickem.py` | pick'em spread-edge model (see PICKEM_STATUS.md) |
+| `edge/pickem_live.py` | free live NFL spreads (ESPN), no key needed |
 | `scripts/wnba_scout.py` | runnable WNBA scout (dry-run default) |
-| `tests/` | de-vig + EV unit tests |
+| `scripts/pickem_backtest.py` | leak-free pick'em backtest, 2014–2024 |
+| `tests/` | de-vig + EV + pick'em unit tests |
 
 ## Extension points (not built yet)
 - **CLV harness**: re-pull flagged events near tip-off (or historical snapshot

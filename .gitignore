@@ -70,3 +70,15 @@ data/actuals_cache/
 # reads it locally regardless of git status. Matches any numbered re-export
 # (...history2.csv, ...history3.csv, etc).
 data/draftkings-contest-entry-history*.csv
+
+# Pick'em: the backtest result IS committed (small, aggregate, no personal
+# data -- same category as the DFS calibration JSON above), so it needs an
+# exception to the blanket `data/*.json` rule.
+!data/pickem_backtest_results.json
+
+# Pick'em: your TOO-GOODE pool's standings, opponents, and $ splits, plus
+# your own per-game pick log -- same "real financial/contest activity in a
+# public repo" logic as the DK entry history above, so the whole local
+# working directory stays off GitHub. pages/*_Pickem.py and
+# scripts/pickem_weekly.py read these locally regardless of git status.
+data/pickem/
