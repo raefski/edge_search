@@ -6,6 +6,11 @@ pick'em-related. Not a DFS project (no salary cap, no lineups) despite sharing "
 this repo with the real NFL DFS build in `DFS_MULTISPORT_PLAN.md` — different game, kept
 deliberately separate (`edge/pickem.py`, not `edge/nfl.py`).
 
+**Feature history lives in `PICKEM_MODEL.md`** — how the model works in plain English,
+what improved it, and the full graveyard of tested-and-killed ideas (DVOA-style efficiency
+ratings, coaching features). Read that before proposing any new feature; it exists so dead
+ends don't get rediscovered.
+
 **Keep this file current.** Update it at the end of any session that changes the model,
 kills a signal, or resolves/updates an open question.
 

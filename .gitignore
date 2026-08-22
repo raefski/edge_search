@@ -82,3 +82,9 @@ data/draftkings-contest-entry-history*.csv
 # working directory stays off GitHub. pages/*_Pickem.py and
 # scripts/pickem_weekly.py read these locally regardless of git status.
 data/pickem/
+
+# Pick'em: raw nflverse schedule mirror (2MB), auto-downloaded by
+# edge/pickem_features.load_games on first use -- regenerable for free, same
+# call as the other nflverse ground-truth files above. The DERIVED
+# data/pbp_team_game.csv (small, aggregated) IS committed.
+data/nflverse_games.csv

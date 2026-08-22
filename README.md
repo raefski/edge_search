@@ -78,13 +78,16 @@ confirmed starter, game not yet locked). Same logic on the CLI:
 multi-page mechanism (no shared code with the MLB app or the NFL/NBA *DFS* build in
 `DFS_MULTISPORT_PLAN.md` — pick'em is a spread contest, not a salary-cap lineup game,
 despite both saying "NFL"). Full status, backtest numbers, and open questions:
-**`PICKEM_STATUS.md`** — start there for anything pick'em-related.
+**`PICKEM_STATUS.md`** — start there for anything pick'em-related, and
+**`PICKEM_MODEL.md`** for how the model actually works plus every feature we've
+tested and killed (read it before proposing a new one).
 
 One-line summary: pool operators freeze a spread and never update it; the market keeps
 moving all week. `edge/pickem.py::make_pick` scores that gap, backtested 55.7% ATS
 out-of-sample on 543 held-out 2023–24 games (`scripts/pickem_backtest.py`). Live market
-line is free (ESPN, no key); CBS's frozen line is login-gated and has to be captured by
-hand into `data/pickem_current_week.csv`. Zero Odds-API credits used.
+line comes from The Odds API (~1 credit for a whole week's slate, cache-first); CBS's
+frozen line is login-gated and has to be captured by hand into
+`data/pickem_current_week.csv`.
 
 ## Layout
 | Path | Role |
@@ -94,9 +97,11 @@ hand into `data/pickem_current_week.csv`. Zero Odds-API credits used.
 | `edge/fairodds.py` | consensus fair prob, excluding the target book |
 | `edge/scanner.py` | normalise payloads, de-vig, flag +EV vs consensus |
 | `edge/pickem.py` | pick'em spread-edge model (see PICKEM_STATUS.md) |
-| `edge/pickem_live.py` | free live NFL spreads (ESPN), no key needed |
+| `edge/pickem_features.py` | as-of-week efficiency + coach features (tested, NOT shipped — see PICKEM_MODEL.md) |
+| `edge/pickem_live.py` | live NFL spreads via The Odds API (~1 credit/week) |
 | `scripts/wnba_scout.py` | runnable WNBA scout (dry-run default) |
 | `scripts/pickem_backtest.py` | leak-free pick'em backtest, 2014–2024 |
+| `scripts/pickem_feature_lab.py` | feature experiments (holdout-safe, dev split only) |
 | `tests/` | de-vig + EV + pick'em unit tests |
 
 ## Extension points (not built yet)
