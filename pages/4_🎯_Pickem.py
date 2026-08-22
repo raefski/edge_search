@@ -159,7 +159,7 @@ except NoApiKey:
                "**Pull fresh lines**. Showing CBS lines only until then.")
 except DryRunBlocked:
     st.info("No live lines cached yet this week — tap **💰 Pull fresh lines** "
-            "in the sidebar (~1 credit for the whole slate). Showing CBS lines only.")
+            "in the sidebar (~2 credits for the whole slate). Showing CBS lines only.")
 except CreditFloorError as e:
     st.error(f"Skipped the live pull to protect your credit floor: {e}")
 except Exception as e:
