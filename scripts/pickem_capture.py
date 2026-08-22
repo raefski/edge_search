@@ -117,6 +117,9 @@ def main() -> None:
         print(f"no live market found for: {', '.join(missing)} "
               "(logged with CBS data only)")
 
+    print("\n(run `python3 scripts/pickem_blocked.py` to see how much closer this "
+          "brings the blocked experiments)")
+
     with_both = [s for s in snaps if s.cbs_line_home is not None and s.market_line_home is not None]
     if with_both:
         biases = [s.cbs_line_home - s.market_line_home for s in with_both]

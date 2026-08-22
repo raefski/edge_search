@@ -295,6 +295,55 @@ collapses to noise. Same trap as DVOA in section 5a, reached from a different di
 > too. A feature only helps if it changes *which side* you take on games you're currently
 > getting wrong. Always evaluate full-slate win rate, never the win rate of a filtered subset.
 
+### 5g. Two claims checked against the data (2026-08-22)
+
+**"Around 75% of home teams cover the spread."** Widely repeated; **false**. Across all
+2,878 games in the file:
+
+| Measure | Result |
+|---|---|
+| Home teams **cover** the closing spread | **48.7%** (1359-1431-88) |
+| Home teams cover the opening spread | 48.9% |
+| Home favorites cover | 48.1% |
+| Home underdogs cover | 49.6% |
+| Home teams **win outright** (no spread) | **54.8%** |
+
+The 54.8% straight-up figure is probably the source of the confusion, and it is a completely
+different question. Home-field advantage is real — and the oddsmaker has already priced it
+into the number, which is exactly why covering sits at a coin flip. Any strategy of the form
+"always take home / always take away" is dead on arrival; the spread exists to kill it.
+*(The one 75% in the table is home pick-em games, at n=4. Coincidence, not a signal.)*
+
+**"If CBS says 3.5 and the market closed at 3, we hold the better side of the 3."** This one
+is **true and already in the model** — it is the key-number effect from 5d, and the intuition
+is sound: a 3-point margin is **14.4%** of all NFL games (7 is 8.5%), so holding +3.5 where
+the market holds +3 wins outright every game that lands exactly on 3.
+
+Tested a broader formulation than 5d's — "capture", defined as *our* number beating the
+market's across a key (`side_line > k >= market_line`), which catches 542 dev games against
+the old crossing rule's 185, and every crossing game is also a capture:
+
+| | Train | Validate | Combined |
+|---|---|---|---|
+| Capture, all moves ≥0.5 | 57.5% | 61.8% | **59.2%** (z=+4.26, 7/9 seasons) |
+| No capture | 53.2% | 55.7% | — |
+| **Capture on 0.5-pt moves only** | 53.4% | **49.1%** | sign flip — dead |
+
+So the effect is real in aggregate, but note the last row: **the exact scenario people
+describe (a single half-point, 3.5 vs 3) does not survive validation.** The aggregate is
+carried by moves of 1.0+ points. And since 5d already showed this family's dev magnitude is
+roughly double what the holdout delivers, nothing here changes the shipped model.
+
+**Two structural reasons this can't do what people hope it will:**
+
+1. **It cannot add wins.** Capture is a property of a pick already made — it never changes
+   *which side* you take, only how confident you should be. In a pool where you must pick
+   every game, confidence pays nothing. (Same trap as 5e; see that section's lesson.)
+2. **It cannot reach the close games.** Lines move in half-point steps, so a coin flip means
+   the CBS number and the market number are *identical* — there is no gap to hold. Measured:
+   **0 of 461** dev coin-flip games can capture a key number. It is blocked by definition,
+   not by sample size.
+
 ### 5f. Experiments that couldn't be run at all (data doesn't exist yet)
 
 Not failures — genuinely blocked. Listed so nobody re-plans them without first solving the
@@ -440,6 +489,9 @@ plausible to sound, and is the single highest-value improvement available to it.
 ## 8. Running it yourself
 
 ```bash
+# What is still blocked, and how close am I to unblocking it? (free, instant)
+python3 scripts/pickem_blocked.py
+
 # Weekly capture -- the habit that unblocks section 5f (2 credits per run)
 python3 scripts/pickem_capture.py --snapshot post --week N            # dry run
 python3 scripts/pickem_capture.py --snapshot post --week N --confirm  # writes
@@ -465,6 +517,8 @@ python3 -m pytest tests/test_pickem.py -q
 | `edge/pickem_log.py` | Append-only snapshot log + the `cbs_bias` formula (section 5f) |
 | `edge/pickem_strategy.py` | Late-season standings play (section 7). **Unvalidated.** |
 | `scripts/pickem_capture.py` | Weekly capture CLI, dry-run by default |
+| `scripts/pickem_blocked.py` | Progress toward each blocked experiment — run it any time |
+| `scripts/pickem_vs_random.py` | Holdout replay vs a coin-flipping field (seeded) |
 | `scripts/pickem_feature_lab.py` | Experiment harness (both rounds). Refuses to read holdout seasons. |
 | `scripts/pickem_backtest.py` | Out-of-sample backtest + the staleness negative control |
 | `scripts/pickem_pbp_collect.py` | nflverse play-by-play → per-game efficiency table |
