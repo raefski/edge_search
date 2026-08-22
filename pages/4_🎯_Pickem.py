@@ -40,6 +40,7 @@ sys.path.insert(0, str(ROOT))
 from edge.client import CreditFloorError, DryRunBlocked, NoApiKey, OddsAPIClient  # noqa: E402
 from edge.pickem import make_pick  # noqa: E402
 from edge.pickem_live import fetch_week  # noqa: E402
+from edge.pickem_log import load as load_line_log  # noqa: E402
 
 CURRENT_WEEK_CSV = ROOT / "data" / "pickem_current_week.csv"
 CACHE_DIR = ROOT / "data" / "cache"
@@ -102,8 +103,8 @@ h1 {font-size: 1.55rem !important; margin-bottom: .1rem;}
 st.title("🎯 NFL Pick'em")
 st.markdown(
     '<p class="pk-sub">TOO-GOODE FOOTBALL POOL, CBS Sportsline. Model: follow the market\'s '
-    'move off CBS\'s frozen line — backtested 55.7% ATS out-of-sample (2023–24 held-out '
-    'seasons, 297-236-10). See PICKEM_STATUS.md for the full method and honest caveats.</p>',
+    'move off CBS\'s frozen line — backtested 55.9% ATS out-of-sample (2023–24 held-out '
+    'seasons, 298-235-10). See PICKEM_MODEL.md for the full method and honest caveats.</p>',
     unsafe_allow_html=True)
 
 
@@ -121,9 +122,10 @@ with st.sidebar:
         st.caption(f"Odds API: {_remaining} credits remaining this cycle")
 
     pull_fresh = st.button(
-        "💰 Pull fresh lines (~1 credit)", use_container_width=True,
-        help="One call covers the whole week's slate (markets × regions = 1), "
-             "then free for 10 minutes. Nothing spends unless you tap this.")
+        "💰 Pull fresh lines (~2 credits)", use_container_width=True,
+        help="One call covers the whole week's slate: spreads + totals across every "
+             "available book (markets × regions = 2), then free for 10 minutes. "
+             "Nothing spends unless you tap this.")
 
 if not CURRENT_WEEK_CSV.exists():
     st.warning(f"No {CURRENT_WEEK_CSV.name} committed yet for this week.")
@@ -135,6 +137,17 @@ with CURRENT_WEEK_CSV.open() as f:
 if not cbs_rows:
     st.info(f"No Week {week} lines captured yet.")
     st.stop()
+
+# The totals tiebreak needs the total as it stood when CBS froze its line.
+# That only exists once scripts/pickem_capture.py has run a 'post' snapshot
+# for this week; without it every game simply falls back to the old
+# market-favourite rule, which is exactly what shipped before.
+post_totals = {
+    r["home_team"]: float(r["market_total"])
+    for r in load_line_log()
+    if r.get("snapshot") == "post" and str(r.get("week")) == str(week)
+    and r.get("market_total")
+}
 
 client = OddsAPIClient(cache_dir=CACHE_DIR, ledger_path=LEDGER, dry_run=not pull_fresh)
 live_by_abbr = {}
@@ -159,7 +172,9 @@ for r in cbs_rows:
     cbs_line = float(r["cbs_line_home"])
     live = live_by_abbr.get(r["home_abbr"])
     live_line = live.live_line if live and live.live_line is not None else cbs_line
-    pk = make_pick(r["away_name"], r["home_name"], cbs_line, live_line)
+    pk = make_pick(r["away_name"], r["home_name"], cbs_line, live_line,
+                   post_totals.get(r["home_abbr"]),
+                   live.total if live else None)
     rows.append((r, pk, live is None or live.live_line is None))
 
 exp_wins = sum(p.prob if p.tier != "COIN FLIP" else 0.5 for _, p, _ in rows)
@@ -184,6 +199,14 @@ for r, pk, no_live in rows:
     home_pct = int(r.get("comm_pct_home") or 0)
     comm_pct = home_pct if pk.side == "home" else away_pct
     note_html = f'<div class="pk-note">{r["note"]}</div>' if r.get("note") and "provisional" not in r["note"] else ""
+    live_g = live_by_abbr.get(r["home_abbr"])
+    books_html = ""
+    if live_g and live_g.n_books:
+        # book disagreement is a confidence caveat: a consensus built from
+        # books that are a full point apart deserves less trust
+        dis = live_g.book_spread
+        books_html = (f' &nbsp; {live_g.n_books} BOOKS'
+                      + (f' (spread {dis:.1f})' if dis else ''))
 
     st.markdown(f'''
 <div class="{card_cls}">
@@ -197,7 +220,7 @@ for r, pk, no_live in rows:
     <span class="{pill_cls}">{pk.tier}</span>
   </div>
   <div class="pk-nums">CBS <b>{pk.pool_line:+.1f}</b> &nbsp; MARKET <b>{pk.live_line:+.1f}</b>
-    &nbsp; EDGE <b>{abs(pk.edge_pts):.1f}</b> &nbsp; COMMUNITY <b>{comm_pct}%</b></div>
+    &nbsp; EDGE <b>{abs(pk.edge_pts):.1f}</b> &nbsp; COMMUNITY <b>{comm_pct}%</b>{books_html}</div>
   {note_html}
 </div>
 ''', unsafe_allow_html=True)

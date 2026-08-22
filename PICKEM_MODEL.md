@@ -309,7 +309,36 @@ data problem.
 
 **All four become testable by logging weekly**, which costs nothing but discipline: record
 CBS's line at post, a market line at that same moment, the total at both points, and the
-community pick percentages. Two seasons of that turns this table into four real experiments.
+community pick percentages.
+
+**The plumbing for that now exists** (built 2026-08-22). Two commands a week:
+
+```bash
+# Tuesday, immediately after transcribing the CBS screenshot into
+# data/pickem_current_week.csv. Order matters -- a "market at the moment CBS
+# posted" reading is only that if you run it within a few minutes.
+python3 scripts/pickem_capture.py --snapshot post --week 3 --confirm
+
+# Before the first game of each day, once inactives are out.
+python3 scripts/pickem_capture.py --snapshot lock --week 3 --confirm
+```
+
+Each run costs **2 Odds-API credits** (spreads + totals, one call covering the whole slate)
+— about 72 credits for a full season, inside the 500/month free tier shared with the MLB
+work. Rows land in `data/pickem_line_log.csv`, which is **committed** (all of it is public
+market data, and it needs to survive a Streamlit rebuild and accumulate across a season).
+Adam's own picks and standings stay in the gitignored `data/pickem/`.
+
+`edge/pickem_log.py::cbs_bias` already implements the 5f formula and returns `None` until
+there is data:
+
+```
+true_edge = (market_now − cbs_line) − cbs_bias        # cbs_bias = cbs_line − market_at_post
+```
+
+Nothing in the model consumes CBS bias yet, deliberately — it gets tested like everything
+else here, on train/validate, once a season of captures exists. **A missed week is a
+permanently missing row.** That is the entire cost of these experiments.
 
 ### 5c. Previously killed (from earlier sessions)
 
@@ -327,9 +356,11 @@ same way: the gains are **not** in better modeling of any kind — football *or*
 market feature tested was either redundant with the line movement we already use, or real
 but unpriceable. Ranked by realistic promise:
 
-0. **Start logging the four things in 5f.** Cheapest, highest-value action available, and it
-   is the only thing that unblocks four separate experiments — including CBS-bias isolation,
-   which is the one with a genuine mechanism nobody else in the pool can exploit.
+0. **Run the weekly capture** (`scripts/pickem_capture.py`, 2 commands, 2 credits each).
+   The plumbing is built as of 2026-08-22; all that remains is the habit. It is the only
+   thing that unblocks four separate experiments — including CBS-bias isolation, the one
+   with a genuine mechanism nobody else in the pool can exploit. A missed week is a
+   permanently missing row.
 
 1. **Time the picks better.** The backtest approximates "at lock" with the *closing* line,
    but Adam's real deadline is each day's first kickoff — hours earlier for most games.
@@ -341,10 +372,15 @@ but unpriceable. Ranked by realistic promise:
    line *at the moment CBS posts* would isolate true movement. The
    `live_line_at_post_home` column in `data/pickem/tracker.csv` exists for this and is
    still unused.
-3. **Multi-book consensus** instead of one book's line — less noise per reading.
-4. **Pool-standings strategy.** Late in the season, maximizing *expected wins* stops being
-   the right goal — you play to win the pool. Copy the leader when ahead, deliberately
-   diverge when behind. Pure game theory, zero football modeling, and completely untouched.
+3. ~~Multi-book consensus instead of one book's line~~ — **done** (2026-08-22).
+   `edge/pickem_live.py` now averages every available book with sharp books upweighted.
+   Note it cannot be backtested: the historical file is single-book, so the weighting is a
+   reasonable prior, not a validated result. Circa is not distributed through The Odds API
+   at all, and Pinnacle sits in the `eu` region (doubling per-call cost) — the default
+   stays `us`-only.
+4. ~~Pool-standings strategy~~ — **framework built** (2026-08-22), see section 7.
+   Unvalidated by construction and gated to Week 14+. The real upgrade available to it is
+   feeding it the pool's ACTUAL pick distribution instead of CBS's national percentages.
 
 Genuinely dead ends, do not revisit: better team-strength ratings of any kind, coaching
 records, moneyline-derived signals, anything else the bookmaker already sees at line-set
@@ -356,9 +392,58 @@ estimated on data that didn't select it.
 
 ---
 
-## 7. Running it yourself
+## 7. Playing the standings (late season)
+
+**Status: built, reasoned, and NOT validated.** Everything else in this document is backed
+by a leak-free backtest. This is not, and cannot be yet — it needs historical pool standings
+and opponents' weekly picks, which nobody recorded. It is standard tournament game theory
+with deliberately simple arithmetic, and it is a heuristic. `edge/pickem_strategy.py`.
+
+**Why it exists.** Maximising expected wins is the right goal only until about Week 14.
+After that you are not trying to win the most games — you are trying to *finish in a paying
+place*, and those differ. Your finish depends on your score **relative** to the field, so
+what matters is the variance of (your score − theirs). Pick what everyone else picks and
+that variance is near zero: a lead is preserved, and a deficit is frozen solid. Pick against
+them and you manufacture the swings a deficit needs.
+
+| Situation | Mode | Behaviour |
+|---|---|---|
+| Before Week 14 | `neutral` | Pure expected wins. Don't touch anything. |
+| Leading, or already at target rank | `protect` | Shadow the field on coin flips so nobody gains ground cheaply. **Never** surrenders a real edge to follow the crowd. |
+| Behind | `chase` | Diverge from the field, spending the cheapest games first. |
+
+**The cost of divergence is expected wins — and the cheapest divergences are coin flips.**
+Flipping a 50/50 game costs nothing (there was no edge to give up) but still separates you
+from however much of the field was on the other side. That is close to free variance, and
+it is why the module spends coin flips first and protects genuine edges last.
+
+**How much to diverge.** Making up a *G*-win deficit needs swing; *n* divergent picks give a
+relative-score standard deviation of roughly √*n*; wanting that on the order of *G* gives
+*n* ≈ *G*², spread over the weeks left:
+
+```
+divergences_per_week ≈ gap² / weeks_remaining
+```
+
+Three back with six weeks left is a gentle 1–2 flips a week. Six back with two weeks left
+demands ~18 — essentially the whole slate — which is correct: a hole that deep that late is
+nearly hopeless, and the only guaranteed loss is playing it safe. Even then the module
+refuses to flip a game whose edge exceeds 12%, because that is spending real advantage to
+buy noise.
+
+**The weakness, stated plainly:** `field_pct` comes from CBS's **national** community
+percentages, not the 15–20 people Adam is actually playing. A national 80/20 can easily be
+55/45 in a small pool, and the leverage maths is only as good as that number. The pool's own
+picks are visible in the CBS app after each lock — feeding those in would upgrade this from
+plausible to sound, and is the single highest-value improvement available to it.
+
+## 8. Running it yourself
 
 ```bash
+# Weekly capture -- the habit that unblocks section 5f (2 credits per run)
+python3 scripts/pickem_capture.py --snapshot post --week N            # dry run
+python3 scripts/pickem_capture.py --snapshot post --week N --confirm  # writes
+
 # Rebuild the efficiency data from nflverse (free, ~45s)
 python3 scripts/pickem_pbp_collect.py 2013 2024      # -> data/pbp_team_game.csv
 
@@ -376,7 +461,10 @@ python3 -m pytest tests/test_pickem.py -q
 |---|---|
 | `edge/pickem.py` | The shipped model. Small on purpose. |
 | `edge/pickem_features.py` | As-of-week ratings + coach history. **Built, tested, not shipped** — kept so nobody rebuilds it to rediscover section 5. |
-| `edge/pickem_live.py` | Live market lines (The Odds API; ~1 credit for a whole week) |
+| `edge/pickem_live.py` | Live lines + totals, multi-book weighted consensus (2 credits/week) |
+| `edge/pickem_log.py` | Append-only snapshot log + the `cbs_bias` formula (section 5f) |
+| `edge/pickem_strategy.py` | Late-season standings play (section 7). **Unvalidated.** |
+| `scripts/pickem_capture.py` | Weekly capture CLI, dry-run by default |
 | `scripts/pickem_feature_lab.py` | Experiment harness (both rounds). Refuses to read holdout seasons. |
 | `scripts/pickem_backtest.py` | Out-of-sample backtest + the staleness negative control |
 | `scripts/pickem_pbp_collect.py` | nflverse play-by-play → per-game efficiency table |

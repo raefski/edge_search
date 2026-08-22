@@ -78,6 +78,29 @@ them: **PICKEM_MODEL.md sections 4, 5d-5f**.
 **This was the project's SECOND holdout evaluation** (first was the original model). A third
 should be resisted until there is genuinely new data -- each look inflates optimism.
 
+## Infrastructure round (2026-08-22) -- built, mostly unvalidated
+
+Following round 2's conclusion that further gains are not in feature engineering, built the
+plumbing instead. **None of this changes the 55.9% model.**
+
+- **Weekly capture** (`scripts/pickem_capture.py` + `edge/pickem_log.py`): append-only
+  snapshot log at `data/pickem_line_log.csv` (COMMITTED -- public market data; Adam's picks
+  stay in gitignored `data/pickem/`). Records CBS's line, a contemporaneous market line and
+  total, per-book numbers, and community pick %. Unblocks all four PICKEM_MODEL.md 5f
+  experiments. 2 credits per run, dry-run by default. **This needs to actually be run every
+  Tuesday and before each deadline -- a missed week is a permanently missing row.**
+- **Multi-book consensus** (`edge/pickem_live.py`): now pulls spreads AND totals across all
+  available books with sharp books upweighted, exposing per-book disagreement as a
+  confidence caveat. Cannot be backtested (historical file is single-book) -- the weighting
+  is a documented prior, not a validated result. Circa is not on The Odds API; Pinnacle
+  requires the `eu` region at double cost.
+- **Standings strategy** (`edge/pickem_strategy.py`): protect/chase/neutral modes gated to
+  Week 14+, divergence budget ~gap^2/weeks_remaining, spends coin flips first and never
+  flips an edge above 12%. **UNVALIDATED and unvalidatable without historical pool
+  standings** -- labelled as such everywhere.
+- The Streamlit page now feeds the logged post-snapshot total into the shipped totals
+  tiebreak, and shows book count + disagreement per game.
+
 ## Honest caveats (don't let these get lost)
 
 1. **CBS sets spreads "at its own discretion"**, not as a mirror of a specific
