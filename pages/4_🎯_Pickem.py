@@ -9,8 +9,9 @@ this one (spread picks) despite the shared "NFL" word.
 
 Two data sources, matching app.py's own free-vs-manual split:
   * Live market line: edge.pickem_live.fetch_week, via edge.client's Odds
-    API (dry-run/cache by default, ~1 credit for the WHOLE week's slate in
-    one call when you explicitly tap "Pull fresh lines"). Originally free
+    API (dry-run/cache by default, ~2 credits -- spreads + totals -- for the
+    WHOLE week's slate in one call when you explicitly tap "Pull fresh
+    lines"). Originally free
     via ESPN's public scoreboard -- that got blocked in production (403,
     Akamai) and DraftKings' own sportsbook endpoint hits the identical wall
     (same Akamai infrastructure sits in front of both), so this is the
