@@ -37,8 +37,10 @@ edge = live_market_line − frozen_CBS_line       (home-team spread, − = home 
 
 - **|edge| ≥ 0.5 points** → pick whichever side the market moved *toward*. That side is
   getting a better number from CBS than the market now thinks it deserves.
-- **|edge| < 0.5** → no validated signal. Fall back to the current market favorite.
-  We deliberately claim *no* edge here rather than inventing one.
+- **|edge| < 0.5** → no movement signal. Break the tie on **totals drift**: if the game
+  total has fallen by 0.5+ points take the underdog, if it has risen take the favorite,
+  otherwise take the market favorite. (Lower-scoring games compress margins, which helps
+  whoever is getting points.) Added 2026-08-22 — see section 4.
 - **Favorite flips sides entirely** (CBS says Team A favored, market now says Team B) →
   automatic STRONG pick. The single strongest pattern in the data.
 - **Win probability**: `P(cover) = Φ(|edge| / 13.45)`. Roughly **+3% win probability per
@@ -57,13 +59,16 @@ Backtested on 2,878 real NFL games (2014–2024). Trained on 2014–2022, then e
 
 | | Record | Rate |
 |---|---|---|
-| **The model, out-of-sample** | 297-236-10 | **55.7%** |
+| **The model, out-of-sample** | 298-235-10 | **55.9%** |
 | Games where the line moved (83% of slate) | 253-193 | 56.7% |
-| Games where it didn't (the coin flips) | 44-43 | 50.6% |
+| Games where it didn't (the coin flips) | 45-42 | 51.7% |
 | *Baseline: always pick the favorite* | — | 54.2% |
 | *Baseline: always pick the home team* | — | 51.2% |
 
-≈ **8.9 wins per 16-game week.** 21 of 36 test weeks hit a 9+/16 pace, 10 hit 10+/16.
+≈ **8.9 wins per 16-game week.** 18 of 36 test weeks hit a 9+/16 pace, 13 hit 10+/16.
+
+*(Was 55.7% / 297-236-10 before the totals tiebreak. That change bought exactly one extra
+win across 543 games — see section 4's honesty note.)*
 
 ### The result that proves it's real
 
@@ -108,11 +113,28 @@ validate. A fake one flips sign. Almost everything below flips sign.
 
 | Feature | Effect | Status |
 |---|---|---|
-| **Market movement off the frozen line** | 54.1% on dev, 55.7% out-of-sample (z=+3.92) | **Shipped.** The entire model. |
+| **Market movement off the frozen line** | 54.1% on dev, 55.9% out-of-sample (z=+3.92) | **Shipped.** The entire model. |
 | **Favorite-flip → auto STRONG** | Best single pattern found | **Shipped.** |
 | **Bigger move = more confidence** | 3+ pt moves hit 65.3% out-of-sample | **Shipped** (drives tiering). |
+| **Totals-drift coin-flip tiebreak** | Beat "take the favorite" in 8 of 9 dev seasons; +1.2pp on dev | **Shipped, provisional.** |
 
-That's the complete list. One idea, and it's the one the project started with.
+### Honesty note on the totals tiebreak (added 2026-08-22)
+
+It is shipped, but it is **not proven**. Dev promised +1.2pp on the full slate (54.1% →
+55.3%); the holdout delivered **+0.2pp** (55.7% → 55.9%) — literally one extra win in 543
+games, well inside noise. It is kept because it beat the old default in 8 of 9 dev seasons,
+it has a real mechanism, it never made things worse, and the old default was measurably
+*bad* (see below). Treat it as a small, unconfirmed edge, not a win.
+
+The thing it replaced deserves naming: **"take the market favorite" on no-movement games was
+the single worst rule in the model** — 48.3% across the dev split, i.e. actively worse than a
+coin flip. Several different replacements beat it. That's the real finding here; totals drift
+just happened to be the best of them.
+
+**Operational cost:** this needs the game total *at the moment CBS froze its spread*, which
+nothing currently captures. Add it to the Tuesday capture (the Odds API can return spreads
+and totals in one call — 2 credits instead of 1). Without it the model silently falls back
+to the old favorite rule, which is safe but forfeits the feature.
 
 ---
 
@@ -207,6 +229,88 @@ But this pool scores **team vs. spread**. A scheme boosting one player shows up 
 as a slightly better team, which is exactly what the line already prices. Wrong tool for
 this game. It has not been tested for DFS and might well work there.
 
+### 5d. The key-number bonus — a real effect we still can't price
+
+**This one is different from the rest of the graveyard: the effect is real.** It's the
+*magnitude* that failed, and the story is worth keeping because it is the clearest example
+in the project of how a validated finding can still be unshippable.
+
+**The idea:** NFL margins cluster hard on 3 and 7. If the market moves *through* one of
+those numbers — say from −2.5 to −3.5 — the frozen CBS line hands us the 3 for free. That
+should be worth far more than the raw 1-point move suggests.
+
+**It replicated everywhere we looked:**
+
+| | Crossed 3 or 7 | Didn't cross | Gap |
+|---|---|---|---|
+| Train (2014–19) | 68.0% (n=97) | 53.2% | +14.8pp |
+| Validate (2020–22) | 72.4% (n=87) | 55.3% | +17.1pp |
+| **Every dev season** | **beat not-crossing 9 times out of 9** | | |
+| **Holdout (2023–24)** | **62.9% (n=62)** | **55.7%** | **+7.2pp** |
+
+Nine out of nine seasons, plus the holdout. This is not noise — and unlike the DVOA work,
+it *strengthened* under scrutiny rather than dissolving.
+
+**So why is `KEY_BONUS = 0.0` in the shipped code?** Because knowing an effect is real is
+not the same as knowing how big it is. Fitting on train gave a bonus of **3.6 points**,
+which validated beautifully (it cut the probability error on validate from +12.5pp to
++2.8pp). Then the holdout showed the dev gap had been roughly **twice** the true one:
+
+| | Predicted | Actual | Error |
+|---|---|---|---|
+| With the 3.6 bonus | 69.7% | 62.9% | **−6.8pp** (overconfident) |
+| With no bonus at all | 59.9% | 62.9% | **+3.0pp** (slightly under) |
+
+The "improvement" made the model's probabilities **worse than leaving it alone**. A value
+near 1.8 would calibrate nicely — but that number is only visible *by looking at the
+holdout*, which would make it a parameter fitted on the test set and destroy the honesty of
+every number in this document.
+
+So it ships at zero. `Pick.key_number` still reports the flag, so the signal stays visible
+and nobody has to rediscover it. **Re-fit and re-validate it once 2025+ seasons provide
+fresh data** — that's the clean path, and it's a genuinely promising one.
+
+> **Lesson:** a replicated effect measured on data you *selected it from* is systematically
+> inflated. Direction survives out-of-sample far more reliably than magnitude. Estimate
+> effect sizes on data you didn't use to find the effect — or shrink them hard.
+
+### 5e. Market-based features that didn't add anything
+
+| Idea | Train | Validate | Verdict |
+|---|---|---|---|
+| Moneyline drift as coin-flip tiebreak | 48.9–51.5% | 35.7–51.0% | Sign flip. Dead. |
+| Key-number *proximity* on coin flips | 44.0% | 56.1% | Sign flip. Dead. |
+| Filtering picks by moneyline confirming the spread | 55.0% | 56.7% | No better than the base signal rate (54.4/57.7). Pointless. |
+| Extended key numbers (3/4/6/7/10) | weaker than 3/7 alone | | Dead — 3 and 7 carry it. |
+
+**Moneyline drift deserves a note**, because on its own it looks fantastic: filtered to
+large drifts it hits 57.6% train / 64.2% validate, and it strengthens monotonically with the
+threshold in *both* eras — every hallmark of a real signal. It is real. It's also
+**redundant**: it's measuring the same market move the spread already tells us about. When
+used where it could add something new — the coin flips, where the spread is silent — it
+collapses to noise. Same trap as DVOA in section 5a, reached from a different direction.
+
+> **Lesson specific to pick'em: selectivity is worthless here.** You must pick every game,
+> so a filter that finds a 64% subset adds nothing — you still have to pick the other games
+> too. A feature only helps if it changes *which side* you take on games you're currently
+> getting wrong. Always evaluate full-slate win rate, never the win rate of a filtered subset.
+
+### 5f. Experiments that couldn't be run at all (data doesn't exist yet)
+
+Not failures — genuinely blocked. Listed so nobody re-plans them without first solving the
+data problem.
+
+| Experiment | What's missing |
+|---|---|
+| **CBS post-offset isolation** (`CBS_bias = CBS_line − market_at_post`) | There are **no historical CBS lines**. The backtest's "pool line" is a *sportsbook opening line* used as a proxy. `live_line_at_post_home` exists in the tracker but holds 16 rows, all 2026 Week 1, none with results — and all currently equal to the CBS line, so the measured bias is zero. **Runnable only after a season of real captures.** |
+| **Line-movement velocity** (Δline in the last 24h) | The history has exactly two snapshots per game, open and close. No intermediate timestamps. Needs a timestamped feed — the Odds API's historical endpoints cost 10× credits, which the free tier can't fund. |
+| **Sharp-book directional agreement** | The history is a **single book**. No cross-book disagreement to measure. |
+| **Public pick-percentage fading** | CBS community percentages exist for 16 games of 2026 Week 1 and nowhere else. No historical pick distributions. |
+
+**All four become testable by logging weekly**, which costs nothing but discipline: record
+CBS's line at post, a market line at that same moment, the total at both points, and the
+community pick percentages. Two seasons of that turns this table into four real experiments.
+
 ### 5c. Previously killed (from earlier sessions)
 
 | Idea | Why it died |
@@ -218,8 +322,14 @@ this game. It has not been tested for DFS and might well work there.
 
 ## 6. Where the remaining upside actually is
 
-We're at ~8.9 wins/week; the target is 10. Based on everything above, the gains are **not**
-in better football modeling. Ranked by realistic promise:
+We're at ~8.9 wins/week; the target is 10. Two full rounds of feature work now point the
+same way: the gains are **not** in better modeling of any kind — football *or* market. Every
+market feature tested was either redundant with the line movement we already use, or real
+but unpriceable. Ranked by realistic promise:
+
+0. **Start logging the four things in 5f.** Cheapest, highest-value action available, and it
+   is the only thing that unblocks four separate experiments — including CBS-bias isolation,
+   which is the one with a genuine mechanism nobody else in the pool can exploit.
 
 1. **Time the picks better.** The backtest approximates "at lock" with the *closing* line,
    but Adam's real deadline is each day's first kickoff — hours earlier for most games.
@@ -237,7 +347,12 @@ in better football modeling. Ranked by realistic promise:
    diverge when behind. Pure game theory, zero football modeling, and completely untouched.
 
 Genuinely dead ends, do not revisit: better team-strength ratings of any kind, coaching
-records, anything else the bookmaker already sees at line-set time.
+records, moneyline-derived signals, anything else the bookmaker already sees at line-set
+time, and any approach evaluated on a *filtered subset* rather than the full slate.
+
+**Open and promising:** re-fitting the key-number bonus (5d) once 2025+ data exists. It is
+the only tested feature whose effect survived the holdout — it just needs a magnitude
+estimated on data that didn't select it.
 
 ---
 
@@ -262,7 +377,7 @@ python3 -m pytest tests/test_pickem.py -q
 | `edge/pickem.py` | The shipped model. Small on purpose. |
 | `edge/pickem_features.py` | As-of-week ratings + coach history. **Built, tested, not shipped** — kept so nobody rebuilds it to rediscover section 5. |
 | `edge/pickem_live.py` | Live market lines (The Odds API; ~1 credit for a whole week) |
-| `scripts/pickem_feature_lab.py` | Experiment harness. Refuses to read holdout seasons. |
+| `scripts/pickem_feature_lab.py` | Experiment harness (both rounds). Refuses to read holdout seasons. |
 | `scripts/pickem_backtest.py` | Out-of-sample backtest + the staleness negative control |
 | `scripts/pickem_pbp_collect.py` | nflverse play-by-play → per-game efficiency table |
 | `pages/4_🎯_Pickem.py` | The weekly picks screen |

@@ -37,12 +37,20 @@ def load_games() -> list[dict]:
         rows = list(csv.DictReader(f))
     games = []
     for r in rows:
-        games.append({
+        g = {
             "season": int(r["season"]), "week": int(r["week"]),
             "away": r["away_team"], "home": r["home_team"],
             "pool_line": float(r["home_line_open"]), "live_line": float(r["home_line_close"]),
             "home_margin": int(r["home_score"]) - int(r["away_score"]),
-        })
+        }
+        # totals feed the no-movement tiebreak (see edge/pickem.py); missing
+        # values simply fall back to the old market-favourite behaviour.
+        try:
+            g["total_open"] = float(r["total_open"])
+            g["total_close"] = float(r["total_close"])
+        except (ValueError, KeyError):
+            g["total_open"] = g["total_close"] = None
+        games.append(g)
     games.sort(key=lambda g: (g["season"], g["week"]))
     return games
 
@@ -51,7 +59,8 @@ def grade(games: list[dict]) -> dict:
     w = l = p = 0
     signal_w = signal_l = fallback_w = fallback_l = 0
     for g in games:
-        pk = make_pick(g["away"], g["home"], g["pool_line"], g["live_line"])
+        pk = make_pick(g["away"], g["home"], g["pool_line"], g["live_line"],
+                       g.get("total_open"), g.get("total_close"))
         r = ats_result(g["home_margin"], g["pool_line"], pk.side)
         if r == "W":
             w += 1
@@ -83,7 +92,8 @@ def grade(games: list[dict]) -> dict:
 def weekly_distribution(games: list[dict]) -> dict:
     by_week: dict[tuple, list[int, int]] = {}
     for g in games:
-        pk = make_pick(g["away"], g["home"], g["pool_line"], g["live_line"])
+        pk = make_pick(g["away"], g["home"], g["pool_line"], g["live_line"],
+                       g.get("total_open"), g.get("total_close"))
         r = ats_result(g["home_margin"], g["pool_line"], pk.side)
         key = (g["season"], g["week"])
         wl = by_week.setdefault(key, [0, 0])

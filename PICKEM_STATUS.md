@@ -45,7 +45,7 @@ Chronological split — train 2014–2022 (2,335 games), test 2023–2024 (543 g
 evaluated **once**, with `make_pick` itself (no separate reimplementation, no drift
 possible between what's tested and what ships):
 
-- **Test: 297-236-10 = 55.7% ATS.** Signal games (83% of slate) 56.7%, fallback/unmoved
+- **Test: 298-235-10 = 55.9% ATS.** Signal games (83% of slate) 56.7%, fallback/unmoved
   games 50.6%. Weekly pace: avg 8.9/16, 10/36 test weeks at a 10+/16 pace, 21/36 at 9+/16.
 - Baselines beaten: blind favorites 54.2%, blind home teams 51.2%, blind underdogs 45.8%.
 - **The load-bearing negative result**: run the identical strategy with `pool_line ==
@@ -62,6 +62,21 @@ repo's discipline (backtest calls the shipped function directly) caught it. Net 
 was tiny (55.5% -> 55.7%, both fallback rules are near-coinflip-equivalent on unmoved
 games either way) but the METHODOLOGY gap was real and is now closed structurally: it
 can't recur because there's only one implementation left to drift from.
+
+## Round 2 feature work (2026-08-22) -- market features
+
+Tested key-number weighting, moneyline drift, totals drift, and coin-flip tiebreaks.
+**One small change shipped** (totals-drift tiebreak on no-movement games: dev +1.2pp,
+holdout +0.2pp -- one extra win in 543, kept but unproven). **One real effect found but
+NOT shipped**: crossing key numbers 3/7 covered 62.9% vs 55.7% on the holdout and beat
+not-crossing in 9 of 9 dev seasons, but the dev-fitted magnitude overshot badly and made
+calibration worse, so `KEY_BONUS` ships at 0.0 pending clean data. Four further experiments
+(CBS post-offset, line velocity, sharp-book agreement, public-pick fading) are **blocked on
+data that does not exist yet**. Full detail, numbers, and the weekly logging that unblocks
+them: **PICKEM_MODEL.md sections 4, 5d-5f**.
+
+**This was the project's SECOND holdout evaluation** (first was the original model). A third
+should be resisted until there is genuinely new data -- each look inflates optimism.
 
 ## Honest caveats (don't let these get lost)
 

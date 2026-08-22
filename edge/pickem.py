@@ -45,6 +45,30 @@ MOVE_FLOOR = 0.5   # below this, no validated edge (test-era: 49.4%, ~coin flip)
 SOLID_FLOOR = 1.5
 STRONG_FLOOR = 3.0
 
+# Points added to the effective edge when the move crosses a key number.
+#
+# DISABLED (0.0) ON PURPOSE -- read PICKEM_MODEL.md section 5d before changing.
+# The key-number EFFECT is real and replicated: crossing 3 or 7 beat
+# not-crossing in 9 of 9 dev seasons, and again on the 2023-24 holdout
+# (62.9% vs 55.7%). But the MAGNITUDE fitted on dev (3.6 pts, from a
+# +15.7pp dev gap) badly overshoots the holdout's +7.2pp gap: with the
+# bonus live the model predicted 69.7% on those games against an actual
+# 62.9% (-6.8pp), strictly WORSE calibration than leaving it off (+3.0pp).
+#
+# A shrunk value near 1.8 would calibrate well -- but that number can only
+# be read off the holdout, which would make it a fitted-on-test parameter
+# and no longer an honest out-of-sample result. So it ships at zero until
+# 2025+ seasons provide enough fresh data to fit and validate it cleanly.
+# `Pick.key_number` still reports the flag so the signal stays visible.
+KEY_BONUS = 0.0
+
+# A falling total means a lower-scoring game, which compresses margins and
+# helps the underdog cover; a rising total does the reverse. Used ONLY to
+# break ties on no-movement games, where taking the market favourite was
+# measurably the wrong default (48.3% across the dev split). Beat that
+# default in 8 of 9 dev seasons.
+TOTAL_DRIFT_FLOOR = 0.5
+
 
 def phi(x: float) -> float:
     """Standard normal CDF, stdlib-only (no scipy dependency)."""
@@ -71,6 +95,40 @@ def favorite_flipped(pool_line: float, live_line: float) -> bool:
     return pool_line != 0 and live_line != 0 and (pool_line < 0) != (live_line < 0)
 
 
+def effective_edge(pool_line: float, live_line: float) -> float:
+    """|edge|, plus KEY_BONUS when the move crossed 3 or 7.
+
+    A stale line sitting on the good side of the modal NFL margin is worth
+    far more than its raw point size suggests: a market that moved from
+    -2.5 through to -3.5 hands us the 3 for free. Empirically these games
+    cover ~70% regardless of how big the move was, so the bonus is flat
+    rather than proportional.
+    """
+    raw = abs(live_line - pool_line)
+    if raw >= MOVE_FLOOR and key_number_crossed(pool_line, live_line):
+        return raw + KEY_BONUS
+    return raw
+
+
+def _coinflip_side(live_line: float, total_open: float | None,
+                   total_close: float | None) -> str:
+    """Which side to take when the spread never moved.
+
+    Falls back to the market favourite when no totals are available, which
+    is what shipped before -- but when we DO have the totals, a drift of at
+    least TOTAL_DRIFT_FLOOR points overrides it.
+    """
+    fav = 'home' if live_line < 0 else 'away'
+    if total_open is None or total_close is None:
+        return fav
+    drift = total_close - total_open
+    if abs(drift) < TOTAL_DRIFT_FLOOR:
+        return fav
+    if drift > 0:
+        return fav                                    # more scoring -> favourite
+    return 'away' if fav == 'home' else 'home'        # less scoring -> underdog
+
+
 @dataclass
 class Pick:
     matchup: str
@@ -83,27 +141,43 @@ class Pick:
     side_line: float    # the spread the picked side gets, from pool_line
     prob: float
     tier: str           # STRONG / SOLID / LEAN / COIN FLIP
+    eff_edge: float = 0.0   # |edge| after any key-number bonus
 
 
-def make_pick(away: str, home: str, pool_line: float, live_line: float) -> Pick:
+def make_pick(away: str, home: str, pool_line: float, live_line: float,
+              total_open: float | None = None,
+              total_close: float | None = None) -> Pick:
     """The whole model in one call -- see module docstring for validation.
 
     |edge| >= MOVE_FLOOR: follow the side the market moved toward (that side
-    is getting a better number than the market's current opinion of it).
-    Below that: no validated edge, default to the live market's own favorite
-    rather than manufacturing a signal that isn't there.
+    is getting a better number than the market's current opinion of it),
+    with a key-number bonus folded into the confidence when the move crossed
+    3 or 7.
+
+    Below MOVE_FLOOR there is no movement signal. Pass `total_open` and
+    `total_close` (the game total when the pool line froze, and now) to break
+    that tie on totals drift; omit them and it falls back to the market
+    favourite, which is what shipped before. Both totals are optional so
+    every existing caller keeps working unchanged.
     """
     edge_pts = live_line - pool_line
     mag = abs(edge_pts)
+    eff = effective_edge(pool_line, live_line)
     flipped = favorite_flipped(pool_line, live_line)
     moved = mag >= MOVE_FLOOR
 
-    side = ('home' if edge_pts < 0 else 'away') if moved else ('home' if live_line < 0 else 'away')
+    if moved:
+        side = 'home' if edge_pts < 0 else 'away'
+    else:
+        side = _coinflip_side(live_line, total_open, total_close)
     side_line = pool_line if side == 'home' else -pool_line
 
-    if flipped or mag >= STRONG_FLOOR:
+    # Tiering runs off the EFFECTIVE edge, so a 1-point move that crosses 3
+    # is rated above a 2-point move that crosses nothing -- which is what the
+    # data says (crossing games covered ~70% in every dev season).
+    if flipped or eff >= STRONG_FLOOR:
         tier = 'STRONG'
-    elif mag >= SOLID_FLOOR:
+    elif eff >= SOLID_FLOOR:
         tier = 'SOLID'
     elif moved:
         tier = 'LEAN'
@@ -114,7 +188,7 @@ def make_pick(away: str, home: str, pool_line: float, live_line: float) -> Pick:
         matchup=f'{away} @ {home}', pool_line=pool_line, live_line=live_line,
         edge_pts=edge_pts, key_number=key_number_crossed(pool_line, live_line),
         flipped=flipped, side=side, side_line=side_line,
-        prob=win_prob(edge_pts) if moved else 0.5, tier=tier,
+        prob=win_prob(eff) if moved else 0.5, tier=tier, eff_edge=eff,
     )
 
 
