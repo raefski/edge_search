@@ -344,6 +344,45 @@ roughly double what the holdout delivers, nothing here changes the shipped model
    **0 of 461** dev coin-flip games can capture a key number. It is blocked by definition,
    not by sample size.
 
+### 5h. Can the pool's frozen line be scraped automatically? (2026-08-22)
+
+Asked directly, tested properly, and the answer has two halves.
+
+**The pool page itself: no.** `picks.cbssports.com/.../pools/<id>` fetched anonymously with
+a real JS-rendering browser **redirects to `/join`** and serves pool settings plus a login
+prompt — no team names, no spreads. That is authentication, not a scraping-technique
+problem, and no amount of cleverness gets around it.
+
+**CBS's public odds page is close, and using it would be a disaster.** `cbssports.com/nfl/odds`
+is fully open, needs no key, and carries every game with open line, current line and total.
+On 2026 Week 1 it agreed with the pool's frozen line on **12 of 16 games** — and disagreed on
+exactly the four the market had moved since the freeze:
+
+| Game | Pool (frozen) | CBS public (live) |
+|---|---|---|
+| Bills @ Texans | HOU −1.5 | **BUF −1.5** (favorite flipped) |
+| Saints @ Lions | DET −7.5 | DET −7.0 |
+| Falcons @ Steelers | PIT −3.5 | PIT −3.0 |
+| Broncos @ Chiefs | KC −2.5 | KC −3.0 open |
+
+**Those four disagreements are the entire edge.** The public page tracks the live market;
+the pool freezes. Substituting one for the other would delete the signal and quietly return
+the model to ~50% while still looking like it worked. This is the most dangerous available
+shortcut, which is why it is written down.
+
+**What automation is actually possible.** Two real wins, both shipped:
+
+1. **A free market feed.** `edge/pickem_cbs.fetch_public_odds()` scrapes the public page for
+   all 16 games — open line, current line, total — at **zero Odds-API credits and no key**.
+   Note it also supplies an *opening* line, which the free Odds-API tier cannot (historical
+   endpoints are paid-plan only).
+2. **No more transcription.** `scripts/pickem_pool_import.py` turns text copied from the
+   logged-in Picks page into `pickem_current_week.csv`, community percentages included. The
+   fetch still needs a human session; the tedious part no longer needs a human.
+
+Nothing in this repo stores, requests, or transmits CBS credentials, and nothing logs in on
+your behalf — the importer parses a page you already opened.
+
 ### 5f. Experiments that couldn't be run at all (data doesn't exist yet)
 
 Not failures — genuinely blocked. Listed so nobody re-plans them without first solving the
@@ -516,6 +555,8 @@ python3 -m pytest tests/test_pickem.py -q
 | `edge/pickem_live.py` | Live lines + totals, multi-book weighted consensus (2 credits/week) |
 | `edge/pickem_log.py` | Append-only snapshot log + the `cbs_bias` formula (section 5f) |
 | `edge/pickem_strategy.py` | Late-season standings play (section 7). **Unvalidated.** |
+| `edge/pickem_cbs.py` | CBS scrapers: free public odds feed + pool-page parser |
+| `scripts/pickem_pool_import.py` | Saved pool page → `pickem_current_week.csv`, no typing |
 | `scripts/pickem_capture.py` | Weekly capture CLI, dry-run by default |
 | `scripts/pickem_blocked.py` | Progress toward each blocked experiment — run it any time |
 | `scripts/pickem_vs_random.py` | Holdout replay vs a coin-flipping field (seeded) |
