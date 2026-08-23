@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import csv
 import math
+import random
 import sys
 from pathlib import Path
 
@@ -260,6 +261,225 @@ def market_experiments(rows) -> None:
         print()
 
 
+def spread_regime_experiments(rows) -> None:
+    """Round 3: does the model's accuracy depend on WHERE on the spread
+    spectrum a game sits -- and if so, should the RULE change per regime?
+
+    Distinct from every other section: this doesn't add a feature, it asks
+    whether the one-size-fits-all rule should be several rules. That CAN add
+    wins (it changes which side we take), unlike confidence-only findings.
+
+    Includes a selection-bias control, which is the reusable part: fitting a
+    per-bucket rule choice is a best-of-N search, and best-of-N looks good on
+    pure noise. The control runs the identical procedure on coin-flip
+    outcomes so any real gain has a null distribution to beat.
+    """
+    print("\n" + "=" * 78)
+    print("ROUND 3 -- SPREAD REGIMES (is one model enough?)")
+    print("=" * 78)
+
+    BUCKETS = ((0.0, 3.0), (3.0, 6.0), (6.0, 9.0), (9.0, 13.0), (13.0, 99.0))
+
+    def abs_line(r):
+        return abs(r["pool_line"])
+
+    def bucket_of(r):
+        for lo, hi in BUCKETS:
+            if lo <= abs_line(r) < hi:
+                return (lo, hi)
+        return None
+
+    def fav_prob(r):
+        """De-vigged implied win prob of whichever side the CLOSING line favours."""
+        if r["ml_close"] is None:
+            return None
+        return r["ml_close"] if r["live_line"] < 0 else 1 - r["ml_close"]
+
+    def shipped(r):
+        return make_pick(r["away"], r["home"], r["pool_line"], r["live_line"],
+                         r["total_open"], r["total_close"]).side
+
+    def dog(r):
+        return "home" if r["pool_line"] > 0 else "away"
+
+    def fav(r):
+        return "away" if r["pool_line"] > 0 else "home"
+
+    def dog_on_coinflips(r):
+        pk = make_pick(r["away"], r["home"], r["pool_line"], r["live_line"],
+                       r["total_open"], r["total_close"])
+        return dog(r) if pk.tier == "COIN FLIP" else pk.side
+
+    RULES = {
+        "shipped": shipped,
+        "shipped-inverted": lambda r: "away" if shipped(r) == "home" else "home",
+        "always-dog": dog,
+        "always-fav": fav,
+        "always-home": lambda r: "home",
+        "dog-on-coinflips": dog_on_coinflips,
+    }
+
+    # ---------------------------------------------------------------- 1
+    print("\n--- 1. EXPOSURE: how many games could a big-spread rule even touch? ---")
+    n_weeks = len({(r["season"], r["week"]) for r in rows})
+    for lo, hi in BUCKETS:
+        n = sum(1 for r in rows if bucket_of(r) == (lo, hi))
+        print(f"  spread {lo:>4.1f}-{hi:<5.1f} {n:5d} games  {n/len(rows):5.1%} of slate  "
+              f"~{16*n/len(rows):.1f} per 16-game week")
+    print(f"  ({n_weeks} dev weeks)")
+
+    # ---------------------------------------------------------------- 2
+    print("\n--- 2. SHIPPED MODEL'S ACCURACY BY SPREAD SIZE ---")
+    for name, seas in (("TRAIN", TRAIN), ("VALIDATE", VAL)):
+        print(f"  [{name}]")
+        for lo, hi in BUCKETS:
+            ev(rows, seas, shipped, f"    |line| {lo:.1f}-{hi:.1f}",
+               only=lambda r, lo=lo, hi=hi: bucket_of(r) == (lo, hi))
+
+    # ---------------------------------------------------------------- 3
+    print("\n--- 3. SHIPPED MODEL'S ACCURACY BY MONEYLINE (de-vigged fav prob) ---")
+    ML = ((0.50, 0.55), (0.55, 0.60), (0.60, 0.65), (0.65, 0.70), (0.70, 1.01))
+    for name, seas in (("TRAIN", TRAIN), ("VALIDATE", VAL)):
+        print(f"  [{name}]")
+        for lo, hi in ML:
+            ev(rows, seas, shipped, f"    fav prob {lo:.2f}-{hi:.2f}",
+               only=lambda r, lo=lo, hi=hi: (fav_prob(r) is not None
+                                             and lo <= fav_prob(r) < hi))
+
+    # ---------------------------------------------------------------- 4
+    print("\n--- 4. IS THE BOOK LESS ACCURATE ON BIG SPREADS? (the premise itself) ---")
+    print("    sigma = std dev of (actual margin - frozen line); model assumes 13.45 flat")
+    for lo, hi in BUCKETS:
+        errs = [r["margin"] + r["pool_line"] for r in rows if bucket_of(r) == (lo, hi)]
+        n = len(errs)
+        mean = sum(errs) / n
+        sd = math.sqrt(sum((e - mean) ** 2 for e in errs) / (n - 1))
+        print(f"  spread {lo:>4.1f}-{hi:<5.1f} n={n:5d}   sigma {sd:5.2f}")
+
+    # ---------------------------------------------------------------- 5
+    print("\n--- 5. 'TAKE THE POINTS ON BIG DOGS' at rising thresholds ---")
+    for thr in (7, 9, 11, 13, 14):
+        for name, seas in (("TRAIN   ", TRAIN), ("VALIDATE", VAL)):
+            ev(rows, seas, dog, f"    dog, |line| >= {thr:<2} [{name}]",
+               only=lambda r, t=thr: abs_line(r) >= t)
+
+    # ---------------------------------------------------------------- 6
+    print("\n--- 6. WHY THE ANECDOTE FEELS TRUE: shape of big-spread outcomes ---")
+    for lab, sel in (("|line| >= 13", lambda r: abs_line(r) >= 13),
+                     ("|line| 3-9  ", lambda r: 3 <= abs_line(r) < 9)):
+        # dog_err = points by which the UNDERDOG beat the frozen number
+        de = [(r["margin"] + r["pool_line"]) * (1 if r["pool_line"] > 0 else -1)
+              for r in rows if sel(r)]
+        de = [d for d in de if d != 0]
+        de.sort()
+        cov = [d for d in de if d > 0]
+        mis = [d for d in de if d < 0]
+        med = de[len(de) // 2] if len(de) % 2 else (de[len(de)//2 - 1] + de[len(de)//2]) / 2
+        print(f"  {lab}  n={len(de):4d}  dog covered {len(cov)/len(de):5.1%}   "
+              f"mean {sum(de)/len(de):+5.2f}  median {med:+5.2f}   "
+              f"when covering {sum(cov)/len(cov):+6.2f}, when not {sum(mis)/len(mis):+6.2f}")
+
+    # ---------------------------------------------------------------- 7
+    print("\n--- 7. EVERY RULE x EVERY BUCKET (a regime needs to win in BOTH eras) ---")
+    for lo, hi in BUCKETS:
+        print(f"  [spread {lo:.1f}-{hi:.1f}]")
+        base = {}
+        for name, seas in (("TRAIN", TRAIN), ("VALIDATE", VAL)):
+            w, l = ev(rows, seas, shipped, f"    shipped [{name}]",
+                      only=lambda r, lo=lo, hi=hi: bucket_of(r) == (lo, hi))
+            base[name] = w / (w + l) if (w + l) else 0
+        for rname, fn in RULES.items():
+            if rname == "shipped":
+                continue
+            deltas = []
+            for name, seas in (("TRAIN", TRAIN), ("VALIDATE", VAL)):
+                w = l = 0
+                for r in rows:
+                    if r["season"] not in seas or bucket_of(r) != (lo, hi):
+                        continue
+                    res = ats_result(r["margin"], r["pool_line"], fn(r))
+                    w += res == "W"
+                    l += res == "L"
+                deltas.append((w / (w + l) if (w + l) else 0) - base[name])
+            flag = "  <== beats shipped in BOTH" if all(d > 0 for d in deltas) else (
+                "  (sign flip)" if any(d > 0 for d in deltas) else "")
+            print(f"    {rname:<20} vs shipped: train {deltas[0]*100:+5.1f}pp  "
+                  f"validate {deltas[1]*100:+5.1f}pp{flag}")
+
+    # ---------------------------------------------------------------- 8
+    print("\n--- 8. SELECTION-BIAS CONTROL (the reusable part) ---")
+    print("    Picking the best of 6 rules in each of 5 buckets is a best-of-N search.")
+    print("    Run the IDENTICAL procedure on pure coin-flip outcomes to see what it")
+    print("    manufactures from nothing. A real gain has to beat that null.")
+
+    sides = {n: [f(r) for r in rows] for n, f in RULES.items()}
+    bkt = [bucket_of(r) for r in rows]
+    covers0 = [None if (r["margin"] + r["pool_line"]) == 0
+               else (r["margin"] + r["pool_line"]) > 0 for r in rows]
+    i_tr = [i for i, r in enumerate(rows) if r["season"] in TRAIN]
+    i_va = [i for i, r in enumerate(rows) if r["season"] in VAL]
+
+    def procedure(covers):
+        best = {}
+        for b in BUCKETS:
+            bn, bp = "shipped", -1.0
+            for n in RULES:
+                w = l = 0
+                for i in i_tr:
+                    if bkt[i] != b or covers[i] is None:
+                        continue
+                    if (sides[n][i] == "home") == covers[i]:
+                        w += 1
+                    else:
+                        l += 1
+                p = w / (w + l) if (w + l) else 0.0
+                if p > bp:
+                    bn, bp = n, p
+            best[b] = bn
+        w = l = 0
+        for i in i_va:
+            if covers[i] is None:
+                continue
+            if (sides[best.get(bkt[i], "shipped")][i] == "home") == covers[i]:
+                w += 1
+            else:
+                l += 1
+        return w / (w + l), best
+
+    def val_rate(covers, rule):
+        w = l = 0
+        for i in i_va:
+            if covers[i] is None:
+                continue
+            if (sides[rule][i] == "home") == covers[i]:
+                w += 1
+            else:
+                l += 1
+        return w / (w + l)
+
+    real, chosen = procedure(covers0)
+    base_real = val_rate(covers0, "shipped")
+    print(f"  REAL: best-per-bucket fitted on train -> validate {real:.1%}")
+    print(f"        shipped one-size-fits-all       -> validate {base_real:.1%}")
+    print(f"        gain {100*(real-base_real):+.1f}pp")
+    print("        chosen: " + ", ".join(f"{b[0]:.0f}-{b[1]:.0f}={n}" for b, n in chosen.items()))
+
+    rng = random.Random(20260823)
+    gains = []
+    for _ in range(400):
+        fake = [None if c is None else (rng.random() < 0.5) for c in covers0]
+        r, _ = procedure(fake)
+        gains.append(r - val_rate(fake, "shipped"))
+    gains.sort()
+    beat = sum(1 for g in gains if g >= (real - base_real))
+    print(f"  NULL (400 sims, no signal anywhere): mean {100*sum(gains)/len(gains):+.1f}pp, "
+          f"95th pct {100*gains[int(.95*len(gains))]:+.1f}pp, max {100*gains[-1]:+.1f}pp")
+    print(f"  -> the real gain was matched by chance in {beat}/400 sims "
+          f"(empirical p = {beat/400:.3f})")
+    print("  NOTE: the 95th percentile is the bar. A '+3pp regime improvement' here")
+    print("        would have been an ordinary draw from pure noise.")
+
+
 def main() -> None:
     rows = load_rows()
     assert not ({r["season"] for r in rows} & HOLDOUT), "holdout leaked into dev"
@@ -375,6 +595,7 @@ def main() -> None:
         print(f"  {label:<40} {w:4d}-{l:<4d} {pct:6.1%}  z={z:+5.2f}  {verdict}")
 
     market_experiments(rows)
+    spread_regime_experiments(rows)
 
     # --- validity check: is the rating broken, or just redundant? ----------
     nr, mg, ln = [], [], []

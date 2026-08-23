@@ -122,12 +122,16 @@ def main() -> None:
 
     with_both = [s for s in snaps if s.cbs_line_home is not None and s.market_line_home is not None]
     if with_both:
-        biases = [s.cbs_line_home - s.market_line_home for s in with_both]
-        print(f"\nCBS bias this snapshot (cbs - market), n={len(biases)}:")
+        # sign convention fixed 2026-08-23 to match edge.pickem_log.cbs_offset:
+        # offset = market - cbs, so that offset + drift = total edge. See 5j r3b.
+        biases = [s.market_line_home - s.cbs_line_home for s in with_both]
+        print(f"\nCBS offset this snapshot (market - cbs), n={len(biases)}:")
         print(f"  mean {sum(biases)/len(biases):+.2f} pts | "
               f"min {min(biases):+.1f} | max {max(biases):+.1f}")
         if args.snapshot == "post":
-            print("  ^ this is the number PICKEM_MODEL.md 5f has been waiting for.")
+            print("  ^ the number 5f waited for. Do NOT subtract it from the model's")
+            print("    edge -- you are graded against CBS, so offset is worth as much")
+            print("    as drift (5j round 3c). Run scripts/pickem_transferability.py.")
 
 
 if __name__ == "__main__":

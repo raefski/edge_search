@@ -54,16 +54,27 @@ def main() -> None:
     print(f"log: {LINE_LOG.name} ({len(rows)} rows, "
           f"{len(snaps_per_week)} week(s) captured)\n")
 
+    lock_games = len({(r.get("season"), r.get("week"), r.get("home_team"))
+                      for r in rows if r.get("snapshot") == "lock"
+                      and r.get("market_line_home") and r.get("cbs_line_home")})
+
     items = [
+        ("EDGE TRANSFERABILITY (w)", lock_games, 64,
+         "How much of the backtested 55.9% actually survives CBS freezing BEFORE "
+         "you pick? One parameter w spans ~$400/season of uncertainty -- more than "
+         "every strategy lever found in 6 rounds combined. Needs NO game results: "
+         "only |market_at_lock - cbs_line|, so ~4 WEEKS settles it -- by far the fastest payoff of anything on this list. See PICKEM_MODEL.md 5j r3/r6.",
+         "run --snapshot post AND --snapshot lock each week, then "
+         "python3 scripts/pickem_transferability.py"),
         ("CBS post-offset isolation", len(with_cbs_and_mkt), NEED_GAMES,
-         "cbs_bias = CBS's line minus the market at the same instant. Separates "
+         "cbs_offset = the market at post minus CBS's line. Separates "
          "CBS's own house shading from real post-Tuesday drift. THE highest-value "
          "one: nobody else in the pool can exploit it.",
          "run --snapshot post every Tuesday, right after transcribing the screenshot"),
         ("Line-movement velocity", velocity_weeks, NEED_WEEKS_VELOCITY,
          "Does a late, fast move carry more signal than slow early drift? Needs "
          "3+ readings per week, not just post and lock.",
-         "add a mid-week capture, e.g. --snapshot thu-am"),
+         "add a mid-week capture: --snapshot midweek (Thursday/Friday)"),
         ("Sharp-book disagreement", len(multi_book), NEED_GAMES,
          "When books disagree, is the sharp side the one to follow? The historical "
          "file is single-book, so this has never been measurable.",

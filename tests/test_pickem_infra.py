@@ -4,7 +4,7 @@ import tempfile
 from pathlib import Path
 
 from edge.pickem_live import BOOK_WEIGHTS, _parse_events, weighted_consensus
-from edge.pickem_log import Snapshot, append, cbs_bias, load
+from edge.pickem_log import Snapshot, append, cbs_offset, load
 from edge.pickem_strategy import (
     GameContext, PoolState, apply, divergences_needed, mode_for,
 )
@@ -97,19 +97,43 @@ def test_a_different_snapshot_label_is_a_new_row():
     assert len(load(p)) == 2
 
 
-def test_cbs_bias_is_cbs_minus_market_at_post():
+def test_cbs_offset_is_market_at_post_minus_cbs():
     p = _tmp()
     append([Snapshot(season=2026, week=1, snapshot="post", away_team="NE",
                      home_team="SEA", cbs_line_home=-3.5, market_line_home=-4.2)], p)
-    assert abs(cbs_bias(2026, 1, "SEA", p) - 0.7) < 1e-6
+    assert abs(cbs_offset(2026, 1, "SEA", p) - (-0.7)) < 1e-6
 
 
-def test_cbs_bias_is_none_until_both_numbers_exist():
+def test_cbs_offset_and_drift_add_to_the_total_edge():
+    """The regression guard for the 2026-08-23 sign bug (PICKEM_MODEL.md 5j r3).
+
+    The old version returned cbs_line - market_at_post, and the prescribed
+    formula `(market_now - cbs) - bias` then reduced to
+    `market_now + market_at_post - 2*cbs` -- doubling the offset rather than
+    removing it, and wrong in exactly the no-drift case it existed for.
+    """
+    p = _tmp()
+    cbs, at_post, at_lock = -3.5, -4.5, -5.5
+    append([Snapshot(season=2026, week=1, snapshot="post", away_team="NE",
+                     home_team="SEA", cbs_line_home=cbs, market_line_home=at_post)], p)
+    offset = cbs_offset(2026, 1, "SEA", p)
+    drift = at_lock - at_post
+    assert abs(offset - (-1.0)) < 1e-6
+    assert abs(offset + drift - (at_lock - cbs)) < 1e-6      # components must ADD
+
+    # the specific case the old formula got wrong: offset present, zero drift
+    p2 = _tmp()
+    append([Snapshot(season=2026, week=1, snapshot="post", away_team="NE",
+                     home_team="SEA", cbs_line_home=-3.5, market_line_home=-4.5)], p2)
+    assert abs(cbs_offset(2026, 1, "SEA", p2) + 0.0 - (-4.5 - -3.5)) < 1e-6
+
+
+def test_cbs_offset_is_none_until_both_numbers_exist():
     p = _tmp()
     append([Snapshot(season=2026, week=1, snapshot="post", away_team="NE",
                      home_team="SEA", cbs_line_home=-3.5)], p)   # no market reading
-    assert cbs_bias(2026, 1, "SEA", p) is None
-    assert cbs_bias(2026, 1, "KC", p) is None                    # unknown game
+    assert cbs_offset(2026, 1, "SEA", p) is None
+    assert cbs_offset(2026, 1, "KC", p) is None                  # unknown game
 
 
 # --- standings strategy ----------------------------------------------------
@@ -166,3 +190,54 @@ def test_leader_with_no_deficit_never_chases():
     st = PoolState(week=17, weeks_remaining=1, my_rank=1, my_wins=150,
                    leader_wins=150, n_players=18)
     assert divergences_needed(st) == 0
+
+
+# --- transferability estimator (PICKEM_MODEL.md 5j round 6) -----------------
+
+def test_transferability_recovers_a_known_w_from_second_moments():
+    """w is a VARIANCE share, so it must be estimated with second moments.
+
+    Regression guard for a real bug: the first version of this estimator used
+    the ratio of MEAN ABSOLUTE gaps, which overestimated w by ~30% (true 0.50
+    recovered as 0.66) because 19.7% of historical games do not move at all --
+    a spike that drags E|M| down relative to SD(M). Second moments are exact
+    regardless of distribution shape.
+    """
+    import math
+    import random
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+    import pickem_transferability as PT
+
+    for true_w in (1.0, 0.5, 0.25):
+        rng = random.Random(4)
+        p = _tmp()
+        snaps = []
+        for i in range(400):
+            gap = math.sqrt(true_w) * 1.8152 * rng.gauss(0, 1)
+            snaps += [
+                Snapshot(season=2026, week=1 + i // 16, snapshot="post",
+                         away_team=f"A{i}", home_team=f"H{i}",
+                         cbs_line_home=-3.5, market_line_home=-3.5),
+                Snapshot(season=2026, week=1 + i // 16, snapshot="lock",
+                         away_team=f"A{i}", home_team=f"H{i}",
+                         cbs_line_home=-3.5, market_line_home=-3.5 + gap),
+            ]
+        append(snaps, p)
+        games = [g for g in PT.collect(p) if g["lock"] is not None]
+        assert len(games) == 400
+        sq = [(g["lock"] - g["cbs"]) ** 2 for g in games]
+        w = sum(sq) / len(sq) / PT.DEV_MEAN_SQ_MOVE
+        assert abs(w - true_w) < 0.10, f"w={w} vs true {true_w}"
+
+
+def test_transferability_curve_is_monotone_and_bottoms_at_chalk():
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+    import pickem_transferability as PT
+
+    margins = [PT.interp(w)[0] for w in (0.0, 0.2, 0.4, 0.6, 0.8, 1.0)]
+    assert margins == sorted(margins), "edge must not increase as w falls"
+    assert abs(PT.interp(0.0)[0]) < 0.5, "at w=0 the model should collapse to chalk"
+    assert PT.interp(1.0)[0] > 6.0, "at w=1 it must reproduce the backtested margin"

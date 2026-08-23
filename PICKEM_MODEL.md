@@ -62,8 +62,25 @@ Backtested on 2,878 real NFL games (2014–2024). Trained on 2014–2022, then e
 | **The model, out-of-sample** | 298-235-10 | **55.9%** |
 | Games where the line moved (83% of slate) | 253-193 | 56.7% |
 | Games where it didn't (the coin flips) | 45-42 | 51.7% |
-| *Baseline: always pick the favorite* | — | 54.2% |
+| *Baseline: always pick the favorite (2023–24)* | — | 54.2% |
 | *Baseline: always pick the home team* | — | 51.2% |
+
+> **⚠ That 54.2% favorite baseline is an anomaly of the holdout era, and reading it as "the
+> model barely beats chalk" is wrong.** Always taking the frozen-line favorite scores **48.2%
+> (train), 48.3% (validate), 54.2% (holdout), 49.4% (all 2,878 games)**. 2023–24 was an unusually
+> good era for favorites. The model's margin *over chalk* — which is what actually matters,
+> because ~17 opponents mostly play chalk — is:
+>
+> | | model | chalk | **margin** |
+> |---|---|---|---|
+> | train 2014–19 | 54.9% | 48.2% | **+6.72pp** |
+> | validate 2020–22 | 56.0% | 48.3% | **+7.70pp** |
+> | holdout 2023–24 | 55.9% | 54.2% | **+1.69pp** |
+>
+> In a typical era the model is **6–8 points better than the field**, roughly one extra win a
+> week against a chalk-picking opponent. In the holdout era it was 1.7. Both numbers are honest;
+> quoting only the second understates the edge, and quoting only the first overstates it.
+> Found 2026-08-23 (5j round 6) — the original table had gone unchallenged for three rounds.
 
 ≈ **8.9 wins per 16-game week.** 18 of 36 test weeks hit a 9+/16 pace, 13 hit 10+/16.
 
@@ -383,6 +400,730 @@ shortcut, which is why it is written down.
 Nothing in this repo stores, requests, or transmits CBS credentials, and nothing logs in on
 your behalf — the importer parses a page you already opened.
 
+### 5i. Spread regimes — "should there be several models, one per spread size?" (2026-08-23)
+
+Asked in two stages, and worth keeping as one entry because the second stage is the more
+interesting failure. Reproducible: `scripts/pickem_feature_lab.py`, "ROUND 3".
+
+**Stage 1 — does accuracy vary by spread size or moneyline?** Stratified the shipped model's
+own win rate. It varies, but not *consistently*, which is the whole question:
+
+| Frozen spread | Train 2014–19 | Validate 2020–22 |
+|---|---|---|
+| 0–3 pts | 50.6% | **60.4%** |
+| 3–6 pts | 56.1% | 55.4% |
+| 6–9 pts | 56.8% | 57.1% |
+| 9–13 pts | 54.6% | 51.6% |
+| 13+ pts | **58.5%** | 42.4% |
+
+**The extremes invert.** The best train bucket (13+) is the worst on validate; the worst
+train bucket (0–3) is the best on validate. Only 3–9 holds steady — at roughly the model's
+overall rate, i.e. no stratified edge at all, just the average showing up in a subgroup.
+
+Moneyline (de-vigged implied probability of the closing favorite) does the same thing: the
+best train bucket (0.60–0.65, 59.0%) ranks 4th of 5 on validate, and the best validate
+bucket (0.50–0.55, 64.3%) ranks 4th of 5 on train. No monotonic relationship in either era,
+and no agreement between eras.
+
+**Stage 2 — should the RULE change per regime?** This is a genuinely different proposal from
+everything else in this graveyard, and it deserved a real test: a per-bucket rule change alters
+*which side* we take, so unlike 5d/5e/5g it is capable of adding wins.
+
+The motivating intuition (Adam's, stated plainly): books must be less accurate setting a
+14-point number than a 3-point number, and on a two-touchdown spread it feels wise to take the
+points.
+
+**The premise is directly falsifiable, and it's false.** The book's error is the same size at
+every spread:
+
+| Frozen spread | σ of (actual margin − line) |
+|---|---|
+| 0–3 pts | 13.14 |
+| 3–6 pts | 12.99 |
+| 6–9 pts | 12.91 |
+| 9–13 pts | 13.38 |
+| **13+ pts** | **12.95** |
+
+A 14-point line is as accurate as a 3-point line. (This also retroactively justifies the model's
+flat σ = 13.45 — no per-bucket σ is warranted.) With no accuracy gradient, there is no mechanism
+for a big-spread regime to exploit.
+
+**"Take the points" tested at rising thresholds** — it never clears 50% on validate, and it gets
+*worse* as the spread grows, the opposite of the hypothesis:
+
+| Threshold | Train | Validate |
+|---|---|---|
+| 7+ | 52.6% | 47.9% |
+| 9+ | 51.0% | 45.3% |
+| 11+ | 47.8% | 44.0% |
+| 13+ | 47.7% | 42.4% |
+| 14+ | 50.0% | 42.9% |
+
+**Why the anecdote feels true anyway** — this is the part worth remembering, because the
+intuition is tracking something real, just not the thing it thinks:
+
+| | \|line\| ≥ 13 | \|line\| 3–9 |
+|---|---|---|
+| dog covers | **45.9%** | 53.2% |
+| median outcome | **−1.00** (favorite side) | +1.00 (dog side) |
+| when the dog covers, by | **+10.74** | +9.82 |
+| when it doesn't, by | −10.01 | −10.77 |
+
+Big-dog covers are **rare but enormous**. The backdoor cover, the garbage-time touchdown, the
+31–14 final that "wasn't as close as it looked" — those are the memorable games, and they cover
+by double digits. The modal outcome is the favorite quietly covering, which is forgettable. The
+mean and the median point *opposite ways*, which is exactly the signature of an availability-bias
+intuition. Note also that the folklore has the direction backwards: mid-sized dogs (3–9) cover
+more often than huge ones.
+
+Six rules × five buckets were tested (shipped, inverted, always-dog, always-favorite,
+always-home, dog-on-coin-flips). One cell beat shipped in both eras — underdog on coin flips
+within 9–13 point spreads, +0.7pp train / +1.1pp validate — on **n=27 and n=18**, which is
+**0.30 games per week**. It is 1 of 30 cells tested. See the control below for why that is
+exactly what you'd expect from nothing.
+
+**The exposure ceiling, worth knowing before anyone proposes this again:** spreads of 9+ are
+**2.3 games per 16-game week**. Even a genuine 5pp edge confined to that regime is worth 0.1
+wins per week. The upside was small before the testing started.
+
+#### The selection-bias control — the reusable part of this entry
+
+Fitting a rule choice per bucket is a **best-of-N search**, and best-of-N looks good on pure
+noise. So the harness runs the *identical* procedure (pick the best of 6 rules in each of 5
+buckets on train, apply to validate) against 400 sets of coin-flip outcomes, where by
+construction there is nothing to find:
+
+| | Validate full-slate rate |
+|---|---|
+| Shipped one-size-fits-all | **56.0%** |
+| Best-per-bucket fitted on train | **52.8%** (−3.2pp) |
+| *Null procedure, mean* | −0.2pp |
+| *Null procedure, 95th percentile* | **+3.6pp** |
+| *Null procedure, max* | +9.8pp |
+
+Empirical p = **0.887** — the real result was matched or beaten by 355 of 400 coin-flip runs.
+The regime model didn't just fail to help, it did **worse than the single rule** it was meant
+to improve on.
+
+> **The methodological lesson, and the reason this control is now permanent:** the 95th
+> percentile is the bar. With 5 buckets and 6 rules, a **"+3pp regime improvement" would have
+> been an ordinary draw from pure noise** — and it would have looked like a real finding in a
+> table. Any future proposal that slices the slate into subgroups and fits something per
+> subgroup must be scored against this null, not against 50%. This is the first tool in the
+> project that puts a number on how good a multi-bucket result has to look before it means
+> anything.
+
+**Holdout note:** the go/no-go here was made entirely on dev. A descriptive look at the holdout
+was taken during the session (the same category as the existing `calibration_by_move_size` table
+in `pickem_backtest.py`, which already reports holdout cover rates by bucket) and showed the same
+era-to-era inconsistency — but **nothing was selected, fitted, or tuned on it**, and the shipped
+model is unchanged, so the 55.9% headline remains an honest once-evaluated number.
+
+**Why it failed, in one line:** the size of the spread is information the bookmaker *has* when
+setting the line, so it is priced. Same wall as 5a and 5b, reached from a third direction. The
+edge is still time, not football.
+
+### 5j. The situational search — 10 rounds of outside ideas (2026-08-23, ongoing)
+
+**The setup.** A domain-expert agent (sharp NFL/betting/pick'em knowledge, deliberately kept
+naive to this model's internals) reads this document fresh each round, proposes 3+ testable
+hypotheses, they get tested on dev, and the results are written back here. Ten rounds, hunting
+for a genuinely novel angle worth an extra win or two per week.
+
+**What made this possible:** `scripts/pickem_situational_collect.py` pulls nflverse's
+`games.csv` and joins it onto the odds history — **2878/2878 games, zero misses**. That adds
+15 columns the project had never used: rest days, weather (temp/wind), roof, surface, division
+flag, weekday/kickoff time, neutral site, **starting QB**, referee. Section 5f's "blocked for
+lack of data" list got materially shorter.
+
+**The protocol, which matters more than any single round:**
+- **The holdout is not touched.** Nothing in this search reads 2023–24. Survivors become
+  candidates; the holdout is spent later, once, on a finished model.
+- **Rules are judged only on the games they FLIP.** A rule agreeing with the shipped model 95%
+  of the time can't be judged on overall win rate — that number is dominated by picks it didn't
+  make. Its entire effect lives in the disagreements (5e).
+- **The significance bar rises with the ledger.** `data/pickem_idea_ledger.json` counts every
+  hypothesis ever tested; the bar is Šidák-adjusted for the cumulative count. Test 1 needs
+  z=1.96; test 30 needs ≈z=3.0. Across 30 tests, ~1.5 will clear conventional significance by
+  luck, and the ledger is what stops one being written up as a discovery.
+- **A live demonstration of why:** a deliberate placebo rule (parity of the home team's
+  abbreviation length, applied to coin flips) hit **z = −2.06 on train** before flipping sign on
+  validate. Meaningless by construction, "significant" in one era.
+
+#### Round 1 — six ideas, all dead
+
+| # | Hypothesis | Flips | Train | Validate | Verdict |
+|---|---|---|---|---|---|
+| 1.1 | Fade the spread move when the total didn't corroborate it | 509 | 44.5% | 43.5% | negative both |
+| 1.2 | Scale the frozen line by scoring environment (total) | 0 | — | — | killed by regression |
+| 1.3 | Outdoor wind ≥13 (and ≥15) → take the underdog | 134 / 89 | 46.4% | 46.0% | negative both |
+| 1.4 | Fade small primetime moves toward the favorite | 134 | 43.7% | 48.9% | negative both |
+| 1.4c | *Control: same rule on 1pm Sunday games* | 495 | 49.5% | 42.6% | control also fired |
+| 1.5 | Back the team whose QB changed when the line moved ≥2 against it | 120 | 39.3% | 42.4% | negative both |
+| 1.6 | Divisional rematch → back the meeting-1 blowout loser | 82 | 35.4% | 32.4% | negative both |
+| 1.6i | *Inverse: back the blowout winner instead* | 67 | 37.3% | 50.0% | also negative |
+
+Percentages are on flipped games only — i.e. how often the new rule was right where it
+overrode the shipped model. Anything under 50% means the override cost wins.
+
+**Three diagnostics worth keeping even though every rule failed:**
+
+**(a) The frozen line is an unbiased predictor of margin, and there is no scoring-environment
+scaling.** Regressing actual margin on the frozen line gives a coefficient of **−1.048 (train)
+and −1.042 (validate)** — essentially exactly 1.0 in the sign convention used here. The line is
+not systematically too steep or too shallow at any level. The interaction with the projected
+total, which would show margins scaling with the scoring environment, came out **+0.0026 on
+train and −0.0192 on validate** — a sign flip, and both an order of magnitude below the
++0.015–0.03 the hypothesis needed. Killed by one regression before any pick logic was built.
+
+**(b) Wind: the mechanism is real, the consequence isn't.** This is the most interesting failure
+of the round, because the premise checked out exactly as predicted:
+
+| Check | Result | Reading |
+|---|---|---|
+| corr(wind, total move) | **−0.138** | the market *does* cut the total for wind in-week |
+| corr(wind, spread move) | **−0.028** | the market does *not* move the spread for it |
+
+So wind really is post-freeze information that the market prices into one number and not the
+other. But the payoff never appears — underdog cover rate by wind is **non-monotone** (49.3% at
+0–9mph, 54.4% at 9–13, 53.1% at 13–18, **48.6% at 18+**), with the windiest bucket the *worst*.
+And the **dome placebo covers 52.9%** — higher than the calm-weather outdoor bucket, which means
+the mid-range "signal" isn't a wind effect at all. Wind compresses scoring without
+systematically helping the side getting points.
+
+*(Honesty note: `wind` is the observed value at kickoff, not a Tuesday forecast, so this test was
+already an upper bound on what's achievable live. It failed as an upper bound.)*
+
+**(c) A directionally correct finding that pays nothing.** The total-corroboration idea predicted
+that spread moves confirmed by a falling total are information, and moves with a rising total are
+just money. The gap is **real and in the predicted direction**: the shipped model goes **59.9%
+when the total fell ≥1** vs **55.8% when it rose ≥1**. But both are comfortably above 50%, so
+fading the "money" bucket loses badly (44.5%/43.5%). The signal is a *confidence* distinction,
+and confidence pays nothing in pick'em (5e). A textbook case of a correct insight with no
+available action.
+
+**Two controls that did their job.** The primetime idea's 1pm-Sunday control fired *harder* than
+the primetime bucket itself (42.6% vs 48.9% on validate), proving any effect belonged to move
+size rather than primetime shading. And on divisional rematches, backing the blowout loser *and*
+backing the blowout winner both lost — meaning the market's in-week movement already prices the
+rematch dynamic, and any override is worse than following it.
+
+#### Round 2 — the half-point zone, the deadline, and the tiebreak's holes
+
+The round-2 scout opened by **killing two idea families before proposing anything**, which is
+worth recording because both are perennial re-proposals:
+
+- **Every variance/σ-based angle is dead by construction.** At an unbiased line,
+  P(cover) = Φ(edge/σ), which is exactly 0.5 at edge = 0 *regardless of σ*. σ scales the payoff
+  of staleness; it cannot create an edge where none exists. Combined with 5j(a)'s finding that
+  the line is unbiased at every level, every "low-total games compress margins" or "volatile
+  team" idea is a confidence distinction before it is tested.
+- **Week 1 lines are not contaminated.** The worry: a Week 1 "opener" is a spring number
+  containing months of pre-Tuesday movement. Measured: Week 1 mean |open−close| is **1.05 vs
+  1.25 for Weeks 2+**. Week 1 moves are *smaller*. Not a problem.
+
+**The reframing that shaped the round:** **47.6% of the slate has ≤0.5 points of signal** —
+650 dev games (4.45/wk) move exactly a half point, 461 (3.16/wk) don't move at all. Any
+remaining upside has to live there.
+
+| # | Hypothesis | Flips | Train | Validate | Verdict |
+|---|---|---|---|---|---|
+| 2.1 | Treat \|move\|=0.5 as no signal → route to totals tiebreak | 319 | 47.9% | 43.0% | negative both |
+| 2.1b | Same, only flat-zone halves (no key number in span) | 167 | 52.6% | 37.7% | sign flip |
+| 2.1c | *Control: route \|move\|=1.0 to tiebreak* | 173 | 44.0% | 50.0% | negative both |
+| 2.2 | Fade the toFAV_totUP cell (max-recreational signature) | 388 | 46.5% | 46.3% | negative both |
+| 2.3 | Raise threshold to 1.5 on Sunday-late games | 157 | 45.9% | 39.1% | negative both |
+| 2.4 | Fade small move toward team off a ≥14 / ≥17 / ≥21 win | 191/138/93 | 51.1/48.5/47.0% | 48.1/39.0/37.0% | sign flip, then negative |
+| 2.4a | *Control: toward team off a ≥14 LOSS* | 149 | 49.5% | 39.5% | negative both |
+| 2.4b | *Control: same rule on \|move\|≥2* | 118 | 38.9% | 37.0% | negative both |
+| 2.5a | Tiebreak fall-through → take the underdog | 69 | 35.3% | 54.3% | sign flip |
+| 2.5b | Referee crew home-lean on coin flips | 104 | 46.2% | 51.3% | sign flip |
+
+**(d) The deadline worry is not supported — and this one changes a priority.** Section 6 ranks
+"time the picks better" as the **#1 remaining upside**, on the reasoning that the backtest
+approximates Adam's lock with the *closing* line, so late-window games (4:25pm, 8:20pm) should
+carry post-deadline information he'll never have. If true, the 55.9% headline would be inflated.
+Measured, shipped-model win rate by kickoff window and move size:
+
+| Window | coin flips *(control)* | 0.5–1.5 pts | 2.0+ pts |
+|---|---|---|---|
+| Sunday early (≤13:00) | 53.2% (n=235) | 54.2% (n=655) | **60.7%** (n=323) |
+| Sunday late (≥16:00) | 56.0% (n=125) | 54.4% (n=395) | **54.1%** (n=183) |
+| Non-Sunday | 55.4% (n=83) | 53.3% (n=195) | 58.6% (n=87) |
+
+**⚠ RETRACTED — this analysis was wrong. See the correction immediately below.**
+
+The original reading was: "the prediction was that late games would outperform; they
+underperform by 6.6pp, so there is no evidence that post-deadline movement is where the edge
+lives," and section 6's ranking was flagged as unsupported on that basis.
+
+**The error: those numbers are POOLED across train and validate.** This document's own standard
+— stated in section 3 and applied to every other result here — is that a difference means
+nothing until it holds in both eras. That check was skipped. Round 3 ran it:
+
+| Window, 2+ pt moves | Train 2014–19 | Validate 2020–22 |
+|---|---|---|
+| Sunday early | 62.4% (n=205) | 57.6% (n=118) |
+| Sunday late | **50.0%** (n=104) | **59.5%** (n=79) |
+
+**The gap sign-flips.** Late games are worse in train and *better* in validate. Pooled, the
+early-vs-late difference is z = 1.44 — under this project's noise floor. There is no late-kickoff
+anomaly. The thread is closed, and section 6's ranking is restored to what it was.
+
+*Kept rather than deleted because the failure mode is the instructive part: pooling two eras
+manufactured a clean-looking 6.6pp effect out of a sign flip, and it was reported as
+decision-relevant before the era split was run. That is the exact mistake sections 5a and 5b
+exist to warn about, committed while writing the document that warns about it.*
+
+**(e) The "fade the uninformative move" family is now closed permanently.** Round 1 tested it
+one way (total direction alone); round 2 split it into the full 2×2 of spread direction ×
+total direction, hunting a cell below 50% that could be flipped:
+
+| Cell | Train | Validate |
+|---|---|---|
+| toFAV_totUP *(max recreational)* | 53.5% | 53.7% |
+| toFAV_totDN | 53.8% | 60.2% |
+| toDOG_totUP | 55.6% | 60.0% |
+| toDOG_totDN | 56.3% | 54.8% |
+
+**Every cell is above 53% in both eras.** The money-vs-news distinction is real and it is
+*entirely* a confidence distinction — there is no cell where the market's move is bad enough to
+fade. Do not propose a variant of this again.
+
+**(f) MOVE_FLOOR = 0.5 is validated, from the opposite direction.** Following the move wins
+**53.0% on half-point moves, 52.6% on 1.0-point moves, 58.7% on 1.5+**. So small moves genuinely
+carry less signal — but routing them to the totals tiebreak is *worse* (47.9%/43.0%), because the
+tiebreak is the weaker rule. A 53% signal beats the best available alternative, so the threshold
+stays where it is. The 1.0-point control confirms it: routing those to the tiebreak also loses.
+
+Both of round 2's designed controls fired correctly again — the symmetry placebo (blowout
+*losses*) and the magnitude placebo (large moves) both went negative, confirming there was no
+recency mechanism to find.
+
+#### Round 3 — a shipped-code bug, and a real threat to the headline number
+
+Round 3 produced no working feature either, but it is the most consequential round so far: it
+found a **sign error in shipped code** and a **calibration problem that probably means the live
+edge is smaller than 55.9%**. Both outrank any pick rule this exercise could have found.
+
+**(a) Drift is front-loaded — and that lands before CBS freezes.** The backtest's "frozen" line
+is a sportsbook **opener** (posted Sunday night / Monday). CBS freezes **Tuesday**. Those are
+different numbers, and the difference only matters if meaningful movement happens in that first
+day or two. Test: if drift accumulated like a random walk, games further from the opener should
+move more, by √time.
+
+| Kickoff | Days from opener | mean \|move\| | observed / Sunday | random-walk expectation |
+|---|---|---|---|---|
+| Thursday | ~3 | 1.234 | **0.994** | 0.707 |
+| Sunday | ~6 | 1.242 | 1.000 | 1.000 |
+| Monday | ~7 | 1.214 | **0.977** | 1.080 |
+
+**A Thursday game has half the time and moves the same amount. A Monday game has an extra day
+and moves slightly less.** Movement is essentially independent of elapsed time, which means it is
+concentrated in the first ~2 days after the opener — *before* CBS posts.
+
+**Why this matters more than any feature in this document:** the backtest credits the model with
+the full opener→close gap. Adam only ever gets the Tuesday→lock gap. If the early correction is
+the large and high-quality part, the live edge is materially smaller than the backtested one.
+
+**What this does NOT establish, stated plainly:** the follow-up test — is a point of *short-window*
+movement worth more than a point of *long-window* movement — is underpowered and inconclusive.
+
+| Kickoff | flat | 0.5–1.5 pts | 2.0+ pts |
+|---|---|---|---|
+| Thursday | 63.6% (n=33) | 53.8% (n=80) | 63.9% (n=36) |
+| Sunday | 54.2% (n=360) | 54.3% (n=1050) | 58.3% (n=506) |
+| Monday | 52.9% (n=34) | 52.4% (n=84) | 51.3% (n=39) |
+
+Thursday looks better at 2+ points (63.9% vs 58.3%) — but n=36, and Thursday's *flat* games come
+in at 63.6% on n=33, which is nonsense (flat games have no signal and must sit near 50%). That
+tells you the Thursday column is noise-dominated. Monday is worse everywhere, which points the
+opposite way. **So: the amount of movement is clearly front-loaded (D1 is solid, n=2,275); whether
+the early points are worth more per point is unresolved.**
+
+**This is the single highest-value thing the weekly capture log can settle**, and it raises the
+stakes on item 0 in section 6 considerably. One season of `market_at_post` readings answers it
+directly. Until then, treat 55.9% as an **upper bound on live performance**, not a forecast.
+
+**(b) A sign error in `edge/pickem_log.py::cbs_bias` — found, fixed, regression-tested.** The
+function returned `cbs_line − market_at_post`, and the prescribed formula was
+`true_edge = (market_now − cbs_line) − cbs_bias`. Substituting:
+
+```
+(market_now − cbs) − (cbs − at_post)  =  market_now + at_post − 2·cbs      ← what it computed
+                                intended:  market_now − at_post             ← pure drift
+```
+
+It **doubles the offset instead of removing it**, and is wrong in exactly the case it exists for:
+
+| Case | As documented | Intended |
+|---|---|---|
+| CBS matches market, no drift | +0.0 | +0.0 ✓ |
+| **CBS off by 1, no drift** | **−2.0** | **+0.0** ✗ |
+| CBS matches, market drifts 1 | −1.0 | −1.0 ✓ |
+| **CBS off by 1 and 1 pt drift** | **−3.0** | **−1.0** ✗ |
+
+Nothing consumed it (5f deliberately left it unwired), so no pick was ever affected — but it
+would have silently corrupted the first season of captures. Renamed to **`cbs_offset`**, returning
+`market_at_post − cbs_line`, so the two components simply **add**:
+`total_edge = cbs_offset + drift`. Guarded by `test_cbs_offset_and_drift_add_to_the_total_edge`.
+
+**(c) …and the correction it was built for is itself conceptually wrong.** 5f framed the CBS
+offset as house methodology to be *netted out*. That is backwards. **The pool grades against
+CBS's number**, so a point of offset is worth exactly as much as a point of drift — both measure
+how far the number you are scored on sits from the market's best estimate. Subtracting the offset
+would **delete real value**, not isolate noise. It would only be correct if CBS's number were a
+*better* predictor than the market's at the same instant, which is not credible for a media
+company setting lines "at its own discretion."
+
+The decomposition is still worth logging — but as a **measurement**, not a subtraction. The null
+worth testing after a season of captures is **β_offset = β_drift**, not β_offset = 0. This is
+recorded in the function's docstring so the trap is not re-entered.
+
+**(d) Pick rules tested, all dead:**
+
+| # | Hypothesis | Flips | Train | Validate | Verdict |
+|---|---|---|---|---|---|
+| 3.4 | Frozen line 3.5/7.5 + small move → take the points | 90 | 53.2% | 57.1% | consistent but z=+0.84 vs bar 3.06 |
+| 3.4a | *Mirror control: 2.5/6.5 → take the favorite* | 89 | 61.9% | 34.6% | sign flip |
+| 3.4b | *Placebo: non-key 4.5/8.5 → take the points* | 30 | 38.9% | 41.7% | negative both |
+| 3.5 | Divisional → take the underdog | 389 | 44.0% | 43.3% | negative both |
+| 3.5b | Divisional → take the road team | 376 | 45.6% | 38.9% | negative both |
+
+3.4 is the closest thing to a survivor in 27 tests — era-consistent and positive — and it still
+fails, for the right reason: **the mirror control sign-flips and the placebo goes negative.** A
+genuine key-number-lumpiness effect must be symmetric; this one isn't, so the positive result is
+noise wearing a good mechanism. The scout that proposed it predicted this outcome and recommended
+skipping it, which is worth more than the test.
+
+**(e) The divisional effect: the most stable subgroup in the project, worth exactly nothing.**
+The shipped model's divisional win rate, every dev season: **57.4, 58.3, 56.4, 59.6, 59.1, 58.5,
+59.8, 57.3, 59.1** — a 3.4-point range across nine years, vs 52.9%/54.4% on non-divisional. Nothing
+else in this document is that stable. And every side-changing version of it loses badly (take the
+dog: 44.0%/43.3%; take the road team: 45.6%/38.9%). It is a pure confidence distinction — the
+fifth one this exercise has produced, and the cleanest illustration of 5e in the document.
+
+#### Round 4 — a survivor, later substantially downgraded by round 5
+
+> **⚠ READ ROUND 5 BEFORE ACTING ON THIS.** Round 4 optimised **P(top 4)**, which is not the
+> payoff function. Scored in dollars, the advantage below shrinks from "+2 to +6pp" to roughly
+> **+$14 to +$68 per season in the favourable corner of the assumption space, and ≈$0 or
+> slightly negative outside it.** The finding is not retracted — it is much smaller and much more
+> conditional than this section originally claimed.
+
+
+**Not agent-scouted.** The round-4 scout was cut off by an API spend limit, so this pursued the
+one fully-specified thread round 3's scout left behind rather than substituting a less
+independent idea generator. Worth flagging: rounds 1–3 drew their value from the scout being
+*naive* to this model, and that property is absent here.
+
+**The reframe: this pool is a tournament, not a prediction task.** The payout is
+$1,200/$450/$300/$150 for the **top four of ~18**. Adam does not get paid for wins; he gets paid
+for **rank**. Those are different objectives, and 27 failed hypotheses have all been attacks on
+the first one.
+
+**(a) The ~3 coin flips per week are genuinely free.** Every candidate rule for the flat zone
+sign-flips between eras:
+
+| Flat-zone rule | Train 2014–19 | Validate 2020–22 |
+|---|---|---|
+| Shipped totals-drift tiebreak | 57.3% | **49.0%** |
+| Always favorite | 51.0% | **43.3%** |
+| Always underdog | **49.0%** | 56.7% |
+
+Pooled, the tiebreak is 54.4% with a 95% CI of **[49.7%, 59.1%]** — it includes 50%. Three
+rounds have now failed to find a football rule here, and the honest conclusion is that **flat-zone
+EV is 50%**. Which means those picks cost nothing to spend on something else.
+
+**(b) A confound that had to be removed first — and it looked like a result.** Simulating with the
+*real* flat-zone outcomes credits each policy with whatever it happened to score on dev. Since the
+shipped tiebreak pooled to 54.4% (that era sign flip), the simulation handed it a spurious
+win-rate advantage, and shadowing appeared to *reverse* and lose by up to −14pp at reduced edge.
+Randomising flat-zone outcomes to true coin flips gives all policies identical expected wins,
+leaving correlation with the field as the only difference. **That reversal was an artifact of
+noise being fed back in as if it were skill.**
+
+**(c) The pure tournament effect.** P(top 4 of 18), flat-zone outcomes randomised, 20k sims/season:
+
+| Field quality | Edge surviving | current | **shadow** | diverge | shadow − current |
+|---|---|---|---|---|---|
+| weak (lean .55–.90) | full | 83.3% | **85.7%** | 81.7% | **+2.33pp** |
+| weak | 60% | 65.6% | **66.6%** | 64.7% | +1.03pp |
+| weak | 30% | 49.9% | 49.7% | 50.0% | −0.13pp |
+| realistic (.70–.95) | full | 88.1% | **92.9%** | 85.3% | **+4.73pp** |
+| realistic | 60% | 72.0% | **74.4%** | 70.3% | +2.49pp |
+| realistic | 30% | 57.5% | **58.3%** | 56.9% | +0.86pp |
+| sharp (.85–1.00) | full | 93.3% | **99.4%** | 89.7% | **+6.06pp** |
+| sharp | 60% | 80.3% | **84.0%** | 77.5% | +3.74pp |
+| sharp | 30% | 67.2% | **69.8%** | 65.6% | +2.58pp |
+
+**Shadowing the field on free picks wins in every cell where the model has a real edge, and the
+advantage grows as the field gets sharper** — which is the signature of a correlation effect, not
+an artifact. It also survives edge shrinkage, which matters given round 3(a).
+
+**The mechanism, plainly:** when you pick the same side as the field on a game nobody can
+predict, you and your opponents win or lose it *together*. That noise cancels out of the
+comparison, so your finishing position is decided by the games where you actually differ — the
+ones where you have an edge. Diverging does the opposite: it injects coin-flip noise into the
+exact comparison you want decided by skill.
+
+**(d) It does not flip for a winner-take-all prize, and that is correct.**
+
+| Prize shape | current | shadow | diverge |
+|---|---|---|---|
+| 1st only (weekly prize) | 63.1% | **64.0%** | 62.3% |
+| top 2 | 76.8% | **79.3%** | 74.8% |
+| top 4 (season money) | 88.1% | **92.9%** | 85.3% |
+| top 8 | 96.5% | **99.7%** | 93.8% |
+
+The advantage shrinks as the target narrows (+4.7pp → +0.9pp) but never reverses, because
+variance-seeking is for **underdogs** and this model is the field's *favorite*. Section 7's
+`chase` mode already covers the genuinely-behind case; this is about the default policy.
+
+#### What this does and does not justify
+
+**It does NOT add a single expected win.** Adam's stated goal is 10 wins/week; this contributes
+nothing to that. It converts picks that were already worthless into rank protection.
+
+**Three caveats that keep this from being shipped on the spot:**
+1. **It is a simulation, not a backtest.** Every other number in this document comes from real
+   games. This one comes from an invented opponent model — 17 players who take the frozen
+   favorite with probability drawn from a range. Real pool opponents are not that.
+2. ~~**The "field" signal available live is CBS's *national* community percentage, not the 15–20
+   people Adam is actually playing.**~~ **RESOLVED 2026-08-23 — this caveat is much weaker than
+   it looked.** Adam confirmed he cannot see his pool's picks until after lock, so the strategy
+   has to run on the national number. Tested directly by comparing two policies: *oracle*
+   (shadow the realised 18-person majority — impossible in practice) vs *prior* (shadow the
+   a-priori popular side — what he can actually do):
+
+   | Field | Edge | current | shadow (prior) | shadow (oracle) | prior captures |
+   |---|---|---|---|---|---|
+   | weak (.55–.90) | full | 83.5% | 85.6% | 85.6% | **99%** |
+   | weak | 60% | 65.4% | 66.8% | 66.8% | 96% |
+   | realistic (.70–.95) | full | 88.1% | 92.9% | 92.9% | **100%** |
+   | realistic | 60% | 72.1% | 74.6% | 74.6% | 100% |
+   | sharp (.85–1.00) | full | 93.3% | 99.4% | 99.4% | **100%** |
+
+   **Shadowing the predictable crowd captures 96–100% of the benefit of shadowing the actual
+   one.** The mechanism is obvious once seen: with 18 opponents who all lean the same way, the
+   realised majority *is* the popular side almost every time, so observing their picks tells you
+   something you could already predict. Not being able to see the pool costs essentially nothing.
+
+   *The residual risk this does not cover:* if Adam's specific 18 are systematically unlike the
+   national population — a cluster of fans of one team, say — the national number could point at
+   the wrong crowd. Unmeasurable until he logs a season of post-lock pool picks, and cheap to
+   check once he does.
+3. **It contradicts the current gating.** `edge/pickem_strategy.py` restricts conformity to Week
+   14+. This result says the default on free games should be shadow **from Week 1** — a change to
+   shipped behaviour that deserves an explicit decision, not a quiet edit.
+
+**Recommended, not shipped.** The cheap version: on COIN FLIP games only, take the side CBS's
+community percentage favours, and log it. One season of real pool pick distributions turns this
+from a simulation into a measurement — and that is the same capture habit section 6 item 0 already
+asks for.
+
+#### Round 5 — the objective was wrong, and it costs the only survivor most of its value
+
+Round 5's scout attacked round 4 rather than proposing more football, and it was right to.
+
+**(a) Two families killed before proposing, both worth keeping.**
+
+- **Weekly outcomes are not overdispersed.** Tested whether favorite-cover counts per week
+  cluster more than binomial across 155 dev weeks: **χ² = 115.8 on df = 154, ratio 0.752,
+  z = −2.18.** If anything *under*-dispersed. There is no "chalk week" or "weather week" to buy
+  variance from, and observed weekly-score SD (2.07) matches independent binomial (≈2.0). This
+  kills any "correlate your divergences with each other" idea at the premise — and also kills
+  "use Sunday-early results to update Sunday-late picks," because there is nothing to learn.
+- **Round 4's national-vs-pool caveat is analytically small.** If 18 players are a draw from the
+  national population, pool% has SE = √(.8×.2/18) = **9.4pp**, so a national 80/20 landing at
+  55/45 in the pool is 2.7 SD away (~0.4%). The national number identifies the majority side
+  essentially always — confirming the simulation in round 4's caveat #2 from a second direction.
+  **The real risk is selection, not sampling:** a $150 self-selected pool may carry a local-team
+  bias. That is what a season of post-lock captures should check.
+
+**(b) The measurement that recalibrates round 4.** The shipped model agrees with "take the
+frozen favorite" on only **48.0%** of dev games. It already diverges from chalk on **7.66 games
+per week (SD 2.05, range 2–12)**. Round 4 was tuning **3** coin flips while nearly **8** games
+swung uncontrolled. Adam's weekly score is already close to uncorrelated with a chalky field —
+he is not a conformist who should shadow more; he is at high differentiation *by accident*.
+
+**(c) Scored in dollars, the picture changes.** The payout is **$1,200/$450/$300/$150** for the
+season *plus* **18 × $50 = $900** in weekly prizes — nearly 30% of all prize money, and
+winner-take-all in a single week, which is the regime that *rewards* variance. Simulation with
+flat-zone outcomes randomised (so all policies have identical expected wins):
+
+| Field | β | policy | season $ | weekly $ | **total $** | vs current |
+|---|---|---|---|---|---|---|
+| chalky | 0.0 | current | 939 | 238 | 1177 | — |
+| chalky | 0.0 | **shadow** | 980 | 222 | **1202** | **+25** |
+| chalky | 0.0 | diverge | 909 | 251 | 1160 | −17 |
+| chalky | 0.2 | current | 1038 | 328 | 1366 | — |
+| chalky | 0.2 | **shadow** | 1116 | 318 | **1434** | **+68** |
+| chalky | 0.2 | diverge | 997 | 334 | 1331 | −35 |
+| mixed | 0.0 | current | 746 | 124 | 870 | — |
+| mixed | 0.0 | shadow | 758 | 110 | 869 | **−1** |
+| mixed | 0.0 | diverge | 739 | 136 | 876 | +6 |
+| mixed | 0.2 | shadow | 911 | 208 | 1119 | +5 |
+
+**The scout's mechanism is confirmed: shadowing loses money on the weekly pot in every single
+cell, and diverging gains it.** But the scout's arithmetic understated the season side — it
+assumed shadowing only buys marginal 4th-place slots worth $150, when protecting an edge lifts
+the *whole* ladder including the $1,200 top rung. Net, shadow still wins in chalky fields and is
+a wash in mixed ones.
+
+**(d) The row that decides it.** Round 3(a) says the live edge is probably below the backtested
+one. Under that assumption the advantage evaporates:
+
+| Edge surviving | current | shadow | diverge |
+|---|---|---|---|
+| full | $1366 | **$1434 (+68)** | $1331 (−35) |
+| 60% | $1152 | **$1165 (+14)** | $1134 (−18) |
+| 30% | $965 | $955 (**−10**) | $964 (−1) |
+
+**Shadowing helps only when the model's edge is close to its backtested strength.** At 30% edge
+survival it is slightly *negative*. Combined with the mixed-field column, the honest summary is
+that round 4's finding lives in one corner of the assumption space — chalky field **and** strong
+edge — and is worth ~$0 outside it. *(Control: with Adam forced to a pure coin flip, all three
+policies converge to exactly $759, so the separation is not a simulator artifact.)*
+
+**(e) β cut the other way, which is a point in round 4's favour.** The scout predicted that
+letting opponents favour chalk more steeply on big spreads (β>0) would shrink the shadow
+advantage to under +1pp, because the field would be split on the small-spread games where flat-zone
+picks live. It did the opposite: **+$25 at β=0 rose to +$68 at β=0.2.** A sharper field is a more
+*coherent* field, so there is more correlation available to buy. Flat-zone games turn out to have
+median |spread| 3.5 (quartiles 3/3.5/7), not the near-pick'em lines the objection assumed.
+
+**Where this leaves the project.** The scout's closing judgement is worth recording verbatim in
+substance: every effect in the tournament frame is worth roughly **$10–70 per season against a
+$150 entry** — real but small — while **section 6 item 0, the weekly capture habit, still
+dominates all of it**, because it is the only thing that converts round 3(a) from a threat into a
+measurement. Knowing whether 55.9% is real is worth more than every strategy refinement found here.
+
+**(f) The tiebreaker question is closed: THERE IS NO TIEBREAKER.** Adam confirmed (2026-08-23)
+that **the weekly $50 is split evenly among everyone tied on wins.** The scout's proposal 5 — solve
+the total-points tiebreak as a bidding game, projected at $10–25/season — is therefore void, and a
+solved version of it was deleted from this document rather than left to mislead. Record the rule
+so it is never re-derived:
+
+> **Weekly prize: $50, split equally among all players tied for the most wins. No total-points
+> tiebreaker exists.** ~40% of dev weeks end with a shared top score, so splitting is common.
+
+Two consequences worth keeping:
+- **Round 5's dollar simulation was already correct on this point** — it modelled the weekly pot
+  as `$50 / n_tied` for ties rather than winner-take-all, so the numbers in (c) and (d) stand
+  unchanged.
+- **Splitting slightly weakens the case for divergence.** Under true winner-take-all you must
+  beat everyone outright, which rewards variance; when ties split, finishing level still pays,
+  so the variance premium in the weekly pot is smaller than a pure winner-take-all analysis
+  would suggest. That nudges the round 5(c) trade-off marginally toward shadowing.
+
+#### Round 6 — the front-loading threat becomes a number, and it is survivable
+
+The best round of the exercise. It corrected the document's own headline and turned round 3(a)
+from an open fear into a measured curve with an actionable calibration path.
+
+**(a) The chalk baseline was an era artifact.** See the callout in section 2. Always-take-chalk
+is 48.2%/48.3%/54.2% by era; the model's margin over it is +6.72/+7.70/**+1.69**pp. The
+holdout happened to be a strong era for favorites, which made the model look barely better than
+the field when in a normal era it is 6–8 points better. This also recalibrates rounds 4–5, whose
+opponent model is parameterised on chalk-taking.
+
+**(b) The transferability curve.** Model the freeze as a variance split: the observed move
+`M = ε₁ + ε₂`, where `ε₁` lands before CBS posts and `ε₂` after. Adam only gets `ε₂`. Sweep
+**w = share of move variance landing after Tuesday**. Critically, the *grading* line moves too —
+he is scored against CBS's number, not the opener — so `cbs_line = close − ε₂`, rounded to the
+half-point lines actually trade on. 40 seeds per point, shipped `make_pick`, dev only:
+
+| w | train model | chalk | margin | validate model | chalk | margin | **retained** |
+|---|---|---|---|---|---|---|---|
+| **1.0** (backtest) | 54.9% | 48.2% | **+6.72pp** | 56.0% | 48.3% | **+7.70pp** | 100% |
+| 0.8 | 54.7% | 48.8% | +5.85pp | 54.7% | 47.8% | +6.89pp | 87 / 89% |
+| 0.6 | 54.3% | 48.9% | +5.37pp | 53.7% | 47.6% | +6.07pp | 80 / 79% |
+| **0.5** | 53.9% | 48.8% | +5.06pp | 53.1% | 47.6% | +5.48pp | **75 / 71%** |
+| 0.3 | 53.1% | 48.8% | +4.23pp | 52.2% | 47.5% | +4.74pp | 63 / 62% |
+| 0.1 | 51.7% | 48.7% | +3.05pp | 50.7% | 47.1% | +3.65pp | 45 / 47% |
+| **0.0** | 48.3% | 48.4% | **−0.13pp** | 46.7% | 46.7% | **+0.00pp** | 0% |
+
+**The damage function is concave and era-consistent. Losing HALF the movement costs only about a
+quarter of the edge.** The mechanism: big moves keep their sign through partial erosion, so only
+marginal ones flip. Round 3(a) is a real threat but a **graceful** one, not a cliff — and the
+floor as w→0 is *chalk*, not 50%, because a dead signal routes to the favorite default.
+
+*Controls both pass, and they are what make the curve trustworthy: at w=1.0 it reproduces the
+backtest exactly (54.9%/56.0%), and at w=0.0 the margin over chalk collapses to −0.13/+0.00pp
+with all 16 games/week becoming coin flips.*
+
+**(c) w can be calibrated in FOUR WEEKS, with no game outcomes at all.** This is the round's most
+useful practical insight, and it overturns "blocked until a season of captures exists." The
+reasoning: round 3(c) established the pool grades against CBS's number, so the live edge is
+exactly `market_at_lock − cbs_frozen` *regardless of where CBS anchors*. Its composition is
+irrelevant to its size — and size is all that sets w. So only the **magnitude** of the live gap
+is needed, which requires no results and no waiting:
+
+```
+w  =  E[(market_at_lock − cbs_frozen)²]  /  E[(open − close)²]
+   =  E[gap²] / 3.3296                              # dev second moment
+```
+
+**Use second moments, not mean absolute gaps.** The obvious form —
+`(E|gap| / 1.235)²` — is wrong, and testing caught it: on synthetic captures with a known w it
+**overestimated by ~30%** (true 0.50 recovered as 0.66). It is only valid when the live gap has
+the same distributional *shape* as the historical move, and it does not: **19.7% of historical
+games do not move at all**, and that spike at zero drags E|M| (1.235) down relative to SD(M)
+(1.815). Since w is defined as a variance share, second moments are exact regardless of shape.
+The corrected estimator recovers a known w to within 0.013 across w ∈ [0.1, 1.0]; both the bug
+and the fix are guarded by `test_transferability_recovers_a_known_w_from_second_moments`.
+
+| If the measured E[gap²] is… | implied w | margin retained |
+|---|---|---|
+| 3.33 | 1.00 | 100% |
+| 2.66 | 0.80 | ~87% |
+| 2.00 | 0.60 | ~80% |
+| 1.66 | 0.50 | ~75% |
+| 1.00 | 0.30 | ~63% |
+| 0.33 | 0.10 | ~45% |
+
+~4 weeks (≈64 games) gives a usable SE. **`scripts/pickem_transferability.py` computes all of
+this from the capture log and prints the answer** — no analysis required, run it any time.
+
+**(d) One capture-spec change worth making before Week 1.** Add a **third mid-week snapshot**
+(Thursday or Friday) alongside `post` and `lock`. No historical data can ever recover the *time
+profile* of post-freeze drift — the history has only two snapshots per game (5f) — and one extra
+call a week (2 credits, ~36/season) buys the single thing the archive structurally cannot. **A
+week not captured is permanently uncapturable.**
+
+**(e) The tiebreaker thread is void.** Round 6's scout proposed solving the total-points tiebreak
+as a bidding game (its item 4, projected ~$115/season). Adam confirmed the pool **splits the $50
+among everyone tied on wins, with no tiebreaker at all** — see 5j round 5(f). Recorded so it is
+not proposed a third time.
+
+**(f) MEASURED 2026-08-23: the pool's frozen line IS an opener, not a Tuesday consensus.**
+Round 3(a)'s threat rests on CBS freezing *after* the front-loaded correction. That is directly
+checkable today, because CBS's public odds page publishes an **open** column (5h) and the pool's
+Week 1 frozen lines are already transcribed. Comparing them:
+
+| | mean \|diff\| | exact matches |
+|---|---|---|
+| pool frozen line vs **CBS published opener** | **0.281** | **12 / 16** |
+| pool frozen line vs CBS current line | 0.438 | 12 / 16 |
+
+**CBS publishes the opener as its pool line.** That is the optimistic branch: Adam's frozen number
+sits at the same point in the timeline the backtest assumes, so w may be close to 1 and little of
+the front-loaded correction is lost. Two games already showed live staleness — BUF@HOU differs by
+3.0 points *with a favorite flip*, and GB@MIN has moved 3.0 points off its opener since posting.
+
+**Do not over-read this.** It is n=16, one week, on lines the tracker still marks *provisional*
+(captured ~3 weeks before kickoff, to be re-verified Tuesday Sep 8). It shows CBS's **anchoring
+behaviour**, not the size of the live gap at lock — that still needs real in-season captures, which
+is exactly what (c) measures. Treat it as evidence that the pessimistic branch is unlikely, not as
+a value for w.
+
+**Where round 6 leaves the project.** The scout's summary is the right one: *the analytical well
+is dry and the measurement well is full.* Twenty-seven football hypotheses, zero survivors; the
+tournament frame yields $10–70/season against a $150 entry; and a single unmeasured parameter
+spans roughly **$400/season of decision uncertainty**. The next useful action is not another
+hypothesis — it is four weeks of captures with a third snapshot.
+
 ### 5f. Experiments that couldn't be run at all (data doesn't exist yet)
 
 Not failures — genuinely blocked. Listed so nobody re-plans them without first solving the
@@ -417,12 +1158,19 @@ work. Rows land in `data/pickem_line_log.csv`, which is **committed** (all of it
 market data, and it needs to survive a Streamlit rebuild and accumulate across a season).
 Adam's own picks and standings stay in the gitignored `data/pickem/`.
 
-`edge/pickem_log.py::cbs_bias` already implements the 5f formula and returns `None` until
-there is data:
+`edge/pickem_log.py::cbs_offset` records the decomposition and returns `None` until there is
+data. **The formula below replaced a buggy one on 2026-08-23 — see 5j round 3(b)/(c) before
+touching it:**
 
 ```
-true_edge = (market_now − cbs_line) − cbs_bias        # cbs_bias = cbs_line − market_at_post
+total_edge = cbs_offset + drift
+           = (market_at_post − cbs_line) + (market_at_lock − market_at_post)
 ```
+
+**Do NOT subtract `cbs_offset` from the model's edge.** The pool grades against CBS's number, so
+a point of offset is worth as much as a point of drift; netting it out deletes real value. The
+paragraph above originally framed it as noise to remove — that was wrong. Log both components and
+test **β_offset = β_drift** after a season.
 
 Nothing in the model consumes CBS bias yet, deliberately — it gets tested like everything
 else here, on train/validate, once a season of captures exists. **A missed week is a
@@ -452,9 +1200,13 @@ but unpriceable. Ranked by realistic promise:
 
 1. **Time the picks better.** The backtest approximates "at lock" with the *closing* line,
    but Adam's real deadline is each day's first kickoff — hours earlier for most games.
-   Capturing the line as late as legally possible is worth more than any new feature,
-   because it directly buys more staleness. (Also why live results may land slightly
-   *below* 55.7% — see `PICKEM_STATUS.md` caveat #2.)
+   Capturing the line as late as legally possible directly buys more staleness. (Also why
+   live results may land slightly *below* 55.7% — see `PICKEM_STATUS.md` caveat #2.)
+   *A round-2 result appeared to undercut this ranking; it was pooled across eras, sign-flips
+   when split, and has been retracted — see 5j round 2(d). The ranking stands.*
+   **But see 5j round 3(a), which is a much more serious problem for this project's headline
+   number than a ranking question: drift appears to be front-loaded into the first ~2 days
+   after the opener, which is BEFORE CBS freezes.**
 2. **Net out CBS's house offset.** CBS sets spreads "at its own discretion," so part of
    the observed gap may be CBS's own methodology rather than drift. Recording a market
    line *at the moment CBS posts* would isolate true movement. The
@@ -466,13 +1218,24 @@ but unpriceable. Ranked by realistic promise:
    reasonable prior, not a validated result. Circa is not distributed through The Odds API
    at all, and Pinnacle sits in the `eu` region (doubling per-call cost) — the default
    stays `us`-only.
-4. ~~Pool-standings strategy~~ — **framework built** (2026-08-22), see section 7.
+4. **Pool-standings strategy — a real but small and conditional lever** (2026-08-22 framework;
+   upgraded by 5j round 4, then substantially downgraded by round 5). Shadowing the field on the
+   ~3 free coin flips per week is worth **+$14 to +$68 a season in a chalky field with a
+   full-strength edge, and ≈$0 or slightly negative in a mixed field or at reduced edge.** It
+   costs money on the weekly pot and makes it back on the season ladder. Unvalidated against a
+   real field.
+   ~~framework built~~ — see section 7.
    Unvalidated by construction and gated to Week 14+. The real upgrade available to it is
    feeding it the pool's ACTUAL pick distribution instead of CBS's national percentages.
 
 Genuinely dead ends, do not revisit: better team-strength ratings of any kind, coaching
-records, moneyline-derived signals, anything else the bookmaker already sees at line-set
-time, and any approach evaluated on a *filtered subset* rather than the full slate.
+records, moneyline-derived signals, **separate models per spread size or moneyline range
+(section 5i)**, anything else the bookmaker already sees at line-set time, and any approach
+evaluated on a *filtered subset* rather than the full slate.
+
+A third round of feature work (5i) added a *methodological* result rather than a modelling one:
+any future idea that slices the slate into buckets and fits something per bucket has to clear
+the selection-bias null in 5i, which sits at **+3.6pp** — not 50%.
 
 **Open and promising:** re-fitting the key-number bonus (5d) once 2025+ data exists. It is
 the only tested feature whose effect survived the holdout — it just needs a magnitude
@@ -553,14 +1316,14 @@ python3 -m pytest tests/test_pickem.py -q
 | `edge/pickem.py` | The shipped model. Small on purpose. |
 | `edge/pickem_features.py` | As-of-week ratings + coach history. **Built, tested, not shipped** — kept so nobody rebuilds it to rediscover section 5. |
 | `edge/pickem_live.py` | Live lines + totals, multi-book weighted consensus (2 credits/week) |
-| `edge/pickem_log.py` | Append-only snapshot log + the `cbs_bias` formula (section 5f) |
+| `edge/pickem_log.py` | Append-only snapshot log + `cbs_offset` decomposition (5f, 5j r3) |
 | `edge/pickem_strategy.py` | Late-season standings play (section 7). **Unvalidated.** |
 | `edge/pickem_cbs.py` | CBS scrapers: free public odds feed + pool-page parser |
 | `scripts/pickem_pool_import.py` | Saved pool page → `pickem_current_week.csv`, no typing |
 | `scripts/pickem_capture.py` | Weekly capture CLI, dry-run by default |
 | `scripts/pickem_blocked.py` | Progress toward each blocked experiment — run it any time |
 | `scripts/pickem_vs_random.py` | Holdout replay vs a coin-flipping field (seeded) |
-| `scripts/pickem_feature_lab.py` | Experiment harness (both rounds). Refuses to read holdout seasons. |
+| `scripts/pickem_feature_lab.py` | Experiment harness (all three rounds, incl. the 5i selection-bias null). Refuses to read holdout seasons. |
 | `scripts/pickem_backtest.py` | Out-of-sample backtest + the staleness negative control |
 | `scripts/pickem_pbp_collect.py` | nflverse play-by-play → per-game efficiency table |
 | `pages/4_🎯_Pickem.py` | The weekly picks screen |

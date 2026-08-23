@@ -138,23 +138,44 @@ def load(path: Path | str = LINE_LOG) -> list[dict]:
         return list(csv.DictReader(f))
 
 
-def cbs_bias(season: int, week: int, home_team: str,
-             path: Path | str = LINE_LOG) -> float | None:
-    """CBS's own shading at post time: cbs_line_home - market_line_home.
+def cbs_offset(season: int, week: int, home_team: str,
+               path: Path | str = LINE_LOG) -> float | None:
+    """How far the market sat from CBS at post time: market_at_post - cbs_line.
 
-    THE point of this whole module. Positive means CBS hung a number more
-    favourable to the away side than the market did at that same instant.
-    Subtracting it from a later edge leaves pure post-Tuesday drift:
+    Sign convention chosen so that the two components of an edge simply ADD,
+    which is what makes the decomposition safe to reason about:
 
-        true_edge = (market_now - cbs_line) - cbs_bias
+        total_edge = market_at_lock - cbs_line
+                   = (market_at_post - cbs_line) + (market_at_lock - market_at_post)
+                   =        cbs_offset          +            drift
 
-    Returns None until a `post` snapshot exists with both numbers, which is
-    why PICKEM_MODEL.md 5f lists this experiment as blocked rather than
-    failed -- there is nothing wrong with the idea, we just have no data yet.
+    READ THIS BEFORE USING IT -- two traps, both of which this project fell into.
+
+    1. SIGN. An earlier version returned `cbs_line - market_at_post` and the
+       docs prescribed `true_edge = (market_now - cbs_line) - cbs_bias`.
+       Substituting gives `market_now + market_at_post - 2*cbs_line`, which
+       DOUBLES the offset instead of removing it, and is wrong in exactly the
+       case the correction exists for (CBS off the market, no drift: returns
+       -2.0 where the answer is 0.0). Fixed 2026-08-23; nothing consumed it
+       while it was wrong. Regression-tested in tests/test_pickem_infra.py.
+
+    2. DO NOT SUBTRACT THIS FROM THE MODEL'S EDGE. The pool grades against
+       CBS's number, so a point of offset is worth exactly as much as a point
+       of drift -- both measure the same thing: how far the number you are
+       scored on sits from the market's best estimate. Netting the offset out
+       would DELETE real value, not isolate it. PICKEM_MODEL.md 5f originally
+       framed it as noise to remove; see 5j round 3 for why that was wrong.
+
+    What the decomposition is legitimately FOR: testing whether the two
+    components are worth the same per point. Log both, and after a season
+    regress the cover outcome on each separately. The null worth testing is
+    `beta_offset == beta_drift`, not `beta_offset == 0`.
+
+    Returns None until a `post` snapshot exists with both numbers.
     """
     for r in load(path):
         if (int(r["season"]) == season and int(r["week"]) == week
                 and r["snapshot"] == "post" and r["home_team"] == home_team):
             if r["cbs_line_home"] and r["market_line_home"]:
-                return float(r["cbs_line_home"]) - float(r["market_line_home"])
+                return float(r["market_line_home"]) - float(r["cbs_line_home"])
     return None

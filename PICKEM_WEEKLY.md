@@ -25,14 +25,27 @@ python3 scripts/pickem_pool_import.py picks.txt --week N --write
 # 2. Immediately after — log the freeze (2 credits)
 python3 scripts/pickem_capture.py --snapshot post --week N --confirm
 
-# 3. Before each day's deadline this week — log it again (2 credits)
+# 3. Thursday or Friday — the mid-week reading (2 credits). NEW, do not skip:
+#    this is the ONLY way to learn the TIME PROFILE of post-freeze drift.
+python3 scripts/pickem_capture.py --snapshot midweek --week N --confirm
+
+# 4. Before each day's deadline this week — log it again (2 credits)
 python3 scripts/pickem_capture.py --snapshot lock --week N --confirm
 
-# 4. After results are in — tell Claude the scores, or edit tracker.csv
+# 5. After results are in — tell Claude the scores, or edit tracker.csv
 
-# 5. Whenever — check progress on everything blocked (free)
+# 6. Whenever — how much of the backtested edge is actually transferring? (free)
+python3 scripts/pickem_transferability.py
+
+# 7. Whenever — check progress on everything blocked (free)
 python3 scripts/pickem_blocked.py
 ```
+
+> **The single most valuable thing in this file is steps 2–4.** After ~4 weeks,
+> `pickem_transferability.py` answers the biggest open question in the project: how much of
+> the backtested 55.9% actually survives the fact that CBS freezes before you pick. It needs
+> **no game results** — only the two line readings. A week you don't capture is permanently
+> uncapturable. See PICKEM_MODEL.md 5j rounds 3 and 6.
 
 Everything below is the same five steps with the why, the gotchas, and what to do when
 something looks wrong.
@@ -95,11 +108,19 @@ Then ask Claude for the refreshed picks for whatever's about to lock, and enter 
 CBS app. **Enter picks for every game as early as you can stomach, then revise before each
 deadline** — missed-week scoring is zero, so an empty day is the one truly fatal mistake.
 
-If you want a third reading mid-week (Thursday morning, say, to help the line-velocity
-experiment), any label works:
+### The mid-week reading — added 2026-08-23, and worth the 2 credits
+
 ```bash
-python3 scripts/pickem_capture.py --snapshot thu-am --week N --confirm
+python3 scripts/pickem_capture.py --snapshot midweek --week N --confirm
 ```
+
+Run this Thursday or Friday, between the Tuesday freeze and the weekend deadlines. It is not
+optional housekeeping: **the 2014–2024 archive has only two snapshots per game (open and close),
+so it can never tell us WHEN post-freeze movement happens.** One extra call a week (~36 credits
+a season) buys the one thing no amount of historical analysis can recover, and
+`pickem_transferability.py` reports it back as a freeze→midweek and midweek→lock split.
+
+Any label works if you want extra readings; `midweek` is the one the tooling looks for.
 
 **Cost:** 2 credits each time you run it with `--confirm`. Re-running the same snapshot
 label is a no-op (de-duped), so it's safe to run twice by accident.
@@ -148,10 +169,11 @@ Your remaining Odds-API credits for the cycle, if you want a sanity check before
 | `pickem_pool_import.py ... --write` | Tuesday, right after copying the Picks page | free |
 | `pickem_capture.py --snapshot post` | Tuesday, same few minutes | 2 credits |
 | `pickem_capture.py --snapshot lock` | Before each of the week's deadlines | 2 credits |
-| `pickem_capture.py --snapshot <label>` | Optional mid-week reading | 2 credits |
+| `pickem_capture.py --snapshot midweek` | Thursday or Friday — **not optional** | 2 credits |
+| `pickem_transferability.py` | Any time (needs ~4 weeks of captures) | free |
 | `pickem_blocked.py` | Any time | free |
 
-A full 18-week season at 2 captures a week (post + one lock) is about **72 credits** — under
+A full 18-week season at 3 captures a week (post + midweek + one lock) is about **108 credits** — under
 15% of the 500/month free tier, with plenty of room for extra mid-week readings.
 
 ---
