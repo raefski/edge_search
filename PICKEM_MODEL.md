@@ -805,11 +805,12 @@ fifth one this exercise has produced, and the cleanest illustration of 5e in the
 
 #### Round 4 — a survivor, later substantially downgraded by round 5
 
-> **⚠ READ ROUND 5 BEFORE ACTING ON THIS.** Round 4 optimised **P(top 4)**, which is not the
-> payoff function. Scored in dollars, the advantage below shrinks from "+2 to +6pp" to roughly
-> **+$14 to +$68 per season in the favourable corner of the assumption space, and ≈$0 or
-> slightly negative outside it.** The finding is not retracted — it is much smaller and much more
-> conditional than this section originally claimed.
+> **⚠ RETIRED 2026-08-23. Do not ship this.** Round 4 optimised **P(top 4)**, which is not the
+> payoff function. Re-run with the *correct pool size* (20 players, not 18), the *actual prize
+> ladder*, and the round-4 confound removed, the tournament strategy is worth **−$32 to +$13 a
+> season — indistinguishable from zero, and negative more often than not.** See "Season
+> simulation" below. The section is kept because the reasoning is sound and the failure is
+> instructive, but the recommendation is withdrawn: **keep the shipped totals tiebreak.**
 
 
 **Not agent-scouted.** The round-4 scout was cut off by an API spend limit, so this pursued the
@@ -1123,6 +1124,55 @@ is dry and the measurement well is full.* Twenty-seven football hypotheses, zero
 tournament frame yields $10–70/season against a $150 entry; and a single unmeasured parameter
 spans roughly **$400/season of decision uncertainty**. The next useful action is not another
 hypothesis — it is four weeks of captures with a third snapshot.
+
+#### Season simulation — the tournament strategy, settled in dollars (2026-08-23)
+
+Adam asked the right question: forget win rates, simulate his **actual** pool and report profit.
+`scripts/pickem_season_sim.py` — 19 opponents + Adam = **20 players**, 1,000 simulated seasons,
+dev slates, real ladder, weekly pot split among ties.
+
+**A structural check that confirms the setup:** 20 × $150 = **$3,000** = season ladder
+($1,200+$450+$300+$150 = $2,100) + weekly ($50 × 18 = $900). **The pool balances exactly at 20
+players.** Earlier rounds assumed 18 and were mis-specified.
+
+**Answering the question — vs 19 coin flippers:**
+
+| Edge assumption | finish 1st | **top 4** | mean profit | median | P(profit > 0) |
+|---|---|---|---|---|---|
+| Full backtested edge | 44.5% | **74.4%** | **+$570** | +$417 | 72.3% |
+| Half the move lost (w=0.5) | 26.4% | **64.4%** | **+$342** | +$192 | 61.4% |
+| Most of it lost (w=0.3) | 20.4% | **51.6%** | **+$238** | $0 | 49.4% |
+
+Mean exceeds median because first place ($1,200) is a fat right tail — the typical season is
+worth less than the average one.
+
+**Coin flippers are a HARDER field than real opponents,** which is counter-intuitive and worth
+knowing: a coin flipper hits 50% ATS, while someone who always takes the favorite hits ~48%
+(5j round 6a). Against 19 chalk-leaning opponents the same model finishes top 4 **86.6%** of the
+time for **+$827**. Adam's real pool sits somewhere between these two, closer to the chalk end.
+
+**The tournament strategy, with the confound removed.** Flat-zone outcomes randomised so every
+policy has identical expected wins, leaving only correlation with the field:
+
+| Field | w | current | shadow | diverge |
+|---|---|---|---|---|
+| coin flippers | 1.0 | $460 | $428 (**−$32**) | $462 (+$2) |
+| coin flippers | 0.5 | $352 | $352 (**$0**) | $355 (+$3) |
+| chalk-leaning | 1.0 | $687 | $673 (**−$14**) | $698 (+$12) |
+| chalk-leaning | 0.5 | $542 | $535 (**−$8**) | $556 (+$13) |
+
+**Worth nothing.** And the mechanism of its failure is now clear: against chalk at w=1 shadowing
+*does* raise top-4 (85.8% vs 83.2%) — exactly what round 4 measured — but it *lowers* first place
+(52.2% vs 53.1%), and **first pays 8× fourth**. Buying top-4 security with first-place equity is a
+losing trade in this ladder. Round 5's scout was right about the objective; this is the confirmation
+with the correct field size and real dollars.
+
+**Against coin flippers specifically, shadowing cannot work even in principle** — the strategy
+correlates your score with the field's so coin-flip noise cancels, but coin flippers share no
+lean, so there is no crowd to join.
+
+**The decision:** keep the shipped totals-drift tiebreak. `edge/pickem_strategy.py` stays gated to
+its late-season chase role and is not promoted to a default policy.
 
 ### 5f. Experiments that couldn't be run at all (data doesn't exist yet)
 
