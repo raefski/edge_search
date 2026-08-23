@@ -80,7 +80,8 @@ multi-page mechanism (no shared code with the MLB app or the NFL/NBA *DFS* build
 despite both saying "NFL"). Full status, backtest numbers, and open questions:
 **`PICKEM_STATUS.md`** — start there for anything pick'em-related, and
 **`PICKEM_MODEL.md`** for how the model actually works plus every feature we've
-tested and killed (read it before proposing a new one).
+tested and killed (read it before proposing a new one), and **`PICKEM_WEEKLY.md`** for the
+actual weekly checklist -- what to run, in order, to keep it fed.
 
 One-line summary: pool operators freeze a spread and never update it; the market keeps
 moving all week. `edge/pickem.py::make_pick` scores that gap, backtested 55.7% ATS
