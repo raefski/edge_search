@@ -1227,6 +1227,62 @@ work either. `home_spread_odds`/`away_spread_odds` are now collected by
 `scripts/pickem_situational_collect.py` and exposed as `p_home_juice` in the idea lab, so nobody
 has to rediscover the column.
 
+#### CBS never posts an integer — the push question (Adam, 2026-08-23)
+
+**Adam's observation:** every line in his pool ends in .5, so a push is impossible for him —
+every game has a winner. Was that accounted for?
+
+**Partially. `ats_result` handles pushes correctly and every rate in this document excludes
+them, but nobody had tested whether CBS's half-point convention changes the measured edge.**
+It does, and it also exposed a bug in the season simulator.
+
+**Verified:** all **16 of 16** Week 1 pool lines end in .5 (−10.5, −7.5, −4.5, −3.5, −2.5, −1.5,
+2.5, 3.5). Meanwhile the historical proxy — a sportsbook opener — is an **integer 52.5% of the
+time** (1,225 of 2,335 dev games). So the backtest grades more than half its games against a
+number the pool would never post. Pushes are 2.3% of dev games, all on those integer lines.
+
+**Re-graded under CBS's convention:**
+
+| Integer lines rewritten as… | Record | Rate |
+|---|---|---|
+| *(unchanged — pushes excluded)* | 1261-1020-54 | **55.28%** |
+| favourite lays MORE (−7 → −7.5) | 1264-1071-0 | **54.13%** |
+| favourite lays LESS (−7 → −6.5) | 1285-1050-0 | **55.03%** |
+| half-point chosen at random | 1274-1061-0 | **54.56%** |
+
+**So the honest dev figure is ~54.1–55.0%, not 55.3% — a haircut of roughly 0.3 to 1.2pp.**
+Which end depends on a convention nobody has established: CBS's Week 1 lines moved *toward* the
+favourite laying more in 2 of 3 observable cases, but those are confounded with market movement
+and the sample is 3. Use the random-rounding figure (54.56%) as the central estimate and treat
+the 0.9pt spread as genuine uncertainty. **The holdout was NOT re-graded** — it is spent, and
+this correction is presumed to apply there similarly.
+
+**The bug this surfaced.** In `scripts/pickem_season_sim.py`'s coin-flipper field, Adam scored
+0.5 on a push while opponents scored a clean 0 or 1 — a quiet asymmetry that penalised him.
+Visible only because forcing the half-point convention made his top-4 rate *rise* from 74.4% to
+82.3%, which is the wrong direction for a stricter grading rule. Fixed; the simulator now applies
+CBS's convention by default and treats a push as a push for everyone.
+
+**Corrected season simulation** (19 opponents, 1,000 seasons, half-point convention, push bug
+fixed):
+
+| Field | Edge | 1st | top 4 | mean profit | median | P(profit>0) |
+|---|---|---|---|---|---|---|
+| coin flippers | full | 47.0% | **76.3%** | +$563 | +$400 | 74.7% |
+| coin flippers | w=0.5 | 31.7% | **67.9%** | +$390 | +$225 | 64.9% |
+| coin flippers | w=0.3 | 21.9% | **52.4%** | +$247 | $0 | 49.2% |
+
+The two corrections largely offset — the raw win rate drops but the push penalty disappears — so
+the profit picture is essentially unchanged from the previous table. **The tournament strategy
+stays retired**: shadowing still costs money here (−$51 at full edge) even though it raises top-4
+by 3.7pp, for the same reason as before — first pays 8× fourth.
+
+**One knock-on worth noting for 5d/5g:** because CBS always posts a half point, Adam is *never*
+sitting exactly on 3 or 7. He always holds the hook one way or the other. That does not create an
+edge (5g's structural argument still applies — capture never changes which side you take), but it
+does mean the "our number vs the market's number" comparisons in 5g are always half-point
+offsets rather than sometimes exact matches.
+
 ### 5f. Experiments that couldn't be run at all (data doesn't exist yet)
 
 Not failures — genuinely blocked. Listed so nobody re-plans them without first solving the

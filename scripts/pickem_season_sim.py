@@ -47,7 +47,15 @@ N_OPP = 19                                  # 19 opponents + Adam = 20 players
 DEV_SD_MOVE = 1.8152                        # SD of open->close on dev
 
 
-def load() -> dict:
+def load(half_point: bool = True, seed: int = 11) -> dict:
+    """CBS's pool NEVER posts an integer line -- every number ends in .5, so a
+    push is impossible for Adam. The historical proxy (a sportsbook opener) is
+    an integer 52.5% of the time, so grading against it is measurably wrong.
+    half_point=True rewrites integer openers to a half point, which is the
+    convention Adam actually plays under. Confirmed 2026-08-23 against the real
+    Week 1 pool lines: 16 of 16 ended in .5."""
+    import random as _random
+    rnd = _random.Random(seed)
     by_season: dict[int, list[dict]] = {}
     with ODDS.open() as f:
         for r in csv.DictReader(f):
@@ -58,9 +66,12 @@ def load() -> dict:
                 to, tc = float(r["total_open"]), float(r["total_close"])
             except ValueError:
                 to = tc = None
+            op = float(r["home_line_open"])
+            if half_point and op == int(op):
+                op += rnd.choice((-0.5, 0.5))
             by_season.setdefault(s, []).append(dict(
                 week=int(r["week"]), away=r["away_team"], home=r["home_team"],
-                op=float(r["home_line_open"]), cl=float(r["home_line_close"]),
+                op=op, cl=float(r["home_line_close"]),
                 margin=int(r["home_score"]) - int(r["away_score"]), to=to, tc=tc))
     return by_season
 
@@ -127,7 +138,13 @@ def simulate(by_season, n_sims, seed, w, policy, field, rng=None,
         n = len(my_ok)
 
         if field == "coinflip":
-            opp_ok = (rng.random((N_OPP, n)) < 0.5).astype(float)
+            # A push is a push for EVERYONE. An earlier version gave Adam 0.5 on
+            # a push while opponents got a clean 0/1, which quietly penalised
+            # him. Only bites when the grading line is an integer -- which
+            # CBS's pool never posts (every pool line ends in .5), so this is
+            # moot under `--half-point` but wrong without it.
+            opp_ok = np.where(fav_ok[None, :] == 0.5, 0.5,
+                              (rng.random((N_OPP, n)) < 0.5).astype(float))
         else:
             lean = rng.uniform(0.60, 0.90, size=(N_OPP, 1))
             takes_fav = rng.random((N_OPP, n)) < lean
@@ -169,6 +186,8 @@ def main() -> None:
     print(f"SEASON SIMULATION -- {N_OPP} opponents + you = {N_OPP+1} players, "
           f"{n_sims} seasons, dev 2014-2022")
     print("=" * 96)
+    print("lines: CBS's half-point convention applied (no pushes possible) -- "
+          "the pool never posts an integer")
     print(f"buy-in ${BUY_IN:.0f} x {N_OPP+1} = ${BUY_IN*(N_OPP+1):,.0f}   "
           f"= season ${sum(LADDER):,.0f} + weekly ${WEEKLY_POT*18:,.0f}   "
           "(the pool balances exactly at 20)")
