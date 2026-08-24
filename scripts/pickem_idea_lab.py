@@ -95,8 +95,20 @@ def load_dev() -> list[dict]:
                 "location": sr.get("location", ""),
                 "home_qb": sr.get("home_qb_name", ""), "away_qb": sr.get("away_qb_name", ""),
                 "referee": sr.get("referee", ""),
+                "home_juice": _f(sr.get("home_spread_odds")),
+                "away_juice": _f(sr.get("away_spread_odds")),
             }
             g["outdoor"] = g["roof"] in ("outdoors", "open")
+            # de-vigged P(home covers) implied by the SPREAD PRICE. A spread bet
+            # should be ~50/50, so any deviation is the book shading to balance
+            # money -- i.e. a direct readout of which side the public is on.
+            if g["home_juice"] is not None and g["away_juice"] is not None:
+                def _p(o):
+                    return (-o) / ((-o) + 100) if o < 0 else 100 / (o + 100)
+                ph, pa = _p(g["home_juice"]), _p(g["away_juice"])
+                g["p_home_juice"] = ph / (ph + pa) if (ph + pa) else None
+            else:
+                g["p_home_juice"] = None
             g["rest_edge"] = (g["home_rest"] - g["away_rest"]
                               if g["home_rest"] is not None and g["away_rest"] is not None
                               else None)

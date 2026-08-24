@@ -34,7 +34,11 @@ OUT = ROOT / "data" / "pickem_situational.csv"
 # a forecast in live use. For the backtest they stand in for the forecast.
 KEEP = ("home_rest", "away_rest", "div_game", "roof", "surface",
         "temp", "wind", "weekday", "gametime", "location",
-        "home_qb_name", "away_qb_name", "referee", "stadium_id", "overtime")
+        "home_qb_name", "away_qb_name", "referee", "stadium_id", "overtime",
+        # spread JUICE -- the price on each side of the spread. A direct
+        # readout of where the money is, and the closest thing to a
+        # historical public-pick distribution that exists (5f).
+        "home_spread_odds", "away_spread_odds")
 
 
 def fetch() -> list[dict]:

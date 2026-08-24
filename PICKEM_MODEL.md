@@ -1174,6 +1174,59 @@ lean, so there is no crowd to join.
 **The decision:** keep the shipped totals-drift tiebreak. `edge/pickem_strategy.py` stays gated to
 its late-season chase role and is not promoted to a default policy.
 
+#### Round 7 — the spread's JUICE (Adam's question, 2026-08-23)
+
+**The question:** a spread is normally priced −110 each side, but when money leans one way the
+other side's price improves (toward +105) to balance the book. Does that price movement indicate
+who beats the spread?
+
+**The data, and a limitation stated up front.** nflverse's `games.csv` carries
+`home_spread_odds` / `away_spread_odds` for **100% of games 2014–2024** — a column this project
+had never touched. It is a *single closing* snapshot, so the open→close price *path* cannot be
+measured. What can be measured is the closing asymmetry, which is the accumulated result of that
+movement: a price that drifted −110 → −120 closes at −120. The mechanism is tested; its
+trajectory is not. De-vigged, `p_home = implied P(home covers)`; 44.6% of games sit within
+0.49–0.51 (i.e. roughly −110/−110), and the mean is 0.5000.
+
+**The answer is no, and the way it fails is informative.**
+
+| Correlation with price lean | value | train | validate |
+|---|---|---|---|
+| home covers the frozen line | **+0.0037** | −0.0242 | +0.0612 **sign flip** |
+| cover amount (margin vs the line) | −0.0121 | −0.0286 | +0.0224 **sign flip** |
+| line movement open→close | +0.0267 | | |
+| **the frozen spread itself** | **+0.2657** | | |
+
+Bucketed, the noise is unmistakable — the most extreme price-lean bucket runs **62.5% in train
+(z=+2.00) and 31.0% in validate (z=−2.04)**. Same rule, both conventionally "significant,"
+opposite directions.
+
+**Why it carries nothing: the juice is mostly a half-point rounding mechanism, not a money
+signal.** The only real correlation it has is with **the spread itself** (+0.2657). When the
+book's true number falls between half-points — say −3.2 — it posts −3.0 and makes up the
+remainder in the price. So the juice encodes a fraction of a point of line, which the line
+already tells you. *(The −0.1172 correlation with raw margin is the line showing through; control
+for the line and it collapses to −0.0121 and flips sign.)* Structurally identical to 5a: highly
+correlated with the line, **zero information beyond it**.
+
+**Five side-changing rules, all dead:**
+
+| # | Rule | Flips | Train | Validate | Verdict |
+|---|---|---|---|---|---|
+| 7.1 | Coin flips → follow the money (p≥0.505) | 177 | 45.8% | 56.1% | sign flip |
+| 7.2 | Coin flips → fade the money (p≥0.505) | 178 | 41.3% | 50.7% | sign flip |
+| 7.1 | Coin flips → follow the money (p≥0.52) | 66 | 51.3% | 51.9% | z=+0.25 vs bar 3.14 |
+| 7.2 | Coin flips → fade the money (p≥0.52) | 58 | 36.6% | 41.2% | negative both |
+| 7.3 | Full slate → fade when price is extreme | 79 | 57.1% | 26.1% | sign flip |
+
+**A genuine side benefit: this partially unblocks a 5f experiment.** That section lists
+"public-pick fading" as blocked forever for want of historical pick distributions. **The juice is
+a historical readout of where the money is**, with full coverage — the closest substitute that
+will ever exist without buying data. The verdict there is also no: fading the public does not
+work either. `home_spread_odds`/`away_spread_odds` are now collected by
+`scripts/pickem_situational_collect.py` and exposed as `p_home_juice` in the idea lab, so nobody
+has to rediscover the column.
+
 ### 5f. Experiments that couldn't be run at all (data doesn't exist yet)
 
 Not failures — genuinely blocked. Listed so nobody re-plans them without first solving the
@@ -1184,7 +1237,7 @@ data problem.
 | **CBS post-offset isolation** (`CBS_bias = CBS_line − market_at_post`) | There are **no historical CBS lines**. The backtest's "pool line" is a *sportsbook opening line* used as a proxy. `live_line_at_post_home` exists in the tracker but holds 16 rows, all 2026 Week 1, none with results — and all currently equal to the CBS line, so the measured bias is zero. **Runnable only after a season of real captures.** |
 | **Line-movement velocity** (Δline in the last 24h) | The history has exactly two snapshots per game, open and close. No intermediate timestamps. Needs a timestamped feed — the Odds API's historical endpoints cost 10× credits, which the free tier can't fund. |
 | **Sharp-book directional agreement** | The history is a **single book**. No cross-book disagreement to measure. |
-| **Public pick-percentage fading** | CBS community percentages exist for 16 games of 2026 Week 1 and nowhere else. No historical pick distributions. |
+| **Public pick-percentage fading** | ~~No historical pick distributions.~~ **PARTIALLY UNBLOCKED and TESTED 2026-08-23 — see 5j round 7.** The spread's JUICE is a readout of where the money is and exists for 100% of games 2014-2024. Fading it does not work (corr with covering +0.0037, sign-flips by era). CBS's own community percentages still exist only for 2026 Wk1, so the pool-specific version remains blocked. |
 
 **All four become testable by logging weekly**, which costs nothing but discipline: record
 CBS's line at post, a market line at that same moment, the total at both points, and the

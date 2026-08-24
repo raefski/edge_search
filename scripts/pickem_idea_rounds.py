@@ -890,6 +890,83 @@ def round5(rows, ledger, evaluate, report, header):
                   f"{'' if pol == 'current' else f'{t-base:>+7.0f}'}")
 
 
+# ============================================================== ROUND 7 =====
+
+def round7(rows, ledger, evaluate, report, header):
+    """Adam's question (2026-08-23): a spread is normally -110 each side, but if
+    money leans one way the other side's price improves toward +105 to balance.
+    Does that PRICE movement indicate who beats the spread?
+
+    Data note, stated honestly: nflverse carries only the CLOSING spread price,
+    so the open->close movement itself cannot be measured. What CAN be measured
+    is the closing ASYMMETRY, which is the accumulated result of that movement --
+    a price that drifted from -110 to -120 closes at -120. So this tests the net
+    effect of exactly the mechanism described, just not its path.
+
+    Why it matters beyond the question: 5f lists public-pick fading as blocked
+    forever for want of historical pick distributions. The juice is a readout of
+    where the money is, and it exists for 100% of games 2014-2024. This is the
+    closest substitute that will ever be available.
+    """
+    header("ROUND 7 -- does the SPREAD PRICE (juice) say who covers?")
+
+    live = [g for g in rows if g["home_covers"] is not None
+            and g.get("p_home_juice") is not None]
+    print(f"\n  dev games with spread juice: {len(live)}")
+    ph = [g["p_home_juice"] for g in live]
+    print(f"  de-vigged P(home covers) implied by price: mean {sum(ph)/len(ph):.4f}, "
+          f"range {min(ph):.3f}-{max(ph):.3f}")
+    print(f"  share priced ~evenly (0.49-0.51, i.e. -110/-110): "
+          f"{sum(1 for x in ph if 0.49 <= x <= 0.51)/len(ph):.1%}")
+
+    TRAIN = set(range(2014, 2020))
+    print("\n  Home cover rate vs the FROZEN line, by how the price leans:")
+    print(f"    {'price bucket':<24} {'TRAIN':>24} {'VALIDATE':>24}")
+    for lo, hi in ((0.0, 0.47), (0.47, 0.49), (0.49, 0.51), (0.51, 0.53), (0.53, 1.0)):
+        line = f"    p_home {lo:.2f}-{hi:.2f}        "
+        for sel in (lambda g: g["season"] in TRAIN, lambda g: g["season"] not in TRAIN):
+            sub = [g for g in live if lo <= g["p_home_juice"] < hi and sel(g)]
+            if not sub:
+                line += f"{'n/a':>24}"
+                continue
+            w = sum(1 for g in sub if g["home_covers"])
+            n = len(sub)
+            line += f"  {w/n:6.1%} (z={(w/n-0.5)/math.sqrt(0.25/n):+.2f}, n={n:4d})"
+        print(line)
+    print("    ^ an informative price would make this RISE monotonically.")
+
+    xs = [g["p_home_juice"] for g in live]
+    ys = [1.0 if g["home_covers"] else 0.0 for g in live]
+    print(f"\n  corr(price-implied P(home), home actually covers) = {_corr(xs, ys):+.4f}")
+
+    def juiced_side(g):
+        """The side the money is on = the side priced worse (higher implied p)."""
+        return "home" if g["p_home_juice"] > 0.5 else "away"
+
+    def unjuiced_side(g):
+        return "away" if g["p_home_juice"] > 0.5 else "home"
+
+    print("\n  Side-changing rules -- the only thing that can add wins:")
+    for thr in (0.505, 0.52):
+        report(evaluate(rows, f"R7.1 coin flips -> FOLLOW the money (p>={thr})",
+                        lambda g, t=thr: (juiced_side(g)
+                                          if (g.get("p_home_juice") is not None
+                                              and _shipped(g).tier == "COIN FLIP"
+                                              and abs(g["p_home_juice"] - 0.5) >= t - 0.5)
+                                          else None), round_no=7), ledger)
+        report(evaluate(rows, f"R7.2 coin flips -> FADE the money (p>={thr})",
+                        lambda g, t=thr: (unjuiced_side(g)
+                                          if (g.get("p_home_juice") is not None
+                                              and _shipped(g).tier == "COIN FLIP"
+                                              and abs(g["p_home_juice"] - 0.5) >= t - 0.5)
+                                          else None), round_no=7), ledger)
+    report(evaluate(rows, "R7.3 full slate: override to the FADE side when price is extreme",
+                    lambda g: (unjuiced_side(g)
+                               if (g.get("p_home_juice") is not None
+                                   and abs(g["p_home_juice"] - 0.5) >= 0.03) else None),
+                    round_no=7), ledger)
+
+
 def run_rounds(rows, ledger, evaluate, report, header):
     sanity(rows, ledger, evaluate, report, header)
     round1(rows, ledger, evaluate, report, header)
@@ -897,3 +974,4 @@ def run_rounds(rows, ledger, evaluate, report, header):
     round3(rows, ledger, evaluate, report, header)
     round4(rows, ledger, evaluate, report, header)
     round5(rows, ledger, evaluate, report, header)
+    round7(rows, ledger, evaluate, report, header)
