@@ -14,6 +14,42 @@ has a synced copy of the two other docs, but none of the scripts live there.
 
 ---
 
+## Where the data actually lives (read this once)
+
+| | |
+|---|---|
+| **The file** | `data/pickem_line_log.csv` — one row per game per snapshot |
+| **The database** | **git.** Every capture appends rows; committing and pushing is what makes them permanent. There is no other store. |
+| **Why git** | Streamlit Cloud rebuilds from the repo, so anything committed survives. Anything not committed does not exist. |
+| **Your picks/standings** | `data/pickem/` — **gitignored on purpose**, stays off the public repo |
+
+**⚠ You cannot capture from your phone, and it is important to know why.** The Streamlit page
+**only reads** the log — it never writes to it. And Streamlit Community Cloud's filesystem is
+**ephemeral**: anything written there vanishes on the next restart or redeploy, and it cannot push
+to git. So tapping "Pull fresh lines" on your phone shows you current numbers but **saves
+nothing**. The phone is a viewer. Capture happens either on a machine with git, or automatically
+(below).
+
+### The automated capture — set this up once, before Week 1
+
+`.github/workflows/pickem-capture.yml` runs the **market half** of the capture on a schedule
+(Tue / Fri / Sun), commits the rows to the repo, and needs nobody to be awake. That matters
+because a market reading not taken at the right moment is **gone forever** — the historical file
+holds only two snapshots per game and can never fill the hole.
+
+**One manual step:** add `ODDS_API_KEY` as a repository secret —
+GitHub → Settings → Secrets and variables → Actions → New repository secret. Until that exists
+every run fails loudly rather than quietly banking nothing.
+
+Then trigger it by hand once (Actions tab → *Pick'em line capture* → Run workflow) to prove it
+works before the season starts.
+
+**The CBS half still needs you** — those lines are behind a login. But the two halves join on
+`(season, week, home_team)`, so CBS's numbers can be filled in *afterwards* with
+`--snapshot <same label>` and the time-critical market reading never waits for you.
+
+---
+
 ## The five-minute version
 
 ```bash

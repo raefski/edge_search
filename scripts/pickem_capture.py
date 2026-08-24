@@ -65,6 +65,11 @@ def main() -> None:
     ap.add_argument("--regions", default=REGIONS,
                     help="'us' (2 credits) or 'us,eu' to include Pinnacle (4 credits)")
     ap.add_argument("--confirm", action="store_true", help="actually spend credits and write")
+    ap.add_argument("--market-only", action="store_true",
+                    help="capture the market WITHOUT CBS's lines. The market half "
+                         "is time-critical and automatable; CBS's half needs a "
+                         "login and can be filled in later. They join on "
+                         "(season, week, home_team).")
     args = ap.parse_args()
 
     cost = len(MARKETS) * len(args.regions.split(","))
@@ -74,10 +79,14 @@ def main() -> None:
     print(f"estimated cost: {cost} credits ({len(MARKETS)} markets x "
           f"{len(args.regions.split(','))} region(s))")
 
-    if not cbs_rows:
+    if not cbs_rows and not args.market_only:
         print(f"\nNo week-{args.week} rows in {CURRENT_WEEK.name}. Transcribe the CBS "
               "screenshot there first -- a snapshot without CBS's number can't "
               "measure CBS bias, which is the point.")
+        print("\nIf you just want to bank a TIMESTAMPED MARKET READING now and add "
+              "CBS's numbers later, re-run with --market-only. The two join on "
+              "(season, week, home_team), so the market half never has to wait "
+              "for the manual half -- and a market reading missed is gone forever.")
         return
 
     if not args.confirm:
@@ -87,6 +96,14 @@ def main() -> None:
     client = OddsAPIClient(cache_dir=CACHE_DIR, ledger_path=LEDGER, dry_run=False)
     live = {g.home_abbr: g for g in fetch_week(client, regions=args.regions)}
     captured = utcnow()
+
+    if not cbs_rows:
+        # market-only: drive off the live slate instead of the CBS transcription
+        cbs_rows = [{"away_abbr": g.away_abbr, "home_abbr": g.home_abbr}
+                    for g in live.values()]
+        print(f"MARKET-ONLY: no CBS lines yet, banking {len(cbs_rows)} market "
+              "readings. Fill in data/pickem_current_week.csv later and re-run "
+              "the same snapshot label to attach CBS's numbers.")
 
     snaps, missing = [], []
     for r in cbs_rows:

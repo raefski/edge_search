@@ -1,0 +1,99 @@
+name: Pick'em line capture
+
+# WHY THIS EXISTS
+# ---------------
+# data/pickem_line_log.csv is the project's only accumulating dataset, and the
+# transferability measurement (PICKEM_MODEL.md 5j r6) depends on it. A market
+# reading not taken at the right moment is gone forever -- the historical file
+# cannot substitute, because it holds only two snapshots per game.
+#
+# The MARKET half of a capture is automatable; the CBS half needs a login and is
+# done by hand. This workflow banks the market half on schedule so it never
+# depends on anyone being at a computer, then commits it to the repo -- which is
+# where the data actually accumulates. The two halves join on
+# (season, week, home_team), so CBS's numbers can be filled in afterwards.
+#
+# SETUP (one time): add ODDS_API_KEY as a repository secret under
+# Settings -> Secrets and variables -> Actions. Until that exists, every run
+# will fail loudly rather than silently banking nothing.
+#
+# COST: 2 Odds-API credits per run, 3 runs/week = ~108 for a full season, inside
+# the 500/month free tier shared with the MLB work.
+
+on:
+  workflow_dispatch:          # run it by hand first, to prove it works
+    inputs:
+      week:
+        description: "NFL week number"
+        required: true
+      snapshot:
+        description: "post | midweek | lock"
+        required: true
+        default: midweek
+  schedule:
+    # times are UTC. Season runs Sept-Jan.
+    - cron: "0 18 * * 2"      # Tue 14:00 ET -- just after CBS posts
+    - cron: "0 16 * * 5"      # Fri 12:00 ET -- the mid-week reading
+    - cron: "0 16 * * 0"      # Sun 12:00 ET -- ~1h before the first kickoff
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write         # needed to commit the appended row
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Work out week and snapshot label
+        id: ctx
+        run: |
+          if [ -n "${{ github.event.inputs.week }}" ]; then
+            echo "week=${{ github.event.inputs.week }}" >> "$GITHUB_OUTPUT"
+            echo "snap=${{ github.event.inputs.snapshot }}" >> "$GITHUB_OUTPUT"
+          else
+            # NFL week 1 of the 2026 season starts Tue 2026-09-08
+            WEEK=$(( ( $(date -u +%s) - $(date -u -d 2026-09-08 +%s) ) / 604800 + 1 ))
+            case "$(date -u +%u)" in
+              2) SNAP=post ;;
+              5) SNAP=midweek ;;
+              *) SNAP=lock ;;
+            esac
+            echo "week=$WEEK" >> "$GITHUB_OUTPUT"
+            echo "snap=$SNAP" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Capture
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: |
+          if [ -z "$ODDS_API_KEY" ]; then
+            echo "::error::ODDS_API_KEY secret is not set -- nothing captured."
+            exit 1
+          fi
+          W="${{ steps.ctx.outputs.week }}"
+          if [ "$W" -lt 1 ] || [ "$W" -gt 18 ]; then
+            echo "Week $W is outside the season. Nothing to do."
+            exit 0
+          fi
+          python3 scripts/pickem_capture.py \
+            --snapshot "${{ steps.ctx.outputs.snap }}" \
+            --week "$W" --market-only --confirm
+
+      - name: Commit the new rows
+        run: |
+          git config user.name  "pickem-capture[bot]"
+          git config user.email "actions@github.com"
+          if git diff --quiet -- data/pickem_line_log.csv; then
+            echo "No new rows (already captured, or nothing returned)."
+            exit 0
+          fi
+          git add data/pickem_line_log.csv
+          git commit -m "Pick'em capture: week ${{ steps.ctx.outputs.week }} ${{ steps.ctx.outputs.snap }} [skip ci]"
+          git push
