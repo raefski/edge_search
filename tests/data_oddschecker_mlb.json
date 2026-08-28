@@ -1,0 +1,1269 @@
+{
+ "subevents": [
+  {
+   "id": 101813087,
+   "name": "Boston Red Sox at Miami Marlins",
+   "categoryGroupId": 46,
+   "categoryId": 23,
+   "eventId": 7445,
+   "eventName": "MLB Matches",
+   "startTime": "2026-08-24T22:40:00Z",
+   "endTime": "2026-08-25T01:40:00Z",
+   "urlPath": "/us/baseball/mlb/boston-red-sox-at-miami-marlins",
+   "type": "MATCH",
+   "inRunning": true,
+   "homeTeam": {
+    "name": "Miami Marlins",
+    "shortName": "MIA",
+    "nickName": "Marlins",
+    "badgeUrl": "https://static.oddschecker.com/content/team-logos/Q4/9b27cbdc-3598-4cff-97bf-a81d08b4d059.svg"
+   },
+   "awayTeam": {
+    "name": "Boston Red Sox",
+    "shortName": "BOS",
+    "nickName": "Red Sox",
+    "badgeUrl": "https://static.oddschecker.com/content/team-logos/Q4/0b2988e0-d1c7-41e3-ba46-2097357ae1a2.svg"
+   },
+   "markets": [
+    {
+     "allowOddsClickout": false,
+     "id": 3586399006,
+     "betTypeId": 525,
+     "name": "Point Spread",
+     "marketGenericSequence": "AWAY_HOME",
+     "bets": [
+      {
+       "id": 27256755812,
+       "name": "Boston Red Sox",
+       "line": {
+        "name": "-1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 1.82741935
+       },
+       "genericName": "AWAY",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195108%22%2C%22selectionId%22%3A%221682717182%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "43/20",
+         "decimal": 3.15,
+         "american": "+215",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256755809,
+       "name": "Miami Marlins",
+       "line": {
+        "name": "+1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 1.82741935
+       },
+       "genericName": "HOME",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195108%22%2C%22selectionId%22%3A%221682717177%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "10/31",
+         "decimal": 1.322580645,
+         "american": "-310",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256755895,
+       "name": "Boston Red Sox",
+       "line": {
+        "name": "+1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 3.95714286
+       },
+       "genericName": "AWAY",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195104%22%2C%22selectionId%22%3A%221682717176%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "1/7",
+         "decimal": 1.142857143,
+         "american": "-700",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256755877,
+       "name": "Miami Marlins",
+       "line": {
+        "name": "-1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 3.95714286
+       },
+       "genericName": "HOME",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195104%22%2C%22selectionId%22%3A%221682717167%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "41/10",
+         "decimal": 5.1,
+         "american": "+410",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256755897,
+       "name": "Boston Red Sox",
+       "line": {
+        "name": "-2.5",
+        "absolute": "2.5",
+        "lineBestPriceDifference": 4.16666667
+       },
+       "genericName": "AWAY",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195114%22%2C%22selectionId%22%3A%221682717192%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "43/10",
+         "decimal": 5.3,
+         "american": "+430",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256755893,
+       "name": "Miami Marlins",
+       "line": {
+        "name": "+2.5",
+        "absolute": "2.5",
+        "lineBestPriceDifference": 4.16666667
+       },
+       "genericName": "HOME",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195114%22%2C%22selectionId%22%3A%221682717188%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "2/15",
+         "decimal": 1.133333333,
+         "american": "-750",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256755917,
+       "name": "Boston Red Sox",
+       "line": {
+        "name": "-3.5",
+        "absolute": "3.5",
+        "lineBestPriceDifference": 7.944444444
+       },
+       "genericName": "AWAY",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195103%22%2C%22selectionId%22%3A%221682717174%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "8/1",
+         "decimal": 9.0,
+         "american": "+800",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256755883,
+       "name": "Miami Marlins",
+       "line": {
+        "name": "+3.5",
+        "absolute": "3.5",
+        "lineBestPriceDifference": 7.944444444
+       },
+       "genericName": "HOME",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195103%22%2C%22selectionId%22%3A%221682717166%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "1/18",
+         "decimal": 1.055555556,
+         "american": "-1800",
+         "movement": "SHORTENING"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "allowOddsClickout": false,
+     "id": 3586397402,
+     "betTypeId": 1,
+     "name": "Win Market",
+     "marketGenericSequence": "AWAY_HOME",
+     "bets": [
+      {
+       "id": 27256734649,
+       "name": "Boston Red Sox",
+       "genericName": "AWAY",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682165911%22%2C%22selectionId%22%3A%221682636348%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "10/13",
+         "decimal": 1.769230769,
+         "american": "-130",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256734642,
+       "name": "Miami Marlins",
+       "genericName": "HOME",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682165911%22%2C%22selectionId%22%3A%221682636341%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "1/1",
+         "decimal": 2.0,
+         "american": "+100",
+         "movement": "SHORTENING"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "allowOddsClickout": false,
+     "id": 3586397413,
+     "betTypeId": 1055802107,
+     "name": "Total Runs",
+     "bets": [
+      {
+       "id": 27256734664,
+       "name": "Over",
+       "line": {
+        "name": "7",
+        "absolute": "7",
+        "lineBestPriceDifference": 0.15238095
+       },
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195225%22%2C%22selectionId%22%3A%221682717422%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "4/5",
+         "decimal": 1.8,
+         "american": "-125",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256734680,
+       "name": "Under",
+       "line": {
+        "name": "7",
+        "absolute": "7",
+        "lineBestPriceDifference": 0.15238095
+       },
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195225%22%2C%22selectionId%22%3A%221682717428%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "20/21",
+         "decimal": 1.952380952,
+         "american": "-105",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256735148,
+       "name": "Over",
+       "line": {
+        "name": "4.5",
+        "absolute": "4.5",
+        "lineBestPriceDifference": 0.15238095
+       },
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195192%22%2C%22selectionId%22%3A%221682717353%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "4/5",
+         "decimal": 1.8,
+         "american": "-125",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256735152,
+       "name": "Under",
+       "line": {
+        "name": "4.5",
+        "absolute": "4.5",
+        "lineBestPriceDifference": 0.15238095
+       },
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195192%22%2C%22selectionId%22%3A%221682717356%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "20/21",
+         "decimal": 1.952380952,
+         "american": "-105",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256735115,
+       "name": "Over",
+       "line": {
+        "name": "8",
+        "absolute": "8",
+        "lineBestPriceDifference": 0.64393939
+       },
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195154%22%2C%22selectionId%22%3A%221682717272%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "5/4",
+         "decimal": 2.25,
+         "american": "+125",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256735149,
+       "name": "Under",
+       "line": {
+        "name": "8",
+        "absolute": "8",
+        "lineBestPriceDifference": 0.64393939
+       },
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195154%22%2C%22selectionId%22%3A%221682717279%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "20/33",
+         "decimal": 1.606060606,
+         "american": "-165",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256735128,
+       "name": "Over",
+       "line": {
+        "name": "6",
+        "absolute": "6",
+        "lineBestPriceDifference": 0.93717949
+       },
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195166%22%2C%22selectionId%22%3A%221682717301%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "20/39",
+         "decimal": 1.512820513,
+         "american": "-195",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256735160,
+       "name": "Under",
+       "line": {
+        "name": "6",
+        "absolute": "6",
+        "lineBestPriceDifference": 0.93717949
+       },
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225209064%22%2C%22marketId%22%3A%22682195166%22%2C%22selectionId%22%3A%221682717307%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "29/20",
+         "decimal": 2.45,
+         "american": "+145",
+         "movement": "SHORTENING"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 101813089,
+   "name": "Cleveland Guardians at Los Angeles Angels",
+   "categoryGroupId": 46,
+   "categoryId": 23,
+   "eventId": 7445,
+   "eventName": "MLB Matches",
+   "startTime": "2026-08-25T01:38:00Z",
+   "endTime": "2026-08-25T04:38:00Z",
+   "urlPath": "/us/baseball/mlb/cleveland-guardians-at-los-angeles-angels",
+   "type": "MATCH",
+   "inRunning": false,
+   "homeTeam": {
+    "name": "Los Angeles Angels",
+    "shortName": "LAA",
+    "nickName": "Angels",
+    "badgeUrl": "https://static.oddschecker.com/content/team-logos/Q4/bd42c923-28fa-43a6-a516-da57d5311e3a.svg"
+   },
+   "awayTeam": {
+    "name": "Cleveland Guardians",
+    "shortName": "CLE",
+    "nickName": "Guardians",
+    "badgeUrl": "https://static.oddschecker.com/content/team-logos/Q4/1883760f-46f3-468b-a8b0-af0be4c6d1b7.svg"
+   },
+   "markets": [
+    {
+     "allowOddsClickout": false,
+     "id": 3586398876,
+     "betTypeId": 525,
+     "name": "Point Spread",
+     "marketGenericSequence": "AWAY_HOME",
+     "bets": [
+      {
+       "id": 27256753918,
+       "name": "Cleveland Guardians",
+       "line": {
+        "name": "-1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 0.25
+       },
+       "genericName": "AWAY",
+       "aiProbability": 35.77,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313312%22%2C%22selectionId%22%3A%221683022205%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "21/20",
+         "decimal": 2.05,
+         "american": "+105",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256753893,
+       "name": "Los Angeles Angels",
+       "line": {
+        "name": "+1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 0.25
+       },
+       "genericName": "HOME",
+       "aiProbability": 64.23,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313312%22%2C%22selectionId%22%3A%221683022198%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "4/5",
+         "decimal": 1.8,
+         "american": "-125",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256754211,
+       "name": "Cleveland Guardians",
+       "line": {
+        "name": "-2.5",
+        "absolute": "2.5",
+        "lineBestPriceDifference": 1.1
+       },
+       "genericName": "AWAY",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313334%22%2C%22selectionId%22%3A%221683022265%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "8/5",
+         "decimal": 2.6,
+         "american": "+160",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256754203,
+       "name": "Los Angeles Angels",
+       "line": {
+        "name": "+2.5",
+        "absolute": "2.5",
+        "lineBestPriceDifference": 1.1
+       },
+       "genericName": "HOME",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313334%22%2C%22selectionId%22%3A%221683022252%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "1/2",
+         "decimal": 1.5,
+         "american": "-200",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256754213,
+       "name": "Cleveland Guardians",
+       "line": {
+        "name": "-3.5",
+        "absolute": "3.5",
+        "lineBestPriceDifference": 2.02741935
+       },
+       "genericName": "AWAY",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313311%22%2C%22selectionId%22%3A%221683022204%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "47/20",
+         "decimal": 3.35,
+         "american": "+235",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256754207,
+       "name": "Los Angeles Angels",
+       "line": {
+        "name": "+3.5",
+        "absolute": "3.5",
+        "lineBestPriceDifference": 2.02741935
+       },
+       "genericName": "HOME",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313311%22%2C%22selectionId%22%3A%221683022197%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "10/31",
+         "decimal": 1.322580645,
+         "american": "-310",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256754202,
+       "name": "Cleveland Guardians",
+       "line": {
+        "name": "+1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 2.53333333
+       },
+       "genericName": "AWAY",
+       "aiProbability": 64.29,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313314%22%2C%22selectionId%22%3A%221683022209%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "4/15",
+         "decimal": 1.266666667,
+         "american": "-375",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256754186,
+       "name": "Los Angeles Angels",
+       "line": {
+        "name": "-1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 2.53333333
+       },
+       "genericName": "HOME",
+       "aiProbability": 35.71,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313314%22%2C%22selectionId%22%3A%221683022201%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "14/5",
+         "decimal": 3.8,
+         "american": "+280",
+         "movement": "DRIFTING"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "allowOddsClickout": false,
+     "id": 3586397404,
+     "betTypeId": 1,
+     "name": "Win Market",
+     "marketGenericSequence": "AWAY_HOME",
+     "bets": [
+      {
+       "id": 27256734653,
+       "name": "Cleveland Guardians",
+       "genericName": "AWAY",
+       "aiProbability": 51.0,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682302394%22%2C%22selectionId%22%3A%221682991985%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "10/17",
+         "decimal": 1.588235294,
+         "american": "-170",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256734651,
+       "name": "Los Angeles Angels",
+       "genericName": "HOME",
+       "aiProbability": 49.0,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682302394%22%2C%22selectionId%22%3A%221682991981%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "7/5",
+         "decimal": 2.4,
+         "american": "+140",
+         "movement": "DRIFTING"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "allowOddsClickout": false,
+     "id": 3586397410,
+     "betTypeId": 1055802107,
+     "name": "Total Runs",
+     "bets": [
+      {
+       "id": 27256735058,
+       "name": "Over",
+       "line": {
+        "name": "7.5",
+        "absolute": "7.5",
+        "lineBestPriceDifference": 0.0
+       },
+       "aiProbability": 52.71,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313338%22%2C%22selectionId%22%3A%221683022255%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "10/11",
+         "decimal": 1.909090909,
+         "american": "-110",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256735075,
+       "name": "Under",
+       "line": {
+        "name": "7.5",
+        "absolute": "7.5",
+        "lineBestPriceDifference": 0.0
+       },
+       "aiProbability": 47.29,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313338%22%2C%22selectionId%22%3A%221683022259%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "10/11",
+         "decimal": 1.909090909,
+         "american": "-110",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256734682,
+       "name": "Over",
+       "line": {
+        "name": "8",
+        "absolute": "8",
+        "lineBestPriceDifference": 0.35925926
+       },
+       "aiProbability": 47.63,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313362%22%2C%22selectionId%22%3A%221683022303%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "11/10",
+         "decimal": 2.1,
+         "american": "+110",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256734663,
+       "name": "Under",
+       "line": {
+        "name": "8",
+        "absolute": "8",
+        "lineBestPriceDifference": 0.35925926
+       },
+       "aiProbability": 52.37,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313362%22%2C%22selectionId%22%3A%221683022306%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "20/27",
+         "decimal": 1.740740741,
+         "american": "-135",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256735085,
+       "name": "Over",
+       "line": {
+        "name": "7",
+        "absolute": "7",
+        "lineBestPriceDifference": 0.43571429
+       },
+       "aiProbability": 57.63,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313536%22%2C%22selectionId%22%3A%221683022903%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "5/7",
+         "decimal": 1.714285714,
+         "american": "-140",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256735053,
+       "name": "Under",
+       "line": {
+        "name": "7",
+        "absolute": "7",
+        "lineBestPriceDifference": 0.43571429
+       },
+       "aiProbability": 42.37,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313536%22%2C%22selectionId%22%3A%221683022911%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "23/20",
+         "decimal": 2.15,
+         "american": "+115",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256735051,
+       "name": "Over",
+       "line": {
+        "name": "8.5",
+        "absolute": "8.5",
+        "lineBestPriceDifference": 0.58333333
+       },
+       "aiProbability": 42.76,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313518%22%2C%22selectionId%22%3A%221683022842%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "5/4",
+         "decimal": 2.25,
+         "american": "+125",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256735068,
+       "name": "Under",
+       "line": {
+        "name": "8.5",
+        "absolute": "8.5",
+        "lineBestPriceDifference": 0.58333333
+       },
+       "aiProbability": 57.24,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210974%22%2C%22marketId%22%3A%22682313518%22%2C%22selectionId%22%3A%221683022855%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "2/3",
+         "decimal": 1.666666667,
+         "american": "-150",
+         "movement": "SHORTENING"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 101813075,
+   "name": "Chicago Cubs at Arizona Diamondbacks",
+   "categoryGroupId": 46,
+   "categoryId": 23,
+   "eventId": 7445,
+   "eventName": "MLB Matches",
+   "startTime": "2026-08-25T01:40:00Z",
+   "endTime": "2026-08-25T04:40:00Z",
+   "urlPath": "/us/baseball/mlb/chicago-cubs-at-arizona-diamondbacks",
+   "type": "MATCH",
+   "inRunning": false,
+   "homeTeam": {
+    "name": "Arizona Diamondbacks",
+    "shortName": "AZ",
+    "nickName": "Diamondbacks",
+    "badgeUrl": "https://static.oddschecker.com/content/team-logos/Q4/8614c2e8-eb47-4a92-a856-dc572af9bb2b.svg"
+   },
+   "awayTeam": {
+    "name": "Chicago Cubs",
+    "shortName": "CHC",
+    "nickName": "Cubs",
+    "badgeUrl": "https://static.oddschecker.com/content/team-logos/Q4/0ede7ffa-a053-41ee-8b08-4d759fb4f157.svg"
+   },
+   "markets": [
+    {
+     "allowOddsClickout": false,
+     "id": 3586397392,
+     "betTypeId": 1,
+     "name": "Win Market",
+     "marketGenericSequence": "AWAY_HOME",
+     "bets": [
+      {
+       "id": 27256734635,
+       "name": "Chicago Cubs",
+       "genericName": "AWAY",
+       "aiProbability": 60.0,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682308973%22%2C%22selectionId%22%3A%221683008496%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "20/29",
+         "decimal": 1.689655172,
+         "american": "-145",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256734648,
+       "name": "Arizona Diamondbacks",
+       "genericName": "HOME",
+       "aiProbability": 40.0,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682308973%22%2C%22selectionId%22%3A%221683008479%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "6/5",
+         "decimal": 2.2,
+         "american": "+120",
+         "movement": "DRIFTING"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "allowOddsClickout": false,
+     "id": 3586398880,
+     "betTypeId": 525,
+     "name": "Point Spread",
+     "marketGenericSequence": "AWAY_HOME",
+     "bets": [
+      {
+       "id": 27256753942,
+       "name": "Chicago Cubs",
+       "line": {
+        "name": "-1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 0.35925926
+       },
+       "genericName": "AWAY",
+       "aiProbability": 45.8,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326551%22%2C%22selectionId%22%3A%221683056855%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "11/10",
+         "decimal": 2.1,
+         "american": "+110",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256753974,
+       "name": "Arizona Diamondbacks",
+       "line": {
+        "name": "+1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 0.35925926
+       },
+       "genericName": "HOME",
+       "aiProbability": 54.2,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326551%22%2C%22selectionId%22%3A%221683056849%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "20/27",
+         "decimal": 1.740740741,
+         "american": "-135",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256754934,
+       "name": "Chicago Cubs",
+       "line": {
+        "name": "-2.5",
+        "absolute": "2.5",
+        "lineBestPriceDifference": 1.1
+       },
+       "genericName": "AWAY",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326577%22%2C%22selectionId%22%3A%221683056949%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "8/5",
+         "decimal": 2.6,
+         "american": "+160",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256754914,
+       "name": "Arizona Diamondbacks",
+       "line": {
+        "name": "+2.5",
+        "absolute": "2.5",
+        "lineBestPriceDifference": 1.1
+       },
+       "genericName": "HOME",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326577%22%2C%22selectionId%22%3A%221683056926%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "1/2",
+         "decimal": 1.5,
+         "american": "-200",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256754909,
+       "name": "Chicago Cubs",
+       "line": {
+        "name": "+1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 1.96666667
+       },
+       "genericName": "AWAY",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326554%22%2C%22selectionId%22%3A%221683056866%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "1/3",
+         "decimal": 1.333333333,
+         "american": "-300",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256754908,
+       "name": "Arizona Diamondbacks",
+       "line": {
+        "name": "-1.5",
+        "absolute": "1.5",
+        "lineBestPriceDifference": 1.96666667
+       },
+       "genericName": "HOME",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326554%22%2C%22selectionId%22%3A%221683056858%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "23/10",
+         "decimal": 3.3,
+         "american": "+230",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256754966,
+       "name": "Chicago Cubs",
+       "line": {
+        "name": "-3.5",
+        "absolute": "3.5",
+        "lineBestPriceDifference": 1.96666667
+       },
+       "genericName": "AWAY",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326550%22%2C%22selectionId%22%3A%221683056856%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "23/10",
+         "decimal": 3.3,
+         "american": "+230",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256754898,
+       "name": "Arizona Diamondbacks",
+       "line": {
+        "name": "+3.5",
+        "absolute": "3.5",
+        "lineBestPriceDifference": 1.96666667
+       },
+       "genericName": "HOME",
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326550%22%2C%22selectionId%22%3A%221683056848%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "1/3",
+         "decimal": 1.333333333,
+         "american": "-300",
+         "movement": "SHORTENING"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "allowOddsClickout": false,
+     "id": 3586397419,
+     "betTypeId": 1055802107,
+     "name": "Total Runs",
+     "bets": [
+      {
+       "id": 27256734681,
+       "name": "Over",
+       "line": {
+        "name": "9",
+        "absolute": "9",
+        "lineBestPriceDifference": 0.0
+       },
+       "aiProbability": 48.38,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326601%22%2C%22selectionId%22%3A%221683056984%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "10/11",
+         "decimal": 1.909090909,
+         "american": "-110",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256734675,
+       "name": "Under",
+       "line": {
+        "name": "9",
+        "absolute": "9",
+        "lineBestPriceDifference": 0.0
+       },
+       "aiProbability": 51.62,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326601%22%2C%22selectionId%22%3A%221683056991%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "10/11",
+         "decimal": 1.909090909,
+         "american": "-110",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256735229,
+       "name": "Over",
+       "line": {
+        "name": "8.5",
+        "absolute": "8.5",
+        "lineBestPriceDifference": 0.35925926
+       },
+       "aiProbability": 52.74,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326767%22%2C%22selectionId%22%3A%221683057583%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "20/27",
+         "decimal": 1.740740741,
+         "american": "-135",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256735222,
+       "name": "Under",
+       "line": {
+        "name": "8.5",
+        "absolute": "8.5",
+        "lineBestPriceDifference": 0.35925926
+       },
+       "aiProbability": 47.26,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326767%22%2C%22selectionId%22%3A%221683057598%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "11/10",
+         "decimal": 2.1,
+         "american": "+110",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256735212,
+       "name": "Over",
+       "line": {
+        "name": "9.5",
+        "absolute": "9.5",
+        "lineBestPriceDifference": 0.40925926
+       },
+       "aiProbability": 43.9,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326587%22%2C%22selectionId%22%3A%221683056957%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "23/20",
+         "decimal": 2.15,
+         "american": "+115",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256735206,
+       "name": "Under",
+       "line": {
+        "name": "9.5",
+        "absolute": "9.5",
+        "lineBestPriceDifference": 0.40925926
+       },
+       "aiProbability": 56.1,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326587%22%2C%22selectionId%22%3A%221683056962%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "20/27",
+         "decimal": 1.740740741,
+         "american": "-135",
+         "movement": "SHORTENING"
+        }
+       ]
+      },
+      {
+       "id": 27256735213,
+       "name": "Over",
+       "line": {
+        "name": "10",
+        "absolute": "10",
+        "lineBestPriceDifference": 0.675
+       },
+       "aiProbability": 39.87,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326757%22%2C%22selectionId%22%3A%221683057514%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "13/10",
+         "decimal": 2.3,
+         "american": "+130",
+         "movement": "DRIFTING"
+        }
+       ]
+      },
+      {
+       "id": 27256735215,
+       "name": "Under",
+       "line": {
+        "name": "10",
+        "absolute": "10",
+        "lineBestPriceDifference": 0.675
+       },
+       "aiProbability": 60.13,
+       "odds": [
+        {
+         "selectionId": "%7B%22eventId%22%3A%225210990%22%2C%22marketId%22%3A%22682326757%22%2C%22selectionId%22%3A%221683057535%22%7D",
+         "bookmakerCode": "FNP",
+         "status": "ACTIVE",
+         "fractional": "5/8",
+         "decimal": 1.625,
+         "american": "-160",
+         "movement": "SHORTENING"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

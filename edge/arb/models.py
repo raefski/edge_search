@@ -1,0 +1,177 @@
+"""Canonical data model shared by every provider and the detection engine."""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+
+
+def utcnow() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+@dataclass(frozen=True)
+class EventMeta:
+    event_id: str
+    sport_key: str
+    sport_title: str
+    commence_time: datetime
+    home_team: str | None
+    away_team: str | None
+
+    @property
+    def matchup(self) -> str:
+        if self.away_team and self.home_team:
+            return f"{self.away_team} @ {self.home_team}"
+        return self.home_team or self.away_team or self.event_id
+
+    def minutes_to_start(self, now: datetime | None = None) -> float:
+        return (self.commence_time - (now or utcnow())).total_seconds() / 60.0
+
+
+@dataclass(frozen=True)
+class GroupKey:
+    """Identifies one set of mutually exclusive outcomes.
+
+    Two quotes may only be combined into an arbitrage if their GroupKeys match
+    exactly -- same event, same market, same subject (player/team) and same
+    line. That equality is the single guard against comparing, say, Over 45.5
+    at one book with Under 46.5 at another and calling it risk-free.
+    """
+    event_id: str
+    market: str
+    subject: str | None = None
+    point: float | None = None
+
+    def label(self, event: EventMeta) -> str:
+        bits = [self.market]
+        if self.subject:
+            bits.append(self.subject)
+        if self.point is not None:
+            bits.append(f"{self.point:+g}" if self.market.startswith(("spread", "alternate_spread")) else f"{self.point:g}")
+        return " ".join(bits)
+
+
+@dataclass(frozen=True)
+class Quote:
+    book: str
+    side: str
+    decimal: float
+    point: float | None
+    last_update: datetime
+    link: str | None = None
+    limit: float | None = None
+
+    def age_seconds(self, now: datetime | None = None) -> float:
+        """Seconds since this quote was *fetched*.
+
+        Clamped at zero: the wall clock on a laptop or WSL host jumps when the
+        machine sleeps and NTP corrects it, which otherwise yields
+        future-dated quotes and a negative age that passes every check.
+        """
+        return max(0.0, ((now or utcnow()) - self.last_update).total_seconds())
+
+
+# Side sets that are exhaustive and mutually exclusive by construction, at a
+# fixed line. Unlike an outright field, these need no inferring.
+COMPLEMENTARY_SIDES: tuple[frozenset[str], ...] = (
+    frozenset({"over", "under"}),
+    frozenset({"home", "away"}),
+    frozenset({"yes", "no"}),
+)
+
+
+@dataclass
+class MarketGroup:
+    key: GroupKey
+    event: EventMeta
+    quotes: dict[str, dict[str, Quote]] = field(default_factory=dict)   # side -> book -> quote
+    book_sides: dict[str, set[str]] = field(default_factory=dict)       # book -> sides offered
+
+    def add(self, q: Quote) -> None:
+        prev = self.quotes.setdefault(q.side, {}).get(q.book)
+        # The board is long-lived, so a newer quote must always displace an
+        # older one -- otherwise a stale high price would sit here forever and
+        # manufacture arbs that no longer exist. Equal timestamps mean the same
+        # refresh listed the side twice, and there the better price wins.
+        if (prev is None
+                or q.last_update > prev.last_update
+                or (q.last_update == prev.last_update and q.decimal > prev.decimal)):
+            self.quotes[q.side][q.book] = q
+        self.book_sides.setdefault(q.book, set()).add(q.side)
+
+    def expected_sides(self) -> set[str]:
+        """The complete outcome set. A group is only tradeable if every side of
+        it can be priced.
+
+        For a binary market the answer is known a priori, so both sides count
+        even when no single book posts both -- DraftKings prices props as
+        one-sided thresholds ("2+"), and the opposing Under comes from another
+        book entirely. Requiring one book to show the whole market would miss
+        every such pairing.
+
+        Anything else (an outright field) still has to be inferred from
+        whichever book offers the most sides, because there is no way to know
+        how many runners exist.
+        """
+        seen = set(self.quotes)
+        for pair in COMPLEMENTARY_SIDES:
+            if seen == set(pair):
+                return set(pair)
+        if not self.book_sides:
+            return set()
+        return max(self.book_sides.values(), key=len)
+
+    def best(self, side: str, books: set[str]) -> Quote | None:
+        candidates = [q for b, q in self.quotes.get(side, {}).items() if b in books]
+        return max(candidates, key=lambda q: q.decimal) if candidates else None
+
+
+@dataclass
+class Board:
+    """Everything currently priced, keyed by group."""
+    groups: dict[GroupKey, MarketGroup] = field(default_factory=dict)
+    events: dict[str, EventMeta] = field(default_factory=dict)
+
+    def group(self, key: GroupKey, event: EventMeta) -> MarketGroup:
+        self.events.setdefault(event.event_id, event)
+        g = self.groups.get(key)
+        if g is None:
+            g = self.groups[key] = MarketGroup(key=key, event=event)
+        return g
+
+    def __len__(self) -> int:
+        return len(self.groups)
+
+    @property
+    def quote_count(self) -> int:
+        return sum(len(bk) for g in self.groups.values() for bk in g.quotes.values())
+
+    def prune(self, started_grace_minutes: float = 20.0, max_quote_age_seconds: float = 1800.0,
+              now: datetime | None = None) -> int:
+        """Drop finished events and quotes nothing has refreshed. Without this
+        a long `watch` run accumulates dead lines and slows every scan."""
+        now = now or utcnow()
+        dropped = 0
+        for key in list(self.groups):
+            g = self.groups[key]
+            if g.event.minutes_to_start(now) < -started_grace_minutes:
+                del self.groups[key]; dropped += 1
+                continue
+            for side in list(g.quotes):
+                for book in list(g.quotes[side]):
+                    if g.quotes[side][book].age_seconds(now) > max_quote_age_seconds:
+                        del g.quotes[side][book]; dropped += 1
+                if not g.quotes[side]:
+                    del g.quotes[side]
+            if not g.quotes:
+                del self.groups[key]
+                continue
+            g.book_sides = {}
+            for side, per_book in g.quotes.items():
+                for book in per_book:
+                    g.book_sides.setdefault(book, set()).add(side)
+        live = {g.event.event_id for g in self.groups.values()}
+        for eid in list(self.events):
+            if eid not in live:
+                del self.events[eid]
+        return dropped

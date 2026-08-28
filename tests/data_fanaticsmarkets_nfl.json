@@ -1,0 +1,406 @@
+{
+ "data": [
+  {
+   "id": "4530250",
+   "sdpId": "dedaa99d-9ee6-4491-b53e-c25b481b8b66",
+   "title": "Pittsburgh Steelers @ Buffalo Bills",
+   "slug": "pittsburgh-steelers-vs-buffalo-bills",
+   "canonicalPath": "/sports/football/nfl/pittsburgh-steelers-vs-buffalo-bills",
+   "description": null,
+   "category": "Sports",
+   "categorySlug": "sports",
+   "topic": "Football",
+   "topicSlug": "football",
+   "series": "NFL",
+   "seriesSlug": "nfl",
+   "categoryTooltip": "Sports > Football > NFL",
+   "image": null,
+   "video": null,
+   "fanVizUrl": null,
+   "startTime": 1787871600000,
+   "isLive": false,
+   "isOver": false,
+   "lastSeenAt": 1787619638330,
+   "isFuture": false,
+   "status": "UPCOMING",
+   "archetype": "team-vs-team",
+   "isMatchupEvent": true,
+   "matchupProps": {
+    "sideA": {
+     "name": "Pittsburgh Steelers",
+     "shortName": "PIT Steelers",
+     "abbreviation": "PIT",
+     "avatarSrc": "https://cms-assets.1.markets.fan/media/Pittsburgh Steelers.png",
+     "color": "#ffb612",
+     "homeAway": "AWAY",
+     "sdpId": "ceb57f12-9690-4a7a-a9a3-ae10de09f531"
+    },
+    "sideB": {
+     "name": "Buffalo Bills",
+     "shortName": "BUF Bills",
+     "abbreviation": "BUF",
+     "avatarSrc": "https://cms-assets.1.markets.fan/media/Buffalo Bills.png",
+     "color": "#00338d",
+     "homeAway": "HOME",
+     "sdpId": "90eac077-afab-4708-a72e-686941d6ac79"
+    },
+    "sideAValue": 45,
+    "sideBValue": 55,
+    "pressureBar": [
+     {
+      "value": 45,
+      "color": "#ffb612",
+      "label": "Pittsburgh Steelers"
+     },
+     {
+      "value": 55,
+      "color": "#00338d",
+      "label": "Buffalo Bills"
+     }
+    ]
+   },
+   "metadata": null,
+   "markets": {
+    "moneyline": [
+     {
+      "marketId": "6448946",
+      "participantId": 9893,
+      "title": "Pittsburgh Steelers",
+      "shortTitle": "PIT Steelers",
+      "abbreviation": "PIT",
+      "symbol": "NX.F.OPT.NFL-00001-260827-M.O.1.1.20270301",
+      "shortSymbol": "NX.F.OPT.NFL-00001-260827-M.O.1.1",
+      "colors": [
+       "#ffb612",
+       "#101820"
+      ],
+      "image": "https://cms-assets.1.markets.fan/media/Pittsburgh Steelers.png",
+      "probability": 0.45,
+      "liquidity": null,
+      "volume24H": null,
+      "totalVolume": "1363.47",
+      "tradeCount": 134,
+      "group": "moneyline",
+      "outcomeType": "AWAY",
+      "periodType": "Full Game",
+      "marketGroupId": 3,
+      "startTime": 1785726000000,
+      "endTime": 1787619635966,
+      "tradingRules": "You receive a $1 return per contract if your prediction is correct and nothing if it is incorrect.\n\nThe market resolves when the match or event ends and the winner is determined.\n\nLiquidity may be low when the match/event is in progress. Trading may be temporarily paused during scheduled maintenance periods.\n\nIn the event of an event cancellation, all open positions will be settled at the Volume Weighted Average Price (VWAP) at the time of cancellation. Please note that settlement at VWAP may result in a return higher or lower than your original stake. For more information see [here](https://help.crypto.com/en/articles/10208780-sports-event-trading#h_aa0e1d8f64)\n \nRead the full contracts terms and conditions [here](https://www.cftc.gov/sites/default/files/filings/ptc/25/07/ptc07302527650.pdf).",
+      "tradingProhibitions": "Certain individuals are prohibited from trading the Event Contract. Those persons include:\n- Current and former Industry Participant players, coaches, agents and staff.\n- Paid employees and management of the Industry Participants.\n- Owners of the Industry Participants.\n- Household members and immediate family members (siblings, children, and parents) of any of the above.\n\n- Current and former Industry Participant players, coaches, agents and staff.\n\n- Paid employees and management of the Industry Participants.\n\n- Owners of the Industry Participants.\n\n- Household members and immediate family members (siblings, children, and parents) of any of the above.",
+      "comboEligible": true,
+      "sgcEligible": true,
+      "liveEligible": true
+     },
+     {
+      "marketId": "6448947",
+      "participantId": 9894,
+      "title": "Buffalo Bills",
+      "shortTitle": "BUF Bills",
+      "abbreviation": "BUF",
+      "symbol": "NX.F.OPT.NFL-00001-260827-M.O.1.2.20270301",
+      "shortSymbol": "NX.F.OPT.NFL-00001-260827-M.O.1.2",
+      "colors": [
+       "#00338d",
+       "#c60c30"
+      ],
+      "image": "https://cms-assets.1.markets.fan/media/Buffalo Bills.png",
+      "probability": 0.55,
+      "liquidity": null,
+      "volume24H": null,
+      "totalVolume": "3291.66",
+      "tradeCount": 206,
+      "group": "moneyline",
+      "outcomeType": "HOME",
+      "periodType": "Full Game",
+      "marketGroupId": 3,
+      "startTime": 1785726000000,
+      "endTime": 1787619635966,
+      "tradingRules": "You receive a $1 return per contract if your prediction is correct and nothing if it is incorrect.\n\nThe market resolves when the match or event ends and the winner is determined.\n\nLiquidity may be low when the match/event is in progress. Trading may be temporarily paused during scheduled maintenance periods.\n\nIn the event of an event cancellation, all open positions will be settled at the Volume Weighted Average Price (VWAP) at the time of cancellation. Please note that settlement at VWAP may result in a return higher or lower than your original stake. For more information see [here](https://help.crypto.com/en/articles/10208780-sports-event-trading#h_aa0e1d8f64)\n \nRead the full contracts terms and conditions [here](https://www.cftc.gov/sites/default/files/filings/ptc/25/07/ptc07302527650.pdf).",
+      "tradingProhibitions": "Certain individuals are prohibited from trading the Event Contract. Those persons include:\n- Current and former Industry Participant players, coaches, agents and staff.\n- Paid employees and management of the Industry Participants.\n- Owners of the Industry Participants.\n- Household members and immediate family members (siblings, children, and parents) of any of the above.\n\n- Current and former Industry Participant players, coaches, agents and staff.\n\n- Paid employees and management of the Industry Participants.\n\n- Owners of the Industry Participants.\n\n- Household members and immediate family members (siblings, children, and parents) of any of the above.",
+      "comboEligible": true,
+      "sgcEligible": true,
+      "liveEligible": true
+     }
+    ]
+   },
+   "venue": {
+    "name": "Highmark Stadium",
+    "city": "Orchard Park",
+    "state": "NY",
+    "country": "USA"
+   },
+   "weather": null,
+   "sdpStatus": "scheduled"
+  },
+  {
+   "id": "4530253",
+   "sdpId": "caf8aee7-7ad5-4977-860e-20ab0165d480",
+   "title": "San Francisco 49ers @ Las Vegas Raiders",
+   "slug": "san-francisco-49ers-vs-las-vegas-raiders",
+   "canonicalPath": "/sports/football/nfl/san-francisco-49ers-vs-las-vegas-raiders",
+   "description": null,
+   "category": "Sports",
+   "categorySlug": "sports",
+   "topic": "Football",
+   "topicSlug": "football",
+   "series": "NFL",
+   "seriesSlug": "nfl",
+   "categoryTooltip": "Sports > Football > NFL",
+   "image": null,
+   "video": null,
+   "fanVizUrl": null,
+   "startTime": 1787875200000,
+   "isLive": false,
+   "isOver": false,
+   "lastSeenAt": 1787619638329,
+   "isFuture": false,
+   "status": "UPCOMING",
+   "archetype": "team-vs-team",
+   "isMatchupEvent": true,
+   "matchupProps": {
+    "sideA": {
+     "name": "San Francisco 49ers",
+     "shortName": "SF 49ers",
+     "abbreviation": "SF",
+     "avatarSrc": "https://cms-assets.1.markets.fan/media/San Francisco 49ers.png",
+     "color": "#b3995d",
+     "homeAway": "AWAY",
+     "sdpId": "0c22476e-aa54-4b29-ae78-a23baf0f4cdb"
+    },
+    "sideB": {
+     "name": "Las Vegas Raiders",
+     "shortName": "LV Raiders",
+     "abbreviation": "LV",
+     "avatarSrc": "https://cms-assets.1.markets.fan/media/Las Vegas Raiders.png",
+     "color": "#a5acaf",
+     "homeAway": "HOME",
+     "sdpId": "cd387ed9-bb5e-4a5a-bdcd-80d7d5eb79fd"
+    },
+    "sideAValue": 47,
+    "sideBValue": 54,
+    "pressureBar": [
+     {
+      "value": 47,
+      "color": "#b3995d",
+      "label": "San Francisco 49ers"
+     },
+     {
+      "value": 54,
+      "color": "#a5acaf",
+      "label": "Las Vegas Raiders"
+     }
+    ]
+   },
+   "metadata": null,
+   "markets": {
+    "moneyline": [
+     {
+      "marketId": "6448951",
+      "participantId": 10198,
+      "title": "San Francisco 49ers",
+      "shortTitle": "SF 49ers",
+      "abbreviation": "SF",
+      "symbol": "NX.F.OPT.NFL-00003-260827-M.O.1.1.20270301",
+      "shortSymbol": "NX.F.OPT.NFL-00003-260827-M.O.1.1",
+      "colors": [
+       "#b3995d",
+       "#aa0000"
+      ],
+      "image": "https://cms-assets.1.markets.fan/media/San Francisco 49ers.png",
+      "probability": 0.465,
+      "liquidity": null,
+      "volume24H": null,
+      "totalVolume": "885.49",
+      "tradeCount": 91,
+      "group": "moneyline",
+      "outcomeType": "AWAY",
+      "periodType": "Full Game",
+      "marketGroupId": 3,
+      "startTime": 1785726000000,
+      "endTime": 1787619635956,
+      "tradingRules": "You receive a $1 return per contract if your prediction is correct and nothing if it is incorrect.\n\nThe market resolves when the match or event ends and the winner is determined.\n\nLiquidity may be low when the match/event is in progress. Trading may be temporarily paused during scheduled maintenance periods.\n\nIn the event of an event cancellation, all open positions will be settled at the Volume Weighted Average Price (VWAP) at the time of cancellation. Please note that settlement at VWAP may result in a return higher or lower than your original stake. For more information see [here](https://help.crypto.com/en/articles/10208780-sports-event-trading#h_aa0e1d8f64)\n \nRead the full contracts terms and conditions [here](https://www.cftc.gov/sites/default/files/filings/ptc/25/07/ptc07302527650.pdf).",
+      "tradingProhibitions": "Certain individuals are prohibited from trading the Event Contract. Those persons include:\n- Current and former Industry Participant players, coaches, agents and staff.\n- Paid employees and management of the Industry Participants.\n- Owners of the Industry Participants.\n- Household members and immediate family members (siblings, children, and parents) of any of the above.\n\n- Current and former Industry Participant players, coaches, agents and staff.\n\n- Paid employees and management of the Industry Participants.\n\n- Owners of the Industry Participants.\n\n- Household members and immediate family members (siblings, children, and parents) of any of the above.",
+      "comboEligible": true,
+      "sgcEligible": true,
+      "liveEligible": true
+     },
+     {
+      "marketId": "6448952",
+      "participantId": 10200,
+      "title": "Las Vegas Raiders",
+      "shortTitle": "LV Raiders",
+      "abbreviation": "LV",
+      "symbol": "NX.F.OPT.NFL-00003-260827-M.O.1.2.20270301",
+      "shortSymbol": "NX.F.OPT.NFL-00003-260827-M.O.1.2",
+      "colors": [
+       "#a5acaf",
+       "#000000"
+      ],
+      "image": "https://cms-assets.1.markets.fan/media/Las Vegas Raiders.png",
+      "probability": 0.535,
+      "liquidity": null,
+      "volume24H": null,
+      "totalVolume": "1122.72",
+      "tradeCount": 41,
+      "group": "moneyline",
+      "outcomeType": "HOME",
+      "periodType": "Full Game",
+      "marketGroupId": 3,
+      "startTime": 1785726000000,
+      "endTime": 1787619635956,
+      "tradingRules": "You receive a $1 return per contract if your prediction is correct and nothing if it is incorrect.\n\nThe market resolves when the match or event ends and the winner is determined.\n\nLiquidity may be low when the match/event is in progress. Trading may be temporarily paused during scheduled maintenance periods.\n\nIn the event of an event cancellation, all open positions will be settled at the Volume Weighted Average Price (VWAP) at the time of cancellation. Please note that settlement at VWAP may result in a return higher or lower than your original stake. For more information see [here](https://help.crypto.com/en/articles/10208780-sports-event-trading#h_aa0e1d8f64)\n \nRead the full contracts terms and conditions [here](https://www.cftc.gov/sites/default/files/filings/ptc/25/07/ptc07302527650.pdf).",
+      "tradingProhibitions": "Certain individuals are prohibited from trading the Event Contract. Those persons include:\n- Current and former Industry Participant players, coaches, agents and staff.\n- Paid employees and management of the Industry Participants.\n- Owners of the Industry Participants.\n- Household members and immediate family members (siblings, children, and parents) of any of the above.\n\n- Current and former Industry Participant players, coaches, agents and staff.\n\n- Paid employees and management of the Industry Participants.\n\n- Owners of the Industry Participants.\n\n- Household members and immediate family members (siblings, children, and parents) of any of the above.",
+      "comboEligible": true,
+      "sgcEligible": true,
+      "liveEligible": true
+     }
+    ]
+   },
+   "venue": {
+    "name": "Allegiant Stadium",
+    "city": "Las Vegas",
+    "state": "NV",
+    "country": "USA"
+   },
+   "weather": null,
+   "sdpStatus": "scheduled"
+  },
+  {
+   "id": "4530251",
+   "sdpId": "172a7056-2f12-4fe2-8252-55fb144724cb",
+   "title": "New England Patriots @ Cleveland Browns",
+   "slug": "new-england-patriots-vs-cleveland-browns",
+   "canonicalPath": "/sports/football/nfl/new-england-patriots-vs-cleveland-browns",
+   "description": null,
+   "category": "Sports",
+   "categorySlug": "sports",
+   "topic": "Football",
+   "topicSlug": "football",
+   "series": "NFL",
+   "seriesSlug": "nfl",
+   "categoryTooltip": "Sports > Football > NFL",
+   "image": null,
+   "video": null,
+   "fanVizUrl": null,
+   "startTime": 1787875200000,
+   "isLive": false,
+   "isOver": false,
+   "lastSeenAt": 1787619638330,
+   "isFuture": false,
+   "status": "UPCOMING",
+   "archetype": "team-vs-team",
+   "isMatchupEvent": true,
+   "matchupProps": {
+    "sideA": {
+     "name": "New England Patriots",
+     "shortName": "NE Patriots",
+     "abbreviation": "NE",
+     "avatarSrc": "https://cms-assets.1.markets.fan/media/New England Patriots-1.png",
+     "color": "#023e7a",
+     "homeAway": "AWAY",
+     "sdpId": "620b5f25-83ce-4ba9-aa33-b51fa9c36f74"
+    },
+    "sideB": {
+     "name": "Cleveland Browns",
+     "shortName": "CLE Browns",
+     "abbreviation": "CLE",
+     "avatarSrc": "https://cms-assets.1.markets.fan/media/Cleveland Browns.png",
+     "color": "#ff3c00",
+     "homeAway": "HOME",
+     "sdpId": "9f04e584-0208-49c8-b879-d1942e29adbe"
+    },
+    "sideAValue": 58,
+    "sideBValue": 42,
+    "pressureBar": [
+     {
+      "value": 58,
+      "color": "#023e7a",
+      "label": "New England Patriots"
+     },
+     {
+      "value": 42,
+      "color": "#ff3c00",
+      "label": "Cleveland Browns"
+     }
+    ]
+   },
+   "metadata": null,
+   "markets": {
+    "moneyline": [
+     {
+      "marketId": "6448948",
+      "participantId": 10107,
+      "title": "New England Patriots",
+      "shortTitle": "NE Patriots",
+      "abbreviation": "NE",
+      "symbol": "NX.F.OPT.NFL-00002-260827-M.O.1.1.20270301",
+      "shortSymbol": "NX.F.OPT.NFL-00002-260827-M.O.1.1",
+      "colors": [
+       "#023e7a",
+       "#b0b7bc",
+       "#c60c30"
+      ],
+      "image": "https://cms-assets.1.markets.fan/media/New England Patriots-1.png",
+      "probability": 0.58,
+      "liquidity": null,
+      "volume24H": null,
+      "totalVolume": "1474.14",
+      "tradeCount": 92,
+      "group": "moneyline",
+      "outcomeType": "AWAY",
+      "periodType": "Full Game",
+      "marketGroupId": 3,
+      "startTime": 1785726000000,
+      "endTime": 1787619635961,
+      "tradingRules": "You receive a $1 return per contract if your prediction is correct and nothing if it is incorrect.\n\nThe market resolves when the match or event ends and the winner is determined.\n\nLiquidity may be low when the match/event is in progress. Trading may be temporarily paused during scheduled maintenance periods.\n\nIn the event of an event cancellation, all open positions will be settled at the Volume Weighted Average Price (VWAP) at the time of cancellation. Please note that settlement at VWAP may result in a return higher or lower than your original stake. For more information see [here](https://help.crypto.com/en/articles/10208780-sports-event-trading#h_aa0e1d8f64)\n \nRead the full contracts terms and conditions [here](https://www.cftc.gov/sites/default/files/filings/ptc/25/07/ptc07302527650.pdf).",
+      "tradingProhibitions": "Certain individuals are prohibited from trading the Event Contract. Those persons include:\n- Current and former Industry Participant players, coaches, agents and staff.\n- Paid employees and management of the Industry Participants.\n- Owners of the Industry Participants.\n- Household members and immediate family members (siblings, children, and parents) of any of the above.\n\n- Current and former Industry Participant players, coaches, agents and staff.\n\n- Paid employees and management of the Industry Participants.\n\n- Owners of the Industry Participants.\n\n- Household members and immediate family members (siblings, children, and parents) of any of the above.",
+      "comboEligible": true,
+      "sgcEligible": true,
+      "liveEligible": true
+     },
+     {
+      "marketId": "6448949",
+      "participantId": 10197,
+      "title": "Cleveland Browns",
+      "shortTitle": "CLE Browns",
+      "abbreviation": "CLE",
+      "symbol": "NX.F.OPT.NFL-00002-260827-M.O.1.2.20270301",
+      "shortSymbol": "NX.F.OPT.NFL-00002-260827-M.O.1.2",
+      "colors": [
+       "#ff3c00",
+       "#311d00"
+      ],
+      "image": "https://cms-assets.1.markets.fan/media/Cleveland Browns.png",
+      "probability": 0.415,
+      "liquidity": null,
+      "volume24H": null,
+      "totalVolume": "745.26",
+      "tradeCount": 34,
+      "group": "moneyline",
+      "outcomeType": "HOME",
+      "periodType": "Full Game",
+      "marketGroupId": 3,
+      "startTime": 1785726000000,
+      "endTime": 1787619635961,
+      "tradingRules": "You receive a $1 return per contract if your prediction is correct and nothing if it is incorrect.\n\nThe market resolves when the match or event ends and the winner is determined.\n\nLiquidity may be low when the match/event is in progress. Trading may be temporarily paused during scheduled maintenance periods.\n\nIn the event of an event cancellation, all open positions will be settled at the Volume Weighted Average Price (VWAP) at the time of cancellation. Please note that settlement at VWAP may result in a return higher or lower than your original stake. For more information see [here](https://help.crypto.com/en/articles/10208780-sports-event-trading#h_aa0e1d8f64)\n \nRead the full contracts terms and conditions [here](https://www.cftc.gov/sites/default/files/filings/ptc/25/07/ptc07302527650.pdf).",
+      "tradingProhibitions": "Certain individuals are prohibited from trading the Event Contract. Those persons include:\n- Current and former Industry Participant players, coaches, agents and staff.\n- Paid employees and management of the Industry Participants.\n- Owners of the Industry Participants.\n- Household members and immediate family members (siblings, children, and parents) of any of the above.\n\n- Current and former Industry Participant players, coaches, agents and staff.\n\n- Paid employees and management of the Industry Participants.\n\n- Owners of the Industry Participants.\n\n- Household members and immediate family members (siblings, children, and parents) of any of the above.",
+      "comboEligible": true,
+      "sgcEligible": true,
+      "liveEligible": true
+     }
+    ]
+   },
+   "venue": {
+    "name": "Huntington Bank Field",
+    "city": "Cleveland",
+    "state": "OH",
+    "country": "USA"
+   },
+   "weather": null,
+   "sdpStatus": "scheduled"
+  }
+ ],
+ "fromCursor": null,
+ "nextCursor": "dHJ1ZXwzMjN8MDFhMDI0ZWItMmEwMC03MDlhLWJhZDgtYzY0OTFjOTI0ZGRm"
+}

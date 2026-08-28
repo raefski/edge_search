@@ -1,0 +1,182 @@
+"""pages/5_⚖️_Arbitrage.py — three-book arbitrage, middles and +EV.
+
+Connecticut licenses exactly three online sportsbooks (DraftKings, FanDuel,
+Fanatics), and this page prices all three against each other. Unlike the other
+tools here it spends **no Odds API credits**: each book is read from its own
+public endpoint, with Fanatics Markets (the prediction market) as a vig-free
+fair-value anchor. The anchor is never a bet leg -- CT enforcement against
+sports event contracts is active.
+
+Numbered 5_ to sit after Pickem; DFS_MULTISPORT_PLAN.md reserves 2_/3_.
+
+Two data paths, the same free-vs-manual split app.py and Pickem already use:
+  * Snapshot (default): data/arb_snapshot.json, written by
+    `python3 scripts/arb_scan.py`. This is what makes the page work on
+    Streamlit Community Cloud.
+  * Live scan (button): runs the scrapers in-process. Works from a machine in
+    Connecticut. It will likely FAIL on Community Cloud -- these endpoints sit
+    behind Akamai and Cloudflare, the same wall that blocked ESPN and
+    DraftKings for pickem_live.py. The button surfaces the error rather than
+    pretending, and the snapshot stays available.
+
+A scan takes ~40s, which is why the snapshot is the default rather than
+scanning on every page load.
+"""
+from __future__ import annotations
+
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+import streamlit as st
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from edge.arb import ArbConfig                      # noqa: E402
+
+SNAPSHOT = ROOT / "data" / "arb_snapshot.json"
+BOOK_NAMES = {"draftkings": "DraftKings", "fanduel": "FanDuel", "fanatics": "Fanatics",
+              "fanatics_markets": "Fanatics Markets", "pinnacle": "Pinnacle"}
+KIND_ICON = {"arb": "🟢", "middle": "🔵", "ev": "🟡"}
+
+st.set_page_config(page_title="Arbitrage", page_icon="⚖️", layout="wide")
+st.title("⚖️ Arbitrage · DraftKings / FanDuel / Fanatics")
+
+
+def load_snapshot() -> dict | None:
+    if not SNAPSHOT.exists():
+        return None
+    try:
+        return json.loads(SNAPSHOT.read_text())
+    except (OSError, ValueError):
+        return None
+
+
+def age_str(iso: str) -> str:
+    try:
+        delta = datetime.now(timezone.utc) - datetime.fromisoformat(iso)
+    except (TypeError, ValueError):
+        return "unknown age"
+    mins = int(delta.total_seconds() // 60)
+    if mins < 60:
+        return f"{mins}m ago"
+    return f"{mins // 60}h{mins % 60:02d}m ago"
+
+
+def starts_in(iso: str) -> str:
+    try:
+        mins = int((datetime.fromisoformat(iso) - datetime.now(timezone.utc)).total_seconds() // 60)
+    except (TypeError, ValueError):
+        return ""
+    if mins < 0:
+        return "live"
+    return f"in {mins}m" if mins < 60 else f"in {mins // 60}h{mins % 60:02d}m"
+
+
+# ---------------------------------------------------------------- sidebar
+with st.sidebar:
+    st.header("Scan")
+    bankroll = st.number_input("Bankroll per opportunity ($)", 50, 100_000, 1000, step=50)
+    kinds = st.multiselect("Show", ["arb", "middle", "ev"], default=["arb", "middle", "ev"],
+                           format_func=lambda k: {"arb": "Arbitrage", "middle": "Middles",
+                                                  "ev": "+EV"}[k])
+    min_profit = st.slider("Minimum %", 0.0, 20.0, 0.0, 0.25)
+    st.divider()
+    st.caption("A live scan takes ~40s and spends **no** API credits. "
+               "It needs a connection the books accept — that usually means "
+               "your own machine, not a cloud host.")
+    run_live = st.button("🔄 Scan live", use_container_width=True)
+
+snap = load_snapshot()
+
+if run_live:
+    prog = st.progress(0.0, text="starting…")
+    try:
+        from edge.arb.run import snapshot as build_snapshot
+
+        cfg = ArbConfig()
+        cfg.bankroll.total = float(bankroll)
+
+        def on_progress(label, i, n):
+            prog.progress((i + 1) / n, text=f"{label}…")
+
+        snap = build_snapshot(cfg, progress=on_progress)
+        SNAPSHOT.parent.mkdir(parents=True, exist_ok=True)
+        SNAPSHOT.write_text(json.dumps(snap, indent=1))
+        prog.empty()
+        st.success(f"Scanned {snap['stats']['quotes']:,} quotes · 0 credits")
+    except Exception as exc:                      # noqa: BLE001 - surface, don't hide
+        prog.empty()
+        st.error(f"Live scan failed: {type(exc).__name__}: {exc}")
+        st.caption("If this is a 403, the host refused this server. Run "
+                   "`python3 scripts/arb_scan.py` locally and commit "
+                   "`data/arb_snapshot.json`.")
+
+if not snap:
+    st.info("No snapshot yet. Run `python3 scripts/arb_scan.py` and commit "
+            "`data/arb_snapshot.json`, or press **Scan live**.")
+    st.stop()
+
+stats = snap.get("stats", {})
+c1, c2, c3, c4 = st.columns(4)
+c1.metric("Quotes", f"{stats.get('quotes', 0):,}")
+c2.metric("Events", stats.get("events", 0))
+c3.metric("Found", len(snap.get("opportunities", [])))
+c4.metric("Credits", "0")
+st.caption(f"Snapshot {age_str(snap.get('generated_at', ''))} · "
+           f"FanDuel {stats.get('fanduel', 0):,} · DraftKings {stats.get('draftkings', 0):,} · "
+           f"Fanatics {stats.get('fanatics', 0):,} · anchor {stats.get('anchor', 0):,}")
+
+opps = [o for o in snap.get("opportunities", [])
+        if o.get("kind") in kinds and o.get("profit_pct", 0) >= min_profit]
+sports = sorted({o.get("sport_title") or o.get("sport_key", "") for o in opps})
+if len(sports) > 1:
+    chosen = st.multiselect("Sport", sports, default=sports)
+    opps = [o for o in opps if (o.get("sport_title") or o.get("sport_key")) in chosen]
+
+if not opps:
+    st.warning("Nothing clears these filters. With three books, days with no "
+               "arbitrage are normal — middles and +EV are the usual finds.")
+    st.stop()
+
+# stakes were sized for the bankroll at scan time; rescale for this one
+scale = float(bankroll) / max(float(snap.get("stats", {}).get("bankroll", 1000.0) or 1000.0), 1.0)
+
+for o in sorted(opps, key=lambda x: -x.get("profit_pct", 0)):
+    kind = o.get("kind", "")
+    icon = KIND_ICON.get(kind, "")
+    if kind == "arb":
+        head = f"{icon} **{o['profit_pct']:+.2f}%** guaranteed"
+    elif kind == "middle":
+        hits = o.get("hit_values") or []
+        on = "/".join(str(h) for h in hits[:4]) or "the window"
+        head = (f"{icon} **+{o['profit_pct']:.1f}%** if it lands on {on} · "
+                f"−{o.get('max_loss_pct', 0):.2f}% otherwise · "
+                f"breakeven {o.get('breakeven_hit_pct', 0):.1f}%")
+    else:
+        head = (f"{icon} **{o['profit_pct']:+.2f}%** edge vs "
+                f"{o.get('anchor_book') or 'consensus'}")
+
+    with st.container(border=True):
+        st.markdown(head)
+        st.caption(f"{o.get('sport_title', '')} · **{o.get('matchup', '')}** · "
+                   f"{starts_in(o.get('commence_time', ''))} · {o.get('description', '')}")
+        rows = []
+        for leg in o.get("legs", []):
+            rows.append({
+                "Book": BOOK_NAMES.get(leg.get("book", ""), leg.get("book", "")),
+                "Bet": leg.get("label", ""),
+                "Line": "" if leg.get("point") is None else f"{leg['point']:g}",
+                "Odds": leg.get("american", ""),
+                "Stake": f"${leg.get('stake', 0) * scale:,.2f}",
+                "Returns": f"${leg.get('payout', 0) * scale:,.2f}",
+            })
+        st.dataframe(rows, hide_index=True, use_container_width=True)
+        for w in o.get("warnings", []):
+            st.warning(w, icon="⚠️")
+
+st.divider()
+st.caption("Confirm both prices in the apps before staking — lines move in "
+           "seconds. Fanatics Markets is reference only and is never a leg.")

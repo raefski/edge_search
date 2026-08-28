@@ -1,0 +1,265 @@
+"""FanDuel sbapi — free player props and alternate lines, no auth.
+
+    /api/content-managed-page?page=CUSTOM&customPageId={league}&_ak={KEY}
+    /api/event-page?eventId={id}&tab={tab}&_ak={KEY}
+
+`_ak` is a static app-wide key in the site's JS, passed as a query param.
+There are no cookies and no rotating token, and the Connecticut host answers
+from anywhere. That makes FanDuel props free, where the aggregator charges
+credits per event for them.
+
+Endpoint shape credit: github.com/sjhouston23/oddswrap
+"""
+from __future__ import annotations
+
+import logging
+import re
+from datetime import datetime, timezone
+
+from . import http as requests
+
+from .models import Board, EventMeta, GroupKey, Quote
+from .matching import match_event
+
+_FRAC_RE = re.compile(r"\.(\d{1,6})\d*")
+
+log = logging.getLogger("arb.fanduel")
+
+API_KEY = "FhMFpcPWXMeyZxOx"
+BOOK = "fanduel"
+HOST = "https://sbapi.{state}.sportsbook.fanduel.com/api"
+HEADERS = {"Accept": "application/json",
+           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/151.0.0.0"}
+
+# league page ids on content-managed-page
+LEAGUE_PAGES = {"baseball_mlb": "mlb", "americanfootball_nfl": "nfl",
+                "basketball_nba": "nba", "icehockey_nhl": "nhl",
+                "americanfootball_ncaaf": "ncaaf", "basketball_wnba": "wnba"}
+
+# game-level markets
+GAME_MARKETS = {
+    "MONEY_LINE": ("h2h", None),
+    "RUN_LINE": ("spreads", None),
+    "ALTERNATE_RUN_LINES": ("spreads", None),
+    "SPREAD": ("spreads", None),
+    "ALTERNATE_SPREAD": ("spreads", None),
+    "TOTAL_RUNS": ("totals", None),
+    "ALTERNATE_TOTAL_RUNS": ("totals", None),
+    "TOTAL_POINTS": ("totals", None),
+    "ALTERNATE_TOTAL_POINTS": ("totals", None),
+    "MATCH_HANDICAP_(2-WAY)": ("spreads", None),
+    "TOTAL_POINTS_(OVER/UNDER)": ("totals", None),
+    "ALTERNATE_MATCH_HANDICAP": ("spreads", None),
+    "ALTERNATE_TOTAL_POINTS_(OVER/UNDER)": ("totals", None),
+}
+
+# Anything naming a period, a single team, or an inning is NOT the full-game
+# market. GroupKey carries no period, so mapping "1ST_HALF_TOTAL_POINTS" to
+# `totals` would pair a half line against a full-game line.
+PERIOD_MARKERS = ("1ST_", "2ND_", "3RD_", "4TH_", "5TH_", "6TH_", "7TH_", "8TH_",
+                  "9TH_", "HALF", "QUARTER", "PERIOD", "INNING", "_TEAM_",
+                  "HOME_TEAM", "AWAY_TEAM", "RACE_TO", "FIRST_", "AWAY_", "HOME_")
+SPREAD_WORDS = ("HANDICAP", "SPREAD", "RUN_LINE", "PUCK_LINE", "LINE_BETTING")
+TOTAL_WORDS = ("TOTAL_POINTS", "TOTAL_RUNS", "TOTAL_GOALS", "OVER/UNDER")
+
+# the statistic named by a threshold market, e.g. TO_RECORD_2+_HITS -> hits
+STAT_KEYS = {
+    "HITS": "batter_hits", "HOME_RUNS": "batter_home_runs", "HOME_RUN": "batter_home_runs",
+    "RBIS": "batter_rbis", "RBI": "batter_rbis", "TOTAL_BASES": "batter_total_bases",
+    "RUNS": "batter_runs_scored", "SINGLE": "batter_singles", "DOUBLE": "batter_doubles",
+    "TRIPLE": "batter_triples", "STOLEN_BASES": "batter_stolen_bases",
+    "STRIKEOUTS": "pitcher_strikeouts", "OUTS": "pitcher_outs",
+}
+# markets whose line lives in the runner handicap rather than the name
+HANDICAP_PROPS = {
+    "PITCHER_D_STRIKEOUTS": "pitcher_strikeouts",
+    "PITCHER_STRIKEOUTS": "pitcher_strikeouts",
+    "PITCHER_OUTS": "pitcher_outs",
+}
+
+# "TO_RECORD_2+_HITS", "TO_HIT_3+_HOME_RUNS", "PLAYER_TO_RECORD_A_HIT"
+THRESHOLD_RE = re.compile(r"(?:TO_RECORD|TO_HIT)_(?:(\d+)\+|A)_(.+)$")
+# pitchers are lettered per event: PITCHER_C_STRIKEOUTS, PITCHER_E_TOTAL_STRIKEOUTS
+PITCHER_RE = re.compile(r"^PITCHER_[A-Z]_(?:TOTAL_)?(STRIKEOUTS|OUTS|WALKS|HITS|EARNED_RUNS)$")
+# On alternate ladders the line is in the runner NAME, not the handicap field,
+# which stays 0: "Over 2.5", "Minnesota Twins +6.5".
+OU_NAME_RE = re.compile(r"^(Over|Under)\s+([+-]?[\d.]+)\s*$", re.I)
+TEAM_LINE_RE = re.compile(r"^(.+?)\s+([+-][\d.]+)\s*$")
+
+
+def classify(market_type: str) -> tuple[str, float | None] | None:
+    """Map a FanDuel marketType to (canonical market, line) or None.
+
+    Threshold markets are converted the same way DraftKings milestones are:
+    "2+ hits" is Over 1.5, "A hit" is Over 0.5. Without that they never meet
+    another book's Over/Under and cannot be compared.
+    """
+    mt = (market_type or "").upper().strip()
+    if mt in GAME_MARKETS:
+        return GAME_MARKETS[mt]
+    if mt in HANDICAP_PROPS:
+        return HANDICAP_PROPS[mt], None
+    pm = PITCHER_RE.match(mt)
+    if pm:
+        return {"STRIKEOUTS": "pitcher_strikeouts", "OUTS": "pitcher_outs",
+                "WALKS": "pitcher_walks", "HITS": "pitcher_hits_allowed",
+                "EARNED_RUNS": "pitcher_earned_runs"}[pm.group(1)], None
+    # tolerant fallback for game markets whose exact name varies by sport,
+    # but never for a period or team-specific variant
+    if not any(marker in mt for marker in PERIOD_MARKERS):
+        if any(w in mt for w in SPREAD_WORDS):
+            return "spreads", None
+        if any(w in mt for w in TOTAL_WORDS):
+            return "totals", None
+
+    m = THRESHOLD_RE.search(mt)
+    if m:
+        n = float(m.group(1)) if m.group(1) else 1.0
+        stat = m.group(2).strip("_")
+        # singular and plural both occur: "A_HIT" vs "2+_HITS"
+        key = (STAT_KEYS.get(stat) or STAT_KEYS.get(stat + "S")
+               or STAT_KEYS.get(stat.rstrip("S")))
+        if key:
+            return key, n - 0.5
+    return None
+
+
+def _decimal(runner: dict) -> float | None:
+    odds = (runner.get("winRunnerOdds") or {})
+    d = ((odds.get("trueOdds") or {}).get("decimalOdds") or {}).get("decimalOdds")
+    if isinstance(d, (int, float)) and d > 1.0:
+        return float(d)
+    a = (odds.get("americanDisplayOdds") or {}).get("americanOddsInt")
+    if isinstance(a, (int, float)) and a:
+        from . import oddsmath as om
+        return om.american_to_decimal(float(a))
+    return None
+
+
+def _ts(value) -> datetime:
+    """Parse an ISO timestamp, tolerating .NET-style sub-second precision.
+
+    DraftKings sends "2026-08-29T16:00:00.0000000Z" -- seven fractional
+    digits. Python's fromisoformat accepts only 3 or 6, so this silently
+    fell back to "now" and every event failed to match on start time.
+    """
+    if value is None:
+        return datetime.now(timezone.utc)
+    text = str(value).strip().replace("Z", "+00:00")
+    text = _FRAC_RE.sub(lambda m: "." + m.group(1), text)
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        return datetime.now(timezone.utc)
+    return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+
+class FanDuelScrape:
+    def __init__(self, state: str = "ct", session: requests.Session | None = None):
+        self.base = HOST.format(state=state.lower())
+        self.session = session or requests.Session()
+
+    def _get(self, path: str, **params) -> dict:
+        params["_ak"] = API_KEY
+        r = self.session.get(f"{self.base}/{path}", params=params,
+                             headers=HEADERS, timeout=25)
+        r.raise_for_status()
+        return r.json() or {}
+
+    def league_page(self, sport_key: str) -> dict:
+        """One call returning every event in the league AND its main-line
+        markets. Per-event calls are then only needed for props."""
+        page = LEAGUE_PAGES.get(sport_key)
+        if not page:
+            return {}
+        return self._get("content-managed-page", page="CUSTOM", customPageId=page)
+
+    def list_events(self, sport_key: str, data: dict | None = None) -> list[tuple[str, str, datetime]]:
+        data = data if data is not None else self.league_page(sport_key)
+        out = []
+        for eid, ev in ((data.get("attachments") or {}).get("events") or {}).items():
+            name, open_date = ev.get("name") or "", ev.get("openDate") or ""
+            if " @ " not in name or open_date.startswith("2099"):
+                continue          # "MLB Player Markets" and similar containers
+            out.append((str(eid), name, _ts(open_date)))
+        return out
+
+    def event_markets(self, event_id: str, tab: str = "popular") -> dict:
+        return self._get("event-page", eventId=event_id, tab=tab)
+
+    def ingest_event(self, board: Board, payload: dict, sport_key: str,
+                     strict_match: bool = True) -> dict:
+        stats = {"markets": 0, "quotes": 0, "unmapped": set(), "unmatched": 0}
+        att = payload.get("attachments") or {}
+        events, markets = att.get("events") or {}, att.get("markets") or {}
+        now = datetime.now(timezone.utc)
+
+        targets: dict[str, EventMeta] = {}
+        for eid, ev in events.items():
+            name = ev.get("name") or ""
+            if " @ " not in name:
+                continue
+            away, home = [re.sub(r"\s*\([^)]*\)", "", p).strip()
+                          for p in name.split(" @ ", 1)]
+            t = match_event(board, home, away, _ts(ev.get("openDate")), sport_key)
+            if t is None:
+                stats["unmatched"] += 1
+                if strict_match:
+                    continue
+                t = EventMeta(f"fd:{eid}", sport_key, sport_key,
+                              _ts(ev.get("openDate")), home, away)
+            targets[str(eid)] = t
+        if not targets:
+            return stats
+
+        for m in markets.values():
+            target = targets.get(str(m.get("eventId")))
+            if target is None or m.get("marketStatus") not in (None, "OPEN"):
+                continue
+            stats["markets"] += 1
+            hit = classify(m.get("marketType") or "")
+            if hit is None:
+                stats["unmapped"].add(m.get("marketType"))
+                continue
+            mkey, fixed_line = hit
+
+            for r in m.get("runners") or []:
+                if r.get("runnerStatus") not in (None, "ACTIVE"):
+                    continue
+                price = _decimal(r)
+                if price is None:
+                    continue
+                name = (r.get("runnerName") or "").strip()
+                handicap = r.get("handicap")
+                is_player = bool(r.get("isPlayerSelection"))
+
+                if fixed_line is not None:            # threshold prop
+                    side, subject, point = "over", name, fixed_line
+                elif is_player:                        # handicap prop (Over/Under N)
+                    mo = re.match(r"^(Over|Under)\s+([\d.]+)\s+(.*)$", name, re.I)
+                    if mo:
+                        side = mo.group(1).lower()
+                        point = float(mo.group(2))
+                        subject = mo.group(3).strip()
+                    else:
+                        side, subject, point = "over", name, (
+                            float(handicap) if handicap else None)
+                else:                                  # game market
+                    from .normalize import normalize_outcome
+                    label, line = name, handicap
+                    ou = OU_NAME_RE.match(name)
+                    tl = TEAM_LINE_RE.match(name)
+                    if ou:
+                        label, line = ou.group(1), float(ou.group(2))
+                    elif tl:
+                        label, line = tl.group(1), float(tl.group(2))
+                    norm = normalize_outcome(mkey, label, line, None,
+                                             target.home_team, target.away_team)
+                    if norm is None:
+                        continue
+                    side, subject, point = norm
+
+                board.group(GroupKey(target.event_id, mkey, subject, point),
+                            target).add(Quote(book=BOOK, side=side, decimal=price,
+                                              point=point, last_update=now))
+                stats["quotes"] += 1
+        return stats
