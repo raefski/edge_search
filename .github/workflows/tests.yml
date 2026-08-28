@@ -1,0 +1,39 @@
+name: tests
+
+# Added 2026-08-24. Until now nothing ran the test suite: 230 tests existed and
+# no automation enforced them, while app.py carried a syntax error that made two
+# of them fail on any interpreter the devcontainer provides.
+#
+# The matrix is deliberate. 3.11 is what .devcontainer pins; 3.12 is what
+# Streamlit Cloud runs. The f-string bug was invisible on one and fatal on the
+# other, so both are tested.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+      - name: Every entry point must at least parse
+        run: |
+          python -m compileall -q app.py edge/ scripts/ pages/
+      - name: pytest
+        run: python -m pytest tests/ -q

@@ -28,6 +28,12 @@ from zoneinfo import ZoneInfo
 
 import streamlit as st
 
+
+# Extracted 2026-08-24: this literal used to be inlined in an f-string with
+# escaped quotes, which is a SyntaxError on Python < 3.12 (PEP 701 lifted the
+# no-backslash rule). The devcontainer pins 3.11, so the repo could not parse
+# its own entry point -- two tests failed on any interpreter it provides.
+_PROJ_STAR = ' <span style="color:#ffd97a">*</span>'
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
@@ -470,7 +476,7 @@ def render_app() -> None:
                     f"own <b>{own:.0f}%</b> · <b>${salary:,}</b> / 50k</div>", unsafe_allow_html=True)
         body = "".join(
             f"<tr><td class='pos'>{r['slot']}</td>"
-            f"<td class='nm'>{r['player']}{' <span style=\"color:#ffd97a\">*</span>' if r.get('projected') else ''}</td>"
+            f"<td class='nm'>{r['player']}{_PROJ_STAR if r.get('projected') else ''}</td>"
             f"<td class='team'>{r['team']}</td><td class='num'>{r['salary']:,}</td>"
             f"<td class='num'>{r['proj']}</td></tr>" for r in rows)
         st.markdown("<div class='lu-wrap'><table class='lu'>"

@@ -52,81 +52,77 @@ DEV_SEASONS = sorted(TRAIN | VAL)
 
 # --------------------------------------------------------------- loading ----
 
-def _f(v):
-    try:
-        return float(v)
-    except (TypeError, ValueError):
-        return None
+from edge.pickem_data import _f  # noqa: E402  (was defined 4x)
 
 
 def load_dev() -> list[dict]:
-    """Odds history joined to situational context, holdout excluded at load."""
-    situ = {}
-    with SITU.open() as f:
-        for r in csv.DictReader(f):
-            situ[(int(r["season"]), int(r["week"]), r["home_team"], r["away_team"])] = r
+    """Dev games as plain dicts, via the shared loader.
+
+    The holdout exclusion is no longer this file's business -- edge/pickem_data
+    owns it, and Split.DEV cannot reach 2023-24 at all. Previously this was one
+    of five hand-rolled `if s in HOLDOUT: continue` filters.
+    """
+    from edge.pickem_data import Split, load as load_games
 
     rows = []
-    with ODDS.open() as f:
-        for r in csv.DictReader(f):
-            s = int(r["season"])
-            if s in HOLDOUT:
-                continue                    # guard rail, not a filter to relax
-            key = (s, int(r["week"]), r["home_team"], r["away_team"])
-            sr = situ.get(key, {})
-            pool = float(r["home_line_open"])
-            live = float(r["home_line_close"])
-            margin = int(r["home_score"]) - int(r["away_score"])
-            v = margin + pool
-            g = {
-                "season": s, "week": int(r["week"]),
-                "home": r["home_team"], "away": r["away_team"],
-                "pool_line": pool, "live_line": live, "margin": margin,
-                "home_covers": None if v == 0 else v > 0,
-                "total_open": _f(r["total_open"]), "total_close": _f(r["total_close"]),
-                "home_ml_close": _f(r["home_ml_close"]),
-                "away_ml_close": _f(r["away_ml_close"]),
-                # situational
-                "home_rest": _f(sr.get("home_rest")), "away_rest": _f(sr.get("away_rest")),
-                "div_game": sr.get("div_game") == "1",
-                "roof": sr.get("roof", ""), "surface": sr.get("surface", ""),
-                "temp": _f(sr.get("temp")), "wind": _f(sr.get("wind")),
-                "weekday": sr.get("weekday", ""), "gametime": sr.get("gametime", ""),
-                "location": sr.get("location", ""),
-                "home_qb": sr.get("home_qb_name", ""), "away_qb": sr.get("away_qb_name", ""),
-                "referee": sr.get("referee", ""),
-                "home_juice": _f(sr.get("home_spread_odds")),
-                "away_juice": _f(sr.get("away_spread_odds")),
-            }
-            g["outdoor"] = g["roof"] in ("outdoors", "open")
-            # de-vigged P(home covers) implied by the SPREAD PRICE. A spread bet
-            # should be ~50/50, so any deviation is the book shading to balance
-            # money -- i.e. a direct readout of which side the public is on.
-            if g["home_juice"] is not None and g["away_juice"] is not None:
-                def _p(o):
-                    return (-o) / ((-o) + 100) if o < 0 else 100 / (o + 100)
-                ph, pa = _p(g["home_juice"]), _p(g["away_juice"])
-                g["p_home_juice"] = ph / (ph + pa) if (ph + pa) else None
-            else:
-                g["p_home_juice"] = None
-            g["rest_edge"] = (g["home_rest"] - g["away_rest"]
-                              if g["home_rest"] is not None and g["away_rest"] is not None
-                              else None)
-            g["move"] = live - pool
-            g["abs_line"] = abs(pool)
-            rows.append(g)
-    rows.sort(key=lambda g: (g["season"], g["week"]))
+    for g in load_games(Split.DEV, situational=True):
+        sr = g.situational or {}
+        d = {
+            "season": g.season, "week": g.week, "home": g.home, "away": g.away,
+            "pool_line": g.pool_line, "live_line": g.live_line,
+            "margin": g.margin, "home_covers": g.home_covers,
+            "total_open": g.total_open, "total_close": g.total_close,
+            "home_ml_close": g.home_ml_close, "away_ml_close": g.away_ml_close,
+            "home_rest": _f(sr.get("home_rest")), "away_rest": _f(sr.get("away_rest")),
+            "div_game": sr.get("div_game") == "1",
+            "roof": sr.get("roof", ""), "surface": sr.get("surface", ""),
+            "temp": _f(sr.get("temp")), "wind": _f(sr.get("wind")),
+            "weekday": sr.get("weekday", ""), "gametime": sr.get("gametime", ""),
+            "location": sr.get("location", ""),
+            "home_qb": sr.get("home_qb_name", ""), "away_qb": sr.get("away_qb_name", ""),
+            "referee": sr.get("referee", ""),
+            "home_juice": _f(sr.get("home_spread_odds")),
+            "away_juice": _f(sr.get("away_spread_odds")),
+            "move": g.move, "abs_line": g.abs_line,
+        }
+        d["outdoor"] = d["roof"] in ("outdoors", "open")
+        # de-vigged P(home covers) implied by the SPREAD PRICE
+        if d["home_juice"] is not None and d["away_juice"] is not None:
+            def _p(o):
+                return (-o) / ((-o) + 100) if o < 0 else 100 / (o + 100)
+            ph, pa = _p(d["home_juice"]), _p(d["away_juice"])
+            d["p_home_juice"] = ph / (ph + pa) if (ph + pa) else None
+        else:
+            d["p_home_juice"] = None
+        d["rest_edge"] = (d["home_rest"] - d["away_rest"]
+                          if d["home_rest"] is not None and d["away_rest"] is not None
+                          else None)
+        rows.append(d)
     return rows
 
 
+def shipped(g):
+    """The shipped Pick for this game, built ONCE and cached on the row.
+
+    shipped_side, shipped_tier and pickem_idea_rounds._shipped each used to
+    rebuild the whole dataclass. Across ~32 rules x 2,335 games that was a
+    quarter-million redundant constructions and the dominant cost of a lab run.
+    The row dict is per-process and never persisted, so caching on it is safe.
+    """
+    pk = g.get("_pick")
+    if pk is None:
+        pk = make_pick(g["away"], g["home"], g["pool_line"], g["live_line"],
+                       g["total_open"], g["total_close"])
+        g["_pick"] = pk
+    return pk
+
+
 def shipped_side(g) -> str:
-    return make_pick(g["away"], g["home"], g["pool_line"], g["live_line"],
-                     g["total_open"], g["total_close"]).side
+    return shipped(g).side
 
 
 def shipped_tier(g) -> str:
-    return make_pick(g["away"], g["home"], g["pool_line"], g["live_line"],
-                     g["total_open"], g["total_close"]).tier
+    return shipped(g).tier
 
 
 def won(g, side) -> str:

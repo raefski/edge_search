@@ -1,0 +1,440 @@
+{
+ "generated_at": "2026-08-28T01:54:22.449139+00:00",
+ "stats": {
+  "fanduel": 3895,
+  "draftkings": 1211,
+  "fanatics": 770,
+  "anchor": 94,
+  "bankroll": 1000,
+  "events": 143,
+  "groups": 2855,
+  "quotes": 4519
+ },
+ "opportunities": [
+  {
+   "kind": "middle",
+   "fingerprint": "cea4099d6a98dca0",
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35170670",
+   "matchup": "North Carolina @ TCU",
+   "commence_time": "2026-08-29T16:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "description": "spreads middle 8.5-9.5",
+   "legs": [
+    {
+     "book": "fanduel",
+     "side": "home",
+     "label": "TCU",
+     "decimal": 1.9091,
+     "american": "-110",
+     "point": -8.5,
+     "stake": 500.0,
+     "payout": 954.55,
+     "link": null,
+     "age_seconds": 33.3,
+     "limit": null
+    },
+    {
+     "book": "fanatics",
+     "side": "away",
+     "label": "North Carolina",
+     "decimal": 1.9091,
+     "american": "-110",
+     "point": 9.5,
+     "stake": 500.0,
+     "payout": 954.55,
+     "link": null,
+     "age_seconds": 1.2,
+     "limit": null
+    }
+   ],
+   "profit_pct": 90.91,
+   "stake_total": 1000.0,
+   "profit_abs": 909.1,
+   "max_loss_pct": 4.545,
+   "breakeven_hit_pct": 4.76,
+   "hit_values": [
+    9
+   ],
+   "pushes": false,
+   "middle_window": [
+    8.5,
+    9.5
+   ],
+   "fair_prob": null,
+   "kelly_stake": null,
+   "anchor_book": null,
+   "max_age_seconds": 33.3,
+   "warnings": [],
+   "found_at": "2026-08-28T01:54:22.369523+00:00"
+  },
+  {
+   "kind": "middle",
+   "fingerprint": "5e56e7046260b4aa",
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655471",
+   "matchup": "New Mexico State @ Florida State",
+   "commence_time": "2026-08-29T23:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "description": "totals middle 53-53.5",
+   "legs": [
+    {
+     "book": "fanatics",
+     "side": "over",
+     "label": "Over",
+     "decimal": 1.8696,
+     "american": "-115",
+     "point": 53.0,
+     "stake": 500.0,
+     "payout": 934.8,
+     "link": null,
+     "age_seconds": 1.2,
+     "limit": null
+    },
+    {
+     "book": "fanduel",
+     "side": "under",
+     "label": "Under",
+     "decimal": 1.9524,
+     "american": "-105",
+     "point": 53.5,
+     "stake": 479.0,
+     "payout": 935.2,
+     "link": null,
+     "age_seconds": 23.1,
+     "limit": null
+    }
+   ],
+   "profit_pct": 46.572,
+   "stake_total": 979.0,
+   "profit_abs": 455.94,
+   "max_loss_pct": 4.528,
+   "breakeven_hit_pct": 8.86,
+   "hit_values": [
+    53
+   ],
+   "pushes": true,
+   "middle_window": [
+    53.0,
+    53.5
+   ],
+   "fair_prob": null,
+   "kelly_stake": null,
+   "anchor_book": null,
+   "max_age_seconds": 23.1,
+   "warnings": [
+    "a whole-number line pushes: that result returns one stake instead of paying it, so the gain is roughly halved"
+   ],
+   "found_at": "2026-08-28T01:54:22.368720+00:00"
+  },
+  {
+   "kind": "middle",
+   "fingerprint": "d52ea195c8f64ab8",
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35170670",
+   "matchup": "North Carolina @ TCU",
+   "commence_time": "2026-08-29T16:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "description": "totals middle 46-46.5",
+   "legs": [
+    {
+     "book": "fanatics",
+     "side": "over",
+     "label": "Over",
+     "decimal": 1.8696,
+     "american": "-115",
+     "point": 46.0,
+     "stake": 500.0,
+     "payout": 934.8,
+     "link": null,
+     "age_seconds": 1.2,
+     "limit": null
+    },
+    {
+     "book": "draftkings",
+     "side": "under",
+     "label": "Under",
+     "decimal": 1.9524,
+     "american": "-105",
+     "point": 46.5,
+     "stake": 479.0,
+     "payout": 935.2,
+     "link": null,
+     "age_seconds": 4.2,
+     "limit": null
+    }
+   ],
+   "profit_pct": 46.572,
+   "stake_total": 979.0,
+   "profit_abs": 455.94,
+   "max_loss_pct": 4.528,
+   "breakeven_hit_pct": 8.86,
+   "hit_values": [
+    46
+   ],
+   "pushes": true,
+   "middle_window": [
+    46.0,
+    46.5
+   ],
+   "fair_prob": null,
+   "kelly_stake": null,
+   "anchor_book": null,
+   "max_age_seconds": 4.2,
+   "warnings": [
+    "a whole-number line pushes: that result returns one stake instead of paying it, so the gain is roughly halved"
+   ],
+   "found_at": "2026-08-28T01:54:22.369327+00:00"
+  },
+  {
+   "kind": "middle",
+   "fingerprint": "7025dbc214626826",
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35170670",
+   "matchup": "North Carolina @ TCU",
+   "commence_time": "2026-08-29T16:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "description": "spreads middle 8.5-9",
+   "legs": [
+    {
+     "book": "fanduel",
+     "side": "home",
+     "label": "TCU",
+     "decimal": 1.9091,
+     "american": "-110",
+     "point": -8.5,
+     "stake": 500.0,
+     "payout": 954.55,
+     "link": null,
+     "age_seconds": 33.3,
+     "limit": null
+    },
+    {
+     "book": "fanatics",
+     "side": "away",
+     "label": "North Carolina",
+     "decimal": 1.9091,
+     "american": "-110",
+     "point": 9.0,
+     "stake": 500.0,
+     "payout": 954.55,
+     "link": null,
+     "age_seconds": 1.2,
+     "limit": null
+    }
+   ],
+   "profit_pct": 45.455,
+   "stake_total": 1000.0,
+   "profit_abs": 454.55,
+   "max_loss_pct": 4.545,
+   "breakeven_hit_pct": 9.09,
+   "hit_values": [
+    9
+   ],
+   "pushes": true,
+   "middle_window": [
+    8.5,
+    9.0
+   ],
+   "fair_prob": null,
+   "kelly_stake": null,
+   "anchor_book": null,
+   "max_age_seconds": 33.3,
+   "warnings": [
+    "a whole-number line pushes: that result returns one stake instead of paying it, so the gain is roughly halved"
+   ],
+   "found_at": "2026-08-28T01:54:22.369657+00:00"
+  },
+  {
+   "kind": "middle",
+   "fingerprint": "f35afb9868229059",
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35682720",
+   "matchup": "NC State @ Virginia",
+   "commence_time": "2026-08-29T19:30:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "description": "spreads middle 4-4.5",
+   "legs": [
+    {
+     "book": "draftkings",
+     "side": "home",
+     "label": "Virginia",
+     "decimal": 1.9524,
+     "american": "-105",
+     "point": -4.0,
+     "stake": 489.0,
+     "payout": 954.72,
+     "link": null,
+     "age_seconds": 4.2,
+     "limit": null
+    },
+    {
+     "book": "fanduel",
+     "side": "away",
+     "label": "NC State",
+     "decimal": 1.8696,
+     "american": "-115",
+     "point": -4.5,
+     "stake": 511.0,
+     "payout": 955.37,
+     "link": null,
+     "age_seconds": 30.4,
+     "limit": null
+    }
+   ],
+   "profit_pct": 44.437,
+   "stake_total": 1000.0,
+   "profit_abs": 444.37,
+   "max_loss_pct": 4.528,
+   "breakeven_hit_pct": 9.25,
+   "hit_values": [
+    4
+   ],
+   "pushes": true,
+   "middle_window": [
+    4.0,
+    4.5
+   ],
+   "fair_prob": null,
+   "kelly_stake": null,
+   "anchor_book": null,
+   "max_age_seconds": 30.4,
+   "warnings": [
+    "a whole-number line pushes: that result returns one stake instead of paying it, so the gain is roughly halved"
+   ],
+   "found_at": "2026-08-28T01:54:22.368983+00:00"
+  },
+  {
+   "kind": "middle",
+   "fingerprint": "79ccc7d3eb831826",
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655468",
+   "matchup": "Memphis @ UNLV",
+   "commence_time": "2026-08-30T02:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "description": "spreads middle 4-4.5",
+   "legs": [
+    {
+     "book": "fanatics",
+     "side": "home",
+     "label": "UNLV",
+     "decimal": 1.9524,
+     "american": "-105",
+     "point": -4.0,
+     "stake": 489.0,
+     "payout": 954.72,
+     "link": null,
+     "age_seconds": 1.2,
+     "limit": null
+    },
+    {
+     "book": "draftkings",
+     "side": "away",
+     "label": "Memphis",
+     "decimal": 1.8696,
+     "american": "-115",
+     "point": -4.5,
+     "stake": 511.0,
+     "payout": 955.37,
+     "link": null,
+     "age_seconds": 4.2,
+     "limit": null
+    }
+   ],
+   "profit_pct": 44.437,
+   "stake_total": 1000.0,
+   "profit_abs": 444.37,
+   "max_loss_pct": 4.528,
+   "breakeven_hit_pct": 9.25,
+   "hit_values": [
+    4
+   ],
+   "pushes": true,
+   "middle_window": [
+    4.0,
+    4.5
+   ],
+   "fair_prob": null,
+   "kelly_stake": null,
+   "anchor_book": null,
+   "max_age_seconds": 4.2,
+   "warnings": [
+    "a whole-number line pushes: that result returns one stake instead of paying it, so the gain is roughly halved"
+   ],
+   "found_at": "2026-08-28T01:54:22.370818+00:00"
+  },
+  {
+   "kind": "middle",
+   "fingerprint": "381f079ac056e63f",
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655471",
+   "matchup": "New Mexico State @ Florida State",
+   "commence_time": "2026-08-29T23:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "description": "totals middle 53.5-54",
+   "legs": [
+    {
+     "book": "draftkings",
+     "side": "over",
+     "label": "Over",
+     "decimal": 1.8929,
+     "american": "-112",
+     "point": 53.5,
+     "stake": 502.0,
+     "payout": 950.24,
+     "link": null,
+     "age_seconds": 4.2,
+     "limit": null
+    },
+    {
+     "book": "fanatics",
+     "side": "under",
+     "label": "Under",
+     "decimal": 1.9091,
+     "american": "-110",
+     "point": 54.0,
+     "stake": 498.0,
+     "payout": 950.73,
+     "link": null,
+     "age_seconds": 1.2,
+     "limit": null
+    }
+   ],
+   "profit_pct": 44.824,
+   "stake_total": 1000.0,
+   "profit_abs": 448.24,
+   "max_loss_pct": 4.976,
+   "breakeven_hit_pct": 9.99,
+   "hit_values": [
+    54
+   ],
+   "pushes": true,
+   "middle_window": [
+    53.5,
+    54.0
+   ],
+   "fair_prob": null,
+   "kelly_stake": null,
+   "anchor_book": null,
+   "max_age_seconds": 4.2,
+   "warnings": [
+    "a whole-number line pushes: that result returns one stake instead of paying it, so the gain is roughly halved"
+   ],
+   "found_at": "2026-08-28T01:54:22.368511+00:00"
+  }
+ ]
+}

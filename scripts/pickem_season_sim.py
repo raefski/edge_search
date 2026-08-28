@@ -48,32 +48,23 @@ DEV_SD_MOVE = 1.8152                        # SD of open->close on dev
 
 
 def load(half_point: bool = True, seed: int = 11) -> dict:
-    """CBS's pool NEVER posts an integer line -- every number ends in .5, so a
-    push is impossible for Adam. The historical proxy (a sportsbook opener) is
-    an integer 52.5% of the time, so grading against it is measurably wrong.
-    half_point=True rewrites integer openers to a half point, which is the
-    convention Adam actually plays under. Confirmed 2026-08-23 against the real
-    Week 1 pool lines: 16 of 16 ended in .5."""
-    import random as _random
-    rnd = _random.Random(seed)
-    by_season: dict[int, list[dict]] = {}
-    with ODDS.open() as f:
-        for r in csv.DictReader(f):
-            s = int(r["season"])
-            if s in HOLDOUT:
-                continue
-            try:
-                to, tc = float(r["total_open"]), float(r["total_close"])
-            except ValueError:
-                to = tc = None
-            op = float(r["home_line_open"])
-            if half_point and op == int(op):
-                op += rnd.choice((-0.5, 0.5))
-            by_season.setdefault(s, []).append(dict(
-                week=int(r["week"]), away=r["away_team"], home=r["home_team"],
-                op=op, cl=float(r["home_line_close"]),
-                margin=int(r["home_score"]) - int(r["away_score"]), to=to, tc=tc))
-    return by_season
+    """Dev seasons, grouped by season, via the shared loader.
+
+    CBS's pool never posts an integer line -- 16/16 real Week 1 lines ended in
+    .5 -- while the historical proxy is an integer 52.5% of the time, so
+    half_point=True is the convention Adam actually plays under. That option
+    now lives in edge/pickem_data so every reader of this CSV can apply it;
+    this script having it privately was the drift that hid a push bug.
+    """
+    from edge.pickem_data import Split, by_season
+    from edge.pickem_data import load as load_games
+
+    grouped = by_season(load_games(Split.DEV, half_point=half_point,
+                                   half_point_seed=seed))
+    return {s: [dict(week=g.week, away=g.away, home=g.home, op=g.pool_line,
+                     cl=g.live_line, margin=g.margin,
+                     to=g.total_open, tc=g.total_close) for g in games]
+            for s, games in grouped.items()}
 
 
 def payout(my_score: float, opp_scores: np.ndarray) -> float:

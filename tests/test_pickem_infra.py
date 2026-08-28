@@ -241,3 +241,52 @@ def test_transferability_curve_is_monotone_and_bottoms_at_chalk():
     assert margins == sorted(margins), "edge must not increase as w falls"
     assert abs(PT.interp(0.0)[0]) < 0.5, "at w=0 the model should collapse to chalk"
     assert PT.interp(1.0)[0] > 6.0, "at w=1 it must reproduce the backtested margin"
+
+
+# --- free feed slate filter (architecture review fix 1) --------------------
+
+def test_free_feed_rejects_a_board_spanning_two_slates():
+    """Regression guard for a live-affecting bug found 2026-08-24.
+
+    The books' league endpoints return their ENTIRE visible board, not one
+    week. Unfiltered, that was 44 events from preseason through Christmas with
+    12 home teams appearing 2-4 times. Every consumer keys by home_abbr, so
+    duplicates silently collapsed to whichever landed last -- often a PRESEASON
+    game -- and the model then emitted maximum-confidence picks off a
+    fabricated edge (CLE +7.5 at a claimed +9.00; five of six STRONG picks
+    were garbage).
+    """
+    from datetime import datetime, timezone
+    import pytest
+    from edge.pickem_free import filter_to_slate
+    from edge.pickem_live import LiveGame
+
+    def g(home, away, kickoff, line):
+        return LiveGame(away=away, home=home, away_abbr=away, home_abbr=home,
+                        kickoff=kickoff, live_line=line, live_line_mean=line,
+                        live_line_median=line, total=44.0, n_books=2)
+
+    preseason = g("SEA", "GB", "2026-08-28T23:00:00Z", 1.5)
+    week1 = g("SEA", "NE", "2026-09-10T00:20:00Z", -3.5)
+    week3 = g("SEA", "DAL", "2026-09-24T00:20:00Z", -2.5)
+    board = [preseason, week1, week3]
+
+    # a window catching two slates must RAISE, not silently pick one
+    with pytest.raises(ValueError, match="more than once"):
+        filter_to_slate(board,
+                        window_start=datetime(2026, 8, 1, tzinfo=timezone.utc),
+                        window_end=datetime(2026, 12, 1, tzinfo=timezone.utc))
+
+    # a correct window yields exactly the Week 1 game, with the Week 1 line
+    only = filter_to_slate(board,
+                           window_start=datetime(2026, 9, 9, tzinfo=timezone.utc),
+                           window_end=datetime(2026, 9, 16, tzinfo=timezone.utc))
+    assert len(only) == 1
+    assert only[0].live_line == -3.5, "must be the Week 1 line, not preseason's"
+
+    # the escape hatch still works, but only when asked for explicitly
+    raw = filter_to_slate(board,
+                          window_start=datetime(2026, 8, 1, tzinfo=timezone.utc),
+                          window_end=datetime(2026, 12, 1, tzinfo=timezone.utc),
+                          allow_duplicates=True)
+    assert len(raw) == 3

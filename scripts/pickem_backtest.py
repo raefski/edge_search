@@ -33,26 +33,21 @@ OUT = ROOT / "data" / "pickem_backtest_results.json"
 
 
 def load_games() -> list[dict]:
-    with DATA.open() as f:
-        rows = list(csv.DictReader(f))
-    games = []
-    for r in rows:
-        g = {
-            "season": int(r["season"]), "week": int(r["week"]),
-            "away": r["away_team"], "home": r["home_team"],
-            "pool_line": float(r["home_line_open"]), "live_line": float(r["home_line_close"]),
-            "home_margin": int(r["home_score"]) - int(r["away_score"]),
-        }
-        # totals feed the no-movement tiebreak (see edge/pickem.py); missing
-        # values simply fall back to the old market-favourite behaviour.
-        try:
-            g["total_open"] = float(r["total_open"])
-            g["total_close"] = float(r["total_close"])
-        except (ValueError, KeyError):
-            g["total_open"] = g["total_close"] = None
-        games.append(g)
-    games.sort(key=lambda g: (g["season"], g["week"]))
-    return games
+    """Every season, holdout included -- this script IS the holdout spend.
+
+    Uses the shared loader (edge/pickem_data.py) rather than a private parser,
+    so the five scripts that read this file can no longer drift apart in their
+    conventions. `spend_the_holdout=True` is the deliberate, named opt-in the
+    guard rail requires; see PICKEM_MODEL.md section 3.
+    """
+    from edge.pickem_data import Split, load
+    return [
+        {"season": g.season, "week": g.week, "away": g.away, "home": g.home,
+         "pool_line": g.pool_line, "live_line": g.live_line,
+         "home_margin": g.margin,
+         "total_open": g.total_open, "total_close": g.total_close}
+        for g in load(Split.ALL, spend_the_holdout=True)
+    ]
 
 
 def grade(games: list[dict]) -> dict:

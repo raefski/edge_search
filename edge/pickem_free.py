@@ -24,7 +24,7 @@ known; NFL is not listed there until the season opens.
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from edge.arb.config import ArbConfig
 from edge.arb.draftkings_league import DraftKingsLeague
@@ -98,8 +98,85 @@ def board_to_events(board: Board) -> list[dict]:
     return out
 
 
-def fetch_week_free(sport_key: str = SPORT_KEY, max_events: int = 0) -> list[LiveGame]:
-    """Free replacement for edge.pickem_live.fetch_week. Costs 0 credits."""
+def _within_window(kickoff: str | None, start: datetime, end: datetime) -> bool:
+    if not kickoff:
+        return False
+    try:
+        ts = datetime.fromisoformat(kickoff.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    if ts.tzinfo is None:
+        ts = ts.replace(tzinfo=timezone.utc)
+    return start <= ts <= end
+
+
+def filter_to_slate(games: list[LiveGame],
+                    window_start: datetime | None = None,
+                    window_end: datetime | None = None,
+                    days_ahead: float = 8.0,
+                    allow_duplicates: bool = False) -> list[LiveGame]:
+    """Trim a raw book board to ONE slate, and refuse an ambiguous one.
+
+    Split out of fetch_week_free so it can be tested without the network --
+    this is the guard that stops preseason lines being served as Week 1.
+    """
+    start = window_start or datetime.now(timezone.utc)
+    end = window_end or (start + timedelta(days=days_ahead))
+    kept = [g for g in games if _within_window(g.kickoff, start, end)]
+    dropped = len(games) - len(kept)
+    if dropped:
+        log.info("pickem_free: dropped %d event(s) outside %s..%s",
+                 dropped, start.date(), end.date())
+
+    seen: set[str] = set()
+    dupes: list[str] = []
+    for g in kept:
+        if g.home_abbr in seen:
+            dupes.append(g.home_abbr)
+        seen.add(g.home_abbr)
+    if dupes and not allow_duplicates:
+        raise ValueError(
+            f"pickem_free: {len(set(dupes))} home team(s) appear more than once "
+            f"in window {start.date()}..{end.date()}: {sorted(set(dupes))}. A "
+            "team plays once a week, so this means the window is catching two "
+            "slates and any consumer keying by home_abbr would silently use the "
+            "wrong game. Narrow the window, or pass allow_duplicates=True if you "
+            "genuinely want the raw board.")
+
+    kept.sort(key=lambda g: g.kickoff or "")
+    return kept
+
+
+def fetch_week_free(sport_key: str = SPORT_KEY, max_events: int = 0,
+                    days_ahead: float = 8.0,
+                    window_start: datetime | None = None,
+                    window_end: datetime | None = None,
+                    allow_duplicates: bool = False) -> list[LiveGame]:
+    """Free replacement for edge.pickem_live.fetch_week. Costs 0 credits.
+
+    WINDOW FILTER -- do not remove without reading this.
+    ---------------------------------------------------
+    The books' league endpoints return their ENTIRE visible board, not one
+    week. Measured 2026-08-24: 44 events spanning preseason (Aug 28) through
+    Christmas, with 12 home teams appearing 2-4 times.
+
+    Every caller keys these by home_abbr, so duplicates silently collapse to
+    whichever entry happens to land last -- and the survivor may be a
+    PRESEASON game. That produced fabricated maximum-confidence picks against
+    the real Week 1 slate: CLE +7.5 at a claimed +9.00 edge, NE +3.5 at
+    +5.00, both pure artifacts of a preseason line matched onto a Week 1
+    matchup. Five of six STRONG picks were garbage.
+
+    So: keep only kickoffs inside a window, and refuse to return a board with
+    duplicate home teams unless the caller explicitly opts in. A team plays
+    once a week; a repeat means the window is wrong.
+
+    PREFER `window_start` / `window_end` over `days_ahead`. The rolling default
+    answers "what is on in the next 8 days", which during preseason is the
+    PRESEASON slate, not the pick'em slate. Callers that know which games they
+    want -- and scripts/pickem_capture.py does, from
+    data/pickem_current_week.csv -- should pass the real kickoff range.
+    """
     cfg = ArbConfig()
     board = Board()
 
@@ -120,7 +197,9 @@ def fetch_week_free(sport_key: str = SPORT_KEY, max_events: int = 0) -> list[Liv
         log.warning("draftkings nfl: %s", exc)
 
     games = _parse_events(board_to_events(board))
-    games.sort(key=lambda g: g.kickoff or "")
+
+    games = filter_to_slate(games, window_start, window_end, days_ahead,
+                            allow_duplicates)
     return games[:max_events] if max_events else games
 
 

@@ -88,3 +88,6 @@ data/pickem/
 # call as the other nflverse ground-truth files above. The DERIVED
 # data/pbp_team_game.csv (small, aggregated) IS committed.
 data/nflverse_games.csv
+
+# Arbitrage snapshot: the Streamlit page reads this
+!data/arb_snapshot.json

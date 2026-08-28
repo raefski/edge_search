@@ -19,8 +19,11 @@ MEAN_TOTAL = 44.0     # league-typical projected total, used as the centering po
 
 
 def _shipped(g):
-    return make_pick(g["away"], g["home"], g["pool_line"], g["live_line"],
-                     g["total_open"], g["total_close"])
+    """Delegates to the memoized builder in pickem_idea_lab -- see the note
+    there. This used to construct a fresh Pick on every call, and it is called
+    several times per game per rule."""
+    from pickem_idea_lab import shipped
+    return shipped(g)
 
 
 def _moved(g, floor=0.5):
