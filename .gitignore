@@ -91,3 +91,14 @@ data/nflverse_games.csv
 
 # Arbitrage snapshot: the Streamlit page reads this
 !data/arb_snapshot.json
+
+# The phone's scan request. Tracked because it IS the message: the Streamlit
+# app commits it through the GitHub API and scripts/arb_agent.py reads it off
+# origin/main. Both need an exception to the blanket data/*.json rule above --
+# the API ignores .gitignore, so without this the file would exist on GitHub
+# and be invisible locally, which is a confusing way to debug.
+!data/scan_request.json
+
+# Local bookkeeping for scripts/arb_agent.py (which request it last handled).
+# Per-machine, and committing it would make two desktops fight over state.
+data/.arb_agent_state.json
