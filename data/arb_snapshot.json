@@ -1,39 +1,555 @@
 {
- "generated_at": "2026-08-29T01:35:18.976916+00:00",
+ "generated_at": "2026-08-29T02:25:24.890788+00:00",
  "stats": {
-  "fanduel": 481,
-  "draftkings": 713,
-  "fanatics": 0,
-  "anchor": 6,
+  "fanduel": 7011,
+  "draftkings": 1486,
+  "fanatics": 549,
+  "anchor": 92,
   "bankroll": 1000,
-  "events": 3,
-  "groups": 763,
-  "quotes": 1057
+  "events": 147,
+  "groups": 4110,
+  "quotes": 5597
  },
- "opportunities": [],
- "candidates": [
+ "opportunities": [
   {
+   "kind": "middle",
+   "fingerprint": "6e34c0619efee052",
    "sport_key": "basketball_wnba",
    "sport_title": "basketball_wnba",
-   "event_id": "fd:35986336",
-   "matchup": "Washington Mystics @ Los Angeles Sparks",
-   "commence_time": "2026-08-29T02:00:00+00:00",
-   "market": "h2h",
+   "event_id": "fd:35989826",
+   "matchup": "Toronto Tempo @ Phoenix Mercury",
+   "commence_time": "2026-08-30T02:00:00+00:00",
+   "market": "totals",
    "subject": null,
-   "point": null,
-   "arb_sum": 1.03445,
+   "description": "totals middle 177.5-178.5 (wins both on 178)",
+   "legs": [
+    {
+     "book": "fanduel",
+     "side": "over",
+     "label": "Over",
+     "decimal": 1.9091,
+     "american": "-110",
+     "point": 177.5,
+     "stake": 500.0,
+     "payout": 954.55,
+     "link": null,
+     "age_seconds": 11.0,
+     "limit": null,
+     "boost_pct": 0.0,
+     "raw_decimal": 1.9091
+    },
+    {
+     "book": "draftkings",
+     "side": "under",
+     "label": "Under",
+     "decimal": 1.9091,
+     "american": "-110",
+     "point": 178.5,
+     "stake": 500.0,
+     "payout": 954.55,
+     "link": null,
+     "age_seconds": 5.0,
+     "limit": null,
+     "boost_pct": 0.0,
+     "raw_decimal": 1.9091
+    }
+   ],
+   "profit_pct": 90.91,
+   "stake_total": 1000.0,
+   "profit_abs": 909.1,
+   "max_loss_pct": 4.545,
+   "breakeven_hit_pct": 4.76,
+   "hit_values": [
+    178
+   ],
+   "push_values": [],
+   "pushes": false,
+   "middle_window": [
+    177.5,
+    178.5
+   ],
+   "fair_prob": null,
+   "kelly_stake": null,
+   "anchor_book": null,
+   "boost": null,
+   "max_age_seconds": 11.0,
+   "warnings": [],
+   "found_at": "2026-08-29T02:25:24.862866+00:00"
+  }
+ ],
+ "candidates": [
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993947",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.0185,
    "legs": [
     {
      "side": "away",
      "book": "draftkings",
+     "decimal": 1.8929,
+     "label": "Colorado Rockies"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.04,
+     "label": "Atlanta Braves"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993934",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-29T18:21:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 8.5,
+   "arb_sum": 1.02165,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.8333,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 2.1,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993933",
+   "matchup": "Seattle Mariners @ Toronto Blue Jays",
+   "commence_time": "2026-08-29T19:08:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 7.5,
+   "arb_sum": 1.02437,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.9434,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 1.9615,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655469",
+   "matchup": "Hawaii @ Stanford",
+   "commence_time": "2026-08-29T23:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 48.5,
+   "arb_sum": 1.02439,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.9524,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.9524,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993934",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-29T18:21:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.02504,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanatics",
+     "decimal": 1.8,
+     "label": "Cincinnati Reds"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 2.13,
+     "label": "Chicago Cubs"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993947",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.02549,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 2.83,
+     "label": "Colorado Rockies"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
      "decimal": 1.4878,
-     "label": "Washington Mystics"
+     "label": "Atlanta Braves"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993946",
+   "matchup": "Chicago White Sox @ Minnesota Twins",
+   "commence_time": "2026-08-29T18:11:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.02635,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.5181,
+     "label": "Chicago White Sox"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.72,
+     "label": "Minnesota Twins"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655466",
+   "matchup": "San Jose State @ USC",
+   "commence_time": "2026-08-29T19:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -38.5,
+   "arb_sum": 1.02903,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.9615,
+     "label": "San Jose State"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.9259,
+     "label": "USC"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993933",
+   "matchup": "Seattle Mariners @ Toronto Blue Jays",
+   "commence_time": "2026-08-29T19:08:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.03009,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.4975,
+     "label": "Seattle Mariners"
     },
     {
      "side": "home",
      "book": "fanduel",
      "decimal": 2.76,
-     "label": "Los Angeles Sparks"
+     "label": "Toronto Blue Jays"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655465",
+   "matchup": "Sacramento State @ Eastern Michigan",
+   "commence_time": "2026-08-29T22:30:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -9.5,
+   "arb_sum": 1.03143,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.9259,
+     "label": "Sacramento State"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.9524,
+     "label": "Eastern Michigan"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993941",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 7.5,
+   "arb_sum": 1.03271,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.8772,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 2.0,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993936",
+   "matchup": "San Diego Padres @ Tampa Bay Rays",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.033,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.5155,
+     "label": "San Diego Padres"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.68,
+     "label": "Tampa Bay Rays"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993927",
+   "matchup": "Texas Rangers @ Milwaukee Brewers",
+   "commence_time": "2026-08-29T23:16:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.0331,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.641,
+     "label": "Texas Rangers"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.36,
+     "label": "Milwaukee Brewers"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993927",
+   "matchup": "Texas Rangers @ Milwaukee Brewers",
+   "commence_time": "2026-08-29T23:16:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03326,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 2.41,
+     "label": "Texas Rangers"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.6173,
+     "label": "Milwaukee Brewers"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655469",
+   "matchup": "Hawaii @ Stanford",
+   "commence_time": "2026-08-29T23:00:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03374,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 2.6,
+     "label": "Hawaii"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.5405,
+     "label": "Stanford"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.03422,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 2.02,
+     "label": "Los Angeles Dodgers"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.8547,
+     "label": "Detroit Tigers"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35682720",
+   "matchup": "NC State @ Virginia",
+   "commence_time": "2026-08-29T19:30:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -4.5,
+   "arb_sum": 1.03488,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.8696,
+     "label": "NC State"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 2.0,
+     "label": "Virginia"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655468",
+   "matchup": "Memphis @ UNLV",
+   "commence_time": "2026-08-30T02:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -4.5,
+   "arb_sum": 1.03488,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.8696,
+     "label": "Memphis"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 2.0,
+     "label": "UNLV"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655465",
+   "matchup": "Sacramento State @ Eastern Michigan",
+   "commence_time": "2026-08-29T22:30:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03502,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 3.85,
+     "label": "Sacramento State"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.2899,
+     "label": "Eastern Michigan"
     }
    ]
   },
@@ -63,65 +579,140 @@
    ]
   },
   {
-   "sport_key": "basketball_wnba",
-   "sport_title": "basketball_wnba",
-   "event_id": "fd:35986331",
-   "matchup": "Toronto Tempo @ Las Vegas Aces",
-   "commence_time": "2026-08-29T02:00:00+00:00",
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993946",
+   "matchup": "Chicago White Sox @ Minnesota Twins",
+   "commence_time": "2026-08-29T18:11:00+00:00",
    "market": "h2h",
    "subject": null,
    "point": null,
-   "arb_sum": 1.0373,
+   "arb_sum": 1.03565,
    "legs": [
     {
      "side": "away",
-     "book": "fanduel",
-     "decimal": 7.8,
-     "label": "Toronto Tempo"
+     "book": "draftkings",
+     "decimal": 2.04,
+     "label": "Chicago White Sox"
     },
     {
      "side": "home",
-     "book": "draftkings",
-     "decimal": 1.1,
-     "label": "Las Vegas Aces"
+     "book": "fanduel",
+     "decimal": 1.8333,
+     "label": "Minnesota Twins"
     }
    ]
   },
   {
-   "sport_key": "basketball_wnba",
-   "sport_title": "basketball_wnba",
-   "event_id": "fd:35986331",
-   "matchup": "Toronto Tempo @ Las Vegas Aces",
-   "commence_time": "2026-08-29T02:00:00+00:00",
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993934",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-29T18:21:00+00:00",
    "market": "spreads",
    "subject": null,
-   "point": -13.5,
-   "arb_sum": 1.04304,
+   "point": -3.5,
+   "arb_sum": 1.03571,
    "legs": [
     {
      "side": "away",
-     "book": "draftkings",
-     "decimal": 1.9091,
-     "label": "Toronto Tempo"
+     "book": "fanatics",
+     "decimal": 1.3333,
+     "label": "Cincinnati Reds"
     },
     {
      "side": "home",
      "book": "fanduel",
-     "decimal": 1.9259,
-     "label": "Las Vegas Aces"
+     "decimal": 3.5,
+     "label": "Chicago Cubs"
     }
    ]
   },
   {
-   "sport_key": "basketball_wnba",
-   "sport_title": "basketball_wnba",
-   "event_id": "fd:35986336",
-   "matchup": "Washington Mystics @ Los Angeles Sparks",
-   "commence_time": "2026-08-29T02:00:00+00:00",
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35170670",
+   "matchup": "North Carolina @ TCU",
+   "commence_time": "2026-08-29T16:00:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03589,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 3.8,
+     "label": "North Carolina"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.2941,
+     "label": "TCU"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993934",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-29T18:21:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03592,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 2.61,
+     "label": "Cincinnati Reds"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.5319,
+     "label": "Chicago Cubs"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35170670",
+   "matchup": "North Carolina @ TCU",
+   "commence_time": "2026-08-29T16:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -8.5,
+   "arb_sum": 1.036,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.9524,
+     "label": "North Carolina"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.9091,
+     "label": "TCU"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655466",
+   "matchup": "San Jose State @ USC",
+   "commence_time": "2026-08-29T19:00:00+00:00",
    "market": "totals",
    "subject": null,
-   "point": 167.5,
-   "arb_sum": 1.04491,
+   "point": 61.5,
+   "arb_sum": 1.036,
    "legs": [
     {
      "side": "over",
@@ -132,7 +723,557 @@
     {
      "side": "under",
      "book": "fanduel",
+     "decimal": 1.9091,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "basketball_wnba",
+   "sport_title": "basketball_wnba",
+   "event_id": "fd:35989826",
+   "matchup": "Toronto Tempo @ Phoenix Mercury",
+   "commence_time": "2026-08-30T02:00:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03608,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 4.2,
+     "label": "Toronto Tempo"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.2532,
+     "label": "Phoenix Mercury"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993946",
+   "matchup": "Chicago White Sox @ Minnesota Twins",
+   "commence_time": "2026-08-29T18:11:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 9.5,
+   "arb_sum": 1.03633,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.02,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.8475,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993945",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T02:08:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.0366,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.4219,
+     "label": "Philadelphia Phillies"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 3.0,
+     "label": "Los Angeles Angels"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993936",
+   "matchup": "San Diego Padres @ Tampa Bay Rays",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03692,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 2.12,
+     "label": "San Diego Padres"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.7692,
+     "label": "Tampa Bay Rays"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655468",
+   "matchup": "Memphis @ UNLV",
+   "commence_time": "2026-08-30T02:00:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03739,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 2.6,
+     "label": "Memphis"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.5319,
+     "label": "UNLV"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993937",
+   "matchup": "Kansas City Royals @ Cleveland Guardians",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.0375,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.5848,
+     "label": "Kansas City Royals"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.46,
+     "label": "Cleveland Guardians"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35682720",
+   "matchup": "NC State @ Virginia",
+   "commence_time": "2026-08-29T19:30:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 51.5,
+   "arb_sum": 1.03766,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.9804,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
      "decimal": 1.8772,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35682720",
+   "matchup": "NC State @ Virginia",
+   "commence_time": "2026-08-29T19:30:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03768,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 2.5,
+     "label": "NC State"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.5682,
+     "label": "Virginia"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993937",
+   "matchup": "Kansas City Royals @ Cleveland Guardians",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03796,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 2.3,
+     "label": "Kansas City Royals"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.6579,
+     "label": "Cleveland Guardians"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03811,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.5556,
+     "label": "Los Angeles Dodgers"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 2.53,
+     "label": "Detroit Tigers"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993934",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-29T18:21:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 9.5,
+   "arb_sum": 1.03827,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.24,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 1.6897,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993933",
+   "matchup": "Seattle Mariners @ Toronto Blue Jays",
+   "commence_time": "2026-08-29T19:08:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03829,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 2.08,
+     "label": "Seattle Mariners"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.7937,
+     "label": "Toronto Blue Jays"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993934",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-29T18:21:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -2.5,
+   "arb_sum": 1.03978,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanatics",
+     "decimal": 1.4878,
+     "label": "Cincinnati Reds"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.72,
+     "label": "Chicago Cubs"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655471",
+   "matchup": "New Mexico State @ Florida State",
+   "commence_time": "2026-08-29T23:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 53.5,
+   "arb_sum": 1.0405,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.8929,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 1.9524,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993945",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T02:08:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 8,
+   "arb_sum": 1.0405,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.9524,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.8929,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993945",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T02:08:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.04139,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.7353,
+     "label": "Philadelphia Phillies"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.15,
+     "label": "Los Angeles Angels"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993941",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.04154,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 2.62,
+     "label": "Miami Marlins"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.5155,
+     "label": "Washington Nationals"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993934",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-29T18:21:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.04181,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanatics",
+     "decimal": 3.5,
+     "label": "Cincinnati Reds"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.3226,
+     "label": "Chicago Cubs"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993936",
+   "matchup": "San Diego Padres @ Tampa Bay Rays",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 7.5,
+   "arb_sum": 1.04271,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.885,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 1.9524,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35170670",
+   "matchup": "North Carolina @ TCU",
+   "commence_time": "2026-08-29T16:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 46.5,
+   "arb_sum": 1.04304,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.9259,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 1.9091,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655468",
+   "matchup": "Memphis @ UNLV",
+   "commence_time": "2026-08-30T02:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 56.5,
+   "arb_sum": 1.04304,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.9259,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 1.9091,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655467",
+   "matchup": "Jacksonville State @ North Dakota State",
+   "commence_time": "2026-08-29T21:30:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 46.5,
+   "arb_sum": 1.04304,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.9091,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.9259,
      "label": "Under"
     }
    ]
