@@ -145,6 +145,14 @@ def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict
     Without this the boost control could only re-price opportunities that
     already exist, which is backwards: the whole point of a boost is the
     markets that are NOT arbs until you apply one.
+
+    `prices` carries EVERY book's price per side, not just the best. The best
+    is what an arbitrage needs, but a boost is tied to a specific book: a
+    DraftKings token is useless if the snapshot only kept FanDuel's better
+    over. `single_book` marks a market only one book prices both sides of --
+    normally a data artifact and excluded by min_books, but with a boost it is
+    a real position (the boost can beat one book's own vig) and it is the only
+    way to devig a fair price where the other book posts one side.
     """
     books = set(cfg.books.bettable)
     now = datetime.now(timezone.utc)
@@ -156,10 +164,9 @@ def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict
         best = {s: g.best(s, books) for s in sides}
         if any(q is None for q in best.values()):
             continue
-        if len({q.book for q in best.values()}) < cfg.detect.min_books:
-            continue
         if not engine.in_window(g.event, cfg, now):
             continue
+        single_book = len({q.book for q in best.values()}) < cfg.detect.min_books
         s = om.arb_sum([q.decimal for q in best.values()])
         if s > max_sum:
             continue
@@ -170,9 +177,13 @@ def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict
             "commence_time": ev.commence_time.isoformat(),
             "market": g.key.market, "subject": g.key.subject, "point": g.key.point,
             "arb_sum": round(s, 5),
+            "single_book": single_book,
             "legs": [{"side": si, "book": q.book, "decimal": round(q.decimal, 4),
                       "label": side_label(si, ev.home_team, ev.away_team, g.key.subject)}
                      for si, q in sorted(best.items())],
+            "prices": {si: {b: round(q.decimal, 4)
+                            for b, q in g.quotes.get(si, {}).items() if b in books}
+                       for si in sorted(sides)},
         })
     out.sort(key=lambda c: c["arb_sum"])
     return out

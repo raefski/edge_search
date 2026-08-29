@@ -521,3 +521,91 @@ def test_a_boost_can_push_a_leg_to_plus_money():
     """The mechanism the screen relies on: 25% takes -110 to +114, 50% to +136."""
     assert om.format_american(om.boosted(1.909, 0.25)) == "+114"
     assert om.format_american(om.boosted(1.909, 0.50)) == "+136"
+
+
+# --- boosted +EV: the boost you cannot hedge --------------------------------
+def _cand(over=2.96, under=1.50, over_book="fanduel", dk_over=None, market="batter_hits"):
+    """One candidate in snapshot shape, with per-book prices."""
+    prices = {"over": {over_book: over}, "under": {"draftkings": under}}
+    if dk_over is not None:
+        prices["over"]["draftkings"] = dk_over
+    return {
+        "sport_key": "baseball_mlb", "sport_title": "MLB", "matchup": "A @ B",
+        "commence_time": (datetime.now(timezone.utc) + timedelta(hours=3)).isoformat(),
+        "market": market, "subject": "Bobby Witt Jr.", "point": 1.5,
+        "arb_sum": 1.0, "single_book": False,
+        "legs": [{"side": "over", "book": over_book, "decimal": over, "label": "Over"},
+                 {"side": "under", "book": "draftkings", "decimal": under, "label": "Under"}],
+        "prices": prices,
+    }
+
+
+def test_boosted_ev_uses_the_books_own_price_not_the_best_one():
+    """The whole reason `prices` exists. A DraftKings token is useless if the
+    snapshot only kept FanDuel's better over -- the EV has to be computed on
+    the price you can actually get at DraftKings."""
+    from edge.arb.engine import Boost, price_boosted_ev
+    c = cfg()
+    b = Boost(book="draftkings", pct=0.5, max_stake=10.0, sides=["over"],
+              min_decimal=1.5, markets=["batter_hits"])
+    rows = price_boosted_ev([_cand(over=2.70, dk_over=2.96)], [b], c)
+    assert rows and rows[0]["book"] == "draftkings"
+    assert rows[0]["raw_decimal"] == 2.96          # DK's own, not FanDuel's 2.70
+    assert rows[0]["boosted_decimal"] == pytest.approx(om.boosted(2.96, 0.5), abs=1e-4)
+
+
+def test_boosted_ev_is_nothing_without_a_price_at_that_book():
+    """FanDuel posts no under on batter markets; a DraftKings-over token has
+    nothing to price if DraftKings does not post that side either."""
+    from edge.arb.engine import Boost, price_boosted_ev
+    b = Boost(book="draftkings", pct=0.5, sides=["over"], markets=["batter_hits"])
+    assert price_boosted_ev([_cand(dk_over=None)], [b], cfg()) == []
+
+
+def test_boosted_ev_respects_the_side_and_odds_terms():
+    from edge.arb.engine import Boost, price_boosted_ev
+    c = cfg()
+    over_only = Boost(book="draftkings", pct=0.5, sides=["over"], min_decimal=1.5,
+                      markets=["batter_hits"])
+    # DK posts the under at 1.50 and an over at 2.96; the token is over-only
+    rows = price_boosted_ev([_cand(dk_over=2.96)], [over_only], c)
+    assert {r["side"] for r in rows} == {"over"}
+
+    too_short = Boost(book="draftkings", pct=0.5, sides=["over"], min_decimal=1.5,
+                      markets=["batter_hits"])
+    assert price_boosted_ev([_cand(dk_over=1.40)], [too_short], c) == []
+
+
+def test_the_fair_estimate_is_never_more_generous_than_the_book():
+    """Devigging can hand back a probability longer than the price on offer;
+    taking the book's own implied probability as a ceiling keeps the EV
+    conservative rather than flattering."""
+    from edge.arb.engine import Boost, price_boosted_ev
+    b = Boost(book="draftkings", pct=0.5, sides=["over"], markets=["batter_hits"])
+    rows = price_boosted_ev([_cand(over=2.70, under=1.50, dk_over=2.96)], [b], cfg())
+    # tolerance is the stored precision: fair_prob is rounded to 5dp, which can
+    # sit a hair above the cap. That is rounding, not generosity.
+    assert rows[0]["fair_prob"] <= om.implied_prob(2.96) + 1e-5
+
+
+def test_a_bigger_boost_is_worth_more_ev():
+    from edge.arb.engine import Boost, price_boosted_ev
+    c = cfg()
+    got = []
+    for pct in (0.25, 0.5, 1.0):
+        b = Boost(book="draftkings", pct=pct, sides=["over"], markets=["batter_hits"])
+        got.append(price_boosted_ev([_cand(dk_over=2.96)], [b], c)[0]["ev_pct"])
+    assert got == sorted(got), f"EV must rise with the boost: {got}"
+
+
+def test_a_single_book_market_is_not_an_arb_without_a_boost():
+    """min_books rejects one book on both sides as a data artifact. That guard
+    has to survive: only a boost makes such a pair a real position."""
+    from edge.arb.engine import Boost, price_candidates
+    c = cfg()
+    single = _cand(over=2.20, under=2.20, over_book="draftkings")
+    single["single_book"] = True
+    assert price_candidates([single], [], c) == [], "priced a one-book pair with no boost"
+    b = Boost(book="draftkings", pct=0.5, max_stake=10.0, sides=["over"],
+              markets=["batter_hits"])
+    assert price_candidates([single], [b], c), "a boost makes it real and it was still dropped"

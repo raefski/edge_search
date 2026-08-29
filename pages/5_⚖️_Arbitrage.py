@@ -184,6 +184,20 @@ with st.sidebar:
         help="Boosts are often scoped to a market type as well as a sport — "
              "a batter-props token cannot be used on a game line.")
     boost_markets = _market_groups.get(boost_market, [])
+    boost_mode = st.radio(
+        "Show", ["Arbitrage (hedged)", "Best +EV (unhedged)"], index=0,
+        help="A boost no second book can cover is not wasted — it stops being "
+             "an arbitrage and becomes an +EV bet. Use that view when nothing "
+             "can hedge the boosted side.")
+    boost_min_odds = st.number_input(
+        "Min odds on the boosted leg (American)", -1000, 1000, -200, step=10,
+        help="Most tokens carry a floor — 'Min Total Odds of -200'. A shorter "
+             "leg does not qualify and the book refuses it at the slip.")
+    boost_sides = st.multiselect(
+        "Boosted side", ["over", "under", "home", "away", "yes", "no"],
+        default=[],
+        help="Leave empty for any. DraftKings' 'Batter Props Milestones' are "
+             "the over-only ladders, so that token is over only.")
     boost_parlay = st.checkbox("Parlay only", value=False,
                                help="Books offer the same headline boost twice — "
                                     "straight bets and parlays. Only the straight-bet "
@@ -332,11 +346,65 @@ if boost_pct > 0:
                       max_stake=float(boost_max),
                       sports=[boost_sport] if boost_sport else [],
                       markets=boost_markets,
+                      sides=list(boost_sides),
+                      min_decimal=(1.0 if boost_min_odds == 0 else
+                                   1.0 + (boost_min_odds / 100.0 if boost_min_odds > 0
+                                          else 100.0 / abs(boost_min_odds))),
                       requires_parlay=boost_parlay,
                       label=(f"{boost_pct}% boost on "
                              f"{BOOK_NAMES.get(boost_book, boost_book)}"
                              + (f" ({boost_market.lower()})"
                                 if boost_markets else "")))
+        if boost_mode.startswith("Best +EV"):
+            from edge.arb.engine import price_boosted_ev
+            ev_rows = price_boosted_ev(cands, [boost], bcfg,
+                                       min_ev_pct=float(min_profit))
+            if boost_parlay:
+                st.info("A parlay-only token cannot be priced as a single bet.")
+            elif not ev_rows:
+                st.warning("Nothing qualifies. Check the side and minimum-odds "
+                           "filters match the token's terms.")
+            else:
+                st.subheader(f"⚡ {len(ev_rows)} boosted +EV bets · "
+                             f"top {int(per_sport)} per sport")
+                st.caption("These are NOT hedged — a boost no second book can "
+                           "cover is an +EV bet, not an arbitrage. Higher "
+                           "expected value than hedging, but it can lose.")
+                by_sport = {}
+                for r in ev_rows:
+                    b = by_sport.setdefault(r["sport_key"], [])
+                    if len(b) < int(per_sport):
+                        b.append(r)
+                for r in [x for b in by_sport.values() for x in b]:
+                    with st.container(border=True):
+                        st.markdown(
+                            f"🟡 **{r['ev_pct']:+.2f}% EV** · "
+                            f"{money(r['ev_abs'])} expected on {money(r['stake'])} · "
+                            f"lands {r['fair_prob']:.0%} of the time")
+                        sub = f" · {r['subject']}" if r.get("subject") else ""
+                        pt = "" if r.get("point") is None else f" {r['point']:g}"
+                        st.caption(f"{r['sport_title']} · **{r['matchup']}** · "
+                                   f"{starts_in(r.get('commence_time',''))} · "
+                                   f"{r['market']}{sub}{pt} · {r['side']}")
+                        other = " · ".join(
+                            f"{BOOK_NAMES.get(k, k)} {r['raw_american']}"
+                            for k in r.get("other_books", {})) or "—"
+                        st.dataframe([{
+                            "Book": BOOK_NAMES.get(r["book"], r["book"]),
+                            "Bet": f"{r['side']} {r['point'] if r['point'] is not None else ''}".strip(),
+                            "Book odds": r["raw_american"],
+                            "Boost": f"+{r['boost_pct']:.0%}",
+                            "Pays": r["american"],
+                            "Stake": money(r["stake"]),
+                            "Elsewhere": other,
+                        }], hide_index=True, use_container_width=True)
+                st.caption("Place the boosted leg only. Nothing hedges it, so "
+                           "most of these lose — the edge is in the price, not "
+                           "in certainty.")
+            boost_rows = []
+            st.divider()
+            st.stop()
+
         boost_rows = price_candidates(cands, [boost], bcfg,
                                       min_profit_pct=float(min_profit))
         if boost_parlay:

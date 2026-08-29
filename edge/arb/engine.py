@@ -600,8 +600,12 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
     for c in cands:
         legs = c["legs"]
         base = [l["decimal"] for l in legs]
+        # One book on both sides is a data artifact on its own -- min_books
+        # exists to reject it -- but a boost can beat that book's own vig, and
+        # then it is a real position. So it is priced only WITH a boost.
+        plain = [] if c.get("single_book") else [(None, None, base)]
         best = None
-        for boost, idx, priced in [(None, None, base)] + [
+        for boost, idx, priced in plain + [
                 (b, i, [om.boosted(d, b.pct) if i == j else d
                         for j, d in enumerate(base)])
                 for b in boosts
@@ -645,6 +649,74 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
                      for i in range(len(legs))],
         })
     out.sort(key=lambda r: r["profit_pct"], reverse=True)
+    return out
+
+
+def price_boosted_ev(cands: list[dict], boosts: list[Boost], cfg,
+                     min_ev_pct: float = 0.0) -> list[dict]:
+    """Expected value of a boosted bet that cannot be hedged.
+
+    A boost no second book can cover is not wasted -- it stops being an
+    arbitrage and becomes an +EV bet, and the question changes from "is this
+    risk-free" to "which single bet is it worth most on". That is the normal
+    case, not the exception: DraftKings' batter-props token is valid only on
+    over-only Milestones, and FanDuel posts no under on any batter market, so
+    nothing can hedge it.
+
+    Fair probability comes from devigging the best over/under pair. Across two
+    books that is a better estimate than either book alone, since each side is
+    the sharpest price available. Where the boosted book's own price on that
+    side is shorter than the devigged fair, the shorter one wins: the estimate
+    should never be more generous than what a book is willing to lay.
+    """
+    out = []
+    method = getattr(cfg.detect, "ev_method", "power")
+    for c in cands:
+        prices = c.get("prices") or {}
+        legs = c["legs"]
+        if len(legs) != 2:
+            continue
+        try:
+            fair_by_side = dict(zip(
+                [l["side"] for l in legs],
+                om.fair_probs_from_decimals([l["decimal"] for l in legs], method)))
+        except (ValueError, ZeroDivisionError):
+            continue
+        for b in boosts:
+            for side, per_book in prices.items():
+                raw = per_book.get(b.book)
+                if raw is None:
+                    continue
+                if not b.applies_to(b.book, c["sport_key"], c["market"],
+                                    side=side, decimal=raw):
+                    continue
+                fair = fair_by_side.get(side)
+                if not fair:
+                    continue
+                # never assume a longer price than the market's own read
+                fair = min(fair, om.implied_prob(raw))
+                boosted = om.boosted(raw, b.pct)
+                ev = om.ev_pct(boosted, fair)
+                if ev < min_ev_pct:
+                    continue
+                stake = min(b.max_stake, cfg.bankroll.total)
+                out.append({
+                    **{k: c[k] for k in ("sport_key", "sport_title", "matchup",
+                                         "market", "subject", "point",
+                                         "commence_time")},
+                    "book": b.book, "side": side,
+                    "raw_decimal": raw,
+                    "raw_american": om.format_american(raw),
+                    "boosted_decimal": round(boosted, 4),
+                    "american": om.format_american(boosted),
+                    "boost": b.describe(), "boost_pct": b.pct,
+                    "fair_prob": round(fair, 5),
+                    "ev_pct": round(ev, 3),
+                    "stake": round(stake, 2),
+                    "ev_abs": round(stake * ev / 100.0, 2),
+                    "other_books": {bk: v for bk, v in per_book.items() if bk != b.book},
+                })
+    out.sort(key=lambda r: r["ev_pct"], reverse=True)
     return out
 
 
