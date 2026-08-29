@@ -292,3 +292,111 @@ def test_sport_choices_are_named_not_raw_keys():
     got = sport_choices(None, {})
     assert got["basketball_wnba"] == "WNBA"
     assert got["americanfootball_ncaaf"] == "NCAAF"
+
+
+# --- GitHub refusals, translated into the setting to change ----------------
+def test_a_403_on_write_names_the_read_only_contents_permission():
+    """Seen live: the token could read the repo but Contents was Read-only, so
+    the PUT came back 403. A bare '403' sends you to the wrong screen."""
+    from edge.arb.scan_request import _explain
+    msg = _explain(403, "write", "raefski/edge_search")
+    assert "Read and write" in msg and "Contents" in msg
+
+
+def test_a_403_on_read_is_a_different_message_from_one_on_write():
+    """Same status, opposite causes -- the phase is what disambiguates."""
+    from edge.arb.scan_request import _explain
+    assert (_explain(403, "read", "a/b") != _explain(403, "write", "a/b"))
+
+
+def test_a_404_explains_that_fine_grained_tokens_hide_repos():
+    """GitHub returns 404 rather than 403 for a repo the token was not granted,
+    so it reads as 'does not exist' when it means 'not selected'."""
+    from edge.arb.scan_request import _explain
+    msg = _explain(404, "read", "raefski/edge_search")
+    assert "raefski/edge_search" in msg and "Repository access" in msg
+
+
+class _Resp:
+    """Just the surface get_file_sha/put_request use from the http shim."""
+
+    def __init__(self, status: int, payload=None):
+        self.status_code = status
+        self._payload = payload or {}
+
+    def json(self):
+        return self._payload
+
+    def raise_for_status(self):
+        if self.status_code >= 400:
+            from edge.arb.http import HTTPError
+            raise HTTPError(f"{self.status_code}", self)
+
+
+def test_a_write_refusal_raises_rather_than_returning_a_bad_result():
+    """The read succeeds and the write is refused -- the live failure mode when
+    Contents is left on Read-only."""
+    from edge.arb.scan_request import RequestRefused, ScanRequest, put_request
+
+    class FakeSession:
+        def get(self, *a, **k):
+            return _Resp(200, {"sha": "deadbeef"})
+
+        def put(self, *a, **k):
+            return _Resp(403)
+
+    with pytest.raises(RequestRefused) as e:
+        put_request("a/b", "github_pat_x", ScanRequest.new(), session=FakeSession())
+    assert "Read and write" in str(e.value)
+
+
+def test_a_read_refusal_is_reported_as_a_read_problem():
+    from edge.arb.scan_request import RequestRefused, ScanRequest, put_request
+
+    class FakeSession:
+        def get(self, *a, **k):
+            return _Resp(403)
+
+        def put(self, *a, **k):
+            raise AssertionError("must not attempt the write after a failed read")
+
+    with pytest.raises(RequestRefused) as e:
+        put_request("a/b", "github_pat_x", ScanRequest.new(), session=FakeSession())
+    assert "at least Read-only" in str(e.value)
+
+
+def test_a_missing_file_is_created_without_a_sha():
+    """First ever request: the file does not exist, so no sha is sent. Sending
+    one for a file that is not there is a 422."""
+    from edge.arb.scan_request import ScanRequest, put_request
+    sent = {}
+
+    class FakeSession:
+        def get(self, *a, **k):
+            return _Resp(404)
+
+        def put(self, *a, **k):
+            sent.update(k.get("json") or {})
+            return _Resp(201, {"commit": {"sha": "abc123"}})
+
+    out = put_request("a/b", "github_pat_x", ScanRequest.new(), session=FakeSession())
+    assert out["commit"]["sha"] == "abc123"
+    assert "sha" not in sent
+
+
+def test_an_existing_file_is_updated_with_its_sha():
+    """Without the sha GitHub refuses the overwrite, which is what stops two
+    phones clobbering each other."""
+    from edge.arb.scan_request import ScanRequest, put_request
+    sent = {}
+
+    class FakeSession:
+        def get(self, *a, **k):
+            return _Resp(200, {"sha": "deadbeef"})
+
+        def put(self, *a, **k):
+            sent.update(k.get("json") or {})
+            return _Resp(200, {"commit": {"sha": "abc123"}})
+
+    put_request("a/b", "github_pat_x", ScanRequest.new(), session=FakeSession())
+    assert sent.get("sha") == "deadbeef"

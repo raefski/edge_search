@@ -206,9 +206,13 @@ if request_scan:
                    "takes ~40s, then this page picks up the new snapshot on "
                    "its next redeploy — give it a couple of minutes.")
     except Exception as exc:                      # noqa: BLE001 - surface, don't hide
-        st.error(f"Could not file the request: {type(exc).__name__}: {exc}")
-        st.caption("A 404 here usually means the token cannot see the repo; a "
-                   "403 means it lacks `contents: write`.")
+        _refused = getattr(_sr, "RequestRefused", None)
+        if _refused is not None and isinstance(exc, _refused):
+            st.error(f"Could not file the request. {exc}")
+        else:
+            st.error(f"Could not file the request: {type(exc).__name__}: {exc}")
+            st.caption("A 404 usually means the token cannot see the repo; a "
+                       "403 means it lacks `contents: write`.")
 
 if st.session_state.get("last_scan_request") and snap:
     ScanRequest = _from_scan_request("ScanRequest")

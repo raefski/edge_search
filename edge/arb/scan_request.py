@@ -214,6 +214,40 @@ def get_file_sha(repo: str, path: str, token: str, branch: str = "main",
     return (r.json() or {}).get("sha")
 
 
+class RequestRefused(Exception):
+    """A GitHub refusal, translated into the setting that caused it."""
+
+
+def _explain(status: int, phase: str, repo: str) -> str:
+    """Turn a bare status code into the token setting to go and change.
+
+    Read and write fail with the SAME code for different reasons, so the phase
+    matters: a 403 reading means the token cannot see the repo's contents at
+    all, while a 403 writing means it can read but Contents is set to
+    Read-only. Reporting just "403" sends you to the wrong screen.
+    """
+    if status == 404:
+        return (f"GitHub cannot find {repo} for this token. Fine-grained tokens "
+                "return 404 rather than 403 for a repository they were not "
+                "granted, so check Repository access names this repo — not "
+                "'Public repositories'.")
+    if status == 403 and phase == "write":
+        return ("The token can read this repo but not write to it. Set "
+                "Repository permissions -> Contents to 'Read and write' "
+                "(it is probably on Read-only). Editing the token in place "
+                "keeps the same value, so Streamlit Secrets needs no change.")
+    if status == 403:
+        return ("The token was refused reading this repo. Check Repository "
+                "permissions -> Contents is at least Read-only, and that the "
+                "token has not expired.")
+    if status == 409:
+        return ("The file changed between reading its sha and writing it -- "
+                "two requests raced. Press the button again.")
+    if status == 422:
+        return "GitHub rejected the commit as malformed (bad sha or branch)."
+    return f"HTTP {status} from GitHub while trying to {phase} the request file."
+
+
 def put_request(repo: str, token: str, req: ScanRequest, branch: str = "main",
                 path: str = REQUEST_PATH, session=None) -> dict:
     """Commit the request file. Needs a token with `contents: write`."""
@@ -224,10 +258,15 @@ def put_request(repo: str, token: str, req: ScanRequest, branch: str = "main",
         "content": base64.b64encode(req.to_json().encode()).decode(),
         "branch": branch,
     }
-    sha = get_file_sha(repo, path, token, branch, session=s)
+    try:
+        sha = get_file_sha(repo, path, token, branch, session=s)
+    except http.HTTPError as exc:
+        status = getattr(exc.response, "status_code", 0)
+        raise RequestRefused(_explain(status, "read", repo)) from exc
     if sha:
         body["sha"] = sha
     r = s.put(f"{API}/repos/{repo}/contents/{path}", json=body,
               headers=_headers(token), timeout=20)
-    r.raise_for_status()
+    if r.status_code >= 400:
+        raise RequestRefused(_explain(r.status_code, "write", repo))
     return r.json() or {}
