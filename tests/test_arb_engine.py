@@ -609,3 +609,100 @@ def test_a_single_book_market_is_not_an_arb_without_a_boost():
     b = Boost(book="draftkings", pct=0.5, max_stake=10.0, sides=["over"],
               markets=["batter_hits"])
     assert price_candidates([single], [b], c), "a boost makes it real and it was still dropped"
+
+
+# --- golf ------------------------------------------------------------------
+def test_only_the_two_way_golf_markets_are_classified():
+    """Golf is mostly fields -- Top 5 has 29-67 runners, the outright 150+ --
+    and a field cannot be paired from a partial list of runners. Only the
+    head-to-heads are usable."""
+    from edge.arb.fanduel import classify
+    assert classify("2_BALLS_IMG") == ("golf_2ball", None)
+    assert classify("TOURNAMENT_MATCHBETS_IMG") == ("golf_matchup", None)
+    assert classify("WHO_WILL_WIN_A_GROUP_OF_HOLES_IMG") == ("golf_hole_group", None)
+    for field_market in ("TOP_5_FINISH_IMG", "TOP_10_FINISH_IMG", "ROUND_LEADER_IMG",
+                         "OUTRIGHT_BETTING", "WIN_ONLY_IMG"):
+        assert classify(field_market) is None, field_market
+
+
+def _golf_payload(pairs, market_type="2_BALLS_IMG", event="2 Balls"):
+    markets, i = {}, 0
+    for names in pairs:
+        i += 1
+        markets[str(i)] = {
+            "eventId": "9", "marketType": market_type,
+            "marketName": f"2 Ball - {' / '.join(names)}", "marketStatus": "OPEN",
+            "runners": [{"runnerName": n, "handicap": 0, "runnerStatus": "ACTIVE",
+                         "winRunnerOdds": {"trueOdds": {"decimalOdds": {"decimalOdds": 2.0}}}}
+                        for n in names],
+        }
+    return {"attachments": {
+        "events": {"9": {"name": event, "openDate": (
+            datetime.now(timezone.utc) + timedelta(hours=3)).isoformat().replace("+00:00", "Z")}},
+        "markets": markets}}
+
+
+def test_each_golf_pairing_gets_its_own_group():
+    """All the two-balls in a tournament share one market key on one event, so
+    without a subject they collapse into a single group -- 14 pairings became
+    one group of 28 'sides', which is unpriceable nonsense."""
+    from edge.arb.fanduel import FanDuelScrape
+    board = Board()
+    FanDuelScrape(state="ct").ingest_event(
+        board, _golf_payload([["Tom Kim", "Alex Smalley"],
+                              ["Ryan Fox", "Akshay Bhatia"]]),
+        "golf_pga", strict_match=False)
+    groups = [g for g in board.groups.values() if g.key.market == "golf_2ball"]
+    assert len(groups) == 2, "the pairings did not separate"
+    for g in groups:
+        assert len(g.quotes) == 2, "a head-to-head has exactly two sides"
+
+
+def test_the_golf_subject_is_built_from_the_players_not_the_label():
+    """FanDuel writes '2 Ball (Round 3) - Smalley / T. Kim'; another book will
+    label it differently. The pair of full runner names, sorted, is the part
+    two books can agree on -- and sorting means the order they list them in
+    does not matter."""
+    from edge.arb.fanduel import FanDuelScrape
+    board = Board()
+    FanDuelScrape(state="ct").ingest_event(
+        board, _golf_payload([["Tom Kim", "Alex Smalley"]]), "golf_pga",
+        strict_match=False)
+    g = next(g for g in board.groups.values() if g.key.market == "golf_2ball")
+    assert g.key.subject == "alex_smalley|tom_kim"
+    assert set(g.quotes) == {"tom_kim", "alex_smalley"}
+
+
+def test_a_golf_market_that_is_not_a_head_to_head_is_dropped():
+    """A three-runner market is a field, not a pairing; keying it by two of the
+    three would invent a market that does not exist."""
+    from edge.arb.fanduel import FanDuelScrape
+    board = Board()
+    st = FanDuelScrape(state="ct").ingest_event(
+        board, _golf_payload([["A Player", "B Player", "C Player"]]),
+        "golf_pga", strict_match=False)
+    assert not [g for g in board.groups.values() if g.key.market == "golf_2ball"]
+    assert any("3 runners" in u for u in st["unmapped"])
+
+
+def test_a_tournament_event_resolves_without_home_and_away():
+    """Golf events are tournaments, not matchups. Requiring 'away @ home'
+    dropped every golf market before it reached the board."""
+    from edge.arb.fanduel import FanDuelScrape
+    board = Board()
+    FanDuelScrape(state="ct").ingest_event(
+        board, _golf_payload([["Tom Kim", "Alex Smalley"]], event="PGA Tour Championship"),
+        "golf_pga", strict_match=False)
+    g = next(iter(board.groups.values()))
+    assert g.event.matchup == "PGA Tour Championship"
+
+
+def test_a_tournament_event_is_never_matched_onto_an_existing_one():
+    """There is no home/away for match_event to key on, so under strict_match
+    such an event must be skipped rather than guessed at."""
+    from edge.arb.fanduel import FanDuelScrape
+    board = Board()
+    st = FanDuelScrape(state="ct").ingest_event(
+        board, _golf_payload([["Tom Kim", "Alex Smalley"]]), "golf_pga",
+        strict_match=True)
+    assert st["quotes"] == 0 and len(board.groups) == 0

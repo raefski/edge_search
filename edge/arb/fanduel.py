@@ -20,6 +20,7 @@ from . import http as requests
 
 from .models import Board, EventMeta, GroupKey, Quote
 from .matching import match_event
+from .normalize import slug
 
 _FRAC_RE = re.compile(r"\.(\d{1,6})\d*")
 
@@ -35,7 +36,8 @@ HEADERS = {"Accept": "application/json",
 # league page ids on content-managed-page
 LEAGUE_PAGES = {"baseball_mlb": "mlb", "americanfootball_nfl": "nfl",
                 "basketball_nba": "nba", "icehockey_nhl": "nhl",
-                "americanfootball_ncaaf": "ncaaf", "basketball_wnba": "wnba"}
+                "americanfootball_ncaaf": "ncaaf", "basketball_wnba": "wnba",
+                "golf_pga": "pga"}
 
 # game-level markets
 GAME_MARKETS = {
@@ -72,6 +74,22 @@ STAT_KEYS = {
     "STRIKEOUTS": "pitcher_strikeouts", "OUTS": "pitcher_outs",
     "HITS+RUNS+RBIS": "batter_hits_runs_rbis",
 }
+# Golf markets that are genuinely two-way, and so can be priced against
+# another book. Everything else golf offers is a field -- Top 5 (29-67
+# runners), Round Leader (33), the outright (150+) -- and a field cannot be
+# arbitraged from a partial list of runners, which is what
+# `test_truncated_outright_field_is_refused` already guards.
+#
+# All three settle head-to-head between exactly two players. A tie is normally
+# a push rather than a loss, which does not break the arithmetic: both legs
+# return their stake, so the position cannot lose. Dead-heat rules differ by
+# book, so confirm the settlement rule before staking a thin one.
+GOLF_TWO_WAY = {
+    "2_BALLS_IMG": "golf_2ball",                       # one round, one pairing
+    "TOURNAMENT_MATCHBETS_IMG": "golf_matchup",        # 72 holes, head to head
+    "WHO_WILL_WIN_A_GROUP_OF_HOLES_IMG": "golf_hole_group",
+}
+
 # markets whose line lives in the runner handicap rather than the name
 HANDICAP_PROPS = {
     "PITCHER_D_STRIKEOUTS": "pitcher_strikeouts",
@@ -146,6 +164,8 @@ def classify(market_type: str) -> tuple[str, float | None] | None:
     another book's Over/Under and cannot be compared.
     """
     mt = (market_type or "").upper().strip()
+    if mt in GOLF_TWO_WAY:
+        return GOLF_TWO_WAY[mt], None
     if mt in GAME_MARKETS:
         return GAME_MARKETS[mt]
     if mt in HANDICAP_PROPS:
@@ -247,17 +267,27 @@ class FanDuelScrape:
         targets: dict[str, EventMeta] = {}
         for eid, ev in events.items():
             name = ev.get("name") or ""
-            if " @ " not in name:
-                continue
-            away, home = [re.sub(r"\s*\([^)]*\)", "", p).strip()
-                          for p in name.split(" @ ", 1)]
-            t = match_event(board, home, away, _ts(ev.get("openDate")), sport_key)
-            if t is None:
-                stats["unmatched"] += 1
+            if " @ " in name:
+                away, home = [re.sub(r"\s*\([^)]*\)", "", p).strip()
+                              for p in name.split(" @ ", 1)]
+                t = match_event(board, home, away, _ts(ev.get("openDate")), sport_key)
+                if t is None:
+                    stats["unmatched"] += 1
+                    if strict_match:
+                        continue
+                    t = EventMeta(f"fd:{eid}", sport_key, sport_key,
+                                  _ts(ev.get("openDate")), home, away)
+            else:
+                # Golf and other non-team sports: the event IS the tournament,
+                # so there is no "away @ home" to split and nothing for
+                # match_event to key on. Requiring that shape dropped every
+                # golf market on the floor -- 37 two-way head-to-heads among
+                # them. Such an event can only be created, never matched onto
+                # an existing one, so it is skipped under strict_match.
                 if strict_match:
                     continue
                 t = EventMeta(f"fd:{eid}", sport_key, sport_key,
-                              _ts(ev.get("openDate")), home, away)
+                              _ts(ev.get("openDate")), name.strip(), None)
             targets[str(eid)] = t
         if not targets:
             return stats
@@ -273,6 +303,24 @@ class FanDuelScrape:
                 continue
             mkey, fixed_line = hit
 
+            # Golf head-to-heads are all one market key on one event, so
+            # without a subject every pairing in the field collapses into a
+            # single group -- 14 two-balls became one group of 28 "sides".
+            # The subject is the pairing itself, built from the runner names
+            # sorted, so it is derived from the players rather than from the
+            # market label: FanDuel writes "2 Ball (Round 3) - Smalley / T.
+            # Kim" where another book will write it differently, and the pair
+            # of full names is the part both agree on.
+            golf_subject = None
+            if mkey.startswith("golf_"):
+                names = sorted(slug(r.get("runnerName") or "")
+                               for r in (m.get("runners") or [])
+                               if r.get("runnerName"))
+                if len(names) != 2:
+                    stats["unmapped"].add(f"{m.get('marketType')} ({len(names)} runners)")
+                    continue          # not a head-to-head; a field cannot be paired
+                golf_subject = "|".join(names)
+
             for r in m.get("runners") or []:
                 if r.get("runnerStatus") not in (None, "ACTIVE"):
                     continue
@@ -283,7 +331,9 @@ class FanDuelScrape:
                 handicap = r.get("handicap")
                 is_player = bool(r.get("isPlayerSelection"))
 
-                if fixed_line is not None:            # threshold prop
+                if golf_subject is not None:          # golf head-to-head
+                    side, subject, point = slug(name), golf_subject, None
+                elif fixed_line is not None:          # threshold prop
                     side, subject, point = "over", name, fixed_line
                 elif is_player or mkey.startswith(PLAYER_MARKETS):
                     # the market key is the reliable signal: isPlayerSelection is
