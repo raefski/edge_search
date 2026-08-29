@@ -163,6 +163,50 @@ def sport_choices(cfg=None, snapshot: dict | None = None) -> dict[str, str]:
     return dict(sorted(titles.items(), key=lambda kv: kv[1]))
 
 
+# Boosts are frequently scoped to a market type, not just a sport -- "25% on
+# batter props" is a different token from "25% on WNBA". Boost.markets matches
+# exactly, deliberately: keeping that rule dumb is worth more than the
+# convenience of prefix matching inside the engine, so a group is expanded into
+# concrete keys out here instead.
+MARKET_GROUP_PREFIXES = {
+    "Batter props": ("batter_",),
+    "Pitcher props": ("pitcher_",),
+    "All player props": ("batter_", "pitcher_", "player_"),
+    "Game lines only": ("h2h", "spreads", "totals"),
+}
+KNOWN_MARKETS = (
+    "h2h", "spreads", "totals", "alternate_spreads", "alternate_totals",
+    "team_totals",
+    "batter_hits", "batter_home_runs", "batter_rbis", "batter_runs_scored",
+    "batter_total_bases", "batter_singles", "batter_doubles", "batter_triples",
+    "batter_stolen_bases", "batter_walks", "batter_strikeouts",
+    "batter_hits_runs_rbis",
+    "pitcher_strikeouts", "pitcher_outs", "pitcher_earned_runs",
+    "pitcher_hits_allowed", "pitcher_walks", "pitcher_record_a_win",
+    "player_points", "player_rebounds", "player_assists", "player_threes",
+)
+
+
+def market_choices(snapshot: dict | None = None) -> dict[str, list[str]]:
+    """{label: concrete market keys} for the boost's market filter.
+
+    Built from the keys actually on the board UNION a known set, so a group is
+    selectable before those markets have been scanned -- the same reason
+    sport_choices does not read the snapshot alone.
+    """
+    keys = set(KNOWN_MARKETS)
+    for c in (snapshot or {}).get("candidates") or []:
+        if c.get("market"):
+            keys.add(c["market"])
+    out: dict[str, list[str]] = {}
+    for label, prefixes in MARKET_GROUP_PREFIXES.items():
+        matched = sorted(k for k in keys
+                         if k.startswith(prefixes) or k in prefixes)
+        if matched:
+            out[label] = matched
+    return out
+
+
 PLACEHOLDERS = {"github_pat_...", "ghp_...", "your_token_here", "...",
                 "your_the_odds_api_v4_key_here"}
 

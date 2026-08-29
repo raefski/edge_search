@@ -400,3 +400,47 @@ def test_an_existing_file_is_updated_with_its_sha():
 
     put_request("a/b", "github_pat_x", ScanRequest.new(), session=FakeSession())
     assert sent.get("sha") == "deadbeef"
+
+
+# --- market-scoped boosts ---------------------------------------------------
+def test_market_groups_expand_to_concrete_keys():
+    """Boost.markets matches exactly, on purpose -- keeping that rule dumb is
+    worth more than prefix matching inside the engine -- so a group has to be
+    expanded out here."""
+    from edge.arb.scan_request import market_choices
+    groups = market_choices({})
+    assert "batter_hits" in groups["Batter props"]
+    assert "batter_total_bases" in groups["Batter props"]
+    assert all(k.startswith("batter_") for k in groups["Batter props"])
+
+
+def test_batter_and_pitcher_groups_do_not_overlap():
+    """A batter-props token must not price a pitcher line."""
+    from edge.arb.scan_request import market_choices
+    g = market_choices({})
+    assert not set(g["Batter props"]) & set(g["Pitcher props"])
+    assert set(g["Batter props"]) <= set(g["All player props"])
+
+
+def test_game_lines_group_excludes_every_prop():
+    from edge.arb.scan_request import market_choices
+    g = market_choices({})
+    assert set(g["Game lines only"]) == {"h2h", "spreads", "totals"}
+
+
+def test_market_groups_pick_up_keys_only_the_snapshot_knows():
+    from edge.arb.scan_request import market_choices
+    g = market_choices({"candidates": [{"market": "batter_bunts"}]})
+    assert "batter_bunts" in g["Batter props"]
+
+
+def test_a_market_scoped_boost_refuses_other_markets():
+    """The point of the filter: a batter-props token priced onto a game total
+    would report a profit that cannot be placed."""
+    from edge.arb.engine import Boost
+    from edge.arb.scan_request import market_choices
+    b = Boost(book="draftkings", pct=0.5,
+              markets=market_choices({})["Batter props"])
+    assert b.applies_to("draftkings", "baseball_mlb", "batter_hits")
+    assert not b.applies_to("draftkings", "baseball_mlb", "totals")
+    assert not b.applies_to("draftkings", "baseball_mlb", "pitcher_strikeouts")

@@ -152,6 +152,13 @@ with st.sidebar:
         st.caption(f"⚠️ The current snapshot has no {_sport_titles[boost_sport]} "
                    "markets, so nothing can be found for it. Request a desktop "
                    "scan first.")
+    _market_choices = _from_scan_request("market_choices", lambda snap: {})
+    _market_groups = _market_choices(_snap_peek)
+    boost_market = st.selectbox(
+        "Markets", ["(every market)"] + list(_market_groups),
+        help="Boosts are often scoped to a market type as well as a sport — "
+             "a batter-props token cannot be used on a game line.")
+    boost_markets = _market_groups.get(boost_market, [])
     boost_parlay = st.checkbox("Parlay only", value=False,
                                help="Books offer the same headline boost twice — "
                                     "straight bets and parlays. Only the straight-bet "
@@ -293,8 +300,12 @@ if boost_pct > 0:
         boost = Boost(book=boost_book, pct=boost_pct / 100.0,
                       max_stake=float(boost_max),
                       sports=[boost_sport] if boost_sport else [],
+                      markets=boost_markets,
                       requires_parlay=boost_parlay,
-                      label=f"{boost_pct}% boost on {BOOK_NAMES.get(boost_book, boost_book)}")
+                      label=(f"{boost_pct}% boost on "
+                             f"{BOOK_NAMES.get(boost_book, boost_book)}"
+                             + (f" ({boost_market.lower()})"
+                                if boost_markets else "")))
         boost_rows = price_candidates(cands, [boost], bcfg,
                                       min_profit_pct=float(min_profit))
         if boost_parlay:
@@ -306,6 +317,7 @@ if boost_pct > 0:
                        f"boost on {BOOK_NAMES.get(boost_book, boost_book)}"
                        + (f" in {_sport_titles.get(boost_sport, boost_sport)}"
                           if boost_sport else "")
+                       + (f" on {boost_market.lower()}" if boost_markets else "")
                        + f" · {len(cands)} candidates checked.")
         else:
             shown = top_rows_per_sport(boost_rows, int(per_sport))
