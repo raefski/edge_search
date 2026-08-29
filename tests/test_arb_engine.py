@@ -706,3 +706,26 @@ def test_a_tournament_event_is_never_matched_onto_an_existing_one():
         board, _golf_payload([["Tom Kim", "Alex Smalley"]]), "golf_pga",
         strict_match=True)
     assert st["quotes"] == 0 and len(board.groups) == 0
+
+
+def test_skipped_events_are_counted_before_prune_erases_them():
+    """prune() deletes anything past its grace period, which is exactly the
+    golf case -- so counting after it would always report nothing skipped and
+    an empty board with no explanation."""
+    from edge.arb import engine
+    ev_live = EventMeta("g1", "golf_pga", "PGA",
+                        datetime.now(timezone.utc) - timedelta(hours=4), "Championship", None)
+    ev_soon = EventMeta("m1", "baseball_mlb", "MLB",
+                        datetime.now(timezone.utc) + timedelta(hours=2), "H", "A")
+    c = cfg()
+    assert not engine.in_window(ev_live, c, datetime.now(timezone.utc))
+    assert engine.in_window(ev_soon, c, datetime.now(timezone.utc))
+
+    b = Board()
+    b.events["g1"], b.events["m1"] = ev_live, ev_soon
+    b.group(GroupKey("g1", "golf_2ball", "a|b", None), ev_live)
+    b.group(GroupKey("m1", "h2h", None, None), ev_soon)
+    before = len(b.events)
+    b.prune()
+    assert len(b.events) < before, "prune must drop the finished event"
+    assert "g1" not in b.events, "counting after prune would see nothing to explain"

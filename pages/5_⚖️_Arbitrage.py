@@ -321,6 +321,13 @@ c1.metric("Quotes", f"{stats.get('quotes', 0):,}")
 c2.metric("Events", stats.get("events", 0))
 c3.metric("Found", len(snap.get("opportunities", [])))
 c4.metric("Credits", "0")
+_skipped = stats.get("skipped_events") or {}
+if _skipped:
+    st.caption("Not scanned: "
+               + " · ".join(f"{n} {k}" for k, n in sorted(_skipped.items()))
+               + ".  Golf tournaments run for days, so they read as in progress "
+                 "from the first tee onward and only appear before a round starts.")
+
 st.caption(f"Snapshot {age_str(snap.get('generated_at', ''))} · "
            f"FanDuel {stats.get('fanduel', 0):,} · DraftKings {stats.get('draftkings', 0):,} · "
            f"Fanatics {stats.get('fanatics', 0):,} · anchor {stats.get('anchor', 0):,}")

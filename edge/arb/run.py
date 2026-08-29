@@ -122,6 +122,21 @@ def scan(cfg: ArbConfig | None = None, progress=None,
         log.warning("fanatics markets: %s", exc)
         stats["anchor"] = 0
 
+    # Why an empty board is empty -- counted BEFORE prune(), which deletes
+    # anything more than its grace period past start and would otherwise erase
+    # the evidence. skip_live is right for a three-hour game and awkward for
+    # golf, where a tournament is "in progress" from Thursday's first tee to
+    # Sunday's last putt, so golf is usually skipped entirely. Without this the
+    # app shows nothing and gives no reason.
+    now_w = datetime.now(timezone.utc)
+    skipped: dict[str, int] = {}
+    for e in board.events.values():
+        if not engine.in_window(e, cfg, now_w):
+            key = ("in progress" if e.minutes_to_start(now_w) < 0 else "outside window")
+            k = f"{e.sport_key} ({key})"
+            skipped[k] = skipped.get(k, 0) + 1
+    stats["skipped_events"] = skipped
+
     board.prune()
     opps = engine.scan(board, cfg)
     # recorded so a UI can rescale stakes to a different bankroll

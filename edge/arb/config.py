@@ -83,8 +83,13 @@ class ArbConfig:
     bankroll: Bankroll = field(default_factory=Bankroll)
     scrape: Scrape = field(default_factory=Scrape)
     state: str = "ct"
+    # golf_pga is scanned but will usually show nothing: skip_live applies to
+    # it like everything else, and a tournament is "in progress" from the
+    # first tee time until the last putt drops on Sunday. It surfaces in the
+    # window before a round starts. run.scan() counts what it skipped for
+    # this reason so an empty golf board is explained rather than mysterious.
     sports: list[str] = field(default_factory=lambda: [
-        "americanfootball_ncaaf", "baseball_mlb", "basketball_wnba"])
+        "americanfootball_ncaaf", "baseball_mlb", "basketball_wnba", "golf_pga"])
     fanduel_max_events: int = 40
     # See arb/config.py FanDuelScrapeConfig.tabs: "popular" alone misses
     # pitcher Outs Recorded entirely and the deeper batter thresholds.
