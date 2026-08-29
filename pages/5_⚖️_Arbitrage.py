@@ -128,7 +128,7 @@ with st.sidebar:
                                "NET winnings, not the total return.")
     boost_book = st.selectbox("Book", ["fanduel", "draftkings", "fanatics"],
                               format_func=lambda b: BOOK_NAMES.get(b, b))
-    boost_max = st.number_input("Boost max stake ($)", 5, 5_000, 25, step=5,
+    boost_max = st.number_input("Boost max stake ($)", 1, 5_000, 10, step=5,
                                 help="The token's cap. This bounds the WHOLE "
                                      "position, not just the boosted leg — the "
                                      "hedge is sized off it.")

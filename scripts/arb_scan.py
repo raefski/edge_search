@@ -41,7 +41,7 @@ def _parse_boost(spec: str):
     book, pct = parts[0], float(parts[1])
     if pct > 1.0:                       # 25 and 0.25 both mean 25%
         pct /= 100.0
-    max_stake = float(parts[2]) if len(parts) > 2 and parts[2] else 25.0
+    max_stake = float(parts[2]) if len(parts) > 2 and parts[2] else 10.0
     sports = [parts[3]] if len(parts) > 3 and parts[3] else []
     return Boost(book=book, pct=pct, max_stake=max_stake, sports=sports,
                  requires_parlay=parlay)

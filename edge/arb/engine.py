@@ -52,7 +52,7 @@ class Boost:
     """
     book: str
     pct: float                                                  # 0.5 == +50%
-    max_stake: float = 25.0
+    max_stake: float = 10.0       # a conservative floor; raise per token
     sports: list[str] = field(default_factory=list)             # empty == any
     markets: list[str] = field(default_factory=list)            # empty == any
     requires_parlay: bool = False
