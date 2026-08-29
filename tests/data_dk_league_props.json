@@ -1,0 +1,520 @@
+{
+ "_source": "sportsbook-nash.draftkings.com league feed 84240 (MLB), captured live",
+ "_event": "COL Rockies @ ATL Braves",
+ "markets": [
+  {
+   "id": "364460809",
+   "eventId": "34581715",
+   "name": "Grant Holmes Outs O/U",
+   "subcategoryId": 17413,
+   "marketType": {
+    "name": "Outs O/U"
+   }
+  },
+  {
+   "id": "364460643",
+   "eventId": "34581715",
+   "name": "Grant Holmes Strikeouts Thrown O/U",
+   "subcategoryId": 15221,
+   "marketType": {
+    "name": "Strikeouts Thrown O/U"
+   }
+  },
+  {
+   "id": "364461081",
+   "eventId": "34581715",
+   "name": "Grant Holmes Earned Runs Allowed O/U",
+   "subcategoryId": 17412,
+   "marketType": {
+    "name": "Earned Runs Allowed O/U"
+   }
+  },
+  {
+   "id": "364460853",
+   "eventId": "34581715",
+   "name": "Grant Holmes Hits Allowed O/U",
+   "subcategoryId": 9886,
+   "marketType": {
+    "name": "Hits Allowed O/U"
+   }
+  },
+  {
+   "id": "364460923",
+   "eventId": "34581715",
+   "name": "Grant Holmes Walks Allowed O/U",
+   "subcategoryId": 15219,
+   "marketType": {
+    "name": "Walks Allowed O/U"
+   }
+  },
+  {
+   "id": "364460642",
+   "eventId": "34581715",
+   "name": "Will Grant Holmes Record a Win?",
+   "subcategoryId": 9884,
+   "marketType": {
+    "name": "Win Probability"
+   }
+  },
+  {
+   "id": "364460975",
+   "eventId": "34581715",
+   "name": "Hunter Goodman Strikeouts",
+   "subcategoryId": 17849,
+   "marketType": {
+    "name": "Strikeouts (Batter) Milestones"
+   }
+  },
+  {
+   "id": "364460961",
+   "eventId": "34581715",
+   "name": "Matt Olson Walks O/U",
+   "subcategoryId": 17411,
+   "marketType": {
+    "name": "Walks (Batter) O/U"
+   }
+  },
+  {
+   "id": "364461036",
+   "eventId": "34581715",
+   "name": "Drake Baldwin Runs O/U",
+   "subcategoryId": 17407,
+   "marketType": {
+    "name": "Runs O/U"
+   }
+  },
+  {
+   "id": "364556376",
+   "eventId": "34581715",
+   "name": "Tomoyuki Sugano v Grant Holmes Race to 3 Strikeouts (Both Pitchers Must Start)",
+   "subcategoryId": 16164,
+   "marketType": {
+    "name": "Starting Pitcher Race to 3 Strikeouts"
+   }
+  },
+  {
+   "id": "1_86049108",
+   "eventId": "34581715",
+   "name": "Moneyline",
+   "subcategoryId": 4519,
+   "marketType": {
+    "name": "Moneyline"
+   }
+  },
+  {
+   "id": "2_86049108",
+   "eventId": "34581715",
+   "name": "Run Line",
+   "subcategoryId": 4519,
+   "marketType": {
+    "name": "Run Line"
+   }
+  },
+  {
+   "id": "3_86049108",
+   "eventId": "34581715",
+   "name": "Total",
+   "subcategoryId": 4519,
+   "marketType": {
+    "name": "Total"
+   }
+  }
+ ],
+ "selections": [
+  {
+   "marketId": "364460809",
+   "label": "Over",
+   "points": 15.5,
+   "displayOdds": {
+    "american": "\u2212125",
+    "decimal": "1.80"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460809",
+   "label": "Under",
+   "points": 15.5,
+   "displayOdds": {
+    "american": "\u2212106",
+    "decimal": "1.94"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460643",
+   "label": "Over",
+   "points": 4.5,
+   "displayOdds": {
+    "american": "\u2212142",
+    "decimal": "1.70"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460643",
+   "label": "Under",
+   "points": 4.5,
+   "displayOdds": {
+    "american": "+112",
+    "decimal": "2.12"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364461081",
+   "label": "Over",
+   "points": 1.5,
+   "displayOdds": {
+    "american": "\u2212174",
+    "decimal": "1.57"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364461081",
+   "label": "Under",
+   "points": 1.5,
+   "displayOdds": {
+    "american": "+130",
+    "decimal": "2.30"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460853",
+   "label": "Over",
+   "points": 4.5,
+   "displayOdds": {
+    "american": "\u2212110",
+    "decimal": "1.90"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460853",
+   "label": "Under",
+   "points": 4.5,
+   "displayOdds": {
+    "american": "\u2212120",
+    "decimal": "1.83"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460923",
+   "label": "Over",
+   "points": 1.5,
+   "displayOdds": {
+    "american": "\u2212112",
+    "decimal": "1.89"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460923",
+   "label": "Under",
+   "points": 1.5,
+   "displayOdds": {
+    "american": "\u2212118",
+    "decimal": "1.84"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460642",
+   "label": "Yes",
+   "points": null,
+   "displayOdds": {
+    "american": "+127",
+    "decimal": "2.27"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460642",
+   "label": "No",
+   "points": null,
+   "displayOdds": {
+    "american": "\u2212177",
+    "decimal": "1.56"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460975",
+   "label": "1+",
+   "points": null,
+   "displayOdds": {
+    "american": "\u2212565",
+    "decimal": "1.17"
+   },
+   "participants": [
+    {
+     "name": "Hunter Goodman",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460975",
+   "label": "2+",
+   "points": null,
+   "displayOdds": {
+    "american": "+109",
+    "decimal": "2.09"
+   },
+   "participants": [
+    {
+     "name": "Hunter Goodman",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460975",
+   "label": "3+",
+   "points": null,
+   "displayOdds": {
+    "american": "+495",
+    "decimal": "5.95"
+   },
+   "participants": [
+    {
+     "name": "Hunter Goodman",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460961",
+   "label": "Over",
+   "points": 0.5,
+   "displayOdds": {
+    "american": "+130",
+    "decimal": "2.30"
+   },
+   "participants": [
+    {
+     "name": "Matt Olson",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364460961",
+   "label": "Under",
+   "points": 0.5,
+   "displayOdds": {
+    "american": "\u2212180",
+    "decimal": "1.55"
+   },
+   "participants": [
+    {
+     "name": "Matt Olson",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364461036",
+   "label": "Over",
+   "points": 0.5,
+   "displayOdds": {
+    "american": "\u2212148",
+    "decimal": "1.67"
+   },
+   "participants": [
+    {
+     "name": "Drake Baldwin",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364461036",
+   "label": "Under",
+   "points": 0.5,
+   "displayOdds": {
+    "american": "+107",
+    "decimal": "2.07"
+   },
+   "participants": [
+    {
+     "name": "Drake Baldwin",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364556376",
+   "label": "Grant Holmes",
+   "points": null,
+   "displayOdds": {
+    "american": "\u2212390",
+    "decimal": "1.25"
+   },
+   "participants": [
+    {
+     "name": "Grant Holmes",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "364556376",
+   "label": "Tomoyuki Sugano",
+   "points": null,
+   "displayOdds": {
+    "american": "+260",
+    "decimal": "3.60"
+   },
+   "participants": [
+    {
+     "name": "Tomoyuki Sugano",
+     "type": "Player"
+    }
+   ]
+  },
+  {
+   "marketId": "1_86049108",
+   "label": "COL Rockies",
+   "points": null,
+   "displayOdds": {
+    "american": "+200",
+    "decimal": "3.00"
+   },
+   "participants": [
+    {
+     "name": "COL Rockies",
+     "type": "Team"
+    }
+   ]
+  },
+  {
+   "marketId": "1_86049108",
+   "label": "ATL Braves",
+   "points": null,
+   "displayOdds": {
+    "american": "\u2212216",
+    "decimal": "1.46"
+   },
+   "participants": [
+    {
+     "name": "ATL Braves",
+     "type": "Team"
+    }
+   ]
+  },
+  {
+   "marketId": "2_86049108",
+   "label": "COL Rockies",
+   "points": 1.5,
+   "displayOdds": {
+    "american": "\u2212112",
+    "decimal": "1.89"
+   },
+   "participants": [
+    {
+     "name": "COL Rockies",
+     "type": "Team"
+    }
+   ]
+  },
+  {
+   "marketId": "2_86049108",
+   "label": "ATL Braves",
+   "points": -1.5,
+   "displayOdds": {
+    "american": "\u2212108",
+    "decimal": "1.92"
+   },
+   "participants": [
+    {
+     "name": "ATL Braves",
+     "type": "Team"
+    }
+   ]
+  },
+  {
+   "marketId": "3_86049108",
+   "label": "Over",
+   "points": 9,
+   "displayOdds": {
+    "american": "\u2212109",
+    "decimal": "1.91"
+   },
+   "participants": []
+  },
+  {
+   "marketId": "3_86049108",
+   "label": "Under",
+   "points": 9,
+   "displayOdds": {
+    "american": "\u2212111",
+    "decimal": "1.90"
+   },
+   "participants": []
+  }
+ ]
+}

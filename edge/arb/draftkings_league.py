@@ -28,7 +28,7 @@ log = logging.getLogger("arb.dk_league")
 
 HOST = "https://sportsbook-nash.draftkings.com/api/sportscontent/dkus{state}/v1"
 LEAGUE_IDS = {
-    "baseball_mlb": 84240, "basketball_nba": 42648,
+    "baseball_mlb": 84240, "basketball_nba": 42648, "basketball_wnba": 94682,
     "americanfootball_nfl": 88808, "icehockey_nhl": 42133,
     "americanfootball_ncaaf": 87637, "basketball_ncaab": 92483,
 }
@@ -48,6 +48,17 @@ HEADERS = {
                    "(KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"),
     "x-client-name": "web", "x-client-page": "event", "x-pe-ep": "SB",
 }
+
+
+# Two-sided tabs, which a cap must never drop. "O/U" names both sides; the
+# rest are over-only ladders. "To Record a Win" is Yes/No -- two-sided, needed
+# by edge/dfs.py, and not identifiable from the name pattern alone.
+TWO_SIDED_EXTRA = {"to record a win"}
+
+
+def _two_sided(name: str) -> bool:
+    n = (name or "").strip()
+    return n.endswith("O/U") or n.lower() in TWO_SIDED_EXTRA
 
 
 def _ts(value) -> datetime:
@@ -94,6 +105,16 @@ class DraftKingsLeague:
 
         Discovered from the league payload, which already carries `categories`
         and `subcategories` -- no per-event capture and no guessing at ids.
+
+        Ordered so the two-sided "O/U" tabs come first. Those carry BOTH sides
+        of a line, which is what makes a prop comparable against another book
+        and what edge/dfs.py projects a pitcher from; the "Milestones" tabs are
+        over-only ladders. DraftKings' own ordering is arbitrary, so a caller
+        capping this list was dropping tabs by position: at the default cap of
+        12 that silently lost Outs Recorded, Earned Runs Allowed, Hits Allowed
+        and To Record a Win -- four of the six markets DFS needs -- plus the
+        Hits / Total Bases / RBIs O/U tabs that supply the `under` side no
+        other free book posts.
         """
         wanted = categories if categories is not None else set(PROP_CATEGORIES)
         out = []
@@ -101,6 +122,7 @@ class DraftKingsLeague:
             cid = sc.get("categoryId")
             if cid in wanted and sc.get("id"):
                 out.append((int(cid), int(sc["id"]), sc.get("name") or ""))
+        out.sort(key=lambda t: (0 if _two_sided(t[2]) else 1, t[2]))
         return out
 
     def fetch_subcategory(self, sport_key: str, category_id: int,

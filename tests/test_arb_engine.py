@@ -207,3 +207,317 @@ def test_longshot_leg_is_not_a_main_line():
     b2, _ = board_with(("spreads", None, -3.5, "home", "fanatics", 1.91),
                        ("spreads", None, -4.5, "away", "fanduel", 1.91))
     assert find_middles(b2, c), "the same geometry at normal prices is a middle"
+
+
+# --- DraftKings league feed: props must not read as game markets ------------
+DFS_PITCHER_MARKETS = ["pitcher_outs", "pitcher_strikeouts", "pitcher_earned_runs",
+                       "pitcher_hits_allowed", "pitcher_walks", "pitcher_record_a_win"]
+
+
+def _dk_league_board():
+    """Real capture from sportsbook-nash league 84240 (MLB). Before the
+    participants-first fix every prop here mapped to `totals`: the league feed
+    names markets "<Player> <Stat> O/U" with no separator for split_player, so
+    canonical_market ran with player=None and the trailing "O/U" matched the
+    game-totals rule. 106 prop groups landed on `totals` in one live scan, and
+    edge/dfs.py -- which keys pitchers by pitcher_outs/pitcher_strikeouts --
+    saw no props at all from the free path."""
+    from edge.arb.draftkings_nash import ingest_sportscontent
+    payload = json.loads((DATA / "data_dk_league_props.json").read_text())
+    ev = EventMeta("e1", "baseball_mlb", "MLB",
+                   datetime.now(timezone.utc) + timedelta(hours=2),
+                   "ATL Braves", "COL Rockies")
+    board = Board(); board.events["e1"] = ev
+    stats = ingest_sportscontent(board, payload, sport_key="baseball_mlb", event=ev)
+    return board, stats
+
+
+@pytest.mark.parametrize("market", DFS_PITCHER_MARKETS)
+def test_dfs_pitcher_market_survives_the_free_scrape(market):
+    """edge/dfs.py:P_MARKETS -- the six a starter is projected from. Any one
+    landing on `totals` costs DFS its whole pitcher pool, silently."""
+    board, _ = _dk_league_board()
+    groups = [g for g in board.groups.values() if g.key.market == market]
+    assert groups, f"{market} did not survive the scrape"
+    assert all(g.key.subject for g in groups), f"{market} must be keyed by player"
+
+
+def test_free_scrape_feeds_project_pitcher_end_to_end():
+    """The whole point: free DK data -> a real DFS pitcher projection."""
+    from edge import dfs
+    board, _ = _dk_league_board()
+    pmkts = {}
+    for g in board.groups.values():
+        if g.key.subject != "Grant Holmes":
+            continue
+        d = {s.capitalize(): q["draftkings"].decimal
+             for s, q in g.quotes.items() if "draftkings" in q}
+        d["point"] = g.key.point
+        pmkts[g.key.market] = d
+    assert set(DFS_PITCHER_MARKETS) <= set(pmkts), \
+        f"missing {sorted(set(DFS_PITCHER_MARKETS) - set(pmkts))}"
+    out = dfs.project_pitcher(pmkts)
+    assert out["proj"] is not None, "project_pitcher rejected the free-scrape shape"
+    assert out["imputed"] == [], f"nothing should need imputing: {out['imputed']}"
+    assert set(out["components"]) == {"out", "K", "ER", "hit", "bb", "win"}
+
+
+def test_props_do_not_pollute_the_game_markets():
+    board, _ = _dk_league_board()
+    for g in board.groups.values():
+        if g.key.market in ("h2h", "spreads", "totals"):
+            assert g.key.subject is None, \
+                f"{g.key.subject!r} landed on the game market {g.key.market}"
+
+
+def test_batter_strikeouts_are_not_a_pitcher_market():
+    board, _ = _dk_league_board()
+    ks = {g.key.subject for g in board.groups.values()
+          if g.key.market == "pitcher_strikeouts"}
+    assert "Hunter Goodman" not in ks
+
+
+def test_multi_player_market_is_dropped_not_guessed_at():
+    """Two pitchers in one market: keyed by either, it would pair against that
+    pitcher's own strikeout line and invent an arbitrage."""
+    board, stats = _dk_league_board()
+    assert any("multi-player" in u for u in stats["markets_unmapped"])
+
+
+# --- FanDuel player props: four runner shapes, one of them parsed -----------
+@pytest.mark.parametrize("name,handicap,expected", [
+    ("Over 15.5 Dean Kremer",        0,   ("over",  "Dean Kremer",   15.5)),
+    ("Dean Kremer Over 15.5",        0,   ("over",  "Dean Kremer",   15.5)),
+    ("Luis Castillo Over",           3.5, ("over",  "Luis Castillo",  3.5)),
+    ("Luis Castillo 3+ Strikeouts",  0,   ("over",  "Luis Castillo",  2.5)),
+])
+def test_fanduel_player_runner_shapes(name, handicap, expected):
+    """FanDuel writes a player line four ways; only the first was handled, so
+    the rest made the whole runner name the player -- 53 groups keyed
+    'Dean Kremer 3+ Strikeouts' with no line, and Over/Under split into two
+    subjects that could never meet."""
+    from edge.arb.fanduel import parse_player_runner
+    assert parse_player_runner(name, handicap) == expected
+
+
+@pytest.mark.parametrize("market_type,expected", [
+    ("PITCHER_A_OUTS_RECORDED_SB", ("pitcher_outs", None)),
+    ("TO_RECORD_AN_RBI", ("batter_rbis", 0.5)),
+    ("PLAYER_TO_RECORD_2+_HITS+RUNS+RBIS", ("batter_hits_runs_rbis", 1.5)),
+])
+def test_fanduel_classifies_the_markets_it_was_dropping(market_type, expected):
+    from edge.arb.fanduel import classify
+    assert classify(market_type) == expected
+
+
+def test_fanduel_pitcher_outs_lands_two_sided():
+    """PITCHER_*_OUTS_RECORDED_SB was unclassified, so pitcher_outs -- which
+    edge/dfs.py needs -- had zero FanDuel groups."""
+    from edge.arb.fanduel import FanDuelScrape
+    payload = json.loads((DATA / "data_fd_player_props.json").read_text())
+    board = Board()
+    FanDuelScrape(state="ct").ingest_event(board, payload, "baseball_mlb",
+                                           strict_match=False)
+    outs = [g for g in board.groups.values() if g.key.market == "pitcher_outs"]
+    assert outs
+    for g in outs:
+        assert {"over", "under"} <= set(g.quotes)
+        assert g.key.point and " Over" not in (g.key.subject or "")
+
+
+def test_dk_cap_keeps_every_market_dfs_needs():
+    """At cap=12 on DraftKings' own ordering, four of the six markets
+    edge/dfs.py projects a pitcher from were silently dropped."""
+    from edge.arb.draftkings_league import DraftKingsLeague
+    live_order = ["Walks Allowed O/U", "Strikeouts Thrown O/U", "Race to Strikeouts",
+                  "Home Runs", "Hits", "Total Bases", "RBIs", "Strikeouts Thrown",
+                  "Hits + Runs + RBIs O/U", "Runs O/U", "Stolen Bases O/U", "Singles O/U",
+                  "Doubles O/U", "Walks (Batter) O/U", "Earned Runs Allowed O/U",
+                  "Outs Recorded O/U", "Triples", "Total Bases O/U", "Hits O/U",
+                  "RBIs O/U", "To Record a Win", "Hits Allowed O/U"]
+    payload = {"subcategories": [{"categoryId": 1031, "id": 1000 + i, "name": n}
+                                 for i, n in enumerate(live_order)]}
+    subs = DraftKingsLeague(state="ct").prop_subcategories(payload)
+    cap = ArbConfig().draftkings_max_prop_subcategories
+    kept = {n for _c, _s, n in subs[:cap]}
+    need = {"Outs Recorded O/U", "Strikeouts Thrown O/U", "Earned Runs Allowed O/U",
+            "Hits Allowed O/U", "Walks Allowed O/U", "To Record a Win"}
+    assert need <= kept, f"cap={cap} drops {sorted(need - kept)}"
+
+
+# --- profit boosts ----------------------------------------------------------
+def test_a_boost_multiplies_profit_not_the_return():
+    """The whole feature rests on this. A 50% boost on +200 pays 300 profit on
+    a 100 stake, i.e. decimal 4.0. Multiplying the decimal instead gives 4.5
+    and overstates every boosted arb -- here by 12.5% of the payout."""
+    assert om.boosted(3.0, 0.5) == pytest.approx(4.0)
+    assert om.boosted(2.0, 0.5) == pytest.approx(2.5)
+    assert om.boosted(1.909, 0.5) == pytest.approx(2.3635, abs=1e-4)
+    assert om.boosted(2.5, 0.0) == 2.5          # no boost is a no-op
+
+
+def test_a_boost_is_a_negative_commission():
+    """Same shape as net_of_commission, opposite sign -- so a 10% boost and a
+    10% rake cancel exactly."""
+    d = 2.4
+    assert om.net_of_commission(om.boosted(d, 0.1), 0.1 / 1.1) == pytest.approx(d, abs=1e-9)
+
+
+def test_one_boost_clears_the_vig_on_a_fair_two_way():
+    """A -110/-110 market sums to 1.048; the 4.8% is vig no shopping removes.
+    One 50% boost takes it under 1.0, which is the reason this exists."""
+    from edge.arb.engine import Boost           # noqa: F401  (import guard)
+    plain = om.arb_sum([1.909, 1.909])
+    boosted = om.arb_sum([om.boosted(1.909, 0.5), 1.909])
+    assert plain > 1.0 and boosted < 1.0
+    assert (1.0 / boosted - 1.0) * 100 == pytest.approx(5.6, abs=0.2)
+
+
+def test_parlay_only_boost_is_never_applied():
+    """Books offer the same headline boost for straight bets and for parlays.
+    Only the straight-bet one can be hedged: each side of an arbitrage is its
+    own single bet, so a parlay token cannot price either leg."""
+    from edge.arb.engine import Boost
+    straight = Boost(book="fanduel", pct=0.25, sports=["basketball_wnba"])
+    parlay = Boost(book="draftkings", pct=0.25, sports=["basketball_wnba"],
+                   requires_parlay=True)
+    assert straight.applies_to("fanduel", "basketball_wnba", "h2h")
+    assert not parlay.applies_to("draftkings", "basketball_wnba", "h2h")
+
+
+def test_boost_respects_its_book_sport_and_market_filters():
+    from edge.arb.engine import Boost
+    b = Boost(book="fanduel", pct=0.25, sports=["basketball_wnba"], markets=["h2h"])
+    assert b.applies_to("fanduel", "basketball_wnba", "h2h")
+    assert not b.applies_to("draftkings", "basketball_wnba", "h2h")   # wrong book
+    assert not b.applies_to("fanduel", "baseball_mlb", "h2h")         # wrong sport
+    assert not b.applies_to("fanduel", "basketball_wnba", "totals")   # wrong market
+    assert not Boost(book="fanduel", pct=0.0).applies_to("fanduel", "x", "h2h")
+
+
+def _two_way_board(over=1.909, under=1.909, sport="basketball_wnba"):
+    ev = EventMeta("e1", sport, "WNBA",
+                   datetime.now(timezone.utc) + timedelta(hours=2), "Aces", "Tempo")
+    b = Board()
+    g = b.group(GroupKey("e1", "totals", None, 165.5), ev)
+    now = datetime.now(timezone.utc)
+    g.add(Quote(book="draftkings", side="over", decimal=over, point=165.5, last_update=now))
+    g.add(Quote(book="fanduel", side="under", decimal=under, point=165.5, last_update=now))
+    return b
+
+
+def test_boost_turns_a_vig_market_into_an_arbitrage():
+    from edge.arb.engine import Boost
+    c = cfg()
+    board = _two_way_board()
+    assert find_arbitrages(board, c) == [], "a -110/-110 pair is not an arb on its own"
+
+    c.boosts = [Boost(book="fanduel", pct=0.5, max_stake=25.0,
+                      sports=["basketball_wnba"])]
+    found = find_arbitrages(board, c)
+    assert found, "a 50% boost on one leg must create the arbitrage"
+    o = found[0]
+    assert o.boost and o.profit_pct > 0
+    boosted_legs = [l for l in o.legs if l.boost_pct]
+    assert len(boosted_legs) == 1, "a token applies to ONE slip"
+    assert boosted_legs[0].book == "fanduel"
+    assert boosted_legs[0].raw_decimal == pytest.approx(1.909, abs=1e-3)
+    assert boosted_legs[0].decimal > boosted_legs[0].raw_decimal
+    assert any("without it this is" in w for w in o.warnings), \
+        "must say what the position is worth WITHOUT the boost"
+
+
+def test_boost_max_stake_caps_the_whole_position():
+    """The token's cap bounds the position, not just its own leg -- the hedge
+    is sized off it. A $25 boost cannot carry a $1000 bankroll."""
+    from edge.arb.engine import Boost
+    c = cfg()
+    c.bankroll.total = 1000.0
+    c.boosts = [Boost(book="fanduel", pct=0.5, max_stake=25.0)]
+    o = find_arbitrages(_two_way_board(), c)[0]
+    fd = next(l for l in o.legs if l.book == "fanduel")
+    assert fd.stake <= 25.0, f"boosted leg staked {fd.stake} over a $25 cap"
+    assert o.stake_total < 100.0, "the hedge must be sized off the capped leg"
+
+
+def test_the_better_leg_is_the_one_boosted():
+    """A boost is worth more on the leg carrying more of the stake, so both
+    have to be tried rather than assuming the longer price."""
+    from edge.arb.engine import Boost
+    c = cfg()
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0),
+                Boost(book="fanduel", pct=0.5, max_stake=500.0)]
+    o = find_arbitrages(_two_way_board(over=1.5, under=3.0), c)[0]
+    assert len([l for l in o.legs if l.boost_pct]) == 1
+    alt = om.arb_sum([1.5, om.boosted(3.0, 0.5)])
+    chosen = om.arb_sum([l.decimal for l in o.legs])
+    assert chosen <= alt + 1e-9, "picked the worse leg to boost"
+
+
+def test_top_per_sport_keeps_each_sport_represented():
+    """A boosted scan can return hundreds; ranking globally buries whole
+    sports under whichever prices widest."""
+    from edge.arb.engine import top_per_sport
+    def opp(sport, pct):
+        return Opportunity(kind="arb", fingerprint=f"{sport}{pct}", sport_key=sport,
+                           sport_title=sport, event_id="e", matchup="m",
+                           commence_time=datetime.now(timezone.utc), market="h2h",
+                           subject=None, description="d", legs=[], profit_pct=pct)
+    from edge.arb.engine import Opportunity
+    rows = [opp("a", p) for p in (9, 8, 7, 6, 5)] + [opp("b", p) for p in (4, 3, 2)]
+    top = top_per_sport(rows, 3)
+    assert len(top) == 6
+    assert sorted({o.sport_key for o in top}) == ["a", "b"]
+    assert [o.profit_pct for o in top if o.sport_key == "a"] == [9, 8, 7]
+
+
+def test_price_candidates_agrees_with_the_scanner():
+    """The slider re-prices snapshot candidates instead of re-scanning, so it
+    is a second implementation of the same maths. If they disagree the number
+    on screen is not the number you can place."""
+    from edge.arb.engine import Boost, price_candidates
+    from edge.arb.run import candidates
+    c = cfg()
+    c.boosts = [Boost(book="fanduel", pct=0.5, max_stake=25.0)]
+    board = _two_way_board()
+    scanned = find_arbitrages(board, c)[0]
+    priced = price_candidates(candidates(board, c), c.boosts, c)[0]
+    assert priced["profit_pct"] == pytest.approx(scanned.profit_pct, abs=1e-6)
+    assert priced["stake_total"] == pytest.approx(scanned.stake_total, abs=1e-6)
+
+
+def test_wnba_is_reachable_on_draftkings():
+    """FanDuel had WNBA; DraftKings had no league id, so it was a one-book
+    sport and could never arb. 94682 verified live 2026-08-28."""
+    from edge.arb.draftkings_league import LEAGUE_IDS
+    from edge.arb.fanduel import LEAGUE_PAGES
+    assert LEAGUE_IDS["basketball_wnba"] == 94682
+    assert "basketball_wnba" in LEAGUE_PAGES
+
+
+def test_both_sides_plus_is_the_eyeball_screen():
+    """Positive American odds means decimal >= 2.0, so 1/d <= 0.5 and two of
+    them sum to <= 1.0. +100/+100 is the boundary -- exactly 1.0, which locks
+    nothing -- so one leg has to be strictly longer."""
+    from edge.arb.engine import both_sides_plus
+    assert both_sides_plus([2.05, 2.00])          # +105 / +100
+    assert both_sides_plus([2.36, 2.10])          # +136 / +110
+    assert not both_sides_plus([2.00, 2.00])      # +100 / +100 is break-even
+    assert not both_sides_plus([1.909, 1.909])    # -110 / -110
+    assert not both_sides_plus([2.50, 1.90])      # one side negative
+    assert not both_sides_plus([2.50])            # a single leg is not a market
+
+
+def test_both_sides_plus_agrees_with_the_arithmetic():
+    """The screen must never disagree with arb_sum, or it is a trap."""
+    from edge.arb.engine import both_sides_plus
+    for a in (1.7, 1.909, 2.0, 2.05, 2.4, 3.0):
+        for b in (1.7, 1.909, 2.0, 2.05, 2.4, 3.0):
+            if both_sides_plus([a, b]):
+                assert om.arb_sum([a, b]) < 1.0, f"{a}/{b} screened in but is not an arb"
+
+
+def test_a_boost_can_push_a_leg_to_plus_money():
+    """The mechanism the screen relies on: 25% takes -110 to +114, 50% to +136."""
+    assert om.format_american(om.boosted(1.909, 0.25)) == "+114"
+    assert om.format_american(om.boosted(1.909, 0.50)) == "+136"

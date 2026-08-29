@@ -45,7 +45,7 @@ class Detect:
     min_books: int = 2
     max_legs: int = 3
     middles_enabled: bool = True
-    middle_min_width: float = 0.5
+    middle_min_width: float = 0.5    # a whole number must also fall inside the window
     middle_max_cost_pct: float = 5.0
     # Sanity bounds. A real middle pairs two readings of the SAME market, so
     # both legs are priced like main lines and the gap between them is small.
@@ -84,10 +84,18 @@ class ArbConfig:
     scrape: Scrape = field(default_factory=Scrape)
     state: str = "ct"
     sports: list[str] = field(default_factory=lambda: [
-        "americanfootball_ncaaf", "baseball_mlb"])
+        "americanfootball_ncaaf", "baseball_mlb", "basketball_wnba"])
     fanduel_max_events: int = 40
+    # See arb/config.py FanDuelScrapeConfig.tabs: "popular" alone misses
+    # pitcher Outs Recorded entirely and the deeper batter thresholds.
+    fanduel_tabs: list[str] = field(default_factory=lambda: [
+        "popular", "pitcher-props", "batter-props"])
+    # Profit-boost tokens offered to YOUR account. Not discoverable: both books
+    # put promotions behind a login and issue them per account. Set from the
+    # Streamlit sidebar, scripts/arb_scan.py --boost, or here.
+    boosts: list = field(default_factory=list)          # list[engine.Boost]
     draftkings_props: bool = True
-    draftkings_max_prop_subcategories: int = 12
+    draftkings_max_prop_subcategories: int = 40   # covers all 31 MLB tabs; see prop_subcategories
     request_gap_seconds: float = 0.35
 
     # Oddschecker league ids for Fanatics. bettypeIds are per sport: 1 and 525
@@ -98,4 +106,8 @@ class ArbConfig:
         {"name": "MLB", "sport_key": "baseball_mlb",
          "event_id": 7445, "bettype_ids": [1, 525, 1055802107]},
     ])
-    fanatics_markets_series: list[str] = field(default_factory=lambda: ["NCAAF", "MLB"])
+    # Vig-free anchor series. WNBA verified live 2026-08-28: 11 pregame events.
+    # This is a REFERENCE source, never a bet leg -- it makes WNBA +EV possible
+    # without a third bettable book, which Oddschecker still cannot supply.
+    fanatics_markets_series: list[str] = field(default_factory=lambda: [
+        "NCAAF", "MLB", "WNBA"])

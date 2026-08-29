@@ -200,6 +200,17 @@ def milestone_point(sel: dict) -> float | None:
     return float(m.group(1)) - 0.5 if m else None
 
 
+def market_players(sels: list[dict]) -> set[str]:
+    """The players a market is about, read off the selections themselves.
+
+    `participants` is typed: a game line carries Team entries (or none at all),
+    a prop carries exactly one Player. Type is what separates them -- the name
+    alone cannot, and the market label often cannot either.
+    """
+    return {p.get("name") for s in sels for p in (s.get("participants") or [])
+            if p.get("type") == "Player" and p.get("name")}
+
+
 def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
                          sport_key: str | None = None, strict_match: bool = True,
                          event: object | None = None) -> dict:
@@ -237,7 +248,28 @@ def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
         # and participants carry both cleanly.
         label = (market.get("marketType") or {}).get("name") or market.get("name") or ""
         _, label_player = split_player(market.get("name") or "")
-        mkey = canonical_market(label, player=label_player)
+
+        # The player has to be known BEFORE the market key, because it is what
+        # decides which rule set wins: "Total Bases" is a game total with no
+        # player and a prop with one. The league feed names markets
+        # "<Player> <Stat> O/U" with no separator, so split_player returned
+        # None and every prop fell through to the game rules -- a starter's
+        # "Outs O/U" was read as a game total, as were Total Bases and every
+        # other O/U prop tab.
+        players = market_players(sels)
+        if len(players) > 1:
+            # "Combined Strikeouts", "Either Pitcher to record a win": no single
+            # subject to key it by, and pairing it against a one-player line
+            # would invent an arb. Dropped rather than guessed at.
+            stats["markets_unmapped"].add(f"{label} (multi-player)")
+            continue
+        player = (players.pop() if players else None) or label_player
+
+        mkey = canonical_market(label, player=player)
+        if mkey is None and market.get("name"):
+            # A marketType can be uninformative where the display name is not:
+            # "Win Probability" against "Will Shane McClanahan Record a Win?".
+            mkey = canonical_market(market["name"], player=player)
         if mkey is None:
             stats["markets_unmapped"].add(label)
             continue
@@ -246,8 +278,6 @@ def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
             price = _decimal(sel)
             if price is None or price <= 1.0:
                 continue
-            participants = sel.get("participants") or []
-            player = (participants[0].get("name") if participants else None) or label_player
             point = sel.get("points")
             if point is not None:
                 try:

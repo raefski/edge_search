@@ -36,12 +36,28 @@ PLAYER_STATS: list[tuple[str, str]] = [
     (r"extra base hits", None),
     (r"plate appearance", None),
     (r"1st inning runs|first inning runs", None),
+    # Game totals that contain a stat word. A player can be in context (an
+    # SGP leg, a same-game tab) without making "Team Total Runs" a prop, so
+    # these are claimed here to stop the batter rule below taking them.
+    # None falls through to RULES, which keys them as the game markets.
+    (r"team total runs|alternate total runs|\btotal runs\b", None),
+
+    # "(batter)" names the batter's side of a stat the pitcher also has, so
+    # these must precede the pitching rules. DraftKings labels the hitter's
+    # strikeout prop "Strikeouts (Batter) Milestones", which the bare
+    # `strikeouts` rule below otherwise claims as a PITCHER market -- pairing a
+    # hitter's line against a starter's.
+    (r"strikeouts \(batter\)", "batter_strikeouts"),
+    (r"walks \(batter\)", "batter_walks"),
 
     # pitching -- "allowed"/"recorded" markets are the pitcher's, not the batter's
     (r"hits allowed", "pitcher_hits_allowed"),
     (r"earned runs allowed|earned runs", "pitcher_earned_runs"),
     (r"walks allowed", "pitcher_walks"),
-    (r"outs recorded", "pitcher_outs"),
+    # The league feed says "Outs O/U" where the per-event feed says "Outs
+    # Recorded". Without the bare form the trailing O/U fell through to the
+    # game-totals rule and every starter's outs line became a game total.
+    (r"outs recorded|\bouts\b", "pitcher_outs"),
     (r"pitcher strikeouts|strikeouts", "pitcher_strikeouts"),
     (r"record a win", "pitcher_record_a_win"),
 
@@ -50,7 +66,11 @@ PLAYER_STATS: list[tuple[str, str]] = [
     (r"total bases", "batter_total_bases"),
     (r"home runs?|to hit a home run", "batter_home_runs"),
     (r"\brbis?\b", "batter_rbis"),
-    (r"runs scored", "batter_runs_scored"),
+    # DraftKings says "Runs O/U" and "Runs (Batter) Milestones", never "Runs
+    # Scored". Safe as a bare word only because every game variant is claimed
+    # above -- home runs, earned runs, the H+R+RBI combo, first-inning runs,
+    # and the team/alternate/game total-runs rule.
+    (r"runs scored|\bruns\b", "batter_runs_scored"),
     (r"\bsingles\b", "batter_singles"),
     (r"\bdoubles\b", "batter_doubles"),
     (r"\btriples\b", "batter_triples"),

@@ -17,6 +17,8 @@ from .draftkings_league import DraftKingsLeague
 from .fanaticsmarkets import FanaticsMarkets
 from .fanduel import FanDuelScrape
 from .models import Board
+from .normalize import side_label
+from . import oddsmath as om
 from .oddschecker_free import fetch_fanatics_league
 
 log = logging.getLogger("edge.arb")
@@ -31,9 +33,11 @@ class _MarketsShim:
             "min_trades": 0, "include_live": False})()
 
 
-def scan(cfg: ArbConfig | None = None, progress=None) -> tuple[list, dict]:
-    """Returns (opportunities, stats). `progress` is an optional callback
-    taking (label, done, total) so a UI can show where it is."""
+def scan(cfg: ArbConfig | None = None, progress=None,
+         return_board: bool = False) -> tuple:
+    """Returns (opportunities, stats), or (opportunities, stats, board) when
+    `return_board` is set. `progress` is an optional callback taking
+    (label, done, total) so a UI can show where it is."""
     cfg = cfg or ArbConfig()
     board = Board()
     stats: dict[str, int] = {}
@@ -62,11 +66,14 @@ def scan(cfg: ArbConfig | None = None, progress=None) -> tuple[list, dict]:
         window.sort(key=lambda e: e[2])
         for eid, _name, _when in window[: cfg.fanduel_max_events]:
             time.sleep(cfg.request_gap_seconds)
-            try:
-                payload = fd.event_markets(eid, tab="popular")
-            except Exception:
-                continue
-            fd_quotes += fd.ingest_event(board, payload, sport, strict_match=False)["quotes"]
+            for tab in cfg.fanduel_tabs:
+                try:
+                    payload = fd.event_markets(eid, tab=tab)
+                except Exception:
+                    continue
+                fd_quotes += fd.ingest_event(board, payload, sport,
+                                             strict_match=False)["quotes"]
+                time.sleep(cfg.request_gap_seconds)
     stats["fanduel"] = fd_quotes
 
     # 2. DraftKings — league feed, plus prop subcategories
@@ -122,14 +129,62 @@ def scan(cfg: ArbConfig | None = None, progress=None) -> tuple[list, dict]:
     stats["events"] = len(board.events)
     stats["groups"] = len(board)
     stats["quotes"] = board.quote_count
-    return opps, stats
+    return (opps, stats, board) if return_board else (opps, stats)
+
+
+def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict]:
+    """Two-way markets with both sides priced at two or more bettable books.
+
+    Snapshotted alongside the opportunities so the app can apply a profit boost
+    WITHOUT re-scanning. A boost only ever improves one leg, so every market
+    that could arb under a boost is already a market that prices near fair --
+    `max_sum` keeps the ones with enough headroom and drops the rest. (A 50%
+    boost turns a -110/-110 pair, sum 1.048, into 0.947; by sum 1.35 no
+    realistic boost rescues it, so storing those would only bloat the file.)
+
+    Without this the boost control could only re-price opportunities that
+    already exist, which is backwards: the whole point of a boost is the
+    markets that are NOT arbs until you apply one.
+    """
+    books = set(cfg.books.bettable)
+    now = datetime.now(timezone.utc)
+    out = []
+    for g in board.groups.values():
+        sides = g.expected_sides()
+        if len(sides) != 2:
+            continue
+        best = {s: g.best(s, books) for s in sides}
+        if any(q is None for q in best.values()):
+            continue
+        if len({q.book for q in best.values()}) < cfg.detect.min_books:
+            continue
+        if not engine.in_window(g.event, cfg, now):
+            continue
+        s = om.arb_sum([q.decimal for q in best.values()])
+        if s > max_sum:
+            continue
+        ev = g.event
+        out.append({
+            "sport_key": ev.sport_key, "sport_title": ev.sport_title,
+            "event_id": ev.event_id, "matchup": ev.matchup,
+            "commence_time": ev.commence_time.isoformat(),
+            "market": g.key.market, "subject": g.key.subject, "point": g.key.point,
+            "arb_sum": round(s, 5),
+            "legs": [{"side": si, "book": q.book, "decimal": round(q.decimal, 4),
+                      "label": side_label(si, ev.home_team, ev.away_team, g.key.subject)}
+                     for si, q in sorted(best.items())],
+        })
+    out.sort(key=lambda c: c["arb_sum"])
+    return out
 
 
 def snapshot(cfg: ArbConfig | None = None, progress=None) -> dict:
     """A JSON-safe scan result, for writing to disk and reading in the app."""
-    opps, stats = scan(cfg, progress=progress)
+    cfg = cfg or ArbConfig()
+    opps, stats, board = scan(cfg, progress=progress, return_board=True)
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "stats": stats,
         "opportunities": [o.to_dict() for o in opps],
+        "candidates": candidates(board, cfg),
     }

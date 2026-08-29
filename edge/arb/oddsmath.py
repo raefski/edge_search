@@ -49,6 +49,22 @@ def net_of_commission(decimal: float, commission: float) -> float:
     return 1.0 + (decimal - 1.0) * (1.0 - commission)
 
 
+def boosted(decimal: float, pct: float) -> float:
+    """Odds after a sportsbook profit boost.
+
+    A profit boost multiplies the NET winnings, not the total return. A 50%
+    boost on +200 (decimal 3.0) pays 300 profit per 100 staked instead of 200,
+    so the effective price is 4.0 -- not 4.5, which is what multiplying the
+    decimal would give and what would overstate every boosted arb.
+
+    Mathematically this is `net_of_commission` with the sign flipped: a boost
+    is a negative rake.
+    """
+    if pct <= 0.0:
+        return float(decimal)
+    return 1.0 + (float(decimal) - 1.0) * (1.0 + float(pct))
+
+
 # --------------------------------------------------------------------------
 # vig removal -- turning a book's two-sided price into a fair probability
 # --------------------------------------------------------------------------

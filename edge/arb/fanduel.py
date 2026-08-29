@@ -27,6 +27,7 @@ log = logging.getLogger("arb.fanduel")
 
 API_KEY = "FhMFpcPWXMeyZxOx"
 BOOK = "fanduel"
+PLAYER_MARKETS = ("pitcher_", "batter_", "player_")
 HOST = "https://sbapi.{state}.sportsbook.fanduel.com/api"
 HEADERS = {"Accept": "application/json",
            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/151.0.0.0"}
@@ -69,6 +70,7 @@ STAT_KEYS = {
     "RUNS": "batter_runs_scored", "SINGLE": "batter_singles", "DOUBLE": "batter_doubles",
     "TRIPLE": "batter_triples", "STOLEN_BASES": "batter_stolen_bases",
     "STRIKEOUTS": "pitcher_strikeouts", "OUTS": "pitcher_outs",
+    "HITS+RUNS+RBIS": "batter_hits_runs_rbis",
 }
 # markets whose line lives in the runner handicap rather than the name
 HANDICAP_PROPS = {
@@ -77,14 +79,63 @@ HANDICAP_PROPS = {
     "PITCHER_OUTS": "pitcher_outs",
 }
 
-# "TO_RECORD_2+_HITS", "TO_HIT_3+_HOME_RUNS", "PLAYER_TO_RECORD_A_HIT"
-THRESHOLD_RE = re.compile(r"(?:TO_RECORD|TO_HIT)_(?:(\d+)\+|A)_(.+)$")
-# pitchers are lettered per event: PITCHER_C_STRIKEOUTS, PITCHER_E_TOTAL_STRIKEOUTS
-PITCHER_RE = re.compile(r"^PITCHER_[A-Z]_(?:TOTAL_)?(STRIKEOUTS|OUTS|WALKS|HITS|EARNED_RUNS)$")
+# "TO_RECORD_2+_HITS", "TO_HIT_3+_HOME_RUNS", "PLAYER_TO_RECORD_A_HIT".
+# `AN?` because FanDuel writes "TO_RECORD_AN_RBI" -- the article agrees with the
+# stat, and requiring a bare "A" silently dropped every RBI threshold.
+THRESHOLD_RE = re.compile(r"(?:TO_RECORD|TO_HIT)_(?:(\d+)\+|AN?)_(.+)$")
+# Pitchers are lettered per event: PITCHER_C_STRIKEOUTS, PITCHER_E_TOTAL_STRIKEOUTS,
+# PITCHER_A_OUTS_RECORDED_SB. The trailing qualifiers are FanDuel's own market
+# variants, not different stats, so they are absorbed rather than enumerated.
+PITCHER_RE = re.compile(
+    r"^PITCHER_[A-Z]_(?:TOTAL_)?(STRIKEOUTS|OUTS|WALKS|HITS|EARNED_RUNS)"
+    r"(?:_RECORDED)?(?:_SB)?$")
 # On alternate ladders the line is in the runner NAME, not the handicap field,
 # which stays 0: "Over 2.5", "Minnesota Twins +6.5".
 OU_NAME_RE = re.compile(r"^(Over|Under)\s+([+-]?[\d.]+)\s*$", re.I)
 TEAM_LINE_RE = re.compile(r"^(.+?)\s+([+-][\d.]+)\s*$")
+
+# Player runners come in four shapes and the line is not always in `handicap`.
+SIDE_FIRST_RE = re.compile(r"^(Over|Under)\s+([\d.]+)\s+(.*)$", re.I)
+PLAYER_OU_RE = re.compile(r"^(?P<who>.+?)\s+(?P<side>Over|Under)\s+(?P<line>[\d.]+)\s*$", re.I)
+PLAYER_SIDE_RE = re.compile(r"^(?P<who>.+?)\s+(?P<side>Over|Under)\s*$", re.I)
+PLAYER_LADDER_RE = re.compile(r"^(?P<who>.+?)\s+(?P<n>\d+)\+\s+(?P<stat>.+)$")
+
+
+def parse_player_runner(name: str, handicap) -> tuple[str, str, float] | None:
+    """(side, player, line) from one player runner.
+
+    FanDuel writes the same idea four ways, and which one it uses varies by
+    market rather than by sport:
+
+        "Over 15.5 Dean Kremer"      handicap 0     side and line first
+        "Dean Kremer Over 15.5"      handicap 0     player first (outs recorded)
+        "Luis Castillo Over"         handicap 3.5   line in the handicap field
+        "Luis Castillo 3+ Strikeouts" handicap 0    one rung of an alt ladder
+
+    Only the first was handled. The rest fell to a default that made the WHOLE
+    runner name the player, so the board carried 53 groups keyed
+    'Dean Kremer 3+ Strikeouts' with no line -- and, worse, 'Luis Castillo
+    Over' and 'Luis Castillo Under' as two separate subjects, which is why the
+    two sides of a strikeout line never met each other, let alone another book.
+
+    A ladder rung is converted the same way the threshold markets are: "3+" is
+    Over 2.5, so it lands on the line another book actually prices.
+    """
+    mo = SIDE_FIRST_RE.match(name)
+    if mo:
+        return mo.group(1).lower(), mo.group(3).strip(), float(mo.group(2))
+    mo = PLAYER_OU_RE.match(name)
+    if mo:
+        return mo.group("side").lower(), mo.group("who").strip(), float(mo.group("line"))
+    mo = PLAYER_SIDE_RE.match(name)
+    if mo and handicap:
+        return mo.group("side").lower(), mo.group("who").strip(), float(handicap)
+    mo = PLAYER_LADDER_RE.match(name)
+    if mo:
+        return "over", mo.group("who").strip(), float(mo.group("n")) - 0.5
+    if handicap:
+        return "over", name, float(handicap)
+    return None
 
 
 def classify(market_type: str) -> tuple[str, float | None] | None:
@@ -234,15 +285,14 @@ class FanDuelScrape:
 
                 if fixed_line is not None:            # threshold prop
                     side, subject, point = "over", name, fixed_line
-                elif is_player:                        # handicap prop (Over/Under N)
-                    mo = re.match(r"^(Over|Under)\s+([\d.]+)\s+(.*)$", name, re.I)
-                    if mo:
-                        side = mo.group(1).lower()
-                        point = float(mo.group(2))
-                        subject = mo.group(3).strip()
-                    else:
-                        side, subject, point = "over", name, (
-                            float(handicap) if handicap else None)
+                elif is_player or mkey.startswith(PLAYER_MARKETS):
+                    # the market key is the reliable signal: isPlayerSelection is
+                    # not set on every prop runner, and a player market routed
+                    # into the game branch below is parsed as a team line
+                    parsed = parse_player_runner(name, handicap)
+                    if parsed is None:
+                        continue
+                    side, subject, point = parsed
                 else:                                  # game market
                     from .normalize import normalize_outcome
                     label, line = name, handicap

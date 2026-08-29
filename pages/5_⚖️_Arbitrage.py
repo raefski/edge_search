@@ -65,6 +65,10 @@ def age_str(iso: str) -> str:
     return f"{mins // 60}h{mins % 60:02d}m ago"
 
 
+def money(x) -> str:
+    return f"${float(x or 0):,.2f}"
+
+
 def starts_in(iso: str) -> str:
     try:
         mins = int((datetime.fromisoformat(iso) - datetime.now(timezone.utc)).total_seconds() // 60)
@@ -83,6 +87,38 @@ with st.sidebar:
                            format_func=lambda k: {"arb": "Arbitrage", "middle": "Middles",
                                                   "ev": "+EV"}[k])
     min_profit = st.slider("Minimum %", 0.0, 20.0, 0.0, 0.25)
+
+    st.divider()
+    st.header("Profit boost")
+    st.caption("A boost is what creates the arbitrage. Two books priced fairly "
+               "still sum to ~1.05 — that 5% is the vig and no amount of "
+               "shopping removes it. One 50% boost on either leg pays 2.36 "
+               "where the book posted 1.91, which clears the vig and leaves "
+               "a locked profit.")
+    boost_pct = st.slider("Boost %", 0, 100, 0, 5,
+                          help="0 turns boosts off. Profit boosts multiply your "
+                               "NET winnings, not the total return.")
+    boost_book = st.selectbox("Book", ["fanduel", "draftkings", "fanatics"],
+                              format_func=lambda b: BOOK_NAMES.get(b, b))
+    boost_max = st.number_input("Boost max stake ($)", 5, 5_000, 25, step=5,
+                                help="The token's cap. This bounds the WHOLE "
+                                     "position, not just the boosted leg — the "
+                                     "hedge is sized off it.")
+    _snap_peek = load_snapshot() or {}
+    _sport_titles = {c["sport_key"]: c.get("sport_title") or c["sport_key"]
+                     for c in (_snap_peek.get("candidates") or []) if c.get("sport_key")}
+    boost_sport = st.selectbox(
+        "Sport", ["(every sport)"] + sorted(_sport_titles),
+        format_func=lambda k: k if k == "(every sport)" else _sport_titles.get(k, k),
+        help="Boosts are almost always tied to one league.")
+    boost_sport = "" if boost_sport == "(every sport)" else boost_sport
+    boost_parlay = st.checkbox("Parlay only", value=False,
+                               help="Books offer the same headline boost twice — "
+                                    "straight bets and parlays. Only the straight-bet "
+                                    "one can be hedged, because each side of an "
+                                    "arbitrage is its own single bet.")
+    per_sport = st.number_input("Show top N per sport", 1, 25, 5, step=1)
+
     st.divider()
     st.caption("A live scan takes ~40s and spends **no** API credits. "
                "It needs a connection the books accept — that usually means "
@@ -129,6 +165,74 @@ st.caption(f"Snapshot {age_str(snap.get('generated_at', ''))} · "
            f"FanDuel {stats.get('fanduel', 0):,} · DraftKings {stats.get('draftkings', 0):,} · "
            f"Fanatics {stats.get('fanatics', 0):,} · anchor {stats.get('anchor', 0):,}")
 
+# --------------------------------------------------------------- boosts
+# Re-priced from the snapshot's `candidates` rather than its opportunities:
+# the markets a boost turns INTO arbitrages are by definition not opportunities
+# yet, so re-scoring the found list would miss every one of them.
+boost_rows = []
+if boost_pct > 0:
+    from edge.arb.engine import Boost, price_candidates, top_rows_per_sport
+
+    cands = snap.get("candidates") or []
+    if not cands:
+        st.warning("This snapshot predates the boost feature — it has no "
+                   "`candidates` section. Press **Scan live** (or re-run "
+                   "`scripts/arb_scan.py`) to rebuild it.")
+    else:
+        bcfg = ArbConfig()
+        bcfg.bankroll.total = float(bankroll)
+        bcfg.detect.min_profit_pct = float(min_profit)
+        boost = Boost(book=boost_book, pct=boost_pct / 100.0,
+                      max_stake=float(boost_max),
+                      sports=[boost_sport] if boost_sport else [],
+                      requires_parlay=boost_parlay,
+                      label=f"{boost_pct}% boost on {BOOK_NAMES.get(boost_book, boost_book)}")
+        boost_rows = price_candidates(cands, [boost], bcfg,
+                                      min_profit_pct=float(min_profit))
+        if boost_parlay:
+            st.info("Parlay-only boosts cannot be arbitraged — each side of a "
+                    "hedge is its own straight bet. Untick **Parlay only** to "
+                    "price a straight-bet boost.")
+        elif not boost_rows:
+            st.warning(f"No market clears {min_profit:.2f}% with a {boost_pct}% "
+                       f"boost on {BOOK_NAMES.get(boost_book, boost_book)}"
+                       + (f" in {_sport_titles.get(boost_sport, boost_sport)}"
+                          if boost_sport else "")
+                       + f" · {len(cands)} candidates checked.")
+        else:
+            shown = top_rows_per_sport(boost_rows, int(per_sport))
+            st.subheader(f"⚡ {len(boost_rows)} boosted "
+                         f"arbitrage{'s' if len(boost_rows) != 1 else ''} · "
+                         f"top {int(per_sport)} per sport")
+            for r in shown:
+                head = (f"🟢 **{r['profit_pct']:+.2f}%** locked · "
+                        f"{money(r['profit_abs'])} on {money(r['stake_total'])} · "
+                        f"unboosted {r['unboosted_pct']:+.2f}%")
+                if r.get("both_plus"):
+                    head += "  ·  ➕ **both sides +money**"
+                with st.container(border=True):
+                    st.markdown(head)
+                    sub = f" · {r['subject']}" if r.get("subject") else ""
+                    pt = "" if r.get("point") is None else f" {r['point']:g}"
+                    st.caption(f"{r['sport_title']} · **{r['matchup']}** · "
+                               f"{starts_in(r.get('commence_time',''))} · "
+                               f"{r['market']}{sub}{pt}")
+                    st.dataframe([{
+                        "Book": BOOK_NAMES.get(l["book"], l["book"]),
+                        "Bet": l["label"],
+                        "Book odds": l["raw_american"],      # verify this at the book
+                        "Boost": f"+{l['boost_pct']:.0%}" if l["boost_pct"] else "—",
+                        "Pays": l["american"],
+                        "Stake": money(l["stake"]),
+                        "Returns": money(l["payout"]),
+                    } for l in r["legs"]], hide_index=True, use_container_width=True)
+            st.caption("The boosted leg is capped at the token's max stake, so "
+                       "the position is small by design. Place the boosted leg "
+                       "FIRST and confirm it applied before placing the hedge — "
+                       "an unboosted first leg leaves you with a plain "
+                       f"{shown[0]['unboosted_pct']:+.2f}% position.")
+    st.divider()
+
 opps = [o for o in snap.get("opportunities", [])
         if o.get("kind") in kinds and o.get("profit_pct", 0) >= min_profit]
 sports = sorted({o.get("sport_title") or o.get("sport_key", "") for o in opps})
@@ -137,9 +241,20 @@ if len(sports) > 1:
     opps = [o for o in opps if (o.get("sport_title") or o.get("sport_key")) in chosen]
 
 if not opps:
-    st.warning("Nothing clears these filters. With three books, days with no "
-               "arbitrage are normal — middles and +EV are the usual finds.")
+    if not boost_rows:
+        st.warning("Nothing clears these filters. With three books, days with no "
+                   "arbitrage are normal — middles and +EV are the usual finds.")
     st.stop()
+
+# cut per sport so one wide-priced sport cannot bury the others
+_by_sport: dict[str, int] = {}
+_kept = []
+for _o in sorted(opps, key=lambda x: -x.get("profit_pct", 0)):
+    _k = _o.get("sport_key", "")
+    if _by_sport.get(_k, 0) < int(per_sport):
+        _by_sport[_k] = _by_sport.get(_k, 0) + 1
+        _kept.append(_o)
+opps = _kept
 
 # stakes were sized for the bankroll at scan time; rescale for this one
 scale = float(bankroll) / max(float(snap.get("stats", {}).get("bankroll", 1000.0) or 1000.0), 1.0)

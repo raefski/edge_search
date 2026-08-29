@@ -1,0 +1,553 @@
+{
+ "_source": "sbapi.ct.sportsbook.fanduel.com event-page, tabs pitcher-props + batter-props",
+ "attachments": {
+  "events": {
+   "35989835": {
+    "name": "Chicago White Sox (L Castillo) @ Minnesota Twins (D Kremer)",
+    "openDate": "2026-08-29T00:11:00.000Z"
+   }
+  },
+  "markets": {
+   "709.183081083": {
+    "eventId": 35989835,
+    "marketType": "PITCHER_C_TOTAL_STRIKEOUTS",
+    "marketName": "Luis Castillo - Strikeouts",
+    "marketStatus": "OPEN",
+    "runners": [
+     {
+      "runnerName": "Luis Castillo Over",
+      "handicap": 3.5,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.675675675675676
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luis Castillo Under",
+      "handicap": 3.5,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 2.16
+        }
+       }
+      }
+     }
+    ]
+   },
+   "709.183230655": {
+    "eventId": 35989835,
+    "marketType": "STARTING_PITCHER_COMBINED_ALT_STRIKEOUTS",
+    "marketName": "Starting Pitcher Combined Alt Strikeouts",
+    "marketStatus": "OPEN",
+    "runners": [
+     {
+      "runnerName": "Luis Castillo & Dean Kremer 9+ Combined Strikeouts",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.595238095238095
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luis Castillo & Dean Kremer 10+ Combined Strikeouts",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 2.12
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luis Castillo & Dean Kremer 11+ Combined Strikeouts",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 2.98
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luis Castillo & Dean Kremer 12+ Combined Strikeouts",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 4.6
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luis Castillo & Dean Kremer 13+ Combined Strikeouts",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 7.1
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luis Castillo & Dean Kremer 14+ Combined Strikeouts",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 12.2
+        }
+       }
+      }
+     }
+    ]
+   },
+   "709.183170163": {
+    "eventId": 35989835,
+    "marketType": "PITCHER_A_OUTS_RECORDED_SB",
+    "marketName": "Dean Kremer Outs Recorded",
+    "marketStatus": "OPEN",
+    "runners": [
+     {
+      "runnerName": "Dean Kremer Over 15.5",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.8
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Dean Kremer Under 15.5",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.943396226415094
+        }
+       }
+      }
+     }
+    ]
+   },
+   "709.183170117": {
+    "eventId": 35989835,
+    "marketType": "PITCHER_B_OUTS_RECORDED_SB",
+    "marketName": "Luis Castillo Outs Recorded",
+    "marketStatus": "OPEN",
+    "runners": [
+     {
+      "runnerName": "Luis Castillo Over 15.5",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.87719298245614
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luis Castillo Under 15.5",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.87719298245614
+        }
+       }
+      }
+     }
+    ]
+   },
+   "709.182981733": {
+    "eventId": 35989835,
+    "marketType": "MONEY_LINE",
+    "marketName": "Moneyline",
+    "marketStatus": "OPEN",
+    "runners": [
+     {
+      "runnerName": "Chicago White Sox",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 2.16
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Minnesota Twins",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": null,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.793650793650794
+        }
+       }
+      }
+     }
+    ]
+   },
+   "709.183100791": {
+    "eventId": 35989835,
+    "marketType": "PITCHER_C_STRIKEOUTS",
+    "marketName": "Luis Castillo - Alt Strikeouts",
+    "marketStatus": "OPEN",
+    "runners": [
+     {
+      "runnerName": "Luis Castillo 3+ Strikeouts",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.227272727272727
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luis Castillo 4+ Strikeouts",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.675675675675676
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luis Castillo 5+ Strikeouts",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 2.5
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luis Castillo 6+ Strikeouts",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 4.5
+        }
+       }
+      }
+     }
+    ]
+   },
+   "709.183100833": {
+    "eventId": 35989835,
+    "marketType": "TO_RECORD_AN_RBI",
+    "marketName": "To Record An RBI",
+    "marketStatus": "OPEN",
+    "runners": [
+     {
+      "runnerName": "Kody Clemens",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 2.25
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Miguel Vargas",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 2.45
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Andrew Benintendi",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 2.4
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Munetaka Murakami",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 2.5
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Josh Bell",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 2.55
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Colson Montgomery",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 2.6
+        }
+       }
+      }
+     }
+    ]
+   },
+   "709.183100816": {
+    "eventId": 35989835,
+    "marketType": "PLAYER_TO_RECORD_2+_HITS",
+    "marketName": "To Record 2+ Hits",
+    "marketStatus": "OPEN",
+    "runners": [
+     {
+      "runnerName": "Sam Antonacci",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 3.1
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Brooks Lee",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 3.2
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luke Keaschall",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 3.2
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Braden Montgomery",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 3.3
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Miguel Vargas",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 3.3
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Josh Bell",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 3.4
+        }
+       }
+      }
+     }
+    ]
+   },
+   "709.183100881": {
+    "eventId": 35989835,
+    "marketType": "PLAYER_TO_RECORD_2+_HITS+RUNS+RBIS",
+    "marketName": "Player To Record 2+ Hits + Runs + RBIs",
+    "marketStatus": "OPEN",
+    "runners": [
+     {
+      "runnerName": "Kody Clemens",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.714285714285714
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Sam Antonacci",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.740740740740741
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Brooks Lee",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.740740740740741
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Josh Bell",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.740740740740741
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Luke Keaschall",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.769230769230769
+        }
+       }
+      }
+     },
+     {
+      "runnerName": "Miguel Vargas",
+      "handicap": 0,
+      "runnerStatus": "ACTIVE",
+      "isPlayerSelection": true,
+      "winRunnerOdds": {
+       "trueOdds": {
+        "decimalOdds": {
+         "decimalOdds": 1.769230769230769
+        }
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}
