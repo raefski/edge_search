@@ -188,3 +188,45 @@ def test_get_still_behaves_after_the_shim_refactor():
         srv.server_close()
     assert seen["method"] == "GET"
     assert seen["query"].count("bettypeIds=") == 3
+
+
+# --- credential validation -------------------------------------------------
+def test_the_documented_placeholder_does_not_pass_as_a_token():
+    """The example value in secrets.toml.example is the literal string
+    "github_pat_...", which is truthy. A plain non-empty check therefore left
+    the button enabled and failing with a bare 401 from GitHub -- an error that
+    tells the user nothing about the real cause."""
+    from edge.arb.scan_request import check_credentials
+    assert "placeholder" in check_credentials("raefski/edge_search", "github_pat_...")
+
+
+@pytest.mark.parametrize("repo,token,expect", [
+    ("raefski/edge_search", "github_pat_11ABCDEF0abcdefghij", ""),
+    ("raefski/edge_search", "ghp_abcdefghijklmnop", ""),
+    ("", "github_pat_x", "GITHUB_REPO is not set"),
+    ("raefski/edge_search", "", "GITHUB_TOKEN is not set"),
+])
+def test_check_credentials_verdicts(repo, token, expect):
+    from edge.arb.scan_request import check_credentials
+    assert check_credentials(repo, token) == expect
+
+
+@pytest.mark.parametrize("repo", ["edge_search", "raefski/", "/edge_search",
+                                  "raefski/edge/search"])
+def test_a_malformed_repo_is_named_rather_than_sent(repo):
+    """owner/name or nothing -- a bare repo name would 404 against the API and
+    look like a permissions problem."""
+    from edge.arb.scan_request import check_credentials
+    assert "owner/name" in check_credentials(repo, "github_pat_real_looking_value")
+
+
+def test_a_non_github_token_is_rejected():
+    from edge.arb.scan_request import check_credentials
+    assert "does not look like" in check_credentials("a/b", "hunter2")
+
+
+def test_whitespace_only_secrets_are_treated_as_unset():
+    """Pasting into the Secrets box picks up stray spaces and newlines."""
+    from edge.arb.scan_request import check_credentials
+    assert check_credentials("  ", " ") == "GITHUB_REPO is not set"
+    assert check_credentials("a/b", "   ") == "GITHUB_TOKEN is not set"

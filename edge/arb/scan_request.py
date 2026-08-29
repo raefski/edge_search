@@ -122,6 +122,32 @@ def snapshot_is_newer(snapshot_generated_at: str | None,
     return snap >= asked
 
 
+PLACEHOLDERS = {"github_pat_...", "ghp_...", "your_token_here", "...",
+                "your_the_odds_api_v4_key_here"}
+
+
+def check_credentials(repo: str | None, token: str | None) -> str:
+    """Empty string if these can file a request, else why they cannot.
+
+    Worth checking properly rather than testing for non-empty: the documented
+    example value is the string "github_pat_...", which is truthy. Pasting the
+    docs verbatim therefore left the button ENABLED and failing with a bare 401
+    from GitHub -- an error that says nothing about the real cause.
+    """
+    repo, token = (repo or "").strip(), (token or "").strip()
+    if not repo:
+        return "GITHUB_REPO is not set"
+    if repo.count("/") != 1 or not all(repo.split("/")):
+        return f"GITHUB_REPO should look like owner/name, got {repo!r}"
+    if not token:
+        return "GITHUB_TOKEN is not set"
+    if token in PLACEHOLDERS or token.endswith("..."):
+        return "GITHUB_TOKEN is still the placeholder from the docs"
+    if not token.startswith(("github_pat_", "ghp_", "gho_", "ghs_")):
+        return "GITHUB_TOKEN does not look like a GitHub token"
+    return ""
+
+
 # --------------------------------------------------------------------------
 # GitHub contents API -- the only I/O in this module
 # --------------------------------------------------------------------------

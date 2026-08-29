@@ -130,13 +130,23 @@ with st.sidebar:
     st.caption("This host cannot fetch odds — the books refuse datacenter IPs. "
                "This asks the machine in Connecticut to scan and push a fresh "
                "snapshot. It needs `arb_agent.py` running there.")
-    _repo = st.secrets.get("GITHUB_REPO", "") if hasattr(st, "secrets") else ""
-    _token = st.secrets.get("GITHUB_TOKEN", "") if hasattr(st, "secrets") else ""
+    from edge.arb.scan_request import check_credentials
+
+    def _secret(name: str) -> str:
+        # st.secrets raises rather than returning empty when no secrets file
+        # exists at all, which is the normal case running locally
+        try:
+            return str(st.secrets.get(name, "") or "")
+        except Exception:                              # noqa: BLE001
+            return ""
+
+    _repo, _token = _secret("GITHUB_REPO"), _secret("GITHUB_TOKEN")
+    _cred_problem = check_credentials(_repo, _token)
     request_scan = st.button("📡 Request a desktop scan", use_container_width=True,
-                             disabled=not (_repo and _token))
-    if not (_repo and _token):
-        st.caption("⚠️ Set `GITHUB_REPO` and `GITHUB_TOKEN` in the app's "
-                   "Settings → Secrets to enable this.")
+                             disabled=bool(_cred_problem))
+    if _cred_problem:
+        st.caption(f"⚠️ {_cred_problem}. Set `GITHUB_REPO` and `GITHUB_TOKEN` in "
+                   "the app's Settings → Secrets.")
 
 snap = load_snapshot()
 
