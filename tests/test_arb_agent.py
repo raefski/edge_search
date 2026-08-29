@@ -444,3 +444,38 @@ def test_a_market_scoped_boost_refuses_other_markets():
     assert b.applies_to("draftkings", "baseball_mlb", "batter_hits")
     assert not b.applies_to("draftkings", "baseball_mlb", "totals")
     assert not b.applies_to("draftkings", "baseball_mlb", "pitcher_strikeouts")
+
+
+def test_a_stale_module_can_be_recovered_by_reloading_it():
+    """Streamlit Cloud pulls new code and RERUNS the script without restarting
+    the process, so sys.modules keeps the previous deploy's module object and
+    anything added since is absent. The documented cure is a dashboard reboot,
+    which is not on the mobile UI -- a phone user is simply stuck. reload()
+    re-executes the file now on disk and rebinds in place, which is the restart
+    the process never got.
+
+    The simulation must put the stale object IN sys.modules: reload() refuses a
+    module that is not the registered one, so a fake that skips that step
+    reports failure for the wrong reason.
+    """
+    import importlib
+    import sys
+    import types
+
+    import edge.arb                                  # noqa: F401
+    from edge.arb import scan_request as real
+
+    stale = types.ModuleType("edge.arb.scan_request")
+    for attr in ("__name__", "__file__", "__spec__", "__loader__", "__package__"):
+        setattr(stale, attr, getattr(real, attr, None))
+    stale.ScanRequest = real.ScanRequest              # an older, smaller surface
+    assert not hasattr(stale, "market_choices")
+
+    saved = sys.modules["edge.arb.scan_request"]
+    sys.modules["edge.arb.scan_request"] = stale
+    try:
+        recovered = importlib.reload(stale)
+        assert hasattr(recovered, "market_choices"), "reload did not pick up the new code"
+        assert "Batter props" in recovered.market_choices({})
+    finally:
+        sys.modules["edge.arb.scan_request"] = saved

@@ -49,10 +49,35 @@ except Exception:                                   # noqa: BLE001
     _sr = None
 
 _STALE: list[str] = []
+_RELOADED: list[str] = []
 
 
 def _from_scan_request(name, fallback=None):
+    """Look a name up on the module, reloading it from disk if it is missing.
+
+    Streamlit Community Cloud pulls new code and RERUNS the script without
+    restarting the Python process, so `sys.modules` keeps the module object
+    from the previous deploy. Anything added since is absent, and the only
+    documented cure is a manual reboot from the dashboard -- which is not on
+    the mobile UI, so a phone user is simply stuck.
+
+    importlib.reload re-executes the file that is now on disk and rebinds the
+    module in place, which is exactly the restart the process did not get. Done
+    lazily, on the first name that turns up missing, so the normal path costs
+    nothing.
+    """
+    global _sr
     fn = getattr(_sr, name, None) if _sr is not None else None
+    if fn is None and _sr is not None:
+        try:
+            import importlib
+
+            _sr = importlib.reload(_sr)
+            fn = getattr(_sr, name, None)
+            if fn is not None:
+                _RELOADED.append(name)
+        except Exception:                           # noqa: BLE001
+            fn = None
     if fn is None:
         _STALE.append(name)
         return fallback
@@ -262,13 +287,19 @@ if not snap:
             "`data/arb_snapshot.json`, or press **Scan live**.")
     st.stop()
 
+if _RELOADED and not _STALE:
+    st.caption(f"♻️ Reloaded `edge.arb.scan_request` from disk "
+               f"({', '.join(sorted(set(_RELOADED)))} were missing) — Streamlit "
+               "reuses modules across reruns after a deploy. No reboot needed.")
+
 if _STALE:
     st.warning(
         f"This app is running a stale copy of `edge.arb.scan_request` "
         f"(missing: {', '.join(sorted(set(_STALE)))}). Streamlit reuses "
-        "imported modules across reruns, so a deploy that adds a function "
-        "needs a full restart. **Reboot the app** from the ⋮ menu — the "
-        "sidebar is running on fallbacks until you do.", icon="♻️")
+        "imported modules across reruns, and reloading it from disk did not "
+        "recover these either — so the deployed code really is behind. "
+        "**Reboot the app** at share.streamlit.io (⋮ → Reboot); the sidebar "
+        "is running on fallbacks until you do.", icon="♻️")
 
 stats = snap.get("stats", {})
 c1, c2, c3, c4 = st.columns(4)
