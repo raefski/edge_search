@@ -104,14 +104,25 @@ with st.sidebar:
                                 help="The token's cap. This bounds the WHOLE "
                                      "position, not just the boosted leg — the "
                                      "hedge is sized off it.")
+    from edge.arb.scan_request import sport_choices
+
     _snap_peek = load_snapshot() or {}
-    _sport_titles = {c["sport_key"]: c.get("sport_title") or c["sport_key"]
-                     for c in (_snap_peek.get("candidates") or []) if c.get("sport_key")}
+    _sport_titles = sport_choices(ArbConfig(), _snap_peek)
+    _in_snapshot = {c.get("sport_key") for c in (_snap_peek.get("candidates") or [])}
     boost_sport = st.selectbox(
-        "Sport", ["(every sport)"] + sorted(_sport_titles),
-        format_func=lambda k: k if k == "(every sport)" else _sport_titles.get(k, k),
-        help="Boosts are almost always tied to one league.")
+        "Sport", ["(every sport)"] + list(_sport_titles),
+        format_func=lambda k: (
+            "(every sport)" if k == "(every sport)"
+            # a sport the current snapshot cannot answer for is still
+            # selectable, but say so rather than silently returning nothing
+            else _sport_titles[k] + ("" if k in _in_snapshot else "  · not in snapshot")),
+        help="The sport your boost is tied to. Sports missing from the current "
+             "snapshot are still listed — request a desktop scan to cover them.")
     boost_sport = "" if boost_sport == "(every sport)" else boost_sport
+    if boost_sport and boost_sport not in _in_snapshot:
+        st.caption(f"⚠️ The current snapshot has no {_sport_titles[boost_sport]} "
+                   "markets, so nothing can be found for it. Request a desktop "
+                   "scan first.")
     boost_parlay = st.checkbox("Parlay only", value=False,
                                help="Books offer the same headline boost twice — "
                                     "straight bets and parlays. Only the straight-bet "

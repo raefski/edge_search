@@ -128,6 +128,41 @@ def snapshot_is_newer(snapshot_generated_at: str | None,
     return snap >= asked
 
 
+# Display names for the sport keys both books can reach. Kept here rather than
+# derived from a snapshot: a boost is tied to a sport you hold a token for,
+# which may well be a sport the last scan did not cover -- offering only what
+# is already in the snapshot means you cannot select the sport you need until
+# after you have scanned it, which is backwards.
+SPORT_TITLES = {
+    "americanfootball_nfl": "NFL",
+    "americanfootball_ncaaf": "NCAAF",
+    "baseball_mlb": "MLB",
+    "basketball_nba": "NBA",
+    "basketball_wnba": "WNBA",
+    "basketball_ncaab": "NCAAB",
+    "icehockey_nhl": "NHL",
+}
+
+
+def sport_choices(cfg=None, snapshot: dict | None = None) -> dict[str, str]:
+    """{sport_key: display name} for the boost picker.
+
+    The union of what the scanner is configured for, what the last snapshot
+    happens to contain, and the leagues both books support -- so a sport is
+    selectable before it has ever been scanned, and a sport in an old snapshot
+    is still named even if it has since been dropped from the config.
+    """
+    keys = set(SPORT_TITLES)
+    keys.update(getattr(cfg, "sports", None) or [])
+    for c in (snapshot or {}).get("candidates") or []:
+        if c.get("sport_key"):
+            keys.add(c["sport_key"])
+    titles = {}
+    for k in keys:
+        titles[k] = SPORT_TITLES.get(k) or k.split("_", 1)[-1].upper()
+    return dict(sorted(titles.items(), key=lambda kv: kv[1]))
+
+
 PLACEHOLDERS = {"github_pat_...", "ghp_...", "your_token_here", "...",
                 "your_the_odds_api_v4_key_here"}
 

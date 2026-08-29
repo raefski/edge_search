@@ -259,3 +259,36 @@ def test_the_real_placeholder_file_on_disk_is_inert():
         pytest.skip("a real request is currently pending")
     ok, why = should_handle(req, last_handled_id=None)
     assert not ok and why == "no request file"
+
+
+# --- the boost sport picker -------------------------------------------------
+def test_sport_choices_do_not_depend_on_the_last_snapshot():
+    """A boost is tied to a sport you hold a token for, which may be one the
+    last scan never covered. Deriving the list from the snapshot meant a
+    WNBA-only snapshot left WNBA as the ONLY selectable sport -- and an empty
+    snapshot left none at all, so the picker offered nothing but 'every sport'."""
+    from edge.arb.scan_request import sport_choices
+    empty = sport_choices(None, {})
+    assert "basketball_wnba" in empty and "baseball_mlb" in empty
+    assert len(empty) >= 7
+
+    wnba_only = sport_choices(None, {"candidates": [{"sport_key": "basketball_wnba"}]})
+    assert set(empty) <= set(wnba_only), "a narrow snapshot must not shrink the list"
+
+
+def test_sport_choices_include_configured_and_snapshot_sports():
+    from edge.arb.scan_request import sport_choices
+
+    class Cfg:
+        sports = ["soccer_epl"]
+
+    got = sport_choices(Cfg(), {"candidates": [{"sport_key": "tennis_atp"}]})
+    assert "soccer_epl" in got and "tennis_atp" in got
+    assert got["soccer_epl"] == "EPL", "an unknown key still gets a readable name"
+
+
+def test_sport_choices_are_named_not_raw_keys():
+    from edge.arb.scan_request import sport_choices
+    got = sport_choices(None, {})
+    assert got["basketball_wnba"] == "WNBA"
+    assert got["americanfootball_ncaaf"] == "NCAAF"
