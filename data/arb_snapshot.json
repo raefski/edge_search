@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-08-29T14:13:14.254203+00:00",
+ "generated_at": "2026-08-29T14:18:04.800890+00:00",
  "stats": {
-  "fanduel": 13491,
-  "draftkings": 13525,
+  "fanduel": 13488,
+  "draftkings": 13542,
   "fanatics": 815,
   "anchor": 115,
   "bankroll": 1000,
   "events": 156,
-  "groups": 11061,
-  "quotes": 19990
+  "groups": 11067,
+  "quotes": 19992
  },
  "opportunities": [
   {
@@ -33,7 +33,7 @@
      "stake": 500.0,
      "payout": 934.8,
      "link": null,
-     "age_seconds": 1.2,
+     "age_seconds": 1.1,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.8696
@@ -48,7 +48,7 @@
      "stake": 479.0,
      "payout": 935.2,
      "link": null,
-     "age_seconds": 139.2,
+     "age_seconds": 132.4,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.9524
@@ -72,9 +72,9 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 139.2,
+   "max_age_seconds": 132.4,
    "warnings": [],
-   "found_at": "2026-08-29T14:13:14.002382+00:00"
+   "found_at": "2026-08-29T14:18:04.556184+00:00"
   },
   {
    "kind": "middle",
@@ -98,7 +98,7 @@
      "stake": 502.0,
      "payout": 950.24,
      "link": null,
-     "age_seconds": 29.8,
+     "age_seconds": 30.2,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.8929
@@ -113,7 +113,7 @@
      "stake": 498.0,
      "payout": 950.73,
      "link": null,
-     "age_seconds": 102.6,
+     "age_seconds": 101.7,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.9091
@@ -137,9 +137,9 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 102.6,
+   "max_age_seconds": 101.7,
    "warnings": [],
-   "found_at": "2026-08-29T14:13:14.002030+00:00"
+   "found_at": "2026-08-29T14:18:04.555845+00:00"
   }
  ],
  "candidates": [
@@ -164,31 +164,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.1783,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993945",
-   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
-   "commence_time": "2026-08-30T02:08:00+00:00",
-   "market": "pitcher_strikeouts",
-   "subject": "Cristopher Sanchez",
-   "point": 7.5,
-   "arb_sum": 1.00658,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.8696,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.12,
      "label": "Under"
     }
    ]
@@ -471,25 +446,25 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993942",
-   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
-   "commence_time": "2026-08-29T17:11:00+00:00",
-   "market": "spreads",
+   "event_id": "fd:35993945",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T02:08:00+00:00",
+   "market": "h2h",
    "subject": null,
-   "point": 3.5,
-   "arb_sum": 1.01316,
+   "point": null,
+   "arb_sum": 1.01282,
    "legs": [
     {
      "side": "away",
      "book": "fanduel",
-     "decimal": 3.8,
-     "label": "Los Angeles Dodgers"
+     "decimal": 1.4444,
+     "label": "Philadelphia Phillies"
     },
     {
      "side": "home",
-     "book": "fanatics",
-     "decimal": 1.3333,
-     "label": "Detroit Tigers"
+     "book": "draftkings",
+     "decimal": 3.12,
+     "label": "Los Angeles Angels"
     }
    ]
   },
@@ -571,25 +546,25 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993938",
-   "matchup": "Boston Red Sox @ New York Yankees",
-   "commence_time": "2026-08-29T17:06:00+00:00",
-   "market": "h2h",
-   "subject": null,
-   "point": null,
-   "arb_sum": 1.0158,
+   "event_id": "fd:35993945",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T02:08:00+00:00",
+   "market": "pitcher_strikeouts",
+   "subject": "Cristopher Sanchez",
+   "point": 7.5,
+   "arb_sum": 1.01565,
    "legs": [
     {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 2.07,
-     "label": "Boston Red Sox"
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.8696,
+     "label": "Over"
     },
     {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 1.8772,
-     "label": "New York Yankees"
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 2.08,
+     "label": "Under"
     }
    ]
   },
@@ -1021,25 +996,25 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993942",
-   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
-   "commence_time": "2026-08-29T17:11:00+00:00",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
    "market": "spreads",
    "subject": null,
-   "point": 2.5,
-   "arb_sum": 1.02282,
+   "point": 1.5,
+   "arb_sum": 1.02348,
    "legs": [
     {
      "side": "away",
      "book": "fanduel",
-     "decimal": 2.72,
-     "label": "Los Angeles Dodgers"
+     "decimal": 2.68,
+     "label": "Arizona Diamondbacks"
     },
     {
      "side": "home",
-     "book": "fanatics",
-     "decimal": 1.5263,
-     "label": "Detroit Tigers"
+     "book": "draftkings",
+     "decimal": 1.5376,
+     "label": "San Francisco Giants"
     }
    ]
   },
@@ -1096,6 +1071,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 3.5,
+   "arb_sum": 1.02397,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 3.65,
+     "label": "Los Angeles Dodgers"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.3333,
+     "label": "Detroit Tigers"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993936",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -1131,7 +1131,7 @@
    "legs": [
     {
      "side": "over",
-     "book": "draftkings",
+     "book": "fanatics",
      "decimal": 1.9524,
      "label": "Over"
     },
@@ -1446,6 +1446,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 2.5,
+   "arb_sum": 1.02831,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 2.68,
+     "label": "Los Angeles Dodgers"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.5263,
+     "label": "Detroit Tigers"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993940",
    "matchup": "Pittsburgh Pirates @ St. Louis Cardinals",
    "commence_time": "2026-08-29T18:16:00+00:00",
@@ -1590,31 +1615,6 @@
      "book": "fanduel",
      "decimal": 1.9615,
      "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 1.5,
-   "arb_sum": 1.02914,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 2.64,
-     "label": "Arizona Diamondbacks"
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.5376,
-     "label": "San Francisco Giants"
     }
    ]
   },
@@ -1971,31 +1971,6 @@
   {
    "sport_key": "americanfootball_ncaaf",
    "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35170670",
-   "matchup": "North Carolina @ TCU",
-   "commence_time": "2026-08-29T16:00:00+00:00",
-   "market": "h2h",
-   "subject": null,
-   "point": null,
-   "arb_sum": 1.03137,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 3.75,
-     "label": "North Carolina"
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.3077,
-     "label": "TCU"
-    }
-   ]
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
    "event_id": "fd:35682720",
    "matchup": "NC State @ Virginia",
    "commence_time": "2026-08-29T19:30:00+00:00",
@@ -2019,26 +1994,51 @@
    ]
   },
   {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655466",
+   "matchup": "San Jose State @ USC",
+   "commence_time": "2026-08-29T19:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -38.5,
+   "arb_sum": 1.03143,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.9259,
+     "label": "San Jose State"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.9524,
+     "label": "USC"
+    }
+   ]
+  },
+  {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
    "event_id": "fd:35993942",
    "matchup": "Los Angeles Dodgers @ Detroit Tigers",
    "commence_time": "2026-08-29T17:11:00+00:00",
-   "market": "pitcher_outs",
-   "subject": "Blake Snell",
-   "point": 17.5,
-   "arb_sum": 1.03154,
+   "market": "totals",
+   "subject": null,
+   "point": 7.5,
+   "arb_sum": 1.03175,
    "legs": [
     {
      "side": "over",
-     "book": "draftkings",
-     "decimal": 1.6173,
+     "book": "fanduel",
+     "decimal": 2.1,
      "label": "Over"
     },
     {
      "side": "under",
-     "book": "fanduel",
-     "decimal": 2.42,
+     "book": "fanatics",
+     "decimal": 1.8,
      "label": "Under"
     }
    ]
@@ -2324,22 +2324,22 @@
    "event_id": "fd:35993942",
    "matchup": "Los Angeles Dodgers @ Detroit Tigers",
    "commence_time": "2026-08-29T17:11:00+00:00",
-   "market": "spreads",
+   "market": "totals",
    "subject": null,
-   "point": 1.5,
+   "point": 7,
    "arb_sum": 1.03488,
    "legs": [
     {
-     "side": "away",
+     "side": "over",
      "book": "fanduel",
-     "decimal": 2.0,
-     "label": "Los Angeles Dodgers"
+     "decimal": 1.8696,
+     "label": "Over"
     },
     {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 1.8696,
-     "label": "Detroit Tigers"
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 2.0,
+     "label": "Under"
     }
    ]
   },
@@ -2390,6 +2390,31 @@
      "book": "fanduel",
      "decimal": 2.0,
      "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35170670",
+   "matchup": "North Carolina @ TCU",
+   "commence_time": "2026-08-29T16:00:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03498,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 3.7,
+     "label": "North Carolina"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.3077,
+     "label": "TCU"
     }
    ]
   },
@@ -2521,31 +2546,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993938",
-   "matchup": "Boston Red Sox @ New York Yankees",
-   "commence_time": "2026-08-29T17:06:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 8,
-   "arb_sum": 1.03547,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.9804,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.885,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993939",
    "matchup": "Houston Astros @ New York Mets",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -2640,31 +2640,6 @@
      "book": "draftkings",
      "decimal": 3.03,
      "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35655466",
-   "matchup": "San Jose State @ USC",
-   "commence_time": "2026-08-29T19:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -38.5,
-   "arb_sum": 1.036,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 1.9091,
-     "label": "San Jose State"
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.9524,
-     "label": "USC"
     }
    ]
   },
@@ -2764,31 +2739,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.1538,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993942",
-   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
-   "commence_time": "2026-08-29T17:11:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 7.5,
-   "arb_sum": 1.03632,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.08,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.8,
      "label": "Under"
     }
    ]
@@ -3346,31 +3296,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -2.5,
-   "arb_sum": 1.0381,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 1.25,
-     "label": "Arizona Diamondbacks"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 4.2,
-     "label": "San Francisco Giants"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993945",
    "matchup": "Philadelphia Phillies @ Los Angeles Angels",
    "commence_time": "2026-08-30T02:08:00+00:00",
@@ -3621,31 +3546,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993942",
-   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
-   "commence_time": "2026-08-29T17:11:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 7,
-   "arb_sum": 1.0388,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.8475,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.01,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993939",
    "matchup": "Houston Astros @ New York Mets",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -3715,6 +3615,31 @@
      "book": "draftkings",
      "decimal": 2.36,
      "label": "Milwaukee Brewers"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993934",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-29T18:21:00+00:00",
+   "market": "pitcher_outs",
+   "subject": "Kevin Gausman",
+   "point": 17.5,
+   "arb_sum": 1.03915,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.7692,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 2.11,
+     "label": "Under"
     }
    ]
   },
@@ -4019,6 +3944,56 @@
    ]
   },
   {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.03983,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.9804,
+     "label": "Los Angeles Dodgers"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.8696,
+     "label": "Detroit Tigers"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993938",
+   "matchup": "Boston Red Sox @ New York Yankees",
+   "commence_time": "2026-08-29T17:06:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 8,
+   "arb_sum": 1.03983,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.9804,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 1.8696,
+     "label": "Under"
+    }
+   ]
+  },
+  {
    "sport_key": "basketball_wnba",
    "sport_title": "basketball_wnba",
    "event_id": "fd:35989827",
@@ -4169,31 +4144,6 @@
    ]
   },
   {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35170670",
-   "matchup": "North Carolina @ TCU",
-   "commence_time": "2026-08-29T16:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -8.5,
-   "arb_sum": 1.0405,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 1.8929,
-     "label": "North Carolina"
-    },
-    {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 1.9524,
-     "label": "TCU"
-    }
-   ]
-  },
-  {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
    "event_id": "fd:35993946",
@@ -4265,6 +4215,31 @@
      "book": "fanduel",
      "decimal": 1.8929,
      "label": "Atlanta Dream"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35170670",
+   "matchup": "North Carolina @ TCU",
+   "commence_time": "2026-08-29T16:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -8.5,
+   "arb_sum": 1.0405,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.8929,
+     "label": "North Carolina"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.9524,
+     "label": "TCU"
     }
    ]
   },
@@ -4364,6 +4339,31 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 2.91,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993938",
+   "matchup": "Boston Red Sox @ New York Yankees",
+   "commence_time": "2026-08-29T17:06:00+00:00",
+   "market": "pitcher_strikeouts",
+   "subject": "Carlos Rodon",
+   "point": 5.5,
+   "arb_sum": 1.04066,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 2.17,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 1.7246,
      "label": "Under"
     }
    ]
@@ -4494,27 +4494,27 @@
    ]
   },
   {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35655469",
-   "matchup": "Hawaii @ Stanford",
-   "commence_time": "2026-08-29T23:00:00+00:00",
-   "market": "h2h",
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993938",
+   "matchup": "Boston Red Sox @ New York Yankees",
+   "commence_time": "2026-08-29T17:06:00+00:00",
+   "market": "spreads",
    "subject": null,
-   "point": null,
-   "arb_sum": 1.04128,
+   "point": 1.5,
+   "arb_sum": 1.0412,
    "legs": [
     {
      "side": "away",
-     "book": "fanduel",
-     "decimal": 2.55,
-     "label": "Hawaii"
+     "book": "draftkings",
+     "decimal": 2.67,
+     "label": "Boston Red Sox"
     },
     {
      "side": "home",
-     "book": "draftkings",
-     "decimal": 1.5405,
-     "label": "Stanford"
+     "book": "fanduel",
+     "decimal": 1.5,
+     "label": "New York Yankees"
     }
    ]
   },
@@ -4571,31 +4571,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993941",
-   "matchup": "Miami Marlins @ Washington Nationals",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "pitcher_strikeouts",
-   "subject": "Cade Cavalli",
-   "point": 6.5,
-   "arb_sum": 1.04141,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.1,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "fanduel",
-     "decimal": 1.7692,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993934",
    "matchup": "Cincinnati Reds @ Chicago Cubs",
    "commence_time": "2026-08-29T18:21:00+00:00",
@@ -4615,6 +4590,31 @@
      "book": "draftkings",
      "decimal": 1.1266,
      "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655469",
+   "matchup": "Hawaii @ Stanford",
+   "commence_time": "2026-08-29T23:00:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.04159,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 2.54,
+     "label": "Hawaii"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.5435,
+     "label": "Stanford"
     }
    ]
   },
@@ -4974,31 +4974,6 @@
    "event_id": "fd:35993938",
    "matchup": "Boston Red Sox @ New York Yankees",
    "commence_time": "2026-08-29T17:06:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -1.5,
-   "arb_sum": 1.0425,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 1.4878,
-     "label": "Boston Red Sox"
-    },
-    {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 2.7,
-     "label": "New York Yankees"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993938",
-   "matchup": "Boston Red Sox @ New York Yankees",
-   "commence_time": "2026-08-29T17:06:00+00:00",
    "market": "batter_doubles",
    "subject": "Ben Rice",
    "point": 0.5,
@@ -5171,25 +5146,25 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993938",
-   "matchup": "Boston Red Sox @ New York Yankees",
-   "commence_time": "2026-08-29T17:06:00+00:00",
-   "market": "pitcher_strikeouts",
-   "subject": "Carlos Rodon",
-   "point": 5.5,
-   "arb_sum": 1.04279,
+   "event_id": "fd:35993941",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.04277,
    "legs": [
     {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.16,
-     "label": "Over"
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 2.58,
+     "label": "Miami Marlins"
     },
     {
-     "side": "under",
-     "book": "fanduel",
-     "decimal": 1.7246,
-     "label": "Under"
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.5263,
+     "label": "Washington Nationals"
     }
    ]
   },
@@ -5571,31 +5546,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993941",
-   "matchup": "Miami Marlins @ Washington Nationals",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 1.5,
-   "arb_sum": 1.0434,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 2.56,
-     "label": "Miami Marlins"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 1.5319,
-     "label": "Washington Nationals"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993933",
    "matchup": "Seattle Mariners @ Toronto Blue Jays",
    "commence_time": "2026-08-29T19:08:00+00:00",
@@ -5696,6 +5646,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -2.5,
+   "arb_sum": 1.0439,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanatics",
+     "decimal": 1.25,
+     "label": "Arizona Diamondbacks"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 4.1,
+     "label": "San Francisco Giants"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993937",
    "matchup": "Kansas City Royals @ Cleveland Guardians",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -5740,31 +5715,6 @@
      "book": "draftkings",
      "decimal": 1.1235,
      "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993938",
-   "matchup": "Boston Red Sox @ New York Yankees",
-   "commence_time": "2026-08-29T17:06:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 1.5,
-   "arb_sum": 1.04403,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 2.65,
-     "label": "Boston Red Sox"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 1.5,
-     "label": "New York Yankees"
     }
    ]
   },
@@ -5914,31 +5864,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 2.53,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993942",
-   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
-   "commence_time": "2026-08-29T17:11:00+00:00",
-   "market": "batter_singles",
-   "subject": "Kyle Tucker",
-   "point": 0.5,
-   "arb_sum": 1.04444,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.25,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.6667,
      "label": "Under"
     }
    ]
@@ -6114,31 +6039,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.1678,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993942",
-   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
-   "commence_time": "2026-08-29T17:11:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Shohei Ohtani",
-   "point": 0.5,
-   "arb_sum": 1.04526,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 4.7,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.2012,
      "label": "Under"
     }
    ]
@@ -6396,31 +6296,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993941",
-   "matchup": "Miami Marlins @ Washington Nationals",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 8.5,
-   "arb_sum": 1.04617,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.12,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.7407,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993927",
    "matchup": "Texas Rangers @ Milwaukee Brewers",
    "commence_time": "2026-08-29T23:16:00+00:00",
@@ -6564,6 +6439,31 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 2.36,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993941",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_hits",
+   "subject": "Griffin Conine",
+   "point": 0.5,
+   "arb_sum": 1.04638,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.6897,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 2.2,
      "label": "Under"
     }
    ]
@@ -6921,6 +6821,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993938",
+   "matchup": "Boston Red Sox @ New York Yankees",
+   "commence_time": "2026-08-29T17:06:00+00:00",
+   "market": "batter_stolen_bases",
+   "subject": "Eli White",
+   "point": 0.5,
+   "arb_sum": 1.0477,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 7.3,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.098,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993940",
    "matchup": "Pittsburgh Pirates @ St. Louis Cardinals",
    "commence_time": "2026-08-29T18:16:00+00:00",
@@ -7064,6 +6989,31 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 2.03,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993941",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_stolen_bases",
+   "subject": "Javier Sanoja",
+   "point": 0.5,
+   "arb_sum": 1.0482,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 8.5,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.0746,
      "label": "Under"
     }
    ]
@@ -7771,6 +7721,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Shohei Ohtani",
+   "point": 0.5,
+   "arb_sum": 1.04989,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 4.6,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.2012,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993946",
    "matchup": "Chicago White Sox @ Minnesota Twins",
    "commence_time": "2026-08-29T18:11:00+00:00",
@@ -7971,31 +7946,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993941",
-   "matchup": "Miami Marlins @ Washington Nationals",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Jakob Marsee",
-   "point": 0.5,
-   "arb_sum": 1.05037,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.6,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1471,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993947",
    "matchup": "Colorado Rockies @ Atlanta Braves",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -8171,6 +8121,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993941",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "pitcher_strikeouts",
+   "subject": "Cade Cavalli",
+   "point": 6.5,
+   "arb_sum": 1.05062,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.14,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.7143,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993933",
    "matchup": "Seattle Mariners @ Toronto Blue Jays",
    "commence_time": "2026-08-29T19:08:00+00:00",
@@ -8189,6 +8164,31 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 2.1,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993941",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 8.5,
+   "arb_sum": 1.05066,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.1,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 1.7407,
      "label": "Under"
     }
    ]
@@ -8239,31 +8239,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.1149,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993938",
-   "matchup": "Boston Red Sox @ New York Yankees",
-   "commence_time": "2026-08-29T17:06:00+00:00",
-   "market": "batter_stolen_bases",
-   "subject": "Eli White",
-   "point": 0.5,
-   "arb_sum": 1.05078,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 7.3,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.0943,
      "label": "Under"
     }
    ]
@@ -8539,6 +8514,31 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.1136,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "pitcher_strikeouts",
+   "subject": "Blake Snell",
+   "point": 6.5,
+   "arb_sum": 1.05189,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.7042,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 2.15,
      "label": "Under"
     }
    ]
@@ -8865,6 +8865,31 @@
      "book": "draftkings",
      "decimal": 1.1124,
      "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993938",
+   "matchup": "Boston Red Sox @ New York Yankees",
+   "commence_time": "2026-08-29T17:06:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.05291,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.4651,
+     "label": "Boston Red Sox"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 2.7,
+     "label": "New York Yankees"
     }
    ]
   },
@@ -9271,6 +9296,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993941",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Jakob Marsee",
+   "point": 0.5,
+   "arb_sum": 1.05361,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 5.5,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1471,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993945",
    "matchup": "Philadelphia Phillies @ Los Angeles Angels",
    "commence_time": "2026-08-30T02:08:00+00:00",
@@ -9421,24 +9471,24 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993941",
-   "matchup": "Miami Marlins @ Washington Nationals",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_hits",
-   "subject": "Griffin Conine",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "batter_singles",
+   "subject": "Kyle Tucker",
    "point": 0.5,
    "arb_sum": 1.05455,
    "legs": [
     {
      "side": "over",
      "book": "fanduel",
-     "decimal": 1.6667,
+     "decimal": 2.2,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 2.2,
+     "decimal": 1.6667,
      "label": "Under"
     }
    ]
@@ -9689,31 +9739,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.1538,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993934",
-   "matchup": "Cincinnati Reds @ Chicago Cubs",
-   "commence_time": "2026-08-29T18:21:00+00:00",
-   "market": "pitcher_outs",
-   "subject": "Kevin Gausman",
-   "point": 17.5,
-   "arb_sum": 1.05549,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 1.6757,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "fanduel",
-     "decimal": 2.18,
      "label": "Under"
     }
    ]
@@ -10089,6 +10114,31 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.1235,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "pitcher_outs",
+   "subject": "Blake Snell",
+   "point": 17.5,
+   "arb_sum": 1.05692,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.6173,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 2.28,
      "label": "Under"
     }
    ]
@@ -10546,6 +10596,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993941",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Jacob Young",
+   "point": 0.5,
+   "arb_sum": 1.05809,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 5.6,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.137,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993939",
    "matchup": "Houston Astros @ New York Mets",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -10664,31 +10739,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.1449,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993942",
-   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
-   "commence_time": "2026-08-29T17:11:00+00:00",
-   "market": "pitcher_strikeouts",
-   "subject": "Blake Snell",
-   "point": 6.5,
-   "arb_sum": 1.05861,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.6849,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.15,
      "label": "Under"
     }
    ]
@@ -10901,31 +10951,6 @@
    "commence_time": "2026-08-29T18:11:00+00:00",
    "market": "batter_doubles",
    "subject": "Tristan Peters",
-   "point": 0.5,
-   "arb_sum": 1.05909,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.1,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1587,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993941",
-   "matchup": "Miami Marlins @ Washington Nationals",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Kyle Stowers",
    "point": 0.5,
    "arb_sum": 1.05909,
    "legs": [
@@ -11439,31 +11464,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.1515,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993942",
-   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
-   "commence_time": "2026-08-29T17:11:00+00:00",
-   "market": "batter_singles",
-   "subject": "Hunter Feduccia",
-   "point": 0.5,
-   "arb_sum": 1.06077,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.7,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.4484,
      "label": "Under"
     }
    ]
@@ -12196,6 +12196,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993941",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Kyle Stowers",
+   "point": 0.5,
+   "arb_sum": 1.06301,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 5.0,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1587,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993939",
    "matchup": "Houston Astros @ New York Mets",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -12289,31 +12314,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.6711,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993940",
-   "matchup": "Pittsburgh Pirates @ St. Louis Cardinals",
-   "commence_time": "2026-08-29T18:16:00+00:00",
-   "market": "batter_hits",
-   "subject": "Nathan Church",
-   "point": 0.5,
-   "arb_sum": 1.06371,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.5714,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.34,
      "label": "Under"
     }
    ]
@@ -12514,31 +12514,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.3676,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993941",
-   "matchup": "Miami Marlins @ Washington Nationals",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Keibert Ruiz",
-   "point": 0.5,
-   "arb_sum": 1.06456,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.7,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.4405,
      "label": "Under"
     }
    ]
@@ -13296,6 +13271,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "batter_hits",
+   "subject": "Tommy Edman",
+   "point": 0.5,
+   "arb_sum": 1.06752,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.5128,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 2.46,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993945",
    "matchup": "Philadelphia Phillies @ Los Angeles Angels",
    "commence_time": "2026-08-30T02:08:00+00:00",
@@ -13439,6 +13439,56 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.9524,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "batter_singles",
+   "subject": "Hunter Feduccia",
+   "point": 0.5,
+   "arb_sum": 1.06776,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.65,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.4484,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "batter_runs_scored",
+   "subject": "Spencer Torkelson",
+   "point": 0.5,
+   "arb_sum": 1.06782,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.9,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.3831,
      "label": "Under"
     }
    ]
@@ -13996,31 +14046,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993942",
-   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
-   "commence_time": "2026-08-29T17:11:00+00:00",
-   "market": "batter_singles",
-   "subject": "Spencer Torkelson",
-   "point": 0.5,
-   "arb_sum": 1.07155,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 3.0,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.3546,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993945",
    "matchup": "Philadelphia Phillies @ Los Angeles Angels",
    "commence_time": "2026-08-30T02:08:00+00:00",
@@ -14271,6 +14296,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993942",
+   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
+   "commence_time": "2026-08-29T17:11:00+00:00",
+   "market": "batter_hits_runs_rbis",
+   "subject": "Kyle Tucker",
+   "point": 1.5,
+   "arb_sum": 1.07296,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.15,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.6452,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993934",
    "matchup": "Cincinnati Reds @ Chicago Cubs",
    "commence_time": "2026-08-29T18:21:00+00:00",
@@ -14489,31 +14539,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.3953,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993942",
-   "matchup": "Los Angeles Dodgers @ Detroit Tigers",
-   "commence_time": "2026-08-29T17:11:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Spencer Torkelson",
-   "point": 0.5,
-   "arb_sum": 1.07387,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.85,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.3831,
      "label": "Under"
     }
    ]
@@ -14801,31 +14826,6 @@
    "commence_time": "2026-08-29T19:08:00+00:00",
    "market": "batter_singles",
    "subject": "Cal Raleigh",
-   "point": 0.5,
-   "arb_sum": 1.07466,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.8,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.3937,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993941",
-   "matchup": "Miami Marlins @ Washington Nationals",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_singles",
-   "subject": "Owen Caissie",
    "point": 0.5,
    "arb_sum": 1.07466,
    "legs": [
