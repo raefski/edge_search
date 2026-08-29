@@ -1,0 +1,26 @@
+# Desktop side of the phone-triggered scan.
+#   mkdir -p ~/.config/systemd/user
+#   cp deploy/arb-agent.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now arb-agent
+#   systemctl --user status arb-agent      # and: journalctl --user -u arb-agent -f
+#
+# WSL2 runs systemd, but a user service stops when the last session for that
+# user ends. To keep it alive with no terminal open:
+#   sudo loginctl enable-linger $USER
+[Unit]
+Description=Arbitrage scan agent (answers scan requests from the Streamlit app)
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/arb_agent.py --interval 30
+Restart=always
+RestartSec=15
+# The scan is network-bound and polite by design; keep it off the CPU governor's
+# radar so it never competes with anything interactive.
+Nice=10
+
+[Install]
+WantedBy=default.target

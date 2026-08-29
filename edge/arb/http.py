@@ -57,6 +57,31 @@ class Session:
 
     def get(self, url: str, params=None, headers=None, timeout: float = 20.0,
             data=None) -> Response:
+        return self.request("GET", url, params=params, headers=headers,
+                            timeout=timeout, data=data)
+
+    def put(self, url: str, params=None, headers=None, timeout: float = 20.0,
+            data=None, json=None) -> Response:
+        return self.request("PUT", url, params=params, headers=headers,
+                            timeout=timeout, data=data, json=json)
+
+    def post(self, url: str, params=None, headers=None, timeout: float = 20.0,
+             data=None, json=None) -> Response:
+        return self.request("POST", url, params=params, headers=headers,
+                            timeout=timeout, data=data, json=json)
+
+    def request(self, method: str, url: str, params=None, headers=None,
+                timeout: float = 20.0, data=None, json=None) -> Response:
+        """One transport for every verb.
+
+        `json=` serialises the body and sets Content-Type, the way requests
+        does -- the GitHub contents API (scan_request.py) needs a real PUT with
+        a JSON body, and routing that through `get` would have sent it as a GET.
+        """
+        if json is not None:
+            data = _json.dumps(json).encode()
+            headers = dict(headers or {})
+            headers.setdefault("Content-Type", "application/json")
         if params:
             pairs = []
             for k, v in (params.items() if hasattr(params, "items") else params):
@@ -73,7 +98,7 @@ class Session:
         merged.setdefault("Accept-Encoding", "gzip")
         if not any(k.lower() == "user-agent" for k in merged):
             merged["User-Agent"] = DEFAULT_UA
-        req = urllib.request.Request(url, headers=merged, data=data, method="GET")
+        req = urllib.request.Request(url, headers=merged, data=data, method=method)
         try:
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 raw = r.read()
@@ -91,9 +116,14 @@ class Session:
         except Exception as exc:                          # DNS, TLS, timeout
             raise RequestException(str(exc)) from exc
 
-    def request(self, method, url, **kw) -> Response:
-        return self.get(url, **kw)
-
 
 def get(url: str, **kw) -> Response:
     return Session().get(url, **kw)
+
+
+def put(url: str, **kw) -> Response:
+    return Session().put(url, **kw)
+
+
+def post(url: str, **kw) -> Response:
+    return Session().post(url, **kw)

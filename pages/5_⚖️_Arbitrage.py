@@ -125,7 +125,48 @@ with st.sidebar:
                "your own machine, not a cloud host.")
     run_live = st.button("🔄 Scan live", use_container_width=True)
 
+    st.divider()
+    st.header("Ask the desktop")
+    st.caption("This host cannot fetch odds — the books refuse datacenter IPs. "
+               "This asks the machine in Connecticut to scan and push a fresh "
+               "snapshot. It needs `arb_agent.py` running there.")
+    _repo = st.secrets.get("GITHUB_REPO", "") if hasattr(st, "secrets") else ""
+    _token = st.secrets.get("GITHUB_TOKEN", "") if hasattr(st, "secrets") else ""
+    request_scan = st.button("📡 Request a desktop scan", use_container_width=True,
+                             disabled=not (_repo and _token))
+    if not (_repo and _token):
+        st.caption("⚠️ Set `GITHUB_REPO` and `GITHUB_TOKEN` in the app's "
+                   "Settings → Secrets to enable this.")
+
 snap = load_snapshot()
+
+# ------------------------------------------------------- desktop scan request
+if request_scan:
+    try:
+        from edge.arb.scan_request import ScanRequest, put_request
+
+        req = ScanRequest.new(sports=[], note="requested from the Streamlit app")
+        put_request(_repo, _token, req)
+        st.session_state["last_scan_request"] = req.requested_at
+        st.success("Asked the desktop to scan. It polls every ~30s, the scan "
+                   "takes ~40s, then this page picks up the new snapshot on "
+                   "its next redeploy — give it a couple of minutes.")
+    except Exception as exc:                      # noqa: BLE001 - surface, don't hide
+        st.error(f"Could not file the request: {type(exc).__name__}: {exc}")
+        st.caption("A 404 here usually means the token cannot see the repo; a "
+                   "403 means it lacks `contents: write`.")
+
+if st.session_state.get("last_scan_request") and snap:
+    from edge.arb.scan_request import ScanRequest, snapshot_is_newer
+
+    _pending = ScanRequest(requested_at=st.session_state["last_scan_request"],
+                           request_id="local")
+    if snapshot_is_newer(snap.get("generated_at"), _pending):
+        st.success("✅ The desktop answered — this snapshot is newer than your request.")
+        st.session_state.pop("last_scan_request", None)
+    else:
+        st.info("⏳ Waiting on the desktop. Refresh in a minute; the snapshot "
+                "below is still the previous one.")
 
 if run_live:
     prog = st.progress(0.0, text="starting…")
