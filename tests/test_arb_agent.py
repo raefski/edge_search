@@ -230,3 +230,32 @@ def test_whitespace_only_secrets_are_treated_as_unset():
     from edge.arb.scan_request import check_credentials
     assert check_credentials("  ", " ") == "GITHUB_REPO is not set"
     assert check_credentials("a/b", "   ") == "GITHUB_TOKEN is not set"
+
+
+def test_the_committed_placeholder_reads_as_no_request():
+    """data/scan_request.json is committed so the path exists in a fresh clone,
+    but a repo nobody has asked anything of must not look like it has a scan
+    pending. Without the sentinel the placeholder parses as a real request,
+    fails the freshness check, and the poller logs a stale-request line every
+    cycle forever -- 2,900 a day at a 30s interval."""
+    from edge.arb.scan_request import PLACEHOLDER_ID, ScanRequest, should_handle
+    placeholder = ScanRequest(requested_at="1970-01-01T00:00:00+00:00",
+                              request_id=PLACEHOLDER_ID, sports=[])
+    ok, why = should_handle(placeholder, last_handled_id=None)
+    assert not ok and why == "no request file"
+
+
+def test_the_real_placeholder_file_on_disk_is_inert():
+    """Guards the actual committed file, not just a reconstruction of it."""
+    import json as _json
+    from pathlib import Path
+
+    from edge.arb.scan_request import REQUEST_PATH, ScanRequest, should_handle
+    path = Path(__file__).resolve().parents[1] / REQUEST_PATH
+    if not path.exists():
+        pytest.skip("no committed request file")
+    req = ScanRequest.parse(path.read_text())
+    if req is None or req.request_id != "none":
+        pytest.skip("a real request is currently pending")
+    ok, why = should_handle(req, last_handled_id=None)
+    assert not ok and why == "no request file"

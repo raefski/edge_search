@@ -151,8 +151,15 @@ def tick(cfg: ArbConfig, max_age: float, also_every: float) -> None:
             publish("arb: scheduled snapshot")
             return
 
-    if why not in ("no request file", "already handled"):
-        log(f"skip: {why}")
+    # Log a skip only when the reason CHANGES. A stale request that nobody
+    # clears is otherwise reported every cycle -- at 30s that is ~2,900
+    # identical lines a day, which buries the one line that matters.
+    if why and why not in ("no request file", "already handled"):
+        if why != state.get("last_skip_reason"):
+            log(f"skip: {why}")
+            write_state(last_skip_reason=why)
+    elif state.get("last_skip_reason"):
+        write_state(last_skip_reason="")
 
 
 def main() -> int:

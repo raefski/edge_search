@@ -28,6 +28,12 @@ from . import http
 REQUEST_PATH = "data/scan_request.json"
 API = "https://api.github.com"
 
+# The file is committed so the path exists in a fresh clone, but an empty repo
+# must not look like it has a scan pending. This id means "nothing asked for" --
+# without it the placeholder reads as a real request, fails the freshness check,
+# and the poller logs a stale-request line every cycle forever.
+PLACEHOLDER_ID = "none"
+
 
 def _now() -> datetime:
     return datetime.now(timezone.utc)
@@ -90,7 +96,7 @@ def should_handle(req: "ScanRequest | None", last_handled_id: str | None,
       * unparseable -- a half-written or hand-edited file is not a reason to
         scrape; say so rather than treating malformed input as a request.
     """
-    if req is None:
+    if req is None or req.request_id == PLACEHOLDER_ID:
         return False, "no request file"
     if last_handled_id and req.request_id == last_handled_id:
         return False, "already handled"
