@@ -1,76 +1,16 @@
 {
- "generated_at": "2026-08-29T18:50:54.636236+00:00",
+ "generated_at": "2026-08-29T19:09:33.026843+00:00",
  "stats": {
-  "fanduel": 12655,
-  "draftkings": 9927,
-  "fanatics": 733,
-  "anchor": 124,
+  "fanduel": 11430,
+  "draftkings": 10540,
+  "fanatics": 670,
+  "anchor": 118,
   "bankroll": 1000,
-  "events": 160,
-  "groups": 8914,
-  "quotes": 16105
+  "events": 158,
+  "groups": 9099,
+  "quotes": 16070
  },
  "opportunities": [
-  {
-   "kind": "arb",
-   "fingerprint": "08e520ec22056172",
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993947",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "pitcher_strikeouts",
-   "subject": "Martin Perez",
-   "description": "pitcher_strikeouts Martin Perez 4.5",
-   "legs": [
-    {
-     "book": "fanduel",
-     "side": "over",
-     "label": "Over",
-     "decimal": 2.08,
-     "american": "+108",
-     "point": 4.5,
-     "stake": 488.0,
-     "payout": 1015.04,
-     "link": null,
-     "age_seconds": 70.8,
-     "limit": null,
-     "boost_pct": 0.0,
-     "raw_decimal": 2.08
-    },
-    {
-     "book": "draftkings",
-     "side": "under",
-     "label": "Under",
-     "decimal": 1.9804,
-     "american": "-102",
-     "point": 4.5,
-     "stake": 512.0,
-     "payout": 1013.96,
-     "link": null,
-     "age_seconds": 19.5,
-     "limit": null,
-     "boost_pct": 0.0,
-     "raw_decimal": 1.9804
-    }
-   ],
-   "profit_pct": 1.397,
-   "stake_total": 1000.0,
-   "profit_abs": 13.96,
-   "max_loss_pct": 0.0,
-   "breakeven_hit_pct": 0.0,
-   "hit_values": [],
-   "push_values": [],
-   "pushes": false,
-   "middle_window": null,
-   "fair_prob": null,
-   "kelly_stake": null,
-   "anchor_book": null,
-   "boost": null,
-   "max_age_seconds": 70.8,
-   "warnings": [],
-   "found_at": "2026-08-29T18:50:54.392074+00:00"
-  },
   {
    "kind": "middle",
    "fingerprint": "9b20ca0352710342",
@@ -93,7 +33,7 @@
      "stake": 500.0,
      "payout": 954.55,
      "link": null,
-     "age_seconds": 32.2,
+     "age_seconds": 30.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.9091
@@ -108,7 +48,7 @@
      "stake": 500.0,
      "payout": 954.55,
      "link": null,
-     "age_seconds": 117.1,
+     "age_seconds": 165.8,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.9091
@@ -132,37 +72,12 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 117.1,
+   "max_age_seconds": 165.8,
    "warnings": [],
-   "found_at": "2026-08-29T18:50:54.450606+00:00"
+   "found_at": "2026-08-29T19:09:32.843366+00:00"
   }
  ],
  "candidates": [
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993947",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "pitcher_strikeouts",
-   "subject": "Martin Perez",
-   "point": 4.5,
-   "arb_sum": 0.98572,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.08,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.9804,
-     "label": "Under"
-    }
-   ]
-  },
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
@@ -185,6 +100,31 @@
      "book": "draftkings",
      "decimal": 2.01,
      "label": "Washington Nationals"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997389",
+   "matchup": "Kansas City Royals @ Cleveland Guardians",
+   "commence_time": "2026-08-30T17:41:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.00827,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.8197,
+     "label": "Kansas City Royals"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.18,
+     "label": "Cleveland Guardians"
     }
    ]
   },
@@ -266,31 +206,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35997389",
-   "matchup": "Kansas City Royals @ Cleveland Guardians",
-   "commence_time": "2026-08-30T17:41:00+00:00",
-   "market": "h2h",
-   "subject": null,
-   "point": null,
-   "arb_sum": 1.01008,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 2.6,
-     "label": "Kansas City Royals"
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.5988,
-     "label": "Cleveland Guardians"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993935",
    "matchup": "Boston Red Sox @ New York Yankees",
    "commence_time": "2026-08-29T23:16:00+00:00",
@@ -310,31 +225,6 @@
      "book": "fanduel",
      "decimal": 1.7576,
      "label": "New York Yankees"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "h2h",
-   "subject": null,
-   "point": null,
-   "arb_sum": 1.0122,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 2.0,
-     "label": "Seattle Mariners"
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.9524,
-     "label": "Toronto Blue Jays"
     }
    ]
   },
@@ -491,31 +381,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -1.5,
-   "arb_sum": 1.01544,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 1.3704,
-     "label": "Baltimore Orioles"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 3.5,
-     "label": "Athletics"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993937",
    "matchup": "Kansas City Royals @ Cleveland Guardians",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -566,31 +431,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35997389",
-   "matchup": "Kansas City Royals @ Cleveland Guardians",
-   "commence_time": "2026-08-30T17:41:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 7.5,
-   "arb_sum": 1.01719,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 1.9709,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "fanduel",
-     "decimal": 1.9615,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993927",
    "matchup": "Texas Rangers @ Milwaukee Brewers",
    "commence_time": "2026-08-29T23:16:00+00:00",
@@ -610,31 +450,6 @@
      "book": "draftkings",
      "decimal": 1.0575,
      "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35682720",
-   "matchup": "NC State @ Virginia",
-   "commence_time": "2026-08-29T19:30:00+00:00",
-   "market": "h2h",
-   "subject": null,
-   "point": null,
-   "arb_sum": 1.01908,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 2.64,
-     "label": "NC State"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 1.5618,
-     "label": "Virginia"
     }
    ]
   },
@@ -691,31 +506,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35997379",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-30T17:38:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 8,
-   "arb_sum": 1.01951,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.9434,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.9804,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993937",
    "matchup": "Kansas City Royals @ Cleveland Guardians",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -741,25 +531,50 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "spreads",
+   "event_id": "fd:35993947",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "batter_stolen_bases",
+   "subject": "Jordan Beck",
+   "point": 0.5,
+   "arb_sum": 1.02268,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 9.8,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.0862,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997385",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T20:08:00+00:00",
+   "market": "h2h",
    "subject": null,
-   "point": 1.5,
-   "arb_sum": 1.02326,
+   "point": null,
+   "arb_sum": 1.02309,
    "legs": [
     {
      "side": "away",
      "book": "fanduel",
-     "decimal": 2.62,
-     "label": "Arizona Diamondbacks"
+     "decimal": 1.5556,
+     "label": "Philadelphia Phillies"
     },
     {
      "side": "home",
      "book": "draftkings",
-     "decimal": 1.5587,
-     "label": "San Francisco Giants"
+     "decimal": 2.63,
+     "label": "Los Angeles Angels"
     }
    ]
   },
@@ -785,31 +600,6 @@
      "book": "draftkings",
      "decimal": 1.1669,
      "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997377",
-   "matchup": "Boston Red Sox @ New York Yankees",
-   "commence_time": "2026-08-30T17:36:00+00:00",
-   "market": "h2h",
-   "subject": null,
-   "point": null,
-   "arb_sum": 1.02381,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 1.9091,
-     "label": "Boston Red Sox"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 2.0,
-     "label": "New York Yankees"
     }
    ]
   },
@@ -864,52 +654,77 @@
    ]
   },
   {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997379",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-30T17:38:00+00:00",
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35682720",
+   "matchup": "NC State @ Virginia",
+   "commence_time": "2026-08-29T19:30:00+00:00",
    "market": "h2h",
    "subject": null,
    "point": null,
-   "arb_sum": 1.02481,
+   "arb_sum": 1.0249,
    "legs": [
     {
      "side": "away",
      "book": "draftkings",
-     "decimal": 1.7937,
-     "label": "Seattle Mariners"
+     "decimal": 2.6,
+     "label": "NC State"
     },
     {
      "side": "home",
      "book": "fanduel",
-     "decimal": 2.14,
-     "label": "Toronto Blue Jays"
+     "decimal": 1.5618,
+     "label": "Virginia"
     }
    ]
   },
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35997387",
-   "matchup": "Pittsburgh Pirates @ St. Louis Cardinals",
-   "commence_time": "2026-08-30T18:16:00+00:00",
+   "event_id": "fd:35997389",
+   "matchup": "Kansas City Royals @ Cleveland Guardians",
+   "commence_time": "2026-08-30T17:41:00+00:00",
    "market": "h2h",
    "subject": null,
    "point": null,
-   "arb_sum": 1.02557,
+   "arb_sum": 1.0249,
    "legs": [
     {
      "side": "away",
+     "book": "fanduel",
+     "decimal": 2.6,
+     "label": "Kansas City Royals"
+    },
+    {
+     "side": "home",
      "book": "draftkings",
-     "decimal": 1.885,
-     "label": "Pittsburgh Pirates"
+     "decimal": 1.5618,
+     "label": "Cleveland Guardians"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.02564,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanatics",
+     "decimal": 1.4444,
+     "label": "Arizona Diamondbacks"
     },
     {
      "side": "home",
      "book": "fanduel",
-     "decimal": 2.02,
-     "label": "St. Louis Cardinals"
+     "decimal": 3.0,
+     "label": "San Francisco Giants"
     }
    ]
   },
@@ -941,74 +756,49 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993947",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "batter_stolen_bases",
-   "subject": "Jordan Beck",
-   "point": 0.5,
-   "arb_sum": 1.02628,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 9.8,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.082,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993939",
-   "matchup": "Houston Astros @ New York Mets",
-   "commence_time": "2026-08-29T20:11:00+00:00",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
    "market": "spreads",
    "subject": null,
-   "point": -1.5,
-   "arb_sum": 1.02648,
+   "point": 1.5,
+   "arb_sum": 1.02619,
    "legs": [
     {
      "side": "away",
      "book": "fanduel",
-     "decimal": 1.6173,
-     "label": "Houston Astros"
+     "decimal": 2.6,
+     "label": "Arizona Diamondbacks"
     },
     {
      "side": "home",
-     "book": "fanatics",
-     "decimal": 2.45,
-     "label": "New York Mets"
+     "book": "draftkings",
+     "decimal": 1.5587,
+     "label": "San Francisco Giants"
     }
    ]
   },
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Ernie Clement",
-   "point": 0.5,
-   "arb_sum": 1.02658,
+   "event_id": "fd:35997389",
+   "matchup": "Kansas City Royals @ Cleveland Guardians",
+   "commence_time": "2026-08-30T17:41:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 7.5,
+   "arb_sum": 1.02671,
    "legs": [
     {
      "side": "over",
-     "book": "fanduel",
-     "decimal": 3.0,
+     "book": "draftkings",
+     "decimal": 1.9346,
      "label": "Over"
     },
     {
      "side": "under",
-     "book": "draftkings",
-     "decimal": 1.4425,
+     "book": "fanduel",
+     "decimal": 1.9615,
      "label": "Under"
     }
    ]
@@ -1141,106 +931,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 3.5,
-   "arb_sum": 1.02824,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 3.35,
-     "label": "Baltimore Orioles"
-    },
-    {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 1.3704,
-     "label": "Athletics"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997388",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T20:06:00+00:00",
-   "market": "h2h",
-   "subject": null,
-   "point": null,
-   "arb_sum": 1.02828,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 1.6849,
-     "label": "Baltimore Orioles"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 2.3,
-     "label": "Athletics"
-    }
-   ]
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35682720",
-   "matchup": "NC State @ Virginia",
-   "commence_time": "2026-08-29T19:30:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 50.5,
-   "arb_sum": 1.02876,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.9091,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.9804,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997382",
-   "matchup": "Miami Marlins @ Washington Nationals",
-   "commence_time": "2026-08-30T16:16:00+00:00",
-   "market": "h2h",
-   "subject": null,
-   "point": null,
-   "arb_sum": 1.02876,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 1.9091,
-     "label": "Miami Marlins"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 1.9804,
-     "label": "Washington Nationals"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993941",
    "matchup": "Miami Marlins @ Washington Nationals",
    "commence_time": "2026-08-29T20:06:00+00:00",
@@ -1309,31 +999,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.3774,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Randy Arozarena",
-   "point": 0.5,
-   "arb_sum": 1.02968,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 6.0,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1587,
      "label": "Under"
     }
    ]
@@ -1416,31 +1081,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -1.5,
-   "arb_sum": 1.03015,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 1.4444,
-     "label": "Seattle Mariners"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 2.96,
-     "label": "Toronto Blue Jays"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993928",
    "matchup": "Baltimore Orioles @ Athletics",
    "commence_time": "2026-08-30T02:06:00+00:00",
@@ -1460,31 +1100,6 @@
      "book": "draftkings",
      "decimal": 1.1408,
      "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "basketball_wnba",
-   "sport_title": "basketball_wnba",
-   "event_id": "fd:35989826",
-   "matchup": "Toronto Tempo @ Phoenix Mercury",
-   "commence_time": "2026-08-30T02:00:00+00:00",
-   "market": "h2h",
-   "subject": null,
-   "point": null,
-   "arb_sum": 1.03054,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 4.3,
-     "label": "Toronto Tempo"
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.2532,
-     "label": "Phoenix Mercury"
     }
    ]
   },
@@ -1510,6 +1125,56 @@
      "book": "draftkings",
      "decimal": 1.1316,
      "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997379",
+   "matchup": "Seattle Mariners @ Toronto Blue Jays",
+   "commence_time": "2026-08-30T17:38:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 8,
+   "arb_sum": 1.03147,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.9434,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.9346,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997388",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T20:06:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.03148,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 2.04,
+     "label": "Baltimore Orioles"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.8475,
+     "label": "Athletics"
     }
    ]
   },
@@ -1691,6 +1356,56 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35997379",
+   "matchup": "Seattle Mariners @ Toronto Blue Jays",
+   "commence_time": "2026-08-30T17:38:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03251,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.7692,
+     "label": "Seattle Mariners"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.14,
+     "label": "Toronto Blue Jays"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997377",
+   "matchup": "Boston Red Sox @ New York Yankees",
+   "commence_time": "2026-08-30T17:36:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03271,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.8772,
+     "label": "Boston Red Sox"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.0,
+     "label": "New York Yankees"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993939",
    "matchup": "Houston Astros @ New York Mets",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -1710,6 +1425,56 @@
      "book": "fanatics",
      "decimal": 1.3704,
      "label": "New York Mets"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997387",
+   "matchup": "Pittsburgh Pirates @ St. Louis Cardinals",
+   "commence_time": "2026-08-30T18:16:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.033,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 2.42,
+     "label": "Pittsburgh Pirates"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.6135,
+     "label": "St. Louis Cardinals"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997382",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-30T16:16:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03325,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.8929,
+     "label": "Miami Marlins"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.9804,
+     "label": "Washington Nationals"
     }
    ]
   },
@@ -1791,31 +1556,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_stolen_bases",
-   "subject": "Daz Cameron",
-   "point": 0.5,
-   "arb_sum": 1.03344,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 13.0,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.0455,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993936",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -1859,31 +1599,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.578,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_singles",
-   "subject": "Kazuma Okamoto",
-   "point": 0.5,
-   "arb_sum": 1.03373,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.55,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.5587,
      "label": "Under"
     }
    ]
@@ -1941,6 +1656,56 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 2.5,
+   "arb_sum": 1.03396,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 2.64,
+     "label": "Baltimore Orioles"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.5263,
+     "label": "Athletics"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997387",
+   "matchup": "Pittsburgh Pirates @ St. Louis Cardinals",
+   "commence_time": "2026-08-30T18:16:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.03422,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.8547,
+     "label": "Pittsburgh Pirates"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.02,
+     "label": "St. Louis Cardinals"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993932",
    "matchup": "Arizona Diamondbacks @ San Francisco Giants",
    "commence_time": "2026-08-29T20:06:00+00:00",
@@ -1960,6 +1725,56 @@
      "book": "fanatics",
      "decimal": 1.3509,
      "label": "San Francisco Giants"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.03438,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanatics",
+     "decimal": 1.3509,
+     "label": "Baltimore Orioles"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 3.4,
+     "label": "Athletics"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 3.5,
+   "arb_sum": 1.03438,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 3.4,
+     "label": "Baltimore Orioles"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.3509,
+     "label": "Athletics"
     }
    ]
   },
@@ -1991,31 +1806,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -1.5,
-   "arb_sum": 1.03483,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 1.4255,
-     "label": "Arizona Diamondbacks"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 3.0,
-     "label": "San Francisco Giants"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993941",
    "matchup": "Miami Marlins @ Washington Nationals",
    "commence_time": "2026-08-29T20:06:00+00:00",
@@ -2035,6 +1825,31 @@
      "book": "fanduel",
      "decimal": 3.0,
      "label": "Washington Nationals"
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35682720",
+   "matchup": "NC State @ Virginia",
+   "commence_time": "2026-08-29T19:30:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -4.5,
+   "arb_sum": 1.03488,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.8696,
+     "label": "NC State"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 2.0,
+     "label": "Virginia"
     }
    ]
   },
@@ -2114,27 +1929,27 @@
    ]
   },
   {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35655468",
-   "matchup": "Memphis @ UNLV",
-   "commence_time": "2026-08-30T02:00:00+00:00",
-   "market": "h2h",
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993939",
+   "matchup": "Houston Astros @ New York Mets",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "spreads",
    "subject": null,
-   "point": null,
-   "arb_sum": 1.03501,
+   "point": -1.5,
+   "arb_sum": 1.03499,
    "legs": [
     {
      "side": "away",
      "book": "fanduel",
-     "decimal": 2.55,
-     "label": "Memphis"
+     "decimal": 1.6173,
+     "label": "Houston Astros"
     },
     {
      "side": "home",
      "book": "fanatics",
-     "decimal": 1.5556,
-     "label": "UNLV"
+     "decimal": 2.4,
+     "label": "New York Mets"
     }
    ]
   },
@@ -2210,6 +2025,31 @@
      "book": "draftkings",
      "decimal": 2.58,
      "label": "New York Yankees"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Rafael Devers",
+   "point": 0.5,
+   "arb_sum": 1.03557,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 5.2,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1859,
+     "label": "Under"
     }
    ]
   },
@@ -2314,51 +2154,51 @@
    ]
   },
   {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35655466",
-   "matchup": "San Jose State @ USC",
-   "commence_time": "2026-08-29T19:00:00+00:00",
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993947",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-29T20:11:00+00:00",
    "market": "spreads",
    "subject": null,
-   "point": -37.5,
-   "arb_sum": 1.036,
+   "point": -2.5,
+   "arb_sum": 1.03586,
    "legs": [
     {
      "side": "away",
      "book": "fanatics",
-     "decimal": 1.9524,
-     "label": "San Jose State"
+     "decimal": 1.6061,
+     "label": "Colorado Rockies"
     },
     {
      "side": "home",
-     "book": "draftkings",
-     "decimal": 1.9091,
-     "label": "USC"
+     "book": "fanduel",
+     "decimal": 2.42,
+     "label": "Atlanta Braves"
     }
    ]
   },
   {
    "sport_key": "americanfootball_ncaaf",
    "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35655466",
-   "matchup": "San Jose State @ USC",
-   "commence_time": "2026-08-29T19:00:00+00:00",
+   "event_id": "fd:35682720",
+   "matchup": "NC State @ Virginia",
+   "commence_time": "2026-08-29T19:30:00+00:00",
    "market": "totals",
    "subject": null,
-   "point": 61.5,
+   "point": 50.5,
    "arb_sum": 1.036,
    "legs": [
     {
      "side": "over",
-     "book": "draftkings",
-     "decimal": 1.9524,
+     "book": "fanduel",
+     "decimal": 1.9091,
      "label": "Over"
     },
     {
      "side": "under",
-     "book": "fanduel",
-     "decimal": 1.9091,
+     "book": "fanatics",
+     "decimal": 1.9524,
      "label": "Under"
     }
    ]
@@ -2489,6 +2329,31 @@
    ]
   },
   {
+   "sport_key": "basketball_wnba",
+   "sport_title": "basketball_wnba",
+   "event_id": "fd:35989826",
+   "matchup": "Toronto Tempo @ Phoenix Mercury",
+   "commence_time": "2026-08-30T02:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 173.5,
+   "arb_sum": 1.036,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.9091,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 1.9524,
+     "label": "Under"
+    }
+   ]
+  },
+  {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
    "event_id": "fd:35993937",
@@ -2509,31 +2374,6 @@
      "side": "under",
      "book": "fanatics",
      "decimal": 1.9091,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_stolen_bases",
-   "subject": "Josh Naylor",
-   "point": 0.5,
-   "arb_sum": 1.03625,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 9.8,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.0704,
      "label": "Under"
     }
    ]
@@ -2595,31 +2435,6 @@
    "matchup": "Arizona Diamondbacks @ San Francisco Giants",
    "commence_time": "2026-08-29T20:06:00+00:00",
    "market": "batter_doubles",
-   "subject": "Jose Fernandez",
-   "point": 0.5,
-   "arb_sum": 1.03638,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.4,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1748,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_doubles",
    "subject": "Drew Cavanaugh",
    "point": 0.5,
    "arb_sum": 1.03655,
@@ -2641,50 +2456,50 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
+   "event_id": "fd:35997379",
    "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "Ernie Clement",
-   "point": 0.5,
-   "arb_sum": 1.03672,
+   "commence_time": "2026-08-30T17:38:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.03699,
    "legs": [
     {
-     "side": "over",
+     "side": "away",
      "book": "fanduel",
-     "decimal": 1.5405,
-     "label": "Over"
+     "decimal": 2.28,
+     "label": "Seattle Mariners"
     },
     {
-     "side": "under",
+     "side": "home",
      "book": "draftkings",
-     "decimal": 2.58,
-     "label": "Under"
+     "decimal": 1.6711,
+     "label": "Toronto Blue Jays"
     }
    ]
   },
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "spreads",
+   "event_id": "fd:35997381",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-30T17:36:00+00:00",
+   "market": "h2h",
    "subject": null,
-   "point": 2.5,
-   "arb_sum": 1.03685,
+   "point": null,
+   "arb_sum": 1.03714,
    "legs": [
     {
      "side": "away",
      "book": "fanduel",
-     "decimal": 2.62,
-     "label": "Baltimore Orioles"
+     "decimal": 2.9,
+     "label": "Colorado Rockies"
     },
     {
      "side": "home",
-     "book": "fanatics",
-     "decimal": 1.5263,
-     "label": "Athletics"
+     "book": "draftkings",
+     "decimal": 1.4444,
+     "label": "Atlanta Braves"
     }
    ]
   },
@@ -2816,31 +2631,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35997381",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-30T17:36:00+00:00",
-   "market": "h2h",
-   "subject": null,
-   "point": null,
-   "arb_sum": 1.03808,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 2.9,
-     "label": "Colorado Rockies"
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.4425,
-     "label": "Atlanta Braves"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993947",
    "matchup": "Colorado Rockies @ Atlanta Braves",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -2966,6 +2756,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35997377",
+   "matchup": "Boston Red Sox @ New York Yankees",
+   "commence_time": "2026-08-30T17:36:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 8,
+   "arb_sum": 1.03837,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.9434,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.9091,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993936",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -3041,25 +2856,25 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "totals",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "spreads",
    "subject": null,
-   "point": 8.5,
-   "arb_sum": 1.0386,
+   "point": 1.5,
+   "arb_sum": 1.0388,
    "legs": [
     {
-     "side": "over",
+     "side": "away",
      "book": "fanduel",
-     "decimal": 2.28,
-     "label": "Over"
+     "decimal": 2.12,
+     "label": "Baltimore Orioles"
     },
     {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.6667,
-     "label": "Under"
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.7634,
+     "label": "Athletics"
     }
    ]
   },
@@ -3085,31 +2900,6 @@
      "book": "fanduel",
      "decimal": 2.32,
      "label": "Cleveland Guardians"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Taylor Ward",
-   "point": 0.5,
-   "arb_sum": 1.0389,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 6.5,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1299,
-     "label": "Under"
     }
    ]
   },
@@ -3194,31 +2984,6 @@
    "event_id": "fd:35993932",
    "matchup": "Arizona Diamondbacks @ San Francisco Giants",
    "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Rafael Devers",
-   "point": 0.5,
-   "arb_sum": 1.03934,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.1,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1859,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
    "market": "batter_singles",
    "subject": "Shay Whitcomb",
    "point": 0.5,
@@ -3291,25 +3056,25 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 1.5,
-   "arb_sum": 1.03979,
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_hits",
+   "subject": "Corbin Carroll",
+   "point": 0.5,
+   "arb_sum": 1.03961,
    "legs": [
     {
-     "side": "away",
+     "side": "over",
      "book": "fanduel",
-     "decimal": 2.6,
-     "label": "Seattle Mariners"
+     "decimal": 1.4545,
+     "label": "Over"
     },
     {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 1.5263,
-     "label": "Toronto Blue Jays"
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 2.84,
+     "label": "Under"
     }
    ]
   },
@@ -3334,6 +3099,31 @@
      "side": "under",
      "book": "fanatics",
      "decimal": 1.8696,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Jose Fernandez",
+   "point": 0.5,
+   "arb_sum": 1.03987,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 5.3,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1748,
      "label": "Under"
     }
    ]
@@ -3491,31 +3281,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "Kazuma Okamoto",
-   "point": 0.5,
-   "arb_sum": 1.04053,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.6667,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.27,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993927",
    "matchup": "Texas Rangers @ Milwaukee Brewers",
    "commence_time": "2026-08-29T23:16:00+00:00",
@@ -3566,6 +3331,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Corbin Carroll",
+   "point": 0.5,
+   "arb_sum": 1.04083,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 4.8,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.2012,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993936",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -3585,6 +3375,31 @@
      "book": "fanatics",
      "decimal": 2.6,
      "label": "Tampa Bay Rays"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_stolen_bases",
+   "subject": "Shay Whitcomb",
+   "point": 0.5,
+   "arb_sum": 1.04107,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 9.8,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.0649,
+     "label": "Under"
     }
    ]
   },
@@ -3664,6 +3479,56 @@
    ]
   },
   {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35655468",
+   "matchup": "Memphis @ UNLV",
+   "commence_time": "2026-08-30T02:00:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.04128,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 2.55,
+     "label": "Memphis"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.5405,
+     "label": "UNLV"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997381",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-30T17:36:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.04128,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.8475,
+     "label": "Colorado Rockies"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.0,
+     "label": "Atlanta Braves"
+    }
+   ]
+  },
+  {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
    "event_id": "fd:35993944",
@@ -3684,31 +3549,6 @@
      "side": "under",
      "book": "fanduel",
      "decimal": 2.0,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Charles McAdoo",
-   "point": 0.5,
-   "arb_sum": 1.04129,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.9,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1471,
      "label": "Under"
     }
    ]
@@ -3766,31 +3606,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Donovan Walton",
-   "point": 0.5,
-   "arb_sum": 1.04152,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.0,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1883,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993941",
    "matchup": "Miami Marlins @ Washington Nationals",
    "commence_time": "2026-08-29T20:06:00+00:00",
@@ -3841,31 +3656,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993945",
-   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
-   "commence_time": "2026-08-30T02:08:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 1.5,
-   "arb_sum": 1.04176,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 1.7407,
-     "label": "Philadelphia Phillies"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 2.14,
-     "label": "Los Angeles Angels"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993936",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -3885,31 +3675,6 @@
      "book": "draftkings",
      "decimal": 1.4115,
      "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 2.5,
-   "arb_sum": 1.04181,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 3.5,
-     "label": "Seattle Mariners"
-    },
-    {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 1.3226,
-     "label": "Toronto Blue Jays"
     }
    ]
   },
@@ -3960,6 +3725,31 @@
      "book": "draftkings",
      "decimal": 1.0943,
      "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "basketball_wnba",
+   "sport_title": "basketball_wnba",
+   "event_id": "fd:35989826",
+   "matchup": "Toronto Tempo @ Phoenix Mercury",
+   "commence_time": "2026-08-30T02:00:00+00:00",
+   "market": "h2h",
+   "subject": null,
+   "point": null,
+   "arb_sum": 1.04202,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 4.2,
+     "label": "Toronto Tempo"
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.2439,
+     "label": "Phoenix Mercury"
     }
    ]
   },
@@ -4041,6 +3831,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "pitcher_strikeouts",
+   "subject": "Shane Baz",
+   "point": 5.5,
+   "arb_sum": 1.04263,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.3,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.6452,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993939",
    "matchup": "Houston Astros @ New York Mets",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -4066,25 +3881,25 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993947",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -2.5,
-   "arb_sum": 1.04285,
+   "event_id": "fd:35993935",
+   "matchup": "Boston Red Sox @ New York Yankees",
+   "commence_time": "2026-08-29T23:16:00+00:00",
+   "market": "batter_hits",
+   "subject": "Caleb Durbin",
+   "point": 0.5,
+   "arb_sum": 1.04282,
    "legs": [
     {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 1.5882,
-     "label": "Colorado Rockies"
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.5405,
+     "label": "Over"
     },
     {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 2.42,
-     "label": "Atlanta Braves"
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 2.54,
+     "label": "Under"
     }
    ]
   },
@@ -4189,31 +4004,6 @@
    ]
   },
   {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 7.5,
-   "arb_sum": 1.04304,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.9259,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.9091,
-     "label": "Under"
-    }
-   ]
-  },
-  {
    "sport_key": "americanfootball_ncaaf",
    "sport_title": "americanfootball_ncaaf",
    "event_id": "fd:35655471",
@@ -4266,6 +4056,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993945",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T02:08:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.04318,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.7299,
+     "label": "Philadelphia Phillies"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 2.15,
+     "label": "Los Angeles Angels"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993936",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -4285,31 +4100,6 @@
      "book": "draftkings",
      "decimal": 1.1859,
      "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 1.5,
-   "arb_sum": 1.04329,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 2.1,
-     "label": "Baltimore Orioles"
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.7634,
-     "label": "Athletics"
     }
    ]
   },
@@ -4335,6 +4125,56 @@
      "book": "draftkings",
      "decimal": 1.2817,
      "label": "Eastern Michigan"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997380",
+   "matchup": "San Diego Padres @ Tampa Bay Rays",
+   "commence_time": "2026-08-30T17:41:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -1.5,
+   "arb_sum": 1.0435,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.6135,
+     "label": "San Diego Padres"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 2.36,
+     "label": "Tampa Bay Rays"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_hits_runs_rbis",
+   "subject": "Shay Whitcomb",
+   "point": 1.5,
+   "arb_sum": 1.04353,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.4,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.5952,
+     "label": "Under"
     }
    ]
   },
@@ -4394,31 +4234,6 @@
    "event_id": "fd:35993937",
    "matchup": "Kansas City Royals @ Cleveland Guardians",
    "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -3.5,
-   "arb_sum": 1.0439,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 1.25,
-     "label": "Kansas City Royals"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 4.1,
-     "label": "Cleveland Guardians"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993937",
-   "matchup": "Kansas City Royals @ Cleveland Guardians",
-   "commence_time": "2026-08-29T20:11:00+00:00",
    "market": "batter_stolen_bases",
    "subject": "Jose Ramirez",
    "point": 0.5,
@@ -4441,25 +4256,25 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Brett Bateman",
-   "point": 0.5,
-   "arb_sum": 1.04421,
+   "event_id": "fd:35997382",
+   "matchup": "Miami Marlins @ Washington Nationals",
+   "commence_time": "2026-08-30T16:16:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.04422,
    "legs": [
     {
-     "side": "over",
+     "side": "away",
      "book": "fanduel",
-     "decimal": 5.8,
-     "label": "Over"
+     "decimal": 2.42,
+     "label": "Miami Marlins"
     },
     {
-     "side": "under",
+     "side": "home",
      "book": "draftkings",
-     "decimal": 1.1471,
-     "label": "Under"
+     "decimal": 1.5848,
+     "label": "Washington Nationals"
     }
    ]
   },
@@ -4564,26 +4379,76 @@
    ]
   },
   {
-   "sport_key": "basketball_wnba",
-   "sport_title": "basketball_wnba",
-   "event_id": "fd:35989826",
-   "matchup": "Toronto Tempo @ Phoenix Mercury",
-   "commence_time": "2026-08-30T02:00:00+00:00",
-   "market": "totals",
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997377",
+   "matchup": "Boston Red Sox @ New York Yankees",
+   "commence_time": "2026-08-30T17:36:00+00:00",
+   "market": "spreads",
    "subject": null,
-   "point": 173.5,
-   "arb_sum": 1.04491,
+   "point": 1.5,
+   "arb_sum": 1.04457,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 2.41,
+     "label": "Boston Red Sox"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.5882,
+     "label": "New York Yankees"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_hits",
+   "subject": "Bryce Eldridge",
+   "point": 0.5,
+   "arb_sum": 1.04458,
    "legs": [
     {
      "side": "over",
      "book": "fanduel",
-     "decimal": 1.8772,
+     "decimal": 1.6061,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.9524,
+     "decimal": 2.37,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Donovan Walton",
+   "point": 0.5,
+   "arb_sum": 1.04493,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 4.8,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1953,
      "label": "Under"
     }
    ]
@@ -4609,81 +4474,6 @@
      "side": "under",
      "book": "fanatics",
      "decimal": 2.15,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Ernie Clement",
-   "point": 0.5,
-   "arb_sum": 1.04503,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.2,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1727,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Corbin Carroll",
-   "point": 0.5,
-   "arb_sum": 1.04526,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 4.7,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.2012,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "Brett Bateman",
-   "point": 0.5,
-   "arb_sum": 1.04545,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.5,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.64,
      "label": "Under"
     }
    ]
@@ -4760,56 +4550,6 @@
      "book": "fanduel",
      "decimal": 3.9,
      "label": "Milwaukee Brewers"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993947",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "batter_hits",
-   "subject": "Matt Olson",
-   "point": 0.5,
-   "arb_sum": 1.04592,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.4545,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.79,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "Randy Arozarena",
-   "point": 0.5,
-   "arb_sum": 1.04608,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.5556,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.48,
-     "label": "Under"
     }
    ]
   },
@@ -4909,56 +4649,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.0769,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "George Springer",
-   "point": 0.5,
-   "arb_sum": 1.04642,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.4762,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.71,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "pitcher_strikeouts",
-   "subject": "Shane Baz",
-   "point": 5.5,
-   "arb_sum": 1.04644,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.28,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.6452,
      "label": "Under"
     }
    ]
@@ -5116,6 +4806,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "pitcher_strikeouts",
+   "subject": "Jack Perkins",
+   "point": 5.5,
+   "arb_sum": 1.04708,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.8696,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.9524,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993939",
    "matchup": "Houston Astros @ New York Mets",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -5166,31 +4881,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits_runs_rbis",
-   "subject": "Brett Bateman",
-   "point": 1.5,
-   "arb_sum": 1.04751,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.0,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.8264,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993936",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -5209,31 +4899,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.0532,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "George Springer",
-   "point": 0.5,
-   "arb_sum": 1.04779,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.0,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1795,
      "label": "Under"
     }
    ]
@@ -5316,31 +4981,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_stolen_bases",
-   "subject": "Jordan Lawlar",
-   "point": 0.5,
-   "arb_sum": 1.04858,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 6.5,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1176,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993947",
    "matchup": "Colorado Rockies @ Atlanta Braves",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -5416,56 +5056,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Kazuma Okamoto",
-   "point": 0.5,
-   "arb_sum": 1.04896,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.8,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1408,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_hits",
-   "subject": "Corbin Carroll",
-   "point": 0.5,
-   "arb_sum": 1.04908,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.4348,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.84,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993936",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -5516,25 +5106,25 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993939",
-   "matchup": "Houston Astros @ New York Mets",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -2.5,
-   "arb_sum": 1.04934,
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_stolen_bases",
+   "subject": "Turner Hill",
+   "point": 0.5,
+   "arb_sum": 1.04924,
    "legs": [
     {
-     "side": "away",
+     "side": "over",
      "book": "fanduel",
-     "decimal": 1.3571,
-     "label": "Houston Astros"
+     "decimal": 8.0,
+     "label": "Over"
     },
     {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 3.2,
-     "label": "New York Mets"
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.082,
+     "label": "Under"
     }
    ]
   },
@@ -5610,81 +5200,6 @@
      "book": "draftkings",
      "decimal": 1.1163,
      "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_stolen_bases",
-   "subject": "George Springer",
-   "point": 0.5,
-   "arb_sum": 1.04971,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 9.5,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.0588,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993947",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "batter_hits_runs_rbis",
-   "subject": "Ozzie Albies",
-   "point": 1.5,
-   "arb_sum": 1.04988,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.9091,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.9009,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -2.5,
-   "arb_sum": 1.05,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 1.25,
-     "label": "Seattle Mariners"
-    },
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 4.0,
-     "label": "Toronto Blue Jays"
     }
    ]
   },
@@ -5841,31 +5356,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_rbis",
-   "subject": "Brett Bateman",
-   "point": 0.5,
-   "arb_sum": 1.05048,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 4.1,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.2398,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993941",
    "matchup": "Miami Marlins @ Washington Nationals",
    "commence_time": "2026-08-29T20:06:00+00:00",
@@ -5991,31 +5481,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_hits",
-   "subject": "Bryce Eldridge",
-   "point": 0.5,
-   "arb_sum": 1.05157,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.5882,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.37,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993939",
    "matchup": "Houston Astros @ New York Mets",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -6060,56 +5525,6 @@
      "book": "fanduel",
      "decimal": 3.0,
      "label": "Milwaukee Brewers"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Alejandro Kirk",
-   "point": 0.5,
-   "arb_sum": 1.05169,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.3,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1587,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Brett Bateman",
-   "point": 0.5,
-   "arb_sum": 1.0517,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.4,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.5747,
-     "label": "Under"
     }
    ]
   },
@@ -6241,6 +5656,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993939",
+   "matchup": "Houston Astros @ New York Mets",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -2.5,
+   "arb_sum": 1.05231,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanatics",
+     "decimal": 1.3704,
+     "label": "Houston Astros"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 3.1,
+     "label": "New York Mets"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993937",
    "matchup": "Kansas City Royals @ Cleveland Guardians",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -6259,81 +5699,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.4255,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_hits_runs_rbis",
-   "subject": "Shay Whitcomb",
-   "point": 1.5,
-   "arb_sum": 1.0524,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.35,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.5952,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits_runs_rbis",
-   "subject": "Ernie Clement",
-   "point": 1.5,
-   "arb_sum": 1.05246,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.1,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.7353,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits_runs_rbis",
-   "subject": "Kazuma Okamoto",
-   "point": 1.5,
-   "arb_sum": 1.05246,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.1,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.7353,
      "label": "Under"
     }
    ]
@@ -6416,6 +5781,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993937",
+   "matchup": "Kansas City Royals @ Cleveland Guardians",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 1.5,
+   "arb_sum": 1.05276,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 3.2,
+     "label": "Kansas City Royals"
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.3509,
+     "label": "Cleveland Guardians"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993927",
    "matchup": "Texas Rangers @ Milwaukee Brewers",
    "commence_time": "2026-08-29T23:16:00+00:00",
@@ -6459,31 +5849,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 2.13,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "J.P. Crawford",
-   "point": 0.5,
-   "arb_sum": 1.05284,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 6.5,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1124,
      "label": "Under"
     }
    ]
@@ -6716,24 +6081,74 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
+   "event_id": "fd:35993947",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-29T20:11:00+00:00",
    "market": "pitcher_strikeouts",
-   "subject": "Jack Perkins",
-   "point": 5.5,
-   "arb_sum": 1.05348,
+   "subject": "Martin Perez",
+   "point": 4.5,
+   "arb_sum": 1.05342,
    "legs": [
     {
      "side": "over",
      "book": "fanduel",
-     "decimal": 1.8475,
+     "decimal": 2.08,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.9524,
+     "decimal": 1.7463,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993937",
+   "matchup": "Kansas City Royals @ Cleveland Guardians",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -3.5,
+   "arb_sum": 1.05343,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanatics",
+     "decimal": 1.2353,
+     "label": "Kansas City Royals"
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 4.1,
+     "label": "Cleveland Guardians"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993935",
+   "matchup": "Boston Red Sox @ New York Yankees",
+   "commence_time": "2026-08-29T23:16:00+00:00",
+   "market": "pitcher_strikeouts",
+   "subject": "Max Fried",
+   "point": 4.5,
+   "arb_sum": 1.05351,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.7752,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 2.04,
      "label": "Under"
     }
    ]
@@ -6769,21 +6184,46 @@
    "event_id": "fd:35993932",
    "matchup": "Arizona Diamondbacks @ San Francisco Giants",
    "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_total_bases",
-   "subject": "Bryce Eldridge",
-   "point": 1.5,
-   "arb_sum": 1.05355,
+   "market": "batter_doubles",
+   "subject": "Jordan Lawlar",
+   "point": 0.5,
+   "arb_sum": 1.05361,
    "legs": [
     {
      "side": "over",
      "book": "fanduel",
-     "decimal": 2.45,
+     "decimal": 5.5,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.5495,
+     "decimal": 1.1471,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993947",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Connor Norby",
+   "point": 0.5,
+   "arb_sum": 1.05361,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 5.4,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1515,
      "label": "Under"
     }
    ]
@@ -6816,49 +6256,24 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_rbis",
-   "subject": "Josh Naylor",
+   "event_id": "fd:35993947",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "batter_hits",
+   "subject": "Matt Olson",
    "point": 0.5,
-   "arb_sum": 1.05404,
+   "arb_sum": 1.0538,
    "legs": [
     {
      "side": "over",
      "book": "fanduel",
-     "decimal": 2.75,
+     "decimal": 1.4545,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.4484,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "batter_singles",
-   "subject": "Colton Cowser",
-   "point": 0.5,
-   "arb_sum": 1.05413,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.9,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.4098,
+     "decimal": 2.73,
      "label": "Under"
     }
    ]
@@ -6941,6 +6356,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Leody Taveras",
+   "point": 0.5,
+   "arb_sum": 1.0546,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 4.9,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1757,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993945",
    "matchup": "Philadelphia Phillies @ Los Angeles Angels",
    "commence_time": "2026-08-30T02:08:00+00:00",
@@ -7016,6 +6456,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "pitcher_strikeouts",
+   "subject": "Merrill Kelly",
+   "point": 4.5,
+   "arb_sum": 1.05516,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 2.35,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 1.5882,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993941",
    "matchup": "Miami Marlins @ Washington Nationals",
    "commence_time": "2026-08-29T20:06:00+00:00",
@@ -7034,31 +6499,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.5263,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Josh Naylor",
-   "point": 0.5,
-   "arb_sum": 1.05523,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.1,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1639,
      "label": "Under"
     }
    ]
@@ -7216,24 +6656,24 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "pitcher_strikeouts",
-   "subject": "Jose Soriano",
-   "point": 5.5,
-   "arb_sum": 1.05626,
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "batter_hits",
+   "subject": "Samuel Basallo",
+   "point": 0.5,
+   "arb_sum": 1.05577,
    "legs": [
     {
      "side": "over",
-     "book": "draftkings",
-     "decimal": 2.13,
+     "book": "fanduel",
+     "decimal": 1.5,
      "label": "Over"
     },
     {
      "side": "under",
-     "book": "fanduel",
-     "decimal": 1.7042,
+     "book": "draftkings",
+     "decimal": 2.57,
      "label": "Under"
     }
    ]
@@ -7241,24 +6681,24 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "Julio Rodriguez",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_stolen_bases",
+   "subject": "Jordan Lawlar",
    "point": 0.5,
-   "arb_sum": 1.05627,
+   "arb_sum": 1.05603,
    "legs": [
     {
      "side": "over",
      "book": "fanduel",
-     "decimal": 1.5128,
+     "decimal": 6.2,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 2.53,
+     "decimal": 1.1176,
      "label": "Under"
     }
    ]
@@ -7341,56 +6781,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_total_bases",
-   "subject": "Ernie Clement",
-   "point": 1.5,
-   "arb_sum": 1.05675,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.6,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.4878,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993935",
-   "matchup": "Boston Red Sox @ New York Yankees",
-   "commence_time": "2026-08-29T23:16:00+00:00",
-   "market": "pitcher_strikeouts",
-   "subject": "Max Fried",
-   "point": 4.5,
-   "arb_sum": 1.05677,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.7576,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.05,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993941",
    "matchup": "Miami Marlins @ Washington Nationals",
    "commence_time": "2026-08-29T20:06:00+00:00",
@@ -7459,56 +6849,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 2.15,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Jordan Lawlar",
-   "point": 0.5,
-   "arb_sum": 1.05698,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.4,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1471,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_stolen_bases",
-   "subject": "Randy Arozarena",
-   "point": 0.5,
-   "arb_sum": 1.05712,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 6.2,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1163,
      "label": "Under"
     }
    ]
@@ -7591,31 +6931,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "Myles Straw",
-   "point": 0.5,
-   "arb_sum": 1.05765,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.8333,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.9524,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993932",
    "matchup": "Arizona Diamondbacks @ San Francisco Giants",
    "commence_time": "2026-08-29T20:06:00+00:00",
@@ -7634,31 +6949,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.9524,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "batter_hits",
-   "subject": "Samuel Basallo",
-   "point": 0.5,
-   "arb_sum": 1.05765,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.4762,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.63,
      "label": "Under"
     }
    ]
@@ -7691,31 +6981,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "Alejandro Kirk",
-   "point": 0.5,
-   "arb_sum": 1.05787,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.4545,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.7,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993939",
    "matchup": "Houston Astros @ New York Mets",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -7734,31 +6999,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 2.7,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "Vladimir Guerrero Jr.",
-   "point": 0.5,
-   "arb_sum": 1.05798,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.4348,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.77,
      "label": "Under"
     }
    ]
@@ -7816,6 +7056,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993947",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Ezequiel Tovar",
+   "point": 0.5,
+   "arb_sum": 1.05838,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 5.9,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.125,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993928",
    "matchup": "Baltimore Orioles @ Athletics",
    "commence_time": "2026-08-30T02:06:00+00:00",
@@ -7834,6 +7099,31 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 2.48,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "batter_total_bases",
+   "subject": "Blaze Alexander",
+   "point": 1.5,
+   "arb_sum": 1.05861,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.15,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.6849,
      "label": "Under"
     }
    ]
@@ -7866,74 +7156,24 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_singles",
-   "subject": "Ernie Clement",
-   "point": 0.5,
+   "event_id": "fd:35993947",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "batter_hits_runs_rbis",
+   "subject": "Ozzie Albies",
+   "point": 1.5,
    "arb_sum": 1.05869,
    "legs": [
     {
      "side": "over",
      "book": "fanduel",
-     "decimal": 1.8696,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
      "decimal": 1.9091,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "batter_hits",
-   "subject": "Dylan Beavers",
-   "point": 0.5,
-   "arb_sum": 1.05872,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.6667,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 2.18,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Leody Taveras",
-   "point": 0.5,
-   "arb_sum": 1.05886,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 4.8,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1757,
+     "decimal": 1.8696,
      "label": "Under"
     }
    ]
@@ -8066,31 +7306,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "Taylor Ward",
-   "point": 0.5,
-   "arb_sum": 1.05952,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.7143,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.1,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993928",
    "matchup": "Baltimore Orioles @ Athletics",
    "commence_time": "2026-08-30T02:06:00+00:00",
@@ -8121,6 +7336,31 @@
    "commence_time": "2026-08-29T20:11:00+00:00",
    "market": "batter_doubles",
    "subject": "Jonny DeLuca",
+   "point": 0.5,
+   "arb_sum": 1.05987,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 5.5,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1389,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Carlos Cortes",
    "point": 0.5,
    "arb_sum": 1.05987,
    "legs": [
@@ -8241,11 +7481,11 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Shay Whitcomb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "batter_singles",
+   "subject": "Colton Cowser",
    "point": 0.5,
    "arb_sum": 1.06018,
    "legs": [
@@ -8266,24 +7506,24 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993947",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Connor Norby",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_runs_scored",
+   "subject": "Ildemaro Vargas",
    "point": 0.5,
-   "arb_sum": 1.06019,
+   "arb_sum": 1.06026,
    "legs": [
     {
      "side": "over",
      "book": "fanduel",
-     "decimal": 5.4,
+     "decimal": 2.15,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.1429,
+     "decimal": 1.6803,
      "label": "Under"
     }
    ]
@@ -8309,31 +7549,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.1471,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "Josh Naylor",
-   "point": 0.5,
-   "arb_sum": 1.06056,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.4762,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.61,
      "label": "Under"
     }
    ]
@@ -8409,31 +7624,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.8621,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "pitcher_outs",
-   "subject": "Jose Soriano",
-   "point": 16.5,
-   "arb_sum": 1.06101,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.8929,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.8772,
      "label": "Under"
     }
    ]
@@ -8566,31 +7756,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_singles",
-   "subject": "Myles Straw",
-   "point": 0.5,
-   "arb_sum": 1.06165,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.3,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.5952,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993936",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -8616,56 +7781,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits_runs_rbis",
-   "subject": "Cole Young",
-   "point": 1.5,
-   "arb_sum": 1.06189,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.15,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.6757,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_total_bases",
-   "subject": "Brett Bateman",
-   "point": 1.5,
-   "arb_sum": 1.0619,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.65,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.4608,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993947",
    "matchup": "Colorado Rockies @ Atlanta Braves",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -8684,56 +7799,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.1908,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993947",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "batter_total_bases",
-   "subject": "Ozzie Albies",
-   "point": 1.5,
-   "arb_sum": 1.06206,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.4,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.5495,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Cole Young",
-   "point": 0.5,
-   "arb_sum": 1.0621,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 5.3,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1449,
      "label": "Under"
     }
    ]
@@ -8859,31 +7924,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.3322,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits_runs_rbis",
-   "subject": "Josh Naylor",
-   "point": 1.5,
-   "arb_sum": 1.06319,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.8696,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.8929,
      "label": "Under"
     }
    ]
@@ -9116,6 +8156,31 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993947",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "batter_singles",
+   "subject": "Hunter Goodman",
+   "point": 0.5,
+   "arb_sum": 1.06392,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.2,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.641,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993932",
    "matchup": "Arizona Diamondbacks @ San Francisco Giants",
    "commence_time": "2026-08-29T20:06:00+00:00",
@@ -9159,31 +8224,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 2.48,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits_runs_rbis",
-   "subject": "Taylor Ward",
-   "point": 1.5,
-   "arb_sum": 1.06441,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.3,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.5882,
      "label": "Under"
     }
    ]
@@ -9266,31 +8306,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "batter_singles",
-   "subject": "Henry Bolte",
-   "point": 0.5,
-   "arb_sum": 1.06522,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.7692,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.0,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993936",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -9341,6 +8356,56 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35993947",
+   "matchup": "Colorado Rockies @ Atlanta Braves",
+   "commence_time": "2026-08-29T20:11:00+00:00",
+   "market": "batter_hits_runs_rbis",
+   "subject": "Hunter Goodman",
+   "point": 1.5,
+   "arb_sum": 1.06577,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.9524,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.8065,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "batter_singles",
+   "subject": "Gunnar Henderson",
+   "point": 0.5,
+   "arb_sum": 1.06577,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.9524,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.8065,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35993927",
    "matchup": "Texas Rangers @ Milwaukee Brewers",
    "commence_time": "2026-08-29T23:16:00+00:00",
@@ -9359,6 +8424,56 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.7299,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993935",
+   "matchup": "Boston Red Sox @ New York Yankees",
+   "commence_time": "2026-08-29T23:16:00+00:00",
+   "market": "batter_hits_runs_rbis",
+   "subject": "Caleb Durbin",
+   "point": 1.5,
+   "arb_sum": 1.06586,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.05,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.7299,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_runs_scored",
+   "subject": "Shay Whitcomb",
+   "point": 0.5,
+   "arb_sum": 1.06645,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.8,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.4098,
      "label": "Under"
     }
    ]
@@ -9391,24 +8506,24 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
+   "event_id": "fd:35993939",
+   "matchup": "Houston Astros @ New York Mets",
+   "commence_time": "2026-08-29T20:11:00+00:00",
    "market": "batter_hits",
-   "subject": "Christian Encarnacion-Strand",
-   "point": 1.5,
-   "arb_sum": 1.0665,
+   "subject": "Christian Walker",
+   "point": 0.5,
+   "arb_sum": 1.06656,
    "legs": [
     {
      "side": "over",
      "book": "fanduel",
-     "decimal": 2.95,
+     "decimal": 1.6452,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.3745,
+     "decimal": 2.18,
      "label": "Under"
     }
    ]
@@ -9416,11 +8531,11 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993939",
-   "matchup": "Houston Astros @ New York Mets",
-   "commence_time": "2026-08-29T20:11:00+00:00",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
    "market": "batter_hits",
-   "subject": "Christian Walker",
+   "subject": "Dylan Beavers",
    "point": 0.5,
    "arb_sum": 1.06656,
    "legs": [
@@ -9666,12 +8781,12 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993947",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "batter_hits_runs_rbis",
-   "subject": "Matt Olson",
-   "point": 1.5,
+   "event_id": "fd:35993932",
+   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
+   "commence_time": "2026-08-29T20:06:00+00:00",
+   "market": "batter_hits",
+   "subject": "Christian Koss",
+   "point": 0.5,
    "arb_sum": 1.06803,
    "legs": [
     {
@@ -9734,31 +8849,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.7299,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "batter_hits",
-   "subject": "Donovan Walton",
-   "point": 0.5,
-   "arb_sum": 1.06839,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.5556,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.35,
      "label": "Under"
     }
    ]
@@ -9916,31 +9006,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "J.P. Crawford",
-   "point": 0.5,
-   "arb_sum": 1.06952,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.7407,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.02,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993939",
    "matchup": "Houston Astros @ New York Mets",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -9966,31 +9031,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "batter_total_bases",
-   "subject": "Blaze Alexander",
-   "point": 1.5,
-   "arb_sum": 1.06969,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.1,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.6849,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993936",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -10009,31 +9049,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.5988,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_singles",
-   "subject": "J.P. Crawford",
-   "point": 0.5,
-   "arb_sum": 1.06993,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.2,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.625,
      "label": "Under"
     }
    ]
@@ -10084,31 +9099,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.625,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_hits",
-   "subject": "Cole Young",
-   "point": 0.5,
-   "arb_sum": 1.07021,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.5556,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.34,
      "label": "Under"
     }
    ]
@@ -10209,56 +9199,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 2.3,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993932",
-   "matchup": "Arizona Diamondbacks @ San Francisco Giants",
-   "commence_time": "2026-08-29T20:06:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Ildemaro Vargas",
-   "point": 0.5,
-   "arb_sum": 1.07133,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.1,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.6803,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993928",
-   "matchup": "Baltimore Orioles @ Athletics",
-   "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Lawrence Butler",
-   "point": 0.5,
-   "arb_sum": 1.07133,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.1,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.6803,
      "label": "Under"
     }
    ]
@@ -10391,81 +9331,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Cole Young",
-   "point": 0.5,
-   "arb_sum": 1.07155,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.65,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.4405,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993947",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Matt Olson",
-   "point": 0.5,
-   "arb_sum": 1.07246,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.8,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.9346,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Josh Naylor",
-   "point": 0.5,
-   "arb_sum": 1.07259,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.45,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.5051,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993928",
    "matchup": "Baltimore Orioles @ Athletics",
    "commence_time": "2026-08-30T02:06:00+00:00",
@@ -10566,31 +9431,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993947",
-   "matchup": "Colorado Rockies @ Atlanta Braves",
-   "commence_time": "2026-08-29T20:11:00+00:00",
-   "market": "batter_singles",
-   "subject": "Hunter Goodman",
-   "point": 0.5,
-   "arb_sum": 1.07287,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.2,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.6173,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993928",
    "matchup": "Baltimore Orioles @ Athletics",
    "commence_time": "2026-08-30T02:06:00+00:00",
@@ -10641,31 +9481,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_singles",
-   "subject": "Julio Rodriguez",
-   "point": 0.5,
-   "arb_sum": 1.07336,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.9091,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.8197,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993937",
    "matchup": "Kansas City Royals @ Cleveland Guardians",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -10684,31 +9499,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.8197,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Kazuma Okamoto",
-   "point": 0.5,
-   "arb_sum": 1.07377,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.3,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.565,
      "label": "Under"
     }
    ]
@@ -10759,6 +9549,31 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.4348,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "batter_singles",
+   "subject": "Henry Bolte",
+   "point": 0.5,
+   "arb_sum": 1.07447,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.7407,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 2.0,
      "label": "Under"
     }
    ]
@@ -10916,31 +9731,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_runs_scored",
-   "subject": "Julio Rodriguez",
-   "point": 0.5,
-   "arb_sum": 1.07704,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.45,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.495,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993937",
    "matchup": "Kansas City Royals @ Cleveland Guardians",
    "commence_time": "2026-08-29T20:11:00+00:00",
@@ -10984,31 +9774,6 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.6061,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_singles",
-   "subject": "George Springer",
-   "point": 0.5,
-   "arb_sum": 1.07738,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.9091,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.8065,
      "label": "Under"
     }
    ]
@@ -11116,49 +9881,24 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_singles",
-   "subject": "Taylor Ward",
-   "point": 0.5,
-   "arb_sum": 1.07752,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 2.15,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.6329,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35993932",
    "matchup": "Arizona Diamondbacks @ San Francisco Giants",
    "commence_time": "2026-08-29T20:06:00+00:00",
    "market": "batter_runs_scored",
-   "subject": "Geraldo Perdomo",
+   "subject": "Jung Hoo Lee",
    "point": 0.5,
-   "arb_sum": 1.07831,
+   "arb_sum": 1.07883,
    "legs": [
     {
      "side": "over",
      "book": "fanduel",
-     "decimal": 2.35,
+     "decimal": 2.4,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.5319,
+     "decimal": 1.5102,
      "label": "Under"
     }
    ]
@@ -11219,46 +9959,21 @@
    "event_id": "fd:35993928",
    "matchup": "Baltimore Orioles @ Athletics",
    "commence_time": "2026-08-30T02:06:00+00:00",
-   "market": "batter_rbis",
-   "subject": "Samuel Basallo",
+   "market": "batter_runs_scored",
+   "subject": "Lawrence Butler",
    "point": 0.5,
-   "arb_sum": 1.08001,
+   "arb_sum": 1.08295,
    "legs": [
     {
      "side": "over",
      "book": "fanduel",
-     "decimal": 2.2,
+     "decimal": 2.05,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.5988,
-     "label": "Under"
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35993933",
-   "matchup": "Seattle Mariners @ Toronto Blue Jays",
-   "commence_time": "2026-08-29T19:08:00+00:00",
-   "market": "batter_singles",
-   "subject": "Cole Young",
-   "point": 0.5,
-   "arb_sum": 1.08116,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.9524,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.7576,
+     "decimal": 1.6803,
      "label": "Under"
     }
    ]
@@ -11284,6 +9999,31 @@
      "side": "under",
      "book": "draftkings",
      "decimal": 1.6452,
+     "label": "Under"
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35993928",
+   "matchup": "Baltimore Orioles @ Athletics",
+   "commence_time": "2026-08-30T02:06:00+00:00",
+   "market": "batter_singles",
+   "subject": "Jonah Heim",
+   "point": 0.5,
+   "arb_sum": 1.08489,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 2.15,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.6135,
      "label": "Under"
     }
    ]
