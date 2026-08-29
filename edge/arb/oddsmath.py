@@ -182,6 +182,42 @@ class Allocation:
     capped: bool                  # a per-book max stake bound the allocation
 
 
+def parlay_decimal(decimals: list[float]) -> float:
+    """Price of a straight multi: the product of its legs.
+
+    True for a STRAIGHT parlay across independent events, which is the only
+    kind this code will price. A same-game parlay is not the product -- the
+    book re-prices correlated legs, usually well below it -- so anything built
+    on this must keep its legs in different events.
+    """
+    out = 1.0
+    for d in decimals:
+        out *= float(d)
+    return out
+
+
+def parlay_hedge_sum(parlay: float, opposites: list[float]) -> float:
+    """The arbitrage test for a hedged parlay: below 1.0 means locked profit.
+
+    Back a parlay of N legs, then bet the OPPOSITE of each leg as a single.
+    The parlay pays only if every leg wins; if any leg loses, that leg's
+    opposing single pays. Where two or more lose, several pay at once, which
+    only helps -- so the binding cases are "all win" and "exactly one loses",
+    N+1 outcomes that behave exactly like N+1 mutually exclusive legs:
+
+        1/parlay + sum(1/opposite_i) < 1
+
+    which is `arb_sum` over the parlay and the opposites. Nothing new.
+
+    Without a boost this can never hold. For two fair legs it works out to
+    1 + (1-p)(1-q), which exceeds 1 for any p, q < 1 -- the parlay's own
+    compounding vig is exactly what makes it unhedgeable. A profit boost is
+    what can push it under, and only on short-priced legs, because a favourite
+    has a long opposite and so a cheap hedge.
+    """
+    return arb_sum([parlay] + list(opposites))
+
+
 def arb_sum(decimals: list[float]) -> float:
     """sum(1/d). Below 1.0 means a guaranteed profit exists."""
     return sum(1.0 / float(d) for d in decimals)
