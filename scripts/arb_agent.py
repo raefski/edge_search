@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -53,6 +54,31 @@ def log(msg: str) -> None:
 def git(*args: str, check: bool = True) -> subprocess.CompletedProcess:
     return subprocess.run(["git", "-C", str(ROOT), *args],
                           capture_output=True, text=True, check=check)
+
+
+def head() -> str:
+    return git("rev-parse", "HEAD", check=False).stdout.strip()
+
+
+def restart_if_code_changed(started_at: str) -> None:
+    """Re-exec when the checkout has moved under us.
+
+    The agent pulls before pushing, so a deploy lands in its working tree --
+    but the running process keeps the modules it imported at startup, and goes
+    on writing snapshots with the old code. That is invisible: the scan
+    succeeds, the file is committed, and it is simply missing whatever the new
+    code would have added. Caught after several phone-triggered scans wrote
+    snapshots with no `prices` field at all, silently disabling the boost
+    features they were meant to feed.
+
+    execv rather than exiting for systemd to restart: no gap, and it works the
+    same when run by hand.
+    """
+    now = head()
+    if now and started_at and now != started_at:
+        log(f"code changed ({started_at[:8]} -> {now[:8]}) — restarting to load it")
+        sys.stdout.flush()
+        os.execv(sys.executable, [sys.executable, *sys.argv])
 
 
 def read_state() -> dict:
@@ -180,7 +206,8 @@ def main() -> int:
         cfg.sports = args.sports
     cfg.bankroll.total = args.bankroll
 
-    log(f"agent up · poll {args.interval:g}s · sports {cfg.sports}"
+    started_head = head()
+    log(f"agent up · {started_head[:8]} · poll {args.interval:g}s · sports {cfg.sports}"
         + (f" · auto-scan every {args.also_every:g}s" if args.also_every else ""))
     while True:
         try:
@@ -194,6 +221,7 @@ def main() -> int:
             log(f"! {type(exc).__name__}: {exc}")
         if args.once:
             return 0
+        restart_if_code_changed(started_head)
         time.sleep(args.interval)
 
 
