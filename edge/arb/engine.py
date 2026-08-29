@@ -55,10 +55,13 @@ class Boost:
     max_stake: float = 10.0       # a conservative floor; raise per token
     sports: list[str] = field(default_factory=list)             # empty == any
     markets: list[str] = field(default_factory=list)            # empty == any
+    sides: list[str] = field(default_factory=list)              # empty == any
+    min_decimal: float = 1.0        # "Min Total Odds of -200" -> 1.5
     requires_parlay: bool = False
     label: str = ""
 
-    def applies_to(self, book: str, sport_key: str, market: str) -> bool:
+    def applies_to(self, book: str, sport_key: str, market: str,
+                   side: str | None = None, decimal: float | None = None) -> bool:
         # A parlay-only token cannot price a single leg. Books hand these out
         # alongside straight-bet boosts and they look identical in the app
         # ("25% WNBA boost"), but only one of them can be hedged: a two-leg
@@ -71,6 +74,18 @@ class Boost:
         if self.sports and sport_key not in self.sports:
             return False
         if self.markets and market not in self.markets:
+            return False
+        # Which SIDE, not just which market. DraftKings' "Batter Props
+        # Milestones" are the over-only threshold ladders (1+, 2+, 3+); the
+        # two-sided O/U tabs are a separate offer the token is not valid on.
+        # Ignoring this lets the hedge maths pick the DK *under* as the leg to
+        # boost -- which it prefers, and which cannot actually be placed.
+        if self.sides and side is not None and side not in self.sides:
+            return False
+        # Nearly every token carries a minimum-odds floor ("Min Total Odds of
+        # -200"). A leg priced shorter does not qualify, and boosting it
+        # reports a profit the book will refuse at the slip.
+        if decimal is not None and float(decimal) < self.min_decimal:
             return False
         return True
 
@@ -172,7 +187,8 @@ def _boost_variants(legs: list[Leg], cfg, sport_key: str, market: str):
     yield None, None, base
     for b in getattr(cfg, "boosts", None) or []:
         for i, leg in enumerate(legs):
-            if not b.applies_to(leg.book, sport_key, market):
+            if not b.applies_to(leg.book, sport_key, market,
+                                side=leg.side, decimal=leg.decimal):
                 continue
             priced = list(base)
             priced[i] = om.boosted(base[i], b.pct)
@@ -590,7 +606,8 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
                         for j, d in enumerate(base)])
                 for b in boosts
                 for i, l in enumerate(legs)
-                if b.applies_to(l["book"], c["sport_key"], c["market"])]:
+                if b.applies_to(l["book"], c["sport_key"], c["market"],
+                                side=l.get("side"), decimal=l.get("decimal"))]:
             s = om.arb_sum(priced)
             if s >= 1.0:
                 continue

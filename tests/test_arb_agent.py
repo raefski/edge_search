@@ -479,3 +479,35 @@ def test_a_stale_module_can_be_recovered_by_reloading_it():
         assert "Batter props" in recovered.market_choices({})
     finally:
         sys.modules["edge.arb.scan_request"] = saved
+
+
+# --- boost terms and conditions --------------------------------------------
+def test_a_side_scoped_boost_refuses_the_other_side():
+    """DraftKings' "Batter Props Milestones" are the over-only threshold
+    ladders; the two-sided O/U tabs are a separate offer the token is not valid
+    on. Without this the hedge maths picks the DK *under* to boost -- which it
+    prefers, because that is the leg carrying the stake, and which cannot be
+    placed. Ignoring it reported 176 arbitrages where 0 were placeable."""
+    from edge.arb.engine import Boost
+    b = Boost(book="draftkings", pct=0.5, sides=["over"], markets=["batter_hits"])
+    assert b.applies_to("draftkings", "baseball_mlb", "batter_hits", "over", 2.0)
+    assert not b.applies_to("draftkings", "baseball_mlb", "batter_hits", "under", 2.0)
+
+
+def test_a_minimum_odds_floor_is_enforced():
+    """'Min Total Odds of -200' is on nearly every token. -200 is decimal 1.5;
+    anything shorter does not qualify and the book refuses it at the slip."""
+    from edge.arb.engine import Boost
+    b = Boost(book="draftkings", pct=0.5, min_decimal=1.5)
+    assert b.applies_to("draftkings", "x", "m", "over", 1.50)     # exactly -200
+    assert b.applies_to("draftkings", "x", "m", "over", 2.40)
+    assert not b.applies_to("draftkings", "x", "m", "over", 1.49)  # -204, too short
+    assert not b.applies_to("draftkings", "x", "m", "over", 1.20)
+
+
+def test_side_and_odds_filters_are_inert_when_unset():
+    """Existing boosts carry neither, and must keep working unchanged."""
+    from edge.arb.engine import Boost
+    b = Boost(book="fanduel", pct=0.25)
+    assert b.applies_to("fanduel", "x", "m")                      # no side/price given
+    assert b.applies_to("fanduel", "x", "m", "under", 1.01)
