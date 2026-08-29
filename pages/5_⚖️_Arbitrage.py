@@ -36,7 +36,35 @@ sys.path.insert(0, str(ROOT))
 
 from edge.arb import ArbConfig                      # noqa: E402
 
+# Streamlit Community Cloud keeps sys.modules warm across reruns. A deploy that
+# ADDS a function to an existing module therefore leaves the old module object
+# in memory: the file on disk has it, `from ... import name` does not, and the
+# page dies at that line before rendering anything -- taking the rest of the
+# sidebar (including the scan-request button) with it. Import the module once,
+# defensively, and look up names off it, so a stale process degrades to a
+# reduced sidebar with a "reboot" hint instead of a white screen.
+try:
+    from edge.arb import scan_request as _sr        # noqa: E402
+except Exception:                                   # noqa: BLE001
+    _sr = None
+
+_STALE: list[str] = []
+
+
+def _from_scan_request(name, fallback=None):
+    fn = getattr(_sr, name, None) if _sr is not None else None
+    if fn is None:
+        _STALE.append(name)
+        return fallback
+    return fn
+
+
 SNAPSHOT = ROOT / "data" / "arb_snapshot.json"
+FALLBACK_SPORTS = {
+    "americanfootball_ncaaf": "NCAAF", "americanfootball_nfl": "NFL",
+    "baseball_mlb": "MLB", "basketball_nba": "NBA", "basketball_ncaab": "NCAAB",
+    "basketball_wnba": "WNBA", "icehockey_nhl": "NHL",
+}
 BOOK_NAMES = {"draftkings": "DraftKings", "fanduel": "FanDuel", "fanatics": "Fanatics",
               "fanatics_markets": "Fanatics Markets", "pinnacle": "Pinnacle"}
 KIND_ICON = {"arb": "🟢", "middle": "🔵", "ev": "🟡"}
@@ -104,10 +132,11 @@ with st.sidebar:
                                 help="The token's cap. This bounds the WHOLE "
                                      "position, not just the boosted leg — the "
                                      "hedge is sized off it.")
-    from edge.arb.scan_request import sport_choices
-
+    _sport_choices = _from_scan_request(
+        "sport_choices", lambda cfg, snap: dict(sorted(FALLBACK_SPORTS.items(),
+                                                       key=lambda kv: kv[1])))
     _snap_peek = load_snapshot() or {}
-    _sport_titles = sport_choices(ArbConfig(), _snap_peek)
+    _sport_titles = _sport_choices(ArbConfig(), _snap_peek)
     _in_snapshot = {c.get("sport_key") for c in (_snap_peek.get("candidates") or [])}
     boost_sport = st.selectbox(
         "Sport", ["(every sport)"] + list(_sport_titles),
@@ -141,7 +170,9 @@ with st.sidebar:
     st.caption("This host cannot fetch odds — the books refuse datacenter IPs. "
                "This asks the machine in Connecticut to scan and push a fresh "
                "snapshot. It needs `arb_agent.py` running there.")
-    from edge.arb.scan_request import check_credentials
+    _check_credentials = _from_scan_request(
+        "check_credentials",
+        lambda repo, token: "" if (repo and token) else "GITHUB_REPO/GITHUB_TOKEN not set")
 
     def _secret(name: str) -> str:
         # st.secrets raises rather than returning empty when no secrets file
@@ -152,7 +183,7 @@ with st.sidebar:
             return ""
 
     _repo, _token = _secret("GITHUB_REPO"), _secret("GITHUB_TOKEN")
-    _cred_problem = check_credentials(_repo, _token)
+    _cred_problem = _check_credentials(_repo, _token)
     request_scan = st.button("📡 Request a desktop scan", use_container_width=True,
                              disabled=bool(_cred_problem))
     if _cred_problem:
@@ -164,8 +195,10 @@ snap = load_snapshot()
 # ------------------------------------------------------- desktop scan request
 if request_scan:
     try:
-        from edge.arb.scan_request import ScanRequest, put_request
-
+        ScanRequest = _from_scan_request("ScanRequest")
+        put_request = _from_scan_request("put_request")
+        if ScanRequest is None or put_request is None:
+            raise RuntimeError("stale module — reboot the app")
         req = ScanRequest.new(sports=[], note="requested from the Streamlit app")
         put_request(_repo, _token, req)
         st.session_state["last_scan_request"] = req.requested_at
@@ -178,10 +211,11 @@ if request_scan:
                    "403 means it lacks `contents: write`.")
 
 if st.session_state.get("last_scan_request") and snap:
-    from edge.arb.scan_request import ScanRequest, snapshot_is_newer
-
-    _pending = ScanRequest(requested_at=st.session_state["last_scan_request"],
-                           request_id="local")
+    ScanRequest = _from_scan_request("ScanRequest")
+    snapshot_is_newer = _from_scan_request("snapshot_is_newer", lambda *_a: False)
+    _pending = (None if ScanRequest is None else
+                ScanRequest(requested_at=st.session_state["last_scan_request"],
+                            request_id="local"))
     if snapshot_is_newer(snap.get("generated_at"), _pending):
         st.success("✅ The desktop answered — this snapshot is newer than your request.")
         st.session_state.pop("last_scan_request", None)
@@ -216,6 +250,14 @@ if not snap:
     st.info("No snapshot yet. Run `python3 scripts/arb_scan.py` and commit "
             "`data/arb_snapshot.json`, or press **Scan live**.")
     st.stop()
+
+if _STALE:
+    st.warning(
+        f"This app is running a stale copy of `edge.arb.scan_request` "
+        f"(missing: {', '.join(sorted(set(_STALE)))}). Streamlit reuses "
+        "imported modules across reruns, so a deploy that adds a function "
+        "needs a full restart. **Reboot the app** from the ⋮ menu — the "
+        "sidebar is running on fallbacks until you do.", icon="♻️")
 
 stats = snap.get("stats", {})
 c1, c2, c3, c4 = st.columns(4)
