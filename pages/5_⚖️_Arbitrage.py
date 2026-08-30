@@ -143,6 +143,34 @@ with st.sidebar:
 
     st.divider()
     st.header("Profit boost")
+    if st.checkbox("Load DraftKings' public offers", value=False,
+                   help="Reads the opt-in boosts off DraftKings' homepage — the "
+                        "same carousel you see logged out. Account tokens in "
+                        "the bet slip's Rewards panel are NOT here; those are "
+                        "issued to you and have to be entered by hand."):
+        try:
+            from edge.arb.promotions import discover as discover_boosts
+
+            _live = discover_boosts(default_max_stake=10.0)
+            if not _live:
+                st.caption("No live public boosts found.")
+            for _p in _live:
+                _b = _p.boost
+                _bits = [f"**{_b.pct:.0%}**", _sport_titles.get(_b.sports[0], _b.sports[0])]
+                if _b.requires_parlay:
+                    _bits.append("parlay only — cannot be hedged")
+                if _b.min_decimal > 1:
+                    _bits.append(f"min {int(round((_b.min_decimal-1)*100)) if _b.min_decimal>=2 else -int(round(100/(_b.min_decimal-1)))}")
+                if _p.expires_at:
+                    _hrs = (_p.expires_at - datetime.now(timezone.utc)).total_seconds()/3600
+                    _bits.append(f"{_hrs:.0f}h left")
+                st.caption("· ".join(["🎁 " + _p.headline] + _bits))
+                if _p.unparsed:
+                    st.caption(f"   ⚠️ not readable from the terms: "
+                               f"{', '.join(_p.unparsed)} — set by hand below")
+        except Exception as exc:                       # noqa: BLE001
+            st.caption(f"Could not read offers: {type(exc).__name__}")
+        st.divider()
     st.caption("A boost is what creates the arbitrage. Two books priced fairly "
                "still sum to ~1.05 — that 5% is the vig and no amount of "
                "shopping removes it. One 50% boost on either leg pays 2.36 "
