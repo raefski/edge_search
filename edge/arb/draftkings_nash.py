@@ -22,7 +22,7 @@ from datetime import datetime, timezone
 from urllib.parse import parse_qsl, quote, urlencode, urlparse, urlunparse
 
 from .models import Board, GroupKey, Quote
-from .normalize import normalize_outcome
+from .normalize import normalize_outcome, slug
 from .marketmap import canonical_market, split_player
 from .matching import match_event
 
@@ -272,6 +272,36 @@ def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
             mkey = canonical_market(market["name"], player=player)
         if mkey is None:
             stats["markets_unmapped"].add(label)
+            continue
+
+        # Golf head-to-heads: two golfers, no over/under, and the whole field
+        # shares one market key on one event -- so each pairing needs its own
+        # subject or all fourteen collapse into one group. Built from the two
+        # runner labels sorted, the same key FanDuel's side derives, so the two
+        # books land on the same group.
+        #
+        # DraftKings also offers a "(3 Way)" variant of every one of these,
+        # carrying an explicit Tie selection. That is a DIFFERENT market -- the
+        # two-way version pushes on a tie, the three-way pays a third outcome --
+        # and pairing them would be pricing two different bets against each
+        # other. Decided here on the runner count rather than by pattern:
+        # participants are typed "Team" for golfers, and the Tie runner has
+        # none at all.
+        if mkey.startswith("golf_"):
+            labels = [x.get("label") for x in sels if (x.get("participants") or [])]
+            names = sorted({slug(l) for l in labels if l})
+            if len(names) != 2 or len(sels) != 2:
+                stats["markets_unmapped"].add(
+                    f"{label} ({len(sels)} runners — three-way or not a pairing)")
+                continue
+            for sel in sels:
+                price = _decimal(sel)
+                if price is None or price <= 1.0:
+                    continue
+                board.group(GroupKey(target.event_id, mkey, "|".join(names), None),
+                            target).add(Quote(book=book, side=slug(sel.get("label") or ""),
+                                              decimal=price, point=None, last_update=now))
+                stats["quotes"] += 1
             continue
 
         for sel in sels:

@@ -14,9 +14,10 @@ from . import books as books_parse
 from . import engine
 from .config import ArbConfig
 from .draftkings_league import DraftKingsLeague
+from . import draftkings_nash as books_nash
 from .fanaticsmarkets import FanaticsMarkets
 from .fanduel import FanDuelScrape
-from .models import Board
+from .models import Board, field_event
 from .normalize import side_label
 from . import oddsmath as om
 from .oddschecker_free import fetch_fanatics_league
@@ -98,6 +99,32 @@ def scan(cfg: ArbConfig | None = None, progress=None,
                 sub = dict(sub, events=payload.get("events") or [])
                 dk_quotes += dk.ingest(board, sub, sport,
                                        strict_match=cfg.scrape.strict_event_match)["quotes"]
+
+    # 2b. DraftKings golf -- a league PER TOURNAMENT, so the id is configured
+    # rather than derived, and only the two-way subcategories are pulled.
+    for tour in getattr(cfg, "draftkings_golf_leagues", None) or []:
+        try:
+            head = dk.session.get(f"{dk.base}/leagues/{tour['league_id']}",
+                                  headers=dk.headers, timeout=25).json() or {}
+        except Exception as exc:
+            log.warning("draftkings golf %s: %s", tour.get("name"), exc)
+            continue
+        ev = (head.get("events") or [{}])[0]
+        target = field_event("golf_pga", _ts_iso(ev.get("startEventDate")),
+                             ev.get("name") or tour.get("name", ""))
+        for cid, sid in getattr(cfg, "draftkings_golf_subcategories", None) or []:
+            time.sleep(cfg.request_gap_seconds)
+            try:
+                r = dk.session.get(
+                    f"{dk.base}/leagues/{tour['league_id']}/categories/{cid}"
+                    f"/subcategories/{sid}", headers=dk.headers, timeout=25)
+                if r.status_code != 200:
+                    continue
+                dk_quotes += books_nash.ingest_sportscontent(
+                    board, r.json(), book="draftkings", sport_key="golf_pga",
+                    strict_match=False, event=target)["quotes"]
+            except Exception as exc:
+                log.debug("draftkings golf %s/%s: %s", cid, sid, exc)
     stats["draftkings"] = dk_quotes
 
     # 3. Fanatics via Oddschecker
@@ -145,6 +172,19 @@ def scan(cfg: ArbConfig | None = None, progress=None,
     stats["groups"] = len(board)
     stats["quotes"] = board.quote_count
     return (opps, stats, board) if return_board else (opps, stats)
+
+
+def _ts_iso(value) -> datetime:
+    """DraftKings sends seven fractional digits; fromisoformat accepts 3 or 6."""
+    import re
+    if not value:
+        return datetime.now(timezone.utc)
+    txt = re.sub(r"\.(\d{1,6})\d*", r".\1", str(value).strip().replace("Z", "+00:00"))
+    try:
+        p = datetime.fromisoformat(txt)
+    except ValueError:
+        return datetime.now(timezone.utc)
+    return p if p.tzinfo else p.replace(tzinfo=timezone.utc)
 
 
 def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict]:

@@ -110,9 +110,26 @@ class ArbConfig:
          "event_id": 5597, "bettype_ids": [1, 525, 526]},
         {"name": "MLB", "sport_key": "baseball_mlb",
          "event_id": 7445, "bettype_ids": [1, 525, 1055802107]},
+        # captured 2026-08-30; WNBA shares NCAAF's totals bettypeId (526)
+        # rather than needing a league-specific one like MLB's
+        {"name": "WNBA", "sport_key": "basketball_wnba",
+         "event_id": 12238, "bettype_ids": [1, 525, 526]},
     ])
     # Vig-free anchor series. WNBA verified live 2026-08-28: 11 pregame events.
     # This is a REFERENCE source, never a bet leg -- it makes WNBA +EV possible
     # without a third bettable book, which Oddschecker still cannot supply.
+    # DraftKings serves golf as a league PER TOURNAMENT -- 71813 is the Tour
+    # Championship, not "PGA Tour" -- and there is no listing endpoint, so the
+    # id changes every week and has to be captured. Same shape as
+    # fanatics_leagues for the same reason. Read it off a DevTools request on
+    # the tournament page: .../sportscontent/dkusct/v1/leagues/{id}
+    draftkings_golf_leagues: list[dict] = field(default_factory=lambda: [
+        {"name": "Tour Championship", "league_id": 71813},   # captured 2026-08-30
+    ])
+    # cat 531 is Matchups, cat 698 Hole Props. Only the TWO-way subcategories:
+    # the "(3 Way)" variants carry a Tie selection and are a different market.
+    draftkings_golf_subcategories: list[tuple] = field(default_factory=lambda: [
+        (531, 19877), (531, 20065), (698, 17673),
+    ])
     fanatics_markets_series: list[str] = field(default_factory=lambda: [
         "NCAAF", "MLB", "WNBA"])

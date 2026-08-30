@@ -729,3 +729,82 @@ def test_skipped_events_are_counted_before_prune_erases_them():
     b.prune()
     assert len(b.events) < before, "prune must drop the finished event"
     assert "g1" not in b.events, "counting after prune would see nothing to explain"
+
+
+def test_golf_collapses_to_one_event_so_the_books_can_meet():
+    """Golf has no fixture to join on, and the books disagree on what an event
+    IS: FanDuel splits a tournament into '2 Balls', 'Hole Match Betting' and
+    the tournament itself; DraftKings has a single 'Tour Championship'. Nothing
+    matched, so 78 DraftKings quotes and 72 FanDuel quotes produced ZERO shared
+    groups. The pairing is what both books agree on, so it carries the identity
+    and the event collapses to one per tour."""
+    from edge.arb.models import field_event
+    a = field_event("golf_pga", datetime.now(timezone.utc), "Tour Championship 2026")
+    b = field_event("golf_pga", datetime.now(timezone.utc) + timedelta(hours=6), "2 Balls")
+    assert a.event_id == b.event_id, "the two books must land on one event"
+    assert a.sport_title == "Golf"
+
+
+def test_a_dk_and_fd_golf_pairing_land_on_the_same_group():
+    """The end-to-end join: same two players, same market, one group."""
+    from edge.arb.draftkings_nash import ingest_sportscontent
+    from edge.arb.fanduel import FanDuelScrape
+    from edge.arb.models import field_event
+
+    when = datetime.now(timezone.utc) + timedelta(hours=4)
+    board = Board()
+    ev = field_event("golf_pga", when, "Tour Championship")
+
+    FanDuelScrape(state="ct").ingest_event(board, {"attachments": {
+        "events": {"1": {"name": "2 Balls",
+                         "openDate": when.isoformat().replace("+00:00", "Z")}},
+        "markets": {"m1": {"eventId": "1", "marketType": "2_BALLS_IMG",
+                           "marketName": "2 Ball - Kim / Smalley", "marketStatus": "OPEN",
+                           "runners": [
+                               {"runnerName": n, "handicap": 0, "runnerStatus": "ACTIVE",
+                                "winRunnerOdds": {"trueOdds": {"decimalOdds": {"decimalOdds": d}}}}
+                               for n, d in (("Tom Kim", 1.61), ("Alex Smalley", 2.25))]}}}},
+        "golf_pga", strict_match=False)
+
+    ingest_sportscontent(board, {
+        "markets": [{"id": "9", "eventId": "9", "name": "2 Ball - Round 4",
+                     "marketType": {"name": "2 Ball - Round 4"}}],
+        "selections": [
+            {"marketId": "9", "label": "Tom Kim", "participants": [{"name": "Tom Kim", "type": "Team"}],
+             "displayOdds": {"decimal": "1.70"}},
+            {"marketId": "9", "label": "Alex Smalley", "participants": [{"name": "Alex Smalley", "type": "Team"}],
+             "displayOdds": {"decimal": "2.30"}}],
+    }, sport_key="golf_pga", strict_match=False, event=ev)
+
+    g = [x for x in board.groups.values() if x.key.market == "golf_2ball"]
+    assert len(g) == 1, f"the pairing split into {len(g)} groups"
+    books = {b for per in g[0].quotes.values() for b in per}
+    assert books == {"fanduel", "draftkings"}
+    assert g[0].key.subject == "alex_smalley|tom_kim"
+
+
+def test_a_three_way_golf_market_is_not_paired_with_a_two_way_one():
+    """DraftKings offers a '(3 Way)' variant of every golf head-to-head, with an
+    explicit Tie selection. The two-way pushes on a tie, the three-way pays a
+    third outcome -- pricing one against the other is pricing two different
+    bets."""
+    from edge.arb.draftkings_nash import ingest_sportscontent
+    from edge.arb.models import field_event
+    board = Board()
+    ev = field_event("golf_pga", datetime.now(timezone.utc) + timedelta(hours=4), "T")
+    st = ingest_sportscontent(board, {
+        "markets": [{"id": "9", "eventId": "9", "name": "2 Ball (3 Way) - Round 4",
+                     "marketType": {"name": "2 Ball (3 Way) - Round 4"}}],
+        "selections": [
+            {"marketId": "9", "label": "Patrick Cantlay",
+             "participants": [{"name": "Patrick Cantlay", "type": "Team"}],
+             "displayOdds": {"decimal": "1.73"}},
+            {"marketId": "9", "label": "Tie", "participants": [],
+             "displayOdds": {"decimal": "8.30"}},
+            {"marketId": "9", "label": "Kristoffer Reitan",
+             "participants": [{"name": "Kristoffer Reitan", "type": "Team"}],
+             "displayOdds": {"decimal": "2.58"}}],
+    }, sport_key="golf_pga", strict_match=False, event=ev)
+    assert st["quotes"] == 0
+    assert not [g for g in board.groups.values() if g.key.market.startswith("golf_")]
+    assert any("three-way" in u for u in st["markets_unmapped"])

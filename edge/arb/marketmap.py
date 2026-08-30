@@ -11,6 +11,15 @@ import re
 
 # ordered: first match wins, so put specific patterns above general ones
 RULES: list[tuple[str, str]] = [
+    # Golf, first: these are two-player head-to-heads and must not fall through
+    # to a generic winner rule. Only the TWO-way versions are usable -- the
+    # "(3 Way)" variants carry a Tie selection and so are a different market --
+    # but that is decided at ingest, where the runner count is visible, rather
+    # than by pattern-matching a label. The hole rule precedes the 2-ball rule
+    # because "2 Ball Holes Winner" matches both.
+    (r"\b2 ball\b.*\bhole|\bholes?\b.*\bwinner\b", "golf_hole_group"),
+    (r"\b2 ball\b", "golf_2ball"),
+    (r"tournament.*matchup|\bh2h matchup\b", "golf_matchup"),
     (r"\b(money ?line|match result|match winner|win market|to win|head to head|1x2)\b", "h2h"),
     (r"\b(point spread|spread|handicap|line betting|run line|puck line)\b", "spreads"),
     (r"\b(alternate|alt)\b.*\b(spread|handicap)\b", "alternate_spreads"),

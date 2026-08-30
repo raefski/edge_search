@@ -28,6 +28,29 @@ class EventMeta:
         return (self.commence_time - (now or utcnow())).total_seconds() / 60.0
 
 
+def field_event(sport_key: str, when: datetime, title: str = "") -> EventMeta:
+    """One synthetic event for a sport identified by its participants.
+
+    Golf has no fixture to join on. There is no home and away, and the books do
+    not even agree on what an event IS: FanDuel splits a tournament into "2
+    Balls", "Hole Match Betting" and the tournament itself, DraftKings has a
+    single "Tour Championship". Nothing matches, so every pairing stayed in its
+    own book's event and no cross-book group ever formed.
+
+    What DOES identify a golf market is the pairing -- two named players, which
+    both books agree on. So the event is collapsed to one per tour and the
+    subject carries the identity.
+
+    The cost, stated plainly: all golf on a tour shares one start time, taken
+    from whichever book created the event first (Board.group keeps the first).
+    That only feeds the in-window check, and it is why golf is treated as one
+    block rather than per-tournament.
+    """
+    return EventMeta(event_id=f"{sport_key}:field", sport_key=sport_key,
+                     sport_title=sport_key.split("_")[0].title(),
+                     commence_time=when, home_team=title or sport_key, away_team=None)
+
+
 @dataclass(frozen=True)
 class GroupKey:
     """Identifies one set of mutually exclusive outcomes.

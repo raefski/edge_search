@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 
 from . import http as requests
 
-from .models import Board, EventMeta, GroupKey, Quote
+from .models import Board, EventMeta, GroupKey, Quote, field_event
 from .matching import match_event
 from .normalize import slug
 
@@ -286,8 +286,13 @@ class FanDuelScrape:
                 # an existing one, so it is skipped under strict_match.
                 if strict_match:
                     continue
-                t = EventMeta(f"fd:{eid}", sport_key, sport_key,
-                              _ts(ev.get("openDate")), name.strip(), None)
+                if sport_key.startswith("golf"):
+                    # collapse to one event per tour: the pairing is the join
+                    # key, and the books do not agree on what an event is
+                    t = field_event(sport_key, _ts(ev.get("openDate")), name.strip())
+                else:
+                    t = EventMeta(f"fd:{eid}", sport_key, sport_key,
+                                  _ts(ev.get("openDate")), name.strip(), None)
             targets[str(eid)] = t
         if not targets:
             return stats
