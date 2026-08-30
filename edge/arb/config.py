@@ -123,8 +123,16 @@ class ArbConfig:
     # id changes every week and has to be captured. Same shape as
     # fanatics_leagues for the same reason. Read it off a DevTools request on
     # the tournament page: .../sportscontent/dkusct/v1/leagues/{id}
+    # There is no listing endpoint. Confirmed against sportscontent (five path
+    # shapes on sportId 12), the v5 eventgroup API (Akamai blocked) and the
+    # pagedata namespace (eight shapes) -- the only thing pagedata offers is
+    # id -> slug, not slug -> id. So these are captured, and run.scan() reports
+    # any that return no events so an expired one is visible rather than just
+    # quietly contributing nothing.
+    #   DevTools on the tournament page -> .../dkusct/v1/leagues/{id}
     draftkings_golf_leagues: list[dict] = field(default_factory=lambda: [
         {"name": "Tour Championship", "league_id": 71813},   # captured 2026-08-30
+        {"name": "Presidents Cup", "league_id": 25461},      # captured 2026-08-30
     ])
     # cat 531 is Matchups, cat 698 Hole Props. Only the TWO-way subcategories:
     # the "(3 Way)" variants carry a Tie selection and are a different market.

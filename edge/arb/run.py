@@ -109,7 +109,16 @@ def scan(cfg: ArbConfig | None = None, progress=None,
         except Exception as exc:
             log.warning("draftkings golf %s: %s", tour.get("name"), exc)
             continue
-        ev = (head.get("events") or [{}])[0]
+        events = head.get("events") or []
+        if not events:
+            # the id has expired: DraftKings retires a tournament league when
+            # it finishes, and a stale one is otherwise indistinguishable from
+            # "golf had nothing today"
+            stats.setdefault("golf_expired", []).append(tour.get("name", ""))
+            log.info("draftkings golf %s (%s): no events — id likely expired, recapture",
+                     tour.get("name"), tour.get("league_id"))
+            continue
+        ev = events[0]
         target = field_event("golf_pga", _ts_iso(ev.get("startEventDate")),
                              ev.get("name") or tour.get("name", ""))
         for cid, sid in getattr(cfg, "draftkings_golf_subcategories", None) or []:
