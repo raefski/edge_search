@@ -191,7 +191,9 @@ def _boost_variants(legs: list[Leg], cfg, sport_key: str, market: str):
                                 side=leg.side, decimal=leg.decimal):
                 continue
             priced = list(base)
-            priced[i] = om.boosted(base[i], b.pct)
+            # the price the BOOK writes, not the exact product: a boosted bet
+            # is booked at whole American odds and settles there
+            priced[i] = om.at_book_price(om.boosted(base[i], b.pct))
             yield b, i, priced
 
 
@@ -606,7 +608,7 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
         plain = [] if c.get("single_book") else [(None, None, base)]
         best = None
         for boost, idx, priced in plain + [
-                (b, i, [om.boosted(d, b.pct) if i == j else d
+                (b, i, [om.at_book_price(om.boosted(d, b.pct)) if i == j else d
                         for j, d in enumerate(base)])
                 for b in boosts
                 for i, l in enumerate(legs)
@@ -695,7 +697,7 @@ def price_boosted_ev(cands: list[dict], boosts: list[Boost], cfg,
                     continue
                 # never assume a longer price than the market's own read
                 fair = min(fair, om.implied_prob(raw))
-                boosted = om.boosted(raw, b.pct)
+                boosted = om.at_book_price(om.boosted(raw, b.pct))
                 ev = om.ev_pct(boosted, fair)
                 if ev < min_ev_pct:
                     continue

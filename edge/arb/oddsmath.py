@@ -182,6 +182,31 @@ class Allocation:
     capped: bool                  # a per-book max stake bound the allocation
 
 
+def at_book_price(decimal: float) -> float:
+    """Snap a computed price to one a book can actually quote.
+
+    Books deal in whole American odds, and a boosted bet is written at the
+    rounded price rather than the exact one -- so the rounded price is what
+    settles. A -110 leg boosted 25% is exactly 2.136364, i.e. +113.636;
+    FanDuel writes it +114 and pays 21.40 on a 10 stake, not 21.36.
+
+    Four cents, but it is the difference between a number that matches the
+    slip and one that does not, and quoting +114 while paying 2.136364 is
+    simply inconsistent with itself.
+
+    Rounding is to NEAREST, so this can go either way -- it is not a hidden
+    bonus. Prices at or below evens are returned untouched, since American
+    odds cannot express them.
+    """
+    d = float(decimal)
+    if d <= 1.0:
+        return d
+    try:
+        return american_to_decimal(decimal_to_american(d))
+    except ValueError:
+        return d
+
+
 def parlay_decimal(decimals: list[float]) -> float:
     """Price of a straight multi: the product of its legs.
 

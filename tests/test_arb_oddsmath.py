@@ -147,3 +147,38 @@ def test_every_losing_outcome_is_covered_by_the_hedges():
         ret = stake_par * boosted if all(outcome) else 0.0
         ret += sum(s * opp for s, won in zip(stake_hedges, outcome) if not won)
         assert ret - a.total > -0.02, f"{outcome} lost {ret - a.total:.4f}"
+
+
+def test_a_boosted_price_is_snapped_to_one_a_book_can_write():
+    """Reported from a real FanDuel slip: a -110 leg boosted 25% is exactly
+    2.136364 (+113.636), but FanDuel writes it +114 and pays 21.40 on a 10
+    stake, not 21.36. The rounded price is what settles, and quoting +114 while
+    paying 2.136364 is inconsistent with itself."""
+    from edge.arb import oddsmath as om
+    exact = om.boosted(om.american_to_decimal(-110), 0.25)
+    assert exact == pytest.approx(2.136364, abs=1e-5)
+    assert om.at_book_price(exact) == pytest.approx(2.14)
+    assert om.at_book_price(exact) * 10 == pytest.approx(21.40)
+
+
+def test_snapping_rounds_to_nearest_not_always_up():
+    """It is not a hidden bonus -- the same leg boosted 50% rounds DOWN."""
+    from edge.arb import oddsmath as om
+    d = om.american_to_decimal(-110)
+    assert om.at_book_price(om.boosted(d, 0.25)) > om.boosted(d, 0.25)   # up
+    assert om.at_book_price(om.boosted(d, 0.50)) < om.boosted(d, 0.50)   # down
+
+
+def test_snapping_leaves_prices_it_cannot_express_alone():
+    """American odds cannot express evens or shorter."""
+    from edge.arb import oddsmath as om
+    assert om.at_book_price(1.0) == 1.0
+    assert om.at_book_price(0.5) == 0.5
+    assert om.at_book_price(2.0) == pytest.approx(2.0)
+
+
+def test_a_price_already_on_the_grid_is_unchanged():
+    from edge.arb import oddsmath as om
+    for am in (-250, -110, 100, 114, 196, 450):
+        d = om.american_to_decimal(am)
+        assert om.at_book_price(d) == pytest.approx(d), am
