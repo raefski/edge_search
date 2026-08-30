@@ -99,6 +99,9 @@ class ArbConfig:
     # put promotions behind a login and issue them per account. Set from the
     # Streamlit sidebar, scripts/arb_scan.py --boost, or here.
     boosts: list = field(default_factory=list)          # list[engine.Boost]
+    # 37 tennis leagues are listed; most are outright containers months out.
+    # Each costs one call, so the list is capped rather than pulled whole.
+    tennis_max_leagues: int = 14
     draftkings_props: bool = True
     draftkings_max_prop_subcategories: int = 40   # covers all 31 MLB tabs; see prop_subcategories
     request_gap_seconds: float = 0.35

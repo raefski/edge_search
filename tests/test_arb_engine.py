@@ -865,3 +865,49 @@ def test_groups_sharing_an_event_id_share_one_event():
                  field_event("golf_pga", later, "Presidents Cup"))
     assert g2.event.commence_time == soon, "the second event overrode the first"
     assert len({g.event.commence_time for g in b.groups.values()}) == 1
+
+
+# --- tennis -----------------------------------------------------------------
+@pytest.mark.parametrize("name,expected", [
+    ("Buffalo Bills @ Kansas City Chiefs", ("Buffalo Bills", "Kansas City Chiefs")),
+    ("Lorenzo Carboni vs Pedro Martinez", ("Lorenzo Carboni", "Pedro Martinez")),
+    ("A vs. B", ("A", "B")),
+    ("X v Y", ("X", "Y")),
+])
+def test_a_fixture_is_parsed_from_either_separator(name, expected):
+    """Team sports are written "Away @ Home", tennis "Player A vs Player B".
+    Requiring "@" skipped every tennis event before it was looked at -- and
+    tennis is a real two-player fixture, so it fits the ordinary model once
+    parsed, unlike golf which needed a synthetic event."""
+    from edge.arb.draftkings_league import split_fixture
+    assert split_fixture(name) == expected
+
+
+@pytest.mark.parametrize("name", ["Tour Championship 2026", "", "vs ", None,
+                                  "Player Finishing Position"])
+def test_a_non_fixture_name_is_refused(name):
+    """An outright container is not a fixture; treating it as one would invent
+    two competitors out of a tournament title."""
+    from edge.arb.draftkings_league import split_fixture
+    assert split_fixture(name) is None
+
+
+def test_a_venueless_sport_reads_vs_not_at():
+    """"Carboni @ Martinez" implies a home venue that tennis does not have."""
+    from edge.arb.models import EventMeta
+    when = datetime.now(timezone.utc)
+    tennis = EventMeta("e", "tennis_atp", "Tennis", when, "Martinez", "Carboni")
+    nfl = EventMeta("e", "americanfootball_nfl", "NFL", when, "Chiefs", "Bills")
+    assert tennis.matchup == "Carboni vs Martinez"
+    assert nfl.matchup == "Bills @ Chiefs"
+
+
+def test_tennis_leagues_are_discovered_under_their_own_display_group():
+    """Tennis is displayGroup 6; golf is 12. Reading the wrong group off the
+    same page would point the tennis scraper at golf tournaments."""
+    from edge.arb.draftkings_league import DISPLAY_GROUPS, parse_league_page
+    assert DISPLAY_GROUPS["tennis"] == 6 and DISPLAY_GROUPS["golf"] == 12
+    html = ('{"displayGroupId":6,"eventGroupId":205637,"eventGroupName":"Challenger - Porto"},'
+            '{"displayGroupId":12,"eventGroupId":71813,"eventGroupName":"Tour Championship"}')
+    assert parse_league_page(html, 6) == {205637: "Challenger - Porto"}
+    assert parse_league_page(html, 12) == {71813: "Tour Championship"}

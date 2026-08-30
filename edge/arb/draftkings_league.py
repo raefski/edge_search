@@ -66,11 +66,36 @@ def _two_sided(name: str) -> bool:
 # listing endpoint, the v5 API is Akamai blocked, and pagedata offers only
 # id -> slug. displayGroupId is DraftKings' own sport number.
 LEAGUE_PAGE = "https://sportsbook.draftkings.com/leagues/{slug}"
-DISPLAY_GROUPS = {"golf": 12}
+DISPLAY_GROUPS = {"golf": 12, "tennis": 6}
 
 _LEAGUE_ROW = re.compile(
     r'"displayGroupId"\s*:\s*"?(\d+)"?\s*,\s*"eventGroupId"\s*:\s*"?(\d+)"?\s*,'
     r'\s*"eventGroupName"\s*:\s*"([^"]+)"')
+
+
+def split_fixture(name: str) -> tuple[str, str] | None:
+    """(away, home) from an event name, or None if it is not a fixture.
+
+    Team sports are written "Away @ Home". Tennis is written "Player A vs
+    Player B" -- a real two-player fixture, not a field, so it fits the normal
+    model perfectly once it is parsed. Requiring "@" skipped every tennis
+    event before it was looked at.
+
+    "vs" has no home and away, so the order is taken as listed and used
+    consistently. That is only a labelling convention: what matters is that
+    both books produce the same two names, which match_event then pairs on
+    similarity regardless of which side each lands.
+    """
+    text = (name or "").strip()
+    if " @ " in text:
+        away, home = text.split(" @ ", 1)
+        return away.strip(), home.strip()
+    for sep in (" vs. ", " vs ", " v "):
+        if sep in text:
+            first, second = text.split(sep, 1)
+            if first.strip() and second.strip():
+                return first.strip(), second.strip()
+    return None
 
 
 def parse_league_page(html: str, display_group: int) -> dict[int, str]:
@@ -215,9 +240,10 @@ class DraftKingsLeague:
         for ev in events:
             stats["events"] += 1
             name = ev.get("name") or ""
-            if " @ " not in name:
+            pair = split_fixture(name)
+            if pair is None:
                 continue
-            away, home = [p.strip() for p in name.split(" @ ", 1)]
+            away, home = pair
             when = _ts(ev.get("startEventDate") or ev.get("startDate"))
             target = match_event(board, home, away, when, sport_key)
             if target is None:

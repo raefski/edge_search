@@ -153,6 +153,31 @@ def scan(cfg: ArbConfig | None = None, progress=None,
                 log.debug("draftkings golf %s/%s: %s", cid, sid, exc)
     stats["draftkings"] = dk_quotes
 
+    # 2c. DraftKings tennis -- also a league per tournament, but unlike golf
+    # each event is a real fixture ("A vs B"), so the ordinary path handles it
+    # once the name is parsed. Doubles and qualifying draws are skipped: they
+    # price differently and no other book here covers them.
+    if any(sp.startswith("tennis") for sp in cfg.sports):
+        tl = dk_discover("tennis")
+        wanted = [(g, n) for g, n in tl.items()
+                  if "Doubles" not in n and "Quals" not in n]
+        stats["tennis_leagues_discovered"] = len(wanted)
+        for gid, name in sorted(wanted, key=lambda kv: kv[1])[: cfg.tennis_max_leagues]:
+            time.sleep(cfg.request_gap_seconds)
+            try:
+                r = dk.session.get(f"{dk.base}/leagues/{gid}", headers=dk.headers,
+                                   timeout=25)
+                if r.status_code != 200:
+                    continue
+                payload_t = r.json() or {}
+                if len(payload_t.get("events") or []) < 2:
+                    continue          # an outright-only container, months out
+                dk_quotes += dk.ingest(board, payload_t, "tennis_atp",
+                                       strict_match=False)["quotes"]
+            except Exception as exc:
+                log.debug("draftkings tennis %s: %s", name, exc)
+        stats["draftkings"] = dk_quotes
+
     # 3. Fanatics via Oddschecker
     tick(2, "Fanatics")
     fan_quotes = 0

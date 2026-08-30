@@ -18,10 +18,14 @@ class EventMeta:
     home_team: str | None
     away_team: str | None
 
+    # sports whose fixtures have no venue, so "@" would imply one
+    VS_SPORTS = ("tennis", "golf", "mma", "boxing")
+
     @property
     def matchup(self) -> str:
         if self.away_team and self.home_team:
-            return f"{self.away_team} @ {self.home_team}"
+            sep = " vs " if self.sport_key.startswith(self.VS_SPORTS) else " @ "
+            return f"{self.away_team}{sep}{self.home_team}"
         return self.home_team or self.away_team or self.event_id
 
     def minutes_to_start(self, now: datetime | None = None) -> float:
