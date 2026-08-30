@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-08-30T13:28:10.384641+00:00",
+ "generated_at": "2026-08-30T13:29:14.549826+00:00",
  "stats": {
   "fanduel": 11259,
   "draftkings": 12558,
@@ -10,7 +10,7 @@
   },
   "bankroll": 1000,
   "events": 124,
-  "groups": 9805,
+  "groups": 9804,
   "quotes": 18604
  },
  "opportunities": [],
@@ -965,7 +965,7 @@
    "prices": {
     "over": {
      "fanduel": 6.5,
-     "draftkings": 5.34
+     "draftkings": 5.29
     },
     "under": {
      "draftkings": 1.1471
@@ -2571,7 +2571,7 @@
    "prices": {
     "over": {
      "fanduel": 9.0,
-     "draftkings": 7.7
+     "draftkings": 7.9
     },
     "under": {
      "draftkings": 1.082
@@ -3855,7 +3855,7 @@
    "prices": {
     "over": {
      "fanduel": 9.5,
-     "draftkings": 8.9
+     "draftkings": 8.6
     },
     "under": {
      "draftkings": 1.0704
@@ -4102,7 +4102,7 @@
    "prices": {
     "over": {
      "fanduel": 6.0,
-     "draftkings": 5.35
+     "draftkings": 5.32
     },
     "under": {
      "draftkings": 1.1449
@@ -5002,7 +5002,7 @@
    "prices": {
     "over": {
      "fanduel": 6.0,
-     "draftkings": 5.41
+     "draftkings": 5.35
     },
     "under": {
      "draftkings": 1.1429
@@ -5037,7 +5037,7 @@
    "prices": {
     "over": {
      "fanduel": 5.4,
-     "draftkings": 4.88
+     "draftkings": 4.94
     },
     "under": {
      "draftkings": 1.1675
@@ -7271,7 +7271,7 @@
    "prices": {
     "over": {
      "fanduel": 5.2,
-     "draftkings": 4.8
+     "draftkings": 4.76
     },
     "under": {
      "draftkings": 1.1715
@@ -7867,7 +7867,7 @@
    "prices": {
     "over": {
      "fanduel": 5.1,
-     "draftkings": 4.72
+     "draftkings": 4.64
     },
     "under": {
      "draftkings": 1.1757
@@ -9018,7 +9018,7 @@
    "prices": {
     "over": {
      "fanduel": 5.3,
-     "draftkings": 4.91
+     "draftkings": 4.87
     },
     "under": {
      "draftkings": 1.1639
@@ -9682,7 +9682,7 @@
    "prices": {
     "over": {
      "fanduel": 7.5,
-     "draftkings": 7.3
+     "draftkings": 7.2
     },
     "under": {
      "draftkings": 1.0926
@@ -9753,7 +9753,7 @@
    "prices": {
     "over": {
      "fanduel": 5.6,
-     "draftkings": 5.29
+     "draftkings": 5.24
     },
     "under": {
      "draftkings": 1.1493
@@ -10173,7 +10173,7 @@
    "prices": {
     "over": {
      "fanduel": 7.0,
-     "draftkings": 6.83
+     "draftkings": 6.71
     },
     "under": {
      "draftkings": 1.1031
@@ -12862,7 +12862,7 @@
    "prices": {
     "over": {
      "fanduel": 7.0,
-     "draftkings": 6.91
+     "draftkings": 6.67
     },
     "under": {
      "draftkings": 1.101
@@ -13175,41 +13175,6 @@
     },
     "under": {
      "fanduel": 2.2
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997385",
-   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
-   "commence_time": "2026-08-30T20:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Denzer Guzman",
-   "point": 0.5,
-   "arb_sum": 1.05137,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 7.5,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.0893,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 7.0,
-     "draftkings": 7.5
-    },
-    "under": {
-     "draftkings": 1.0893
     }
    }
   },
@@ -14009,7 +13974,7 @@
    "prices": {
     "over": {
      "fanduel": 6.5,
-     "draftkings": 6.39
+     "draftkings": 6.29
     },
     "under": {
      "draftkings": 1.1136
@@ -15454,7 +15419,7 @@
    "prices": {
     "over": {
      "fanduel": 6.5,
-     "draftkings": 6.43
+     "draftkings": 6.25
     },
     "under": {
      "draftkings": 1.1124
@@ -15672,35 +15637,35 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35997383",
-   "matchup": "Cincinnati Reds @ Chicago Cubs",
-   "commence_time": "2026-08-30T23:21:00+00:00",
+   "event_id": "fd:35997385",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T20:08:00+00:00",
    "market": "batter_doubles",
-   "subject": "Miguel Amaya",
+   "subject": "Denzer Guzman",
    "point": 0.5,
-   "arb_sum": 1.05313,
+   "arb_sum": 1.05317,
    "single_book": true,
    "legs": [
     {
      "side": "over",
      "book": "draftkings",
-     "decimal": 7.1,
+     "decimal": 7.4,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.0962,
+     "decimal": 1.0893,
      "label": "Under"
     }
    ],
    "prices": {
     "over": {
-     "fanduel": 6.5,
-     "draftkings": 7.1
+     "fanduel": 7.0,
+     "draftkings": 7.4
     },
     "under": {
-     "draftkings": 1.0962
+     "draftkings": 1.0893
     }
    }
   },
@@ -15953,41 +15918,6 @@
    }
   },
   {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997385",
-   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
-   "commence_time": "2026-08-30T20:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Christian Moore",
-   "point": 0.5,
-   "arb_sum": 1.05379,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 6.71,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1053,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 6.5,
-     "draftkings": 6.71
-    },
-    "under": {
-     "draftkings": 1.1053
-    }
-   }
-  },
-  {
    "sport_key": "basketball_wnba",
    "sport_title": "basketball_wnba",
    "event_id": "fd:35993931",
@@ -16228,41 +16158,6 @@
     },
     "under": {
      "draftkings": 1.2024
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997383",
-   "matchup": "Cincinnati Reds @ Chicago Cubs",
-   "commence_time": "2026-08-30T23:21:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Hector Rodriguez",
-   "point": 0.5,
-   "arb_sum": 1.0539,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 6.54,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1099,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 6.5,
-     "draftkings": 6.54
-    },
-    "under": {
-     "draftkings": 1.1099
     }
    }
   },
@@ -16931,41 +16826,6 @@
    }
   },
   {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997385",
-   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
-   "commence_time": "2026-08-30T20:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Mike Trout",
-   "point": 0.5,
-   "arb_sum": 1.0544,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 6.56,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1087,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 6.0,
-     "draftkings": 6.56
-    },
-    "under": {
-     "draftkings": 1.1087
-    }
-   }
-  },
-  {
    "sport_key": "basketball_wnba",
    "sport_title": "basketball_wnba",
    "event_id": "fd:35993929",
@@ -17450,6 +17310,41 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35997383",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-30T23:21:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Hector Rodriguez",
+   "point": 0.5,
+   "arb_sum": 1.0546,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 6.51,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1099,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 6.5,
+     "draftkings": 6.51
+    },
+    "under": {
+     "draftkings": 1.1099
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35997379",
    "matchup": "Seattle Mariners @ Toronto Blue Jays",
    "commence_time": "2026-08-30T17:38:00+00:00",
@@ -17480,41 +17375,6 @@
     "under": {
      "fanduel": 1.5495,
      "draftkings": 1.5848
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997383",
-   "matchup": "Cincinnati Reds @ Chicago Cubs",
-   "commence_time": "2026-08-30T23:21:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Michael Conforto",
-   "point": 0.5,
-   "arb_sum": 1.05475,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 6.42,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1124,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 6.0,
-     "draftkings": 6.42
-    },
-    "under": {
-     "draftkings": 1.1124
     }
    }
   },
@@ -17731,40 +17591,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35997383",
-   "matchup": "Cincinnati Reds @ Chicago Cubs",
-   "commence_time": "2026-08-30T23:21:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Jose Trevino",
-   "point": 0.5,
-   "arb_sum": 1.05507,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 6.28,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1163,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "draftkings": 6.28
-    },
-    "under": {
-     "draftkings": 1.1163
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35997377",
    "matchup": "Boston Red Sox @ New York Yankees",
    "commence_time": "2026-08-30T17:36:00+00:00",
@@ -17829,41 +17655,6 @@
     },
     "under": {
      "draftkings": 1.0962
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997383",
-   "matchup": "Cincinnati Reds @ Chicago Cubs",
-   "commence_time": "2026-08-30T23:21:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Matt McLain",
-   "point": 0.5,
-   "arb_sum": 1.05514,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 6.32,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1149,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 6.0,
-     "draftkings": 6.32
-    },
-    "under": {
-     "draftkings": 1.1149
     }
    }
   },
@@ -19450,6 +19241,41 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35997383",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-30T23:21:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Miguel Amaya",
+   "point": 0.5,
+   "arb_sum": 1.05575,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 6.97,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.0962,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 6.5,
+     "draftkings": 6.97
+    },
+    "under": {
+     "draftkings": 1.0962
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35997388",
    "matchup": "Baltimore Orioles @ Athletics",
    "commence_time": "2026-08-30T20:06:00+00:00",
@@ -20032,7 +19858,7 @@
    "prices": {
     "over": {
      "fanduel": 5.7,
-     "draftkings": 5.63
+     "draftkings": 5.61
     },
     "under": {
      "draftkings": 1.1351
@@ -20283,6 +20109,41 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35997385",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T20:08:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Mike Trout",
+   "point": 0.5,
+   "arb_sum": 1.05676,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 6.46,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1087,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 6.0,
+     "draftkings": 6.46
+    },
+    "under": {
+     "draftkings": 1.1087
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35997383",
    "matchup": "Cincinnati Reds @ Chicago Cubs",
    "commence_time": "2026-08-30T23:21:00+00:00",
@@ -20308,7 +20169,7 @@
    "prices": {
     "over": {
      "fanduel": 6.0,
-     "draftkings": 6.0
+     "draftkings": 5.92
     },
     "under": {
      "draftkings": 1.1235
@@ -20619,7 +20480,7 @@
    "prices": {
     "over": {
      "fanduel": 5.2,
-     "draftkings": 5.09
+     "draftkings": 5.06
     },
     "under": {
      "draftkings": 1.1562
@@ -20654,7 +20515,7 @@
    "prices": {
     "over": {
      "fanduel": 5.2,
-     "draftkings": 5.12
+     "draftkings": 5.02
     },
     "under": {
      "draftkings": 1.1562
@@ -20734,6 +20595,41 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35997383",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-30T23:21:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Michael Conforto",
+   "point": 0.5,
+   "arb_sum": 1.05722,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 6.32,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1124,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 6.0,
+     "draftkings": 6.32
+    },
+    "under": {
+     "draftkings": 1.1124
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35997381",
    "matchup": "Colorado Rockies @ Atlanta Braves",
    "commence_time": "2026-08-30T17:36:00+00:00",
@@ -20804,6 +20700,40 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35997383",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-30T23:21:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Jose Trevino",
+   "point": 0.5,
+   "arb_sum": 1.05738,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 6.19,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1163,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "draftkings": 6.19
+    },
+    "under": {
+     "draftkings": 1.1163
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35997388",
    "matchup": "Baltimore Orioles @ Athletics",
    "commence_time": "2026-08-30T20:06:00+00:00",
@@ -20833,6 +20763,41 @@
     },
     "under": {
      "draftkings": 1.6061
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997383",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-30T23:21:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Matt McLain",
+   "point": 0.5,
+   "arb_sum": 1.05742,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 6.23,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1149,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 6.0,
+     "draftkings": 6.23
+    },
+    "under": {
+     "draftkings": 1.1149
     }
    }
   },
@@ -21840,6 +21805,41 @@
     "under": {
      "fanduel": 2.54,
      "draftkings": 2.48
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997385",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T20:08:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Christian Moore",
+   "point": 0.5,
+   "arb_sum": 1.05814,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 6.52,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1053,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 6.5,
+     "draftkings": 6.52
+    },
+    "under": {
+     "draftkings": 1.1053
     }
    }
   },
@@ -27995,41 +27995,6 @@
    }
   },
   {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997383",
-   "matchup": "Cincinnati Reds @ Chicago Cubs",
-   "commence_time": "2026-08-30T23:21:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Tyler Stephenson",
-   "point": 0.5,
-   "arb_sum": 1.05936,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 5.47,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1408,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 5.4,
-     "draftkings": 5.47
-    },
-    "under": {
-     "draftkings": 1.1408
-    }
-   }
-  },
-  {
    "sport_key": "basketball_wnba",
    "sport_title": "basketball_wnba",
    "event_id": "fd:35993930",
@@ -29084,41 +29049,6 @@
     },
     "home": {
      "fanduel": 4.2
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997383",
-   "matchup": "Cincinnati Reds @ Chicago Cubs",
-   "commence_time": "2026-08-30T23:21:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Elly De La Cruz",
-   "point": 0.5,
-   "arb_sum": 1.05952,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 5.28,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1493,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 5.2,
-     "draftkings": 5.28
-    },
-    "under": {
-     "draftkings": 1.1493
     }
    }
   },
@@ -36647,76 +36577,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35997383",
-   "matchup": "Cincinnati Reds @ Chicago Cubs",
-   "commence_time": "2026-08-30T23:21:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Pedro Ramirez",
-   "point": 0.5,
-   "arb_sum": 1.06071,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 5.01,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1613,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 5.0,
-     "draftkings": 5.01
-    },
-    "under": {
-     "draftkings": 1.1613
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997383",
-   "matchup": "Cincinnati Reds @ Chicago Cubs",
-   "commence_time": "2026-08-30T23:21:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Sal Stewart",
-   "point": 0.5,
-   "arb_sum": 1.06073,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 5.2,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1515,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 5.1,
-     "draftkings": 5.2
-    },
-    "under": {
-     "draftkings": 1.1515
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35997385",
    "matchup": "Philadelphia Phillies @ Los Angeles Angels",
    "commence_time": "2026-08-30T20:08:00+00:00",
@@ -37031,41 +36891,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35997385",
-   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
-   "commence_time": "2026-08-30T20:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "J.T. Realmuto",
-   "point": 0.5,
-   "arb_sum": 1.06083,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 5.29,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1471,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 4.8,
-     "draftkings": 5.29
-    },
-    "under": {
-     "draftkings": 1.1471
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35997383",
    "matchup": "Cincinnati Reds @ Chicago Cubs",
    "commence_time": "2026-08-30T23:21:00+00:00",
@@ -37126,7 +36951,7 @@
    "prices": {
     "over": {
      "fanduel": 4.8,
-     "draftkings": 4.77
+     "draftkings": 4.74
     },
     "under": {
      "draftkings": 1.173
@@ -38468,6 +38293,41 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35997383",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-30T23:21:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Sal Stewart",
+   "point": 0.5,
+   "arb_sum": 1.0611,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 5.19,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1515,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 5.1,
+     "draftkings": 5.19
+    },
+    "under": {
+     "draftkings": 1.1515
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35997382",
    "matchup": "Miami Marlins @ Washington Nationals",
    "commence_time": "2026-08-30T16:16:00+00:00",
@@ -38701,6 +38561,41 @@
     },
     "under": {
      "fanduel": 5.0
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997383",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-30T23:21:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Pedro Ramirez",
+   "point": 0.5,
+   "arb_sum": 1.06111,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 5.0,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1613,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 5.0,
+     "draftkings": 4.97
+    },
+    "under": {
+     "draftkings": 1.1613
     }
    }
   },
@@ -40790,6 +40685,41 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35997383",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-30T23:21:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Tyler Stephenson",
+   "point": 0.5,
+   "arb_sum": 1.06139,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 5.41,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1408,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 5.4,
+     "draftkings": 5.41
+    },
+    "under": {
+     "draftkings": 1.1408
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35997382",
    "matchup": "Miami Marlins @ Washington Nationals",
    "commence_time": "2026-08-30T16:16:00+00:00",
@@ -42567,41 +42497,6 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
-   "event_id": "fd:35997385",
-   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
-   "commence_time": "2026-08-30T20:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Luis Arraez",
-   "point": 0.5,
-   "arb_sum": 1.06182,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 5.03,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1587,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 4.7,
-     "draftkings": 5.03
-    },
-    "under": {
-     "draftkings": 1.1587
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
    "event_id": "fd:35997387",
    "matchup": "Pittsburgh Pirates @ St. Louis Cardinals",
    "commence_time": "2026-08-30T18:16:00+00:00",
@@ -43580,41 +43475,6 @@
    "event_id": "fd:35997385",
    "matchup": "Philadelphia Phillies @ Los Angeles Angels",
    "commence_time": "2026-08-30T20:08:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Trea Turner",
-   "point": 0.5,
-   "arb_sum": 1.06239,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 4.69,
-     "label": "Over"
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1776,
-     "label": "Under"
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 4.1,
-     "draftkings": 4.69
-    },
-    "under": {
-     "draftkings": 1.1776
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:35997385",
-   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
-   "commence_time": "2026-08-30T20:08:00+00:00",
    "market": "batter_hits_runs_rbis",
    "subject": "Luis Arraez",
    "point": 1.5,
@@ -43742,6 +43602,41 @@
    "prices": {
     "over": {
      "fanduel": 5.0,
+     "draftkings": 5.2
+    },
+    "under": {
+     "draftkings": 1.1493
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997383",
+   "matchup": "Cincinnati Reds @ Chicago Cubs",
+   "commence_time": "2026-08-30T23:21:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Elly De La Cruz",
+   "point": 0.5,
+   "arb_sum": 1.06244,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 5.2,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1493,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 5.2,
      "draftkings": 5.2
     },
     "under": {
@@ -44623,31 +44518,31 @@
    "matchup": "Philadelphia Phillies @ Los Angeles Angels",
    "commence_time": "2026-08-30T20:08:00+00:00",
    "market": "batter_doubles",
-   "subject": "Alec Bohm",
+   "subject": "J.T. Realmuto",
    "point": 0.5,
-   "arb_sum": 1.06306,
+   "arb_sum": 1.063,
    "single_book": true,
    "legs": [
     {
      "side": "over",
      "book": "draftkings",
-     "decimal": 4.58,
+     "decimal": 5.23,
      "label": "Over"
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.1838,
+     "decimal": 1.1471,
      "label": "Under"
     }
    ],
    "prices": {
     "over": {
-     "fanduel": 4.4,
-     "draftkings": 4.58
+     "fanduel": 4.8,
+     "draftkings": 5.23
     },
     "under": {
-     "draftkings": 1.1838
+     "draftkings": 1.1471
     }
    }
   },
@@ -45242,6 +45137,41 @@
     },
     "under": {
      "draftkings": 1.1695
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997385",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T20:08:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Luis Arraez",
+   "point": 0.5,
+   "arb_sum": 1.06341,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 4.99,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1587,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 4.7,
+     "draftkings": 4.99
+    },
+    "under": {
+     "draftkings": 1.1587
     }
    }
   },
@@ -46920,6 +46850,41 @@
   {
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
+   "event_id": "fd:35997385",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T20:08:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Trea Turner",
+   "point": 0.5,
+   "arb_sum": 1.06422,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 4.65,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1776,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 4.1,
+     "draftkings": 4.65
+    },
+    "under": {
+     "draftkings": 1.1776
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
    "event_id": "fd:35997380",
    "matchup": "San Diego Padres @ Tampa Bay Rays",
    "commence_time": "2026-08-30T17:41:00+00:00",
@@ -47402,6 +47367,41 @@
     },
     "under": {
      "draftkings": 2.68
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:35997385",
+   "matchup": "Philadelphia Phillies @ Los Angeles Angels",
+   "commence_time": "2026-08-30T20:08:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Alec Bohm",
+   "point": 0.5,
+   "arb_sum": 1.0645,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 4.55,
+     "label": "Over"
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1838,
+     "label": "Under"
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 4.4,
+     "draftkings": 4.55
+    },
+    "under": {
+     "draftkings": 1.1838
     }
    }
   },
