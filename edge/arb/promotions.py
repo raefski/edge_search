@@ -11,6 +11,9 @@ of them is here:
     read them, so they can be discovered, and that is what this module does.
   * ACCOUNT tokens -- the "Rewards" panel inside the bet slip, issued to you
     with your own countdown. Those need your session and stay hand-entered.
+    Confirmed, not assumed: v2/rewards/summary and v2/rewards/details both
+    answer 401 "User is unauthenticated" to an anonymous request. See
+    ACCOUNT_REWARDS_ENDPOINTS.
 
 WHAT IS PARSED, AND WHAT IS NOT
 The percentage, minimum odds, sport, expiry and whether the offer is
@@ -37,7 +40,22 @@ from datetime import datetime, timezone
 from . import http
 from .engine import Boost
 
-API = "https://api.draftkings.com/en/api/promotions/v2/promotions/query"
+# v3 is a superset of v2 -- same request shape, 28 promotions where v2 returns
+# 13. Both answer anonymously. Route table read out of the Reward Center's own
+# JS bundle (/mf/rewardcenter/static/js/main.*.js), which carries the whole map
+# of query names to paths.
+API = "https://api.draftkings.com/en/api/promotions/v3/promotions/query"
+
+# The ACCOUNT rewards endpoints from that same table, recorded so nobody
+# re-derives them. Both answer 401 "User is unauthenticated" without a session,
+# which settles the question: claimed tokens cannot be read anonymously, and
+# reaching them means storing DraftKings credentials.
+#     v2/rewards/summary   UserRewardsSummaryQuery
+#     v2/rewards/details   UserRewardsDetailsQuery
+ACCOUNT_REWARDS_ENDPOINTS = (
+    "https://api.draftkings.com/en/api/promotions/v2/rewards/summary",
+    "https://api.draftkings.com/en/api/promotions/v2/rewards/details",
+)
 
 # The zones the homepage asks for. `zoneIdentifierId` is a content-slot id, not
 # an account id, and the request works without the long inline-promo list the
