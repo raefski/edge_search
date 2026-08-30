@@ -911,3 +911,47 @@ def test_tennis_leagues_are_discovered_under_their_own_display_group():
             '{"displayGroupId":12,"eventGroupId":71813,"eventGroupName":"Tour Championship"}')
     assert parse_league_page(html, 6) == {205637: "Challenger - Porto"}
     assert parse_league_page(html, 12) == {71813: "Tour Championship"}
+
+
+def test_a_moneyline_is_not_routed_into_the_prop_parser():
+    """In a sport played by individuals the runners of an ordinary moneyline
+    ARE people, and FanDuel flags them isPlayerSelection. Routing on that flag
+    sent every tennis h2h into the prop parser, which found no Over/Under and
+    no ladder rung and dropped it: 140 of 144 markets, silently, leaving 19
+    quotes where there were 280. The market key is what says whether a line is
+    a prop, not the runner."""
+    from edge.arb.fanduel import FanDuelScrape
+    when = datetime.now(timezone.utc) + timedelta(hours=3)
+    payload = {"attachments": {
+        "events": {"7": {"name": "Aoi Ito v Oksana Selekhmeteva",
+                         "openDate": when.isoformat().replace("+00:00", "Z")}},
+        "markets": {"m": {"eventId": "7", "marketType": "MATCH_BETTING",
+                          "marketName": "Moneyline", "marketStatus": "OPEN",
+                          "runners": [
+                              {"runnerName": "Aoi Ito", "handicap": 0,
+                               "runnerStatus": "ACTIVE", "isPlayerSelection": True,
+                               "winRunnerOdds": {"trueOdds": {"decimalOdds": {"decimalOdds": 2.32}}}},
+                              {"runnerName": "Oksana Selekhmeteva", "handicap": 0,
+                               "runnerStatus": "ACTIVE", "isPlayerSelection": None,
+                               "winRunnerOdds": {"trueOdds": {"decimalOdds": {"decimalOdds": 1.62}}}}]}}}}
+    board = Board()
+    st = FanDuelScrape(state="ct").ingest_event(board, payload, "tennis_atp",
+                                                strict_match=False)
+    assert st["quotes"] == 2, f"got {st['quotes']} quotes, the h2h was dropped"
+    g = next(iter(board.groups.values()))
+    assert g.key.market == "h2h"
+    assert set(g.quotes) == {"home", "away"}
+
+
+def test_tennis_moneyline_classifies():
+    """FanDuel calls it MATCH_BETTING, not MONEY_LINE."""
+    from edge.arb.fanduel import classify
+    assert classify("MATCH_BETTING") == ("h2h", None)
+
+
+def test_tennis_is_served_by_event_type_id_not_a_slug():
+    """Tennis has no customPageId -- every slug guess 404s. page=SPORT with
+    eventTypeId=2 is the shape FanDuel's own app uses."""
+    from edge.arb.fanduel import EVENT_TYPE_IDS, LEAGUE_PAGES
+    assert EVENT_TYPE_IDS["tennis_atp"] == 2
+    assert "tennis_atp" not in LEAGUE_PAGES

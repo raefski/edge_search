@@ -20,7 +20,7 @@ from . import http as requests
 
 from .models import Board, EventMeta, GroupKey, Quote, field_event
 from .matching import match_event
-from .normalize import slug
+from .normalize import slug, split_fixture
 
 _FRAC_RE = re.compile(r"\.(\d{1,6})\d*")
 
@@ -34,6 +34,11 @@ HEADERS = {"Accept": "application/json",
            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/151.0.0.0"}
 
 # league page ids on content-managed-page
+# Sports served by page=SPORT&eventTypeId= rather than a customPageId slug.
+# Tennis has no slug at all -- every guess 404s -- and this is the shape their
+# own app uses.
+EVENT_TYPE_IDS = {"tennis_atp": 2}
+
 LEAGUE_PAGES = {"baseball_mlb": "mlb", "americanfootball_nfl": "nfl",
                 "basketball_nba": "nba", "icehockey_nhl": "nhl",
                 "americanfootball_ncaaf": "ncaaf", "basketball_wnba": "wnba",
@@ -42,6 +47,7 @@ LEAGUE_PAGES = {"baseball_mlb": "mlb", "americanfootball_nfl": "nfl",
 # game-level markets
 GAME_MARKETS = {
     "MONEY_LINE": ("h2h", None),
+    "MATCH_BETTING": ("h2h", None),        # tennis names its moneyline this way
     "RUN_LINE": ("spreads", None),
     "ALTERNATE_RUN_LINES": ("spreads", None),
     "SPREAD": ("spreads", None),
@@ -237,6 +243,10 @@ class FanDuelScrape:
         return r.json() or {}
 
     def league_page(self, sport_key: str) -> dict:
+        etid = EVENT_TYPE_IDS.get(sport_key)
+        if etid is not None:
+            return self._get("content-managed-page", page="SPORT",
+                             eventTypeId=etid, timezone="America/New_York")
         """One call returning every event in the league AND its main-line
         markets. Per-event calls are then only needed for props."""
         page = LEAGUE_PAGES.get(sport_key)
@@ -267,9 +277,9 @@ class FanDuelScrape:
         targets: dict[str, EventMeta] = {}
         for eid, ev in events.items():
             name = ev.get("name") or ""
-            if " @ " in name:
-                away, home = [re.sub(r"\s*\([^)]*\)", "", p).strip()
-                              for p in name.split(" @ ", 1)]
+            pair = split_fixture(name)
+            if pair is not None:
+                away, home = [re.sub(r"\s*\([^)]*\)", "", p).strip() for p in pair]
                 t = match_event(board, home, away, _ts(ev.get("openDate")), sport_key)
                 if t is None:
                     stats["unmatched"] += 1
@@ -334,16 +344,21 @@ class FanDuelScrape:
                     continue
                 name = (r.get("runnerName") or "").strip()
                 handicap = r.get("handicap")
+                # deliberately NOT used to route: see the market-key branch below
                 is_player = bool(r.get("isPlayerSelection"))
 
                 if golf_subject is not None:          # golf head-to-head
                     side, subject, point = slug(name), golf_subject, None
                 elif fixed_line is not None:          # threshold prop
                     side, subject, point = "over", name, fixed_line
-                elif is_player or mkey.startswith(PLAYER_MARKETS):
-                    # the market key is the reliable signal: isPlayerSelection is
-                    # not set on every prop runner, and a player market routed
-                    # into the game branch below is parsed as a team line
+                elif mkey.startswith(PLAYER_MARKETS):
+                    # Route on the MARKET, never on isPlayerSelection. In a
+                    # sport played by individuals the runners of an ordinary
+                    # moneyline are people too, and FanDuel flags them -- so
+                    # keying on the flag sent every tennis h2h into the prop
+                    # parser, which found no Over/Under and no ladder rung and
+                    # dropped it. 140 of 144 markets, silently. The market key
+                    # is what actually says whether a line is a prop.
                     parsed = parse_player_runner(name, handicap)
                     if parsed is None:
                         continue

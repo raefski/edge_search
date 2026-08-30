@@ -21,6 +21,7 @@ from . import http as requests
 from .models import Board, EventMeta
 from .draftkings_nash import ingest_sportscontent
 from .matching import match_event
+from .normalize import split_fixture  # noqa: F401  (re-exported)
 
 _FRAC_RE = re.compile(r"\.(\d{1,6})\d*")
 
@@ -71,31 +72,6 @@ DISPLAY_GROUPS = {"golf": 12, "tennis": 6}
 _LEAGUE_ROW = re.compile(
     r'"displayGroupId"\s*:\s*"?(\d+)"?\s*,\s*"eventGroupId"\s*:\s*"?(\d+)"?\s*,'
     r'\s*"eventGroupName"\s*:\s*"([^"]+)"')
-
-
-def split_fixture(name: str) -> tuple[str, str] | None:
-    """(away, home) from an event name, or None if it is not a fixture.
-
-    Team sports are written "Away @ Home". Tennis is written "Player A vs
-    Player B" -- a real two-player fixture, not a field, so it fits the normal
-    model perfectly once it is parsed. Requiring "@" skipped every tennis
-    event before it was looked at.
-
-    "vs" has no home and away, so the order is taken as listed and used
-    consistently. That is only a labelling convention: what matters is that
-    both books produce the same two names, which match_event then pairs on
-    similarity regardless of which side each lands.
-    """
-    text = (name or "").strip()
-    if " @ " in text:
-        away, home = text.split(" @ ", 1)
-        return away.strip(), home.strip()
-    for sep in (" vs. ", " vs ", " v "):
-        if sep in text:
-            first, second = text.split(sep, 1)
-            if first.strip() and second.strip():
-                return first.strip(), second.strip()
-    return None
 
 
 def parse_league_page(html: str, display_group: int) -> dict[int, str]:

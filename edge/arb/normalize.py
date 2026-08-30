@@ -22,6 +22,31 @@ def slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", str(text).lower()).strip("_")
 
 
+def split_fixture(name: str) -> tuple[str, str] | None:
+    """(away, home) from an event name, or None if it is not a fixture.
+
+    Team sports are written "Away @ Home". Tennis is written "Player A vs
+    Player B" -- a real two-player fixture, not a field, so it fits the normal
+    model perfectly once it is parsed. Requiring "@" skipped every tennis
+    event before it was looked at.
+
+    "vs" has no home and away, so the order is taken as listed and used
+    consistently. That is only a labelling convention: what matters is that
+    both books produce the same two names, which match_event then pairs on
+    similarity regardless of which side each lands.
+    """
+    text = (name or "").strip()
+    if " @ " in text:
+        away, home = text.split(" @ ", 1)
+        return away.strip(), home.strip()
+    for sep in (" vs. ", " vs ", " v "):
+        if sep in text:
+            first, second = text.split(sep, 1)
+            if first.strip() and second.strip():
+                return first.strip(), second.strip()
+    return None
+
+
 def is_spread_market(market: str) -> bool:
     return market.startswith(SPREAD_MARKETS) or "_spreads" in market or market.startswith("alternate_spreads")
 
