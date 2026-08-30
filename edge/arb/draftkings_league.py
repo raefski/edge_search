@@ -61,6 +61,67 @@ def _two_sided(name: str) -> bool:
     return n.endswith("O/U") or n.lower() in TWO_SIDED_EXTRA
 
 
+# The public league page for a sport. Its HTML embeds the whole league list,
+# which is the only place DraftKings exposes it -- the sportscontent API has no
+# listing endpoint, the v5 API is Akamai blocked, and pagedata offers only
+# id -> slug. displayGroupId is DraftKings' own sport number.
+LEAGUE_PAGE = "https://sportsbook.draftkings.com/leagues/{slug}"
+DISPLAY_GROUPS = {"golf": 12}
+
+_LEAGUE_ROW = re.compile(
+    r'"displayGroupId"\s*:\s*"?(\d+)"?\s*,\s*"eventGroupId"\s*:\s*"?(\d+)"?\s*,'
+    r'\s*"eventGroupName"\s*:\s*"([^"]+)"')
+
+
+def parse_league_page(html: str, display_group: int) -> dict[int, str]:
+    """{league_id: name} out of a league page's embedded JSON.
+
+    Split from the fetch so the parsing can be tested without the network --
+    this is the part that breaks when DraftKings changes their page, and a
+    test that needs a live request would not be run often enough to catch it.
+    """
+    out: dict[int, str] = {}
+    for disp, gid, name in _LEAGUE_ROW.findall(html or ""):
+        if disp == str(display_group):
+            out[int(gid)] = name
+    return out
+
+
+def discover_leagues(sport_slug: str, session=None, timeout: float = 30.0) -> dict[int, str]:
+    """{league_id: name} for a sport, read off its public league page.
+
+    Golf is served as a league PER TOURNAMENT, so its id changes every week and
+    hardcoding one means recapturing it by hand every week. The ids are not
+    discoverable through any API -- but the league page's HTML carries them,
+    and unlike the API on that host it is not Akamai blocked.
+
+    This is HTML scraping and will break when DraftKings changes their page, so
+    it is written to fail soft: an empty dict on any error, leaving the caller
+    to fall back to whatever is configured. Never let a layout change take the
+    scan down.
+    """
+    group = DISPLAY_GROUPS.get(sport_slug)
+    if group is None:
+        return {}
+    sess = session or requests.Session()
+    try:
+        r = sess.get(LEAGUE_PAGE.format(slug=sport_slug),
+                     headers={"User-Agent": HEADERS["User-Agent"],
+                              "Accept": "text/html,application/xhtml+xml"},
+                     timeout=timeout)
+        if r.status_code != 200:
+            log.warning("dk league page %s: HTTP %s", sport_slug, r.status_code)
+            return {}
+        out = parse_league_page(r.text, group)
+        if not out:
+            log.warning("dk league page %s: parsed 0 leagues — page layout changed?",
+                        sport_slug)
+        return out
+    except Exception as exc:                       # noqa: BLE001
+        log.warning("dk league discovery %s: %s", sport_slug, exc)
+        return {}
+
+
 def _ts(value) -> datetime:
     """Parse an ISO timestamp, tolerating .NET-style sub-second precision.
 

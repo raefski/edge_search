@@ -808,3 +808,60 @@ def test_a_three_way_golf_market_is_not_paired_with_a_two_way_one():
     assert st["quotes"] == 0
     assert not [g for g in board.groups.values() if g.key.market.startswith("golf_")]
     assert any("three-way" in u for u in st["markets_unmapped"])
+
+
+# --- DraftKings league discovery -------------------------------------------
+GOLF_PAGE_SNIPPET = (
+    '{"sportName":"golf","hasOffers":true,"eventGroupInfos":'
+    '[{"displayGroupId":12,"eventGroupId":71813,"eventGroupName":"Tour Championship"},'
+    '{"displayGroupId":12,"eventGroupId":25461,"eventGroupName":"Presidents Cup"},'
+    '{"displayGroupId":12,"eventGroupId":92694,"eventGroupName":"The Masters"}],'
+    '"other":[{"name":"MLB","displayGroupId":"1","eventGroupId":"84240",'
+    '"path":"/leagues/baseball/mlb"}]}')
+
+
+def test_league_ids_are_parsed_out_of_the_page():
+    """Golf is a league PER TOURNAMENT, so its id changes weekly and there is
+    no API that lists them -- sportscontent has no endpoint, the v5 API is
+    Akamai blocked, and pagedata offers only id -> slug. The league page's HTML
+    carries them, and unlike the API on that host it is not blocked."""
+    from edge.arb.draftkings_league import parse_league_page
+    got = parse_league_page(GOLF_PAGE_SNIPPET, 12)
+    assert got == {71813: "Tour Championship", 25461: "Presidents Cup",
+                   92694: "The Masters"}
+
+
+def test_discovery_ignores_other_sports_on_the_page():
+    """The page carries a nav listing every sport; only this displayGroup's
+    leagues are ours. Picking up MLB's 84240 as a golf tournament would send
+    the golf scraper at a baseball league."""
+    from edge.arb.draftkings_league import parse_league_page
+    assert 84240 not in parse_league_page(GOLF_PAGE_SNIPPET, 12)
+    assert parse_league_page(GOLF_PAGE_SNIPPET, 1) == {}
+
+
+@pytest.mark.parametrize("html", ["", None, "<html>nothing here</html>",
+                                  '{"displayGroupId":12}'])
+def test_a_changed_page_yields_nothing_rather_than_garbage(html):
+    """HTML scraping breaks when the page changes. It must fail soft so the
+    caller falls back to configured ids -- a layout change should cost coverage,
+    never the scan."""
+    from edge.arb.draftkings_league import parse_league_page
+    assert parse_league_page(html, 12) == {}
+
+
+def test_groups_sharing_an_event_id_share_one_event():
+    """Golf collapses ten tournaments onto one synthetic event id. Without
+    this, groups built from the Presidents Cup carried a late-September start
+    while groups from this weekend's round carried today's -- and the window
+    check then dropped two thirds of the board depending on parse order."""
+    from edge.arb.models import field_event
+    soon = datetime.now(timezone.utc) + timedelta(hours=1)
+    later = datetime.now(timezone.utc) + timedelta(days=26)
+    b = Board()
+    b.group(GroupKey("golf_pga:field", "golf_2ball", "a|b", None),
+            field_event("golf_pga", soon, "Tour Championship"))
+    g2 = b.group(GroupKey("golf_pga:field", "golf_2ball", "c|d", None),
+                 field_event("golf_pga", later, "Presidents Cup"))
+    assert g2.event.commence_time == soon, "the second event overrode the first"
+    assert len({g.event.commence_time for g in b.groups.values()}) == 1

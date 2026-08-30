@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from . import books as books_parse
 from . import engine
 from .config import ArbConfig
-from .draftkings_league import DraftKingsLeague
+from .draftkings_league import DraftKingsLeague, discover_leagues as dk_discover
 from . import draftkings_nash as books_nash
 from .fanaticsmarkets import FanaticsMarkets
 from .fanduel import FanDuelScrape
@@ -100,9 +100,19 @@ def scan(cfg: ArbConfig | None = None, progress=None,
                 dk_quotes += dk.ingest(board, sub, sport,
                                        strict_match=cfg.scrape.strict_event_match)["quotes"]
 
-    # 2b. DraftKings golf -- a league PER TOURNAMENT, so the id is configured
-    # rather than derived, and only the two-way subcategories are pulled.
-    for tour in getattr(cfg, "draftkings_golf_leagues", None) or []:
+    # 2b. DraftKings golf -- a league PER TOURNAMENT, so the ids are read off
+    # the public league page each scan rather than captured weekly by hand.
+    # Discovery is HTML scraping and fails soft, so the configured list stays
+    # as the fallback: a layout change costs coverage, never the scan.
+    tours = [{"name": n, "league_id": i}
+             for i, n in sorted(dk_discover("golf").items(), key=lambda kv: kv[1])]
+    if tours:
+        stats["golf_leagues_discovered"] = len(tours)
+    else:
+        tours = list(getattr(cfg, "draftkings_golf_leagues", None) or [])
+        log.info("golf league discovery returned nothing; using %d configured id(s)",
+                 len(tours))
+    for tour in tours:
         try:
             head = dk.session.get(f"{dk.base}/leagues/{tour['league_id']}",
                                   headers=dk.headers, timeout=25).json() or {}
@@ -119,8 +129,15 @@ def scan(cfg: ArbConfig | None = None, progress=None,
                      tour.get("name"), tour.get("league_id"))
             continue
         ev = events[0]
-        target = field_event("golf_pga", _ts_iso(ev.get("startEventDate")),
-                             ev.get("name") or tour.get("name", ""))
+        when = _ts_iso(ev.get("startEventDate"))
+        # ten golf leagues are listed year-round -- the Masters in April, the
+        # Ryder Cup in September. Pulling subcategories for all of them is
+        # dozens of calls for markets that do not exist yet, so only
+        # tournaments inside the detection window get the extra requests.
+        hours_out = (when - datetime.now(timezone.utc)).total_seconds() / 3600.0
+        if cfg.detect.max_hours_to_start and hours_out > cfg.detect.max_hours_to_start:
+            continue
+        target = field_event("golf_pga", when, ev.get("name") or tour.get("name", ""))
         for cid, sid in getattr(cfg, "draftkings_golf_subcategories", None) or []:
             time.sleep(cfg.request_gap_seconds)
             try:

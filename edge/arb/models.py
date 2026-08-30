@@ -156,10 +156,23 @@ class Board:
     events: dict[str, EventMeta] = field(default_factory=dict)
 
     def group(self, key: GroupKey, event: EventMeta) -> MarketGroup:
-        self.events.setdefault(event.event_id, event)
+        """Groups sharing an event_id share ONE EventMeta.
+
+        Whichever source registers the event first defines it, and later
+        callers reuse that rather than attaching their own copy. Two books
+        describing one event must not disagree about when it starts.
+
+        This only ever bit where events are synthetic: golf collapses ten
+        tournaments onto one id (see field_event), so groups built from the
+        Presidents Cup were carrying a start time in late September while
+        groups built from this weekend's round carried today's -- and the
+        window check then dropped two thirds of the board depending on which
+        league happened to be parsed first.
+        """
+        canonical = self.events.setdefault(event.event_id, event)
         g = self.groups.get(key)
         if g is None:
-            g = self.groups[key] = MarketGroup(key=key, event=event)
+            g = self.groups[key] = MarketGroup(key=key, event=canonical)
         return g
 
     def __len__(self) -> int:
