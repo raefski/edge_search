@@ -955,3 +955,40 @@ def test_tennis_is_served_by_event_type_id_not_a_slug():
     from edge.arb.fanduel import EVENT_TYPE_IDS, LEAGUE_PAGES
     assert EVENT_TYPE_IDS["tennis_atp"] == 2
     assert "tennis_atp" not in LEAGUE_PAGES
+
+
+# --- token expiry -----------------------------------------------------------
+def test_an_event_after_the_token_expires_cannot_be_boosted():
+    """Reported live: the scanner offered Vallejo vs Monfils as a boosted
+    arbitrage against a DraftKings token expiring that night. The match was
+    Tuesday, 55 hours out -- the odds cleared the -200 floor, but the offer is
+    dated ("valid on Tennis on 8/30") and the event was outside it. A bet that
+    cannot be placed."""
+    from edge.arb.engine import Boost
+    now = datetime.now(timezone.utc)
+    tok = Boost(book="draftkings", pct=0.5, max_stake=5.0, sports=["tennis_atp"],
+                min_decimal=1.5, expires_at=now + timedelta(hours=16))
+    ok = dict(book="draftkings", sport_key="tennis_atp", market="h2h",
+              side="away", decimal=1.76)
+    assert tok.applies_to(**ok, event_start=now + timedelta(hours=1))
+    assert tok.applies_to(**ok, event_start=now + timedelta(hours=15))
+    assert not tok.applies_to(**ok, event_start=now + timedelta(hours=55))
+
+
+def test_a_boost_with_no_expiry_is_unaffected():
+    """Existing boosts carry none and must keep working."""
+    from edge.arb.engine import Boost
+    b = Boost(book="fanduel", pct=0.25)
+    assert b.applies_to("fanduel", "x", "h2h", "over", 2.0,
+                        event_start=datetime.now(timezone.utc) + timedelta(days=90))
+
+
+def test_an_unreadable_start_time_does_not_block_every_boost():
+    """A snapshot written before commence_time was carried should degrade to
+    'no expiry rule', not to 'nothing is boostable'."""
+    from edge.arb.engine import _start_of, Boost
+    assert _start_of({"commence_time": "not a date"}) is None
+    assert _start_of({}) is None
+    tok = Boost(book="fanduel", pct=0.5,
+                expires_at=datetime.now(timezone.utc) + timedelta(hours=2))
+    assert tok.applies_to("fanduel", "x", "h2h", "over", 2.0, event_start=None)

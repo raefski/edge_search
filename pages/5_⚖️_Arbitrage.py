@@ -427,9 +427,15 @@ if boost_pct > 0:
                        + f" · {len(cands)} candidates checked.")
         else:
             shown = top_rows_per_sport(boost_rows, int(per_sport))
+            _plain = price_candidates(cands, [], bcfg,
+                                      min_profit_pct=float(min_profit))
             st.subheader(f"⚡ {len(boost_rows)} boosted "
                          f"arbitrage{'s' if len(boost_rows) != 1 else ''} · "
                          f"top {int(per_sport)} per sport")
+            st.caption(f"Without the boost the same board gives "
+                       f"**{len(_plain)}**. Everything below needs the token "
+                       f"on the leg marked with a boost — place that leg "
+                       f"first and confirm it attached before hedging.")
             for r in shown:
                 head = (f"🟢 **{r['profit_pct']:+.2f}%** locked · "
                         f"{money(r['profit_abs'])} on {money(r['stake_total'])} · "

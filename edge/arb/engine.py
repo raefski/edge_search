@@ -5,7 +5,7 @@ import hashlib
 import logging
 import math
 from dataclasses import dataclass, field, asdict
-from datetime import datetime
+from datetime import datetime, timezone
 
 from .models import Board, EventMeta, GroupKey, MarketGroup, Quote, utcnow
 from .normalize import is_spread_market, side_label
@@ -58,10 +58,17 @@ class Boost:
     sides: list[str] = field(default_factory=list)              # empty == any
     min_decimal: float = 1.0        # "Min Total Odds of -200" -> 1.5
     requires_parlay: bool = False
+    # When the token dies. An event starting after this cannot be boosted --
+    # tokens are dated ("valid on Tennis on 8/30") and a match two days out
+    # is outside the offer no matter how good the price. Without this the
+    # scanner reported a Tuesday match as a boosted arbitrage against a token
+    # expiring that night: a bet that cannot be placed.
+    expires_at: datetime | None = None
     label: str = ""
 
     def applies_to(self, book: str, sport_key: str, market: str,
-                   side: str | None = None, decimal: float | None = None) -> bool:
+                   side: str | None = None, decimal: float | None = None,
+                   event_start: datetime | None = None) -> bool:
         # A parlay-only token cannot price a single leg. Books hand these out
         # alongside straight-bet boosts and they look identical in the app
         # ("25% WNBA boost"), but only one of them can be hedged: a two-leg
@@ -86,6 +93,8 @@ class Boost:
         # -200"). A leg priced shorter does not qualify, and boosting it
         # reports a profit the book will refuse at the slip.
         if decimal is not None and float(decimal) < self.min_decimal:
+            return False
+        if self.expires_at and event_start is not None and event_start > self.expires_at:
             return False
         return True
 
@@ -177,7 +186,8 @@ def _describe(group: MarketGroup) -> str:
 # --------------------------------------------------------------------------
 # arbitrage
 # --------------------------------------------------------------------------
-def _boost_variants(legs: list[Leg], cfg, sport_key: str, market: str):
+def _boost_variants(legs: list[Leg], cfg, sport_key: str, market: str,
+                    event_start: datetime | None = None):
     """(boost, leg index, prices) for the plain market and each boostable leg.
 
     The unboosted case is always first, so a market that arbs on its own still
@@ -188,7 +198,8 @@ def _boost_variants(legs: list[Leg], cfg, sport_key: str, market: str):
     for b in getattr(cfg, "boosts", None) or []:
         for i, leg in enumerate(legs):
             if not b.applies_to(leg.book, sport_key, market,
-                                side=leg.side, decimal=leg.decimal):
+                                side=leg.side, decimal=leg.decimal,
+                                event_start=event_start):
                 continue
             priced = list(base)
             # the price the BOOK writes, not the exact product: a boosted bet
@@ -230,7 +241,9 @@ def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Oppo
         # the better one wins. Evaluating only the longest leg would be wrong:
         # the boost is worth more on the leg carrying more of the stake.
         best = None
-        for boost, idx, priced in _boost_variants(legs, cfg, ev.sport_key, group.key.market):
+        for boost, idx, priced in _boost_variants(
+                legs, cfg, ev.sport_key, group.key.market,
+                event_start=ev.commence_time):
             s = om.arb_sum(priced)
             if s >= 1.0:
                 continue
@@ -585,6 +598,20 @@ def both_sides_plus(decimals: list[float]) -> bool:
         and any(float(d) > 2.0 for d in decimals)
 
 
+def _start_of(cand: dict) -> datetime | None:
+    """A candidate's start time, or None if it cannot be read.
+
+    None means "do not apply the expiry rule" rather than "reject": a snapshot
+    written before commence_time was carried should not silently stop every
+    boost from applying.
+    """
+    try:
+        ts = datetime.fromisoformat(cand.get("commence_time") or "")
+    except (ValueError, TypeError):
+        return None
+    return ts if ts.tzinfo else ts.replace(tzinfo=timezone.utc)
+
+
 def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
                      min_profit_pct: float | None = None) -> list[dict]:
     """Re-price snapshotted candidates under a set of boosts.
@@ -613,7 +640,8 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
                 for b in boosts
                 for i, l in enumerate(legs)
                 if b.applies_to(l["book"], c["sport_key"], c["market"],
-                                side=l.get("side"), decimal=l.get("decimal"))]:
+                                side=l.get("side"), decimal=l.get("decimal"),
+                                event_start=_start_of(c))]:
             s = om.arb_sum(priced)
             if s >= 1.0:
                 continue
@@ -690,7 +718,8 @@ def price_boosted_ev(cands: list[dict], boosts: list[Boost], cfg,
                 if raw is None:
                     continue
                 if not b.applies_to(b.book, c["sport_key"], c["market"],
-                                    side=side, decimal=raw):
+                                    side=side, decimal=raw,
+                                    event_start=_start_of(c)):
                     continue
                 fair = fair_by_side.get(side)
                 if not fair:
