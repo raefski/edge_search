@@ -92,6 +92,13 @@ data/nflverse_games.csv
 # Arbitrage snapshot: the Streamlit page reads this
 !data/arb_snapshot.json
 
+# Fanatics' Oddschecker league ids. Committed because rebuilding it means
+# ~30,000 probes of a third party's API (edge/arb/oddschecker_discover.py) and
+# the result is public, non-sensitive reference data that changes about as
+# often as a league does. Without it the scan falls back to three hardcoded
+# ids and loses two dozen leagues.
+!data/oddschecker_leagues.json
+
 # The phone's scan request. Tracked because it IS the message: the Streamlit
 # app commits it through the GitHub API and scripts/arb_agent.py reads it off
 # origin/main. Both need an exception to the blanket data/*.json rule above --

@@ -24,11 +24,25 @@ HEADERS = {
 }
 
 
-def fetch_fanatics_league(event_id: int, bettype_ids: list[int],
+def fetch_fanatics_league(event_id: int, bettype_ids: list[int] | None = None,
                           bet_limit: int = 8, subevent_limit: int = 50) -> dict:
+    """One league's whole board.
+
+    `bettype_ids` is now OPTIONAL, and leaving it out is the better call.
+    Filtering was believed to be required -- adding a league meant capturing
+    its totals bettypeId, which differs per sport (526 points, 1055802107
+    runs) -- but the endpoint returns every bet type when the parameter is
+    omitted: 17 markets per MLB game against 3, and on NFL that includes
+    passing, rushing and receiving yards and anytime touchdown scorer, which
+    COVERAGE.md had recorded as app-only.
+
+    That breadth is only safe because `marketmap.is_full_game` now refuses the
+    period and team-scoped markets it also returns -- "1st Quarter Point
+    Spread" would otherwise share a GroupKey with the full-game spread.
+    """
     params = [("eventId", str(event_id)), ("betLimit", str(bet_limit)),
               ("subeventLimit", str(subevent_limit))]
-    params += [("bettypeIds", str(b)) for b in bettype_ids]
+    params += [("bettypeIds", str(b)) for b in (bettype_ids or [])]
     params.append(("overrideBookies", "FNP"))       # FNP = Fanatics
     r = http.get(BASE, params=params, headers=HEADERS, timeout=25)
     r.raise_for_status()

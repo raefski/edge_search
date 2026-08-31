@@ -62,20 +62,91 @@ def _two_sided(name: str) -> bool:
     return n.endswith("O/U") or n.lower() in TWO_SIDED_EXTRA
 
 
+# Full-game sides and totals, in the order they are worth spending a call on.
+# The league feed already carries the moneyline for every sport, but only the
+# US ones get spreads and totals with it -- soccer keeps them in subcategories
+# ("Match Lines" 490: Spread 13170, Total Goals 13171), so without this a
+# soccer league arrives as a moneyline and nothing else.
+# Moneyline is absent on purpose: every league feed already carries it, for
+# soccer as well as the US sports, so asking for it again is a wasted request.
+# So are the Asian lines -- a quarter handicap settles half-win/half-push,
+# which is not the bet a European spread at the same number is, and
+# marketmap's `handicap` rule would file them together.
+MAIN_LINE_ORDER = (
+    r"^(point )?spread$", r"^total( goals| points| runs)?$", r"^run line$",
+    r"^puck line$", r"^alt(ernate)? (spread|run line|puck line)",
+    r"^alt(ernate)? total",
+)
+
+
+def main_line_subcategories(payload: dict,
+                            limit: int = 4) -> list[tuple[int, int, str]]:
+    """(categoryId, subcategoryId, name) for the full-game sides and totals.
+
+    Ordered by MAIN_LINE_ORDER rather than by DraftKings' own ordering, which
+    is arbitrary -- the same trap prop_subcategories documents. `limit` is what
+    keeps a 136-subcategory soccer league from costing 136 requests.
+
+    THE CATEGORY IS CHECKED AS WELL AS THE SUBCATEGORY, because a subcategory
+    name alone does not say what it is scoped to. MLB category 1674 is "Team
+    Totals" and its subcategories are called, in full, "Total Runs" and
+    "Alternate Total Runs" -- indistinguishable by name from the game totals in
+    category 493, and they carry one team's runs. Matching on the subcategory
+    alone pulled them in and a team total was reported as a game total.
+    """
+    from .marketmap import is_full_game
+
+    categories = {c.get("id"): (c.get("name") or "")
+                  for c in (payload.get("categories") or [])}
+    ranked: list[tuple[int, int, int, str]] = []
+    for sc in payload.get("subcategories") or []:
+        name = (sc.get("name") or "").strip()
+        cid, sid = sc.get("categoryId"), sc.get("id")
+        if not name or cid is None or sid is None or not is_full_game(name):
+            continue
+        if not is_full_game(categories.get(cid) or categories.get(str(cid)) or ""):
+            continue
+        for rank, pattern in enumerate(MAIN_LINE_ORDER):
+            if re.match(pattern, name, re.I):
+                ranked.append((rank, int(cid), int(sid), name))
+                break
+    ranked.sort(key=lambda t: (t[0], t[3]))
+    return [(c, s, n) for _, c, s, n in ranked[:limit]]
+
+
 # The public league page for a sport. Its HTML embeds the whole league list,
 # which is the only place DraftKings exposes it -- the sportscontent API has no
 # listing endpoint, the v5 API is Akamai blocked, and pagedata offers only
 # id -> slug. displayGroupId is DraftKings' own sport number.
 LEAGUE_PAGE = "https://sportsbook.draftkings.com/leagues/{slug}"
-DISPLAY_GROUPS = {"golf": 12, "tennis": 6}
+# DraftKings' own sport numbers. Golf and tennis were the first two because
+# they are served as a league PER TOURNAMENT; the rest are here because ONE
+# page carries the whole catalog -- 478 rows across 25 display groups -- so
+# every league id in the book costs a single request to learn. Verified
+# 2026-08-30: discovery reproduces all seven previously hardcoded LEAGUE_IDS
+# exactly, which is what makes it safe to prefer over them.
+DISPLAY_GROUPS = {
+    "soccer": 1, "basketball": 2, "americanfootball": 3, "tennis": 6,
+    "baseball": 7, "icehockey": 8, "handball": 10, "rugbyleague": 11,
+    "golf": 12, "snooker": 13, "motorsport": 14, "darts": 15, "boxing": 20,
+    "tabletennis": 26, "rugbyunion": 35, "aussierules": 41, "mma": 43,
+    "cricket": 59, "esports": 64, "lacrosse": 245,
+}
+# Any league page serves the whole catalog, so discovery does not depend on
+# the slug matching the sport being looked up. MLB's is used because it is the
+# one page proven to answer year-round.
+CATALOG_PAGE_SLUG = "baseball/mlb"
 
 _LEAGUE_ROW = re.compile(
     r'"displayGroupId"\s*:\s*"?(\d+)"?\s*,\s*"eventGroupId"\s*:\s*"?(\d+)"?\s*,'
     r'\s*"eventGroupName"\s*:\s*"([^"]+)"')
 
 
-def parse_league_page(html: str, display_group: int) -> dict[int, str]:
+def parse_league_page(html: str, display_group: int | None = None) -> dict[int, str]:
     """{league_id: name} out of a league page's embedded JSON.
+
+    `display_group` filters to one sport; None returns every league on the
+    page, which is the whole book.
 
     Split from the fetch so the parsing can be tested without the network --
     this is the part that breaks when DraftKings changes their page, and a
@@ -83,9 +154,45 @@ def parse_league_page(html: str, display_group: int) -> dict[int, str]:
     """
     out: dict[int, str] = {}
     for disp, gid, name in _LEAGUE_ROW.findall(html or ""):
-        if disp == str(display_group):
+        if display_group is None or disp == str(display_group):
             out[int(gid)] = name
     return out
+
+
+def parse_catalog(html: str) -> dict[int, dict[int, str]]:
+    """{display_group: {league_id: name}} for every sport on the page."""
+    out: dict[int, dict[int, str]] = {}
+    for disp, gid, name in _LEAGUE_ROW.findall(html or ""):
+        out.setdefault(int(disp), {})[int(gid)] = name
+    return out
+
+
+def fetch_catalog(session=None, timeout: float = 30.0) -> dict[int, dict[int, str]]:
+    """Every league DraftKings lists, {display_group: {league_id: name}}.
+
+    One request. The page is ~2 MB of HTML, which is still cheaper than the
+    dozens of calls a per-sport walk would cost, and it is the only place the
+    book exposes a league list at all -- see the dead ends in HANDOFF.md §5.
+
+    Fails soft to an empty dict, exactly as discover_leagues does, so a layout
+    change costs coverage rather than the scan.
+    """
+    sess = session or requests.Session()
+    try:
+        r = sess.get(LEAGUE_PAGE.format(slug=CATALOG_PAGE_SLUG),
+                     headers={"User-Agent": HEADERS["User-Agent"],
+                              "Accept": "text/html,application/xhtml+xml"},
+                     timeout=timeout)
+        if r.status_code != 200:
+            log.warning("dk catalog page: HTTP %s", r.status_code)
+            return {}
+        out = parse_catalog(r.text)
+        if not out:
+            log.warning("dk catalog page: parsed 0 leagues — page layout changed?")
+        return out
+    except Exception as exc:                       # noqa: BLE001
+        log.warning("dk catalog discovery: %s", exc)
+        return {}
 
 
 def discover_leagues(sport_slug: str, session=None, timeout: float = 30.0) -> dict[int, str]:
@@ -150,7 +257,16 @@ class DraftKingsLeague:
         league = LEAGUE_IDS.get(sport_key)
         if league is None:
             return {}
-        url = f"{self.base}/leagues/{league}"
+        return self.fetch_league(league, category_id)
+
+    def fetch_league(self, league_id: int, category_id: int | None = None) -> dict:
+        """One league by id, for the leagues discovered rather than hardcoded.
+
+        LEAGUE_IDS names seven; the catalog page names 478. Anything outside
+        the original seven has no sport_key to look up, so the id is passed
+        straight through.
+        """
+        url = f"{self.base}/leagues/{league_id}"
         if category_id:
             url += f"/categories/{category_id}"
         r = self.session.get(url, headers=self.headers, timeout=25)
@@ -158,6 +274,16 @@ class DraftKingsLeague:
             raise PermissionError(
                 "DraftKings returned 403. This host blocks datacenter IPs; run "
                 "from a residential connection in Connecticut.")
+        r.raise_for_status()
+        return r.json() or {}
+
+    def fetch_league_subcategory(self, league_id: int, category_id: int,
+                                 subcategory_id: int) -> dict:
+        url = (f"{self.base}/leagues/{league_id}/categories/{category_id}"
+               f"/subcategories/{subcategory_id}")
+        r = self.session.get(url, headers=self.headers, timeout=25)
+        if r.status_code == 403:
+            raise PermissionError("DraftKings 403 on the subcategory path")
         r.raise_for_status()
         return r.json() or {}
 

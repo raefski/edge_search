@@ -67,6 +67,39 @@ def _same_team(name: str, team: str | None) -> bool:
     return team_similarity(name, team) >= 0.6
 
 
+def pick_team_side(name: str, home_team: str | None, away_team: str | None,
+                   threshold: float = 0.6, margin: float = 0.05) -> str | None:
+    """"home", "away", or None -- whichever of the two this outcome NAMES.
+
+    Compares against both and takes the better, rather than returning the first
+    to clear the bar. Order mattered because the abbreviations books use are
+    lossy in ways that make two teams in ONE fixture look alike:
+
+        Man Utd @ Man City   normalize_team drops "city" as noise, so "Man
+                             City" becomes "man"; _mascot_extension then reads
+                             "Man Utd" as "man" + a mascot and scores it 0.90
+                             against the HOME team. Home was tested first, so
+                             both runners became `home`, the away price
+                             overwrote the home price, and the group held a
+                             moneyline summing to 0.59.
+
+        Omonia @ Omonia FC Aradippou   same shape, same result.
+
+    Taking the better match fixes both: "Man Utd" scores 1.00 against the away
+    team and 0.90 against the home one. `margin` refuses the genuinely
+    ambiguous rather than guessing, which is the house rule everywhere else
+    here -- a wrong side is a fake arbitrage, a dropped one is only a gap.
+    """
+    from .matching import team_similarity
+    sh = team_similarity(name, home_team) if home_team else 0.0
+    sa = team_similarity(name, away_team) if away_team else 0.0
+    if max(sh, sa) < threshold:
+        return None
+    if abs(sh - sa) < margin:
+        return None
+    return "home" if sh > sa else "away"
+
+
 def is_team_side(market: str) -> bool:
     """h2h / spread markets whose outcome name is a team rather than Over/Under."""
     return market.startswith(("h2h", "spreads", "alternate_spreads")) or "_spreads" in market or "_h2h" in market
@@ -103,19 +136,26 @@ def normalize_outcome(
 
     # 3. Team-named sides on a spread: fold both listings onto the home line so
     #    "Home -3.5" and "Away +3.5" land in the same group.
-    if is_spread_market(market) and point is not None:
-        if _same_team(name, home_team):
+    if is_spread_market(market):
+        # A spread with no line is not a moneyline. Without this it fell
+        # through to rule 4 and became one -- which is how every rung of a
+        # market whose "line" does not parse as a number ("Set Betting" is
+        # priced 2-0, 2-1) collapsed onto ONE keyless group, last rung wins,
+        # and produced a two-sided price that summed to 0.397.
+        if point is None:
+            return None
+        side = pick_team_side(name, home_team, away_team)
+        if side == "home":
             return "home", None, round(float(point), 2)
-        if _same_team(name, away_team):
+        if side == "away":
             return "away", None, round(-float(point), 2)
-        # unknown team on a spread: cannot pair it safely
+        # unknown or ambiguous team on a spread: cannot pair it safely
         return None
 
     # 4. Team-named sides on a moneyline, plus Draw for 3-way soccer.
-    if _same_team(name, home_team):
-        return "home", None, None
-    if _same_team(name, away_team):
-        return "away", None, None
+    side = pick_team_side(name, home_team, away_team)
+    if side is not None:
+        return side, None, None
     if low in ("draw", "tie"):
         return "draw", None, None
 

@@ -11,18 +11,200 @@ import time
 from datetime import datetime, timezone
 
 from . import books as books_parse
+from . import catalog
 from . import engine
+from . import oddschecker_discover
 from .config import ArbConfig
-from .draftkings_league import DraftKingsLeague, discover_leagues as dk_discover
+from .draftkings_league import (DraftKingsLeague, DISPLAY_GROUPS,
+                                discover_leagues as dk_discover, fetch_catalog,
+                                main_line_subcategories)
 from . import draftkings_nash as books_nash
 from .fanaticsmarkets import FanaticsMarkets
-from .fanduel import FanDuelScrape
+from .fanduel import FanDuelScrape, SPORT_EVENT_TYPES
 from .models import Board, field_event
 from .normalize import side_label
 from . import oddsmath as om
 from .oddschecker_free import fetch_fanatics_league
 
 log = logging.getLogger("edge.arb")
+
+
+def _wanted(cfg: ArbConfig) -> set[str] | None:
+    """The sport keys this scan is restricted to, or None for all of them."""
+    return set(cfg.sports) if getattr(cfg, "sports", None) else None
+
+
+def _fanduel_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
+    """FanDuel first, because its event list is the spine the rest attach to.
+
+    One request per SPORT rather than per league. That is the change that made
+    the other twenty leagues affordable: `page=SPORT` returns every event in
+    soccer, or in basketball, together with the competitions that name them and
+    the main-line markets, where `customPageId` returns one league and only
+    exists for the seven with a slug.
+
+    Every event is then routed to a sport_key by its competition, because
+    sport_key is what match_event joins on -- filing all of soccer under one
+    key would let a Bundesliga fixture match a Serie A one.
+    """
+    fd = FanDuelScrape(state=cfg.state)
+    wanted = _wanted(cfg)
+    quotes = 0
+    prop_targets: list[tuple[str, str]] = []       # (sport_key, fanduel event id)
+    for sport, event_type in SPORT_EVENT_TYPES.items():
+        try:
+            payload = fd.sport_page(event_type)
+        except Exception as exc:                   # noqa: BLE001
+            log.warning("fanduel %s: %s", sport, exc)
+            continue
+        competitions = (payload.get("attachments") or {}).get("competitions") or {}
+
+        def sport_key_of(ev, _sport=sport, _comps=competitions):
+            comp = _comps.get(str(ev.get("competitionId"))) or {}
+            name = comp.get("name") or ""
+            league = catalog.fanduel_league(_sport, name)
+            key = league.key if league else (
+                catalog.generic_key(_sport, name)
+                if cfg.include_uncatalogued and name else None)
+            if key is None or (wanted is not None and key not in wanted):
+                return None
+            return key
+
+        st = fd.ingest_event(board, payload, sport, strict_match=False,
+                             sport_key_of=sport_key_of)
+        quotes += st["quotes"]
+
+        # Queue the per-event prop calls, soonest first. Only for the leagues
+        # the catalog marks -- props are one request per event per tab, which
+        # is most of a scan's time, and they only pay where two books post the
+        # same stat.
+        now = datetime.now(timezone.utc)
+        events = (payload.get("attachments") or {}).get("events") or {}
+        per_league: dict[str, list[tuple[datetime, str]]] = {}
+        for eid, ev in events.items():
+            key = sport_key_of(ev)
+            if key is None or key not in catalog.props_sports():
+                continue
+            when = _ts_iso(ev.get("openDate"))
+            minutes = (when - now).total_seconds() / 60.0
+            if minutes < cfg.detect.min_minutes_to_start:
+                continue
+            if (cfg.detect.max_hours_to_start
+                    and minutes / 60.0 > cfg.detect.max_hours_to_start):
+                continue
+            per_league.setdefault(key, []).append((when, str(eid)))
+        for key, rows in per_league.items():
+            rows.sort()
+            prop_targets += [(key, eid) for _w, eid in rows[: cfg.prop_events_per_league]]
+
+    stats["fanduel_prop_events"] = len(prop_targets)
+    for key, eid in prop_targets[: cfg.fanduel_max_events]:
+        time.sleep(cfg.request_gap_seconds)
+        for tab in cfg.fanduel_tabs:
+            try:
+                payload = fd.event_markets(eid, tab=tab)
+            except Exception:                      # noqa: BLE001
+                continue
+            quotes += fd.ingest_event(board, payload, key,
+                                      strict_match=False)["quotes"]
+            time.sleep(cfg.request_gap_seconds)
+    stats["fanduel"] = quotes
+
+
+def _draftkings_pass(board: Board, cfg: ArbConfig, stats: dict) -> int:
+    """DraftKings by discovered league id, plus its main lines and props.
+
+    The league ids are read off the public catalog page rather than hardcoded.
+    That is one request for all 478 of them, and it reproduces every id the
+    seven-entry LEAGUE_IDS table held -- which is what makes it safe to prefer.
+    """
+    dk = DraftKingsLeague(state=cfg.state)
+    wanted = _wanted(cfg)
+    quotes = 0
+    page = fetch_catalog(session=dk.session)
+    stats["draftkings_leagues_listed"] = sum(len(v) for v in page.values())
+
+    targets: list[tuple[str, int, str]] = []       # (sport_key, league id, name)
+    for league in catalog.LEAGUES:
+        if league.tournament or not league.dk_sport:
+            continue
+        if wanted is not None and league.key not in wanted:
+            continue
+        group = DISPLAY_GROUPS.get(league.dk_sport)
+        for lid, name in (page.get(group) or {}).items():
+            if catalog.draftkings_league(league.dk_sport, name) is league:
+                targets.append((league.key, lid, name))
+                break
+    stats["draftkings_leagues_scanned"] = len(targets)
+
+    for sport_key, league_id, name in targets:
+        time.sleep(cfg.request_gap_seconds)
+        try:
+            payload = dk.fetch_league(league_id)
+        except Exception as exc:                   # noqa: BLE001
+            log.warning("draftkings %s (%s): %s", name, league_id, exc)
+            continue
+        if not (payload.get("events") or []):
+            continue                               # out of season; nothing to price
+        quotes += dk.ingest(board, payload, sport_key,
+                            strict_match=cfg.scrape.strict_event_match)["quotes"]
+
+        for cid, sid, _n in main_line_subcategories(
+                payload, cfg.draftkings_main_line_subcategories):
+            time.sleep(cfg.request_gap_seconds)
+            try:
+                sub = dk.fetch_league_subcategory(league_id, cid, sid)
+            except Exception:                      # noqa: BLE001
+                continue
+            sub = dict(sub, events=payload.get("events") or [])
+            quotes += dk.ingest(board, sub, sport_key,
+                                strict_match=cfg.scrape.strict_event_match)["quotes"]
+
+        if cfg.draftkings_props and sport_key in catalog.props_sports():
+            subs = dk.prop_subcategories(payload)[: cfg.draftkings_max_prop_subcategories]
+            for cid, sid, _n in subs:
+                time.sleep(cfg.request_gap_seconds)
+                try:
+                    sub = dk.fetch_league_subcategory(league_id, cid, sid)
+                except Exception:                  # noqa: BLE001
+                    continue
+                sub = dict(sub, events=payload.get("events") or [])
+                quotes += dk.ingest(board, sub, sport_key,
+                                    strict_match=cfg.scrape.strict_event_match)["quotes"]
+    return quotes
+
+
+def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
+    """Fanatics for every league whose Oddschecker id is known.
+
+    Ids come from the discovery cache when there is one and from the three
+    hand-captured entries in config otherwise, so a missing cache costs breadth
+    rather than the source. No bettypeIds are sent: the endpoint returns all of
+    them, which is where Fanatics' alternate ladders and its NFL player props
+    come from.
+    """
+    wanted = _wanted(cfg)
+    discovered = oddschecker_discover.resolve(path=cfg.fanatics_cache_path)
+    leagues = discovered or list(cfg.fanatics_leagues)
+    stats["fanatics_leagues_known"] = len(leagues)
+    quotes = 0
+    scanned = 0
+    for league in leagues:
+        key = league["sport_key"]
+        if wanted is not None and key not in wanted:
+            continue
+        try:
+            payload = fetch_fanatics_league(league["event_id"],
+                                            league.get("bettype_ids"))
+        except Exception as exc:                   # noqa: BLE001
+            log.warning("fanatics %s: %s", league["name"], exc)
+            continue
+        scanned += 1
+        quotes += books_parse.ingest_oddschecker(
+            board, payload, book="fanatics", sport_key=key,
+            strict_match=cfg.scrape.strict_event_match)["quotes"]
+    stats["fanatics_leagues_scanned"] = scanned
+    stats["fanatics"] = quotes
 
 
 class _MarketsShim:
@@ -50,62 +232,21 @@ def scan(cfg: ArbConfig | None = None, progress=None,
 
     # 1. FanDuel — the spine, plus main lines, props and alternate ladders
     tick(0, "FanDuel")
-    fd = FanDuelScrape(state=cfg.state)
-    fd_quotes = 0
-    for sport in cfg.sports:
-        try:
-            league = fd.league_page(sport)
-            events = fd.list_events(sport, league)
-            fd_quotes += fd.ingest_event(board, league, sport, strict_match=False)["quotes"]
-        except Exception as exc:
-            log.warning("fanduel %s: %s", sport, exc)
-            continue
-        now = datetime.now(timezone.utc)
-        window = [e for e in events
-                  if cfg.detect.min_minutes_to_start * 60
-                  <= (e[2] - now).total_seconds() <= cfg.detect.max_hours_to_start * 3600]
-        window.sort(key=lambda e: e[2])
-        for eid, _name, _when in window[: cfg.fanduel_max_events]:
-            time.sleep(cfg.request_gap_seconds)
-            for tab in cfg.fanduel_tabs:
-                try:
-                    payload = fd.event_markets(eid, tab=tab)
-                except Exception:
-                    continue
-                fd_quotes += fd.ingest_event(board, payload, sport,
-                                             strict_match=False)["quotes"]
-                time.sleep(cfg.request_gap_seconds)
-    stats["fanduel"] = fd_quotes
+    _fanduel_pass(board, cfg, stats)
 
-    # 2. DraftKings — league feed, plus prop subcategories
+    # 2. DraftKings — every catalogued league, its main lines and its props
     tick(1, "DraftKings")
     dk = DraftKingsLeague(state=cfg.state)
-    dk_quotes = 0
-    for sport in cfg.sports:
-        try:
-            payload = dk.fetch(sport)
-        except Exception as exc:
-            log.warning("draftkings %s: %s", sport, exc)
-            continue
-        dk_quotes += dk.ingest(board, payload, sport,
-                               strict_match=cfg.scrape.strict_event_match)["quotes"]
-        if cfg.draftkings_props:
-            for cid, sid, _n in dk.prop_subcategories(payload)[: cfg.draftkings_max_prop_subcategories]:
-                time.sleep(cfg.request_gap_seconds)
-                try:
-                    sub = dk.fetch_subcategory(sport, cid, sid)
-                except Exception:
-                    continue
-                sub = dict(sub, events=payload.get("events") or [])
-                dk_quotes += dk.ingest(board, sub, sport,
-                                       strict_match=cfg.scrape.strict_event_match)["quotes"]
+    dk_quotes = _draftkings_pass(board, cfg, stats)
 
     # 2b. DraftKings golf -- a league PER TOURNAMENT, so the ids are read off
     # the public league page each scan rather than captured weekly by hand.
     # Discovery is HTML scraping and fails soft, so the configured list stays
     # as the fallback: a layout change costs coverage, never the scan.
-    tours = [{"name": n, "league_id": i}
-             for i, n in sorted(dk_discover("golf").items(), key=lambda kv: kv[1])]
+    want = _wanted(cfg)
+    tours = [] if (want is not None and not any(sp.startswith("golf") for sp in want)) else [
+        {"name": n, "league_id": i}
+        for i, n in sorted(dk_discover("golf").items(), key=lambda kv: kv[1])]
     if tours:
         stats["golf_leagues_discovered"] = len(tours)
     else:
@@ -157,7 +298,7 @@ def scan(cfg: ArbConfig | None = None, progress=None,
     # each event is a real fixture ("A vs B"), so the ordinary path handles it
     # once the name is parsed. Doubles and qualifying draws are skipped: they
     # price differently and no other book here covers them.
-    if any(sp.startswith("tennis") for sp in cfg.sports):
+    if _wanted(cfg) is None or any(sp.startswith("tennis") for sp in cfg.sports):
         tl = dk_discover("tennis")
         wanted = [(g, n) for g, n in tl.items()
                   if "Doubles" not in n and "Quals" not in n]
@@ -180,22 +321,14 @@ def scan(cfg: ArbConfig | None = None, progress=None,
 
     # 3. Fanatics via Oddschecker
     tick(2, "Fanatics")
-    fan_quotes = 0
-    for league in cfg.fanatics_leagues:
-        try:
-            payload = fetch_fanatics_league(league["event_id"], league["bettype_ids"])
-        except Exception as exc:
-            log.warning("fanatics %s: %s", league["name"], exc)
-            continue
-        fan_quotes += books_parse.ingest_oddschecker(
-            board, payload, book="fanatics", sport_key=league["sport_key"],
-            strict_match=cfg.scrape.strict_event_match)["quotes"]
-    stats["fanatics"] = fan_quotes
+    _fanatics_pass(board, cfg, stats)
 
     # 4. vig-free anchor
     tick(3, "Anchor")
+    anchor_sports = sorted({e.sport_key for e in board.events.values()})
     try:
-        stats["anchor"] = FanaticsMarkets(_MarketsShim(cfg)).fetch_all(board, cfg.sports)["quotes"]
+        stats["anchor"] = FanaticsMarkets(_MarketsShim(cfg)).fetch_all(
+            board, anchor_sports)["quotes"]
     except Exception as exc:
         log.warning("fanatics markets: %s", exc)
         stats["anchor"] = 0
@@ -214,6 +347,16 @@ def scan(cfg: ArbConfig | None = None, progress=None,
             k = f"{e.sport_key} ({key})"
             skipped[k] = skipped.get(k, 0) + 1
     stats["skipped_events"] = skipped
+
+    # The smoke alarm for a mismapped market. In a one-shot scan every quote is
+    # seconds old, so one book quoting one side of one group at two prices 25%
+    # apart is never a price move -- it is two different bets on one GroupKey,
+    # which is how a team total was reported as a game total. Expected to be 0.
+    conflicts = [(g.key, c) for g in board.groups.values() for c in g.conflicts]
+    stats["price_conflicts"] = len(conflicts)
+    for key, (side, book, old_d, new_d) in conflicts[:20]:
+        log.warning("price conflict: %s %s %s %s %.3f vs %.3f — two markets on one key?",
+                    key.market, key.subject, key.point, f"{book}/{side}", old_d, new_d)
 
     board.prune()
     opps = engine.scan(board, cfg)

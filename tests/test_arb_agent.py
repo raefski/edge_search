@@ -280,11 +280,24 @@ def test_sport_choices_include_configured_and_snapshot_sports():
     from edge.arb.scan_request import sport_choices
 
     class Cfg:
-        sports = ["soccer_epl"]
+        sports = ["soccer_bulgarian_a_pfg"]
 
     got = sport_choices(Cfg(), {"candidates": [{"sport_key": "tennis_atp"}]})
-    assert "soccer_epl" in got and "tennis_atp" in got
-    assert got["soccer_epl"] == "EPL", "an unknown key still gets a readable name"
+    assert "soccer_bulgarian_a_pfg" in got and "tennis_atp" in got
+    assert got["soccer_bulgarian_a_pfg"] == "BULGARIAN_A_PFG", \
+        "an unknown key still gets a readable name"
+
+
+def test_sport_choices_cover_every_league_the_scan_can_reach():
+    """The picker listed seven sports while the scan covered five. It now
+    covers thirty-odd, and a boost token for one of them is unusable if the
+    league cannot be selected."""
+    from edge.arb import catalog
+    from edge.arb.scan_request import sport_choices
+    got = sport_choices(None, {})
+    for lg in catalog.LEAGUES:
+        assert lg.key in got, lg.key
+    assert got["soccer_epl"] == "English Premier League"
 
 
 def test_sport_choices_are_named_not_raw_keys():

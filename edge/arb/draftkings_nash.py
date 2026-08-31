@@ -23,8 +23,12 @@ from urllib.parse import parse_qsl, quote, urlencode, urlparse, urlunparse
 
 from .models import Board, GroupKey, Quote
 from .normalize import normalize_outcome, slug
-from .marketmap import canonical_market, split_player
+from .marketmap import canonical_market, is_full_game, split_player
 from .matching import match_event
+
+# Canonical keys whose subject is a person; a one-player market is legitimate
+# where a one-TEAM market is not.
+PLAYER_MARKETS = ("pitcher_", "batter_", "player_")
 
 log = logging.getLogger("arb.dk_nash")
 
@@ -265,6 +269,23 @@ def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
             continue
         player = (players.pop() if players else None) or label_player
 
+        # A REFUSAL MUST STICK. `is_full_game` says "this is not the whole
+        # game, never map it"; canonical_market returning None says only "no
+        # rule matched". Collapsing the two let the display-name fallback below
+        # resurrect a market the guard had already thrown out:
+        #
+        #   marketType.name "Alternate Team Total Runs"  -> refused, correctly
+        #   market.name     "Alternate CIN Reds Total Runs" -> `totals`
+        #
+        # so one team's run total was filed as the GAME total. On SD Padres @
+        # CIN Reds the Reds' team Over 6.5 (+330) sat in the same group as the
+        # game Over 6.5 (-310), best() took the +330, and the result was
+        # reported as a free middle and a straight arbitrage. The book's own
+        # app showed -310 the whole time.
+        if not is_full_game(label) or not is_full_game(market.get("name") or ""):
+            stats["markets_unmapped"].add(f"{label} (not the full game)")
+            continue
+
         mkey = canonical_market(label, player=player)
         if mkey is None and market.get("name"):
             # A marketType can be uninformative where the display name is not:
@@ -272,6 +293,18 @@ def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
             mkey = canonical_market(market["name"], player=player)
         if mkey is None:
             stats["markets_unmapped"].add(label)
+            continue
+
+        # Independent of any name: a market every selection of which points at
+        # ONE team is that team's market, not the game's. A game total carries
+        # no participants at all; a moneyline or spread carries both teams. So
+        # a single distinct team across two or more selections is the shape of
+        # a team total, whatever the market happens to be called -- which is
+        # the backstop for the next label nobody anticipated.
+        teams = {p.get("name") for sel in sels for p in (sel.get("participants") or [])
+                 if p.get("type") == "Team" and p.get("name")}
+        if len(teams) == 1 and len(sels) > 1 and not mkey.startswith(PLAYER_MARKETS):
+            stats["markets_unmapped"].add(f"{label} (one team: {teams.pop()})")
             continue
 
         # Golf head-to-heads: two golfers, no over/under, and the whole field

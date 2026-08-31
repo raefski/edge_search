@@ -133,15 +133,25 @@ def snapshot_is_newer(snapshot_generated_at: str | None,
 # which may well be a sport the last scan did not cover -- offering only what
 # is already in the snapshot means you cannot select the sport you need until
 # after you have scanned it, which is backwards.
-SPORT_TITLES = {
-    "americanfootball_nfl": "NFL",
-    "americanfootball_ncaaf": "NCAAF",
-    "baseball_mlb": "MLB",
-    "basketball_nba": "NBA",
-    "basketball_wnba": "WNBA",
-    "basketball_ncaab": "NCAAB",
-    "icehockey_nhl": "NHL",
-}
+#
+# Built from catalog.LEAGUES so the picker offers every league the scan can
+# actually reach. It listed seven while the scan covered five; the scan now
+# covers thirty-odd, and a token for one of them has to be selectable.
+def _sport_titles() -> dict[str, str]:
+    from .catalog import LEAGUES
+    titles = {lg.key: lg.title for lg in LEAGUES}
+    # Kept explicitly as well: these must be offered even if the catalog is
+    # ever edited, because they are the leagues boosts are actually issued for.
+    titles.update({
+        "americanfootball_nfl": "NFL", "americanfootball_ncaaf": "NCAAF",
+        "baseball_mlb": "MLB", "basketball_nba": "NBA",
+        "basketball_wnba": "WNBA", "basketball_ncaab": "NCAAB",
+        "icehockey_nhl": "NHL",
+    })
+    return titles
+
+
+SPORT_TITLES = _sport_titles()
 
 
 def sport_choices(cfg=None, snapshot: dict | None = None) -> dict[str, str]:

@@ -24,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from edge.arb import ArbConfig                     # noqa: E402
+from edge.arb.config import Detect                 # noqa: E402
 from edge.arb.run import snapshot                  # noqa: E402
 
 SNAPSHOT = ROOT / "data" / "arb_snapshot.json"
@@ -53,7 +54,9 @@ def main() -> int:
     ap.add_argument("--sports", nargs="+", help="sport keys to scan")
     ap.add_argument("--bankroll", type=float, default=1000.0)
     ap.add_argument("--min-profit", type=float, default=0.30, help="arb %% floor")
-    ap.add_argument("--max-hours", type=float, default=96.0, help="how far ahead to look")
+    ap.add_argument("--max-hours", type=float, default=Detect().max_hours_to_start,
+                    help="how far ahead to look (default covers a full weekly "
+                         "football cycle -- see edge/arb/config.py)")
     ap.add_argument("--no-props", action="store_true", help="skip DraftKings prop tabs")
     ap.add_argument("--boost", action="append", default=[], metavar="SPEC",
                     help="a profit boost, book:pct[:max_stake[:sport]] -- e.g. "

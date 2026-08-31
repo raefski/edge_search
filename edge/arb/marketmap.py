@@ -9,6 +9,84 @@ from __future__ import annotations
 
 import re
 
+# Markets that are NOT the full game, claimed first so no later rule takes them.
+#
+# GroupKey carries no period and no team, so "1st Quarter Point Spread -1.5"
+# and the full-game "Point Spread -1.5" produce the SAME key -- two different
+# bets in one group, which is how a fake arbitrage gets invented. FanDuel's own
+# parser has guarded this since it was written (fanduel.PERIOD_MARKERS); this
+# is the same guard for every book that comes through the market map, and it
+# became load-bearing the moment the Fanatics feed stopped being filtered down
+# to three bet types and started returning all seventeen.
+#
+# Team totals are dropped for the same reason rather than kept as `team_totals`:
+# "Total Home Goals" and "Total Away Goals" both normalise to a subject of None,
+# so at a shared line they would collide with each other.
+NOT_FULL_GAME = re.compile("|".join((
+    r"\b(1st|2nd|3rd|4th|5th|6th|7th|8th|9th|first|second|third|fourth)\b"
+    r".{0,24}\b(half|quarter|period|innings?|set|map|round)\b",
+    r"\b(half|quarter|period|innings?)\b\s*[-–—]?\s*\b(1st|2nd|3rd|4th|first|second)\b",
+    r"\bhalf ?time\b|\bfull ?time\b|\bht/ft\b|\brest of (match|game)\b|\bhalves\b",
+    # "(Regular Time)" is a settlement basis, not a decoration. DraftKings
+    # prices soccer "Spread" and "Alt Spread (Regular Time)" as two ladders on
+    # one match, and they disagree: Tottenham -2.5 was 7.0 on one and 8.5 on
+    # the other. Merged onto `spreads` they were two prices for one side of one
+    # group -- 23 of them across EPL, the Champions League and La Liga.
+    r"\bregular time\b|\breg\.? time\b|\b90 min",
+    # Side markets that share a total's vocabulary. "Total Corners" would map
+    # to `totals` on the bare `totals?` rule and meet a game total at a line
+    # they happen to share.
+    r"\bcorners?\b|\bcards?\b|\bbookings?\b|\boffsides?\b|\bthrow ?ins?\b",
+    r"\b(1st|2nd|3rd|4th|first|second|third|fourth)\b"
+    r".{0,16}\b(goal|run|score|touchdown|td|basket|point)\b",
+    r"\brace to\b|\bto win (either|both) half\b|\bwinning margin\b",
+    r"\bteam totals?\b|\btotal (home|away)\b|\b(home|away) team\b",
+    # "Set Betting" is a correct score, not a handicap: its lines are "2-0" and
+    # "2-1" and its bets are player names. Claimed as a set handicap it lost
+    # its line to float("2-0"), fell through to the team-moneyline rule and
+    # put Joint 2-1 at 6.8 against Samsonova 2-1 at 4.0 in one group -- an
+    # arb_sum of 0.397.
+    r"\bodd/even\b|\bcorrect score\b|\bset betting\b|\bdouble chance\b|\bboth halves\b",
+    r"\binterval\b|\bbands?\b|\bexact\b",
+    # Soccer's derivatives of the moneyline. "To Win To Nil" is a different bet
+    # from "to win" -- it also requires a clean sheet -- and it was mapping to
+    # h2h off the bare `to win` in the rule below. Fanatics posted Eintracht
+    # Frankfurt 4.1 / Augsburg 7.0 for it; filed as a three-way alongside
+    # FanDuel's genuine Draw at 4.1 that summed to 0.63 and was reported as a
+    # 58% arbitrage. Nothing about the numbers looked wrong until the market
+    # name was read.
+    # `to score` stops short of "to score a touchdown", which IS a full-game
+    # market and pairs fine once it is keyed by player.
+    r"\bto nil\b|\bclean sheet\b|\bgoalscorer\b|\bhat-?trick\b|\bto score (?!a touchdown)",
+)), re.I)
+
+
+# Markets about MORE THAN ONE subject. GroupKey carries a single `subject`, so
+# these arrive with subject=None and every one of them in an event collapses
+# onto the same key.
+#
+# "Either Pitcher Strikeouts Thrown" (one of the two starters reaches 11.5) and
+# "Combined Pitcher Strikeouts Thrown" (their totals added) are different bets
+# that both keyed to pitcher_strikeouts / 11.5 / over -- 19.00 against 1.613,
+# an 11x price gap in one group. ingest_sportscontent already refuses a market
+# whose selections name two Players, but these do not populate `participants`,
+# so the name is the only signal. Neither can pair against a single pitcher's
+# line in any case.
+MULTI_SUBJECT = re.compile(
+    r"\beither\b|\bcombined\b|\bboth (pitchers|players|teams|fighters)\b", re.I)
+
+
+def is_full_game(name: str) -> bool:
+    """False for a market this map must not key.
+
+    Two conditions, both of which end in two different bets sharing one
+    GroupKey: the market is not the whole game (a period, a team, a
+    moneyline lookalike), or it is not about a single subject.
+    """
+    text = name or ""
+    return not (NOT_FULL_GAME.search(text) or MULTI_SUBJECT.search(text))
+
+
 # ordered: first match wins, so put specific patterns above general ones
 RULES: list[tuple[str, str]] = [
     # Golf, first: these are two-player head-to-heads and must not fall through
@@ -20,10 +98,32 @@ RULES: list[tuple[str, str]] = [
     (r"\b2 ball\b.*\bhole|\bholes?\b.*\bwinner\b", "golf_hole_group"),
     (r"\b2 ball\b", "golf_2ball"),
     (r"tournament.*matchup|\bh2h matchup\b", "golf_matchup"),
-    (r"\b(money ?line|match result|match winner|win market|to win|head to head|1x2)\b", "h2h"),
+    # `to win` was bare here, which is how "To Win To Nil" became a moneyline.
+    # It has to name what is being won: books write "Moneyline", "Win Market"
+    # or "Match Betting" for the real thing, never a bare "To Win", so nothing
+    # is lost by requiring the noun.
+    (r"\b(money ?line|match result|match winner|match betting|win market"
+     r"|to win (the )?(match|game|fight|bout)|head to head|1x2)\b", "h2h"),
+    # Tennis counts three different things and calls them all handicaps and
+    # totals. A set handicap of -1.5 and a games handicap of -1.5 are not the
+    # same bet, and on one `spreads` key at one point they would be one group.
+    # These sit above the generic rules so the generic rules never see them.
+    (r"\bsets? handicap\b", "spreads_sets"),
+    (r"\bgames? handicap\b", "spreads_games"),
+    (r"\btotal sets\b", "totals_sets"),
+    (r"\btotal games\b", "totals_games"),
     (r"\b(point spread|spread|handicap|line betting|run line|puck line)\b", "spreads"),
-    (r"\b(alternate|alt)\b.*\b(spread|handicap)\b", "alternate_spreads"),
-    (r"\b(alternate|alt)\b.*\b(total|over ?/? ?under)\b", "alternate_totals"),
+    # An alternate ladder is the SAME bet as the main line at the same number,
+    # so both fold onto the main key and let the point in the GroupKey do the
+    # distinguishing. That was already true of spreads by accident -- the
+    # `spreads` rule above fires first on "Alternate Run Line", which made this
+    # rule unreachable -- and NOT true of totals, which took a key of their
+    # own. FanDuel maps every ALTERNATE_TOTAL_* to `totals`, so a DraftKings
+    # alt total at 9.5 and a FanDuel total at 9.5 sat in two different groups
+    # and could never pair. Alt ladders are where three-book middles come from,
+    # so that was the wrong half of the asymmetry to keep.
+    (r"\b(alternate|alt)\b.*\b(spread|handicap)\b", "spreads"),
+    (r"\b(alternate|alt)\b.*\b(total|over ?/? ?under)\b", "totals"),
     (r"\b(team total)\b", "team_totals"),
     (r"\b(total (points|runs|goals)|totals?|over ?/? ?under|o ?/ ?u)\b", "totals"),
     (r"\b(draw no bet)\b", "draw_no_bet"),
@@ -130,6 +230,12 @@ def canonical_market(name: str, group: str = "", player: str | None = None) -> s
     the player context decides which rule set wins rather than rule ordering.
     """
     text = f"{group} {name}".lower().strip()
+    # Checked here rather than as a None-mapping rule in RULES, because
+    # `_first_match` cannot tell "matched a rule that maps to None" from "no
+    # rule matched" -- so a None claimed in RULES falls straight through to
+    # PLAYER_STATS and the guard would not hold.
+    if not is_full_game(text):
+        return None
     if player:
         return _first_match(PLAYER_STATS, text) or _first_match(RULES, text)
     return _first_match(RULES, text) or _first_match(PLAYER_STATS, text)

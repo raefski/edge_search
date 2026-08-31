@@ -1,0 +1,595 @@
+{
+ "generated_at": "2026-08-30T17:38:26.815758+00:00",
+ "leagues": [
+  {
+   "event_id": 1554,
+   "name": "NBA Championship",
+   "url_path": "/us/basketball/nba/nba-championship",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "NBA Championship",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 1714,
+   "name": "English League One",
+   "url_path": "/us/soccer/english-league-1/english-league-one",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "English League One",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 1724,
+   "name": "Swedish Allsvenskan Matches",
+   "url_path": "/us/soccer/sweden/allsvenskan/djurgarden-v-mjallby-aif",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Djurgarden v Mjallby AIF",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 1725,
+   "name": "Swedish Superettan Matches",
+   "url_path": "/us/soccer/sweden/superettan/gif-sundsvall-v-norrby",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "GIF Sundsvall v Norrby",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 2302,
+   "name": "English Championship",
+   "url_path": "/us/soccer/english-championship/winner",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "Championship",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 2339,
+   "name": "Formula One Races",
+   "url_path": "/us/motorsport/formula-one/italian-grand-prix",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "Italian Grand Prix",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 2379,
+   "name": "Champions League",
+   "url_path": "/us/soccer/uefa-champions-league/winner",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "Champions League",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 2457,
+   "name": "English Premier League Matches",
+   "url_path": "/us/soccer/premier-league/aston-villa-v-arsenal",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "Aston Villa v Arsenal",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 2463,
+   "name": "Scottish Premiership Matches",
+   "url_path": "/us/soccer/scottish-premiership/dundee-v-st-johnstone",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Dundee v St Johnstone",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 2708,
+   "name": "Japanese J-League Matches",
+   "url_path": "/us/soccer/japan/j-league/cerezo-osaka-v-kashiwa-reysol",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "Cerezo Osaka v Kashiwa Reysol",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 3043,
+   "name": "NASCAR Championship",
+   "url_path": "/us/motorsport/nascar/craftsman-truck-series-championship",
+   "type": "OUTRIGHT",
+   "subevents": 2,
+   "sample": "Craftsman Truck Series Championship",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 3481,
+   "name": "Mexican Apertura Matches",
+   "url_path": "/us/soccer/mexican-primera-division/toluca-v-fc-juarez",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "Toluca v FC Juarez",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 3598,
+   "name": "Belgian Pro League Matches",
+   "url_path": "/us/soccer/belgian-pro-league/union-st-gilloise-v-anderlecht",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "Union St Gilloise v Anderlecht",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 3605,
+   "name": "Turkish Super Lig Matches",
+   "url_path": "/us/soccer/super-lig/eyupspor-v-alanyaspor",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Eyupspor v Alanyaspor",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 4290,
+   "name": "CFL Matches",
+   "url_path": "/us/football/point-spread-coupon/british-columbia-lions-at-ottawa-redblacks",
+   "type": "MATCH",
+   "subevents": 1,
+   "sample": "British Columbia Lions at Ottawa Redblacks",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 4547,
+   "name": "NCAA",
+   "url_path": "/us/basketball/ncaam/ncaa-championship",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "NCAA Championship",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 4652,
+   "name": "NHL Matches",
+   "url_path": "/us/hockey/nhl/florida-panthers-at-carolina-hurricanes",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Florida Panthers at Carolina Hurricanes",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 5597,
+   "name": "NCAAF Matches",
+   "url_path": "/us/football/college-football/akron-zips-at-wake-forest-demon-deacons",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Akron Zips at Wake Forest Demon Deacons",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 6136,
+   "name": "Euroleague Matches",
+   "url_path": "/us/basketball/euroleague/zalgiris-kaunas-at-crvena-zvezda",
+   "type": "MATCH",
+   "subevents": 1,
+   "sample": "Zalgiris Kaunas at Crvena Zvezda",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 6544,
+   "name": "PDC Darts World Championship",
+   "url_path": "/us/darts/pdc-world-championship/winner",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "PDC World Championship",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 7165,
+   "name": "NCAAF",
+   "url_path": "/us/football/college-football/acc-championship",
+   "type": "OUTRIGHT",
+   "subevents": 3,
+   "sample": "ACC Championship",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 7445,
+   "name": "MLB Matches",
+   "url_path": "/us/baseball/mlb/miami-marlins-at-washington-nationals",
+   "type": "MATCH",
+   "subevents": 1,
+   "sample": "Miami Marlins at Washington Nationals",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9934,
+   "name": "German Bundesliga",
+   "url_path": "/us/soccer/bundesliga/german-bundesliga",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "German Bundesliga",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9935,
+   "name": "German Bundesliga Matches",
+   "url_path": "/us/soccer/bundesliga/vfb-stuttgart-v-cologne",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "Vfb Stuttgart v Cologne",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9938,
+   "name": "Austrian Bundesliga Matches",
+   "url_path": "/us/soccer/austrian-bundesliga/fc-salzburg-v-austria-vienna",
+   "type": "MATCH",
+   "subevents": 1,
+   "sample": "FC Salzburg v Austria Vienna",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9940,
+   "name": "French Ligue 1",
+   "url_path": "/us/soccer/ligue-1/winner",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "Ligue 1",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9941,
+   "name": "French Ligue 1 Matches",
+   "url_path": "/us/soccer/ligue-1/monaco-v-marseille",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Monaco v Marseille",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9943,
+   "name": "Dutch Eredivisie Matches",
+   "url_path": "/us/soccer/eredivisie/cambuur-leeuwarden-v-fc-twente",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "Cambuur Leeuwarden v FC Twente",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9944,
+   "name": "Spanish Primera Division",
+   "url_path": "/us/soccer/la-liga-primera/la-liga",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "Spanish La Liga Primera",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9945,
+   "name": "Spanish La Liga Primera Matches",
+   "url_path": "/us/soccer/la-liga-primera/deportivo-a-coruna-v-valencia",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "Deportivo A Coruna v Valencia",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9950,
+   "name": "Italian Serie A Matches",
+   "url_path": "/us/soccer/serie-a/napoli-v-como",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Napoli v Como",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9955,
+   "name": "Portuguese Super Liga Matches",
+   "url_path": "/us/soccer/primeira-liga/casa-pia-v-moreirense",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Casa Pia v Moreirense",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9960,
+   "name": "Danish Superligaen Matches",
+   "url_path": "/us/soccer/denmark/superligaen/fc-nordsjaelland-v-brondby",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "FC Nordsjaelland v Brondby",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9961,
+   "name": "English Championship Matches",
+   "url_path": "/us/soccer/english-championship/portsmouth-v-derby",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Portsmouth v Derby",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9962,
+   "name": "English League Two Matches",
+   "url_path": "/us/soccer/english-league-2/northampton-v-crawley",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Northampton v Crawley",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9963,
+   "name": "English League 1 Matches",
+   "url_path": "/us/soccer/english-league-1/doncaster-v-notts-county",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Doncaster v Notts County",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 9966,
+   "name": "Greek Super League Matches",
+   "url_path": "/us/soccer/superleague/atromitos-v-paok-salonika",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "Atromitos v PAOK Salonika",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 10495,
+   "name": "Scottish Championship Matches",
+   "url_path": "/us/soccer/scottish-championship/livingston-v-stenhousemuir",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Livingston v Stenhousemuir",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 11730,
+   "name": "NFL Matches",
+   "url_path": "/us/football/nfl/new-england-patriots-at-seattle-seahawks",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "New England Patriots at Seattle Seahawks",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 12238,
+   "name": "WNBA Matches",
+   "url_path": "/us/basketball/wnba/minnesota-lynx-at-atlanta-dream",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Minnesota Lynx at Atlanta Dream",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 12293,
+   "name": "CFL Grey Cup",
+   "url_path": "/us/football/cfl/winner",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "CFL",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 12614,
+   "name": "AFL Matches",
+   "url_path": "/us/australian-rules/afl/fremantle-v-hawthorn",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Fremantle v Hawthorn",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 13058,
+   "name": "World Series",
+   "url_path": "/us/baseball/mlb/world-series",
+   "type": "OUTRIGHT",
+   "subevents": 3,
+   "sample": "World Series",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 13957,
+   "name": "Czech Extraliga Matches",
+   "url_path": "/us/hockey/czech-extraliga/hc-ocelari-trinec-at-hc-energie-karlovy-vary",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "HC Ocelari Trinec at HC Energie Karlovy Vary",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 15595,
+   "name": "MLB Divisions",
+   "url_path": "/us/baseball/mlb/american-league-central",
+   "type": "OUTRIGHT",
+   "subevents": 3,
+   "sample": "American League Central",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 19494,
+   "name": "Brazilian Serie A Matches",
+   "url_path": "/us/soccer/brazilian-serie-a/corinthians-v-santos-fc",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Corinthians v Santos FC",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 22876,
+   "name": "Polish Ekstraklasa Matches",
+   "url_path": "/us/soccer/poland/ekstraklasa/gornik-zabrze-v-katowice",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "Gornik Zabrze v Katowice",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 23733,
+   "name": "Mens US Open Matches",
+   "url_path": "/us/tennis/mens-us-open/sho-shimabukuro-v-arthur-rinderknech",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "Sho Shimabukuro v Arthur Rinderknech",
+   "last_seen": "2026-08-30T17:38:26.815758+00:00",
+   "first_seen": "2026-08-30T17:38:26.815758+00:00"
+  },
+  {
+   "event_id": 23742,
+   "name": "Womens US Open",
+   "url_path": "/us/tennis/womens-us-open/winner",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "Womens US Open",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 23743,
+   "name": "Womens US Open Matches",
+   "url_path": "/us/tennis/womens-us-open/talia-gibson-v-donna-vekic",
+   "type": "MATCH",
+   "subevents": 2,
+   "sample": "Talia Gibson v Donna Vekic",
+   "last_seen": "2026-08-30T17:38:26.815758+00:00",
+   "first_seen": "2026-08-30T17:38:26.815758+00:00"
+  },
+  {
+   "event_id": 26459,
+   "name": "NBA Divisions",
+   "url_path": "/us/basketball/nba/atlantic-division",
+   "type": "OUTRIGHT",
+   "subevents": 3,
+   "sample": "Atlantic Division",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 27710,
+   "name": "Womens Australian Open",
+   "url_path": "/us/tennis/womens-australian-open/winner",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "Womens Australian Open",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 31859,
+   "name": "Mens French Open",
+   "url_path": "/us/tennis/mens-french-open/winner",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "Mens French Open",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 32448,
+   "name": "NFL",
+   "url_path": "/us/football/nfl/super-bowl",
+   "type": "OUTRIGHT",
+   "subevents": 3,
+   "sample": "Super Bowl",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 32464,
+   "name": "Womens French Open",
+   "url_path": "/us/tennis/womens-french-open/winner",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "Womens French Open",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 40607,
+   "name": "Mens US Open",
+   "url_path": "/us/tennis/mens-us-open/winner",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "Mens US Open",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 46863,
+   "name": "Ultimate Fighting Championship (UFC)",
+   "url_path": "/us/boxing-mma/ufc-mma/delphine-benouaich-v-sofia-montenegro",
+   "type": "MATCH",
+   "subevents": 3,
+   "sample": "Delphine Benouaich v Sofia Montenegro",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 48292,
+   "name": "Tour De France",
+   "url_path": "/us/cycling/tour-de-france/winner",
+   "type": "OUTRIGHT",
+   "subevents": 1,
+   "sample": "Tour de France",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  },
+  {
+   "event_id": 72721,
+   "name": "Formula One",
+   "url_path": "/us/motorsport/formula-one/constructors-championship",
+   "type": "OUTRIGHT",
+   "subevents": 2,
+   "sample": "Constructors Championship",
+   "last_seen": "2026-08-30T17:37:16.117702+00:00",
+   "first_seen": "2026-08-30T17:37:16.117702+00:00"
+  }
+ ]
+}

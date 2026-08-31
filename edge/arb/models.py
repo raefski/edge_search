@@ -113,9 +113,27 @@ class MarketGroup:
     event: EventMeta
     quotes: dict[str, dict[str, Quote]] = field(default_factory=dict)   # side -> book -> quote
     book_sides: dict[str, set[str]] = field(default_factory=dict)       # book -> sides offered
+    # (side, book, old, new) where one book quoted one side twice, far apart
+    conflicts: list = field(default_factory=list)
+
+    # One book quoting the SAME side of the SAME group at two prices this far
+    # apart is not a price move, it is two different bets that landed on one
+    # key. 1.25 is well outside a refresh and well inside the gaps that have
+    # actually been caught: a team total at 4.30 against the game total at
+    # 1.32, "Either Pitcher 11.5+ K" at 19.00 against "Combined 11.5+" at 1.61.
+    CONFLICT_RATIO = 1.25
 
     def add(self, q: Quote) -> None:
         prev = self.quotes.setdefault(q.side, {}).get(q.book)
+        if prev is not None and prev.decimal > 0:
+            ratio = max(q.decimal, prev.decimal) / min(q.decimal, prev.decimal)
+            if ratio > self.CONFLICT_RATIO:
+                # Counted, never raised: a bad mapping must not take the scan
+                # down, and the count is the smoke alarm. In a one-shot scan
+                # every quote is seconds old, so this can only be a collision;
+                # in a long-running watch loop a real move could trip it, which
+                # is why run.scan() reports it rather than acting on it.
+                self.conflicts.append((q.side, q.book, prev.decimal, q.decimal))
         # The board is long-lived, so a newer quote must always displace an
         # older one -- otherwise a stale high price would sit here forever and
         # manufacture arbs that no longer exist. Equal timestamps mean the same

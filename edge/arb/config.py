@@ -41,7 +41,17 @@ class Detect:
     max_quote_age_seconds: float = 600.0
     skip_live: bool = True
     min_minutes_to_start: float = 3.0
-    max_hours_to_start: float = 96.0
+    # Ten days, not four. Football is a WEEKLY sport: scanned on a Sunday with
+    # a 96-hour ceiling, next Saturday's 103 NCAAF games are all outside the
+    # window, and NCAAF is one of the few leagues all three books price. The
+    # board carried them and the scan then skipped every one.
+    #
+    # The usual objection to a far-out line -- it is stale and will move -- does
+    # not apply to an arbitrage, because both legs are placed now and the lock
+    # is taken at today's prices. What DOES apply is limits: a line ten days
+    # out is posted small, so books.max_stake is the term that bounds these,
+    # not the window.
+    max_hours_to_start: float = 240.0
     min_books: int = 2
     max_legs: int = 3
     middles_enabled: bool = True
@@ -88,9 +98,16 @@ class ArbConfig:
     # first tee time until the last putt drops on Sunday. It surfaces in the
     # window before a round starts. run.scan() counts what it skipped for
     # this reason so an empty golf board is explained rather than mysterious.
-    sports: list[str] = field(default_factory=lambda: [
-        "americanfootball_ncaaf", "baseball_mlb", "basketball_wnba", "golf_pga",
-        "tennis_atp"])
+    # EMPTY means every league in catalog.LEAGUES, which is the point of the
+    # catalog: the books between them offer ~25 sports and naming five here was
+    # the reason only five were scanned. A non-empty list restricts the scan,
+    # which is what a quick pass or a single-sport debug wants.
+    sports: list[str] = field(default_factory=list)
+    # A league nobody curated still gets scanned, under a key derived from its
+    # own name. Two books meet there only when they spell the competition
+    # identically, so it is a bonus rather than the mechanism -- but it costs
+    # nothing, and FanDuel alone lists 108 soccer competitions.
+    include_uncatalogued: bool = True
     fanduel_max_events: int = 40
     # See arb/config.py FanDuelScrapeConfig.tabs: "popular" alone misses
     # pitcher Outs Recorded entirely and the deeper batter thresholds.
@@ -105,6 +122,14 @@ class ArbConfig:
     tennis_max_leagues: int = 14
     draftkings_props: bool = True
     draftkings_max_prop_subcategories: int = 40   # covers all 31 MLB tabs; see prop_subcategories
+    # Soccer keeps its spreads and totals in subcategories rather than in the
+    # league feed, so without these a soccer league arrives as a moneyline and
+    # nothing else. 4 is enough for sides, totals and one alternate ladder.
+    draftkings_main_line_subcategories: int = 4
+    # Props are per event and the most expensive thing in a scan. Only the
+    # leagues catalog.props_sports() marks get them, and only this many events
+    # each -- soonest first, which is where the lines are firmest.
+    prop_events_per_league: int = 6
     request_gap_seconds: float = 0.35
 
     # Oddschecker league ids for Fanatics. bettypeIds are per sport: 1 and 525
@@ -143,5 +168,10 @@ class ArbConfig:
     draftkings_golf_subcategories: list[tuple] = field(default_factory=lambda: [
         (531, 19877), (531, 20065), (698, 17673),
     ])
+    # Discovered ids override the three hardcoded above -- see
+    # oddschecker_discover.py. The file is a cache, not a requirement: with it
+    # missing the scan falls back to fanatics_leagues and loses breadth, never
+    # correctness.
+    fanatics_cache_path: str = "data/oddschecker_leagues.json"
     fanatics_markets_series: list[str] = field(default_factory=lambda: [
-        "NCAAF", "MLB", "WNBA"])
+        "NFL", "NCAAF", "MLB", "NBA", "WNBA", "NHL"])

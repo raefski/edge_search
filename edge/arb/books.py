@@ -16,6 +16,10 @@ from .normalize import normalize_outcome
 from .marketmap import canonical_market, split_player
 from .matching import match_event
 
+# Canonical keys whose subject is a person. Shared with fanduel.py, which
+# writes its prop runners the same four ways Oddschecker does.
+PLAYER_MARKETS = ("pitcher_", "batter_", "player_")
+
 log = logging.getLogger("arb.scrape.books")
 
 
@@ -172,7 +176,9 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
     trustworthy without a period field.
     """
     stats = {"events": 0, "matched": 0, "unmatched": 0, "quotes": 0, "live_skipped": 0,
-             "markets_seen": set(), "markets_unmapped": set()}
+             "flat_ladders": 0, "markets_seen": set(), "markets_unmapped": set()}
+
+    from .fanduel import parse_player_runner
 
     for sv in payload.get("subevents") or []:
         stats["events"] += 1
@@ -203,6 +209,42 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                 stats["markets_unmapped"].add(label)
                 continue
 
+            # A LADDER THAT DOES NOT REPRICE IS NOT A LADDER. Oddschecker
+            # returns several lines for a market and, on a large minority of
+            # NCAAF events, the SAME price on every one of them: Merrimack at
+            # Delaware came back with the spread at 23.5, 25, 26 and 26.5 and
+            # -110 on both sides of all four. That is arithmetically
+            # impossible -- P(cover -23.5) is not P(cover -26.5) -- so the
+            # rungs carry no line-specific information, and there is no way to
+            # tell which of them (if any) is the real one.
+            #
+            # Left in, they manufactured four "free middles" on that one game:
+            # a -110 attached to the wrong number beat DraftKings' genuine
+            # +27.5 and the pair summed under 1.00. Dropped rather than
+            # guessed at, the same way an unrecognised market is.
+            # Keyed on the ABSOLUTE line, because a spread names its two sides
+            # "+23.5" and "-23.5" -- counting those as two rungs would make a
+            # two-line ladder look like four.
+            rungs: dict = {}
+            for bet in market.get("bets") or []:
+                line_name = (bet.get("line") or {}).get("name")
+                try:
+                    rung = abs(float(line_name))
+                except (TypeError, ValueError):
+                    rung = line_name
+                for odd in bet.get("odds") or []:
+                    if odd.get("status") == "ACTIVE" and odd.get("decimal"):
+                        rungs.setdefault(rung, set()).add(
+                            round(float(odd["decimal"]), 4))
+            if len(rungs) >= 3:
+                distinct = {v for prices in rungs.values() for v in prices}
+                if len(distinct) <= 2:
+                    stats["markets_unmapped"].add(
+                        f"{label} (flat ladder: {len(rungs)} lines, "
+                        f"{len(distinct)} price(s))")
+                    stats["flat_ladders"] = stats.get("flat_ladders", 0) + 1
+                    continue
+
             for bet in market.get("bets") or []:
                 raw_line = (bet.get("line") or {}).get("name")
                 try:
@@ -220,11 +262,30 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                     resolved = book or BOOKMAKER_CODES.get(o.get("bookmakerCode"))
                     if not resolved:
                         continue
-                    norm = normalize_outcome(mkey, oc_name, point, None,
-                                             target.home_team, target.away_team)
-                    if norm is None:
-                        continue
-                    side, subject, gpoint = norm
+                    if mkey.startswith(PLAYER_MARKETS):
+                        # The player is inside the bet name -- "Drake Maye
+                        # Over" at line 220.5 -- and there is no `description`
+                        # field to carry it. Left to normalize_outcome the
+                        # subject is None, so every quarterback's passing line
+                        # lands in ONE group keyed only by the yardage: the
+                        # same collapse that put 106 prop groups on `totals`.
+                        #
+                        # A market whose bets are bare names is a field, not a
+                        # two-sided line -- "Anytime Touchdown Scorer" lists
+                        # twenty players and no opposite side -- and the parser
+                        # returns None for those, so they are dropped rather
+                        # than folded into one group of twenty "sides".
+                        parsed = parse_player_runner(oc_name, point)
+                        if parsed is None:
+                            stats["markets_unmapped"].add(f"{label} (no player)")
+                            continue
+                        side, subject, gpoint = parsed
+                    else:
+                        norm = normalize_outcome(mkey, oc_name, point, None,
+                                                 target.home_team, target.away_team)
+                        if norm is None:
+                            continue
+                        side, subject, gpoint = norm
                     board.group(GroupKey(target.event_id, mkey, subject, gpoint),
                                 target).add(Quote(
                         book=resolved, side=side, decimal=float(price), point=point,

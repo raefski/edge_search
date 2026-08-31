@@ -44,10 +44,39 @@ LEAGUE_PAGES = {"baseball_mlb": "mlb", "americanfootball_nfl": "nfl",
                 "americanfootball_ncaaf": "ncaaf", "basketball_wnba": "wnba",
                 "golf_pga": "pga"}
 
+# Every sport FanDuel serves, by the eventTypeId `page=SPORT` takes.
+#
+# One call per entry returns the whole sport -- every event, every competition
+# in it, and the main-line markets -- where `customPageId` returns one league
+# and only exists for the handful with a slug. That is the difference between
+# scanning five leagues and scanning the book: eleven requests cover soccer,
+# basketball, hockey, football, MMA, boxing and the rest together.
+#
+# Verified live 2026-08-30. Ids absent here (7 horse racing, 72382) 404; ids
+# that answer with nothing in season (rugby union 5, handball 468328,
+# volleyball 998917, cycling 11, winter sports 451485) are omitted rather than
+# polled for an empty list every scan. `attachments.competitions` then splits
+# the sport into leagues -- see catalog.py, which is what decides the
+# sport_key an event lands under.
+SPORT_EVENT_TYPES = {
+    "soccer": 1, "tennis": 2, "golf": 3, "cricket": 4, "boxing": 6,
+    "motorsport": 8, "rugbyleague": 1477, "darts": 3503, "snooker": 6422,
+    "americanfootball": 6423, "baseball": 7511, "basketball": 7522,
+    "icehockey": 7524, "mma": 26420387, "aussierules": 61420,
+}
+
 # game-level markets
 GAME_MARKETS = {
     "MONEY_LINE": ("h2h", None),
-    "MATCH_BETTING": ("h2h", None),        # tennis names its moneyline this way
+    "MATCH_BETTING": ("h2h", None),        # tennis and MMA name their moneyline this way
+    "HEAD_TO_HEAD": ("h2h", None),         # boxing
+    # Soccer's three-way. The hyphens matter: the tolerant fallback below
+    # splits on "_", so this name reaches none of the SPREAD/TOTAL word tests
+    # and without an entry here every soccer moneyline on the board was
+    # dropped -- which is most of what soccer prices.
+    "WIN-DRAW-WIN": ("h2h", None),
+    "MATCH_ODDS": ("h2h", None),
+    "MONEYLINE": ("h2h", None),
     "RUN_LINE": ("spreads", None),
     "ALTERNATE_RUN_LINES": ("spreads", None),
     "SPREAD": ("spreads", None),
@@ -65,9 +94,15 @@ GAME_MARKETS = {
 # Anything naming a period, a single team, or an inning is NOT the full-game
 # market. GroupKey carries no period, so mapping "1ST_HALF_TOTAL_POINTS" to
 # `totals` would pair a half line against a full-game line.
+# "SERIES_" is here for the same reason as "HALF": a playoff-series handicap is
+# not this game's handicap, and SERIES_PLAYER_HANDICAP was reaching the
+# tolerant SPREAD_WORDS fallback on the strength of the word "HANDICAP" alone.
+# NOTE these are only applied to the tolerant fallback, never to the threshold
+# props below -- "TO_HIT_3+_HOME_RUNS" contains "HOME_".
 PERIOD_MARKERS = ("1ST_", "2ND_", "3RD_", "4TH_", "5TH_", "6TH_", "7TH_", "8TH_",
                   "9TH_", "HALF", "QUARTER", "PERIOD", "INNING", "_TEAM_",
-                  "HOME_TEAM", "AWAY_TEAM", "RACE_TO", "FIRST_", "AWAY_", "HOME_")
+                  "HOME_TEAM", "AWAY_TEAM", "RACE_TO", "FIRST_", "AWAY_", "HOME_",
+                  "SERIES_")
 SPREAD_WORDS = ("HANDICAP", "SPREAD", "RUN_LINE", "PUCK_LINE", "LINE_BETTING")
 TOTAL_WORDS = ("TOTAL_POINTS", "TOTAL_RUNS", "TOTAL_GOALS", "OVER/UNDER")
 
@@ -117,6 +152,14 @@ PITCHER_RE = re.compile(
 # which stays 0: "Over 2.5", "Minnesota Twins +6.5".
 OU_NAME_RE = re.compile(r"^(Over|Under)\s+([+-]?[\d.]+)\s*$", re.I)
 TEAM_LINE_RE = re.compile(r"^(.+?)\s+([+-][\d.]+)\s*$")
+# ALTERNATE_HANDICAP writes the line PARENTHESISED inside the runner name --
+# "New England Patriots (-14.5)" -- and leaves `handicap` at 0. Neither of the
+# forms above matches that, so the name stayed whole, the line came back 0, and
+# every rung of the ladder landed on ONE group at line 0: twenty-two spreads
+# per game, both teams, last one winning. FanDuel's alternate spreads were
+# therefore never usable, which matters because alt ladders are where
+# three-book middles come from.
+TEAM_PAREN_RE = re.compile(r"^(.+?)\s*\(\s*([+-][\d.]+)\s*\)\s*$")
 
 # Player runners come in four shapes and the line is not always in `handicap`.
 SIDE_FIRST_RE = re.compile(r"^(Over|Under)\s+([\d.]+)\s+(.*)$", re.I)
@@ -254,12 +297,30 @@ class FanDuelScrape:
             return {}
         return self._get("content-managed-page", page="CUSTOM", customPageId=page)
 
+    def sport_page(self, event_type_id: int) -> dict:
+        """Every event in one SPORT, with its competitions and main lines.
+
+        `page=SPORT` is the shape FanDuel's own app uses for a sport with no
+        league slug, and it is not limited to those: it answers for all
+        fifteen eventTypeIds in SPORT_EVENT_TYPES and returns more than the
+        per-league page does -- 146 soccer events across 108 competitions in
+        one request. `attachments.competitions` names each league, which is
+        what splits the payload back into sport keys.
+        """
+        return self._get("content-managed-page", page="SPORT",
+                         eventTypeId=event_type_id, timezone="America/New_York")
+
     def list_events(self, sport_key: str, data: dict | None = None) -> list[tuple[str, str, datetime]]:
         data = data if data is not None else self.league_page(sport_key)
         out = []
         for eid, ev in ((data.get("attachments") or {}).get("events") or {}).items():
             name, open_date = ev.get("name") or "", ev.get("openDate") or ""
-            if " @ " not in name or open_date.startswith("2099"):
+            # A fixture is "Away @ Home" in a team sport and "A vs B" in an
+            # individual one. Requiring "@" was right while only MLB and the
+            # other US leagues were scanned and silently dropped every soccer,
+            # tennis, MMA and boxing event once they were added -- those are
+            # the sports where props are worth a per-event call.
+            if open_date.startswith("2099") or split_fixture(name) is None:
                 continue          # "MLB Player Markets" and similar containers
             out.append((str(eid), name, _ts(open_date)))
         return out
@@ -268,14 +329,31 @@ class FanDuelScrape:
         return self._get("event-page", eventId=event_id, tab=tab)
 
     def ingest_event(self, board: Board, payload: dict, sport_key: str,
-                     strict_match: bool = True) -> dict:
-        stats = {"markets": 0, "quotes": 0, "unmapped": set(), "unmatched": 0}
+                     strict_match: bool = True, sport_key_of=None) -> dict:
+        """Fold a league, sport or single-event payload onto the board.
+
+        `sport_key_of` is how one SPORT payload becomes many leagues: given the
+        event dict it returns the sport_key that event belongs to, or None to
+        skip it. That routing has to happen here rather than by filtering the
+        payload first, because `sport_key` is the join key match_event() keys
+        on -- put every soccer event under one "soccer" key and Bundesliga
+        fixtures would be candidates to match Serie A ones. Omit it and the
+        whole payload takes the `sport_key` argument, as before.
+        """
+        stats = {"markets": 0, "quotes": 0, "unmapped": set(), "unmatched": 0,
+                 "skipped_events": 0}
         att = payload.get("attachments") or {}
         events, markets = att.get("events") or {}, att.get("markets") or {}
         now = datetime.now(timezone.utc)
 
         targets: dict[str, EventMeta] = {}
         for eid, ev in events.items():
+            if sport_key_of is not None:
+                resolved = sport_key_of(ev)
+                if resolved is None:
+                    stats["skipped_events"] += 1
+                    continue
+                sport_key = resolved
             name = ev.get("name") or ""
             pair = split_fixture(name)
             if pair is not None:
@@ -367,9 +445,12 @@ class FanDuelScrape:
                     from .normalize import normalize_outcome
                     label, line = name, handicap
                     ou = OU_NAME_RE.match(name)
+                    tp = TEAM_PAREN_RE.match(name)
                     tl = TEAM_LINE_RE.match(name)
                     if ou:
                         label, line = ou.group(1), float(ou.group(2))
+                    elif tp:
+                        label, line = tp.group(1), float(tp.group(2))
                     elif tl:
                         label, line = tl.group(1), float(tl.group(2))
                     norm = normalize_outcome(mkey, label, line, None,
