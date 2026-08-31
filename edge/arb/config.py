@@ -130,6 +130,18 @@ class ArbConfig:
     # leagues catalog.props_sports() marks get them, and only this many events
     # each -- soonest first, which is where the lines are firmest.
     prop_events_per_league: int = 6
+    # FanDuel's alternate ladders. The SPORT page carries one line per market;
+    # the alternates are on the per-event `popular` tab only, so depth costs
+    # one request per event. It is the biggest single lever on cross-book
+    # coverage -- FanDuel is the spine (250+ events) and without this it
+    # contributes 1.4 rungs per event against DraftKings' 8.6, so its line
+    # pairs only when another book happens to hang the same number.
+    #
+    # Measured 2026-08-31: one MLB game returns 19 alternate total rungs and
+    # 15 alternate run-line rungs. Set fanduel_alt_line_events to 0 to skip the
+    # pass entirely and get the old, faster, shallower scan back.
+    fanduel_alt_line_events: int = 30       # per league, soonest first
+    fanduel_max_alt_events: int = 400       # global ceiling on the extra calls
     request_gap_seconds: float = 0.35
 
     # Oddschecker league ids for Fanatics. bettypeIds are per sport: 1 and 525

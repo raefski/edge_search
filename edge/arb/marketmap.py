@@ -26,6 +26,10 @@ NOT_FULL_GAME = re.compile("|".join((
     r"\b(1st|2nd|3rd|4th|5th|6th|7th|8th|9th|first|second|third|fourth)\b"
     r".{0,24}\b(half|quarter|period|innings?|set|map|round)\b",
     r"\b(half|quarter|period|innings?)\b\s*[-–—]?\s*\b(1st|2nd|3rd|4th|first|second)\b",
+    # "Set 1 Game Handicap" -- the period numbered with a bare digit rather
+    # than an ordinal. FanDuel names all three of a tennis match's set
+    # handicaps with ONE marketType and distinguishes them only in marketName.
+    r"\b(set|period|quarter|half|map|innings?)\s*\d+\b",
     r"\bhalf ?time\b|\bfull ?time\b|\bht/ft\b|\brest of (match|game)\b|\bhalves\b",
     # "(Regular Time)" is a settlement basis, not a decoration. DraftKings
     # prices soccer "Spread" and "Alt Spread (Regular Time)" as two ladders on

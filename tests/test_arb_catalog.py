@@ -904,3 +904,109 @@ def test_a_two_rung_market_is_not_treated_as_a_flat_ladder():
         book="fanatics", sport_key="americanfootball_ncaaf", strict_match=False)
     assert st["flat_ladders"] == 0
     assert len(board.groups) == 2
+
+
+# --- FanDuel alternate ladders ----------------------------------------------
+def test_alt_line_events_are_queued_for_catalogued_leagues_only():
+    """FanDuel's SPORT page carries ONE line per market. Its alternate ladders
+    live on the per-event `popular` tab only -- one MLB game returns 19 alt
+    total rungs and 15 alt run-line rungs -- so depth costs a request per
+    event, and it is spent where another book is actually likely to be."""
+    from edge.arb import catalog as cat
+    assert "baseball_mlb" in cat.BY_KEY
+    assert cat.generic_key("soccer", "Bulgarian A PFG") not in cat.BY_KEY
+
+
+def test_the_alt_pass_does_not_refetch_what_the_prop_pass_covered():
+    """An event in the prop queue already gets `popular`, which is where the
+    alternates are; asking again would buy nothing and cost a request."""
+    prop_queue = [("baseball_mlb", "1"), ("baseball_mlb", "2")]
+    alt_targets = [("baseball_mlb", "1"), ("baseball_mlb", "3")]
+    covered = {eid for _k, eid in prop_queue}
+    assert [(k, e) for k, e in alt_targets if e not in covered] == [("baseball_mlb", "3")]
+
+
+def test_alternate_handicap_and_ladders_classify_as_game_markets():
+    """These are the market types the extra call exists to collect."""
+    from edge.arb.fanduel import classify
+    for mt in ("ALTERNATE_HANDICAP", "ALTERNATE_RUN_LINES", "ALTERNATE_SPREAD",
+               "ALTERNATE_MATCH_HANDICAP"):
+        assert classify(mt)[0] == "spreads", mt
+    for mt in ("ALTERNATE_TOTAL_RUNS", "ALTERNATE_TOTAL_POINTS",
+               "ALTERNATE_TOTAL_POINTS_(OVER/UNDER)"):
+        assert classify(mt)[0] == "totals", mt
+
+
+def test_the_alt_pass_can_be_turned_off():
+    from edge.arb.config import ArbConfig
+    cfg = ArbConfig()
+    assert cfg.fanduel_alt_line_events > 0, "on by default"
+    cfg.fanduel_alt_line_events = 0
+    assert cfg.fanduel_alt_line_events == 0
+
+
+# --- FanDuel reuses one marketType across periods ---------------------------
+@pytest.mark.parametrize("market_name", [
+    "Set 1 Game Handicap", "Set 2 Game Handicap", "Set 3 Total Games",
+    "Quarter 2 Spread", "Period 3 Total",
+])
+def test_a_period_named_with_a_bare_digit_is_refused(market_name):
+    """The ordinal patterns only caught "1st"/"first". FanDuel numbers tennis
+    sets "Set 1", and gives all three of a match's set handicaps the SAME
+    marketType (MAIN_SET_GAME_HANDICAP) -- the period lives only in
+    marketName. All three landed on one `spreads` key at the same numbers:
+    67 same-book price conflicts in one scan."""
+    assert not is_full_game(market_name)
+
+
+def test_the_full_match_tennis_markets_are_kept_and_kept_apart():
+    from edge.arb.fanduel import classify
+    assert is_full_game("Alternative Game Spread")
+    assert is_full_game("Match Total Games")
+    # sets and games are different axes and must not share a key
+    assert classify("ALTERNATIVE_MATCH_GAME_HANDICAP")[0] == "spreads_games"
+    assert classify("MATCH_TOTAL_GAMES")[0] == "totals_games"
+    assert classify("MATCH_TOTAL_GAMES")[0] != classify("TOTAL_POINTS_(OVER/UNDER)")[0]
+
+
+def test_a_market_is_refused_on_its_name_even_when_its_type_maps():
+    """MAIN_SET_GAME_HANDICAP classifies as `spreads` on its type alone. Only
+    the name says it is one set's handicap, so the name has to be checked."""
+    from edge.arb.fanduel import FanDuelScrape, classify
+    from edge.arb.models import Board
+    assert classify("MAIN_SET_GAME_HANDICAP")[0] == "spreads"   # type alone maps
+    soon = (datetime.now(timezone.utc) + timedelta(hours=6)).strftime(
+        "%Y-%m-%dT%H:%M:%S.000Z")
+
+    def market(name):
+        return {"eventId": "1", "marketType": "MAIN_SET_GAME_HANDICAP",
+                "marketName": name, "marketStatus": "OPEN",
+                "runners": [{"runnerName": f"{who} {sign}1.5", "runnerStatus": "ACTIVE",
+                             "handicap": 0,
+                             "winRunnerOdds": {"trueOdds": {"decimalOdds":
+                                                            {"decimalOdds": 1.9}}}}
+                            for who, sign in (("Starodubtseva", "-"), ("Seidel", "+"))]}
+
+    payload = {"attachments": {
+        "events": {"1": {"name": "Starodubtseva v Seidel", "openDate": soon}},
+        "markets": {"a": market("Set 1 Game Handicap"),
+                    "b": market("Set 2 Game Handicap"),
+                    "c": market("Set 3 Game Handicap")}}}
+    board = Board()
+    FanDuelScrape.ingest_event(FanDuelScrape.__new__(FanDuelScrape), board, payload,
+                               "tennis_atp", strict_match=False)
+    assert not board.groups
+    assert not any(g.conflicts for g in board.groups.values())
+
+
+def test_one_players_total_is_not_the_games_total():
+    """PLAYER_A_TOTAL_POINTS reached the tolerant TOTAL_WORDS fallback and was
+    filed as the GAME total -- the same shape as the DraftKings team total,
+    and it also pollutes the totals ladder the middle finder walks."""
+    from edge.arb.fanduel import classify
+    assert classify("PLAYER_A_TOTAL_POINTS") is None
+    assert classify("PLAYER_B_TOTAL_POINTS") is None
+    # the trailing underscore matters: PLAYER_A is a prefix of PLAYER_ASSISTS,
+    # and the game total itself must survive
+    assert classify("TOTAL_POINTS_(OVER/UNDER)")[0] == "totals"
+    assert classify("ALTERNATE_TOTAL_RUNS")[0] == "totals"

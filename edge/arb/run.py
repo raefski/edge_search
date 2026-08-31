@@ -51,6 +51,7 @@ def _fanduel_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
     wanted = _wanted(cfg)
     quotes = 0
     prop_targets: list[tuple[str, str]] = []       # (sport_key, fanduel event id)
+    alt_targets: list[tuple[str, str]] = []       # same, for the alt-line pass
     for sport, event_type in SPORT_EVENT_TYPES.items():
         try:
             payload = fd.sport_page(event_type)
@@ -74,16 +75,28 @@ def _fanduel_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
                              sport_key_of=sport_key_of)
         quotes += st["quotes"]
 
-        # Queue the per-event prop calls, soonest first. Only for the leagues
-        # the catalog marks -- props are one request per event per tab, which
-        # is most of a scan's time, and they only pay where two books post the
-        # same stat.
+        # Queue the per-event calls, soonest first. Two queues, because they
+        # buy different things and cost differently:
+        #
+        #   props     one request per event PER TAB, and only where the
+        #             catalog says two books post the same stat
+        #   alt lines one request per event, for every catalogued league
+        #
+        # The SPORT page carries exactly ONE line per market -- the main one.
+        # FanDuel's alternate ladders exist only on the per-event `popular`
+        # tab, where a single MLB game returned 19 alternate total rungs and
+        # 15 alternate run-line rungs. Without that call FanDuel contributed
+        # 1.4 rungs per event against DraftKings' 8.6, so its main line only
+        # ever paired when another book happened to hang the same number.
+        # There is no league-wide shortcut: `game-lines`, `alternate-lines`,
+        # `totals` and `spreads` as tab values all fall through to a default
+        # payload with no alternates in it.
         now = datetime.now(timezone.utc)
         events = (payload.get("attachments") or {}).get("events") or {}
         per_league: dict[str, list[tuple[datetime, str]]] = {}
         for eid, ev in events.items():
             key = sport_key_of(ev)
-            if key is None or key not in catalog.props_sports():
+            if key is None:
                 continue
             when = _ts_iso(ev.get("openDate"))
             minutes = (when - now).total_seconds() / 60.0
@@ -95,10 +108,26 @@ def _fanduel_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
             per_league.setdefault(key, []).append((when, str(eid)))
         for key, rows in per_league.items():
             rows.sort()
-            prop_targets += [(key, eid) for _w, eid in rows[: cfg.prop_events_per_league]]
+            if key in catalog.props_sports():
+                prop_targets += [(key, eid) for _w, eid in
+                                 rows[: cfg.prop_events_per_league]]
+            # Alt lines only for leagues the catalog names: those are the ones
+            # another book is actually likely to be on, and an uncatalogued
+            # competition pairs only when two books spell it identically.
+            if key in catalog.BY_KEY:
+                alt_targets += [(key, eid) for _w, eid in
+                                rows[: cfg.fanduel_alt_line_events]]
 
-    stats["fanduel_prop_events"] = len(prop_targets)
-    for key, eid in prop_targets[: cfg.fanduel_max_events]:
+    prop_queue = prop_targets[: cfg.fanduel_max_events]
+    # An event in the prop queue already gets `popular`, which is where the
+    # alternates are -- so asking for it again would buy nothing.
+    covered = {eid for _k, eid in prop_queue}
+    alt_queue = [(k, eid) for k, eid in alt_targets
+                 if eid not in covered][: cfg.fanduel_max_alt_events]
+    stats["fanduel_prop_events"] = len(prop_queue)
+    stats["fanduel_alt_events"] = len(alt_queue)
+
+    for key, eid in prop_queue:
         time.sleep(cfg.request_gap_seconds)
         for tab in cfg.fanduel_tabs:
             try:
@@ -108,6 +137,15 @@ def _fanduel_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
             quotes += fd.ingest_event(board, payload, key,
                                       strict_match=False)["quotes"]
             time.sleep(cfg.request_gap_seconds)
+
+    for key, eid in alt_queue:
+        time.sleep(cfg.request_gap_seconds)
+        try:
+            payload = fd.event_markets(eid, tab="popular")
+        except Exception:                          # noqa: BLE001
+            continue
+        quotes += fd.ingest_event(board, payload, key,
+                                  strict_match=False)["quotes"]
     stats["fanduel"] = quotes
 
 

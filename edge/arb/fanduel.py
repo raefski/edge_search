@@ -20,6 +20,7 @@ from . import http as requests
 
 from .models import Board, EventMeta, GroupKey, Quote, field_event
 from .matching import match_event
+from .marketmap import is_full_game
 from .normalize import slug, split_fixture
 
 _FRAC_RE = re.compile(r"\.(\d{1,6})\d*")
@@ -86,6 +87,12 @@ GAME_MARKETS = {
     "TOTAL_POINTS": ("totals", None),
     "ALTERNATE_TOTAL_POINTS": ("totals", None),
     "MATCH_HANDICAP_(2-WAY)": ("spreads", None),
+    # Tennis counts sets and games and calls both a handicap. These two are
+    # the whole match; the per-set ones share a marketType with each other and
+    # are refused on their marketName instead -- see ingest_event.
+    "ALTERNATIVE_MATCH_GAME_HANDICAP": ("spreads_games", None),
+    "MATCH_TOTAL_GAMES": ("totals_games", None),
+    "ALTERNATIVE_MATCH_TOTAL_GAMES": ("totals_games", None),
     "TOTAL_POINTS_(OVER/UNDER)": ("totals", None),
     "ALTERNATE_MATCH_HANDICAP": ("spreads", None),
     "ALTERNATE_TOTAL_POINTS_(OVER/UNDER)": ("totals", None),
@@ -102,7 +109,13 @@ GAME_MARKETS = {
 PERIOD_MARKERS = ("1ST_", "2ND_", "3RD_", "4TH_", "5TH_", "6TH_", "7TH_", "8TH_",
                   "9TH_", "HALF", "QUARTER", "PERIOD", "INNING", "_TEAM_",
                   "HOME_TEAM", "AWAY_TEAM", "RACE_TO", "FIRST_", "AWAY_", "HOME_",
-                  "SERIES_")
+                  "SERIES_",
+                  # PLAYER_A_TOTAL_POINTS is one player's points, and the
+                  # tolerant TOTAL_WORDS fallback was filing it as the GAME
+                  # total -- the same shape as the DraftKings team total. The
+                  # trailing underscore matters: "PLAYER_A" alone is a prefix
+                  # of PLAYER_ASSISTS.
+                  "PLAYER_A_", "PLAYER_B_")
 SPREAD_WORDS = ("HANDICAP", "SPREAD", "RUN_LINE", "PUCK_LINE", "LINE_BETTING")
 TOTAL_WORDS = ("TOTAL_POINTS", "TOTAL_RUNS", "TOTAL_GOALS", "OVER/UNDER")
 
@@ -390,6 +403,14 @@ class FanDuelScrape:
             if target is None or m.get("marketStatus") not in (None, "OPEN"):
                 continue
             stats["markets"] += 1
+            # The marketType is not always enough. FanDuel reuses ONE type
+            # across periods and says which only in marketName: all three of a
+            # tennis match's set handicaps are MAIN_SET_GAME_HANDICAP, named
+            # "Set 1/2/3 Game Handicap", and they landed on one `spreads` key
+            # at the same numbers -- 67 same-book price conflicts in a scan.
+            if not is_full_game(m.get("marketName") or ""):
+                stats["unmapped"].add(m.get("marketName"))
+                continue
             hit = classify(m.get("marketType") or "")
             if hit is None:
                 stats["unmapped"].add(m.get("marketType"))
