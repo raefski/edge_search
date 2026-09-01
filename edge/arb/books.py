@@ -176,7 +176,8 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
     trustworthy without a period field.
     """
     stats = {"events": 0, "matched": 0, "unmatched": 0, "quotes": 0, "live_skipped": 0,
-             "flat_ladders": 0, "markets_seen": set(), "markets_unmapped": set()}
+             "flat_ladders": 0, "placeholder_rungs": 0,
+             "markets_seen": set(), "markets_unmapped": set()}
 
     from .fanduel import parse_player_runner
 
@@ -225,6 +226,10 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
             # Keyed on the ABSOLUTE line, because a spread names its two sides
             # "+23.5" and "-23.5" -- counting those as two rungs would make a
             # two-line ladder look like four.
+            # rung -> {bet name: decimal}. Both sides of a line are needed to
+            # judge it, and the bet NAME is what separates them -- keying on
+            # the price alone cannot tell a symmetric two-sided rung from a
+            # one-sided one that happens to carry a single price.
             rungs: dict = {}
             for bet in market.get("bets") or []:
                 line_name = (bet.get("line") or {}).get("name")
@@ -234,10 +239,10 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                     rung = line_name
                 for odd in bet.get("odds") or []:
                     if odd.get("status") == "ACTIVE" and odd.get("decimal"):
-                        rungs.setdefault(rung, set()).add(
-                            round(float(odd["decimal"]), 4))
+                        rungs.setdefault(rung, {})[bet.get("name")] = round(
+                            float(odd["decimal"]), 4)
             if len(rungs) >= 3:
-                distinct = {v for prices in rungs.values() for v in prices}
+                distinct = {v for prices in rungs.values() for v in prices.values()}
                 if len(distinct) <= 2:
                     stats["markets_unmapped"].add(
                         f"{label} (flat ladder: {len(rungs)} lines, "
@@ -245,12 +250,37 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                     stats["flat_ladders"] = stats.get("flat_ladders", 0) + 1
                     continue
 
+            # ...and the PARTIAL version of the same thing, which the check
+            # above is too blunt to see. North Carolina A&T at Georgia State
+            # came back with Total Points at 63.5, 56 and 55.5 all -110/-110
+            # plus a real 64.5 at -105/-115. Three distinct prices in the
+            # market, so nothing fired, and Over 55.5 at -110 went on the board
+            # against a genuine DraftKings Under 56.5 -- reported as a free
+            # middle. Over 55.5 and Over 63.5 cannot both be -110; they are
+            # eight points apart. The book's own app had the total at 56.5 with
+            # the over at -235, a line the feed does not even carry.
+            #
+            # A real ladder prices at most ONE rung symmetrically -- the main
+            # line. Two or more rungs at identical prices on both sides are
+            # placeholders, and there is no way to tell which of them (if any)
+            # is the real one, so they all go.
+            symmetric = {rung for rung, prices in rungs.items()
+                         if len(prices) >= 2 and len(set(prices.values())) == 1}
+            placeholder = symmetric if len(symmetric) >= 2 else set()
+            if placeholder:
+                stats["markets_unmapped"].add(
+                    f"{label} (placeholder rungs at {sorted(placeholder)})")
+                stats["placeholder_rungs"] = (stats.get("placeholder_rungs", 0)
+                                              + len(placeholder))
+
             for bet in market.get("bets") or []:
                 raw_line = (bet.get("line") or {}).get("name")
                 try:
                     point = float(raw_line) if raw_line not in (None, "") else None
                 except (TypeError, ValueError):
                     point = None
+                if point is not None and abs(point) in placeholder:
+                    continue
                 oc_name = bet.get("name") or ""
 
                 for o in bet.get("odds") or []:

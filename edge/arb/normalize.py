@@ -100,6 +100,10 @@ def pick_team_side(name: str, home_team: str | None, away_team: str | None,
     return "home" if sh > sa else "away"
 
 
+def is_totals_market(market: str) -> bool:
+    return market.startswith("totals") or market.endswith("_totals")
+
+
 def is_team_side(market: str) -> bool:
     """h2h / spread markets whose outcome name is a team rather than Over/Under."""
     return market.startswith(("h2h", "spreads", "alternate_spreads")) or "_spreads" in market or "_h2h" in market
@@ -125,6 +129,15 @@ def normalize_outcome(
         return None
 
     low = name.lower()
+
+    # A TOTAL WITHOUT A LINE IS NOT A BET. The same hole the spread branch
+    # below closes, on the other axis: a market keyed `totals` whose line does
+    # not parse fell through to the team-moneyline rule, so every rung of it
+    # landed on ONE keyless group and the last one won. That is how FanDuel's
+    # rugby league parlays -- "Bulldogs & Over (52.5) Points" -- produced 286
+    # same-book price conflicts in a single scan.
+    if is_totals_market(market) and point is None:
+        return None
 
     # 1. Over/Under: totals, team totals, and the bulk of player props.
     if low in OVER_UNDER_NAMES:

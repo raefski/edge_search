@@ -33,11 +33,32 @@ def normalize_team(name: str) -> str:
     return " ".join(words).strip()
 
 
+# Tokens that trail a team name to qualify the SQUAD, not to name it. They
+# are the last word for BOTH teams in a fixture, which is exactly what mascot()
+# must not key on -- see below.
+QUALIFIERS = {"women", "w", "men", "m", "ii", "b", "reserves", "youth",
+              "u17", "u18", "u19", "u20", "u21", "u23"}
+
+
 def mascot(name: str) -> str:
     """Last word of a team name -- the most stable token across sources
-    ('Yankees', 'Chiefs'). Cities get abbreviated; mascots rarely do."""
-    norm = normalize_team(name)
-    return norm.split()[-1] if norm else ""
+    ('Yankees', 'Chiefs'). Cities get abbreviated; mascots rarely do.
+
+    Trailing squad qualifiers are stepped over first. In a women's fixture
+    every team ends in "Women", so the bare last word made the mascot shortcut
+    below fire between the two SIDES of one match: "St George Illawarra
+    Dragons Women" scored 0.85 against "Brisbane Broncos Women" -- beating its
+    genuine 0.50 against the away name the event actually carried -- and both
+    runners were filed as `home`.
+
+    They are stripped here and NOT in normalize_team, deliberately: dropping
+    "Women" from the name itself would let a women's fixture match the men's
+    fixture of the same two clubs, which is a worse error than missing one.
+    """
+    words = [w for w in normalize_team(name).split() if w]
+    while len(words) > 1 and words[-1] in QUALIFIERS:
+        words.pop()
+    return words[-1] if words else ""
 
 
 # Words that distinguish two different schools rather than naming a mascot.

@@ -52,6 +52,24 @@ NOT_FULL_GAME = re.compile("|".join((
     # arb_sum of 0.397.
     r"\bodd/even\b|\bcorrect score\b|\bset betting\b|\bdouble chance\b|\bboth halves\b",
     r"\binterval\b|\bbands?\b|\bexact\b",
+    # Same-game parlays. FanDuel's NRL page carries "Head to Head / Total
+    # Points Parlay" and friends, whose marketTypes contain TOTAL_POINTS and
+    # so reached the totals rule; the runners are "Bulldogs & Over (52.5)
+    # Points", which no line parses out of, so every one of them collapsed
+    # onto a single keyless `totals` group. A parlay is two bets and cannot be
+    # arbitraged as one anyway -- see HANDOFF.md section 5.
+    # `_doubles?` with the leading underscore, NOT a bare \bdoubles?\b: the
+    # bare form also matched "Doubles O/U", which is a batter's two-base hits.
+    # The parlay marketTypes are underscore-joined (TOTAL_POINTS_DOUBLE), and
+    # their display names all say "Parlay".
+    r"\bparlay\b|_doubles?\b",
+    # The three-way variant of a two-way market is a DIFFERENT bet: the
+    # two-way pushes where the three-way pays a third outcome. DraftKings'
+    # golf pairings already had this documented; FanDuel's rugby league page
+    # offers "Moneyline" and "Moneyline (3-Way)" on one match, and both were
+    # writing to the same h2h key. Soccer is unaffected -- its three-way IS
+    # the market and is named WIN-DRAW-WIN, not "3-Way".
+    r"\b3[-  ]?way\b",
     # Soccer's derivatives of the moneyline. "To Win To Nil" is a different bet
     # from "to win" -- it also requires a clean sheet -- and it was mapping to
     # h2h off the bare `to win` in the rule below. Fanatics posted Eintracht

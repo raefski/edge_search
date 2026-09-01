@@ -893,17 +893,72 @@ def test_a_ladder_that_reprices_is_kept():
     assert len(board.groups) == 4
 
 
-def test_a_two_rung_market_is_not_treated_as_a_flat_ladder():
-    """Three lines is the threshold: with only two, identical juice on both is
-    ordinary rather than impossible."""
+def test_one_symmetric_rung_is_the_main_line_and_is_kept():
+    """A book prices its main line -110 both ways all the time. It is the
+    SECOND symmetric rung that is impossible, so one is left alone."""
     from edge.arb.books import ingest_oddschecker
     from edge.arb.models import Board
     board = Board()
     st = ingest_oddschecker(board, _ladder_payload([
-        (23.5, 1.9091, 1.9091), (25, 1.9091, 1.9091)]),
+        (28.5, 1.9091, 1.9091),      # the main line, symmetric and real
+        (29, 1.8696, 1.9524), (29.5, 1.8696, 1.9524), (28, 2.0, 1.8333)]),
         book="fanatics", sport_key="americanfootball_ncaaf", strict_match=False)
-    assert st["flat_ladders"] == 0
-    assert len(board.groups) == 2
+    assert st["placeholder_rungs"] == 0
+    # spreads fold onto the home axis, so the sign is the home team's
+    assert sorted(abs(g.key.point) for g in board.groups.values()) == \
+        [28.0, 28.5, 29.0, 29.5]
+
+
+def test_placeholder_rungs_are_dropped_without_taking_the_real_one():
+    """The partial version, which the whole-market check is too blunt to see.
+    North Carolina A&T at Georgia State came back with Total Points at 63.5, 56
+    and 55.5 all -110/-110 plus a real 64.5 at -105/-115. Three distinct prices
+    in the market, so the flat-ladder check did not fire, and Over 55.5 at -110
+    went on the board against a genuine DraftKings Under 56.5 and was reported
+    as a free middle. Over 55.5 and Over 63.5 cannot both be -110 -- they are
+    eight points apart -- and the book's own app had the total at 56.5 with the
+    over at -235, a line the feed does not even carry."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board
+    soon = (datetime.now(timezone.utc) + timedelta(hours=6)).isoformat()
+    bets = []
+    for line, over, under in [(63.5, 1.9091, 1.9091), (56, 1.9091, 1.9091),
+                              (55.5, 1.9091, 1.9091), (64.5, 1.9524, 1.8696)]:
+        for name, dec in (("Over", over), ("Under", under)):
+            bets.append({"name": name, "line": {"name": str(line)},
+                         "odds": [{"bookmakerCode": "FNP", "status": "ACTIVE",
+                                   "decimal": dec}]})
+    payload = {"subevents": [{"id": 1, "name": "North Carolina A&T at Georgia State",
+                              "startTime": soon, "inRunning": False,
+                              "homeTeam": {"name": "Georgia State"},
+                              "awayTeam": {"name": "North Carolina A&T"},
+                              "markets": [{"betTypeId": 526, "name": "Total Points",
+                                           "bets": bets}]}]}
+    board = Board()
+    st = ingest_oddschecker(board, payload, book="fanatics",
+                            sport_key="americanfootball_ncaaf", strict_match=False)
+    assert st["placeholder_rungs"] == 3
+    assert sorted(g.key.point for g in board.groups.values()) == [64.5]
+
+
+def test_a_one_sided_rung_is_not_mistaken_for_a_symmetric_one():
+    """Both sides are needed to call a rung symmetric: keying on the price
+    alone cannot tell a two-sided -110/-110 from a lone quote."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board
+    soon = (datetime.now(timezone.utc) + timedelta(hours=6)).isoformat()
+    bets = [{"name": "Over", "line": {"name": str(ln)},
+             "odds": [{"bookmakerCode": "FNP", "status": "ACTIVE", "decimal": 1.9091}]}
+            for ln in (55.5, 56.5, 57.5)]
+    payload = {"subevents": [{"id": 1, "name": "A at B", "startTime": soon,
+                              "inRunning": False,
+                              "homeTeam": {"name": "B"}, "awayTeam": {"name": "A"},
+                              "markets": [{"betTypeId": 526, "name": "Total Points",
+                                           "bets": bets}]}]}
+    board = Board()
+    st = ingest_oddschecker(board, payload, book="fanatics",
+                            sport_key="americanfootball_ncaaf", strict_match=False)
+    assert st["placeholder_rungs"] == 0
 
 
 # --- FanDuel alternate ladders ----------------------------------------------
@@ -1010,3 +1065,89 @@ def test_one_players_total_is_not_the_games_total():
     # and the game total itself must survive
     assert classify("TOTAL_POINTS_(OVER/UNDER)")[0] == "totals"
     assert classify("ALTERNATE_TOTAL_RUNS")[0] == "totals"
+
+
+# --- parlays, three-way variants, and totals with no line -------------------
+@pytest.mark.parametrize("name", [
+    "Head to Head / Total Points Parlay", "Margin / Total Points Parlay",
+    "Line & Total Points Parlay", "Same Game Parlay",
+])
+def test_parlay_markets_are_refused(name):
+    """FanDuel's rugby league page carries these, and their marketTypes contain
+    TOTAL_POINTS so they reached the totals rule. The runners are "Bulldogs &
+    Over (52.5) Points" -- no line parses out -- so all of them collapsed onto
+    one keyless `totals` group: 286 same-book price conflicts in a scan. A
+    parlay is two bets and cannot be arbitraged as one regardless."""
+    assert not is_full_game(name)
+
+
+@pytest.mark.parametrize("name", ["HEAD_TO_HEAD/TOTAL_POINTS_DOUBLE",
+                                  "LINE_&_TOTAL_POINTS_DOUBLES"])
+def test_parlay_market_types_are_refused_too(name):
+    assert not is_full_game(name)
+
+
+def test_a_batters_doubles_are_not_a_parlay():
+    """The first version of the parlay guard used a bare \bdoubles?\b and
+    killed "Doubles O/U" -- a batter's two-base hits. The parlay marketTypes
+    are underscore-joined, so the guard requires the underscore."""
+    assert is_full_game("Doubles O/U")
+    assert canonical_market("Doubles O/U", player="Tatis") == "batter_doubles"
+
+
+@pytest.mark.parametrize("name", ["Moneyline (3-Way)", "Spread (3-Way)",
+                                  "Total Runs (3-Way)", "1st Quarter Winner 3-Way"])
+def test_three_way_variants_are_refused(name):
+    """A two-way market pushes where its three-way variant pays a third
+    outcome, so they are different bets. FanDuel offers "Moneyline" and
+    "Moneyline (3-Way)" on one rugby league match and both wrote to h2h."""
+    assert not is_full_game(name)
+
+
+def test_soccers_three_way_moneyline_is_untouched():
+    """Soccer's three-way IS the market, and it is named WIN-DRAW-WIN rather
+    than "3-Way" -- so the guard above must not reach it."""
+    from edge.arb.fanduel import classify
+    assert classify("WIN-DRAW-WIN")[0] == "h2h"
+    assert is_full_game("Win Market") and canonical_market("Win Market") == "h2h"
+
+
+def test_a_total_without_a_line_is_not_a_moneyline():
+    """The spread branch already refused this on its own axis. Without the
+    same guard on totals, a market keyed `totals` whose line does not parse
+    fell through to the team rule and every rung landed on one keyless group."""
+    from edge.arb.normalize import normalize_outcome, is_totals_market
+    assert is_totals_market("totals") and is_totals_market("totals_games")
+    assert is_totals_market("alternate_totals") and not is_totals_market("h2h")
+    assert normalize_outcome("totals", "Canterbury Bulldogs", None, None,
+                             "Brisbane Broncos", "Canterbury Bulldogs") is None
+    # ...but a real total still lands
+    assert normalize_outcome("totals", "Over", 52.5, None,
+                             "Brisbane Broncos", "Canterbury Bulldogs") == \
+        ("over", None, 52.5)
+
+
+def test_a_squad_qualifier_is_not_treated_as_the_mascot():
+    """In a women's fixture every team ends in "Women", so the bare last word
+    made the mascot shortcut fire between the two SIDES of one match: "St
+    George Illawarra Dragons Women" scored 0.85 against "Brisbane Broncos
+    Women", beat its genuine 0.50 against the away name, and both runners were
+    filed as `home`."""
+    from edge.arb.matching import mascot, team_similarity
+    from edge.arb.normalize import pick_team_side
+    assert mascot("St George Illawarra Dragons Women") == "dragons"
+    assert mascot("Brisbane Broncos Women") == "broncos"
+    assert mascot("New York Yankees") == "yankees"          # unchanged
+    # the two sides of one women's fixture no longer look alike
+    assert team_similarity("St George Illawarra Dragons Women",
+                           "Brisbane Broncos Women") < 0.6
+    assert pick_team_side("Brisbane Broncos Women", "Brisbane Broncos Women",
+                          "St George Illawarra Drag") == "home"
+
+
+def test_qualifiers_are_stripped_in_the_mascot_not_in_the_name():
+    """Dropping "Women" from the name itself would let a women's fixture match
+    the men's fixture of the same two clubs -- a worse error than missing one.
+    So normalize_team keeps it and only mascot() steps over it."""
+    from edge.arb.matching import normalize_team
+    assert "women" in normalize_team("Brisbane Broncos Women")

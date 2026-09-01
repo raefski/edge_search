@@ -807,7 +807,12 @@ def test_a_three_way_golf_market_is_not_paired_with_a_two_way_one():
     }, sport_key="golf_pga", strict_match=False, event=ev)
     assert st["quotes"] == 0
     assert not [g for g in board.groups.values() if g.key.market.startswith("golf_")]
-    assert any("three-way" in u for u in st["markets_unmapped"])
+    # Refused, and now refused EARLIER than it used to be: "(3 Way)" in the
+    # name is caught by marketmap's guard before the runner count is reached,
+    # because FanDuel offers the same two-way/three-way pair on rugby league
+    # moneylines where there are no runners to count. Either reason is fine;
+    # what matters is that it never reaches a golf_ key.
+    assert any("3 Way" in u or "three-way" in u for u in st["markets_unmapped"])
 
 
 # --- DraftKings league discovery -------------------------------------------
