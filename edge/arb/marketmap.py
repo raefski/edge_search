@@ -152,6 +152,10 @@ RULES: list[tuple[str, str]] = [
     (r"\bboth teams to score\b", "btts"),
 ]
 
+# How books join the parts of a COMBINED stat. "+" was the only one handled,
+# and Fanatics uses commas.
+_SEP = r"(?:\s*[+,&/]\s*|\s+and\s+|\s+)"
+
 # player prop stat -> canonical suffix, matched against the market name
 PLAYER_STATS: list[tuple[str, str]] = [
     # ---- ORDER MATTERS: specific and combo markets before general ones.
@@ -160,10 +164,17 @@ PLAYER_STATS: list[tuple[str, str]] = [
     # A mismapped market is worse than an unmapped one: it pairs two different
     # bets and invents an arbitrage, where an unmapped one is simply dropped.
 
-    # combos -- must precede the single-stat patterns they contain
-    (r"hits\s*\+\s*runs\s*\+\s*rbis", "batter_hits_runs_rbis"),
-    (r"hits\s*\+\s*walks\s*\+\s*stolen bases", None),
-    (r"hits\s*\+\s*runs\s*\+\s*stolen bases", None),
+    # combos -- must precede the single-stat patterns they contain.
+    #
+    # The separator is NOT just "+". Fanatics writes the same market with
+    # commas -- "Player Hits, Runs, RBIs" -- which fell past a plus-only
+    # pattern and landed on `batter_rbis` via the bare \brbis?\b rule below.
+    # Shohei Ohtani's H+R+RBI Under 2.5 was then filed as his RBI Under 2.5 and
+    # paired against a genuine FanDuel RBI Over 1.5: a reported free middle
+    # between two completely different stats. His actual RBI line is 0.5.
+    (rf"hits{_SEP}runs{_SEP}rbis", "batter_hits_runs_rbis"),
+    (rf"hits{_SEP}walks{_SEP}stolen bases", None),
+    (rf"hits{_SEP}runs{_SEP}stolen bases", None),
     (r"extra base hits", None),
     (r"plate appearance", None),
     (r"1st inning runs|first inning runs", None),
@@ -219,7 +230,8 @@ PLAYER_STATS: list[tuple[str, str]] = [
     (r"anytime touchdown|anytime td|to score a touchdown", "player_anytime_td"),
 
     # basketball
-    (r"points \+ rebounds \+ assists|pts \+ reb \+ ast", "player_points_rebounds_assists"),
+    (rf"points{_SEP}rebounds{_SEP}assists|pts{_SEP}reb{_SEP}ast",
+     "player_points_rebounds_assists"),
     (r"three pointers?|3 ?pointers?|threes made", "player_threes"),
     (r"\bpoints\b", "player_points"),
     (r"\brebounds?\b", "player_rebounds"),

@@ -310,6 +310,13 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                             stats["markets_unmapped"].add(f"{label} (no player)")
                             continue
                         side, subject, gpoint = parsed
+                        # The line often lives in the bet NAME ("Shohei Ohtani
+                        # Under 2.5") with the line field empty, and the quote
+                        # kept that empty value -- so the app showed a leg with
+                        # a blank Line column, which is exactly the cell you
+                        # would check to notice the market was wrong.
+                        if point is None:
+                            point = gpoint
                     else:
                         norm = normalize_outcome(mkey, oc_name, point, None,
                                                  target.home_team, target.away_team)

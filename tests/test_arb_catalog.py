@@ -1151,3 +1151,56 @@ def test_qualifiers_are_stripped_in_the_mascot_not_in_the_name():
     So normalize_team keeps it and only mascot() steps over it."""
     from edge.arb.matching import normalize_team
     assert "women" in normalize_team("Brisbane Broncos Women")
+
+
+# --- combined stats -----------------------------------------------------
+@pytest.mark.parametrize("name,expected", [
+    ("Hits + Runs + RBIs", "batter_hits_runs_rbis"),
+    ("Player Hits, Runs, RBIs", "batter_hits_runs_rbis"),
+    ("Hits Runs RBIs", "batter_hits_runs_rbis"),
+    ("Points + Rebounds + Assists", "player_points_rebounds_assists"),
+    ("Player Points, Rebounds, Assists", "player_points_rebounds_assists"),
+    ("Pts + Reb + Ast", "player_points_rebounds_assists"),
+])
+def test_a_combined_stat_is_not_read_as_one_of_its_parts(name, expected):
+    """The combo patterns required "+" and Fanatics writes commas, so "Player
+    Hits, Runs, RBIs" fell past them to the bare \\brbis?\\b rule and became
+    `batter_rbis`. Shohei Ohtani's H+R+RBI Under 2.5 was then filed as his RBI
+    Under 2.5 and paired against a genuine FanDuel RBI Over 1.5 -- a reported
+    free middle between two different stats. His real RBI line was 0.5."""
+    assert canonical_market(name, player="Ohtani") == expected
+
+
+def test_the_single_stats_still_map_to_themselves():
+    for name, expected in [("Player RBIs", "batter_rbis"),
+                           ("Player Runs", "batter_runs_scored"),
+                           ("Player Hits", "batter_hits"),
+                           ("Player Points", "player_points"),
+                           ("Player Rebounds", "player_rebounds"),
+                           ("Player Assists", "player_assists")]:
+        assert canonical_market(name, player="X") == expected, name
+
+
+def test_a_prop_leg_carries_the_line_parsed_out_of_its_name():
+    """Fanatics puts the line in the bet name -- "Shohei Ohtani Under 2.5" --
+    and leaves the line field empty, so the leg displayed a blank Line. That is
+    the cell you would check to notice a market was wrong."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board
+    soon = (datetime.now(timezone.utc) + timedelta(hours=5)).isoformat()
+    payload = {"subevents": [{"id": 1, "name": "St Louis at Los Angeles",
+                              "startTime": soon, "inRunning": False,
+                              "homeTeam": {"name": "Los Angeles Dodgers"},
+                              "awayTeam": {"name": "St Louis Cardinals"},
+                              "markets": [{"betTypeId": 1, "name": "Player RBIs",
+                                           "bets": [{"name": "Shohei Ohtani Under 2.5",
+                                                     "line": None,
+                                                     "odds": [{"bookmakerCode": "FNP",
+                                                               "status": "ACTIVE",
+                                                               "decimal": 1.606}]}]}]}]}
+    board = Board()
+    ingest_oddschecker(board, payload, book="fanatics", sport_key="baseball_mlb",
+                       strict_match=False)
+    (key, group), = board.groups.items()
+    assert key.point == 2.5 and key.subject == "Shohei Ohtani"
+    assert group.quotes["under"]["fanatics"].point == 2.5
