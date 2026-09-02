@@ -1204,3 +1204,96 @@ def test_a_prop_leg_carries_the_line_parsed_out_of_its_name():
     (key, group), = board.groups.items()
     assert key.point == 2.5 and key.subject == "Shohei Ohtani"
     assert group.quotes["under"]["fanatics"].point == 2.5
+
+
+# --- a rung whose price contradicts the feed's own model --------------------
+def _ai_payload(rows, market="Total Points"):
+    """rows: (line, over_decimal, under_decimal, over_ai)"""
+    soon = (datetime.now(timezone.utc) + timedelta(hours=6)).isoformat()
+    bets = []
+    for line, over, under, ai in rows:
+        bets.append({"name": "Over", "line": {"name": str(line)},
+                     "aiProbability": ai,
+                     "odds": [{"bookmakerCode": "FNP", "status": "ACTIVE",
+                               "decimal": over}]})
+        bets.append({"name": "Under", "line": {"name": str(line)},
+                     "aiProbability": round(100 - ai, 1),
+                     "odds": [{"bookmakerCode": "FNP", "status": "ACTIVE",
+                               "decimal": under}]})
+    return {"subevents": [{"id": 1, "name": "A at B", "startTime": soon,
+                           "inRunning": False, "homeTeam": {"name": "B"},
+                           "awayTeam": {"name": "A"},
+                           "markets": [{"betTypeId": 526, "name": market,
+                                        "bets": bets}]}]}
+
+
+def test_a_rung_contradicting_its_own_ai_probability_is_dropped():
+    """Every bet carries `aiProbability`, which the parser used to throw away.
+    On the North Carolina A&T total it tracked the devigged price to a median
+    of 2.4pp; on the two phantom rungs it was out by 15-16pp. That is the only
+    signal identifying WHICH rung is wrong rather than condemning the market --
+    and the phantoms are what produced Over 55 at -105 when the book's own app
+    had no line at 55 at all."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board
+    board = Board()
+    st = ingest_oddschecker(board, _ai_payload([
+        (55.0, 1.9524, 1.8696, 65.3),    # phantom: devigs to 0.49, ai says 0.65
+        (56.5, 1.4545, 2.70, 62.1),      # real
+        (57.0, 1.4762, 2.65, 61.0),      # real
+        (57.5, 1.4878, 2.60, 59.9),      # real
+    ]), book="fanatics", sport_key="americanfootball_ncaaf", strict_match=False)
+    assert st["contradicted_rungs"] == 1
+    assert sorted(g.key.point for g in board.groups.values()) == [56.5, 57.0, 57.5]
+
+
+def test_a_sound_ladder_is_not_touched_by_the_ai_check():
+    """It is judged against the market's OWN median residual, never an absolute
+    threshold: Oddschecker's model sits a different distance from the price in
+    different markets, so a fixed cut-off would condemn whole sound ladders."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board
+    board = Board()
+    # every rung offset from its model by a consistent ~12pp
+    st = ingest_oddschecker(board, _ai_payload([
+        (56.5, 1.4545, 2.70, 50.1), (57.0, 1.4762, 2.65, 49.0),
+        (57.5, 1.4878, 2.60, 47.9), (58.0, 1.5385, 2.50, 46.5),
+    ]), book="fanatics", sport_key="americanfootball_ncaaf", strict_match=False)
+    assert st["contradicted_rungs"] == 0
+    assert len(board.groups) == 4
+
+
+def test_the_ai_check_needs_enough_rungs_to_have_a_median():
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board
+    board = Board()
+    st = ingest_oddschecker(board, _ai_payload([
+        (56.5, 1.4545, 2.70, 62.1), (57.0, 1.9091, 1.9091, 20.0)]),
+        book="fanatics", sport_key="americanfootball_ncaaf", strict_match=False)
+    assert st["contradicted_rungs"] == 0, "two rungs cannot establish a median"
+
+
+def test_an_impossible_overround_rung_is_dropped():
+    """+200/+140 sums to 0.750 -- the book arbing itself. Rare, and only
+    reachable now that the deeper fetch returns the tail of the ladder."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board
+    board = Board()
+    st = ingest_oddschecker(board, _ai_payload([
+        (5.5, 3.00, 2.40, 40.0),         # overround 0.750
+        (6.5, 1.4545, 2.70, 62.1), (7.0, 1.4762, 2.65, 61.0),
+        (7.5, 1.4878, 2.60, 59.9)]),
+        book="fanatics", sport_key="americanfootball_ncaaf", strict_match=False)
+    assert st["bad_overround_rungs"] == 1
+    assert 5.5 not in [g.key.point for g in board.groups.values()]
+
+
+def test_fanatics_prop_naming_gives_canonical_market_its_player_context():
+    """Fanatics names every prop "Player <stat>". Without the hint RULES beats
+    PLAYER_STATS and "Player Total Bases" matched the bare `total` in the
+    game-totals rule, landing on `totals` beside real game totals."""
+    assert canonical_market("Player Total Bases") == "totals"          # the trap
+    assert canonical_market("Player Total Bases", player="x") == "batter_total_bases"
+    assert canonical_market("Player Total Points", player="x") == "player_points"
+    # a real game total has no "Player " prefix, so it keeps the game key
+    assert canonical_market("Total Points") == "totals"

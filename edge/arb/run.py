@@ -227,7 +227,7 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
     stats["fanatics_leagues_known"] = len(leagues)
     quotes = 0
     scanned = 0
-    dropped_flat = dropped_rungs = 0
+    dropped_flat = dropped_rungs = dropped_ai = dropped_vig = 0
     for league in leagues:
         key = league["sport_key"]
         if wanted is not None and key not in wanted:
@@ -248,9 +248,13 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
         # how much of Fanatics' depth is placeholder on any given day.
         dropped_flat += st.get("flat_ladders", 0)
         dropped_rungs += st.get("placeholder_rungs", 0)
+        dropped_ai += st.get("contradicted_rungs", 0)
+        dropped_vig += st.get("bad_overround_rungs", 0)
     stats["fanatics_leagues_scanned"] = scanned
     stats["fanatics_flat_ladders"] = dropped_flat
     stats["fanatics_placeholder_rungs"] = dropped_rungs
+    stats["fanatics_contradicted_rungs"] = dropped_ai
+    stats["fanatics_bad_overround_rungs"] = dropped_vig
     stats["fanatics"] = quotes
 
 

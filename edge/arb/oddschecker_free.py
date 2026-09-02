@@ -24,8 +24,22 @@ HEADERS = {
 }
 
 
+# `bets` comes back sorted by `lineBestPriceDifference` -- a distance in PRICE,
+# not in line. So a rung whose price duplicates a near-the-money rung's carries
+# the same tiny difference and sorts in beside it, however far its LINE is from
+# the market. bet_limit=8 therefore did not truncate the tail: it kept a
+# phantom 55.0 alongside the real 63-63.5 rungs and cut the genuine 56.5 away.
+# Asking for the whole ladder removes the mechanism and costs almost nothing --
+# NCAAF measured at 0.33s/0.77MB against 0.62s/5.8MB.
+#
+# subevent_limit=50 was also cutting NCAAF in half: the league has 95 events.
+DEFAULT_BET_LIMIT = 60
+DEFAULT_SUBEVENT_LIMIT = 200
+
+
 def fetch_fanatics_league(event_id: int, bettype_ids: list[int] | None = None,
-                          bet_limit: int = 8, subevent_limit: int = 50) -> dict:
+                          bet_limit: int = DEFAULT_BET_LIMIT,
+                          subevent_limit: int = DEFAULT_SUBEVENT_LIMIT) -> dict:
     """One league's whole board.
 
     `bettype_ids` is now OPTIONAL, and leaving it out is the better call.

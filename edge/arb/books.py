@@ -162,6 +162,44 @@ BOOKMAKER_CODES = {
 }
 
 
+# How far a rung's price may sit from the feed's own model before it is not a
+# price. 10pp above the market's OWN median residual: on a sound ladder the
+# residuals cluster inside a few points of each other, and a phantom sat six
+# times the median out.
+AI_RESIDUAL_MARGIN = 0.10
+_MIN_AI_RUNGS = 3
+
+
+def _contradicted_rungs(rungs: dict) -> set:
+    """Rungs whose devigged price disagrees with their own `aiProbability`.
+
+    Returns an empty set unless at least `_MIN_AI_RUNGS` two-sided rungs carry
+    the field -- a median taken over one or two rungs says nothing, and a
+    market with no model attached must not be condemned for lacking one.
+    """
+    residuals = {}
+    for rung, prices in rungs.items():
+        if len(prices) != 2:
+            continue
+        (_na, (da, ai_a)), (_nb, (db, ai_b)) = sorted(prices.items())
+        total = 1.0 / da + 1.0 / db
+        if total <= 0:
+            continue
+        pa, pb = (1.0 / da) / total, (1.0 / db) / total
+        seen = [abs(p - ai / 100.0)
+                for p, ai in ((pa, ai_a), (pb, ai_b))
+                if isinstance(ai, (int, float))]
+        if seen:
+            residuals[rung] = max(seen)
+    if len(residuals) < _MIN_AI_RUNGS:
+        return set()
+    ordered = sorted(residuals.values())
+    mid = len(ordered) // 2
+    median = (ordered[mid] if len(ordered) % 2
+              else (ordered[mid - 1] + ordered[mid]) / 2.0)
+    return {rung for rung, r in residuals.items() if r > median + AI_RESIDUAL_MARGIN}
+
+
 def ingest_oddschecker(board: Board, payload, book: str | None = None,
                        sport_key: str | None = None, strict_match: bool = True,
                        include_live: bool = False) -> dict:
@@ -176,7 +214,8 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
     trustworthy without a period field.
     """
     stats = {"events": 0, "matched": 0, "unmatched": 0, "quotes": 0, "live_skipped": 0,
-             "flat_ladders": 0, "placeholder_rungs": 0,
+             "flat_ladders": 0, "placeholder_rungs": 0, "contradicted_rungs": 0,
+             "bad_overround_rungs": 0,
              "markets_seen": set(), "markets_unmapped": set()}
 
     from .fanduel import parse_player_runner
@@ -205,7 +244,13 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
         for market in sv.get("markets") or []:
             label = market.get("name") or ""
             stats["markets_seen"].add(label)
-            mkey = canonical_market(label)
+            # Fanatics names every prop "Player <stat>", and canonical_market
+            # needs to know a player is in play or RULES wins over
+            # PLAYER_STATS: "Player Total Bases" matched the bare `total` in
+            # the game-totals rule and landed on `totals`, alongside real game
+            # totals. Same shape as the PLAYER_A_TOTAL_POINTS bug.
+            player_hint = "x" if label.lower().startswith("player ") else None
+            mkey = canonical_market(label, player=player_hint)
             if mkey is None:
                 stats["markets_unmapped"].add(label)
                 continue
@@ -237,12 +282,13 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                     rung = abs(float(line_name))
                 except (TypeError, ValueError):
                     rung = line_name
+                ai = bet.get("aiProbability")
                 for odd in bet.get("odds") or []:
                     if odd.get("status") == "ACTIVE" and odd.get("decimal"):
-                        rungs.setdefault(rung, {})[bet.get("name")] = round(
-                            float(odd["decimal"]), 4)
+                        rungs.setdefault(rung, {})[bet.get("name")] = (
+                            round(float(odd["decimal"]), 4), ai)
             if len(rungs) >= 3:
-                distinct = {v for prices in rungs.values() for v in prices.values()}
+                distinct = {d for prices in rungs.values() for d, _ai in prices.values()}
                 if len(distinct) <= 2:
                     stats["markets_unmapped"].add(
                         f"{label} (flat ladder: {len(rungs)} lines, "
@@ -265,13 +311,54 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
             # placeholders, and there is no way to tell which of them (if any)
             # is the real one, so they all go.
             symmetric = {rung for rung, prices in rungs.items()
-                         if len(prices) >= 2 and len(set(prices.values())) == 1}
+                         if len(prices) >= 2
+                         and len({d for d, _ai in prices.values()}) == 1}
             placeholder = symmetric if len(symmetric) >= 2 else set()
             if placeholder:
                 stats["markets_unmapped"].add(
                     f"{label} (placeholder rungs at {sorted(placeholder)})")
                 stats["placeholder_rungs"] = (stats.get("placeholder_rungs", 0)
                                               + len(placeholder))
+
+            # A rung whose price contradicts the feed's OWN model.
+            #
+            # Every bet carries `aiProbability`, which the parser used to throw
+            # away. On a sound ladder it tracks the devigged price closely --
+            # median 2.4pp on the North Carolina A&T total. On the phantom
+            # rungs of that same market it was out by 15-16pp, six times the
+            # market's own median, which is a clean separation and the only
+            # signal that identifies WHICH rung is wrong rather than
+            # condemning the whole market.
+            #
+            # Judged against the market's own median, never an absolute
+            # threshold: the offset between Oddschecker's model and its price
+            # varies by market, so a fixed cut-off would fire on whole sound
+            # ladders.
+            contradicted = _contradicted_rungs(rungs)
+            if contradicted:
+                stats["markets_unmapped"].add(
+                    f"{label} (price contradicts aiProbability at "
+                    f"{sorted(contradicted)})")
+                stats["contradicted_rungs"] = (stats.get("contradicted_rungs", 0)
+                                               + len(contradicted))
+
+            # A two-sided price that is not a price: outside this band the pair
+            # is either arbing the book against itself or carrying impossible
+            # margin. Rare, but the deeper fetch now reaches the tail where it
+            # lives (seen once: +200/+140, an overround of 0.750).
+            overround_bad = set()
+            for rung, prices in rungs.items():
+                if len(prices) != 2:
+                    continue
+                total = sum(1.0 / d for d, _ai in prices.values())
+                if not (1.015 <= total <= 1.12):
+                    overround_bad.add(rung)
+            if overround_bad:
+                stats["markets_unmapped"].add(
+                    f"{label} (impossible overround at {sorted(overround_bad)})")
+                stats["bad_overround_rungs"] = (stats.get("bad_overround_rungs", 0)
+                                                + len(overround_bad))
+            placeholder = placeholder | contradicted | overround_bad
 
             for bet in market.get("bets") or []:
                 raw_line = (bet.get("line") or {}).get("name")
