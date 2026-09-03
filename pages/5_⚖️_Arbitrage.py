@@ -93,6 +93,10 @@ FALLBACK_SPORTS = {
 BOOK_NAMES = {"draftkings": "DraftKings", "fanduel": "FanDuel", "fanatics": "Fanatics",
               "fanatics_markets": "Fanatics Markets", "pinnacle": "Pinnacle"}
 KIND_ICON = {"arb": "🟢", "middle": "🔵", "ev": "🟡"}
+# A generous boost turns most of the board into an arbitrage -- a 50% token on
+# one slate produced 2,568 of them. Ranking them all is right; RENDERING them
+# all is a hung page, so the panel draws the best of them and says so.
+BOOST_ROWS_SHOWN = 50
 
 st.set_page_config(page_title="Arbitrage", page_icon="⚖️", layout="wide")
 st.title("⚖️ Arbitrage · DraftKings / FanDuel / Fanatics")
@@ -412,17 +416,18 @@ if boost_pct > 0:
                 st.warning("Nothing qualifies. Check the side and minimum-odds "
                            "filters match the token's terms.")
             else:
-                st.subheader(f"⚡ {len(ev_rows)} boosted +EV bets · "
-                             f"top {int(per_sport)} per sport")
+                st.subheader(f"⚡ {len(ev_rows)} boosted +EV bets"
+                             + (f" · top {int(per_sport)} per sport"
+                                if int(per_sport) > 0 else ""))
                 st.caption("These are NOT hedged — a boost no second book can "
                            "cover is an +EV bet, not an arbitrage. Higher "
                            "expected value than hedging, but it can lose.")
-                by_sport = {}
-                for r in ev_rows:
-                    b = by_sport.setdefault(r["sport_key"], [])
-                    if len(b) < int(per_sport):
-                        b.append(r)
-                for r in [x for b in by_sport.values() for x in b]:
+                _ev_shown = top_rows_per_sport(ev_rows, int(per_sport))[:BOOST_ROWS_SHOWN]
+                if len(ev_rows) > len(_ev_shown):
+                    st.caption(f"Showing the best {len(_ev_shown)} of "
+                               f"{len(ev_rows)}. Narrow with the sport filter "
+                               f"or a per-sport cap in the sidebar.")
+                for r in _ev_shown:
                     with st.container(border=True):
                         st.markdown(
                             f"🟡 **{r['ev_pct']:+.2f}% EV** · "
@@ -466,12 +471,17 @@ if boost_pct > 0:
                        + (f" on {boost_market.lower()}" if boost_markets else "")
                        + f" · {len(cands)} candidates checked.")
         else:
-            shown = top_rows_per_sport(boost_rows, int(per_sport))
+            shown = top_rows_per_sport(boost_rows, int(per_sport))[:BOOST_ROWS_SHOWN]
             _plain = price_candidates(cands, [], bcfg,
                                       min_profit_pct=float(min_profit))
             st.subheader(f"⚡ {len(boost_rows)} boosted "
-                         f"arbitrage{'s' if len(boost_rows) != 1 else ''} · "
-                         f"top {int(per_sport)} per sport")
+                         f"arbitrage{'s' if len(boost_rows) != 1 else ''}"
+                         + (f" · top {int(per_sport)} per sport"
+                            if int(per_sport) > 0 else ""))
+            if len(boost_rows) > len(shown):
+                st.caption(f"Showing the best {len(shown)} of {len(boost_rows)}. "
+                           f"Narrow with the sport filter or a per-sport cap "
+                           f"in the sidebar.")
             st.caption(f"Without the boost the same board gives "
                        f"**{len(_plain)}**. Everything below needs the token "
                        f"on the leg marked with a boost — place that leg "
@@ -502,7 +512,8 @@ if boost_pct > 0:
                        "the position is small by design. Place the boosted leg "
                        "FIRST and confirm it applied before placing the hedge — "
                        "an unboosted first leg leaves you with a plain "
-                       f"{shown[0]['unboosted_pct']:+.2f}% position.")
+                       f"{shown[0]['unboosted_pct']:+.2f}% position."
+                       if shown else "")
     st.divider()
 
 opps = [o for o in snap.get("opportunities", [])

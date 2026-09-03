@@ -851,14 +851,33 @@ def price_boosted_ev(cands: list[dict], boosts: list[Boost], cfg,
 
 
 def top_rows_per_sport(rows: list[dict], n: int = 3) -> list[dict]:
-    """`top_per_sport` for the dict rows `price_candidates` returns."""
+    """`top_per_sport` for the dict rows `price_candidates` returns.
+
+    `n <= 0` means NO CAP, and returns every row best-first. The app's control
+    reads "0 = no cap"; passing that through to a plain top-N asked for zero
+    rows per sport, which returned an empty list and crashed the boost panel on
+    `shown[0]` the moment a boost was entered.
+    """
+    def score(r: dict) -> float:
+        # price_candidates rows carry profit_pct; price_boosted_ev rows carry
+        # ev_pct. Reading only the first raised KeyError on the +EV panel.
+        for field in ("profit_pct", "ev_pct"):
+            if field in r:
+                return float(r[field])
+        return 0.0
+
+    if n <= 0:
+        # Both callers hand these over already sorted best-first, and that
+        # order is the point: one ranking across every sport.
+        return list(rows)
+    ordered = sorted(rows, key=score, reverse=True)
     best: dict[str, list[dict]] = {}
-    for r in sorted(rows, key=lambda x: x["profit_pct"], reverse=True):
-        bucket = best.setdefault(r["sport_key"], [])
+    for r in ordered:
+        bucket = best.setdefault(r.get("sport_key", ""), [])
         if len(bucket) < n:
             bucket.append(r)
     out = [r for bucket in best.values() for r in bucket]
-    out.sort(key=lambda r: (r["sport_title"], -r["profit_pct"]))
+    out.sort(key=lambda r: (r.get("sport_title", ""), -score(r)))
     return out
 
 

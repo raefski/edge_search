@@ -1501,3 +1501,32 @@ def test_each_leg_shows_the_line_its_own_book_posts():
     # a market with no line is untouched
     h2h = MarketGroup(GroupKey("1", "h2h", None, None), ev)
     assert _leg_point(Quote("fanduel", "home", 1.3, None, now), h2h) is None
+
+
+# --- "0 = no cap" -----------------------------------------------------------
+def test_a_cap_of_zero_means_no_cap_not_no_rows():
+    """The sidebar control reads "0 = no cap". Passing that through to a plain
+    top-N asked for ZERO rows per sport, returned an empty list, and crashed
+    the boost panel on shown[0] the moment a boost was entered."""
+    from edge.arb.engine import top_rows_per_sport
+    rows = [{"sport_key": "a", "sport_title": "A", "profit_pct": 3.0},
+            {"sport_key": "a", "sport_title": "A", "profit_pct": 2.0},
+            {"sport_key": "b", "sport_title": "B", "profit_pct": 1.0}]
+    assert len(top_rows_per_sport(rows, 0)) == 3
+    assert len(top_rows_per_sport(rows, -1)) == 3
+    assert [r["profit_pct"] for r in top_rows_per_sport(rows, 0)] == [3.0, 2.0, 1.0], \
+        "uncapped keeps the caller's best-first order across all sports"
+    assert len(top_rows_per_sport(rows, 1)) == 2, "one per sport"
+    assert top_rows_per_sport([], 0) == []
+
+
+def test_the_cap_handles_boosted_ev_rows_too():
+    """price_candidates rows carry profit_pct; price_boosted_ev rows carry
+    ev_pct. Reading only the first raised KeyError on the +EV panel."""
+    from edge.arb.engine import top_rows_per_sport
+    rows = [{"sport_key": "a", "sport_title": "A", "ev_pct": 5.0},
+            {"sport_key": "a", "sport_title": "A", "ev_pct": 2.0},
+            {"sport_key": "b", "sport_title": "B", "ev_pct": 4.0}]
+    assert len(top_rows_per_sport(rows, 0)) == 3
+    kept = top_rows_per_sport(rows, 1)
+    assert {r["ev_pct"] for r in kept} == {5.0, 4.0}
