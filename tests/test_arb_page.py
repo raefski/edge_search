@@ -96,6 +96,9 @@ class FakeStreamlit(types.ModuleType):
     def text_input(self, label, value="", *_a, **_k):
         return self._answer(label, value)
 
+    def date_input(self, label, value=None, *_a, **_k):
+        return self._answer(label, value)
+
     def button(self, label, *_a, **_k):
         return self._answer(label, False)
 
@@ -219,6 +222,51 @@ def _snapshot(n_opps: int = 3, n_cands: int = 40) -> dict:
             "opportunities": opps, "candidates": cands}
 
 
+def _snapshot_on_two_dates() -> dict:
+    """One opportunity/candidate pair 6 hours out, one 10 days out -- far
+    enough apart that "Today" and the +10-day game never land on the same
+    US/Eastern calendar date no matter when this test runs."""
+    now = datetime.now(timezone.utc)
+    near, far = (now + timedelta(hours=6)).isoformat(), (now + timedelta(days=10)).isoformat()
+
+    def leg(book, side, dec):
+        return {"book": book, "side": side, "label": side.title(), "decimal": dec,
+                "american": "+100", "point": 50.5, "stake": 500.0, "payout": 1000.0,
+                "boost_pct": 0.0, "raw_decimal": dec, "age_seconds": 1.0,
+                "link": None, "limit": None}
+
+    def opp(tag, commence_time):
+        return {"kind": "arb", "fingerprint": tag, "sport_key": "americanfootball_ncaaf",
+                "sport_title": "NCAAF", "event_id": tag, "matchup": f"{tag} A @ {tag} B",
+                "commence_time": commence_time, "market": "totals", "subject": None,
+                "description": "totals 50.5", "profit_pct": 3.0, "expected_pct": 3.0,
+                "stake_total": 1000.0, "profit_abs": 25.0, "max_loss_pct": 0.0,
+                "breakeven_hit_pct": 0.0, "hit_values": [], "push_values": [],
+                "pushes": False, "middle_window": None, "fair_prob": None,
+                "kelly_stake": None, "anchor_book": None, "boost": None,
+                "max_age_seconds": 2.0, "warnings": [], "found_at": commence_time,
+                "legs": [leg("draftkings", "over", 1.95), leg("fanduel", "under", 2.05)]}
+
+    def cand(tag, commence_time):
+        return {"sport_key": "americanfootball_ncaaf", "sport_title": "NCAAF",
+                "event_id": tag, "matchup": f"{tag} A @ {tag} B",
+                "commence_time": commence_time, "market": "totals", "subject": None,
+                "point": 50.5, "arb_sum": 1.03, "single_book": False,
+                "legs": [{"side": "over", "book": "draftkings", "decimal": 1.95,
+                          "label": "Over", "point": 50.5},
+                         {"side": "under", "book": "fanduel", "decimal": 1.95,
+                          "label": "Under", "point": 50.5}],
+                "prices": {"over": {"draftkings": 1.95, "fanduel": 1.92},
+                           "under": {"draftkings": 1.92, "fanduel": 1.95}}}
+
+    return {"generated_at": near,
+            "stats": {"bankroll": 1000, "events": 2, "groups": 2, "quotes": 8,
+                      "fanduel": 4, "draftkings": 4, "fanatics": 0, "anchor": 0,
+                      "skipped_events": {}},
+            "opportunities": [opp("near", near), opp("far", far)],
+            "candidates": [cand("near", near), cand("far", far)]}
+
+
 # ---------------------------------------------------------------- the tests
 def test_the_page_runs_with_no_snapshot_at_all(tmp_path):
     st = run_page(None, tmp_path=tmp_path)
@@ -318,6 +366,27 @@ def test_a_sport_filter_that_matches_nothing_is_survivable(tmp_path):
     st = run_page(_snapshot(), tmp_path=tmp_path,
                   answers={"Filter by sport": ["Not A Real Sport"]})
     assert st.drawn
+
+
+def test_the_date_filter_narrows_to_the_selected_range(tmp_path):
+    """"Game date" reads the event's US/Eastern calendar date, not the raw
+    UTC timestamp. A custom range covering only the near fixture must keep
+    it and drop the one ten days out -- from both the main list and the
+    candidates the boost panel prices."""
+    from zoneinfo import ZoneInfo
+
+    snap = _snapshot_on_two_dates()
+    near_et = (datetime.fromisoformat(snap["opportunities"][0]["commence_time"])
+              .astimezone(ZoneInfo("America/New_York")).date())
+    st = run_page(snap, tmp_path=tmp_path, answers={
+        "Game date": "Custom range",
+        "Range (ET)": (near_et, near_et),
+        "Boost %": 50,
+    })
+    captions = _captions(st)
+    assert any("near A @ near B" in c for c in captions)
+    assert not any("far A @ far B" in c for c in captions), \
+        "the +10-day fixture leaked past a range that only covers the near one"
 
 
 def test_a_corrupt_snapshot_does_not_take_the_page_down(tmp_path):

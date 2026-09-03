@@ -27,8 +27,9 @@ from __future__ import annotations
 import importlib
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import streamlit as st
 
@@ -162,6 +163,37 @@ def starts_in(iso: str) -> str:
     return f"in {mins}m" if mins < 60 else f"in {mins // 60}h{mins % 60:02d}m"
 
 
+ET = ZoneInfo("America/New_York")
+
+
+def event_date_et(iso: str):
+    """The event's calendar date in US/Eastern -- the books' own timezone,
+    and the one every CT bettor is in. `commence_time` is stored in UTC, and
+    comparing a naive string prefix against "today" is wrong for anything
+    that tips past 8pm ET: a 9pm ET kickoff is already tomorrow in UTC, and
+    would silently vanish from a "today" filter built that way.
+    """
+    try:
+        dt = datetime.fromisoformat(iso)
+    except (TypeError, ValueError):
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(ET).date()
+
+
+def in_date_range(commence_time: str, date_range) -> bool:
+    if not date_range:
+        return True
+    d = event_date_et(commence_time)
+    return d is not None and date_range[0] <= d <= date_range[1]
+
+
+def date_range_label(date_range) -> str:
+    lo, hi = date_range
+    return f"{lo}" if lo == hi else f"{lo} – {hi}"
+
+
 # ---------------------------------------------------------------- sidebar
 with st.sidebar:
     st.header("Scan")
@@ -280,6 +312,31 @@ with st.sidebar:
         "Filter by sport", options=_opp_sports, default=[],
         help="Leave empty to rank every sport together, which is the point of "
              "the ordering. Pick one or more to narrow it.")
+
+    _today_et = datetime.now(ET).date()
+    date_mode = st.selectbox(
+        "Game date", ["All upcoming", "Today", "Tomorrow", "Next 7 days", "Custom range"],
+        help="Filters by the event's calendar date in US/Eastern -- the "
+             "books' own timezone. A late kickoff can already be tomorrow "
+             "in UTC, so this is not the same as filtering on the raw "
+             "timestamp.")
+    if date_mode == "Today":
+        date_range = (_today_et, _today_et)
+    elif date_mode == "Tomorrow":
+        date_range = (_today_et + timedelta(days=1),) * 2
+    elif date_mode == "Next 7 days":
+        date_range = (_today_et, _today_et + timedelta(days=7))
+    elif date_mode == "Custom range":
+        _picked = st.date_input("Range (ET)", value=(_today_et, _today_et),
+                                help="Both ends are included.")
+        # A range date_input returns a ONE-element tuple while the user has
+        # only picked the start -- not yet a valid range, so hold off
+        # filtering rather than treat it as a single-day range by accident.
+        date_range = tuple(_picked) if isinstance(_picked, (tuple, list)) else (_picked, _picked)
+        if len(date_range) != 2:
+            date_range = None
+    else:
+        date_range = None
 
     st.divider()
     st.caption("A live scan takes ~40s and spends **no** API credits. "
@@ -421,6 +478,10 @@ if boost_pct > 0:
         st.warning("This snapshot predates the boost feature — it has no "
                    "`candidates` section. Press **Scan live** (or re-run "
                    "`scripts/arb_scan.py`) to rebuild it.")
+    elif date_range and not (cands := [c for c in cands if in_date_range(
+            c.get("commence_time", ""), date_range)]):
+        st.warning(f"No candidates land on {date_range_label(date_range)} "
+                   "(US/Eastern). Widen the date filter in the sidebar.")
     else:
         bcfg = ArbConfig()
         bcfg.bankroll.total = float(bankroll)
@@ -555,6 +616,8 @@ opps = [o for o in snap.get("opportunities", [])
 if sport_filter:
     opps = [o for o in opps
             if (o.get("sport_title") or o.get("sport_key")) in sport_filter]
+if date_range:
+    opps = [o for o in opps if in_date_range(o.get("commence_time", ""), date_range)]
 
 if not opps:
     if not boost_rows:
