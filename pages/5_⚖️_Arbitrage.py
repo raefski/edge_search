@@ -244,8 +244,10 @@ with st.sidebar:
              "cap only if one sport is crowding out the rest.")
     _opp_sports = sorted({(o.get("sport_title") or o.get("sport_key") or "")
                           for o in (_snap_peek.get("opportunities") or [])} - {""})
+    # Named distinctly from the boost section's "Sport", which asks a
+    # different question: that one is the sport the TOKEN is tied to.
     sport_filter = st.multiselect(
-        "Sport", options=_opp_sports, default=[],
+        "Filter by sport", options=_opp_sports, default=[],
         help="Leave empty to rank every sport together, which is the point of "
              "the ordering. Pick one or more to narrow it.")
 
