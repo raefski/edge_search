@@ -486,6 +486,50 @@ def test_price_candidates_agrees_with_the_scanner():
     assert priced["stake_total"] == pytest.approx(scanned.stake_total, abs=1e-6)
 
 
+def _spread_board(home_point=-57.5, home_dec=1.76, away_dec=2.38):
+    """A two-book spread, folded onto the home axis like the real feed."""
+    ev = EventMeta("e1", "americanfootball_ncaaf", "NCAAF",
+                   datetime.now(timezone.utc) + timedelta(hours=8),
+                   "Missouri", "Arkansas Pine Bluff")
+    b = Board()
+    g = b.group(GroupKey("e1", "spreads", None, home_point), ev)
+    now = datetime.now(timezone.utc)
+    g.add(Quote(book="draftkings", side="home", decimal=home_dec,
+                point=home_point, last_update=now))
+    g.add(Quote(book="fanduel", side="away", decimal=away_dec,
+                point=-home_point, last_update=now))
+    return b
+
+
+def test_candidate_legs_carry_their_own_signed_point():
+    """Spreads are stored folded onto the home axis, so the group's OWN point
+    is the same negative number for both sides. A leg dict that just copied it
+    would show the away side laying the favourite's points too -- the exact
+    bug already fixed once for the opportunity list's legs (`_leg_point`), but
+    `run.candidates()` builds its own leg dicts and had not picked up the fix.
+    The boost panel reads this `point` straight into its "Line" column."""
+    from edge.arb.run import candidates
+    rows = candidates(_spread_board(), cfg(), max_sum=2.0)
+    assert len(rows) == 1
+    by_side = {l["side"]: l["point"] for l in rows[0]["legs"]}
+    assert by_side["home"] == -57.5, "Missouri (home, favourite) lays 57.5"
+    assert by_side["away"] == 57.5, "Arkansas Pine Bluff (away) gets 57.5"
+
+
+def test_boosted_ev_row_point_is_signed_per_side_not_the_folded_group_point():
+    """price_boosted_ev used to carry the candidate's raw (home-folded) point
+    straight through regardless of which side the row was FOR -- so a boosted
+    away spread would have displayed the home team's negative number."""
+    from edge.arb.engine import Boost, price_boosted_ev
+    from edge.arb.run import candidates
+    c = cfg()
+    rows = price_boosted_ev(candidates(_spread_board(), c, max_sum=2.0),
+                            [Boost(book="fanduel", pct=0.5, max_stake=25.0)],
+                            c, min_ev_pct=-100.0)
+    away_rows = [r for r in rows if r["side"] == "away"]
+    assert away_rows and all(r["point"] == 57.5 for r in away_rows)
+
+
 def test_wnba_is_reachable_on_draftkings():
     """FanDuel had WNBA; DraftKings had no league id, so it was a one-book
     sport and could never arb. 94682 verified live 2026-08-28."""

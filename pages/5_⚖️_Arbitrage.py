@@ -475,7 +475,8 @@ if boost_pct > 0:
                             for k in r.get("other_books", {})) or "—"
                         st.dataframe([{
                             "Book": BOOK_NAMES.get(r["book"], r["book"]),
-                            "Bet": f"{r['side']} {r['point'] if r['point'] is not None else ''}".strip(),
+                            "Bet": r["side"],
+                            "Line": "" if r.get("point") is None else f"{r['point']:g}",
                             "Book odds": r["raw_american"],
                             "Boost": f"+{r['boost_pct']:.0%}",
                             "Pays": r["american"],
@@ -534,6 +535,7 @@ if boost_pct > 0:
                     st.dataframe([{
                         "Book": BOOK_NAMES.get(l["book"], l["book"]),
                         "Bet": l["label"],
+                        "Line": "" if l.get("point") is None else f"{l['point']:g}",
                         "Book odds": l["raw_american"],      # verify this at the book
                         "Boost": f"+{l['boost_pct']:.0%}" if l["boost_pct"] else "—",
                         "Pays": l["american"],

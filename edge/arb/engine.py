@@ -805,6 +805,10 @@ def price_boosted_ev(cands: list[dict], boosts: list[Boost], cfg,
         legs = c["legs"]
         if len(legs) != 2:
             continue
+        # Per-SIDE, not `c["point"]` -- that is the group's home-axis-folded
+        # point, and a spread's away side needs it negated. Falls back to the
+        # folded point for a snapshot written before legs carried their own.
+        point_by_side = {l["side"]: l.get("point") for l in legs}
         try:
             fair_by_side = dict(zip(
                 [l["side"] for l in legs],
@@ -832,8 +836,8 @@ def price_boosted_ev(cands: list[dict], boosts: list[Boost], cfg,
                 stake = min(b.max_stake, cfg.bankroll.total)
                 out.append({
                     **{k: c[k] for k in ("sport_key", "sport_title", "matchup",
-                                         "market", "subject", "point",
-                                         "commence_time")},
+                                         "market", "subject", "commence_time")},
+                    "point": point_by_side.get(side, c.get("point")),
                     "book": b.book, "side": side,
                     "raw_decimal": raw,
                     "raw_american": om.format_american(raw),

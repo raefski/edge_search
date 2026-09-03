@@ -478,8 +478,15 @@ def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict
             "market": g.key.market, "subject": g.key.subject, "point": g.key.point,
             "arb_sum": round(s, 5),
             "single_book": single_book,
+            # Signed per its OWN side, not the group's home-axis-folded point --
+            # spreads are stored folded (both sides share one negative number),
+            # so a leg carrying that raw value straight would show both teams
+            # laying points. `engine._leg_point` is the same fix already applied
+            # to the opportunity list's legs; candidates build their own leg
+            # dicts and had not picked it up.
             "legs": [{"side": si, "book": q.book, "decimal": round(q.decimal, 4),
-                      "label": side_label(si, ev.home_team, ev.away_team, g.key.subject)}
+                      "label": side_label(si, ev.home_team, ev.away_team, g.key.subject),
+                      "point": engine._leg_point(q, g)}
                      for si, q in sorted(best.items())],
             "prices": {si: {b: round(q.decimal, 4)
                             for b, q in g.quotes.get(si, {}).items() if b in books}
