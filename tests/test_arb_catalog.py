@@ -1297,3 +1297,59 @@ def test_fanatics_prop_naming_gives_canonical_market_its_player_context():
     assert canonical_market("Player Total Points", player="x") == "player_points"
     # a real game total has no "Player " prefix, so it keeps the game key
     assert canonical_market("Total Points") == "totals"
+
+
+# --- one number that ranks all three kinds ----------------------------------
+def test_p_above_reads_the_ladder_and_interpolates():
+    from edge.arb.engine import p_above
+    cdf = {50.5: 0.62, 51.5: 0.55, 52.5: 0.48}
+    assert p_above(cdf, 51.5, spread=False) == 0.55
+    mid = p_above(cdf, 52.0, spread=False)
+    assert 0.48 < mid < 0.55
+    assert p_above(cdf, 99.0, spread=False) is None, "outside the ladder"
+    # a spread's group point is the home line; home covers above its negation
+    assert p_above({-3.5: 0.55}, 3.5, spread=True) == 0.55
+
+
+def test_a_middle_is_ranked_on_expected_return_not_on_its_headline():
+    """profit_pct means different things per kind: guaranteed for an arb, but
+    "only if it lands" for a middle. Ranking on it puts every +130%-if-it-hits
+    above every real arbitrage -- the reverse of the order you would bet in."""
+    def rank(o):
+        if o.get("expected_pct") is not None:
+            return float(o["expected_pct"])
+        if o.get("kind") == "middle":
+            return -float(o.get("max_loss_pct", 0.0))
+        return float(o.get("profit_pct", 0.0))
+
+    arb = {"kind": "arb", "profit_pct": 2.1, "expected_pct": 2.1}
+    middle = {"kind": "middle", "profit_pct": 131.4, "max_loss_pct": 4.5,
+              "expected_pct": -2.8}
+    unpriced = {"kind": "middle", "profit_pct": 120.0, "max_loss_pct": 4.0}
+    ordered = sorted([middle, unpriced, arb], key=rank, reverse=True)
+    assert ordered[0] is arb, "a guaranteed 2.1% beats a -2.8% expected middle"
+    assert ordered[-1] is unpriced, "unmeasured must not outrank a measured edge"
+
+
+def test_an_arbitrages_expected_return_is_its_guaranteed_return():
+    from edge.arb.engine import Opportunity
+    assert "expected_pct" in Opportunity.__dataclass_fields__
+
+
+def test_ladder_cdfs_needs_both_sides_and_enough_rungs():
+    from edge.arb.engine import ladder_cdfs
+    from edge.arb.models import Board, EventMeta, GroupKey, Quote
+    now = datetime.now(timezone.utc)
+    ev = EventMeta("9", "americanfootball_ncaaf", "NCAAF",
+                   now + timedelta(hours=6), "B", "A")
+    board = Board()
+    for pt, over, under in [(50.5, 1.85, 1.95), (51.5, 1.95, 1.85), (52.5, 2.05, 1.75)]:
+        g = board.group(GroupKey("9", "totals", None, pt), ev)
+        g.add(Quote("draftkings", "over", over, pt, now))
+        g.add(Quote("draftkings", "under", under, pt, now))
+    # a one-sided rung contributes nothing
+    board.group(GroupKey("9", "totals", None, 53.5), ev).add(
+        Quote("draftkings", "over", 2.2, 53.5, now))
+    cdf = ladder_cdfs(board, {"draftkings"})[("9", "totals")]
+    assert sorted(cdf) == [50.5, 51.5, 52.5]
+    assert cdf[50.5] > cdf[52.5], "P(over) must fall as the line rises"

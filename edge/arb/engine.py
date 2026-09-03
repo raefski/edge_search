@@ -124,7 +124,14 @@ class Opportunity:
     push_values: list[int] = field(default_factory=list)  # results winning one, pushing one
     pushes: bool = False              # a whole-number line returns a stake
     middle_window: tuple[float, float] | None = None
-    fair_prob: float | None = None    # ev only
+    fair_prob: float | None = None    # ev: devigged fair prob; middle: P(window)
+    # The one number that ranks all three kinds against each other. profit_pct
+    # does not: for an arb it is guaranteed, for a middle it is what you get
+    # ONLY if it lands, and a middle's headline (+90-130%) therefore buries
+    # every real arbitrage when the list is sorted on it. Expected return puts
+    # a guaranteed 2% above a 130%-if-it-lands that hits 1.5% of the time,
+    # which is the order you would actually bet in.
+    expected_pct: float | None = None
     kelly_stake: float | None = None  # ev only
     anchor_book: str | None = None
     boost: str | None = None      # description of the boost this relies on
@@ -299,6 +306,8 @@ def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Oppo
             matchup=ev.matchup, commence_time=ev.commence_time,
             market=group.key.market, subject=group.key.subject, description=_describe(group),
             legs=legs, profit_pct=round(alloc.worst_profit_pct, 3),
+            # An arbitrage's guaranteed return IS its expected return.
+            expected_pct=round(alloc.worst_profit_pct, 3),
             stake_total=alloc.total, profit_abs=alloc.worst_profit,
             boost=boost.describe() if boost else None,
             max_age_seconds=round(max(ages), 1), warnings=warnings,
@@ -363,6 +372,57 @@ def _middle_families(board: Board) -> dict[tuple, list[MarketGroup]]:
     return {k: v for k, v in fams.items() if len(v) > 1}
 
 
+def ladder_cdfs(board: Board, books: set[str],
+                min_rungs: int = 3) -> dict[tuple, dict[float, float]]:
+    """(event, market) -> {line: devigged P(over / home covers)}.
+
+    Pooled across books -- best price per side per line, then devigged. One
+    book often posts only its main line on a given game; between the three of
+    them the axis gets covered. Markets with fewer than `min_rungs` two-sided
+    lines are omitted, because two points cannot describe a distribution.
+    """
+    pooled: dict[tuple, dict[float, dict[str, float]]] = {}
+    for g in board.groups.values():
+        if g.key.subject is not None or g.key.point is None:
+            continue
+        rungs = pooled.setdefault((g.key.event_id, g.key.market), {})
+        sides = rungs.setdefault(g.key.point, {})
+        for side, bybook in g.quotes.items():
+            for bk, q in bybook.items():
+                if bk in books and q.decimal > sides.get(side, 0.0):
+                    sides[side] = q.decimal
+    out: dict[tuple, dict[float, float]] = {}
+    for key, rungs in pooled.items():
+        cdf = {}
+        for point, sides in rungs.items():
+            a = sides.get("over") or sides.get("home")
+            b = sides.get("under") or sides.get("away")
+            if not a or not b:
+                continue
+            cdf[point] = (1.0 / a) / (1.0 / a + 1.0 / b)
+        if len(cdf) >= min_rungs:
+            out[key] = cdf
+    return out
+
+
+def p_above(cdf: dict[float, float], value: float, spread: bool) -> float | None:
+    """P(the settled number exceeds `value`), interpolated between rungs.
+
+    Totals sit on the axis directly; a spread's group point is the home line,
+    and home covers when the margin exceeds its negation.
+    """
+    points = sorted(((-p if spread else p), v) for p, v in cdf.items())
+    for x, v in points:
+        if abs(x - value) < 1e-9:
+            return v
+    below = [(x, v) for x, v in points if x < value]
+    above = [(x, v) for x, v in points if x > value]
+    if not below or not above:
+        return None
+    (x0, v0), (x1, v1) = below[-1], above[0]
+    return v0 + (v1 - v0) * (value - x0) / (x1 - x0)
+
+
 def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportunity]:
     now = now or utcnow()
     d = cfg.detect
@@ -370,6 +430,7 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
         return []
     books = set(cfg.books.bettable)
     out: list[Opportunity] = []
+    cdfs = ladder_cdfs(board, books)
 
     for (event_id, market, subject), groups in _middle_families(board).items():
         if not in_window(groups[0].event, cfg, now):
@@ -448,6 +509,20 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                 # total points for O/U, home margin of victory for spreads
                 window = (-plo, -phi) if spread else (plo, phi)
                 window = (min(window), max(window))
+                # How often the window actually lands, read off the books' own
+                # alternate ladders rather than assumed. Without it the list
+                # ranks on "+131% if it lands" and a middle that hits 1.5% of
+                # the time outranks every real arbitrage. Pushes are ignored,
+                # which understates rather than flatters: a push returns a
+                # stake instead of losing it.
+                cdf = cdfs.get((event_id, market))
+                p_hit = None
+                if cdf and subject is None:
+                    lo_p = p_above(cdf, window[0], spread)
+                    hi_p = p_above(cdf, window[1], spread)
+                    if lo_p is not None and hi_p is not None:
+                        p_hit = max(0.0, min(1.0, abs(lo_p - hi_p)))
+
                 lands_on = ("/".join(str(n) for n in hit_values) if len(hit_values) <= 4
                             else f"{hit_values[0]}-{hit_values[-1]}")
                 warnings = []
@@ -469,6 +544,9 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                     description=f"{market}{' ' + subject if subject else ''} middle "
                                 f"{window[0]:g}-{window[1]:g} (wins both on {lands_on})",
                     legs=legs, profit_pct=round(hit_pct, 3),
+                    fair_prob=(round(p_hit, 4) if p_hit is not None else None),
+                    expected_pct=(round(p_hit * hit_pct - (1.0 - p_hit) * cost_pct, 3)
+                                  if p_hit is not None else None),
                     stake_total=alloc.total,
                     profit_abs=round(alloc.total * hit_pct / 100.0, 2),
                     max_loss_pct=round(max(cost_pct, 0.0), 3),
@@ -569,6 +647,8 @@ def find_ev(board: Board, cfg, now: datetime | None = None) -> list[Opportunity]
                     commence_time=ev_meta.commence_time, market=group.key.market,
                     subject=group.key.subject, description=_describe(group),
                     legs=[leg], profit_pct=round(edge, 3), stake_total=stake,
+                    # +EV's headline is already an expected return.
+                    expected_pct=round(edge, 3),
                     profit_abs=round(stake * edge / 100.0, 2),
                     fair_prob=round(fair, 5),
                     kelly_stake=stake, anchor_book=anchor_name,

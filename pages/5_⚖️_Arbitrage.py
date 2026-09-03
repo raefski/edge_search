@@ -231,7 +231,19 @@ with st.sidebar:
                                     "straight bets and parlays. Only the straight-bet "
                                     "one can be hedged, because each side of an "
                                     "arbitrage is its own single bet.")
-    per_sport = st.number_input("Show top N per sport", 1, 25, 5, step=1)
+    # The main list is ranked by expected return across every sport at once --
+    # you bet the best price on the board, not the best price in each league.
+    # This caps a runaway sport if you want it; 0 means no cap.
+    per_sport = st.number_input(
+        "Cap per sport (0 = no cap)", 0, 25, 0, step=1,
+        help="The list is ranked by expected return across all sports. Set a "
+             "cap only if one sport is crowding out the rest.")
+    _opp_sports = sorted({(o.get("sport_title") or o.get("sport_key") or "")
+                          for o in (_snap_peek.get("opportunities") or [])} - {""})
+    sport_filter = st.multiselect(
+        "Sport", options=_opp_sports, default=[],
+        help="Leave empty to rank every sport together, which is the point of "
+             "the ordering. Pick one or more to narrow it.")
 
     st.divider()
     st.caption("A live scan takes ~40s and spends **no** API credits. "
@@ -495,10 +507,9 @@ if boost_pct > 0:
 
 opps = [o for o in snap.get("opportunities", [])
         if o.get("kind") in kinds and o.get("profit_pct", 0) >= min_profit]
-sports = sorted({o.get("sport_title") or o.get("sport_key", "") for o in opps})
-if len(sports) > 1:
-    chosen = st.multiselect("Sport", sports, default=sports)
-    opps = [o for o in opps if (o.get("sport_title") or o.get("sport_key")) in chosen]
+if sport_filter:
+    opps = [o for o in opps
+            if (o.get("sport_title") or o.get("sport_key")) in sport_filter]
 
 if not opps:
     if not boost_rows:
@@ -506,20 +517,46 @@ if not opps:
                    "arbitrage are normal — middles and +EV are the usual finds.")
     st.stop()
 
-# cut per sport so one wide-priced sport cannot bury the others
-_by_sport: dict[str, int] = {}
-_kept = []
-for _o in sorted(opps, key=lambda x: -x.get("profit_pct", 0)):
-    _k = _o.get("sport_key", "")
-    if _by_sport.get(_k, 0) < int(per_sport):
-        _by_sport[_k] = _by_sport.get(_k, 0) + 1
-        _kept.append(_o)
-opps = _kept
+
+def _rank(o: dict) -> float:
+    """What this is worth per dollar staked, comparable across all three kinds.
+
+    NOT profit_pct. For an arbitrage that is the guaranteed return, but for a
+    middle it is what you collect ONLY if the window lands -- so ranking on it
+    puts every "+130% if it hits" above every real arbitrage, which is the
+    reverse of the order you would bet in. `expected_pct` is the guaranteed
+    return for an arb, the edge for +EV, and P(window) x gain - P(miss) x cost
+    for a middle, read off the books' own alternate ladders.
+
+    A middle whose window probability could not be measured (no ladder deep
+    enough on that market) falls back to its worst case, which is negative:
+    unmeasured is not the same as good, and it must not outrank a real edge.
+    """
+    if o.get("expected_pct") is not None:
+        return float(o["expected_pct"])
+    if o.get("kind") == "middle":
+        return -float(o.get("max_loss_pct", 0.0))
+    return float(o.get("profit_pct", 0.0))
+
+
+opps.sort(key=_rank, reverse=True)
+
+# Optional: stop one sport crowding the list. Off by default -- the ranking is
+# global on purpose.
+if int(per_sport) > 0:
+    _by_sport: dict[str, int] = {}
+    _kept = []
+    for _o in opps:
+        _k = _o.get("sport_key", "")
+        if _by_sport.get(_k, 0) < int(per_sport):
+            _by_sport[_k] = _by_sport.get(_k, 0) + 1
+            _kept.append(_o)
+    opps = _kept
 
 # stakes were sized for the bankroll at scan time; rescale for this one
 scale = float(bankroll) / max(float(snap.get("stats", {}).get("bankroll", 1000.0) or 1000.0), 1.0)
 
-for o in sorted(opps, key=lambda x: -x.get("profit_pct", 0)):
+for o in opps:
     kind = o.get("kind", "")
     icon = KIND_ICON.get(kind, "")
     if kind == "arb":
@@ -527,9 +564,20 @@ for o in sorted(opps, key=lambda x: -x.get("profit_pct", 0)):
     elif kind == "middle":
         hits = o.get("hit_values") or []
         on = "/".join(str(h) for h in hits[:4]) or "the window"
-        head = (f"{icon} **+{o['profit_pct']:.1f}%** if it lands on {on} · "
-                f"−{o.get('max_loss_pct', 0):.2f}% otherwise · "
-                f"breakeven {o.get('breakeven_hit_pct', 0):.1f}%")
+        # Lead with the expected return, because that is what the list is
+        # ordered by and what decides whether the bet is worth making. The
+        # "+130% if it lands" is the headline a middle wants to be judged on
+        # and the one that is misleading on its own.
+        exp = o.get("expected_pct")
+        prob = o.get("fair_prob")
+        if exp is not None:
+            lead = (f"{icon} **{exp:+.2f}%** expected · lands {prob * 100:.1f}% "
+                    f"of the time vs {o.get('breakeven_hit_pct', 0):.1f}% needed")
+        else:
+            lead = (f"{icon} **?** expected — no ladder deep enough to price "
+                    f"this window · needs {o.get('breakeven_hit_pct', 0):.1f}%")
+        head = (f"{lead}  \n+{o['profit_pct']:.1f}% if it lands on {on}, "
+                f"−{o.get('max_loss_pct', 0):.2f}% otherwise")
     else:
         head = (f"{icon} **{o['profit_pct']:+.2f}%** edge vs "
                 f"{o.get('anchor_book') or 'consensus'}")
