@@ -8,6 +8,7 @@ scan that never happens or a poller that scrapes in a loop.
 """
 from __future__ import annotations
 
+import json
 from datetime import datetime, timedelta, timezone
 
 import pytest
@@ -74,6 +75,24 @@ def test_a_request_round_trips_through_json():
     assert back.sports == ["basketball_wnba"]
     assert back.note == "from the app"
     assert back.age_seconds() < 5
+
+
+def test_a_request_round_trips_its_date_and_live_bounds():
+    req = ScanRequest.new(date_from="2026-09-03", date_to="2026-09-03",
+                          skip_live=False)
+    back = ScanRequest.parse(req.to_json())
+    assert (back.date_from, back.date_to, back.skip_live) == ("2026-09-03", "2026-09-03", False)
+
+
+def test_an_older_request_file_without_the_new_fields_still_skips_live():
+    """A request file written before this existed has no date_from/date_to/
+    skip_live keys at all. Missing must mean the OLD behaviour -- unbounded
+    dates, live games still dropped -- not silently start including them."""
+    old = json.dumps({"requested_at": datetime.now(timezone.utc).isoformat(),
+                      "request_id": "20260101T000000000000", "sports": []})
+    req = ScanRequest.parse(old)
+    assert req.date_from is None and req.date_to is None
+    assert req.skip_live is True
 
 
 def test_request_ids_are_unique_across_rapid_presses():

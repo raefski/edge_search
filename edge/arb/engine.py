@@ -6,12 +6,15 @@ import logging
 import math
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 from .models import Board, EventMeta, GroupKey, MarketGroup, Quote, utcnow
 from .normalize import is_spread_market, side_label
 from . import oddsmath as om
 
 log = logging.getLogger("arb.engine")
+
+ET = ZoneInfo("America/New_York")
 
 
 @dataclass
@@ -132,6 +135,17 @@ class Opportunity:
     # a guaranteed 2% above a 130%-if-it-lands that hits 1.5% of the time,
     # which is the order you would actually bet in.
     expected_pct: float | None = None
+    # A middle whose worst case is still a profit -- it is a straight
+    # arbitrage AND carries the middle's upside if the window lands. No
+    # downside, a higher ceiling than the arb alone: strictly better than an
+    # ordinary middle, and the app ranks these first regardless of size.
+    free_middle: bool = False
+    # The guaranteed floor when free_middle is True (missing the window still
+    # profits by this much). max_loss_pct clamps a negative cost to 0 for the
+    # "risk" reading everywhere else, which is right for THAT purpose but
+    # would otherwise erase the one number that says how large the guarantee
+    # actually is here.
+    free_middle_floor_pct: float | None = None
     kelly_stake: float | None = None  # ev only
     anchor_book: str | None = None
     boost: str | None = None      # description of the boost this relies on
@@ -146,17 +160,41 @@ class Opportunity:
         return d
 
 
+def within_date_bounds(commence_time: datetime, cfg) -> bool:
+    """Does this event's US/Eastern calendar date fall inside
+    cfg.detect.date_from/date_to? Both are inclusive "YYYY-MM-DD" strings, or
+    None for no bound on that side -- the default, and the common case, so
+    this is a no-op unless the sidebar's date filter set one.
+    """
+    d = cfg.detect
+    date_from, date_to = getattr(d, "date_from", None), getattr(d, "date_to", None)
+    if not (date_from or date_to):
+        return True
+    et_date = commence_time.astimezone(ET).date().isoformat()
+    if date_from and et_date < date_from:
+        return False
+    if date_to and et_date > date_to:
+        return False
+    return True
+
+
 def in_window(event: EventMeta, cfg, now: datetime) -> bool:
     """Is this event close enough to bet, and not already under way?"""
     d = cfg.detect
     mins = event.minutes_to_start(now)
-    if d.skip_live and mins < 0:
+    if mins < 0:
+        # min_minutes_to_start is positive by default, so mins < 0 was ALWAYS
+        # also mins < min_minutes_to_start -- the check below excluded every
+        # live event on its own, regardless of skip_live. That made skip_live
+        # dead code: setting it False never actually surfaced a live event.
+        # Branching here instead of falling through is the fix.
+        if d.skip_live:
+            return False
+    elif mins < d.min_minutes_to_start:
         return False
-    if mins < d.min_minutes_to_start:
+    elif d.max_hours_to_start and mins > d.max_hours_to_start * 60.0:
         return False
-    if d.max_hours_to_start and mins > d.max_hours_to_start * 60.0:
-        return False
-    return True
+    return within_date_bounds(event.commence_time, cfg)
 
 
 def _fingerprint(*parts) -> str:
@@ -566,6 +604,8 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                     fair_prob=(round(p_hit, 4) if p_hit is not None else None),
                     expected_pct=(round(p_hit * hit_pct - (1.0 - p_hit) * cost_pct, 3)
                                   if p_hit is not None else None),
+                    free_middle=cost_pct <= 0,
+                    free_middle_floor_pct=(round(-cost_pct, 3) if cost_pct <= 0 else None),
                     stake_total=alloc.total,
                     profit_abs=round(alloc.total * hit_pct / 100.0, 2),
                     max_loss_pct=round(max(cost_pct, 0.0), 3),
@@ -576,7 +616,11 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                     warnings=warnings,
                 ))
 
-    out.sort(key=lambda o: (o.profit_pct / (o.max_loss_pct + 0.5)), reverse=True)
+    # Free middles first, regardless of size -- no downside means one must
+    # not be truncated away by middle_max_results in favour of an ordinary
+    # middle that merely scores higher on the cost/reward heuristic below.
+    out.sort(key=lambda o: (o.free_middle, o.profit_pct / (o.max_loss_pct + 0.5)),
+            reverse=True)
     return out[: d.middle_max_results]
 
 

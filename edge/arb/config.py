@@ -41,6 +41,15 @@ class Detect:
     max_quote_age_seconds: float = 600.0
     skip_live: bool = True
     min_minutes_to_start: float = 3.0
+    # US/Eastern calendar-date bounds on commence_time, inclusive, "YYYY-MM-DD"
+    # or None for no bound on that side. Distinct from max_hours_to_start: that
+    # is a fixed window measured from NOW, but "today" needs a fixed cutoff at
+    # ET midnight, which a relative-hours number cannot express consistently
+    # as the day goes on. Also read by the FanDuel per-event queue in run.py,
+    # so narrowing this also cuts the per-event prop/alt-line calls that make
+    # a full scan slow -- not just what gets reported at the end.
+    date_from: str | None = None
+    date_to: str | None = None
     # Ten days, not four. Football is a WEEKLY sport: scanned on a Sunday with
     # a 96-hour ceiling, next Saturday's 103 NCAAF games are all outside the
     # window, and NCAAF is one of the few leagues all three books price. The

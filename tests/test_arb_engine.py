@@ -102,6 +102,31 @@ def test_true_middle_pays_on_every_number_inside():
     assert sc[45] < 0 and sc[48] < 0
 
 
+def test_a_free_middle_is_flagged_with_its_true_floor():
+    """When the two legs alone already sum under 1 (a straight arbitrage on
+    their own), missing the window still profits -- this is that arbitrage
+    PLUS the middle's upside if the window lands too. No downside, so it
+    must be flagged distinctly from an ordinary middle, and the guarantee's
+    actual size preserved rather than clamped to 0 like max_loss_pct is."""
+    b, _ = board_with(("totals", None, 45.5, "over", "draftkings", 2.5),
+                      ("totals", None, 47.5, "under", "fanduel", 2.5))
+    mids = find_middles(b, cfg())
+    assert mids, "generous enough prices on both sides must still find the middle"
+    m = mids[0]
+    assert m.free_middle
+    assert m.max_loss_pct == 0.0, "the clamped reading must still be 0, not negative"
+    assert m.free_middle_floor_pct is not None and m.free_middle_floor_pct > 0, \
+        "the true guarantee must survive somewhere, not just get thrown away"
+
+
+def test_an_ordinary_middle_is_not_flagged_free():
+    b, _ = board_with(("totals", None, 45.5, "over", "draftkings", 1.91),
+                      ("totals", None, 47.5, "under", "fanduel", 1.91))
+    mids = find_middles(b, cfg())
+    assert mids and not mids[0].free_middle
+    assert mids[0].free_middle_floor_pct is None
+
+
 def test_middle_is_detected_across_two_books():
     b, _ = board_with(("totals", None, 45.5, "over", "draftkings", 1.91),
                       ("totals", None, 45.5, "under", "draftkings", 1.91),
@@ -528,6 +553,57 @@ def test_boosted_ev_row_point_is_signed_per_side_not_the_folded_group_point():
                             c, min_ev_pct=-100.0)
     away_rows = [r for r in rows if r["side"] == "away"]
     assert away_rows and all(r["point"] == 57.5 for r in away_rows)
+
+
+def test_skip_live_false_actually_surfaces_a_live_event():
+    """min_minutes_to_start defaults to 3.0, and mins < 0 is always also
+    mins < 3.0 -- so the OLD in_window fell through to that check regardless
+    of skip_live and excluded every live event no matter what skip_live said.
+    Setting skip_live=False must now actually change the answer."""
+    from edge.arb.engine import in_window
+    ev = EventMeta("e1", "baseball_mlb", "MLB",
+                   datetime.now(timezone.utc) - timedelta(minutes=10), "Home", "Away")
+    now = datetime.now(timezone.utc)
+    c = cfg()
+    c.detect.skip_live = True
+    assert not in_window(ev, c, now), "default must still exclude a live event"
+    c.detect.skip_live = False
+    assert in_window(ev, c, now), "skip_live=False must surface it"
+
+
+def test_within_date_bounds_uses_the_et_calendar_date_not_utc():
+    """The whole reason for this check: a late-evening ET kickoff already
+    rolled over to the next UTC calendar date. A naive UTC-date comparison
+    would put this event on the wrong side of an ET-dated bound."""
+    from edge.arb.engine import within_date_bounds
+    # 01:30 UTC on the 4th == 21:30 ET on the 3rd (EDT, UTC-4 in September).
+    commence = datetime(2026, 9, 4, 1, 30, tzinfo=timezone.utc)
+    c = cfg()
+    c.detect.date_from = c.detect.date_to = "2026-09-03"
+    assert within_date_bounds(commence, c), \
+        "21:30 ET on the 3rd must match a bound of 2026-09-03"
+    c.detect.date_from = c.detect.date_to = "2026-09-04"
+    assert not within_date_bounds(commence, c), \
+        "the UTC calendar date (the 4th) must NOT be what this matches on"
+
+
+def test_in_window_respects_date_bounds():
+    """Computes the bound from the event's OWN ET date rather than assuming
+    "6 hours out" stays on today's calendar date -- it doesn't, whenever
+    `now` is within 6 hours of ET midnight, which made an earlier version of
+    this test flaky depending on the wall clock at run time."""
+    from edge.arb import engine as engine_mod
+    from edge.arb.engine import in_window
+    now = datetime.now(timezone.utc)
+    ev = EventMeta("e1", "americanfootball_ncaaf", "NCAAF",
+                   now + timedelta(hours=6), "Home", "Away")
+    c = cfg()
+    assert in_window(ev, c, now), "no bound set must not filter anything"
+    its_own_et_date = ev.commence_time.astimezone(engine_mod.ET).date().isoformat()
+    c.detect.date_from = c.detect.date_to = its_own_et_date
+    assert in_window(ev, c, now), "an event must fall inside a bound built from its own date"
+    c.detect.date_from = c.detect.date_to = (now + timedelta(days=10)).date().isoformat()
+    assert not in_window(ev, c, now), "a 6h-out event must not match a +10-day bound"
 
 
 def test_wnba_is_reachable_on_draftkings():

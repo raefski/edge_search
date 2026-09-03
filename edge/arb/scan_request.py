@@ -45,16 +45,29 @@ class ScanRequest:
     request_id: str
     sports: list[str] = field(default_factory=list)
     note: str = ""
+    # US/Eastern calendar-date bounds, "YYYY-MM-DD" or None for no bound on
+    # that side -- the sidebar's "Game date" filter, threaded through so a
+    # scan asked for just today's games actually fetches fewer events instead
+    # of scanning everything and filtering the result on the phone.
+    date_from: str | None = None
+    date_to: str | None = None
+    # True (the default, matching Detect.skip_live) means the scan drops
+    # anything already under way, same as today. False asks the desktop to
+    # keep live/in-progress events too.
+    skip_live: bool = True
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), indent=1) + "\n"
 
     @classmethod
-    def new(cls, sports: list[str] | None = None, note: str = "") -> "ScanRequest":
+    def new(cls, sports: list[str] | None = None, note: str = "",
+           date_from: str | None = None, date_to: str | None = None,
+           skip_live: bool = True) -> "ScanRequest":
         ts = _now()
         return cls(requested_at=ts.isoformat(),
                    request_id=ts.strftime("%Y%m%dT%H%M%S%f"),
-                   sports=list(sports or []), note=note)
+                   sports=list(sports or []), note=note,
+                   date_from=date_from, date_to=date_to, skip_live=skip_live)
 
     @classmethod
     def parse(cls, raw: str | bytes | None) -> "ScanRequest | None":
@@ -69,7 +82,12 @@ class ScanRequest:
         return cls(requested_at=str(d.get("requested_at") or ""),
                    request_id=str(d["request_id"]),
                    sports=list(d.get("sports") or []),
-                   note=str(d.get("note") or ""))
+                   note=str(d.get("note") or ""),
+                   date_from=d.get("date_from") or None,
+                   date_to=d.get("date_to") or None,
+                   # Missing (an older request file) must mean the OLD
+                   # behaviour, not silently start including live games.
+                   skip_live=bool(d.get("skip_live", True)))
 
     def age_seconds(self, now: datetime | None = None) -> float:
         try:

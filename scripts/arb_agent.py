@@ -27,6 +27,7 @@ never clobbers work pushed from elsewhere.
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 import os
 import subprocess
@@ -152,6 +153,14 @@ def tick(cfg: ArbConfig, max_age: float, also_every: float) -> None:
         scan_cfg.__dict__.update(cfg.__dict__)
         if req.sports:
             scan_cfg.sports = req.sports
+        # dataclasses.replace, not a mutation of scan_cfg.detect in place --
+        # the __dict__.update above means scan_cfg.detect IS cfg.detect (same
+        # object, shallow-copied reference), so writing through it would leak
+        # this one request's date/live bounds into every later tick, request
+        # or not.
+        scan_cfg.detect = dataclasses.replace(
+            cfg.detect, date_from=req.date_from, date_to=req.date_to,
+            skip_live=req.skip_live)
         run_scan(scan_cfg)
         # record BEFORE pushing: a push that fails must not cause the same
         # request to be scraped again on the next tick

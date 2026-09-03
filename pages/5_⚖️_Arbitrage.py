@@ -194,6 +194,19 @@ def date_range_label(date_range) -> str:
     return f"{lo}" if lo == hi else f"{lo} – {hi}"
 
 
+def is_live(commence_time: str) -> bool:
+    """Live at RENDER time, not scan time -- a game that had not started when
+    the snapshot was built can easily have kicked off by the time this page
+    is opened, and the "Include live" toggle is about what you see now."""
+    try:
+        dt = datetime.fromisoformat(commence_time)
+    except (TypeError, ValueError):
+        return False
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt <= datetime.now(timezone.utc)
+
+
 # ---------------------------------------------------------------- sidebar
 with st.sidebar:
     st.header("Scan")
@@ -338,6 +351,14 @@ with st.sidebar:
     else:
         date_range = None
 
+    show_live = st.checkbox(
+        "Include live/in-progress games", value=False,
+        help="Off by default: an in-play line can already be a different "
+             "price than the book is showing you by the time a bet lands. "
+             "This also asks the NEXT scan to actually capture live games -- "
+             "a snapshot scanned with this off has none to show even if you "
+             "turn it on now, since it never kept them in the first place.")
+
     st.divider()
     st.caption("A live scan takes ~40s and spends **no** API credits. "
                "It needs a connection the books accept — that usually means "
@@ -378,7 +399,11 @@ if request_scan:
         put_request = _from_scan_request("put_request")
         if ScanRequest is None or put_request is None:
             raise RuntimeError("stale module — reboot the app")
-        req = ScanRequest.new(sports=[], note="requested from the Streamlit app")
+        req = ScanRequest.new(
+            sports=[], note="requested from the Streamlit app",
+            date_from=date_range[0].isoformat() if date_range else None,
+            date_to=date_range[1].isoformat() if date_range else None,
+            skip_live=not show_live)
         put_request(_repo, _token, req)
         st.session_state["last_scan_request"] = req.requested_at
         st.success("Asked the desktop to scan. It polls every ~30s, the scan "
@@ -413,6 +438,10 @@ if run_live:
 
         cfg = ArbConfig()
         cfg.bankroll.total = float(bankroll)
+        cfg.detect.skip_live = not show_live
+        if date_range:
+            cfg.detect.date_from = date_range[0].isoformat()
+            cfg.detect.date_to = date_range[1].isoformat()
 
         def on_progress(label, i, n):
             prog.progress((i + 1) / n, text=f"{label}…")
@@ -478,6 +507,10 @@ if boost_pct > 0:
         st.warning("This snapshot predates the boost feature — it has no "
                    "`candidates` section. Press **Scan live** (or re-run "
                    "`scripts/arb_scan.py`) to rebuild it.")
+    elif not show_live and not (cands := [
+            c for c in cands if not is_live(c.get("commence_time", ""))]):
+        st.warning("Every remaining candidate is live/in-progress, and "
+                   "\"Include live/in-progress games\" is off in the sidebar.")
     elif date_range and not (cands := [c for c in cands if in_date_range(
             c.get("commence_time", ""), date_range)]):
         st.warning(f"No candidates land on {date_range_label(date_range)} "
@@ -616,6 +649,8 @@ opps = [o for o in snap.get("opportunities", [])
 if sport_filter:
     opps = [o for o in opps
             if (o.get("sport_title") or o.get("sport_key")) in sport_filter]
+if not show_live:
+    opps = [o for o in opps if not is_live(o.get("commence_time", ""))]
 if date_range:
     opps = [o for o in opps if in_date_range(o.get("commence_time", ""), date_range)]
 
@@ -626,25 +661,36 @@ if not opps:
     st.stop()
 
 
-def _rank(o: dict) -> float:
-    """What this is worth per dollar staked, comparable across all three kinds.
+def _rank(o: dict) -> tuple[bool, float]:
+    """(is a free middle, what this is worth per dollar staked) -- the tuple
+    sorts free middles above everything else, and everything else against
+    each other by the second element.
 
-    NOT profit_pct. For an arbitrage that is the guaranteed return, but for a
-    middle it is what you collect ONLY if the window lands -- so ranking on it
-    puts every "+130% if it hits" above every real arbitrage, which is the
-    reverse of the order you would bet in. `expected_pct` is the guaranteed
-    return for an arb, the edge for +EV, and P(window) x gain - P(miss) x cost
-    for a middle, read off the books' own alternate ladders.
+    A free middle is a middle whose worst case is STILL a profit: it is a
+    straight arbitrage that also carries the middle's upside if the window
+    lands. No downside, a higher ceiling than the arbitrage alone -- so it
+    outranks every other opportunity regardless of size, not just ones with
+    a smaller expected return.
+
+    The second element is NOT profit_pct. For an arbitrage that is the
+    guaranteed return, but for a middle it is what you collect ONLY if the
+    window lands -- so ranking on it puts every "+130% if it hits" above
+    every real arbitrage, which is the reverse of the order you would bet
+    in. `expected_pct` is the guaranteed return for an arb, the edge for
+    +EV, and P(window) x gain - P(miss) x cost for a middle, read off the
+    books' own alternate ladders.
 
     A middle whose window probability could not be measured (no ladder deep
     enough on that market) falls back to its worst case, which is negative:
     unmeasured is not the same as good, and it must not outrank a real edge.
     """
     if o.get("expected_pct") is not None:
-        return float(o["expected_pct"])
-    if o.get("kind") == "middle":
-        return -float(o.get("max_loss_pct", 0.0))
-    return float(o.get("profit_pct", 0.0))
+        value = float(o["expected_pct"])
+    elif o.get("kind") == "middle":
+        value = -float(o.get("max_loss_pct", 0.0))
+    else:
+        value = float(o.get("profit_pct", 0.0))
+    return (bool(o.get("free_middle")), value)
 
 
 opps.sort(key=_rank, reverse=True)
@@ -672,20 +718,30 @@ for o in opps:
     elif kind == "middle":
         hits = o.get("hit_values") or []
         on = "/".join(str(h) for h in hits[:4]) or "the window"
-        # Lead with the expected return, because that is what the list is
-        # ordered by and what decides whether the bet is worth making. The
-        # "+130% if it lands" is the headline a middle wants to be judged on
-        # and the one that is misleading on its own.
-        exp = o.get("expected_pct")
-        prob = o.get("fair_prob")
-        if exp is not None:
-            lead = (f"{icon} **{exp:+.2f}%** expected · lands {prob * 100:.1f}% "
-                    f"of the time vs {o.get('breakeven_hit_pct', 0):.1f}% needed")
+        if o.get("free_middle"):
+            # No downside AND the middle's upside -- strictly better than an
+            # ordinary middle or a plain arb of the same guaranteed size, so
+            # this is called out rather than left to look like just another
+            # row the ranking happened to put on top.
+            floor = o.get("free_middle_floor_pct") or 0.0
+            head = (f"🎯 **FREE MIDDLE — no downside** · "
+                    f"+{floor:.2f}% guaranteed no matter what  \n"
+                    f"up to +{o['profit_pct']:.1f}% if it lands on {on}")
         else:
-            lead = (f"{icon} **?** expected — no ladder deep enough to price "
-                    f"this window · needs {o.get('breakeven_hit_pct', 0):.1f}%")
-        head = (f"{lead}  \n+{o['profit_pct']:.1f}% if it lands on {on}, "
-                f"−{o.get('max_loss_pct', 0):.2f}% otherwise")
+            # Lead with the expected return, because that is what the list is
+            # ordered by and what decides whether the bet is worth making. The
+            # "+130% if it lands" is the headline a middle wants to be judged on
+            # and the one that is misleading on its own.
+            exp = o.get("expected_pct")
+            prob = o.get("fair_prob")
+            if exp is not None:
+                lead = (f"{icon} **{exp:+.2f}%** expected · lands {prob * 100:.1f}% "
+                        f"of the time vs {o.get('breakeven_hit_pct', 0):.1f}% needed")
+            else:
+                lead = (f"{icon} **?** expected — no ladder deep enough to price "
+                        f"this window · needs {o.get('breakeven_hit_pct', 0):.1f}%")
+            head = (f"{lead}  \n+{o['profit_pct']:.1f}% if it lands on {on}, "
+                    f"−{o.get('max_loss_pct', 0):.2f}% otherwise")
     else:
         head = (f"{icon} **{o['profit_pct']:+.2f}%** edge vs "
                 f"{o.get('anchor_book') or 'consensus'}")

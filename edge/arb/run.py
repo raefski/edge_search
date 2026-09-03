@@ -105,6 +105,12 @@ def _fanduel_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
             if (cfg.detect.max_hours_to_start
                     and minutes / 60.0 > cfg.detect.max_hours_to_start):
                 continue
+            # A narrowed date_from/date_to (the sidebar's "Today", say) is the
+            # one place this cuts actual scan TIME, not just what gets shown
+            # afterward: this is the per-event prop/alt-line queue, one
+            # request per event per tab, and the biggest cost in the scan.
+            if not engine.within_date_bounds(when, cfg):
+                continue
             per_league.setdefault(key, []).append((when, str(eid)))
         for key, rows in per_league.items():
             rows.sort()

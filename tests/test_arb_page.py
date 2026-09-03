@@ -267,6 +267,21 @@ def _snapshot_on_two_dates() -> dict:
             "candidates": [cand("near", near), cand("far", far)]}
 
 
+def _snapshot_with_a_live_game() -> dict:
+    """Reuses _snapshot_on_two_dates' builders with a "live" (30 minutes ago)
+    fixture standing in for the far one, and a normal upcoming fixture for
+    the near one."""
+    snap = _snapshot_on_two_dates()
+    live_ct = (datetime.now(timezone.utc) - timedelta(minutes=30)).isoformat()
+    for o in snap["opportunities"]:
+        if o["fingerprint"] == "far":
+            o["commence_time"] = live_ct
+    for c in snap["candidates"]:
+        if c["event_id"] == "far":
+            c["commence_time"] = live_ct
+    return snap
+
+
 # ---------------------------------------------------------------- the tests
 def test_the_page_runs_with_no_snapshot_at_all(tmp_path):
     st = run_page(None, tmp_path=tmp_path)
@@ -281,6 +296,55 @@ def test_the_page_runs_with_an_empty_snapshot(tmp_path):
 def test_the_page_runs_with_opportunities(tmp_path):
     st = run_page(_snapshot(), tmp_path=tmp_path)
     assert st.drawn
+
+
+def test_a_free_middle_ranks_above_a_bigger_plain_arb(tmp_path):
+    """A free middle has no downside AND the middle's upside, so it must
+    lead the list even against an arb with a much larger expected_pct --
+    ranking is not just "highest expected value" for this one case."""
+    soon = (datetime.now(timezone.utc) + timedelta(hours=6)).isoformat()
+
+    def leg(book, side, dec):
+        return {"book": book, "side": side, "label": side.title(), "decimal": dec,
+                "american": "+100", "point": 50.5, "stake": 500.0, "payout": 1000.0,
+                "boost_pct": 0.0, "raw_decimal": dec, "age_seconds": 1.0,
+                "link": None, "limit": None}
+
+    big_arb = {"kind": "arb", "fingerprint": "bigarb", "sport_key": "americanfootball_nfl",
+              "sport_title": "NFL", "event_id": "bigarb", "matchup": "Big Arb Away @ Big Arb Home",
+              "commence_time": soon, "market": "totals", "subject": None,
+              "description": "totals 50.5", "profit_pct": 8.0, "expected_pct": 8.0,
+              "stake_total": 1000.0, "profit_abs": 80.0, "max_loss_pct": 0.0,
+              "breakeven_hit_pct": 0.0, "hit_values": [], "push_values": [],
+              "pushes": False, "middle_window": None, "fair_prob": None,
+              "free_middle": False, "kelly_stake": None, "anchor_book": None,
+              "boost": None, "max_age_seconds": 2.0, "warnings": [], "found_at": soon,
+              "legs": [leg("draftkings", "over", 1.95), leg("fanduel", "under", 2.05)]}
+    free_middle = {"kind": "middle", "fingerprint": "freemid", "sport_key": "baseball_mlb",
+                  "sport_title": "MLB", "event_id": "freemid",
+                  "matchup": "Free Middle Away @ Free Middle Home",
+                  "commence_time": soon, "market": "totals", "subject": None,
+                  "description": "totals middle 45.5-47.5 (wins both on 46/47)",
+                  "profit_pct": 45.0, "expected_pct": 1.0, "stake_total": 1000.0,
+                  "profit_abs": 450.0, "max_loss_pct": 0.0, "breakeven_hit_pct": 0.0,
+                  "hit_values": [46, 47], "push_values": [], "pushes": False,
+                  "middle_window": [45.5, 47.5], "fair_prob": 0.05,
+                  "free_middle": True, "free_middle_floor_pct": 2.0,
+                  "kelly_stake": None, "anchor_book": None, "boost": None,
+                  "max_age_seconds": 2.0, "warnings": [], "found_at": soon,
+                  "legs": [leg("draftkings", "over", 2.5), leg("fanduel", "under", 2.5)]}
+    snap = {"generated_at": soon,
+            "stats": {"bankroll": 1000, "events": 2, "groups": 2, "quotes": 8,
+                      "fanduel": 4, "draftkings": 4, "fanatics": 0, "anchor": 0,
+                      "skipped_events": {}},
+            "opportunities": [big_arb, free_middle], "candidates": []}
+
+    st = run_page(snap, tmp_path=tmp_path)
+    markdowns = [str(a) for k, a in st.drawn if k == "markdown"]
+    free_idx = next(i for i, m in enumerate(markdowns) if "FREE MIDDLE" in m)
+    arb_idx = next(i for i, m in enumerate(markdowns) if "+8.00%" in m)
+    assert free_idx < arb_idx, \
+        "the free middle (no downside) must render before the 8% plain arb"
 
 
 def _captions(st) -> list[str]:
@@ -387,6 +451,21 @@ def test_the_date_filter_narrows_to_the_selected_range(tmp_path):
     assert any("near A @ near B" in c for c in captions)
     assert not any("far A @ far B" in c for c in captions), \
         "the +10-day fixture leaked past a range that only covers the near one"
+
+
+def test_live_games_are_hidden_by_default_and_shown_when_toggled_on(tmp_path):
+    snap = _snapshot_with_a_live_game()
+
+    hidden = run_page(snap, tmp_path=tmp_path, answers={"Boost %": 50})
+    captions = _captions(hidden)
+    assert any("near A @ near B" in c for c in captions)
+    assert not any("far A @ far B" in c for c in captions), \
+        "a live game leaked past the default (Include live is off)"
+
+    shown = run_page(snap, tmp_path=tmp_path, answers={
+        "Boost %": 50, "Include live/in-progress games": True})
+    assert any("far A @ far B" in c for c in _captions(shown)), \
+        "turning the toggle on must surface the live game"
 
 
 def test_a_corrupt_snapshot_does_not_take_the_page_down(tmp_path):
