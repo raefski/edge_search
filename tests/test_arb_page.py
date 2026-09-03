@@ -18,6 +18,7 @@ line of a 570-line script that is otherwise only ever run by hand.
 """
 from __future__ import annotations
 
+import importlib
 import json
 import sys
 import types
@@ -273,13 +274,44 @@ def test_the_boosted_ev_panel_renders_rows(tmp_path, cap):
     st = run_page(_snapshot(), tmp_path=tmp_path, answers={
         "Boost %": 50,
         "Cap per sport (0 = no cap)": cap,
-        "Show": "Best +EV (unhedged)",
+        "Boosted view": "Best +EV (unhedged)",
     })
     assert st.drawn
     assert any("boosted +EV" in str(a) for k, a in st.drawn if k == "subheader"), \
         "the +EV panel should have found rows on this fixture"
     assert any("Place the boosted leg only" in c for c in _captions(st)), \
         f"cap={cap} rendered no +EV rows"
+
+
+def test_a_stale_cached_engine_module_is_reloaded_before_use(tmp_path):
+    """Streamlit Community Cloud reruns this script WITHOUT restarting the
+    Python process, so `sys.modules` keeps whatever module object an earlier
+    run imported. That is not hypothetical: it is exactly what undid the
+    cap-0 boost fix in production -- the page's own code updated on the next
+    deploy, but `edge.arb.engine` stayed the pre-fix module object, so
+    `top_rows_per_sport` kept returning zero rows for every sport with no
+    error at all.
+
+    Simulated here by planting a broken `top_rows_per_sport` directly onto the
+    already-imported module -- standing in for "what a previous run left
+    behind" -- and checking the page throws it out before using it.
+    """
+    import edge.arb.engine as real_engine
+
+    def stale(rows, n=3):
+        return []                 # the pre-fix shape: always empty
+
+    sys.modules["edge.arb.engine"].top_rows_per_sport = stale
+    try:
+        st = run_page(_snapshot(), tmp_path=tmp_path, answers={
+            "Boost %": 50,
+            "Cap per sport (0 = no cap)": 0,
+        })
+    finally:
+        importlib.reload(real_engine)
+    assert _panel_rendered_rows(st), (
+        "a stale cached edge.arb.engine kept the pre-fix top_rows_per_sport "
+        "and the boost panel rendered nothing despite finding real rows")
 
 
 def test_a_sport_filter_that_matches_nothing_is_survivable(tmp_path):

@@ -24,6 +24,7 @@ scanning on every page load.
 """
 from __future__ import annotations
 
+import importlib
 import json
 import sys
 from datetime import datetime, timezone
@@ -33,6 +34,31 @@ import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+
+# Streamlit Community Cloud pulls new commits and RERUNS this script WITHOUT
+# restarting the Python process, so `sys.modules` keeps whatever module
+# objects an earlier run imported. `from edge.arb.x import name` only notices
+# a change when `name` is new -- the far more common case is an EXISTING
+# name's BODY changing (an ordinary bugfix), and that goes on running the
+# pre-fix code with no error at all, silently. That is what undid the boost
+# cap-0 fix here: the page's own code updated on the next deploy (Streamlit
+# always re-execs the entrypoint script), but `top_rows_per_sport` kept its
+# pre-fix body -- returning zero rows for every sport -- because nothing
+# forced `edge.arb.engine` back in sync with disk. `_from_scan_request` below
+# only reloads on a MISSING name, which never catches this.
+#
+# Reload every edge.arb module already resident, every run, before anything
+# below binds a name off one. Three passes because reload order here is not
+# dependency-sorted: a module reloaded before something it does
+# `from .x import y` on picks up that something's PRE-reload value the first
+# time round, and only catches up once that something is reloaded too.
+for _pass in range(3):
+    for _name in sorted(k for k in sys.modules
+                        if k == "edge.arb" or k.startswith("edge.arb.")):
+        try:
+            importlib.reload(sys.modules[_name])
+        except Exception:                               # noqa: BLE001
+            pass
 
 from edge.arb import ArbConfig                      # noqa: E402
 
@@ -217,7 +243,11 @@ with st.sidebar:
              "a batter-props token cannot be used on a game line.")
     boost_markets = _market_groups.get(boost_market, [])
     boost_mode = st.radio(
-        "Show", ["Arbitrage (hedged)", "Best +EV (unhedged)"], index=0,
+        # Named distinctly from the top "Show" multiselect (arb/middle/ev) --
+        # the test harness answers widgets by label, and the two are only
+        # different widget TYPES, not different labels. See HANDOFF.md on the
+        # "Filter by sport" rename for the same trap.
+        "Boosted view", ["Arbitrage (hedged)", "Best +EV (unhedged)"], index=0,
         help="A boost no second book can cover is not wasted — it stops being "
              "an arbitrage and becomes an +EV bet. Use that view when nothing "
              "can hedge the boosted side.")
