@@ -33,7 +33,12 @@ HEADERS = {
 # NCAAF measured at 0.33s/0.77MB against 0.62s/5.8MB.
 #
 # subevent_limit=50 was also cutting NCAAF in half: the league has 95 events.
-DEFAULT_BET_LIMIT = 60
+# 60 was tuned on NCAAF. NFL ships 188 bets (94 rungs) on a Total Points
+# market, so 60 was cutting 61% of its ladder -- cleanly from both tails, not
+# the NCAAF phantom pattern, but 1,308 of 2,152 rungs all the same. 200
+# saturates: 500 returns identical counts. Cost 1.23MB -> 2.65MB, no
+# measurable change in fetch time.
+DEFAULT_BET_LIMIT = 200
 DEFAULT_SUBEVENT_LIMIT = 200
 
 

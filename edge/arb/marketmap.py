@@ -134,7 +134,13 @@ RULES: list[tuple[str, str]] = [
     (r"\bgames? handicap\b", "spreads_games"),
     (r"\btotal sets\b", "totals_sets"),
     (r"\btotal games\b", "totals_games"),
-    (r"\b(point spread|spread|handicap|line betting|run line|puck line)\b", "spreads"),
+    # `handicaps?` -- the plural was the whole of Fanatics' soccer spread
+    # coverage. Oddschecker names the market "Handicaps", `\bhandicap\b` did
+    # not match it, and all 218 soccer handicap markets across 22 leagues were
+    # silently dropped: 1,843 bets, and it looked exactly like Fanatics not
+    # offering soccer spreads at all.
+    (r"\b(point spreads?|spreads?|handicaps?|line betting|run line|puck line)\b",
+     "spreads"),
     # An alternate ladder is the SAME bet as the main line at the same number,
     # so both fold onto the main key and let the point in the GroupKey do the
     # distinguishing. That was already true of spreads by accident -- the

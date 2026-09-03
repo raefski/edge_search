@@ -164,6 +164,25 @@ def _fingerprint(*parts) -> str:
     return hashlib.sha1(raw.encode()).hexdigest()[:16]
 
 
+def _leg_point(q: Quote, group: MarketGroup) -> float | None:
+    """The line to SHOW for this leg: the one its own book posts.
+
+    Spreads are stored folded onto the home axis, so both sides of a group
+    carry the same negative number. Displayed raw that reads as both teams
+    laying points -- a reported arbitrage showed "FanDuel away -30.5" beside
+    "Fanatics home -30.5" when the FanDuel bet is Long Island **+30.5**, which
+    is the number you would type into the book. The away side is the negation.
+    """
+    point = group.key.point
+    if point is None:
+        return q.point
+    if is_spread_market(group.key.market) and q.side == "away":
+        return -point
+    if is_spread_market(group.key.market) and q.side == "home":
+        return point
+    return q.point if q.point is not None else point
+
+
 def _leg(q: Quote, group: MarketGroup, commission: float, now: datetime) -> Leg:
     eff = om.net_of_commission(q.decimal, commission)
     return Leg(
@@ -173,7 +192,7 @@ def _leg(q: Quote, group: MarketGroup, commission: float, now: datetime) -> Leg:
         label=side_label(q.side, group.event.home_team, group.event.away_team, group.key.subject),
         decimal=round(eff, 4),
         american=om.format_american(eff),
-        point=q.point,
+        point=_leg_point(q, group),
         link=q.link,
         limit=q.limit,
         age_seconds=round(q.age_seconds(now), 1),

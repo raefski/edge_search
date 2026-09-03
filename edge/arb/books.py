@@ -12,7 +12,7 @@ import logging
 from datetime import datetime, timezone
 
 from .models import Board, EventMeta, GroupKey, Quote
-from .normalize import normalize_outcome
+from .normalize import is_spread_market, normalize_outcome, pick_team_side
 from .marketmap import canonical_market, split_player
 from .matching import match_event
 
@@ -170,6 +170,39 @@ AI_RESIDUAL_MARGIN = 0.10
 _MIN_AI_RUNGS = 3
 
 
+# How far a run of identical prices may span before it is not a ladder.
+STALLED_RUN_LINES = 2.0
+
+
+def _stalled_runs(rungs: dict) -> set:
+    """Rungs inside a run of consecutive lines carrying one identical price.
+
+    Only two-sided numeric rungs are considered, and only runs spanning
+    STALLED_RUN_LINES or more -- two adjacent half-points at one price is just
+    the American odds grid, and there are ~1,800 of those to every 7 of these.
+    """
+    priced = {}
+    for rung, prices in rungs.items():
+        if len(prices) != 2 or not isinstance(rung, (int, float)):
+            continue
+        # Ordered by SIDE, not sorted by value. A European handicap's two
+        # directions mirror each other -- (1.16, 5.00) and (5.00, 1.16) -- so
+        # sorting makes them identical and the run check would drop both
+        # genuine markets.
+        priced[rung] = tuple(prices[name][0] for name in sorted(prices))
+    order = sorted(priced)
+    out: set = set()
+    i = 0
+    while i < len(order):
+        j = i
+        while j + 1 < len(order) and priced[order[j + 1]] == priced[order[i]]:
+            j += 1
+        if j > i and abs(order[j] - order[i]) >= STALLED_RUN_LINES:
+            out.update(order[i:j + 1])
+        i = j + 1
+    return out
+
+
 def _contradicted_rungs(rungs: dict) -> set:
     """Rungs whose devigged price disagrees with their own `aiProbability`.
 
@@ -200,6 +233,29 @@ def _contradicted_rungs(rungs: dict) -> set:
     return {rung for rung, r in residuals.items() if r > median + AI_RESIDUAL_MARGIN}
 
 
+_GENERIC_SIDES = {"HOME": "home", "AWAY": "away", "DRAW": "draw"}
+
+
+def side_label_of(bet: dict) -> str | None:
+    """The side this bet is on, straight from the feed's own `genericName`."""
+    return _GENERIC_SIDES.get((bet.get("genericName") or "").strip().upper())
+
+
+def _labelled_outcome(side: str, market: str, point):
+    """(side, subject, group point) for a bet the feed has already labelled.
+
+    A spread folds onto the home line exactly as normalize_outcome does, so
+    "Away +1.5" and "Home -1.5" meet in one group. A spread with no line is
+    refused for the reason normalize_outcome refuses it: it is not a moneyline.
+    """
+    if is_spread_market(market):
+        if point is None:
+            return None
+        value = round(float(point), 2)
+        return side, None, (value if side == "home" else -value)
+    return side, None, None
+
+
 def ingest_oddschecker(board: Board, payload, book: str | None = None,
                        sport_key: str | None = None, strict_match: bool = True,
                        include_live: bool = False) -> dict:
@@ -215,7 +271,7 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
     """
     stats = {"events": 0, "matched": 0, "unmatched": 0, "quotes": 0, "live_skipped": 0,
              "flat_ladders": 0, "placeholder_rungs": 0, "contradicted_rungs": 0,
-             "bad_overround_rungs": 0,
+             "bad_overround_rungs": 0, "stalled_rungs": 0,
              "markets_seen": set(), "markets_unmapped": set()}
 
     from .fanduel import parse_player_runner
@@ -268,18 +324,42 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
             # a -110 attached to the wrong number beat DraftKings' genuine
             # +27.5 and the pair summed under 1.00. Dropped rather than
             # guessed at, the same way an unrecognised market is.
-            # Keyed on the ABSOLUTE line, because a spread names its two sides
-            # "+23.5" and "-23.5" -- counting those as two rungs would make a
-            # two-line ladder look like four.
-            # rung -> {bet name: decimal}. Both sides of a line are needed to
-            # judge it, and the bet NAME is what separates them -- keying on
-            # the price alone cannot tell a symmetric two-sided rung from a
-            # one-sided one that happens to carry a single price.
+            # THESE LADDER CHECKS ARE FOR GAME LINES ONLY. They assume one
+            # subject per market and a line grid fine enough that a price must
+            # move between rungs; a player prop has neither. Keyed by line,
+            # several PLAYERS pool onto one rung (35% of NFL prop rungs hold
+            # two or more), and a yardage ladder legitimately repeats a price
+            # across five yards, which the stalled-run check would read as a
+            # ladder that had stopped updating. Oddschecker's aiProbability is
+            # unreliable there too -- p90 residual 17pp against 4pp on game
+            # lines. Props are protected instead by parse_player_runner, which
+            # refuses anything it cannot attach to one named player.
             rungs: dict = {}
-            for bet in market.get("bets") or []:
+            placeholder: set = set()
+            bets_iter = ([] if mkey.startswith(PLAYER_MARKETS)
+                         else (market.get("bets") or []))
+
+            # rung -> {side: (decimal, aiProbability)}, keyed on the line as
+            # the HOME side sees it.
+            #
+            # It keyed on the ABSOLUTE line, because a US spread names its two
+            # sides "+23.5" and "-23.5" and counting those separately would
+            # make a two-line ladder look like four. But a European handicap
+            # ships BOTH DIRECTIONS in one market -- Bournemouth +1.5,
+            # Bournemouth -1.5, Brentford +1.5, Brentford -1.5 -- and abs()
+            # collapsed all four onto one key, where the second direction
+            # overwrote the first and left a same-sign pair whose overround was
+            # 0.400. The overround guard then killed both genuine markets.
+            #
+            # `genericName` gives the side outright, so negating the away line
+            # folds each direction onto its own home-axis key.
+            for bet in bets_iter:
                 line_name = (bet.get("line") or {}).get("name")
+                generic = (bet.get("genericName") or "").strip().upper()
                 try:
-                    rung = abs(float(line_name))
+                    value = float(line_name)
+                    rung = (value if generic == "HOME"
+                            else -value if generic == "AWAY" else abs(value))
                 except (TypeError, ValueError):
                     rung = line_name
                 ai = bet.get("aiProbability")
@@ -358,7 +438,28 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                     f"{label} (impossible overround at {sorted(overround_bad)})")
                 stats["bad_overround_rungs"] = (stats.get("bad_overround_rungs", 0)
                                                 + len(overround_bad))
-            placeholder = placeholder | contradicted | overround_bad
+            # A LADDER MUST REPRICE AS THE LINE MOVES. A run of consecutive
+            # rungs carrying one identical price pair across two or more points
+            # of line is not odds-grid coarseness, it is a ladder that stopped
+            # updating: Long Island at Kansas came back with the spread at
+            # -33.0, -32.5, -32.0, -31.5 and -31.0 all at +190/-250, on a game
+            # whose real line is -41.5. The owner could not find Kansas -31 on
+            # the book, because in any meaningful sense it is not there.
+            #
+            # Threshold measured, not guessed: across 11,006 two-sided rungs,
+            # 1,781 runs span 0.5 lines (ordinary rounding) and 77 span 1.0,
+            # but only 7 span 2.0 or more. What that drops is either this
+            # defect or a deep tail priced at +1200, which is unbettable
+            # anyway. It is the check `aiProbability` cannot make here: on this
+            # market the whole model ladder is offset ~12pp from the price, so
+            # the residual rule is inert.
+            stalled = _stalled_runs(rungs)
+            if stalled:
+                stats["markets_unmapped"].add(
+                    f"{label} (ladder does not reprice across {sorted(stalled)})")
+                stats["stalled_rungs"] = stats.get("stalled_rungs", 0) + len(stalled)
+
+            placeholder = placeholder | contradicted | overround_bad | stalled
 
             for bet in market.get("bets") or []:
                 raw_line = (bet.get("line") or {}).get("name")
@@ -366,8 +467,12 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                     point = float(raw_line) if raw_line not in (None, "") else None
                 except (TypeError, ValueError):
                     point = None
-                if point is not None and abs(point) in placeholder:
-                    continue
+                if point is not None and placeholder:
+                    _gn = (bet.get("genericName") or "").strip().upper()
+                    _rung = (point if _gn == "HOME"
+                             else -point if _gn == "AWAY" else abs(point))
+                    if _rung in placeholder:
+                        continue
                 oc_name = bet.get("name") or ""
 
                 for o in bet.get("odds") or []:
@@ -405,8 +510,42 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                         if point is None:
                             point = gpoint
                     else:
-                        norm = normalize_outcome(mkey, oc_name, point, None,
-                                                 target.home_team, target.away_team)
+                        # The feed labels every h2h and handicap bet
+                        # HOME/AWAY/DRAW. Taking that is exact, where the fuzzy
+                        # team match is not: on soccer it mis-sided 20 of 451
+                        # moneyline bets and lost 79 of 1,843 handicap ones
+                        # (4.4% each), including the Man Utd / Man City pair
+                        # pick_team_side refuses. Refusing is safe, but the
+                        # price is thrown away either way.
+                        # genericName is relative to FANATICS' OWN
+                        # orientation, and the board's event may be the other
+                        # way round -- match_event pairs a fixture regardless
+                        # of which book calls which side home. Sydney v
+                        # Brisbane is Fanatics' home/away and FanDuel's
+                        # away/home, so trusting the label directly inverted
+                        # both prices and reported an 84% arbitrage on a
+                        # two-way moneyline.
+                        #
+                        # So the label resolves the TEAM, and the team is then
+                        # matched to the board the same way any other name is.
+                        # That keeps what genericName is good for -- knowing
+                        # exactly which side a bet is on without parsing its
+                        # label -- without inheriting Fanatics' orientation.
+                        labelled = side_label_of(bet)
+                        norm = None
+                        if labelled == "draw":
+                            norm = ("draw", None, None)
+                        elif labelled:
+                            named = home if labelled == "home" else away
+                            board_side = (pick_team_side(named, target.home_team,
+                                                         target.away_team)
+                                          if named else None)
+                            if board_side:
+                                norm = _labelled_outcome(board_side, mkey, point)
+                        if norm is None:
+                            norm = normalize_outcome(mkey, oc_name, point, None,
+                                                     target.home_team,
+                                                     target.away_team)
                         if norm is None:
                             continue
                         side, subject, gpoint = norm

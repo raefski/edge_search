@@ -1353,3 +1353,151 @@ def test_ladder_cdfs_needs_both_sides_and_enough_rungs():
     cdf = ladder_cdfs(board, {"draftkings"})[("9", "totals")]
     assert sorted(cdf) == [50.5, 51.5, 52.5]
     assert cdf[50.5] > cdf[52.5], "P(over) must fall as the line rises"
+
+
+# --- a ladder that stops repricing ------------------------------------------
+def test_a_run_of_identical_prices_across_two_lines_is_dropped():
+    """Long Island at Kansas came back with the spread at -33.0, -32.5, -32.0,
+    -31.5 and -31.0 all at +190/-250, on a game whose real line is -41.5. The
+    owner could not find Kansas -31 on the book, because in any meaningful
+    sense it is not there.
+
+    Threshold measured across 11,006 two-sided rungs: 1,781 runs span 0.5
+    lines (ordinary odds-grid rounding) and 77 span 1.0, but only 7 span 2.0
+    or more."""
+    from edge.arb.books import _stalled_runs
+    rungs = {-31.0: {"HOME": (1.40, None), "AWAY": (2.90, None)},
+             -31.5: {"HOME": (1.40, None), "AWAY": (2.90, None)},
+             -32.0: {"HOME": (1.40, None), "AWAY": (2.90, None)},
+             -32.5: {"HOME": (1.40, None), "AWAY": (2.90, None)},
+             -33.0: {"HOME": (1.40, None), "AWAY": (2.90, None)},
+             -33.5: {"HOME": (1.36, None), "AWAY": (3.10, None)}}
+    assert _stalled_runs(rungs) == {-33.0, -32.5, -32.0, -31.5, -31.0}
+
+
+def test_two_adjacent_lines_at_one_price_are_just_the_odds_grid():
+    """1,781 of these against 7 real stalls -- the guard must not touch them."""
+    from edge.arb.books import _stalled_runs
+    rungs = {-41.5: {"HOME": (1.91, None), "AWAY": (1.91, None)},
+             -42.0: {"HOME": (1.91, None), "AWAY": (1.91, None)},
+             -42.5: {"HOME": (1.83, None), "AWAY": (2.00, None)}}
+    assert _stalled_runs(rungs) == set()
+
+
+def test_a_one_sided_rung_cannot_stall_a_ladder():
+    from edge.arb.books import _stalled_runs
+    rungs = {-31.0: {"HOME": (1.40, None)}, -32.0: {"HOME": (1.40, None)},
+             -33.0: {"HOME": (1.40, None)}}
+    assert _stalled_runs(rungs) == set()
+
+
+# --- the feed's own side label ----------------------------------------------
+def test_generic_name_is_used_in_place_of_fuzzy_team_matching():
+    """Every h2h and handicap bet carries genericName HOME/AWAY/DRAW. Using it
+    is exact; the fuzzy match mis-sided 20 of 451 soccer moneyline bets and
+    lost 79 of 1,843 handicap ones."""
+    from edge.arb.books import side_label_of, _labelled_outcome
+    assert side_label_of({"genericName": "HOME"}) == "home"
+    assert side_label_of({"genericName": "away"}) == "away"
+    assert side_label_of({"genericName": "DRAW"}) == "draw"
+    assert side_label_of({"name": "Man Utd"}) is None
+    # a spread folds onto the home line, exactly as normalize_outcome does
+    assert _labelled_outcome("home", "spreads", -1.5) == ("home", None, -1.5)
+    assert _labelled_outcome("away", "spreads", 1.5) == ("away", None, -1.5)
+    assert _labelled_outcome("home", "h2h", None) == ("home", None, None)
+    # ...and a spread with no line is still not a moneyline
+    assert _labelled_outcome("home", "spreads", None) is None
+
+
+def test_a_european_handicaps_two_directions_do_not_collapse():
+    """Soccer ships BOTH directions in one market -- Bournemouth +1.5,
+    Bournemouth -1.5, Brentford +1.5, Brentford -1.5. Keying the rung on the
+    ABSOLUTE line put all four on one key, the second direction overwrote the
+    first, and the leftover same-sign pair had an overround of 0.400 -- which
+    the overround guard then used to kill both genuine markets."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board
+    soon = (datetime.now(timezone.utc) + timedelta(hours=6)).isoformat()
+
+    def bet(name, generic, line, dec):
+        return {"name": name, "genericName": generic, "line": {"name": line},
+                "odds": [{"bookmakerCode": "FNP", "status": "ACTIVE", "decimal": dec}]}
+
+    payload = {"subevents": [{"id": 1, "name": "Brentford at Bournemouth",
+                              "startTime": soon, "inRunning": False,
+                              "homeTeam": {"name": "Bournemouth"},
+                              "awayTeam": {"name": "Brentford"},
+                              "markets": [{"betTypeId": 525, "name": "Handicaps",
+                                           "bets": [
+                                               bet("Bournemouth", "HOME", "+1.5", 1.1587),
+                                               bet("Brentford", "AWAY", "-1.5", 5.0),
+                                               bet("Bournemouth", "HOME", "-1.5", 5.0),
+                                               bet("Brentford", "AWAY", "+1.5", 1.1587)]}]}]}
+    board = Board()
+    st = ingest_oddschecker(board, payload, book="fanatics",
+                            sport_key="soccer_epl", strict_match=False)
+    assert st["bad_overround_rungs"] == 0, "the collapse used to fake an overround of 0.400"
+    # the two directions are separate groups, each with both sides
+    assert sorted(g.key.point for g in board.groups.values()) == [-1.5, 1.5]
+    for g in board.groups.values():
+        assert set(g.quotes) == {"home", "away"}, g.key
+
+
+def test_generic_name_is_read_against_the_boards_orientation_not_fanatics():
+    """genericName is relative to FANATICS' own home/away, and the board's
+    event may be the other way round -- match_event pairs a fixture regardless
+    of which book calls which side home. Sydney v Brisbane is Fanatics'
+    home/away and FanDuel's away/home; trusting the label directly inverted
+    both prices and reported an 84% arbitrage on a two-way moneyline."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board, EventMeta, GroupKey, Quote
+    now = datetime.now(timezone.utc)
+    soon = (now + timedelta(hours=6)).isoformat()
+    # the board already holds the fixture the OTHER way round
+    board = Board()
+    ev = EventMeta("fd:1", "aussierules_afl", "AFL", now + timedelta(hours=6),
+                   "Brisbane Lions", "Sydney Swans")
+    board.group(GroupKey("fd:1", "h2h", None, None), ev).add(
+        Quote("fanduel", "home", 1.30, None, now))
+
+    payload = {"subevents": [{"id": 1, "name": "Sydney v Brisbane",
+                              "startTime": soon, "inRunning": False,
+                              "homeTeam": {"name": "Sydney"},
+                              "awayTeam": {"name": "Brisbane"},
+                              "markets": [{"betTypeId": 1, "name": "Win Market",
+                                           "bets": [
+                                               {"name": "Sydney", "genericName": "HOME",
+                                                "odds": [{"bookmakerCode": "FNP",
+                                                          "status": "ACTIVE",
+                                                          "decimal": 3.50}]},
+                                               {"name": "Brisbane", "genericName": "AWAY",
+                                                "odds": [{"bookmakerCode": "FNP",
+                                                          "status": "ACTIVE",
+                                                          "decimal": 1.2857}]}]}]}]}
+    ingest_oddschecker(board, payload, book="fanatics",
+                       sport_key="aussierules_afl", strict_match=False)
+    g = board.groups[GroupKey("fd:1", "h2h", None, None)]
+    # Fanatics' HOME is Sydney, which is the board's AWAY
+    assert round(g.quotes["away"]["fanatics"].decimal, 2) == 3.50
+    assert round(g.quotes["home"]["fanatics"].decimal, 2) == 1.29
+
+
+def test_each_leg_shows_the_line_its_own_book_posts():
+    """Spreads are stored folded onto the home axis, so both sides of a group
+    carry the same negative number. Displayed raw that reads as BOTH TEAMS
+    laying points: a reported arbitrage showed "FanDuel away -30.5" beside
+    "Fanatics home -30.5" when the FanDuel bet is Long Island +30.5, which is
+    the number you type into the book."""
+    from edge.arb.engine import _leg_point
+    from edge.arb.models import Board, EventMeta, GroupKey, MarketGroup, Quote
+    now = datetime.now(timezone.utc)
+    ev = EventMeta("1", "americanfootball_ncaaf", "NCAAF",
+                   now + timedelta(hours=6), "Kansas", "Long Island")
+    g = MarketGroup(GroupKey("1", "spreads", None, -30.5), ev)
+    home = Quote("fanatics", "home", 1.377, -30.5, now)
+    away = Quote("fanduel", "away", 4.40, -30.5, now)
+    assert _leg_point(home, g) == -30.5, "the favourite lays the points"
+    assert _leg_point(away, g) == 30.5, "the underdog takes them"
+    # a market with no line is untouched
+    h2h = MarketGroup(GroupKey("1", "h2h", None, None), ev)
+    assert _leg_point(Quote("fanduel", "home", 1.3, None, now), h2h) is None
