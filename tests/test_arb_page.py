@@ -371,7 +371,7 @@ def test_entering_a_boost_renders_rows_at_any_cap(tmp_path, cap):
     survives an empty `shown`, so a pure smoke assertion passes against the
     original bug. This checks that rows were drawn."""
     st = run_page(_snapshot(), tmp_path=tmp_path, answers={
-        "Boost %": 50,
+        "Boost 1 %": 50,
         "Cap per sport (0 = no cap)": cap,
     })
     assert st.drawn
@@ -384,7 +384,7 @@ def test_the_boosted_ev_panel_renders_rows(tmp_path, cap):
     """price_boosted_ev rows carry `ev_pct`, not `profit_pct`. A helper that
     read only the latter raises KeyError here."""
     st = run_page(_snapshot(), tmp_path=tmp_path, answers={
-        "Boost %": 50,
+        "Boost 1 %": 50,
         "Cap per sport (0 = no cap)": cap,
         "Boosted view": "Best +EV (unhedged)",
     })
@@ -393,6 +393,49 @@ def test_the_boosted_ev_panel_renders_rows(tmp_path, cap):
         "the +EV panel should have found rows on this fixture"
     assert any("Place the boosted leg only" in c for c in _captions(st)), \
         f"cap={cap} rendered no +EV rows"
+
+
+def test_two_boosts_stack_and_show_best_floor_ceiling(tmp_path):
+    """Two different tokens on two different books (Boost 1 defaults to
+    DraftKings, Boost 2 to FanDuel) must both apply to the same candidate,
+    and the page must surface a combined floor/ceiling summary -- not just
+    whichever boost happens to win alone."""
+    st = run_page(_snapshot(), tmp_path=tmp_path, answers={
+        "Boost 1 %": 50,
+        "Boost 2 %": 30,
+        "Cap per sport (0 = no cap)": 0,
+    })
+    assert st.drawn
+    assert any("boosted arbitrage" in str(a) for k, a in st.drawn if k == "subheader"), \
+        "the boost panel should have found rows on this fixture"
+    assert any("Best floor/ceiling" in str(a) for k, a in st.drawn if k == "markdown"), \
+        "stacking two boosts should surface a combined floor/ceiling summary"
+    assert _panel_rendered_rows(st)
+
+
+def test_boosted_middle_panel_renders(tmp_path):
+    """`middle_candidates` in the snapshot must produce a boosted-middle
+    panel when a boost is entered, not just the two-way arb panel."""
+    snap = _snapshot()
+    soon = snap["candidates"][0]["commence_time"]
+    snap["middle_candidates"] = [{
+        "sport_key": "americanfootball_ncaaf", "sport_title": "NCAAF",
+        "event_id": "m0", "matchup": "M0 @ N0", "commence_time": soon,
+        "market": "totals", "subject": None, "window": [45.5, 47.5],
+        "cost_pct": 4.0,
+        "legs": [
+            {"side": "over", "book": "draftkings", "decimal": 1.91,
+             "label": "Over", "point": 45.5, "line": 45.5},
+            {"side": "under", "book": "fanduel", "decimal": 1.91,
+             "label": "Under", "point": 47.5, "line": 47.5},
+        ],
+    }]
+    st = run_page(snap, tmp_path=tmp_path, answers={
+        "Boost 1 %": 50,
+        "Boost 2 %": 30,
+    })
+    assert any("boosted middle" in str(a) for k, a in st.drawn if k == "subheader"), \
+        "a middle_candidates entry should render its own boosted-middle panel"
 
 
 def test_a_stale_cached_engine_module_is_reloaded_before_use(tmp_path):
@@ -416,7 +459,7 @@ def test_a_stale_cached_engine_module_is_reloaded_before_use(tmp_path):
     sys.modules["edge.arb.engine"].top_rows_per_sport = stale
     try:
         st = run_page(_snapshot(), tmp_path=tmp_path, answers={
-            "Boost %": 50,
+            "Boost 1 %": 50,
             "Cap per sport (0 = no cap)": 0,
         })
     finally:
@@ -445,7 +488,7 @@ def test_the_date_filter_narrows_to_the_selected_range(tmp_path):
     st = run_page(snap, tmp_path=tmp_path, answers={
         "Game date": "Custom range",
         "Range (ET)": (near_et, near_et),
-        "Boost %": 50,
+        "Boost 1 %": 50,
     })
     captions = _captions(st)
     assert any("near A @ near B" in c for c in captions)
@@ -456,14 +499,14 @@ def test_the_date_filter_narrows_to_the_selected_range(tmp_path):
 def test_live_games_are_hidden_by_default_and_shown_when_toggled_on(tmp_path):
     snap = _snapshot_with_a_live_game()
 
-    hidden = run_page(snap, tmp_path=tmp_path, answers={"Boost %": 50})
+    hidden = run_page(snap, tmp_path=tmp_path, answers={"Boost 1 %": 50})
     captions = _captions(hidden)
     assert any("near A @ near B" in c for c in captions)
     assert not any("far A @ far B" in c for c in captions), \
         "a live game leaked past the default (Include live is off)"
 
     shown = run_page(snap, tmp_path=tmp_path, answers={
-        "Boost %": 50, "Include live/in-progress games": True})
+        "Boost 1 %": 50, "Include live/in-progress games": True})
     assert any("far A @ far B" in c for c in _captions(shown)), \
         "turning the toggle on must surface the live game"
 

@@ -177,7 +177,9 @@ class Allocation:
     payouts: list[float]          # gross return if that leg wins
     profits: list[float]          # payout - total staked
     worst_profit: float
-    worst_profit_pct: float
+    worst_profit_pct: float       # the floor -- guaranteed no matter which leg wins
+    best_profit: float
+    best_profit_pct: float        # the ceiling -- what the better-paying leg returns
     ideal_profit_pct: float       # before rounding / caps
     capped: bool                  # a per-book max stake bound the allocation
 
@@ -296,6 +298,7 @@ def allocate(
     payouts = [stakes[i] * ds[i] for i in range(len(ds))]
     profits = [p - staked for p in payouts]
     worst = min(profits)
+    best = max(profits)
     return Allocation(
         stakes=[round(x, 2) for x in stakes],
         total=round(staked, 2),
@@ -303,6 +306,8 @@ def allocate(
         profits=[round(p, 2) for p in profits],
         worst_profit=round(worst, 2),
         worst_profit_pct=round(worst / staked * 100.0, 4) if staked else 0.0,
+        best_profit=round(best, 2),
+        best_profit_pct=round(best / staked * 100.0, 4) if staked else 0.0,
         ideal_profit_pct=round(ideal_pct, 4),
         capped=capped,
     )

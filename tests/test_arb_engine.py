@@ -139,6 +139,29 @@ def test_middle_is_detected_across_two_books():
     assert 0 < m.breakeven_hit_pct < 100
 
 
+def test_boosts_stack_on_a_middle_across_two_books():
+    """DraftKings' and FanDuel's tokens each land on their own leg of a
+    middle, same as they would on a straight arbitrage -- an ordinary
+    (costly) middle can turn free once both are applied, since boosting
+    either leg only ever helps the worst case."""
+    from edge.arb.engine import Boost
+    b, _ = board_with(("totals", None, 45.5, "over", "draftkings", 1.91),
+                      ("totals", None, 47.5, "under", "fanduel", 1.91))
+    c = cfg()
+    plain = find_middles(b, c)[0]
+    assert not plain.free_middle, "the unboosted baseline must still be an ordinary middle"
+
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0),
+                Boost(book="fanduel", pct=0.3, max_stake=500.0)]
+    boosted = find_middles(b, c)[0]
+    boosted_books = {l.book for l in boosted.legs if l.boost_pct}
+    assert boosted_books == {"draftkings", "fanduel"}, \
+        "two tokens on two different books' legs should both be used"
+    assert boosted.boost and "draftkings" in boosted.boost and "fanduel" in boosted.boost
+    assert boosted.floor_pct > plain.floor_pct, "stacking both tokens must raise the floor"
+    assert boosted.ceiling_pct >= plain.ceiling_pct
+
+
 # --- +EV --------------------------------------------------------------------
 def test_ev_prices_a_book_against_the_vig_free_anchor():
     c = cfg()
@@ -465,18 +488,42 @@ def test_boost_max_stake_caps_the_whole_position():
     assert o.stake_total < 100.0, "the hedge must be sized off the capped leg"
 
 
-def test_the_better_leg_is_the_one_boosted():
-    """A boost is worth more on the leg carrying more of the stake, so both
-    have to be tried rather than assuming the longer price."""
+def test_two_different_boosts_stack_on_the_same_arbitrage():
+    """DraftKings' token and FanDuel's token are separate bet slips on
+    separate books' legs, so both apply to the same two-leg market at once --
+    "one token, one slip" bounds a single Boost to one leg, not the whole
+    position to one boost. The combined result must be at least as good as
+    using either token alone, since boosting an additional leg can only
+    lower arb_sum further."""
     from edge.arb.engine import Boost
     c = cfg()
     c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0),
                 Boost(book="fanduel", pct=0.5, max_stake=500.0)]
     o = find_arbitrages(_two_way_board(over=1.5, under=3.0), c)[0]
-    assert len([l for l in o.legs if l.boost_pct]) == 1
-    alt = om.arb_sum([1.5, om.boosted(3.0, 0.5)])
-    chosen = om.arb_sum([l.decimal for l in o.legs])
-    assert chosen <= alt + 1e-9, "picked the worse leg to boost"
+    boosted_books = {l.book for l in o.legs if l.boost_pct}
+    assert boosted_books == {"draftkings", "fanduel"}, \
+        "two tokens on two different books' legs should both be used"
+    single_fd = om.arb_sum([1.5, om.boosted(3.0, 0.5)])
+    assert (1.0 / om.arb_sum([l.decimal for l in o.legs]) - 1.0) * 100 >= (
+        (1.0 / single_fd - 1.0) * 100 - 1e-9), \
+        "stacking both tokens must be at least as good as using just one"
+    assert o.floor_pct == pytest.approx(o.profit_pct)
+    assert o.ceiling_pct >= o.floor_pct - 1e-9
+
+
+def test_a_boost_that_cannot_apply_leaves_the_other_leg_alone():
+    """Only one of two configured tokens actually covers this market (the
+    second is scoped to a sport it is not in) -- exactly that one leg is
+    boosted, not both."""
+    from edge.arb.engine import Boost
+    c = cfg()
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0),
+                Boost(book="fanduel", pct=0.5, max_stake=500.0,
+                      sports=["basketball_nba"])]
+    o = find_arbitrages(_two_way_board(over=1.5, under=3.0), c)[0]
+    boosted_legs = [l for l in o.legs if l.boost_pct]
+    assert len(boosted_legs) == 1
+    assert boosted_legs[0].book == "draftkings"
 
 
 def test_top_per_sport_keeps_each_sport_represented():
@@ -509,6 +556,42 @@ def test_price_candidates_agrees_with_the_scanner():
     priced = price_candidates(candidates(board, c), c.boosts, c)[0]
     assert priced["profit_pct"] == pytest.approx(scanned.profit_pct, abs=1e-6)
     assert priced["stake_total"] == pytest.approx(scanned.stake_total, abs=1e-6)
+
+
+def test_price_candidates_stacks_two_boosts_like_the_scanner():
+    """Two different tokens on two different books' legs must agree between
+    the two implementations here too, not just the single-boost case."""
+    from edge.arb.engine import Boost, price_candidates
+    from edge.arb.run import candidates
+    c = cfg()
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0),
+                Boost(book="fanduel", pct=0.5, max_stake=500.0)]
+    board = _two_way_board(over=1.5, under=3.0)
+    scanned = find_arbitrages(board, c)[0]
+    priced = price_candidates(candidates(board, c), c.boosts, c)[0]
+    assert priced["profit_pct"] == pytest.approx(scanned.profit_pct, abs=1e-6)
+    assert {l["book"] for l in priced["legs"] if l["boost_pct"]} == {"draftkings", "fanduel"}
+    assert priced["ceiling_pct"] >= priced["floor_pct"] - 1e-9
+    assert priced["floor_pct"] == pytest.approx(priced["profit_pct"])
+
+
+def test_price_middle_candidates_agrees_with_the_scanner():
+    """The middle-shaped counterpart to price_candidates: re-pricing a
+    snapshot's middle_candidates under a boost must land on the same numbers
+    find_middles reports live, stacked boosts included."""
+    from edge.arb.engine import Boost, price_middle_candidates
+    from edge.arb.run import middle_candidates
+    b, _ = board_with(("totals", None, 45.5, "over", "draftkings", 1.91),
+                      ("totals", None, 47.5, "under", "fanduel", 1.91))
+    c = cfg()
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0),
+                Boost(book="fanduel", pct=0.3, max_stake=500.0)]
+    scanned = find_middles(b, c)[0]
+    priced = price_middle_candidates(middle_candidates(b, c), c.boosts, c)[0]
+    assert priced["floor_pct"] == pytest.approx(scanned.floor_pct, abs=1e-6)
+    assert priced["hit_pct"] == pytest.approx(scanned.ceiling_pct, abs=1e-6)
+    assert {l["book"] for l in priced["legs"] if l["boost_pct"]} == {"draftkings", "fanduel"}
+    assert priced["free_middle"] == scanned.free_middle
 
 
 def _spread_board(home_point=-57.5, home_dec=1.76, away_dec=2.38):

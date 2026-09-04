@@ -513,6 +513,78 @@ def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict
     return out
 
 
+def middle_candidates(board: Board, cfg: ArbConfig, max_cost_pct: float = 20.0) -> list[dict]:
+    """Middle-shaped pairings -- two DIFFERENT point lines on the same
+    market, one book each -- snapshotted raw so a profit boost can be
+    applied to either leg without re-scanning. The middle counterpart to
+    `candidates()`, which does the same job for the OTHER two-leg shape this
+    scanner prices: one shared line, two books.
+
+    `max_cost_pct` keeps pairings a plausible token could still turn free and
+    drops the rest; wider than `cfg.detect.middle_max_cost_pct` on purpose --
+    a token doubles as headroom `middle_max_cost_pct` alone does not budget
+    for, the same reason `candidates()`'s own `max_sum` sits above 1.0.
+    """
+    books = set(cfg.books.bettable)
+    now = datetime.now(timezone.utc)
+    out = []
+    for (event_id, market, subject), groups in engine._middle_families(board).items():
+        if not engine.in_window(groups[0].event, cfg, now):
+            continue
+        spread = engine.is_spread_market(market)
+        lo_side, hi_side = ("home", "away") if spread else ("over", "under")
+        lows = [(g, g.best(lo_side, books)) for g in groups if g.best(lo_side, books)]
+        highs = [(g, g.best(hi_side, books)) for g in groups if g.best(hi_side, books)]
+        if not lows or not highs:
+            continue
+        for glo, qlo in lows:
+            for ghi, qhi in highs:
+                plo, phi = glo.key.point, ghi.key.point
+                width = (plo - phi) if spread else (phi - plo)
+                if width <= 0 or width < cfg.detect.middle_min_width \
+                        or width > cfg.detect.middle_max_width:
+                    continue
+                axis_lo = -plo if spread else plo
+                axis_hi = -phi if spread else phi
+                lo_line, hi_line = axis_lo, axis_hi
+                landing = engine.middle_results(lo_line, hi_line)
+                if not landing:
+                    continue
+                if qlo.book == qhi.book:
+                    continue
+                if (qlo.decimal > cfg.detect.middle_max_leg_decimal
+                        or qhi.decimal > cfg.detect.middle_max_leg_decimal):
+                    continue
+                alloc0 = om.allocate([qlo.decimal, qhi.decimal], bankroll=cfg.bankroll.total,
+                                     round_to=cfg.bankroll.round_to)
+                scenarios = engine.middle_scenarios(qlo.decimal, qhi.decimal, lo_line, hi_line,
+                                                    alloc0.stakes[0], alloc0.stakes[1])
+                staked = sum(alloc0.stakes)
+                cost_pct = -min(scenarios.values()) / staked * 100.0
+                if cost_pct > max_cost_pct:
+                    continue
+                ev = glo.event
+                window = (-plo, -phi) if spread else (plo, phi)
+                window = (min(window), max(window))
+                out.append({
+                    "sport_key": ev.sport_key, "sport_title": ev.sport_title,
+                    "event_id": event_id, "matchup": ev.matchup,
+                    "commence_time": ev.commence_time.isoformat(),
+                    "market": market, "subject": subject, "window": window,
+                    "cost_pct": round(cost_pct, 5),
+                    "legs": [
+                        {"side": lo_side, "book": qlo.book, "decimal": round(qlo.decimal, 4),
+                         "label": side_label(lo_side, ev.home_team, ev.away_team, subject),
+                         "point": engine._leg_point(qlo, glo), "line": lo_line},
+                        {"side": hi_side, "book": qhi.book, "decimal": round(qhi.decimal, 4),
+                         "label": side_label(hi_side, ev.home_team, ev.away_team, subject),
+                         "point": engine._leg_point(qhi, ghi), "line": hi_line},
+                    ],
+                })
+    out.sort(key=lambda c: c["cost_pct"])
+    return out
+
+
 def snapshot(cfg: ArbConfig | None = None, progress=None) -> dict:
     """A JSON-safe scan result, for writing to disk and reading in the app."""
     cfg = cfg or ArbConfig()
@@ -522,4 +594,5 @@ def snapshot(cfg: ArbConfig | None = None, progress=None) -> dict:
         "stats": stats,
         "opportunities": [o.to_dict() for o in opps],
         "candidates": candidates(board, cfg),
+        "middle_candidates": middle_candidates(board, cfg),
     }

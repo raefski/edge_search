@@ -135,6 +135,16 @@ class Opportunity:
     # a guaranteed 2% above a 130%-if-it-lands that hits 1.5% of the time,
     # which is the order you would actually bet in.
     expected_pct: float | None = None
+    # The guaranteed-worst-case and best-case % on THIS position, in the same
+    # units for every kind: an arb's floor and ceiling are ~equal (a hedge
+    # pays the same either way, up to rounding); a middle's floor is what a
+    # miss still nets (negative unless it is a free middle) and its ceiling
+    # is profit_pct, the payout if the window lands; +EV bets carry neither,
+    # since there is no hedge to guarantee a floor. This is what a boost
+    # panel comparing many opportunities at once ranks on, rather than
+    # profit_pct alone, whose meaning otherwise differs by kind.
+    floor_pct: float | None = None
+    ceiling_pct: float | None = None
     # A middle whose worst case is still a profit -- it is a straight
     # arbitrage AND carries the middle's upside if the window lands. No
     # downside, a higher ceiling than the arb alone: strictly better than an
@@ -250,26 +260,51 @@ def _describe(group: MarketGroup) -> str:
 # --------------------------------------------------------------------------
 # arbitrage
 # --------------------------------------------------------------------------
-def _boost_variants(legs: list[Leg], cfg, sport_key: str, market: str,
-                    event_start: datetime | None = None):
-    """(boost, leg index, prices) for the plain market and each boostable leg.
+def _boost_variants(leg_specs: list[tuple[str, str | None, float]], boosts: list[Boost],
+                    sport_key: str, market: str, event_start: datetime | None = None):
+    """(assignment, prices) for the plain market, each singly-boosted leg, and
+    (if more than one leg qualifies) every leg boosted at once.
 
-    The unboosted case is always first, so a market that arbs on its own still
-    reports without spending a token on it.
+    leg_specs is (book, side, decimal) per leg, in leg order. assignment is
+    {leg index: Boost}, empty for the unboosted variant, which is always
+    first so a market that arbs on its own still reports without spending a
+    token on it.
+
+    Two DIFFERENT boosts can apply simultaneously here even though a single
+    Boost only ever covers one leg ("one token, one slip") -- each is its own
+    token on its own book's own bet slip, so a DraftKings token on the
+    DraftKings leg and a FanDuel token on the FanDuel leg are two separate
+    placements, not one token doing double duty. Boosting an additional leg
+    only raises that leg's price, which can only lower arb_sum further, so
+    the fully-stacked variant is never worse than any single one -- it is
+    computed directly rather than searched combinatorially. Two boosts both
+    eligible for the SAME leg is not a real scenario (each book normally
+    offers you one live token at a time) but is resolved by keeping the one
+    worth more on that leg, since only one token can go on one slip.
     """
-    base = [l.decimal for l in legs]
-    yield None, None, base
-    for b in getattr(cfg, "boosts", None) or []:
-        for i, leg in enumerate(legs):
-            if not b.applies_to(leg.book, sport_key, market,
-                                side=leg.side, decimal=leg.decimal,
-                                event_start=event_start):
-                continue
-            priced = list(base)
-            # the price the BOOK writes, not the exact product: a boosted bet
-            # is booked at whole American odds and settles there
+    base = [d for _, _, d in leg_specs]
+    yield {}, base
+
+    per_leg: dict[int, Boost] = {}
+    for i, (book, side, decimal) in enumerate(leg_specs):
+        applicable = [b for b in boosts
+                     if b.applies_to(book, sport_key, market, side=side,
+                                     decimal=decimal, event_start=event_start)]
+        if not applicable:
+            continue
+        best_b = max(applicable, key=lambda b: b.pct)
+        per_leg[i] = best_b
+        priced = list(base)
+        # the price the BOOK writes, not the exact product: a boosted bet
+        # is booked at whole American odds and settles there
+        priced[i] = om.at_book_price(om.boosted(base[i], best_b.pct))
+        yield {i: best_b}, priced
+
+    if len(per_leg) > 1:
+        priced = list(base)
+        for i, b in per_leg.items():
             priced[i] = om.at_book_price(om.boosted(base[i], b.pct))
-            yield b, i, priced
+        yield dict(per_leg), priced
 
 
 def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Opportunity]:
@@ -301,13 +336,16 @@ def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Oppo
         legs = [_leg(q, group, cfg.books.commission.get(q.book, 0.0), now) for q in quotes]
         ev = group.event
 
-        # A boost applies to ONE slip, so each leg is a separate candidate and
-        # the better one wins. Evaluating only the longest leg would be wrong:
-        # the boost is worth more on the leg carrying more of the stake.
+        # Each boost applies to ONE slip (its own book's leg), but two
+        # DIFFERENT boosts on two different legs are two separate slips, so
+        # both can be worth placing at once. _boost_variants tries every
+        # single leg alone and, when more than one qualifies, the fully
+        # stacked combination too; the best worst_profit_pct wins.
+        leg_specs = [(l.book, l.side, l.decimal) for l in legs]
         best = None
-        for boost, idx, priced in _boost_variants(
-                legs, cfg, ev.sport_key, group.key.market,
-                event_start=ev.commence_time):
+        for assignment, priced in _boost_variants(
+                leg_specs, getattr(cfg, "boosts", None) or [],
+                ev.sport_key, group.key.market, event_start=ev.commence_time):
             s = om.arb_sum(priced)
             if s >= 1.0:
                 continue
@@ -315,58 +353,63 @@ def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Oppo
             if profit_pct < d.min_profit_pct:
                 continue
             caps = [cfg.books.max_stake.get(l.book) for l in legs]
-            if boost is not None:
+            for i, b in assignment.items():
                 # the token's max stake bounds the whole position, not just its
                 # own leg -- allocate() shrinks the total to keep the ratio
-                caps[idx] = min(c for c in (caps[idx], boost.max_stake) if c)
+                caps[i] = min(c for c in (caps[i], b.max_stake) if c)
             alloc = om.allocate(priced, bankroll=cfg.bankroll.total,
                                 round_to=cfg.bankroll.round_to, max_stakes=caps)
             if best is None or alloc.worst_profit_pct > best[0].worst_profit_pct:
-                best = (alloc, boost, idx, priced, profit_pct)
+                best = (alloc, assignment, priced, profit_pct)
         if best is None:
             continue
-        alloc, boost, boost_idx, priced, profit_pct = best
+        alloc, assignment, priced, profit_pct = best
 
         for i, (leg, stake, payout) in enumerate(zip(legs, alloc.stakes, alloc.payouts)):
             leg.stake, leg.payout = stake, payout
             leg.decimal = round(priced[i], 4)
             leg.american = om.format_american(priced[i])
-            if boost is not None and i == boost_idx:
-                leg.boost_pct = boost.pct
+            if i in assignment:
+                leg.boost_pct = assignment[i].pct
 
         warnings = []
-        if profit_pct > d.max_profit_pct and boost is None:
+        if profit_pct > d.max_profit_pct and not assignment:
             warnings.append(
                 f"{profit_pct:.1f}% exceeds max_profit_pct ({d.max_profit_pct}%) -- "
                 "usually a stale or mispublished line, verify both prices before staking"
             )
-        if boost is not None:
+        if assignment:
+            tokens = " and ".join(f"the {b.describe()} applied to the {legs[i].book} leg"
+                                  for i, b in sorted(assignment.items()))
+            unboosted_pct = (1.0 / om.arb_sum([l.raw_decimal for l in legs]) - 1.0) * 100.0
             warnings.append(
-                f"needs the {boost.describe()} applied to the "
-                f"{legs[boost_idx].book} leg -- without it this is "
-                f"{(1.0 / om.arb_sum([l.raw_decimal for l in legs]) - 1.0) * 100.0:+.2f}%")
+                f"needs {tokens} -- without "
+                f"{'them' if len(assignment) > 1 else 'it'} this is {unboosted_pct:+.2f}%")
         if alloc.capped:
             warnings.append(
-                "stake reduced to respect the boost's max stake" if boost is not None
+                "stake reduced to respect the boost's max stake" if assignment
                 else "stake reduced to respect a per-book limit")
         if alloc.worst_profit_pct <= 0:
             warnings.append("rounding erases the edge at this bankroll")
         if max(ages) > d.max_quote_age_seconds / 2:
             warnings.append(f"oldest quote is {max(ages):.0f}s old")
 
+        boost_desc = " + ".join(b.describe() for _, b in sorted(assignment.items())) or None
         out.append(Opportunity(
             kind="arb",
             fingerprint=_fingerprint("arb", ev.event_id, group.key.market, group.key.subject,
                                      group.key.point, *[f"{l.book}:{l.side}" for l in legs],
-                                     boost.describe() if boost else ""),
+                                     boost_desc or ""),
             sport_key=ev.sport_key, sport_title=ev.sport_title, event_id=ev.event_id,
             matchup=ev.matchup, commence_time=ev.commence_time,
             market=group.key.market, subject=group.key.subject, description=_describe(group),
             legs=legs, profit_pct=round(alloc.worst_profit_pct, 3),
             # An arbitrage's guaranteed return IS its expected return.
             expected_pct=round(alloc.worst_profit_pct, 3),
+            floor_pct=round(alloc.worst_profit_pct, 3),
+            ceiling_pct=round(alloc.best_profit_pct, 3),
             stake_total=alloc.total, profit_abs=alloc.worst_profit,
-            boost=boost.describe() if boost else None,
+            boost=boost_desc,
             max_age_seconds=round(max(ages), 1), warnings=warnings,
         ))
 
@@ -480,6 +523,58 @@ def p_above(cdf: dict[float, float], value: float, spread: bool) -> float | None
     return v0 + (v1 - v0) * (value - x0) / (x1 - x0)
 
 
+def _price_middle_variants(lo_book: str, lo_side: str, d_lo0: float,
+                           hi_book: str, hi_side: str, d_hi0: float,
+                           lo_line: float, hi_line: float, landing: list[int],
+                           boosts: list[Boost], bankroll: float, round_to: float,
+                           sport_key: str, market: str,
+                           event_start: datetime | None = None) -> tuple[dict, dict]:
+    """The winning boost variant for one middle pairing, plus the unboosted
+    reading for comparison. Shared by `find_middles` (live) and
+    `price_middle_candidates` (re-pricing a snapshot) so the two cannot drift
+    apart from each other -- the same reason `_boost_variants` itself is
+    shared by the two arbitrage pricers.
+
+    Boosting a leg raises its own price, which helps that leg's own win
+    scenarios -- but the two legs' PROPORTIONAL stake split also shifts when
+    a decimal changes (`allocate` sizes inversely to price), so the net
+    effect on the worst case is not obvious by inspection. Rather than
+    assume, every variant `_boost_variants` offers (plain, each leg boosted
+    alone, and -- if two different tokens each cover a different leg -- both
+    at once) is actually priced, and the one with the best floor wins (ties
+    broken by ceiling).
+
+    Returns (best, plain), each a dict with assignment/d_lo/d_hi/wins/
+    hit_pct/cost_pct/floor_pct/staked.
+    """
+    leg_specs = [(lo_book, lo_side, d_lo0), (hi_book, hi_side, d_hi0)]
+    best = None
+    plain = None
+    for assignment, (d_lo, d_hi) in _boost_variants(leg_specs, boosts, sport_key, market,
+                                                    event_start=event_start):
+        # Enumerate the real outcomes instead of assuming both legs win: a
+        # whole-number line pushes, returning the stake rather than paying it.
+        alloc0 = om.allocate([d_lo, d_hi], bankroll=bankroll, round_to=round_to)
+        s_lo, s_hi = alloc0.stakes
+        staked = s_lo + s_hi
+        scenarios = middle_scenarios(d_lo, d_hi, lo_line, hi_line, s_lo, s_hi)
+        wins = {x: p for x, p in scenarios.items() if p > 0}
+        worst = min(scenarios.values())
+        # the headline is what a landing pays -- every number inside the
+        # window wins both legs for the same amount
+        hit_pct = min(scenarios[n] for n in landing) / staked * 100.0
+        cost_pct = -worst / staked * 100.0
+        row = {"assignment": assignment, "d_lo": d_lo, "d_hi": d_hi, "wins": wins,
+              "hit_pct": hit_pct, "cost_pct": cost_pct, "floor_pct": -cost_pct,
+              "staked": staked}
+        if not assignment:
+            plain = row
+        if best is None or row["floor_pct"] > best["floor_pct"] or (
+                row["floor_pct"] == best["floor_pct"] and row["hit_pct"] > best["hit_pct"]):
+            best = row
+    return best, plain
+
+
 def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportunity]:
     now = now or utcnow()
     d = cfg.detect
@@ -529,36 +624,43 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                         for q, g in ((qlo, glo), (qhi, ghi))]
                 if any(l.decimal > d.middle_max_leg_decimal for l in legs):
                     continue          # a longshot price is not a main line
-                # Enumerate the real outcomes instead of assuming both legs
-                # win: a whole-number line pushes, returning the stake rather
-                # than paying it.
-                alloc0 = om.allocate([l.decimal for l in legs],
-                                     bankroll=cfg.bankroll.total,
-                                     round_to=cfg.bankroll.round_to)
-                # legs[0] sits on lo_line and legs[1] on hi_line: width > 0
-                d_lo, d_hi = legs[0].decimal, legs[1].decimal
-                s_lo, s_hi = alloc0.stakes[0], alloc0.stakes[1]
-                staked = s_lo + s_hi
-                scenarios = middle_scenarios(d_lo, d_hi, lo_line, hi_line, s_lo, s_hi)
-                wins = {x: p for x, p in scenarios.items() if p > 0}
-                worst = min(scenarios.values())
-                # the headline is what a landing pays -- every number inside
-                # the window wins both legs for the same amount
-                hit_pct = min(scenarios[n] for n in landing) / staked * 100.0
+                ev = glo.event
+
+                best_variant, plain_variant = _price_middle_variants(
+                    legs[0].book, lo_side, legs[0].decimal,
+                    legs[1].book, hi_side, legs[1].decimal,
+                    lo_line, hi_line, landing, getattr(cfg, "boosts", None) or [],
+                    cfg.bankroll.total, cfg.bankroll.round_to,
+                    ev.sport_key, market, event_start=ev.commence_time)
+                if best_variant["cost_pct"] > d.middle_max_cost_pct:
+                    continue
+                assignment = best_variant["assignment"]
+                d_lo, d_hi = best_variant["d_lo"], best_variant["d_hi"]
+                wins, hit_pct, cost_pct, staked = (
+                    best_variant["wins"], best_variant["hit_pct"],
+                    best_variant["cost_pct"], best_variant["staked"])
+                plain_metrics = (plain_variant["hit_pct"], plain_variant["cost_pct"])
                 # a whole-number end returns one stake instead of paying it,
                 # so it profits far less; break even on that weaker result
                 min_hit_pct = min(wins.values()) / staked * 100.0
-                cost_pct = -worst / staked * 100.0
-                if cost_pct > d.middle_max_cost_pct:
-                    continue
                 breakeven = (cost_pct / (cost_pct + min_hit_pct) * 100.0
                              if (cost_pct + min_hit_pct) > 0 else 100.0)
                 hit_values = landing
                 push_values = sorted(x for x in wins if float(x) in (lo_line, hi_line))
 
+                legs[0].decimal, legs[1].decimal = round(d_lo, 4), round(d_hi, 4)
+                legs[0].american, legs[1].american = (om.format_american(d_lo),
+                                                       om.format_american(d_hi))
+                for i, b in assignment.items():
+                    legs[i].boost_pct = b.pct
+
+                caps = [cfg.books.max_stake.get(l.book) for l in legs]
+                for i, b in assignment.items():
+                    # the token's max stake bounds the whole position, not just
+                    # its own leg -- allocate() shrinks the total to keep the ratio
+                    caps[i] = min(c for c in (caps[i], b.max_stake) if c)
                 alloc = om.allocate([l.decimal for l in legs], bankroll=cfg.bankroll.total,
-                                    round_to=cfg.bankroll.round_to,
-                                    max_stakes=[cfg.books.max_stake.get(l.book) for l in legs])
+                                    round_to=cfg.bankroll.round_to, max_stakes=caps)
                 for leg, stake, payout in zip(legs, alloc.stakes, alloc.payouts):
                     leg.stake, leg.payout = stake, payout
 
@@ -589,8 +691,16 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                         "returns one stake instead of paying it, so it earns roughly half")
                 if cost_pct <= 0:
                     warnings.append("free middle: this is also a straight arbitrage")
+                if assignment:
+                    tokens = " and ".join(f"the {b.describe()} applied to the {legs[i].book} leg"
+                                          for i, b in sorted(assignment.items()))
+                    plain_hit, plain_cost = plain_metrics
+                    warnings.append(
+                        f"needs {tokens} -- without "
+                        f"{'them' if len(assignment) > 1 else 'it'} this middle's floor is "
+                        f"{-plain_cost:+.2f}% and its ceiling {plain_hit:.1f}%")
 
-                ev = glo.event
+                boost_desc = " + ".join(b.describe() for _, b in sorted(assignment.items())) or None
                 out.append(Opportunity(
                     kind="middle",
                     fingerprint=_fingerprint("mid", event_id, market, subject, plo, phi,
@@ -604,6 +714,8 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                     fair_prob=(round(p_hit, 4) if p_hit is not None else None),
                     expected_pct=(round(p_hit * hit_pct - (1.0 - p_hit) * cost_pct, 3)
                                   if p_hit is not None else None),
+                    floor_pct=round(-cost_pct, 3),
+                    ceiling_pct=round(hit_pct, 3),
                     free_middle=cost_pct <= 0,
                     free_middle_floor_pct=(round(-cost_pct, 3) if cost_pct <= 0 else None),
                     stake_total=alloc.total,
@@ -613,6 +725,7 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                     hit_values=hit_values, push_values=push_values,
                     pushes=bool(push_values),
                     middle_window=window, max_age_seconds=round(max(ages), 1),
+                    boost=boost_desc,
                     warnings=warnings,
                 ))
 
@@ -772,42 +885,45 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
     for c in cands:
         legs = c["legs"]
         base = [l["decimal"] for l in legs]
-        # One book on both sides is a data artifact on its own -- min_books
-        # exists to reject it -- but a boost can beat that book's own vig, and
-        # then it is a real position. So it is priced only WITH a boost.
-        plain = [] if c.get("single_book") else [(None, None, base)]
+        leg_specs = [(l["book"], l.get("side"), l["decimal"]) for l in legs]
         best = None
-        for boost, idx, priced in plain + [
-                (b, i, [om.at_book_price(om.boosted(d, b.pct)) if i == j else d
-                        for j, d in enumerate(base)])
-                for b in boosts
-                for i, l in enumerate(legs)
-                if b.applies_to(l["book"], c["sport_key"], c["market"],
-                                side=l.get("side"), decimal=l.get("decimal"),
-                                event_start=_start_of(c))]:
+        for assignment, priced in _boost_variants(leg_specs, boosts, c["sport_key"], c["market"],
+                                                  event_start=_start_of(c)):
+            if not assignment and c.get("single_book"):
+                # One book on both sides is a data artifact on its own -- min_books
+                # exists to reject it -- but a boost can beat that book's own vig, and
+                # then it is a real position. So it is priced only WITH a boost.
+                continue
             s = om.arb_sum(priced)
             if s >= 1.0:
                 continue
             caps = [cfg.books.max_stake.get(l["book"]) for l in legs]
-            if boost is not None:
-                caps[idx] = min(x for x in (caps[idx], boost.max_stake) if x)
+            for i, b in assignment.items():
+                caps[i] = min(x for x in (caps[i], b.max_stake) if x)
             alloc = om.allocate(priced, bankroll=cfg.bankroll.total,
                                 round_to=cfg.bankroll.round_to, max_stakes=caps)
             if alloc.worst_profit_pct < floor:
                 continue
             if best is None or alloc.worst_profit_pct > best[0].worst_profit_pct:
-                best = (alloc, boost, idx, priced)
+                best = (alloc, assignment, priced)
         if best is None:
             continue
-        alloc, boost, idx, priced = best
+        alloc, assignment, priced = best
+        boost_desc = " + ".join(b.describe() for _, b in sorted(assignment.items())) or None
         out.append({
             **{k: c[k] for k in ("sport_key", "sport_title", "matchup", "market",
                                  "subject", "point", "commence_time")},
             "profit_pct": round(alloc.worst_profit_pct, 3),
+            # floor: guaranteed no matter which leg wins. ceiling: what the
+            # better-paying leg actually returns -- these differ only when
+            # rounded stakes stop exactly equalising the two outcomes, which
+            # is small but real, and worth showing rather than assuming away.
+            "floor_pct": round(alloc.worst_profit_pct, 3),
+            "ceiling_pct": round(alloc.best_profit_pct, 3),
             "profit_abs": alloc.worst_profit,
             "stake_total": alloc.total,
             "unboosted_pct": round((1.0 / om.arb_sum(base) - 1.0) * 100.0, 3),
-            "boost": boost.describe() if boost else None,
+            "boost": boost_desc,
             "both_plus": both_sides_plus(priced),
             # both prices: `raw_american` is what the book posts and what you
             # verify against before placing, `american` is what it pays after
@@ -818,10 +934,76 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
                       "priced": round(priced[i], 4),
                       "raw_american": om.format_american(legs[i]["decimal"]),
                       "american": om.format_american(priced[i]),
-                      "boost_pct": boost.pct if (boost and i == idx) else 0.0}
+                      "boost_pct": assignment[i].pct if i in assignment else 0.0}
                      for i in range(len(legs))],
         })
     out.sort(key=lambda r: r["profit_pct"], reverse=True)
+    return out
+
+
+def price_middle_candidates(cands: list[dict], boosts: list[Boost], cfg) -> list[dict]:
+    """Re-price snapshotted middle pairings under a set of boosts.
+
+    The middle-shaped counterpart to `price_candidates`: that one re-prices
+    single two-sided markets (`run.candidates`), this one re-prices two
+    DIFFERENT point lines paired into a middle (`run.middle_candidates`).
+    Both exist so the boost slider can work from a snapshot without
+    re-scanning, and both call `_price_middle_variants`/`_boost_variants`
+    rather than re-deriving the maths, so this cannot drift from what
+    `find_middles` would report live.
+
+    Returns rows sorted with free middles first, then by floor -- the same
+    order `find_middles` ranks free middles in, since a floor guaranteed no
+    matter what outranks a bigger number that depends on the window landing.
+    """
+    out = []
+    for c in cands:
+        legs = c["legs"]
+        lo, hi = legs[0], legs[1]
+        landing = middle_results(lo["line"], hi["line"])
+        if not landing:
+            continue
+        best, plain = _price_middle_variants(
+            lo["book"], lo["side"], lo["decimal"], hi["book"], hi["side"], hi["decimal"],
+            lo["line"], hi["line"], landing, boosts, cfg.bankroll.total, cfg.bankroll.round_to,
+            c["sport_key"], c["market"], event_start=_start_of(c))
+        if best["cost_pct"] > cfg.detect.middle_max_cost_pct:
+            continue
+        assignment = best["assignment"]
+        d_lo, d_hi = best["d_lo"], best["d_hi"]
+        min_hit_pct = (min(best["wins"].values()) / best["staked"] * 100.0
+                      if best["wins"] else 0.0)
+        breakeven = (best["cost_pct"] / (best["cost_pct"] + min_hit_pct) * 100.0
+                    if (best["cost_pct"] + min_hit_pct) > 0 else 100.0)
+        caps = [cfg.books.max_stake.get(lo["book"]), cfg.books.max_stake.get(hi["book"])]
+        for i, b in assignment.items():
+            # the token's max stake bounds the whole position, not just its
+            # own leg -- allocate() shrinks the total to keep the ratio
+            caps[i] = min(x for x in (caps[i], b.max_stake) if x)
+        alloc = om.allocate([d_lo, d_hi], bankroll=cfg.bankroll.total,
+                            round_to=cfg.bankroll.round_to, max_stakes=caps)
+        priced = [d_lo, d_hi]
+        out.append({
+            **{k: c[k] for k in ("sport_key", "sport_title", "matchup", "market",
+                                 "subject", "commence_time", "window")},
+            "hit_pct": round(best["hit_pct"], 3),
+            "cost_pct": round(best["cost_pct"], 3),
+            "floor_pct": round(best["floor_pct"], 3),
+            "ceiling_pct": round(best["hit_pct"], 3),
+            "free_middle": best["cost_pct"] <= 0,
+            "breakeven_hit_pct": round(max(breakeven, 0.0), 2),
+            "unboosted_floor_pct": round(-plain["cost_pct"], 3),
+            "unboosted_ceiling_pct": round(plain["hit_pct"], 3),
+            "boost": " + ".join(b.describe() for _, b in sorted(assignment.items())) or None,
+            "stake_total": alloc.total,
+            "legs": [{**legs[i], "stake": alloc.stakes[i], "payout": alloc.payouts[i],
+                     "priced": round(priced[i], 4),
+                     "raw_american": om.format_american(legs[i]["decimal"]),
+                     "american": om.format_american(priced[i]),
+                     "boost_pct": assignment[i].pct if i in assignment else 0.0}
+                    for i in range(2)],
+        })
+    out.sort(key=lambda r: (r["free_middle"], r["floor_pct"]), reverse=True)
     return out
 
 
