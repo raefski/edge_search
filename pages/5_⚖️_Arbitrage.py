@@ -211,10 +211,6 @@ def is_live(commence_time: str) -> bool:
 with st.sidebar:
     st.header("Scan")
     bankroll = st.number_input("Bankroll per opportunity ($)", 50, 100_000, 1000, step=50)
-    kinds = st.multiselect("Show", ["arb", "middle", "ev"], default=["arb", "middle", "ev"],
-                           format_func=lambda k: {"arb": "Arbitrage", "middle": "Middles",
-                                                  "ev": "+EV"}[k])
-    min_profit = st.slider("Minimum %", 0.0, 20.0, 0.0, 0.25)
 
     _sport_choices = _from_scan_request(
         "sport_choices", lambda cfg, snap: dict(sorted(FALLBACK_SPORTS.items(),
@@ -227,13 +223,81 @@ with st.sidebar:
 
     st.divider()
     st.subheader("Scan filters")
+    st.caption("Sport and date both narrow the SCAN itself, not just what's "
+               "shown afterward — combine them for the fastest scan. A sport "
+               "alone still crawls the full rolling window (10 days by "
+               "default), so \"NCAAF\" without a date still fetches every "
+               "NCAAF game through next Saturday.")
     scan_sports = st.multiselect(
         "Restrict scan to sport(s)", options=list(_sport_titles),
         format_func=lambda k: _sport_titles.get(k, k), default=[],
-        help="Narrows the SCAN itself, not just what's shown afterward — much "
-             "faster than scanning everything when today's boosts only cover "
-             "one sport (e.g. NCAAF). Leave empty to scan every league. "
-             "Applies to both Scan live and Request a desktop scan.")
+        help="Leave empty to scan every league. Applies to both Scan live "
+             "and Request a desktop scan.")
+
+    _today_et = datetime.now(ET).date()
+    date_mode = st.selectbox(
+        "Game date", ["All upcoming", "Today", "Tomorrow", "Next 7 days", "Custom range"],
+        help="Also narrows the scan itself (both Scan live and Request a "
+             "desktop scan), not just what's shown -- filters by the event's "
+             "calendar date in US/Eastern, the books' own timezone. A late "
+             "kickoff can already be tomorrow in UTC, so this is not the "
+             "same as filtering on the raw timestamp.")
+    if date_mode == "Today":
+        date_range = (_today_et, _today_et)
+    elif date_mode == "Tomorrow":
+        date_range = (_today_et + timedelta(days=1),) * 2
+    elif date_mode == "Next 7 days":
+        date_range = (_today_et, _today_et + timedelta(days=7))
+    elif date_mode == "Custom range":
+        _picked = st.date_input("Range (ET)", value=(_today_et, _today_et),
+                                help="Both ends are included.")
+        # A range date_input returns a ONE-element tuple while the user has
+        # only picked the start -- not yet a valid range, so hold off
+        # filtering rather than treat it as a single-day range by accident.
+        date_range = tuple(_picked) if isinstance(_picked, (tuple, list)) else (_picked, _picked)
+        if len(date_range) != 2:
+            date_range = None
+    else:
+        date_range = None
+
+    show_live = st.checkbox(
+        "Include live/in-progress games", value=False,
+        help="Off by default: an in-play line can already be a different "
+             "price than the book is showing you by the time a bet lands. "
+             "This also asks the NEXT scan to actually capture live games -- "
+             "a snapshot scanned with this off has none to show even if you "
+             "turn it on now, since it never kept them in the first place.")
+
+    st.divider()
+    st.caption("A live scan takes ~40s and spends **no** API credits. "
+               "It needs a connection the books accept — that usually means "
+               "your own machine, not a cloud host.")
+    run_live = st.button("🔄 Scan live", use_container_width=True)
+
+    st.divider()
+    st.header("Ask the desktop")
+    st.caption("This host cannot fetch odds — the books refuse datacenter IPs. "
+               "This asks the machine in Connecticut to scan and push a fresh "
+               "snapshot. It needs `arb_agent.py` running there.")
+    _check_credentials = _from_scan_request(
+        "check_credentials",
+        lambda repo, token: "" if (repo and token) else "GITHUB_REPO/GITHUB_TOKEN not set")
+
+    def _secret(name: str) -> str:
+        # st.secrets raises rather than returning empty when no secrets file
+        # exists at all, which is the normal case running locally
+        try:
+            return str(st.secrets.get(name, "") or "")
+        except Exception:                              # noqa: BLE001
+            return ""
+
+    _repo, _token = _secret("GITHUB_REPO"), _secret("GITHUB_TOKEN")
+    _cred_problem = _check_credentials(_repo, _token)
+    request_scan = st.button("📡 Request a desktop scan", use_container_width=True,
+                             disabled=bool(_cred_problem))
+    if _cred_problem:
+        st.caption(f"⚠️ {_cred_problem}. Set `GITHUB_REPO` and `GITHUB_TOKEN` in "
+                   "the app's Settings → Secrets.")
 
     st.divider()
     st.header("Profit boosts")
@@ -346,6 +410,16 @@ with st.sidebar:
         help="A boost no second book can cover is not wasted — it stops being "
              "an arbitrage and becomes an +EV bet. Use that view when nothing "
              "can hedge the boosted side.")
+
+    st.divider()
+    st.header("Results")
+    st.caption("These only change what's shown from an existing scan — none "
+               "of them make a scan itself faster. For that, use Scan "
+               "filters above.")
+    kinds = st.multiselect("Show", ["arb", "middle", "ev"], default=["arb", "middle", "ev"],
+                           format_func=lambda k: {"arb": "Arbitrage", "middle": "Middles",
+                                                  "ev": "+EV"}[k])
+    min_profit = st.slider("Minimum %", 0.0, 20.0, 0.0, 0.25)
     # The main list is ranked by expected return across every sport at once --
     # you bet the best price on the board, not the best price in each league.
     # This caps a runaway sport if you want it; 0 means no cap.
@@ -361,70 +435,6 @@ with st.sidebar:
         "Filter by sport", options=_opp_sports, default=[],
         help="Leave empty to rank every sport together, which is the point of "
              "the ordering. Pick one or more to narrow it.")
-
-    _today_et = datetime.now(ET).date()
-    date_mode = st.selectbox(
-        "Game date", ["All upcoming", "Today", "Tomorrow", "Next 7 days", "Custom range"],
-        help="Filters by the event's calendar date in US/Eastern -- the "
-             "books' own timezone. A late kickoff can already be tomorrow "
-             "in UTC, so this is not the same as filtering on the raw "
-             "timestamp.")
-    if date_mode == "Today":
-        date_range = (_today_et, _today_et)
-    elif date_mode == "Tomorrow":
-        date_range = (_today_et + timedelta(days=1),) * 2
-    elif date_mode == "Next 7 days":
-        date_range = (_today_et, _today_et + timedelta(days=7))
-    elif date_mode == "Custom range":
-        _picked = st.date_input("Range (ET)", value=(_today_et, _today_et),
-                                help="Both ends are included.")
-        # A range date_input returns a ONE-element tuple while the user has
-        # only picked the start -- not yet a valid range, so hold off
-        # filtering rather than treat it as a single-day range by accident.
-        date_range = tuple(_picked) if isinstance(_picked, (tuple, list)) else (_picked, _picked)
-        if len(date_range) != 2:
-            date_range = None
-    else:
-        date_range = None
-
-    show_live = st.checkbox(
-        "Include live/in-progress games", value=False,
-        help="Off by default: an in-play line can already be a different "
-             "price than the book is showing you by the time a bet lands. "
-             "This also asks the NEXT scan to actually capture live games -- "
-             "a snapshot scanned with this off has none to show even if you "
-             "turn it on now, since it never kept them in the first place.")
-
-    st.divider()
-    st.caption("A live scan takes ~40s and spends **no** API credits. "
-               "It needs a connection the books accept — that usually means "
-               "your own machine, not a cloud host.")
-    run_live = st.button("🔄 Scan live", use_container_width=True)
-
-    st.divider()
-    st.header("Ask the desktop")
-    st.caption("This host cannot fetch odds — the books refuse datacenter IPs. "
-               "This asks the machine in Connecticut to scan and push a fresh "
-               "snapshot. It needs `arb_agent.py` running there.")
-    _check_credentials = _from_scan_request(
-        "check_credentials",
-        lambda repo, token: "" if (repo and token) else "GITHUB_REPO/GITHUB_TOKEN not set")
-
-    def _secret(name: str) -> str:
-        # st.secrets raises rather than returning empty when no secrets file
-        # exists at all, which is the normal case running locally
-        try:
-            return str(st.secrets.get(name, "") or "")
-        except Exception:                              # noqa: BLE001
-            return ""
-
-    _repo, _token = _secret("GITHUB_REPO"), _secret("GITHUB_TOKEN")
-    _cred_problem = _check_credentials(_repo, _token)
-    request_scan = st.button("📡 Request a desktop scan", use_container_width=True,
-                             disabled=bool(_cred_problem))
-    if _cred_problem:
-        st.caption(f"⚠️ {_cred_problem}. Set `GITHUB_REPO` and `GITHUB_TOKEN` in "
-                   "the app's Settings → Secrets.")
 
 snap = load_snapshot()
 
