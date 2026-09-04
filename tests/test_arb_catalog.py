@@ -893,6 +893,105 @@ def test_a_ladder_that_reprices_is_kept():
     assert len(board.groups) == 4
 
 
+# --- a ladder can be wrong EVERYWHERE and still internally consistent -------
+def test_ladder_center_interpolates_the_pickem_crossing():
+    """Rhode Island at Temple's real bug: every rung repriced smoothly, so
+    nothing internal to the ladder was wrong -- only where it was CENTERED.
+    -110/-110 sits exactly on a rung here; the crossing should land there."""
+    from edge.arb.books import _ladder_center
+    rungs = {14.0: {"A": (1.65, None), "B": (2.30, None)},
+             14.5: {"A": (1.80, None), "B": (2.05, None)},
+             15.0: {"A": (1.909, None), "B": (1.909, None)},
+             15.5: {"A": (2.05, None), "B": (1.80, None)},
+             16.0: {"A": (2.30, None), "B": (1.65, None)}}
+    assert _ladder_center(rungs) == pytest.approx(15.0, abs=0.05)
+
+
+def test_a_ladder_whose_centre_disagrees_with_another_book_is_dropped():
+    """Reproduces the live case: Rhode Island at Temple's Fanatics spread
+    crossed pick'em around -15 -- its own price says Temple -15 is a
+    coinflip -- while FanDuel already had Temple -5.5 on the board and the
+    book's own app showed -7.5/-8. Nothing inside this ladder is
+    inconsistent, which is exactly why flat/stalled/contradicted/overround
+    all miss it: this is checked against an INDEPENDENT source instead."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board, EventMeta, GroupKey, Quote
+    board = Board()
+    now = datetime.now(timezone.utc)
+    ev = EventMeta("e1", "americanfootball_ncaaf", "NCAAF", now + timedelta(hours=6),
+                   "Temple", "Rhode Island")
+    board.events["e1"] = ev
+    board.group(GroupKey("e1", "spreads", None, -5.5), ev).add(
+        Quote(book="fanduel", side="away", decimal=1.91, point=5.5, last_update=now))
+
+    payload = _ladder_payload([
+        (14.0, 1.65, 2.30), (14.5, 1.80, 2.05), (15.0, 1.909, 1.909),
+        (15.5, 2.05, 1.80), (16.0, 2.30, 1.65)])
+    payload["subevents"][0]["homeTeam"]["name"] = "Temple"
+    payload["subevents"][0]["awayTeam"]["name"] = "Rhode Island"
+    for bet in payload["subevents"][0]["markets"][0]["bets"]:
+        # _ladder_payload does not set genericName (its own tests only need
+        # the ABS-folded flat/reprice checks, where sign is irrelevant); this
+        # test's whole point IS the signed axis, so give it one.
+        bet["genericName"] = "HOME" if bet["name"] == "Delaware" else "AWAY"
+        bet["name"] = "Temple" if bet["name"] == "Delaware" else "Rhode Island"
+
+    st = ingest_oddschecker(board, payload, book="fanatics",
+                            sport_key="americanfootball_ncaaf", strict_match=False)
+    assert st["offset_ladders"] == 1
+    assert any("ladder centres" in u for u in st["markets_unmapped"])
+    assert not any(k.market == "spreads" and k.point != -5.5 for k in board.groups)
+
+
+def test_a_ladder_that_agrees_with_another_book_is_kept():
+    """Long Island at Kansas's own case: this feed's overall centre (~-42)
+    was close to the real line (-41.5) even though a NARROW band inside it
+    was corrupted -- this check must not throw out an otherwise-sound
+    ladder over ordinary book-to-book disagreement."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board, EventMeta, GroupKey, Quote
+    board = Board()
+    now = datetime.now(timezone.utc)
+    ev = EventMeta("e1", "americanfootball_ncaaf", "NCAAF", now + timedelta(hours=6),
+                   "Temple", "Rhode Island")
+    board.events["e1"] = ev
+    board.group(GroupKey("e1", "spreads", None, -14.0), ev).add(
+        Quote(book="fanduel", side="away", decimal=1.91, point=14.0, last_update=now))
+
+    payload = _ladder_payload([
+        (14.0, 1.65, 2.30), (14.5, 1.80, 2.05), (15.0, 1.909, 1.909),
+        (15.5, 2.05, 1.80), (16.0, 2.30, 1.65)])
+    payload["subevents"][0]["homeTeam"]["name"] = "Temple"
+    payload["subevents"][0]["awayTeam"]["name"] = "Rhode Island"
+    for bet in payload["subevents"][0]["markets"][0]["bets"]:
+        # _ladder_payload does not set genericName (its own tests only need
+        # the ABS-folded flat/reprice checks, where sign is irrelevant); this
+        # test's whole point IS the signed axis, so give it one.
+        bet["genericName"] = "HOME" if bet["name"] == "Delaware" else "AWAY"
+        bet["name"] = "Temple" if bet["name"] == "Delaware" else "Rhode Island"
+
+    st = ingest_oddschecker(board, payload, book="fanatics",
+                            sport_key="americanfootball_ncaaf", strict_match=False)
+    assert st["offset_ladders"] == 0
+    assert any(k.market == "spreads" and k.point == -15.0 for k in board.groups)
+
+
+def test_without_another_book_the_ladder_is_not_second_guessed():
+    """No reference to check against means no verdict -- a Fanatics-exclusive
+    market must not be dropped just because nothing else is there to agree
+    with it."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board
+    board = Board()
+    payload = _ladder_payload([
+        (14.0, 1.65, 2.30), (14.5, 1.80, 2.05), (15.0, 1.909, 1.909),
+        (15.5, 2.05, 1.80), (16.0, 2.30, 1.65)])
+    st = ingest_oddschecker(board, payload, book="fanatics",
+                            sport_key="americanfootball_ncaaf", strict_match=False)
+    assert st["offset_ladders"] == 0
+    assert len(board.groups) == 5
+
+
 def test_one_symmetric_rung_is_the_main_line_and_is_kept():
     """A book prices its main line -110 both ways all the time. It is the
     SECOND symmetric rung that is impossible, so one is left alone."""

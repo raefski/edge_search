@@ -174,6 +174,62 @@ _MIN_AI_RUNGS = 3
 STALLED_RUN_LINES = 2.0
 
 
+# How far this ladder's OWN implied centre may sit from another book's ALREADY
+# on the board for the same event and market before the whole ladder is not
+# trusted. Reasoned, not measured the way STALLED_RUN_LINES was against
+# 11,006 real rungs -- a proper calibration needs a broad live cross-book
+# sample this session did not have time to gather cleanly. Set with a wide
+# safety margin over the ~0.4pp median / ~1.3pp p90 cross-book PRICE agreement
+# already measured on matched rungs elsewhere in this file: real books
+# occasionally shade a line by a point or two, essentially never by six.
+# `offset_ladders` is counted so this can be tightened, loosened, or replaced
+# once real scans accumulate evidence either way.
+LADDER_CENTER_DRIFT_MAX = 6.0
+
+
+def _ladder_center(rungs: dict) -> float | None:
+    """The point where this ladder's OWN devigged PRICE crosses pick'em
+    (50/50) -- the feed's implied read of the market's true number, from the
+    price alone.
+
+    Deliberately not `aiProbability`: on a ladder wide enough off that this
+    check exists to catch, the model is not a clean reference either -- Long
+    Island at Kansas's spread carried a 10pp median residual between its own
+    aiProbability and its own price, an offset the same order as the defect.
+    Interpolates between the two rungs straddling 50%, so it is not limited to
+    landing exactly on a priced rung.
+    """
+    priced = []
+    for rung, prices in rungs.items():
+        if len(prices) != 2 or not isinstance(rung, (int, float)):
+            continue
+        (_na, (da, _ai_a)), (_nb, (db, _ai_b)) = sorted(prices.items())
+        total = 1.0 / da + 1.0 / db
+        if total <= 0:
+            continue
+        priced.append((rung, (1.0 / da) / total))
+    priced.sort()
+    for (r0, p0), (r1, p1) in zip(priced, priced[1:]):
+        if (p0 - 0.5) * (p1 - 0.5) <= 0 and p1 != p0:
+            frac = (0.5 - p0) / (p1 - p0)
+            return r0 + frac * (r1 - r0)
+    return None      # this ladder never crosses 50/50 in the fetched range
+
+
+def _other_book_points(board: Board, event_id: str, market: str,
+                       exclude_book: str) -> list[float]:
+    """Points already on the board for this event+market from books OTHER
+    than the one being ingested -- independently sourced ground truth to
+    check a ladder's own centre against, rather than trusting one feed's
+    internal consistency alone. FanDuel and DraftKings are always ingested
+    first (see run.py), so their main and alternate lines are already here
+    by the time Fanatics is."""
+    return [k.point for k, g in board.groups.items()
+            if k.event_id == event_id and k.market == market
+            and k.point is not None
+            and set(g.book_sides) - {exclude_book}]
+
+
 def _stalled_runs(rungs: dict) -> set:
     """Rungs inside a run of consecutive lines carrying one identical price.
 
@@ -271,7 +327,7 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
     """
     stats = {"events": 0, "matched": 0, "unmatched": 0, "quotes": 0, "live_skipped": 0,
              "flat_ladders": 0, "placeholder_rungs": 0, "contradicted_rungs": 0,
-             "bad_overround_rungs": 0, "stalled_rungs": 0,
+             "bad_overround_rungs": 0, "stalled_rungs": 0, "offset_ladders": 0,
              "markets_seen": set(), "markets_unmapped": set()}
 
     from .fanduel import parse_player_runner
@@ -375,6 +431,29 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                         f"{len(distinct)} price(s))")
                     stats["flat_ladders"] = stats.get("flat_ladders", 0) + 1
                     continue
+
+            # THE WHOLE LADDER, NOT JUST A RUNG WITHIN IT, CAN BE MISPLACED.
+            # Rhode Island at Temple's spread crossed pick'em around line 15 --
+            # its OWN price says Temple -15 is a coinflip -- while FanDuel had
+            # Temple -5.5 and the book's own app showed -7.5/-8. Every rung
+            # repriced smoothly; none of the per-rung checks below can see
+            # this, because nothing here is internally inconsistent, only
+            # externally wrong. Checked against whichever other book already
+            # has this event+market (FanDuel and DraftKings are always
+            # ingested first), not against this feed's own aiProbability --
+            # a whole-ladder offset large enough to move every price can move
+            # a model trained alongside it too.
+            refs = _other_book_points(board, target.event_id, mkey, book or "")
+            if refs:
+                center = _ladder_center(rungs)
+                if center is not None:
+                    drift = min(abs(center - r) for r in refs)
+                    if drift > LADDER_CENTER_DRIFT_MAX:
+                        stats["markets_unmapped"].add(
+                            f"{label} (ladder centres on {center:g}, other "
+                            f"book(s) have {sorted(refs)}, drift {drift:.1f})")
+                        stats["offset_ladders"] = stats.get("offset_ladders", 0) + 1
+                        continue
 
             # ...and the PARTIAL version of the same thing, which the check
             # above is too blunt to see. North Carolina A&T at Georgia State

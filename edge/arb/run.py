@@ -234,6 +234,7 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
     quotes = 0
     scanned = 0
     dropped_flat = dropped_rungs = dropped_ai = dropped_vig = 0
+    dropped_stalled = dropped_offset = 0
     for league in leagues:
         key = league["sport_key"]
         if wanted is not None and key not in wanted:
@@ -256,11 +257,21 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
         dropped_rungs += st.get("placeholder_rungs", 0)
         dropped_ai += st.get("contradicted_rungs", 0)
         dropped_vig += st.get("bad_overround_rungs", 0)
+        dropped_stalled += st.get("stalled_rungs", 0)
+        dropped_offset += st.get("offset_ladders", 0)
     stats["fanatics_leagues_scanned"] = scanned
     stats["fanatics_flat_ladders"] = dropped_flat
     stats["fanatics_placeholder_rungs"] = dropped_rungs
     stats["fanatics_contradicted_rungs"] = dropped_ai
     stats["fanatics_bad_overround_rungs"] = dropped_vig
+    # These two were never wired up to the top-level stats before -- counted
+    # inside ingest_oddschecker since the day each check was added, but never
+    # summed here the way the other four are, so neither had a number to
+    # watch. offset_ladders in particular is new and unmeasured at scale;
+    # this is what lets its real hit rate be observed over real scans instead
+    # of guessed at.
+    stats["fanatics_stalled_rungs"] = dropped_stalled
+    stats["fanatics_offset_ladders"] = dropped_offset
     stats["fanatics"] = quotes
 
 
