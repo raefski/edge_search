@@ -30,6 +30,15 @@ NOT_FULL_GAME = re.compile("|".join((
     # than an ordinal. FanDuel names all three of a tennis match's set
     # handicaps with ONE marketType and distinguishes them only in marketName.
     r"\b(set|period|quarter|half|map|innings?)\s*\d+\b",
+    # DraftKings' own compact period abbreviation, spelled out nowhere: a
+    # subcategory named "Alternate Total - 1Q" is the 1st quarter, not the
+    # game, and its CATEGORY is bare "Quarters" -- neither an ordinal word
+    # nor "quarter N" the way every pattern above expects, so both slipped
+    # past undetected. Portland State at San Diego State's DraftKings totals
+    # leg was still showing 52.5 with the app's own game total at 61.5 -- the
+    # 1st-quarter number, filed as the full game.
+    r"\b\d[qhp]\b",
+    r"\bquarters?\b",
     r"\bhalf ?time\b|\bfull ?time\b|\bht/ft\b|\brest of (match|game)\b|\bhalves\b",
     # "(Regular Time)" is a settlement basis, not a decoration. DraftKings
     # prices soccer "Spread" and "Alt Spread (Regular Time)" as two ladders on

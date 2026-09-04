@@ -1203,6 +1203,46 @@ def test_three_way_variants_are_refused(name):
     assert not is_full_game(name)
 
 
+@pytest.mark.parametrize("name", [
+    "Alternate Total - 1Q", "Alternate Spread - 1Q", "Total - 2Q",
+    "Alternate Total - 1H", "Alternate Spread - 3P", "Quarters",
+])
+def test_draftkings_quarter_abbreviations_are_refused(name):
+    """Neither an ordinal word nor "quarter N" -- "1Q" is DraftKings' own
+    compact abbreviation, spelled out nowhere, and its CATEGORY is the bare
+    plural "Quarters". Both slipped past every existing pattern: Portland
+    State at San Diego State's DraftKings total was reported at 52.5 while
+    the book's own app had the game total at 61.5 -- the 1st-quarter number,
+    filed as the full game because main_line_subcategories trusted both the
+    subcategory name and its category as full-game."""
+    assert not is_full_game(name)
+
+
+def test_a_real_full_game_alternate_total_is_untouched():
+    assert is_full_game("Alternate Total") and is_full_game("Alternate Spread")
+
+
+def test_main_line_subcategories_skips_the_quarter_variants():
+    """The live bug's other half: with the filter gap, a limit of 4 picked
+    Alternate Spread, Alternate Spread - 1Q, Alternate Total and Alternate
+    Total - 1Q -- the two useless entries crowding out any other genuine
+    full-game subcategory a league might have."""
+    from edge.arb.draftkings_league import main_line_subcategories
+    payload = {
+        "categories": [{"id": 492, "name": "Game Lines"},
+                       {"id": 527, "name": "Quarters"}],
+        "subcategories": [
+            {"id": 1, "categoryId": 492, "name": "Alternate Spread"},
+            {"id": 2, "categoryId": 527, "name": "Alternate Spread - 1Q"},
+            {"id": 3, "categoryId": 492, "name": "Alternate Total"},
+            {"id": 4, "categoryId": 527, "name": "Alternate Total - 1Q"},
+        ],
+    }
+    picked = main_line_subcategories(payload, limit=4)
+    names = {n for _c, _s, n in picked}
+    assert names == {"Alternate Spread", "Alternate Total"}
+
+
 def test_soccers_three_way_moneyline_is_untouched():
     """Soccer's three-way IS the market, and it is named WIN-DRAW-WIN rather
     than "3-Way" -- so the guard above must not reach it."""
