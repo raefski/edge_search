@@ -370,6 +370,16 @@ def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
             board.group(GroupKey(target.event_id, mkey, subject, gpoint), target).add(
                 Quote(book=book, side=side, decimal=price, point=gpoint, last_update=now))
             stats["quotes"] += 1
-            if is_main_line and mkey in ("totals", "spreads"):
-                board.record_main_point(target.event_id, mkey, book, gpoint)
+            if mkey in ("totals", "spreads"):
+                if is_main_line:
+                    board.record_main_point(target.event_id, mkey, book, gpoint)
+                # DraftKings tags exactly one selection per alternate ladder
+                # "main": true -- the rung its own app currently treats as
+                # equal to the main line. True regardless of which call this
+                # is: the base Game market's own selections are trivially all
+                # "main" (a single-line market), which is a no-op restating
+                # main_points, but reading it on an ALTERNATE-line call is
+                # what catches DraftKings' own data disagreeing with itself.
+                if sel.get("main") is True:
+                    board.record_ladder_main_point(target.event_id, mkey, book, gpoint)
     return stats

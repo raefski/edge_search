@@ -155,7 +155,8 @@ def test_stale_alt_ladders_respects_the_configured_drift():
                       ("totals", None, 60.5, "under", "draftkings", 1.95))
     b.record_main_point("e1", "totals", "draftkings", 62.5)
     assert stale_alt_ladders(b, max_drift=3.0) == {}, "2 points off is within a generous drift"
-    assert stale_alt_ladders(b, max_drift=1.0) == {("e1", "totals", "draftkings", 60.5): 62.5}, \
+    assert stale_alt_ladders(b, max_drift=1.0) == {
+        ("e1", "totals", "draftkings", 60.5): (62.5, False)}, \
         "the same 2-point drift must trip a tighter setting"
 
 
@@ -173,7 +174,48 @@ def test_stale_alt_ladders_checks_the_far_rungs_own_vig_not_the_ladders_tightest
         ("totals", None, 52.5, "under", "draftkings", 1.92592593),
     )
     b.record_main_point("e1", "totals", "draftkings", 62.5)
-    assert stale_alt_ladders(b, max_drift=3.0) == {("e1", "totals", "draftkings", 52.5): 62.5}
+    assert stale_alt_ladders(b, max_drift=3.0) == {
+        ("e1", "totals", "draftkings", 52.5): (62.5, False)}
+
+
+def test_stale_alt_ladders_confirmed_via_draftkings_own_tag_bypasses_vig():
+    """When the ladder's own "main" tag disagrees with the recorded main
+    line, that is DraftKings' data contradicting itself -- every non-main
+    rung is flagged, INCLUDING one whose own vig would pass the heuristic
+    (a properly long-shot -2400/+800 price, the exact shape the inferred
+    check is designed to leave alone). Confirmed does not need that
+    protection: once the center is known to be wrong, a rung looking
+    properly priced from that wrong center proves nothing."""
+    b, _ = board_with(
+        ("totals", None, 62.5, "over", "draftkings", 1.90),
+        ("totals", None, 62.5, "under", "draftkings", 1.90),
+        ("totals", None, 45.5, "over", "draftkings", 1.98),
+        ("totals", None, 45.5, "under", "draftkings", 1.85),
+        ("totals", None, 30.5, "over", "draftkings", 1.04167),   # -2400, would pass unconfirmed
+        ("totals", None, 30.5, "under", "draftkings", 9.0),      # +800
+    )
+    b.record_main_point("e1", "totals", "draftkings", 62.5)
+    b.record_ladder_main_point("e1", "totals", "draftkings", 45.5)
+    stale = stale_alt_ladders(b, max_drift=3.0, max_vig=1.06)
+    assert stale[("e1", "totals", "draftkings", 45.5)] == (62.5, True)
+    assert stale[("e1", "totals", "draftkings", 30.5)] == (62.5, True), \
+        "confirmed disagreement flags every non-main rung, vig or not"
+
+
+def test_stale_alt_ladders_trusts_a_ladder_that_agrees_with_itself():
+    """The ladder's own "main" tag matching the recorded main line is
+    DraftKings confirming its OWN data is in sync -- nothing to flag from
+    the confirmed path, so this falls through to (and passes) the inferred
+    check same as if no tag had been read at all."""
+    b, _ = board_with(
+        ("totals", None, 62.5, "over", "draftkings", 1.90),
+        ("totals", None, 62.5, "under", "draftkings", 1.90),
+        ("totals", None, 30.5, "over", "draftkings", 1.04167),
+        ("totals", None, 30.5, "under", "draftkings", 9.0),
+    )
+    b.record_main_point("e1", "totals", "draftkings", 62.5)
+    b.record_ladder_main_point("e1", "totals", "draftkings", 62.5)
+    assert stale_alt_ladders(b, max_drift=3.0, max_vig=1.06) == {}
 
 
 def test_a_genuine_tail_rung_is_not_flagged_just_for_being_far_from_main():
@@ -209,8 +251,30 @@ def test_a_middle_on_a_drifted_alt_ladder_is_flagged_and_warns():
     m = mids[0]
     assert m.stale_alt_line
     dk_leg = next(l for l in m.legs if l.book == "draftkings")
-    assert dk_leg.off_main_line
+    assert dk_leg.off_main_line and not dk_leg.stale_confirmed
     assert any("looks stale" in w for w in m.warnings)
+
+
+def test_a_middle_confirmed_stale_by_draftkings_own_tag_says_so_in_the_warning():
+    """Same shape, but this time DraftKings' own alternate-ladder tag says
+    the ladder's center is 45.5 while the base Game market says 62.5 --
+    confirmed, not inferred, and the warning text says which."""
+    b, _ = board_with(
+        ("totals", None, 62.5, "over", "draftkings", 1.90),
+        ("totals", None, 62.5, "under", "draftkings", 1.90),
+        ("totals", None, 45.5, "over", "draftkings", 1.98),
+        ("totals", None, 45.5, "under", "draftkings", 1.85),
+        ("totals", None, 48.0, "under", "fanduel", 1.91),
+    )
+    b.record_main_point("e1", "totals", "draftkings", 62.5)
+    b.record_ladder_main_point("e1", "totals", "draftkings", 45.5)
+    mids = find_middles(b, cfg())
+    assert mids, "45.5 over / 48.0 under is still a middle on its face"
+    m = mids[0]
+    assert m.stale_alt_line
+    dk_leg = next(l for l in m.legs if l.book == "draftkings")
+    assert dk_leg.off_main_line and dk_leg.stale_confirmed
+    assert any("DraftKings' own alternate-line feed" in w for w in m.warnings)
 
 
 def test_a_middle_is_not_flagged_when_the_ladder_tracks_its_main_line():
@@ -368,6 +432,38 @@ def test_an_alternate_line_pull_does_not_get_mistaken_for_the_main_line():
     board = Board(); board.events["e1"] = ev
     ingest_sportscontent(board, _dk_total_payload(52.5), sport_key="baseball_mlb", event=ev)
     assert board.main_points == {}
+
+
+def _dk_alt_ladder_payload(points_and_main: list[tuple[float, bool]]) -> dict:
+    """One 'Total Alternate'-shaped market with several rungs, at most one of
+    which DraftKings tags "main": true, matching what the real API sends."""
+    selections = []
+    for i, (point, is_main) in enumerate(points_and_main):
+        for side in ("Over", "Under"):
+            sel = {"id": f"s{side}{i}", "marketId": "m1", "label": side,
+                  "points": point, "trueOdds": 1.90}
+            if is_main:
+                sel["main"] = True
+            selections.append(sel)
+    return {"markets": [{"id": "m1", "eventId": "e1", "name": "Total Alternate",
+                         "marketType": {"name": "Total Alternate"}}],
+           "selections": selections}
+
+
+def test_an_alternate_ladders_own_main_tag_is_recorded_separately():
+    """DraftKings marks exactly one rung per alternate ladder "main": true --
+    the one its own app currently treats as equal to the main line. This
+    must land in ladder_main_points, NOT main_points: it is a claim from the
+    ladder itself, not from the base Game market is_main_line=True records,
+    and the whole point is to be able to compare the two."""
+    from edge.arb.draftkings_nash import ingest_sportscontent
+    ev = EventMeta("e1", "baseball_mlb", "MLB",
+                   datetime.now(timezone.utc) + timedelta(hours=2), "H", "A")
+    board = Board(); board.events["e1"] = ev
+    payload = _dk_alt_ladder_payload([(45.5, True), (52.5, False), (30.5, False)])
+    ingest_sportscontent(board, payload, sport_key="baseball_mlb", event=ev)
+    assert board.ladder_main_points[("e1", "totals", "draftkings")] == 45.5
+    assert board.main_points == {}, "an alternate pull must still never set main_points"
 
 
 def test_truncated_outright_field_is_refused():

@@ -185,11 +185,28 @@ class Board:
     # has already moved past and not yet pulled or repriced. See
     # engine.stale_alt_ladders.
     main_points: dict[tuple[str, str, str], float] = field(default_factory=dict)
+    # (event_id, market, book) -> the point THAT BOOK'S OWN alternate ladder
+    # currently marks as equal to its main line -- DraftKings tags exactly one
+    # selection per alternate total/spread market `"main": true`, which is how
+    # its own app knows which rung to pre-select. This is a claim from the
+    # ladder ITSELF, so it can be wrong in exactly the way the ladder can be
+    # wrong: a ladder frozen before a line move still says "true" on its own
+    # (now superseded) center. What makes it useful is comparing it against
+    # main_points, which comes from a DIFFERENT endpoint (the book's base
+    # Game market) -- the two disagreeing is DraftKings' own data
+    # contradicting itself, not a threshold guessing that something looks
+    # off. See engine.stale_alt_ladders.
+    ladder_main_points: dict[tuple[str, str, str], float] = field(default_factory=dict)
 
     def record_main_point(self, event_id: str, market: str, book: str,
                           point: float | None) -> None:
         if point is not None:
             self.main_points[(event_id, market, book)] = point
+
+    def record_ladder_main_point(self, event_id: str, market: str, book: str,
+                                 point: float | None) -> None:
+        if point is not None:
+            self.ladder_main_points[(event_id, market, book)] = point
 
     def group(self, key: GroupKey, event: EventMeta) -> MarketGroup:
         """Groups sharing an event_id share ONE EventMeta.
