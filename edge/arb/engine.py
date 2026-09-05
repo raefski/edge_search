@@ -32,11 +32,18 @@ class Leg:
     limit: float | None = None
     boost_pct: float = 0.0        # profit boost applied to THIS leg, 0 = none
     raw_decimal: float = 0.0      # the book's own price, before any boost
-    # True when this leg's own book quotes an alternate line whose ladder has
-    # drifted from that SAME book's current main line for this event/market --
-    # see stale_alt_ladders. Never true for the main line itself, only for the
-    # other rungs of a ladder that has drifted.
+    # True when this leg's own book quotes an alternate rung far from that
+    # SAME book's current main line while still priced like one -- see
+    # stale_alt_ladders. Never true for the main line itself.
     off_main_line: bool = False
+    # The main point off_main_line was measured against, for the warning
+    # message. Looked up and stored here (rather than re-derived by the
+    # caller from `point`) because `point` is the SIGNED, per-side display
+    # value on a spread -- home and away carry opposite signs -- while the
+    # board's own main_points key is the raw, unsigned group point. Reading
+    # it back through `point` on an away spread leg would look up the wrong
+    # sign entirely, which is a KeyError, not just a wrong number.
+    main_line: float | None = None
 
 
 @dataclass
@@ -248,25 +255,36 @@ def _leg_point(q: Quote, group: MarketGroup) -> float | None:
     return q.point if q.point is not None else point
 
 
-def stale_alt_ladders(board: Board, max_drift: float) -> dict[tuple[str, str, str], float]:
-    """(event_id, market, book) -> that book's own current main point, for
-    every alternate ladder whose own best-priced rung has drifted from it.
+def stale_alt_ladders(board: Board, max_drift: float,
+                      max_vig: float = 1.06) -> dict[tuple[str, str, str, float], float]:
+    """(event_id, market, book, point) -> that book's own current main point,
+    for every alternate rung far from it that is STILL priced like a main
+    line rather than a genuine tail outcome.
 
-    A ladder is built AROUND the main line, so its best-priced rung (lowest
-    two-sided vig -- the point closest to a fair coin flip) should sit at or
-    within a point of it. This does NOT mean a rung far from main is
-    suspicious on its own: alt ladders are supposed to span a wide range,
-    that is the product. It means the ladder's own implied center should
-    track the number the book is actually quoting right now, and when it
-    doesn't, DraftKings (or FanDuel) has moved the real line and not yet
-    repriced or pulled the alternate one -- observed directly: a DraftKings
-    NCAAF alt total sat at 52.5 for hours after the main total moved to 62.5,
-    silently reported as a free middle. Distinct from the flat-ladder /
-    placeholder-rung checks Fanatics ingestion already runs, which catch a
-    ladder that never repriced AT ALL rather than one that reflects a
-    superseded number consistently.
+    The first version of this compared vig ACROSS a whole ladder and trusted
+    whichever point came out tightest, on the theory that a book's true
+    number is the one closest to a fair coin flip. That failed on the exact
+    case it was written for: DraftKings' real (and correctly known) main
+    total was 62.5 at 1.98/1.85 (vig 1.0462), and the stale alternate rung
+    sitting at 52.5 was 1.89/1.93 (vig 1.0475) -- 0.0013 apart, a coin flip
+    that happened to go the right way once and would go the wrong way just
+    as easily. A real main line and a stale-but-still-fresh-looking
+    alternate rung are simply not reliably distinguishable BY COMPARISON,
+    because both get quoted at close to fair vig while they are live.
 
-    Only books that had `is_main_line=True` recorded for them (DraftKings,
+    What DOES distinguish them is already known without any comparison: the
+    board separately recorded which point IS the main line (main_points, set
+    only by an is_main_line=True ingestion call). A genuine alternate rung
+    FAR from that number should price the corresponding tail probability,
+    which means WORSE vig the further out it sits -- that is the entire
+    reason alternate ladders blow out to -2400/+800 a few rungs from center.
+    A rung that is both far from the known main line and STILL carries
+    near-fair vig is not a great number, it is what a ladder built around a
+    number DraftKings has since moved past looks like: internally consistent
+    around its own old center (so the flat-ladder/placeholder checks
+    elsewhere do not catch it), just not the center any more.
+
+    Only books that had is_main_line=True recorded for them (DraftKings,
     FanDuel) can be checked this way -- Fanatics' feed carries no equivalent
     signal yet, so its ladders are not covered here.
     """
@@ -279,30 +297,30 @@ def stale_alt_ladders(board: Board, max_drift: float) -> dict[tuple[str, str, st
                 by_ladder.setdefault((key.event_id, key.market, book), {}) \
                     .setdefault(key.point, []).append(q)
 
-    stale: dict[tuple[str, str, str], float] = {}
-    for ladder_key, points in by_ladder.items():
-        if len(points) < 2:
-            continue                                  # no ladder, just the one line
-        main = board.main_points.get(ladder_key)
+    stale: dict[tuple[str, str, str, float], float] = {}
+    for (event_id, market, book), points in by_ladder.items():
+        main = board.main_points.get((event_id, market, book))
         if main is None:
             continue                                  # book never resolved as main-line
-        best_point, best_vig = None, None
         for point, quotes in points.items():
+            if abs(point - main) <= max_drift:
+                continue                              # close to main: unremarkable either way
             prices = [q.decimal for q in quotes if q.decimal > 1.0]
             if len(prices) < 2:
                 continue
             vig = sum(1.0 / p for p in prices)
-            if best_vig is None or vig < best_vig:
-                best_point, best_vig = point, vig
-        if best_point is not None and abs(best_point - main) > max_drift:
-            stale[ladder_key] = main
+            if vig <= max_vig:
+                stale[(event_id, market, book, point)] = main
     return stale
 
 
 def _leg(q: Quote, group: MarketGroup, commission: float, now: datetime,
-        stale_mains: dict[tuple[str, str, str], float] | None = None) -> Leg:
+        stale_mains: dict[tuple[str, str, str, float], float] | None = None) -> Leg:
     eff = om.net_of_commission(q.decimal, commission)
-    main = (stale_mains or {}).get((group.key.event_id, group.key.market, q.book))
+    main_line = None
+    if stale_mains is not None and group.key.point is not None:
+        main_line = stale_mains.get(
+            (group.key.event_id, group.key.market, q.book, group.key.point))
     return Leg(
         book=q.book,
         side=q.side,
@@ -314,7 +332,8 @@ def _leg(q: Quote, group: MarketGroup, commission: float, now: datetime,
         link=q.link,
         limit=q.limit,
         age_seconds=round(q.age_seconds(now), 1),
-        off_main_line=main is not None and group.key.point != main,
+        off_main_line=main_line is not None,
+        main_line=main_line,
     )
 
 
@@ -382,7 +401,7 @@ def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Oppo
     now = now or utcnow()
     d = cfg.detect
     books = set(cfg.books.bettable)
-    stale_mains = stale_alt_ladders(board, d.alt_line_max_drift)
+    stale_mains = stale_alt_ladders(board, d.alt_line_max_drift, d.alt_line_max_vig)
     out: list[Opportunity] = []
 
     for group in board.groups.values():
@@ -468,7 +487,7 @@ def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Oppo
             warnings.append(f"oldest quote is {max(ages):.0f}s old")
         stale_leg = next((l for l in legs if l.off_main_line), None)
         if stale_leg is not None:
-            main = stale_mains[(ev.event_id, group.key.market, stale_leg.book)]
+            main = stale_leg.main_line
             warnings.append(
                 f"{stale_leg.book}'s {stale_leg.point:g} looks stale -- its alternate "
                 f"ladder implies a different number than its own current main line ({main:g})")
@@ -679,7 +698,7 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
     books = set(cfg.books.bettable)
     out: list[Opportunity] = []
     cdfs = ladder_cdfs(board, books)
-    stale_mains = stale_alt_ladders(board, d.alt_line_max_drift)
+    stale_mains = stale_alt_ladders(board, d.alt_line_max_drift, d.alt_line_max_vig)
 
     for (event_id, market, subject), groups in _middle_families(board).items():
         if not in_window(groups[0].event, cfg, now):
@@ -785,7 +804,7 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                         gap_warnings.append(f"needs {tokens} to reach "
                                            f"{alloc.worst_profit_pct:+.2f}% outside the gap")
                     if stale_leg is not None:
-                        main = stale_mains[(event_id, market, stale_leg.book)]
+                        main = stale_leg.main_line
                         gap_warnings.append(
                             f"{stale_leg.book}'s {stale_leg.point:g} looks stale -- its "
                             f"alternate ladder implies a different number than its own "
@@ -906,7 +925,7 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                         f"{'them' if len(assignment) > 1 else 'it'} this middle's floor is "
                         f"{-plain_cost:+.2f}% and its ceiling {plain_hit:.1f}%")
                 if stale_leg is not None:
-                    main = stale_mains[(event_id, market, stale_leg.book)]
+                    main = stale_leg.main_line
                     warnings.append(
                         f"{stale_leg.book}'s {stale_leg.point:g} looks stale -- its alternate "
                         f"ladder implies a different number than its own current main line "
@@ -1002,7 +1021,7 @@ def find_ev(board: Board, cfg, now: datetime | None = None) -> list[Opportunity]
         return []
     books = set(cfg.books.bettable)
     out: list[Opportunity] = []
-    stale_mains = stale_alt_ladders(board, d.alt_line_max_drift)
+    stale_mains = stale_alt_ladders(board, d.alt_line_max_drift, d.alt_line_max_vig)
 
     for group in board.groups.values():
         if not in_window(group.event, cfg, now):
@@ -1044,7 +1063,7 @@ def find_ev(board: Board, cfg, now: datetime | None = None) -> list[Opportunity]
                 ev_warnings = [] if anchor_name != "consensus" \
                     else ["priced off book consensus, not a sharp anchor"]
                 if leg.off_main_line:
-                    main = stale_mains[(ev_meta.event_id, group.key.market, book)]
+                    main = leg.main_line
                     ev_warnings.append(
                         f"{book}'s {leg.point:g} looks stale -- its alternate ladder "
                         f"implies a different number than its own current main line "

@@ -63,19 +63,26 @@ class Detect:
     max_hours_to_start: float = 240.0
     min_books: int = 2
     max_legs: int = 3
-    # A book's alternate ladder is built AROUND its own current main line --
-    # the rung closest to a fair coin flip (lowest two-sided vig) should sit
-    # at or within a point of it. When that rung is instead this far from the
-    # main line the board separately recorded for the same book/event/market,
-    # the whole ladder has drifted: DraftKings moved a total from 52.5 to 62.5
-    # and the alternate-total subcategory kept serving the OLD ladder for
-    # hours afterward, unrelated to any of the flat-ladder/placeholder checks
-    # those already catch a differently-shaped failure. Every rung in a
-    # drifted ladder is suspect, not just the far ones -- alt ladders are
-    # SUPPOSED to span a wide range on purpose, so a rung being far from main
-    # is normal; a rung being where the book's OWN vig says the truth is, and
-    # that spot being far from main, is the actual signal.
+    # A genuine alternate rung far from a book's own current main line should
+    # be priced with correspondingly worse vig -- that is the whole reason a
+    # ladder blows out to -2400/+800 a few rungs from center, and it is what
+    # makes a rung a real tail outcome rather than a coin flip. alt_line_max_drift
+    # is "far" (points/goals/runs from the main line the board separately
+    # recorded); alt_line_max_vig is "still priced like a main line" (total
+    # implied probability at or below this). A rung past BOTH thresholds is
+    # flagged: DraftKings moved a total from 52.5 to 62.5 and the
+    # alternate-total subcategory kept serving 52.5 at 1.90/1.93 (vig 1.0475,
+    # essentially main-line-grade) for hours afterward -- comparing vig
+    # ACROSS the ladder to find its "true" center does not catch this, because
+    # the real main line (1.98/1.85, vig 1.0462) and the stale rung differ by
+    # 0.0013, a coin flip that happens to go the right way as often as not.
+    # Checking a far rung's OWN vig against a fixed bar sidesteps that: it does
+    # not matter which of the two is tighter, only whether the far one is
+    # tight at all. A legitimate rung that far out (e.g. -2400/+800, vig
+    # ~1.07) fails max_vig and is correctly left alone -- that is exactly what
+    # a real tail rung should look like.
     alt_line_max_drift: float = 3.0
+    alt_line_max_vig: float = 1.06
     middles_enabled: bool = True
     middle_min_width: float = 0.5    # a whole number must also fall inside the window
     middle_max_cost_pct: float = 5.0

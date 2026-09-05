@@ -140,9 +140,8 @@ def test_middle_is_detected_across_two_books():
     assert 0 < m.breakeven_hit_pct < 100
 
 
-def test_stale_alt_ladders_needs_at_least_two_points_to_call_it_a_ladder():
-    """One point plus a known main line is just the main line itself, seen
-    twice -- nothing to compare it against yet."""
+def test_stale_alt_ladders_ignores_a_lone_main_line():
+    """One point that IS the recorded main line -- nothing else to check."""
     b, _ = board_with(("totals", None, 62.5, "over", "draftkings", 1.90),
                       ("totals", None, 62.5, "under", "draftkings", 1.90))
     b.record_main_point("e1", "totals", "draftkings", 62.5)
@@ -156,16 +155,47 @@ def test_stale_alt_ladders_respects_the_configured_drift():
                       ("totals", None, 60.5, "under", "draftkings", 1.95))
     b.record_main_point("e1", "totals", "draftkings", 62.5)
     assert stale_alt_ladders(b, max_drift=3.0) == {}, "2 points off is within a generous drift"
-    assert stale_alt_ladders(b, max_drift=1.0) == {("e1", "totals", "draftkings"): 62.5}, \
+    assert stale_alt_ladders(b, max_drift=1.0) == {("e1", "totals", "draftkings", 60.5): 62.5}, \
         "the same 2-point drift must trip a tighter setting"
 
 
+def test_stale_alt_ladders_checks_the_far_rungs_own_vig_not_the_ladders_tightest():
+    """Reproduces the actual bug in the first version of this check, with the
+    real numbers: comparing vig ACROSS the ladder to find its "implied
+    center" picked the genuine main line here (62.5, vig 1.0462) over the
+    stale rung (52.5, vig 1.0475) by a margin of 0.0013 -- a coin flip that
+    happened to land right. Checking the far rung's own vig against a fixed
+    bar does not depend on that coin flip at all."""
+    b, _ = board_with(
+        ("totals", None, 62.5, "over", "draftkings", 1.98039216),
+        ("totals", None, 62.5, "under", "draftkings", 1.84745763),
+        ("totals", None, 52.5, "over", "draftkings", 1.89285715),
+        ("totals", None, 52.5, "under", "draftkings", 1.92592593),
+    )
+    b.record_main_point("e1", "totals", "draftkings", 62.5)
+    assert stale_alt_ladders(b, max_drift=3.0) == {("e1", "totals", "draftkings", 52.5): 62.5}
+
+
+def test_a_genuine_tail_rung_is_not_flagged_just_for_being_far_from_main():
+    """A rung far from main SHOULD be priced worse -- that is the product.
+    -2400/+800 is what a real alternate 32 points from a 62.5 main looks
+    like, and it must survive even a very loose vig bar."""
+    b, _ = board_with(
+        ("totals", None, 62.5, "over", "draftkings", 1.90),
+        ("totals", None, 62.5, "under", "draftkings", 1.90),
+        ("totals", None, 30.5, "over", "draftkings", 1.04167),   # -2400
+        ("totals", None, 30.5, "under", "draftkings", 9.0),      # +800
+    )
+    b.record_main_point("e1", "totals", "draftkings", 62.5)
+    assert stale_alt_ladders(b, max_drift=3.0, max_vig=1.06) == {}
+
+
 def test_a_middle_on_a_drifted_alt_ladder_is_flagged_and_warns():
-    """Reproduces the real failure: a DraftKings alternate-total ladder whose
-    own best-priced (tightest-vig) rung sits at 52.5 while the board's known
-    main line for the same book/event/market is 62.5 -- ten points off, the
-    exact shape that reported a 52.5-55 free middle against Fanatics on a
-    game whose real total DraftKings' own app showed as 62.5."""
+    """Reproduces the real failure end to end: a DraftKings alternate-total
+    rung sits at 52.5, tightly priced, while the board's known main line for
+    the same book/event/market is 62.5 -- ten points off, the exact shape
+    that reported a 52.5-55 free middle against Fanatics on a game whose
+    real total DraftKings' own app showed as 62.5."""
     b, _ = board_with(
         ("totals", None, 62.5, "over", "draftkings", 1.90),
         ("totals", None, 62.5, "under", "draftkings", 1.90),
@@ -200,6 +230,31 @@ def test_a_middle_is_not_flagged_when_the_ladder_tracks_its_main_line():
     assert mids
     assert not mids[0].stale_alt_line
     assert not any(l.off_main_line for l in mids[0].legs)
+
+
+def test_a_stale_spread_on_the_away_side_does_not_crash_the_warning():
+    """Leg.point on a spread is SIGNED per side (away is the negation of the
+    stored home-axis point -- see _leg_point), while stale_alt_ladders and
+    main_points key on the raw, unsigned group point. Looking a stale leg's
+    warning up by its (signed) `point` instead of the value already resolved
+    onto the Leg would KeyError here, since -40.5 is never a key while 40.5
+    is. draftkings' main spread is -39.5 (home); the alternate leg used is
+    the AWAY side of a drifted rung, which displays as +40.5."""
+    b, _ = board_with(
+        ("spreads", None, -39.5, "home", "draftkings", 1.90),
+        ("spreads", None, -39.5, "away", "draftkings", 1.90),
+        ("spreads", None, -50.5, "home", "draftkings", 1.95),
+        ("spreads", None, -50.5, "away", "draftkings", 1.95),
+        ("spreads", None, -48.0, "home", "fanduel", 1.91),
+    )
+    b.record_main_point("e1", "spreads", "draftkings", -39.5)
+    mids = find_middles(b, cfg())
+    assert mids, "away +50.5 / fanduel home -48.0 is still a middle on its face"
+    m = mids[0]
+    assert m.stale_alt_line
+    dk_leg = next(l for l in m.legs if l.book == "draftkings")
+    assert dk_leg.off_main_line and dk_leg.main_line == -39.5
+    assert any("looks stale" in w for w in m.warnings)
 
 
 def test_a_book_with_no_recorded_main_line_is_never_flagged():
