@@ -438,6 +438,65 @@ def test_boosted_middle_panel_renders(tmp_path):
         "a middle_candidates entry should render its own boosted-middle panel"
 
 
+def test_casino_mode_filters_to_dk_fd_and_ranks_by_smallest_risk(tmp_path):
+    """Casino mode must drop any opportunity with a Fanatics leg, keep a real
+    arbitrage on top regardless of size, and rank everything else by
+    ascending risk_pct -- not by expected_pct like the normal view does. Gap
+    opportunities must appear even though "gap" is not in the default Show
+    selection, since Casino mode always wants them on the board."""
+    soon = (datetime.now(timezone.utc) + timedelta(hours=6)).isoformat()
+
+    def leg(book, side, dec):
+        return {"book": book, "side": side, "label": side.title(), "decimal": dec,
+                "american": "+100", "point": None, "stake": 500.0, "payout": 1000.0,
+                "boost_pct": 0.0, "raw_decimal": dec, "age_seconds": 1.0,
+                "link": None, "limit": None}
+
+    base = {"kind": "arb", "sport_key": "baseball_mlb", "sport_title": "MLB",
+           "commence_time": soon, "market": "h2h", "subject": None,
+           "description": "h2h", "stake_total": 1000.0, "profit_abs": 200.0,
+           "max_loss_pct": 0.0, "breakeven_hit_pct": 0.0, "hit_values": [],
+           "push_values": [], "pushes": False, "middle_window": None,
+           "fair_prob": None, "free_middle": False, "kelly_stake": None,
+           "anchor_book": None, "boost": None, "max_age_seconds": 2.0,
+           "warnings": [], "found_at": soon}
+
+    fanatics_arb = {**base, "fingerprint": "fan", "event_id": "fan",
+                    "matchup": "Fan A @ Fan B", "profit_pct": 20.0, "expected_pct": 20.0,
+                    "risk_pct": 0.0,
+                    "legs": [leg("draftkings", "home", 2.0), leg("fanatics", "away", 2.0)]}
+    dkfd_arb = {**base, "fingerprint": "dkfd", "event_id": "dkfd",
+               "matchup": "DKFD A @ DKFD B", "profit_pct": 2.0, "expected_pct": 2.0,
+               "risk_pct": 0.0,
+               "legs": [leg("draftkings", "home", 2.0), leg("fanduel", "away", 2.0)]}
+    gap_base = {**base, "kind": "gap", "market": "totals", "expected_pct": None,
+               "max_loss_pct": 100.0, "hit_values": [43], "middle_window": [42.5, 44.5],
+               "fair_prob": 0.02, "warnings": ["NOT a guaranteed position"]}
+    safe_gap = {**gap_base, "fingerprint": "safegap", "event_id": "safegap",
+               "matchup": "Safe A @ Safe B", "profit_pct": 1.0, "risk_pct": 2.0,
+               "legs": [leg("draftkings", "home", 2.05), leg("fanduel", "away", 2.0)]}
+    risky_gap = {**safe_gap, "fingerprint": "riskygap", "event_id": "riskygap",
+                "matchup": "Risky A @ Risky B", "risk_pct": 40.0}
+
+    snap = {"generated_at": soon,
+            "stats": {"bankroll": 1000, "events": 4, "groups": 4, "quotes": 8,
+                      "fanduel": 4, "draftkings": 4, "fanatics": 4, "anchor": 0,
+                      "skipped_events": {}},
+            "opportunities": [fanatics_arb, dkfd_arb, safe_gap, risky_gap],
+            "candidates": []}
+
+    st = run_page(snap, tmp_path=tmp_path,
+                 answers={"🎰 Casino mode (DraftKings + FanDuel only)": True})
+    all_text = [str(a) for k, a in st.drawn if k in ("markdown", "caption")]
+    assert not any("Fan A @ Fan B" in t for t in all_text), \
+        "a Fanatics leg must be dropped in Casino mode"
+    idx_dkfd = next(i for i, t in enumerate(all_text) if "DKFD A" in t)
+    idx_safe = next(i for i, t in enumerate(all_text) if "Safe A" in t)
+    idx_risky = next(i for i, t in enumerate(all_text) if "Risky A" in t)
+    assert idx_dkfd < idx_safe < idx_risky, \
+        "real arb first regardless of size, then gaps by ascending risk"
+
+
 def test_a_stale_cached_engine_module_is_reloaded_before_use(tmp_path):
     """Streamlit Community Cloud reruns this script WITHOUT restarting the
     Python process, so `sys.modules` keeps whatever module object an earlier

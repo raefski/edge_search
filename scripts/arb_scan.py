@@ -105,6 +105,12 @@ def main() -> int:
                 hits = o.get("hit_values") or []
                 extra = (f"  lands on {'/'.join(str(h) for h in hits)}"
                          f", breakeven {o['breakeven_hit_pct']:.1f}%")
+            elif o["kind"] == "gap":
+                hits = o.get("hit_values") or []
+                risk = o.get("risk_pct")
+                risk_str = f"{risk:.1f}%" if risk is not None else "unmeasured"
+                extra = (f"  loses BOTH legs on {'/'.join(str(h) for h in hits)}"
+                         f", risk {risk_str} -- not guaranteed")
             print(f"\n{o['kind'].upper():6} {o['profit_pct']:+.2f}%  {o['matchup']}"
                   f"  ({o['description']}){extra}")
             print(f"       {legs}")

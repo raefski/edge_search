@@ -145,6 +145,14 @@ class Opportunity:
     # profit_pct alone, whose meaning otherwise differs by kind.
     floor_pct: float | None = None
     ceiling_pct: float | None = None
+    # Probability (0-100) of landing on the WORST outcome: 0 for an arb or a
+    # free middle (there is no bad outcome), 100x(1-P(hit)) for an ordinary
+    # middle, 100xP(gap) for a gap. None when unmeasured -- which must sort as
+    # WORSE than any measured risk, not better, the same principle
+    # `expected_pct`'s None-handling already uses for a middle with no CDF.
+    # This is the field a "smallest risk" ranking (e.g. a casino-comps view)
+    # sorts on, since profit_pct's meaning otherwise differs by kind.
+    risk_pct: float | None = None
     # A middle whose worst case is still a profit -- it is a straight
     # arbitrage AND carries the middle's upside if the window lands. No
     # downside, a higher ceiling than the arb alone: strictly better than an
@@ -408,6 +416,7 @@ def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Oppo
             expected_pct=round(alloc.worst_profit_pct, 3),
             floor_pct=round(alloc.worst_profit_pct, 3),
             ceiling_pct=round(alloc.best_profit_pct, 3),
+            risk_pct=0.0,          # guaranteed regardless of outcome
             stake_total=alloc.total, profit_abs=alloc.worst_profit,
             boost=boost_desc,
             max_age_seconds=round(max(ages), 1), warnings=warnings,
@@ -456,6 +465,21 @@ def middle_results(lo_line: float, hi_line: float) -> list[int]:
     """
     return [n for n in range(math.floor(lo_line) + 1, math.ceil(hi_line))
             if lo_line < n < hi_line]
+
+
+def gap_results(lo_line: float, hi_line: float) -> list[int]:
+    """The whole-number results that fall strictly inside a CROSSED pair.
+
+    `middle_scenarios`'s "low leg wins above `lo_line`, high leg wins below
+    `hi_line`" reading holds even when the lines have crossed (`lo_line >
+    hi_line`) -- outside the gap exactly one leg still wins, same as always,
+    but for `hi_line < n < lo_line` NEITHER threshold is met and both lose.
+    Same floor/ceil-not-int() reasoning as `middle_results`: only a whole
+    number can settle a bet, and truncation walks the wrong way on the
+    negative half of the spread axis.
+    """
+    return [n for n in range(math.floor(hi_line) + 1, math.ceil(lo_line))
+            if hi_line < n < lo_line]
 
 
 def _middle_families(board: Board) -> dict[tuple, list[MarketGroup]]:
@@ -600,20 +624,8 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                 plo, phi = glo.key.point, ghi.key.point
                 # spreads live on the home-margin axis with the sign flipped
                 width = (plo - phi) if spread else (phi - plo)
-                if width <= 0 or width < d.middle_min_width or width > d.middle_max_width:
-                    continue          # width <= 0 inverts the legs: a gap, not a middle
-                # A positive width is not enough. The bet settles on a whole
-                # number, so the window has to hold one: Over 53.5 / Under 54
-                # spans half a point no score can land on, and Over 53 /
-                # Under 54 pushes at both ends. Neither can win both legs.
-                axis_lo = -plo if spread else plo
-                axis_hi = -phi if spread else phi
-                lo_line, hi_line = axis_lo, axis_hi        # ordered: width > 0
-                landing = middle_results(lo_line, hi_line)
-                if not landing:
-                    log.debug("%s %s: no whole number lies between %g and %g",
-                              market, subject or "game", lo_line, hi_line)
-                    continue
+                if width == 0:
+                    continue          # the lines touch exactly: no window, no gap
                 if qlo.book == qhi.book:
                     continue
                 ages = [qlo.age_seconds(now), qhi.age_seconds(now)]
@@ -625,6 +637,119 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                 if any(l.decimal > d.middle_max_leg_decimal for l in legs):
                     continue          # a longshot price is not a main line
                 ev = glo.event
+                axis_lo = -plo if spread else plo
+                axis_hi = -phi if spread else phi
+
+                if width < 0:
+                    # A "gap": two books' lines have CROSSED, so outside it
+                    # exactly one leg still wins as always, but inside the
+                    # narrow band neither does -- both stakes are lost. Not a
+                    # guaranteed position like an arbitrage; see gap_results.
+                    if not d.gaps_enabled or -width > d.gap_max_width:
+                        continue
+                    lo_line, hi_line = axis_lo, axis_hi     # crossed: lo_line > hi_line
+                    # A push at a whole-number boundary line is not modeled
+                    # below (the "outside" reading assumes a clean win/loss,
+                    # not a partial push) -- rather than risk an optimistic
+                    # ceiling, skip it. Half-point lines, the ordinary case,
+                    # can never push, so this costs nothing for the common case.
+                    if float(lo_line).is_integer() or float(hi_line).is_integer():
+                        continue
+                    gap_values = gap_results(lo_line, hi_line)
+                    if not gap_values:
+                        continue     # crossed, but no whole number sits in the gap
+
+                    leg_specs = [(legs[0].book, lo_side, legs[0].decimal),
+                                (legs[1].book, hi_side, legs[1].decimal)]
+                    best_gap = None
+                    for assignment, priced in _boost_variants(
+                            leg_specs, getattr(cfg, "boosts", None) or [],
+                            ev.sport_key, market, event_start=ev.commence_time):
+                        caps = [cfg.books.max_stake.get(l.book) for l in legs]
+                        for i, b in assignment.items():
+                            caps[i] = min(c for c in (caps[i], b.max_stake) if c)
+                        alloc = om.allocate(priced, bankroll=cfg.bankroll.total,
+                                           round_to=cfg.bankroll.round_to, max_stakes=caps)
+                        # Landing in the gap loses both legs outright regardless
+                        # of price, so a boost cannot rescue THAT outcome -- it
+                        # only ever helps the ordinary (one-wins) case, so the
+                        # boost is chosen the same way find_arbitrages chooses
+                        # one: maximise worst_profit_pct, the worse of the two
+                        # ordinary outcomes.
+                        if best_gap is None or alloc.worst_profit_pct > best_gap[0].worst_profit_pct:
+                            best_gap = (alloc, assignment, priced)
+                    alloc, assignment, priced = best_gap
+                    if alloc.worst_profit_pct < d.gap_min_profit_pct:
+                        continue
+
+                    for i, (leg, stake, payout) in enumerate(
+                            zip(legs, alloc.stakes, alloc.payouts)):
+                        leg.stake, leg.payout = stake, payout
+                        leg.decimal = round(priced[i], 4)
+                        leg.american = om.format_american(priced[i])
+                        if i in assignment:
+                            leg.boost_pct = assignment[i].pct
+
+                    window = (-plo, -phi) if spread else (plo, phi)
+                    window = (min(window), max(window))
+                    cdf = cdfs.get((event_id, market))
+                    p_gap = None
+                    if cdf and subject is None:
+                        lo_p = p_above(cdf, window[0], spread)
+                        hi_p = p_above(cdf, window[1], spread)
+                        if lo_p is not None and hi_p is not None:
+                            p_gap = max(0.0, min(1.0, abs(lo_p - hi_p)))
+
+                    lands_on = ("/".join(str(n) for n in gap_values) if len(gap_values) <= 4
+                               else f"{gap_values[0]}-{gap_values[-1]}")
+                    gap_warnings = [f"NOT a guaranteed position — both legs lose if the "
+                                   f"result lands on {lands_on}"]
+                    if assignment:
+                        tokens = " and ".join(
+                            f"the {b.describe()} applied to the {legs[i].book} leg"
+                            for i, b in sorted(assignment.items()))
+                        gap_warnings.append(f"needs {tokens} to reach "
+                                           f"{alloc.worst_profit_pct:+.2f}% outside the gap")
+
+                    gap_boost_desc = (" + ".join(b.describe() for _, b in sorted(assignment.items()))
+                                      or None)
+                    out.append(Opportunity(
+                        kind="gap",
+                        fingerprint=_fingerprint("gap", event_id, market, subject, plo, phi,
+                                                 qlo.book, qhi.book),
+                        sport_key=ev.sport_key, sport_title=ev.sport_title, event_id=event_id,
+                        matchup=ev.matchup, commence_time=ev.commence_time,
+                        market=market, subject=subject,
+                        description=f"{market}{' ' + subject if subject else ''} gap "
+                                    f"{window[0]:g}-{window[1]:g} (loses both on {lands_on})",
+                        legs=legs, profit_pct=round(alloc.worst_profit_pct, 3),
+                        fair_prob=(round(p_gap, 4) if p_gap is not None else None),
+                        expected_pct=(round((1.0 - p_gap) * alloc.worst_profit_pct - p_gap * 100.0, 3)
+                                     if p_gap is not None else None),
+                        floor_pct=-100.0,
+                        ceiling_pct=round(alloc.worst_profit_pct, 3),
+                        risk_pct=(round(p_gap * 100.0, 3) if p_gap is not None else None),
+                        max_loss_pct=100.0,
+                        stake_total=alloc.total, profit_abs=alloc.worst_profit,
+                        hit_values=gap_values,
+                        middle_window=window, max_age_seconds=round(max(ages), 1),
+                        boost=gap_boost_desc,
+                        warnings=gap_warnings,
+                    ))
+                    continue
+
+                if width < d.middle_min_width or width > d.middle_max_width:
+                    continue
+                # A positive width is not enough. The bet settles on a whole
+                # number, so the window has to hold one: Over 53.5 / Under 54
+                # spans half a point no score can land on, and Over 53 /
+                # Under 54 pushes at both ends. Neither can win both legs.
+                lo_line, hi_line = axis_lo, axis_hi        # ordered: width > 0
+                landing = middle_results(lo_line, hi_line)
+                if not landing:
+                    log.debug("%s %s: no whole number lies between %g and %g",
+                              market, subject or "game", lo_line, hi_line)
+                    continue
 
                 best_variant, plain_variant = _price_middle_variants(
                     legs[0].book, lo_side, legs[0].decimal,
@@ -716,6 +841,8 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                                   if p_hit is not None else None),
                     floor_pct=round(-cost_pct, 3),
                     ceiling_pct=round(hit_pct, 3),
+                    risk_pct=(0.0 if cost_pct <= 0 else
+                             (round((1.0 - p_hit) * 100.0, 3) if p_hit is not None else None)),
                     free_middle=cost_pct <= 0,
                     free_middle_floor_pct=(round(-cost_pct, 3) if cost_pct <= 0 else None),
                     stake_total=alloc.total,
@@ -729,12 +856,23 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                     warnings=warnings,
                 ))
 
+    # Gaps get their OWN cap: they rank near the bottom of the middle
+    # heuristic below (max_loss_pct is always 100 for one), so mixing them in
+    # before truncating would let a page of real middles crowd every gap out
+    # of the list entirely, defeating the point of surfacing them at all.
+    middles = [o for o in out if o.kind == "middle"]
+    gaps = [o for o in out if o.kind == "gap"]
+
     # Free middles first, regardless of size -- no downside means one must
     # not be truncated away by middle_max_results in favour of an ordinary
     # middle that merely scores higher on the cost/reward heuristic below.
-    out.sort(key=lambda o: (o.free_middle, o.profit_pct / (o.max_loss_pct + 0.5)),
-            reverse=True)
-    return out[: d.middle_max_results]
+    middles.sort(key=lambda o: (o.free_middle, o.profit_pct / (o.max_loss_pct + 0.5)),
+                reverse=True)
+    # Smallest chance of landing in the gap first -- that IS the point of a
+    # gap play. Unmeasured must sort last, not first: absence of a CDF is not
+    # evidence of safety.
+    gaps.sort(key=lambda o: o.risk_pct if o.risk_pct is not None else 101.0)
+    return middles[: d.middle_max_results] + gaps[: d.gap_max_results]
 
 
 # --------------------------------------------------------------------------

@@ -74,6 +74,15 @@ class Detect:
     middle_max_width: float = 14.0
     middle_max_leg_decimal: float = 6.0     # ~+500; longer is not a main line
     middle_max_results: int = 60
+    # A "gap" is a middle's mirror image: two DIFFERENT books' lines have
+    # CROSSED (width < 0), so outside the gap exactly one leg wins as usual,
+    # but INSIDE it -- a narrow band, not the common case -- BOTH lose. Not a
+    # guaranteed position like an arbitrage; it is priced and ranked by how
+    # rarely the gap itself is hit. See engine.find_middles.
+    gaps_enabled: bool = True
+    gap_max_width: float = 6.0        # sanity bound, same reasoning as middle_max_width
+    gap_min_profit_pct: float = 0.0   # the OUTSIDE-the-gap return must not itself be a loser
+    gap_max_results: int = 30
     ev_enabled: bool = True
     ev_method: str = "power"
     ev_min_pct: float = 2.0

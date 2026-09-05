@@ -524,6 +524,13 @@ def middle_candidates(board: Board, cfg: ArbConfig, max_cost_pct: float = 20.0) 
     drops the rest; wider than `cfg.detect.middle_max_cost_pct` on purpose --
     a token doubles as headroom `middle_max_cost_pct` alone does not budget
     for, the same reason `candidates()`'s own `max_sum` sits above 1.0.
+
+    Deliberately excludes gaps (width < 0, crossed lines -- see
+    `engine.find_middles`) even though the live scan now reports those too:
+    there is no `price_gap_candidates` boost-repricing counterpart yet, so a
+    gap here would sit in the snapshot unable to ever be re-priced by the
+    boost slider. Gaps are found by re-scanning, same as +EV, not by
+    re-pricing an old snapshot.
     """
     books = set(cfg.books.bettable)
     now = datetime.now(timezone.utc)

@@ -257,6 +257,72 @@ def test_longshot_leg_is_not_a_main_line():
     assert find_middles(b2, c), "the same geometry at normal prices is a middle"
 
 
+# --- gaps: crossed lines, the mirror image of a middle ----------------------
+def test_gap_between_crossed_lines_is_detected():
+    """Oklahoma -44.5 (+105) against UTEP +42.5 (+100), two different books:
+    outside the 43/44 gap exactly one leg wins as always, but a final margin
+    of 43 or 44 loses BOTH -- the exact scenario reported live. Not a
+    guaranteed position, so it is its own kind, not folded into 'middle'."""
+    b, _ = board_with(("spreads", None, -44.5, "home", "draftkings", 2.05),
+                      ("spreads", None, -42.5, "away", "fanduel", 2.00))
+    c = cfg()
+    gaps = [o for o in find_middles(b, c) if o.kind == "gap"]
+    assert len(gaps) == 1
+    o = gaps[0]
+    assert o.hit_values == [43, 44]
+    assert o.floor_pct == -100.0
+    assert o.max_loss_pct == 100.0
+    expected = om.allocate([2.05, 2.00], bankroll=c.bankroll.total, round_to=c.bankroll.round_to,
+                           max_stakes=[c.books.max_stake.get("draftkings"),
+                                      c.books.max_stake.get("fanduel")])
+    assert o.ceiling_pct == pytest.approx(expected.worst_profit_pct, abs=1e-6)
+    assert o.profit_pct == pytest.approx(expected.worst_profit_pct, abs=1e-6)
+    assert any("NOT a guaranteed" in w for w in o.warnings)
+
+
+def test_boost_helps_the_normal_side_of_a_gap_but_not_the_gap_itself():
+    """A boost cannot rescue landing in the gap -- both legs pay exactly 0
+    there regardless of price -- but it must still improve the ordinary
+    (one-wins) case, the same as it would for a real hedge."""
+    from edge.arb.engine import Boost
+    b, _ = board_with(("spreads", None, -44.5, "home", "draftkings", 2.05),
+                      ("spreads", None, -42.5, "away", "fanduel", 2.00))
+    c = cfg()
+    plain = next(o for o in find_middles(b, c) if o.kind == "gap")
+
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0)]
+    boosted = next(o for o in find_middles(b, c) if o.kind == "gap")
+    assert boosted.floor_pct == -100.0
+    assert boosted.ceiling_pct > plain.ceiling_pct
+    assert boosted.hit_values == [43, 44]
+
+
+def test_gap_with_a_whole_number_boundary_is_not_reported():
+    """A push at the exact line is not modeled here (the 'outside' reading
+    assumes a clean win/loss) -- skip rather than risk an optimistic
+    ceiling. Half-point lines, the ordinary case, never trigger this."""
+    b, _ = board_with(("spreads", None, -44.0, "home", "draftkings", 2.05),
+                      ("spreads", None, -42.5, "away", "fanduel", 2.00))
+    assert [o for o in find_middles(b, cfg()) if o.kind == "gap"] == []
+
+
+def test_absurdly_wide_gap_is_rejected():
+    """Same sanity-bound reasoning as an absurdly wide middle: a real gap
+    from genuine line movement between books is narrow."""
+    b, _ = board_with(("spreads", None, -50.5, "home", "draftkings", 2.05),
+                      ("spreads", None, -40.5, "away", "fanduel", 2.00))
+    assert [o for o in find_middles(b, cfg()) if o.kind == "gap"] == []
+
+
+def test_a_gap_with_a_losing_normal_case_is_rejected():
+    """A gap is only worth surfacing if the OUTSIDE-the-gap case doesn't
+    itself lose money -- otherwise it is a worse bet than a plain one, with
+    extra risk on top."""
+    b, _ = board_with(("spreads", None, -44.5, "home", "draftkings", 1.91),
+                      ("spreads", None, -42.5, "away", "fanduel", 1.91))
+    assert [o for o in find_middles(b, cfg()) if o.kind == "gap"] == []
+
+
 # --- DraftKings league feed: props must not read as game markets ------------
 DFS_PITCHER_MARKETS = ["pitcher_outs", "pitcher_strikeouts", "pitcher_earned_runs",
                        "pitcher_hits_allowed", "pitcher_walks", "pitcher_record_a_win"]

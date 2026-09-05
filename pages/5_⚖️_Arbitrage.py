@@ -119,7 +119,8 @@ FALLBACK_SPORTS = {
 }
 BOOK_NAMES = {"draftkings": "DraftKings", "fanduel": "FanDuel", "fanatics": "Fanatics",
               "fanatics_markets": "Fanatics Markets", "pinnacle": "Pinnacle"}
-KIND_ICON = {"arb": "🟢", "middle": "🔵", "ev": "🟡"}
+KIND_ICON = {"arb": "🟢", "middle": "🔵", "ev": "🟡", "gap": "🕳️"}
+CASINO_BOOKS = {"draftkings", "fanduel"}
 # A generous boost turns most of the board into an arbitrage -- a 50% token on
 # one slate produced 2,568 of them. Ranking them all is right; RENDERING them
 # all is a hung page, so the panel draws the best of them and says so.
@@ -267,6 +268,17 @@ with st.sidebar:
              "This also asks the NEXT scan to actually capture live games -- "
              "a snapshot scanned with this off has none to show even if you "
              "turn it on now, since it never kept them in the first place.")
+
+    casino_mode = st.checkbox(
+        "🎰 Casino mode (DraftKings + FanDuel only)", value=False,
+        help="For standing at a physical sportsbook window with only these "
+             "two books open. Keeps only positions where every leg is at "
+             "DraftKings or FanDuel, drops Fanatics-only legs, and re-ranks "
+             "the list: a real arbitrage or free middle (zero risk) always "
+             "leads, then everything else -- including gap plays, crossed "
+             "lines where you lose only in a narrow band -- ordered by the "
+             "smallest chance of landing on the losing result. Good for "
+             "low-risk volume toward casino comps, not for expected value.")
 
     st.divider()
     st.caption("A live scan takes ~40s and spends **no** API credits. "
@@ -416,9 +428,13 @@ with st.sidebar:
     st.caption("These only change what's shown from an existing scan — none "
                "of them make a scan itself faster. For that, use Scan "
                "filters above.")
-    kinds = st.multiselect("Show", ["arb", "middle", "ev"], default=["arb", "middle", "ev"],
+    kinds = st.multiselect("Show", ["arb", "middle", "gap", "ev"],
+                           default=["arb", "middle", "ev"],
                            format_func=lambda k: {"arb": "Arbitrage", "middle": "Middles",
-                                                  "ev": "+EV"}[k])
+                                                  "gap": "Gaps", "ev": "+EV"}[k],
+                           help="Gaps (crossed lines, small chance of losing both legs) "
+                                "are off by default -- Casino mode below always includes "
+                                "them regardless of this.")
     min_profit = st.slider("Minimum %", 0.0, 20.0, 0.0, 0.25)
     # The main list is ranked by expected return across every sport at once --
     # you bet the best price on the board, not the best price in each league.
@@ -761,8 +777,12 @@ if boosts:
                                     f"and ceiling {r['unboosted_ceiling_pct']:+.1f}%.")
     st.divider()
 
+# Casino mode always wants gap plays on the board regardless of the Show
+# picker above -- that is the whole point of turning it on -- so it is added
+# to whatever kinds are already checked rather than requiring a second click.
+_effective_kinds = set(kinds) | ({"gap"} if casino_mode else set())
 opps = [o for o in snap.get("opportunities", [])
-        if o.get("kind") in kinds and o.get("profit_pct", 0) >= min_profit]
+        if o.get("kind") in _effective_kinds and o.get("profit_pct", 0) >= min_profit]
 if sport_filter:
     opps = [o for o in opps
             if (o.get("sport_title") or o.get("sport_key")) in sport_filter]
@@ -770,11 +790,18 @@ if not show_live:
     opps = [o for o in opps if not is_live(o.get("commence_time", ""))]
 if date_range:
     opps = [o for o in opps if in_date_range(o.get("commence_time", ""), date_range)]
+if casino_mode:
+    opps = [o for o in opps
+           if all(l.get("book") in CASINO_BOOKS for l in o.get("legs", []))]
 
 if not opps:
     if not boost_rows:
-        st.warning("Nothing clears these filters. With three books, days with no "
-                   "arbitrage are normal — middles and +EV are the usual finds.")
+        st.warning(
+            "Nothing clears these filters, and only DraftKings/FanDuel legs "
+            "qualify in Casino mode — try widening the date range or "
+            "turning it off." if casino_mode else
+            "Nothing clears these filters. With three books, days with no "
+            "arbitrage are normal — middles and +EV are the usual finds.")
     st.stop()
 
 
@@ -810,7 +837,25 @@ def _rank(o: dict) -> tuple[bool, float]:
     return (bool(o.get("free_middle")), value)
 
 
-opps.sort(key=_rank, reverse=True)
+def _casino_rank(o: dict) -> tuple[bool, float]:
+    """(is a zero-risk position, -risk_pct) for Casino mode.
+
+    A real arbitrage or a free middle has no downside either way, so it
+    always leads regardless of size -- same principle as `_rank`. Everything
+    else is ordered by the SMALLEST chance of landing on its worst outcome,
+    since the point of hunting these out at a casino window is safe volume
+    toward comps, not the biggest edge.
+
+    Unmeasured risk (no CDF ladder deep enough on that market) must sort as
+    WORSE than a measured one, not better -- absence of a number is not
+    evidence of safety.
+    """
+    zero_risk = o.get("kind") == "arb" or bool(o.get("free_middle"))
+    risk = o.get("risk_pct")
+    return (zero_risk, -float(risk if risk is not None else 101.0))
+
+
+opps.sort(key=_casino_rank if casino_mode else _rank, reverse=True)
 
 # Optional: stop one sport crowding the list. Off by default -- the ranking is
 # global on purpose.
@@ -859,6 +904,16 @@ for o in opps:
                         f"this window · needs {o.get('breakeven_hit_pct', 0):.1f}%")
             head = (f"{lead}  \n+{o['profit_pct']:.1f}% if it lands on {on}, "
                     f"−{o.get('max_loss_pct', 0):.2f}% otherwise")
+    elif kind == "gap":
+        # The mirror image of a middle's head: NOT guaranteed, so lead with
+        # the risk of the bad outcome rather than the normal-case return --
+        # that risk is exactly what a "smallest risk" casino search sorts on.
+        hits = o.get("hit_values") or []
+        on = "/".join(str(h) for h in hits[:4]) or "the gap"
+        risk = o.get("risk_pct")
+        risk_str = f"{risk:.1f}%" if risk is not None else "unmeasured"
+        head = (f"{icon} risk **{risk_str}** of losing both legs on {on}  \n"
+                f"+{o['profit_pct']:.2f}% otherwise (not guaranteed)")
     else:
         head = (f"{icon} **{o['profit_pct']:+.2f}%** edge vs "
                 f"{o.get('anchor_book') or 'consensus'}")
