@@ -1,11 +1,11 @@
 {
- "requested_at": "2026-09-04T23:17:35.801136+00:00",
- "request_id": "20260904T231735801136",
+ "requested_at": "2026-09-05T01:20:18.744604+00:00",
+ "request_id": "20260905T012018744604",
  "sports": [
-  "baseball_mlb"
+  "americanfootball_ncaaf"
  ],
  "note": "requested from the Streamlit app",
- "date_from": null,
- "date_to": null,
- "skip_live": true
+ "date_from": "2026-09-04",
+ "date_to": "2026-09-04",
+ "skip_live": false
 }
