@@ -992,6 +992,99 @@ def test_without_another_book_the_ladder_is_not_second_guessed():
     assert len(board.groups) == 5
 
 
+def test_a_rung_beyond_the_apps_width_limit_is_dropped_even_when_centred_right():
+    """Rhode Island at Temple's actual live shape, found while checking DK's
+    tag against real games: Fanatics' spread ladder is correctly centred on
+    -14.5 (main_points agrees, and the ladder's own crossing lands exactly
+    there -- offset_ladders stays 0, a genuinely different check) but the
+    feed runs -3.5 to -22.5, while Fanatics' own app -- confirmed by hand --
+    only offers -7.5 to -21.5. A rung out here is not mispriced; it simply
+    is not a bet Fanatics will let you place."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board, EventMeta, GroupKey, Quote
+
+    board = Board()
+    now = datetime.now(timezone.utc)
+    ev = EventMeta("e1", "americanfootball_ncaaf", "NCAAF", now + timedelta(hours=6),
+                   "Temple", "Rhode Island")
+    board.events["e1"] = ev
+    board.group(GroupKey("e1", "spreads", None, -14.5), ev).add(
+        Quote(book="fanduel", side="home", decimal=1.909, point=-14.5, last_update=now))
+    board.record_main_point("e1", "spreads", "fanduel", -14.5)
+
+    # (line, Temple's decimal, Rhode Island's decimal) -- widening properly
+    # in both directions away from a fair 14.5, same shape as the real feed.
+    rows = [(3.5, 1.2273, 4.10), (6.5, 1.3226, 3.30), (7.5, 1.4255, 2.80),
+           (14.5, 1.909, 1.909), (21.5, 2.70, 1.4545), (22.5, 3.00, 1.40)]
+    payload = _ladder_payload([(l, td, rd) for l, td, rd in rows])
+    payload["subevents"][0]["homeTeam"]["name"] = "Temple"
+    payload["subevents"][0]["awayTeam"]["name"] = "Rhode Island"
+    for bet in payload["subevents"][0]["markets"][0]["bets"]:
+        bet["genericName"] = "HOME" if bet["name"] == "Delaware" else "AWAY"
+        bet["name"] = "Temple" if bet["name"] == "Delaware" else "Rhode Island"
+
+    st = ingest_oddschecker(board, payload, book="fanatics",
+                            sport_key="americanfootball_ncaaf", strict_match=False)
+    kept = sorted(k.point for k in board.groups if k.market == "spreads" and k.point != -14.5)
+    # -14.5 is already on the board from fanduel above; fanatics' own quotes
+    # land on the same GroupKeys, so check what fanatics itself contributed.
+    fanatics_points = sorted(k.point for k, g in board.groups.items()
+                             if k.market == "spreads" and "fanatics" in g.book_sides)
+    assert fanatics_points == [-21.5, -14.5, -7.5], f"got {fanatics_points}"
+    assert st["out_of_range_rungs"] == 3
+    assert st["offset_ladders"] == 0, "the ladder IS centred right -- a different check"
+    assert any("app's 7-point range" in u for u in st["markets_unmapped"])
+
+
+def test_a_rung_at_exactly_the_width_limit_is_kept():
+    """7.0 exactly is inside, not outside -- confirmed boundary is -7.5/-21.5
+    on the app for a -14.5 main, which is exactly 7.0 either side."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board, EventMeta
+
+    board = Board()
+    now = datetime.now(timezone.utc)
+    ev = EventMeta("e1", "americanfootball_ncaaf", "NCAAF", now + timedelta(hours=6),
+                   "Temple", "Rhode Island")
+    board.events["e1"] = ev
+    board.record_main_point("e1", "spreads", "fanduel", -14.5)
+
+    rows = [(7.5, 1.4255, 2.80), (14.5, 1.909, 1.909), (21.5, 2.70, 1.4545)]
+    payload = _ladder_payload([(l, td, rd) for l, td, rd in rows])
+    payload["subevents"][0]["homeTeam"]["name"] = "Temple"
+    payload["subevents"][0]["awayTeam"]["name"] = "Rhode Island"
+    for bet in payload["subevents"][0]["markets"][0]["bets"]:
+        bet["genericName"] = "HOME" if bet["name"] == "Delaware" else "AWAY"
+        bet["name"] = "Temple" if bet["name"] == "Delaware" else "Rhode Island"
+
+    st = ingest_oddschecker(board, payload, book="fanatics",
+                            sport_key="americanfootball_ncaaf", strict_match=False)
+    assert st["out_of_range_rungs"] == 0
+    assert sorted(k.point for k in board.groups if k.market == "spreads") == [-21.5, -14.5, -7.5]
+
+
+def test_without_a_known_main_line_width_is_not_checked():
+    """Same shape as the drop case, but with nothing else on the board and no
+    main_points entry -- a Fanatics-exclusive market must not be narrowed
+    just because there is nothing to measure its width against."""
+    from edge.arb.books import ingest_oddschecker
+    from edge.arb.models import Board
+
+    board = Board()
+    rows = [(3.5, 1.2273, 4.10), (14.5, 1.909, 1.909), (22.5, 3.00, 1.40)]
+    payload = _ladder_payload([(l, td, rd) for l, td, rd in rows])
+    payload["subevents"][0]["homeTeam"]["name"] = "Temple"
+    payload["subevents"][0]["awayTeam"]["name"] = "Rhode Island"
+    for bet in payload["subevents"][0]["markets"][0]["bets"]:
+        bet["genericName"] = "HOME" if bet["name"] == "Delaware" else "AWAY"
+        bet["name"] = "Temple" if bet["name"] == "Delaware" else "Rhode Island"
+
+    st = ingest_oddschecker(board, payload, book="fanatics",
+                            sport_key="americanfootball_ncaaf", strict_match=False)
+    assert st["out_of_range_rungs"] == 0
+    assert len(board.groups) == 3
+
+
 def test_one_symmetric_rung_is_the_main_line_and_is_kept():
     """A book prices its main line -110 both ways all the time. It is the
     SECOND symmetric rung that is impossible, so one is left alone."""

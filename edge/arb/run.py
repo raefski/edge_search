@@ -246,7 +246,7 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
     quotes = 0
     scanned = 0
     dropped_flat = dropped_rungs = dropped_ai = dropped_vig = 0
-    dropped_stalled = dropped_offset = 0
+    dropped_stalled = dropped_offset = dropped_range = 0
     for league in leagues:
         key = league["sport_key"]
         if wanted is not None and key not in wanted:
@@ -271,6 +271,7 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
         dropped_vig += st.get("bad_overround_rungs", 0)
         dropped_stalled += st.get("stalled_rungs", 0)
         dropped_offset += st.get("offset_ladders", 0)
+        dropped_range += st.get("out_of_range_rungs", 0)
     stats["fanatics_leagues_scanned"] = scanned
     stats["fanatics_flat_ladders"] = dropped_flat
     stats["fanatics_placeholder_rungs"] = dropped_rungs
@@ -284,6 +285,12 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
     # of guessed at.
     stats["fanatics_stalled_rungs"] = dropped_stalled
     stats["fanatics_offset_ladders"] = dropped_offset
+    # New alongside the DraftKings "main" tag work: Oddschecker's feed tracks
+    # every line the wider market compares, not the narrower set Fanatics'
+    # own app lets you bet -- see FANATICS_ALT_LINE_MAX_WIDTH. Reported the
+    # same way as the others, so its real hit rate is observed rather than
+    # guessed at.
+    stats["fanatics_out_of_range_rungs"] = dropped_range
     stats["fanatics"] = quotes
 
 

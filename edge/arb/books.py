@@ -230,6 +230,32 @@ def _other_book_points(board: Board, event_id: str, market: str,
             and set(g.book_sides) - {exclude_book}]
 
 
+# Fanatics' feed comes from Oddschecker, which carries every line the market
+# comparison tracks -- not the narrower set Fanatics' own app actually lets
+# you bet. Confirmed on three separate games rather than assumed: Rhode
+# Island at Temple's spread (main -14.5) is offered -7.5 to -21.5 on the
+# Fanatics app, but Oddschecker's feed for the same market runs -3.5 to
+# -22.5; another game's spread (main 20.5) was 13.5-27.5 on the app; a third's
+# total (main 53.5) was 47-61. All three land within half a point of exactly
+# 7 either side of the main line -- a hard product limit on Fanatics' side,
+# not a pricing question, so nothing here checks whether the excluded rungs
+# are internally consistent. They can be perfectly priced and still not be a
+# bet Fanatics will let you place.
+FANATICS_ALT_LINE_MAX_WIDTH = 7.0
+
+
+def _known_main_point(board: Board, event_id: str, market: str) -> float | None:
+    """The main line for this event+market, if DraftKings or FanDuel (both
+    ingested before Fanatics, see run.py) has already resolved one -- the
+    same registry engine.stale_alt_ladders reads, reused here as the centre
+    Fanatics' own app-width limit is measured from."""
+    for book in ("draftkings", "fanduel"):
+        point = board.main_points.get((event_id, market, book))
+        if point is not None:
+            return point
+    return None
+
+
 def _stalled_runs(rungs: dict) -> set:
     """Rungs inside a run of consecutive lines carrying one identical price.
 
@@ -328,6 +354,7 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
     stats = {"events": 0, "matched": 0, "unmatched": 0, "quotes": 0, "live_skipped": 0,
              "flat_ladders": 0, "placeholder_rungs": 0, "contradicted_rungs": 0,
              "bad_overround_rungs": 0, "stalled_rungs": 0, "offset_ladders": 0,
+             "out_of_range_rungs": 0,
              "markets_seen": set(), "markets_unmapped": set()}
 
     from .fanduel import parse_player_runner
@@ -455,6 +482,33 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                         stats["offset_ladders"] = stats.get("offset_ladders", 0) + 1
                         continue
 
+            # THE LADDER CAN BE CENTRED RIGHT AND STILL BE WIDER THAN THE
+            # PRODUCT. Oddschecker aggregates for market comparison, not for
+            # any one book -- it keeps every line the wider market tracks,
+            # while Fanatics' own app only lets you bet within a fixed range
+            # of its main line (measured at exactly 7 points either side
+            # across three separate games; see FANATICS_ALT_LINE_MAX_WIDTH).
+            # A rung out here can be perfectly priced -- this is not a
+            # pricing defect, unlike every check above and below it -- and
+            # still not be a bet Fanatics will let you place. Distinct from
+            # the offset check above: that one catches the whole ladder
+            # being centred on the wrong number; this one runs even when the
+            # centre is exactly right.
+            out_of_range: set = set()
+            if mkey in ("totals", "spreads"):
+                main = _known_main_point(board, target.event_id, mkey)
+                if main is not None:
+                    out_of_range = {rung for rung in rungs
+                                   if isinstance(rung, (int, float))
+                                   and abs(rung - main) > FANATICS_ALT_LINE_MAX_WIDTH}
+                    if out_of_range:
+                        stats["markets_unmapped"].add(
+                            f"{label} (main {main:g}, {len(out_of_range)} rung(s) "
+                            f"beyond the app's {FANATICS_ALT_LINE_MAX_WIDTH:g}-point "
+                            f"range: {sorted(out_of_range)})")
+                        stats["out_of_range_rungs"] = (
+                            stats.get("out_of_range_rungs", 0) + len(out_of_range))
+
             # ...and the PARTIAL version of the same thing, which the check
             # above is too blunt to see. North Carolina A&T at Georgia State
             # came back with Total Points at 63.5, 56 and 55.5 all -110/-110
@@ -538,7 +592,7 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                     f"{label} (ladder does not reprice across {sorted(stalled)})")
                 stats["stalled_rungs"] = stats.get("stalled_rungs", 0) + len(stalled)
 
-            placeholder = placeholder | contradicted | overround_bad | stalled
+            placeholder = placeholder | contradicted | overround_bad | stalled | out_of_range
 
             for bet in market.get("bets") or []:
                 raw_line = (bet.get("line") or {}).get("name")
