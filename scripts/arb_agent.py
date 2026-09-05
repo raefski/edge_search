@@ -148,7 +148,8 @@ def tick(cfg: ArbConfig, max_age: float, also_every: float) -> None:
     ok, why = should_handle(req, state.get("last_handled_id"), max_age_seconds=max_age)
 
     if ok:
-        log(f"request {req.request_id} — {req.note or 'no note'}")
+        log(f"request {req.request_id} — {req.note or 'no note'}"
+            + (f" · state {req.state}" if req.state else ""))
         scan_cfg = ArbConfig(**{})
         scan_cfg.__dict__.update(cfg.__dict__)
         if req.sports:
@@ -161,6 +162,8 @@ def tick(cfg: ArbConfig, max_age: float, also_every: float) -> None:
         scan_cfg.detect = dataclasses.replace(
             cfg.detect, date_from=req.date_from, date_to=req.date_to,
             skip_live=req.skip_live)
+        if req.state:
+            scan_cfg.state = req.state
         run_scan(scan_cfg)
         # record BEFORE pushing: a push that fails must not cause the same
         # request to be scraped again on the next tick
@@ -208,15 +211,20 @@ def main() -> int:
                     help="also scan unprompted every N seconds (0 = only on request)")
     ap.add_argument("--sports", nargs="+", help="default sports when a request names none")
     ap.add_argument("--bankroll", type=float, default=1000.0)
+    ap.add_argument("--state", help="default book-skin state when a request names none "
+                                    "(default: ArbConfig's own default, CT)")
     args = ap.parse_args()
 
     cfg = ArbConfig()
     if args.sports:
         cfg.sports = args.sports
+    if args.state:
+        cfg.state = args.state
     cfg.bankroll.total = args.bankroll
 
     started_head = head()
-    log(f"agent up · {started_head[:8]} · poll {args.interval:g}s · sports {cfg.sports}"
+    log(f"agent up · {started_head[:8]} · poll {args.interval:g}s · sports {cfg.sports} "
+        f"· state {cfg.state}"
         + (f" · auto-scan every {args.also_every:g}s" if args.also_every else ""))
     while True:
         try:

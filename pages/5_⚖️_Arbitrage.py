@@ -212,6 +212,13 @@ def is_live(commence_time: str) -> bool:
 with st.sidebar:
     st.header("Scan")
     bankroll = st.number_input("Bankroll per opportunity ($)", 50, 100_000, 1000, step=50)
+    book_state = st.text_input(
+        "State", value="CT", max_chars=2,
+        help="Which state's DraftKings/FanDuel skin to scan. Sportsbooks "
+             "price state by state — a market (an alternate line especially) "
+             "can be live in one state's app before it is approved in "
+             "another's. Applies to both Scan live and Request a desktop "
+             "scan. Defaults to Connecticut.").strip().upper() or "CT"
 
     _sport_choices = _from_scan_request(
         "sport_choices", lambda cfg, snap: dict(sorted(FALLBACK_SPORTS.items(),
@@ -465,7 +472,7 @@ if request_scan:
             sports=list(scan_sports), note="requested from the Streamlit app",
             date_from=date_range[0].isoformat() if date_range else None,
             date_to=date_range[1].isoformat() if date_range else None,
-            skip_live=not show_live)
+            skip_live=not show_live, state=book_state)
         put_request(_repo, _token, req)
         st.session_state["last_scan_request"] = req.requested_at
         st.success("Asked the desktop to scan. It polls every ~30s, the scan "
@@ -499,6 +506,7 @@ if run_live:
         from edge.arb.run import snapshot as build_snapshot
 
         cfg = ArbConfig()
+        cfg.state = book_state
         cfg.bankroll.total = float(bankroll)
         cfg.detect.skip_live = not show_live
         if date_range:

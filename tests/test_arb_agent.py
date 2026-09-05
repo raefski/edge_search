@@ -95,6 +95,21 @@ def test_an_older_request_file_without_the_new_fields_still_skips_live():
     assert req.skip_live is True
 
 
+def test_a_request_round_trips_its_state():
+    req = ScanRequest.new(state="NJ")
+    back = ScanRequest.parse(req.to_json())
+    assert back.state == "NJ"
+
+
+def test_an_older_request_file_without_a_state_falls_back_to_the_desktops_default():
+    """Missing (a request filed before this existed) must mean 'use whatever
+    the desktop is already configured for,' not silently force a state."""
+    old = json.dumps({"requested_at": datetime.now(timezone.utc).isoformat(),
+                      "request_id": "20260101T000000000000", "sports": []})
+    req = ScanRequest.parse(old)
+    assert req.state is None
+
+
 def test_request_ids_are_unique_across_rapid_presses():
     ids = {ScanRequest.new().request_id for _ in range(50)}
     assert len(ids) == 50, "two presses would collide and the second be ignored"

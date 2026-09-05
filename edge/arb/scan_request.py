@@ -55,6 +55,12 @@ class ScanRequest:
     # anything already under way, same as today. False asks the desktop to
     # keep live/in-progress events too.
     skip_live: bool = True
+    # Which state's book skin to scan -- DraftKings and FanDuel price state by
+    # state, and a market (an alternate line especially) can be live in one
+    # state's app before it is approved in another's. None (an older request
+    # file, or a phone that has not set one) must mean "use the desktop's own
+    # default," not silently force a specific state.
+    state: str | None = None
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), indent=1) + "\n"
@@ -62,12 +68,13 @@ class ScanRequest:
     @classmethod
     def new(cls, sports: list[str] | None = None, note: str = "",
            date_from: str | None = None, date_to: str | None = None,
-           skip_live: bool = True) -> "ScanRequest":
+           skip_live: bool = True, state: str | None = None) -> "ScanRequest":
         ts = _now()
         return cls(requested_at=ts.isoformat(),
                    request_id=ts.strftime("%Y%m%dT%H%M%S%f"),
                    sports=list(sports or []), note=note,
-                   date_from=date_from, date_to=date_to, skip_live=skip_live)
+                   date_from=date_from, date_to=date_to, skip_live=skip_live,
+                   state=state)
 
     @classmethod
     def parse(cls, raw: str | bytes | None) -> "ScanRequest | None":
@@ -87,7 +94,8 @@ class ScanRequest:
                    date_to=d.get("date_to") or None,
                    # Missing (an older request file) must mean the OLD
                    # behaviour, not silently start including live games.
-                   skip_live=bool(d.get("skip_live", True)))
+                   skip_live=bool(d.get("skip_live", True)),
+                   state=d.get("state") or None)
 
     def age_seconds(self, now: datetime | None = None) -> float:
         try:
