@@ -839,6 +839,51 @@ def test_two_different_boosts_stack_on_the_same_arbitrage():
     assert o.ceiling_pct >= o.floor_pct - 1e-9
 
 
+def test_one_token_never_boosts_both_legs_of_a_same_book_market():
+    """Direct unit test on _boost_variants: an unrestricted DraftKings boost
+    qualifies for EITHER side of a same-book two-sided market (batter unders
+    exist on DraftKings only, not FanDuel, so this shape is real, not
+    contrived). The fully-stacked variant must never apply one token to two
+    legs -- each single-leg variant is still offered on its own."""
+    from edge.arb.engine import Boost, _boost_variants
+    boost = Boost(book="draftkings", pct=0.5, max_stake=500.0)
+    leg_specs = [("draftkings", "over", 1.8), ("draftkings", "under", 1.9709)]
+    variants = list(_boost_variants(leg_specs, [boost], "baseball_mlb", "batter_hits"))
+    assignments = [a for a, _priced in variants]
+    assert {} in assignments, "plain variant always offered"
+    assert {0: boost} in assignments, "over boosted alone"
+    assert {1: boost} in assignments, "under boosted alone"
+    assert not any(len(a) > 1 for a in assignments), \
+        "one token cannot cover two legs, even when its own terms allow either"
+
+
+def test_a_single_book_boost_candidate_does_not_double_boost_both_legs():
+    """End to end through the real path that produced this: run.candidates
+    marks a same-book two-sided market single_book=True specifically so a
+    boost can turn it into a real arb (see candidates' own docstring), and
+    price_candidates is what the boost slider actually calls. Boosting ONE
+    side against the other's plain price is a genuine, placeable arb here;
+    boosting both would need the same token on two different bet slips."""
+    from edge.arb.engine import Boost, price_candidates
+    from edge.arb.run import candidates
+    ev = EventMeta("e1", "baseball_mlb", "MLB",
+                   datetime.now(timezone.utc) + timedelta(hours=2), "Guardians", "Tigers")
+    b = Board()
+    g = b.group(GroupKey("e1", "batter_hits", "Zach McKinstry", 0.5), ev)
+    now = datetime.now(timezone.utc)
+    g.add(Quote(book="draftkings", side="over", decimal=1.8, point=0.5, last_update=now))
+    g.add(Quote(book="draftkings", side="under", decimal=1.9709, point=0.5, last_update=now))
+
+    c = cfg()
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0)]
+    cands = candidates(b, c)
+    assert cands and cands[0]["single_book"]
+    priced = price_candidates(cands, c.boosts, c)
+    assert priced, "one leg boosted against the other's plain price is a real arb"
+    boosted_legs = [l for l in priced[0]["legs"] if l.get("boost_pct")]
+    assert len(boosted_legs) == 1, "one token boosts exactly one leg, never both"
+
+
 def test_a_boost_that_cannot_apply_leaves_the_other_leg_alone():
     """Only one of two configured tokens actually covers this market (the
     second is scoped to a sport it is not in) -- exactly that one leg is

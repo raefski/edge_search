@@ -402,11 +402,24 @@ def _boost_variants(leg_specs: list[tuple[str, str | None, float]], boosts: list
     eligible for the SAME leg is not a real scenario (each book normally
     offers you one live token at a time) but is resolved by keeping the one
     worth more on that leg, since only one token can go on one slip.
+
+    ONE TOKEN CANNOT COVER TWO LEGS, even when its own terms (book, market,
+    side) allow either one individually -- a same-book two-sided market with
+    no other book on the far side (batter unders exist on DraftKings only,
+    not FanDuel) let an unrestricted "DraftKings batter props" boost qualify
+    for BOTH the Over and the Under, and the stacked variant applied it to
+    both, reporting a "both sides +money" arbitrage that needs the same
+    single-use token redeemed on two different bet slips at once. `used`
+    tracks boosts by identity as they are claimed leg by leg, in order, so a
+    boost already spent on an earlier leg is not offered again to a later
+    one -- the single-leg variant for that later leg is still yielded on its
+    own above, just never combined with a leg already spoken for.
     """
     base = [d for _, _, d in leg_specs]
     yield {}, base
 
     per_leg: dict[int, Boost] = {}
+    used: set[int] = set()
     for i, (book, side, decimal) in enumerate(leg_specs):
         applicable = [b for b in boosts
                      if b.applies_to(book, sport_key, market, side=side,
@@ -414,12 +427,14 @@ def _boost_variants(leg_specs: list[tuple[str, str | None, float]], boosts: list
         if not applicable:
             continue
         best_b = max(applicable, key=lambda b: b.pct)
-        per_leg[i] = best_b
         priced = list(base)
         # the price the BOOK writes, not the exact product: a boosted bet
         # is booked at whole American odds and settles there
         priced[i] = om.at_book_price(om.boosted(base[i], best_b.pct))
         yield {i: best_b}, priced
+        if id(best_b) not in used:
+            per_leg[i] = best_b
+            used.add(id(best_b))
 
     if len(per_leg) > 1:
         priced = list(base)
