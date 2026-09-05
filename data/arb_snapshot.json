@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-05T01:20:43.660662+00:00",
+ "generated_at": "2026-09-05T01:29:42.427998+00:00",
  "stats": {
   "fanduel_prop_events": 0,
   "fanduel_alt_events": 0,
@@ -9,16 +9,16 @@
   "golf_expired": [
    "Tour Championship"
   ],
-  "draftkings": 5793,
+  "draftkings": 5769,
   "fanatics_leagues_known": 29,
   "fanatics_leagues_scanned": 1,
   "fanatics_flat_ladders": 3,
-  "fanatics_placeholder_rungs": 26,
-  "fanatics_contradicted_rungs": 38,
+  "fanatics_placeholder_rungs": 30,
+  "fanatics_contradicted_rungs": 39,
   "fanatics_bad_overround_rungs": 0,
   "fanatics_stalled_rungs": 2,
   "fanatics_offset_ladders": 0,
-  "fanatics": 18366,
+  "fanatics": 18356,
   "anchor": 64,
   "skipped_events": {
    "americanfootball_ncaaf (outside window)": 112
@@ -26,8 +26,8 @@
   "price_conflicts": 0,
   "bankroll": 1000,
   "events": 113,
-  "groups": 10679,
-  "quotes": 24695
+  "groups": 10650,
+  "quotes": 24662
  },
  "opportunities": [],
  "candidates": [
@@ -40,68 +40,32 @@
    "market": "h2h",
    "subject": null,
    "point": null,
-   "arb_sum": 1.03842,
-   "single_book": true,
+   "arb_sum": 1.02236,
+   "single_book": false,
    "legs": [
     {
      "side": "away",
      "book": "draftkings",
-     "decimal": 17.0,
+     "decimal": 31.0,
      "label": "Fresno State",
      "point": null
     },
     {
      "side": "home",
-     "book": "draftkings",
-     "decimal": 1.0208,
+     "book": "fanduel",
+     "decimal": 1.01,
      "label": "USC",
      "point": null
     }
    ],
    "prices": {
     "away": {
-     "fanduel": 16.0,
-     "draftkings": 17.0
+     "fanduel": 19.0,
+     "draftkings": 31.0
     },
     "home": {
-     "fanduel": 1.0143,
-     "draftkings": 1.0208
-    }
-   }
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -11.5,
-   "arb_sum": 1.05865,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 4.3,
-     "label": "Fresno State",
-     "point": 11.5
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.2105,
-     "label": "USC",
-     "point": -11.5
-    }
-   ],
-   "prices": {
-    "away": {
-     "draftkings": 4.3
-    },
-    "home": {
-     "draftkings": 1.2105
+     "fanduel": 1.01,
+     "draftkings": 1.005
     }
    }
   },
@@ -113,67 +77,33 @@
    "commence_time": "2026-09-05T01:10:00+00:00",
    "market": "totals",
    "subject": null,
-   "point": 63.5,
-   "arb_sum": 1.06019,
-   "single_book": true,
+   "point": 48.5,
+   "arb_sum": 1.05652,
+   "single_book": false,
    "legs": [
     {
      "side": "over",
-     "book": "draftkings",
-     "decimal": 4.8,
+     "book": "fanduel",
+     "decimal": 1.8772,
      "label": "Over",
-     "point": 63.5
+     "point": 48.5
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.1739,
+     "decimal": 1.9091,
      "label": "Under",
-     "point": 63.5
+     "point": 48.5
     }
    ],
    "prices": {
     "over": {
-     "draftkings": 4.8
+     "fanduel": 1.8772,
+     "draftkings": 1.8333
     },
     "under": {
-     "draftkings": 1.1739
-    }
-   }
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 42.5,
-   "arb_sum": 1.06039,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 1.2778,
-     "label": "Over",
-     "point": 42.5
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 3.6,
-     "label": "Under",
-     "point": 42.5
-    }
-   ],
-   "prices": {
-    "over": {
-     "draftkings": 1.2778
-    },
-    "under": {
-     "draftkings": 3.6
+     "fanduel": 1.8772,
+     "draftkings": 1.9091
     }
    }
   },
@@ -186,30 +116,30 @@
    "market": "totals",
    "subject": null,
    "point": 60.5,
-   "arb_sum": 1.0643,
+   "arb_sum": 1.05739,
    "single_book": true,
    "legs": [
     {
      "side": "over",
      "book": "draftkings",
-     "decimal": 3.55,
+     "decimal": 4.6,
      "label": "Over",
      "point": 60.5
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.2778,
+     "decimal": 1.1905,
      "label": "Under",
      "point": 60.5
     }
    ],
    "prices": {
     "over": {
-     "draftkings": 3.55
+     "draftkings": 4.6
     },
     "under": {
-     "draftkings": 1.2778
+     "draftkings": 1.1905
     }
    }
   },
@@ -219,69 +149,33 @@
    "event_id": "fd:35660006",
    "matchup": "Fresno State @ USC",
    "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "spreads",
+   "market": "totals",
    "subject": null,
-   "point": -24.5,
-   "arb_sum": 1.06509,
+   "point": 39.5,
+   "arb_sum": 1.05952,
    "single_book": true,
    "legs": [
     {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 1.8475,
-     "label": "Fresno State",
-     "point": 24.5
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.2353,
+     "label": "Over",
+     "point": 39.5
     },
     {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 1.9091,
-     "label": "USC",
-     "point": -24.5
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 4.0,
+     "label": "Under",
+     "point": 39.5
     }
    ],
    "prices": {
-    "away": {
-     "fanduel": 1.8475
+    "over": {
+     "draftkings": 1.2353
     },
-    "home": {
-     "fanduel": 1.9091
-    }
-   }
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -32.5,
-   "arb_sum": 1.06564,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 1.2632,
-     "label": "Fresno State",
-     "point": 32.5
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 3.65,
-     "label": "USC",
-     "point": -32.5
-    }
-   ],
-   "prices": {
-    "away": {
-     "draftkings": 1.2632
-    },
-    "home": {
-     "draftkings": 3.65
+    "under": {
+     "draftkings": 4.0
     }
    }
   },
@@ -294,30 +188,30 @@
    "market": "spreads",
    "subject": null,
    "point": -14.5,
-   "arb_sum": 1.06595,
+   "arb_sum": 1.06061,
    "single_book": true,
    "legs": [
     {
      "side": "away",
      "book": "draftkings",
-     "decimal": 3.35,
+     "decimal": 4.4,
      "label": "Fresno State",
      "point": 14.5
     },
     {
      "side": "home",
      "book": "draftkings",
-     "decimal": 1.303,
+     "decimal": 1.2,
      "label": "USC",
      "point": -14.5
     }
    ],
    "prices": {
     "away": {
-     "draftkings": 3.35
+     "draftkings": 4.4
     },
     "home": {
-     "draftkings": 1.303
+     "draftkings": 1.2
     }
    }
   },
@@ -330,30 +224,30 @@
    "market": "totals",
    "subject": null,
    "point": 57.5,
-   "arb_sum": 1.06729,
+   "arb_sum": 1.06258,
    "single_book": true,
    "legs": [
     {
      "side": "over",
      "book": "draftkings",
-     "decimal": 2.8,
+     "decimal": 3.45,
      "label": "Over",
      "point": 57.5
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 1.4082,
+     "decimal": 1.2941,
      "label": "Under",
      "point": 57.5
     }
    ],
    "prices": {
     "over": {
-     "draftkings": 2.8
+     "draftkings": 3.45
     },
     "under": {
-     "draftkings": 1.4082
+     "draftkings": 1.2941
     }
    }
   },
@@ -365,175 +259,31 @@
    "commence_time": "2026-09-05T01:10:00+00:00",
    "market": "spreads",
    "subject": null,
-   "point": -23.5,
-   "arb_sum": 1.06926,
+   "point": -32.5,
+   "arb_sum": 1.06501,
    "single_book": true,
    "legs": [
     {
      "side": "away",
      "book": "draftkings",
-     "decimal": 1.9091,
+     "decimal": 1.3774,
      "label": "Fresno State",
-     "point": 23.5
+     "point": 32.5
     },
     {
      "side": "home",
      "book": "draftkings",
-     "decimal": 1.8333,
+     "decimal": 2.95,
      "label": "USC",
-     "point": -23.5
+     "point": -32.5
     }
    ],
    "prices": {
     "away": {
-     "draftkings": 1.9091
+     "draftkings": 1.3774
     },
     "home": {
-     "draftkings": 1.8333
-    }
-   }
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 51.5,
-   "arb_sum": 1.06926,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 1.9091,
-     "label": "Over",
-     "point": 51.5
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.8333,
-     "label": "Under",
-     "point": 51.5
-    }
-   ],
-   "prices": {
-    "over": {
-     "draftkings": 1.9091
-    },
-    "under": {
-     "draftkings": 1.8333
-    }
-   }
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -29.5,
-   "arb_sum": 1.06952,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 1.4167,
-     "label": "Fresno State",
-     "point": 29.5
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 2.75,
-     "label": "USC",
-     "point": -29.5
-    }
-   ],
-   "prices": {
-    "away": {
-     "draftkings": 1.4167
-    },
-    "home": {
-     "draftkings": 2.75
-    }
-   }
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -26.5,
-   "arb_sum": 1.06993,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 1.625,
-     "label": "Fresno State",
-     "point": 26.5
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 2.2,
-     "label": "USC",
-     "point": -26.5
-    }
-   ],
-   "prices": {
-    "away": {
-     "draftkings": 1.625
-    },
-    "home": {
-     "draftkings": 2.2
-    }
-   }
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 52.5,
-   "arb_sum": 1.07017,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.9804,
-     "label": "Over",
-     "point": 52.5
-    },
-    {
-     "side": "under",
-     "book": "fanduel",
-     "decimal": 1.7692,
-     "label": "Under",
-     "point": 52.5
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 1.9804
-    },
-    "under": {
-     "fanduel": 1.7692
+     "draftkings": 2.95
     }
    }
   },
@@ -546,6 +296,258 @@
    "market": "spreads",
    "subject": null,
    "point": -20.5,
+   "arb_sum": 1.06516,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 2.85,
+     "label": "Fresno State",
+     "point": 20.5
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.4,
+     "label": "USC",
+     "point": -20.5
+    }
+   ],
+   "prices": {
+    "away": {
+     "draftkings": 2.85
+    },
+    "home": {
+     "draftkings": 1.4
+    }
+   }
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35660006",
+   "matchup": "Fresno State @ USC",
+   "commence_time": "2026-09-05T01:10:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 54.5,
+   "arb_sum": 1.06734,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 2.7,
+     "label": "Over",
+     "point": 54.5
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.4348,
+     "label": "Under",
+     "point": 54.5
+    }
+   ],
+   "prices": {
+    "over": {
+     "draftkings": 2.7
+    },
+    "under": {
+     "draftkings": 1.4348
+    }
+   }
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35660006",
+   "matchup": "Fresno State @ USC",
+   "commence_time": "2026-09-05T01:10:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -17.5,
+   "arb_sum": 1.06763,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 3.45,
+     "label": "Fresno State",
+     "point": 17.5
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.2857,
+     "label": "USC",
+     "point": -17.5
+    }
+   ],
+   "prices": {
+    "away": {
+     "draftkings": 3.45
+    },
+    "home": {
+     "draftkings": 1.2857
+    }
+   }
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35660006",
+   "matchup": "Fresno State @ USC",
+   "commence_time": "2026-09-05T01:10:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -35.5,
+   "arb_sum": 1.06818,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.2222,
+     "label": "Fresno State",
+     "point": 35.5
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 4.0,
+     "label": "USC",
+     "point": -35.5
+    }
+   ],
+   "prices": {
+    "away": {
+     "draftkings": 1.2222
+    },
+    "home": {
+     "draftkings": 4.0
+    }
+   }
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35660006",
+   "matchup": "Fresno State @ USC",
+   "commence_time": "2026-09-05T01:10:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -24.5,
+   "arb_sum": 1.06897,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 2.0,
+     "label": "Fresno State",
+     "point": 24.5
+    },
+    {
+     "side": "home",
+     "book": "fanduel",
+     "decimal": 1.7576,
+     "label": "USC",
+     "point": -24.5
+    }
+   ],
+   "prices": {
+    "away": {
+     "fanduel": 2.0
+    },
+    "home": {
+     "fanduel": 1.7576
+    }
+   }
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35660006",
+   "matchup": "Fresno State @ USC",
+   "commence_time": "2026-09-05T01:10:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -26.5,
+   "arb_sum": 1.06977,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.8696,
+     "label": "Fresno State",
+     "point": 26.5
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.8696,
+     "label": "USC",
+     "point": -26.5
+    }
+   ],
+   "prices": {
+    "away": {
+     "draftkings": 1.8696
+    },
+    "home": {
+     "draftkings": 1.8696
+    }
+   }
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35660006",
+   "matchup": "Fresno State @ USC",
+   "commence_time": "2026-09-05T01:10:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 42.5,
+   "arb_sum": 1.07085,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.3774,
+     "label": "Over",
+     "point": 42.5
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 2.9,
+     "label": "Under",
+     "point": 42.5
+    }
+   ],
+   "prices": {
+    "over": {
+     "draftkings": 1.3774
+    },
+    "under": {
+     "draftkings": 2.9
+    }
+   }
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35660006",
+   "matchup": "Fresno State @ USC",
+   "commence_time": "2026-09-05T01:10:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -23.5,
    "arb_sum": 1.07115,
    "single_book": true,
    "legs": [
@@ -554,14 +556,14 @@
      "book": "draftkings",
      "decimal": 2.3,
      "label": "Fresno State",
-     "point": 20.5
+     "point": 23.5
     },
     {
      "side": "home",
      "book": "draftkings",
      "decimal": 1.5714,
      "label": "USC",
-     "point": -20.5
+     "point": -23.5
     }
    ],
    "prices": {
@@ -581,103 +583,31 @@
    "commence_time": "2026-09-05T01:10:00+00:00",
    "market": "spreads",
    "subject": null,
-   "point": -17.5,
-   "arb_sum": 1.07186,
+   "point": -29.5,
+   "arb_sum": 1.07115,
    "single_book": true,
    "legs": [
     {
      "side": "away",
      "book": "draftkings",
-     "decimal": 2.7,
+     "decimal": 1.5714,
      "label": "Fresno State",
-     "point": 17.5
+     "point": 29.5
     },
     {
      "side": "home",
      "book": "draftkings",
-     "decimal": 1.4255,
+     "decimal": 2.3,
      "label": "USC",
-     "point": -17.5
+     "point": -29.5
     }
    ],
    "prices": {
     "away": {
-     "draftkings": 2.7
+     "draftkings": 1.5714
     },
     "home": {
-     "draftkings": 1.4255
-    }
-   }
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 48.5,
-   "arb_sum": 1.07296,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 1.6452,
-     "label": "Over",
-     "point": 48.5
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.15,
-     "label": "Under",
-     "point": 48.5
-    }
-   ],
-   "prices": {
-    "over": {
-     "draftkings": 1.6452
-    },
-    "under": {
-     "draftkings": 2.15
-    }
-   }
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 54.5,
-   "arb_sum": 1.07407,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.25,
-     "label": "Over",
-     "point": 54.5
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.5882,
-     "label": "Under",
-     "point": 54.5
-    }
-   ],
-   "prices": {
-    "over": {
-     "draftkings": 2.25
-    },
-    "under": {
-     "draftkings": 1.5882
+     "draftkings": 2.3
     }
    }
   },
@@ -690,30 +620,66 @@
    "market": "totals",
    "subject": null,
    "point": 45.5,
-   "arb_sum": 1.07433,
+   "arb_sum": 1.07407,
    "single_book": true,
    "legs": [
     {
      "side": "over",
      "book": "draftkings",
-     "decimal": 1.4348,
+     "decimal": 1.5882,
      "label": "Over",
      "point": 45.5
     },
     {
      "side": "under",
      "book": "draftkings",
-     "decimal": 2.65,
+     "decimal": 2.25,
      "label": "Under",
      "point": 45.5
     }
    ],
    "prices": {
     "over": {
-     "draftkings": 1.4348
+     "draftkings": 1.5882
     },
     "under": {
-     "draftkings": 2.65
+     "draftkings": 2.25
+    }
+   }
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35660006",
+   "matchup": "Fresno State @ USC",
+   "commence_time": "2026-09-05T01:10:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 51.5,
+   "arb_sum": 1.07719,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 2.2,
+     "label": "Over",
+     "point": 51.5
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.6061,
+     "label": "Under",
+     "point": 51.5
+    }
+   ],
+   "prices": {
+    "over": {
+     "draftkings": 2.2
+    },
+    "under": {
+     "draftkings": 1.6061
     }
    }
   }
@@ -728,90 +694,26 @@
    "market": "spreads",
    "subject": null,
    "window": [
-    23.5,
-    24.5
+    24.5,
+    26.5
    ],
-   "cost_pct": 7.99661,
+   "cost_pct": 9.48485,
    "legs": [
     {
      "side": "home",
-     "book": "draftkings",
-     "decimal": 1.8333,
+     "book": "fanduel",
+     "decimal": 1.7576,
      "label": "USC",
-     "point": -23.5,
-     "line": 23.5
+     "point": -24.5,
+     "line": 24.5
     },
     {
      "side": "away",
-     "book": "fanduel",
-     "decimal": 1.8475,
+     "book": "draftkings",
+     "decimal": 1.8696,
      "label": "Fresno State",
-     "point": 24.5,
-     "line": 24.5
-    }
-   ]
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
-    51.5,
-    52.5
-   ],
-   "cost_pct": 8.17692,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 1.9091,
-     "label": "Over",
-     "point": 51.5,
-     "line": 51.5
-    },
-    {
-     "side": "under",
-     "book": "fanduel",
-     "decimal": 1.7692,
-     "label": "Under",
-     "point": 52.5,
-     "line": 52.5
-    }
-   ]
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
-    52.5,
-    54.5
-   ],
-   "cost_pct": 11.87255,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.9804,
-     "label": "Over",
-     "point": 52.5,
-     "line": 52.5
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.5882,
-     "label": "Under",
-     "point": 54.5,
-     "line": 54.5
+     "point": 26.5,
+     "line": 26.5
     }
    ]
   },
@@ -824,26 +726,26 @@
    "market": "spreads",
    "subject": null,
    "window": [
-    24.5,
-    26.5
+    23.5,
+    24.5
    ],
-   "cost_pct": 12.25,
+   "cost_pct": 12.0,
    "legs": [
     {
      "side": "home",
-     "book": "fanduel",
-     "decimal": 1.9091,
+     "book": "draftkings",
+     "decimal": 1.5714,
      "label": "USC",
-     "point": -24.5,
-     "line": 24.5
+     "point": -23.5,
+     "line": 23.5
     },
     {
      "side": "away",
-     "book": "draftkings",
-     "decimal": 1.625,
+     "book": "fanduel",
+     "decimal": 2.0,
      "label": "Fresno State",
-     "point": 26.5,
-     "line": 26.5
+     "point": 24.5,
+     "line": 24.5
     }
    ]
   },
@@ -857,89 +759,25 @@
    "subject": null,
    "window": [
     48.5,
-    52.5
+    51.5
    ],
-   "cost_pct": 14.78064,
+   "cost_pct": 13.4614,
    "legs": [
     {
      "side": "over",
-     "book": "draftkings",
-     "decimal": 1.6452,
+     "book": "fanduel",
+     "decimal": 1.8772,
      "label": "Over",
      "point": 48.5,
      "line": 48.5
     },
     {
      "side": "under",
-     "book": "fanduel",
-     "decimal": 1.7692,
-     "label": "Under",
-     "point": 52.5,
-     "line": 52.5
-    }
-   ]
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "window": [
-    20.5,
-    24.5
-   ],
-   "cost_pct": 15.14286,
-   "legs": [
-    {
-     "side": "home",
      "book": "draftkings",
-     "decimal": 1.5714,
-     "label": "USC",
-     "point": -20.5,
-     "line": 20.5
-    },
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 1.8475,
-     "label": "Fresno State",
-     "point": 24.5,
-     "line": 24.5
-    }
-   ]
-  },
-  {
-   "sport_key": "americanfootball_ncaaf",
-   "sport_title": "americanfootball_ncaaf",
-   "event_id": "fd:35660006",
-   "matchup": "Fresno State @ USC",
-   "commence_time": "2026-09-05T01:10:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
-    52.5,
-    57.5
-   ],
-   "cost_pct": 17.76327,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.9804,
-     "label": "Over",
-     "point": 52.5,
-     "line": 52.5
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.4082,
+     "decimal": 1.6061,
      "label": "Under",
-     "point": 57.5,
-     "line": 57.5
+     "point": 51.5,
+     "line": 51.5
     }
    ]
   },
@@ -955,12 +793,12 @@
     24.5,
     29.5
    ],
-   "cost_pct": 18.68333,
+   "cost_pct": 17.04242,
    "legs": [
     {
      "side": "home",
      "book": "fanduel",
-     "decimal": 1.9091,
+     "decimal": 1.7576,
      "label": "USC",
      "point": -24.5,
      "line": 24.5
@@ -968,7 +806,7 @@
     {
      "side": "away",
      "book": "draftkings",
-     "decimal": 1.4167,
+     "decimal": 1.5714,
      "label": "Fresno State",
      "point": 29.5,
      "line": 29.5
@@ -984,26 +822,58 @@
    "market": "spreads",
    "subject": null,
    "window": [
-    17.5,
+    20.5,
     24.5
    ],
-   "cost_pct": 19.6,
+   "cost_pct": 17.68,
    "legs": [
     {
      "side": "home",
      "book": "draftkings",
-     "decimal": 1.4255,
+     "decimal": 1.4,
      "label": "USC",
-     "point": -17.5,
-     "line": 17.5
+     "point": -20.5,
+     "line": 20.5
     },
     {
      "side": "away",
      "book": "fanduel",
-     "decimal": 1.8475,
+     "decimal": 2.0,
      "label": "Fresno State",
      "point": 24.5,
      "line": 24.5
+    }
+   ]
+  },
+  {
+   "sport_key": "americanfootball_ncaaf",
+   "sport_title": "americanfootball_ncaaf",
+   "event_id": "fd:35660006",
+   "matchup": "Fresno State @ USC",
+   "commence_time": "2026-09-05T01:10:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "window": [
+    48.5,
+    54.5
+   ],
+   "cost_pct": 18.71754,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.8772,
+     "label": "Over",
+     "point": 48.5,
+     "line": 48.5
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.4348,
+     "label": "Under",
+     "point": 54.5,
+     "line": 54.5
     }
    ]
   }
