@@ -342,7 +342,8 @@ class FanDuelScrape:
         return self._get("event-page", eventId=event_id, tab=tab)
 
     def ingest_event(self, board: Board, payload: dict, sport_key: str,
-                     strict_match: bool = True, sport_key_of=None) -> dict:
+                     strict_match: bool = True, sport_key_of=None,
+                     is_main_line: bool = False) -> dict:
         """Fold a league, sport or single-event payload onto the board.
 
         `sport_key_of` is how one SPORT payload becomes many leagues: given the
@@ -352,6 +353,12 @@ class FanDuelScrape:
         on -- put every soccer event under one "soccer" key and Bundesliga
         fixtures would be candidates to match Serie A ones. Omit it and the
         whole payload takes the `sport_key` argument, as before.
+
+        `is_main_line` marks this as the SPORT page fetch, which "carries
+        exactly ONE line per market -- the main one" (see run.py), as opposed
+        to the per-event `popular` tab where the alternate ladders live.
+        Recorded on the board so an alternate rung can later be checked
+        against the number FanDuel itself currently posts as the line.
         """
         stats = {"markets": 0, "quotes": 0, "unmapped": set(), "unmatched": 0,
                  "skipped_events": 0}
@@ -484,4 +491,6 @@ class FanDuelScrape:
                             target).add(Quote(book=BOOK, side=side, decimal=price,
                                               point=point, last_update=now))
                 stats["quotes"] += 1
+                if is_main_line and mkey in ("totals", "spreads"):
+                    board.record_main_point(target.event_id, mkey, BOOK, point)
         return stats

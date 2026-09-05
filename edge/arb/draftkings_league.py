@@ -327,9 +327,13 @@ class DraftKingsLeague:
         return r.json() or {}
 
     def ingest(self, board: Board, payload: dict, sport_key: str,
-               strict_match: bool = True) -> dict:
+               strict_match: bool = True, is_main_line: bool = False) -> dict:
         """Resolve every event in the payload, then reuse the markets/selections
-        join once per event."""
+        join once per event.
+
+        `is_main_line` says whether THIS payload is the book's own full-game
+        Spread/Total (the base league feed, or a main-line subcategory) as
+        opposed to an alternate-line pull -- see ingest_sportscontent."""
         stats = {"events": 0, "matched": 0, "unmatched": 0, "quotes": 0,
                  "markets_unmapped": set()}
         events = payload.get("events") or []
@@ -368,7 +372,7 @@ class DraftKingsLeague:
             st = ingest_sportscontent(
                 board, {"markets": ev_markets, "selections": ev_sels},
                 book="draftkings", sport_key=sport_key,
-                strict_match=False, event=target)
+                strict_match=False, event=target, is_main_line=is_main_line)
             stats["quotes"] += st["quotes"]
             stats["markets_unmapped"] |= st["markets_unmapped"]
         return stats

@@ -72,7 +72,7 @@ def _fanduel_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
             return key
 
         st = fd.ingest_event(board, payload, sport, strict_match=False,
-                             sport_key_of=sport_key_of)
+                             sport_key_of=sport_key_of, is_main_line=True)
         quotes += st["quotes"]
 
         # Queue the per-event calls, soonest first. Two queues, because they
@@ -190,10 +190,15 @@ def _draftkings_pass(board: Board, cfg: ArbConfig, stats: dict) -> int:
             continue
         if not (payload.get("events") or []):
             continue                               # out of season; nothing to price
+        # The base league feed carries the book's own current full-game
+        # Spread/Total for every US sport (soccer keeps them in subcategories
+        # instead, handled below) -- never an alternate line, so this is
+        # always the main-line fetch.
         quotes += dk.ingest(board, payload, sport_key,
-                            strict_match=cfg.scrape.strict_event_match)["quotes"]
+                            strict_match=cfg.scrape.strict_event_match,
+                            is_main_line=True)["quotes"]
 
-        for cid, sid, _n in main_line_subcategories(
+        for cid, sid, name in main_line_subcategories(
                 payload, cfg.draftkings_main_line_subcategories):
             time.sleep(cfg.request_gap_seconds)
             try:
@@ -201,8 +206,15 @@ def _draftkings_pass(board: Board, cfg: ArbConfig, stats: dict) -> int:
             except Exception:                      # noqa: BLE001
                 continue
             sub = dict(sub, events=payload.get("events") or [])
+            # main_line_subcategories ranks a league's own Spread/Total ahead
+            # of its "Alternate Spread"/"Alternate Total" siblings (see
+            # MAIN_LINE_ORDER) -- soccer's main lines arrive through exactly
+            # this loop, since they live in a subcategory rather than the
+            # base feed, so "alt" in the name is what actually distinguishes
+            # them here, not which loop iteration this is.
             quotes += dk.ingest(board, sub, sport_key,
-                                strict_match=cfg.scrape.strict_event_match)["quotes"]
+                                strict_match=cfg.scrape.strict_event_match,
+                                is_main_line="alt" not in name.lower())["quotes"]
 
         if cfg.draftkings_props and sport_key in catalog.props_sports():
             subs = dk.prop_subcategories(payload)[: cfg.draftkings_max_prop_subcategories]

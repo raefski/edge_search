@@ -14,7 +14,8 @@ import pytest
 
 from edge.arb import oddsmath as om
 from edge.arb.config import ArbConfig
-from edge.arb.engine import find_arbitrages, find_ev, find_middles, middle_scenarios
+from edge.arb.engine import (find_arbitrages, find_ev, find_middles,
+                             middle_scenarios, stale_alt_ladders)
 from edge.arb.models import Board, EventMeta, GroupKey, Quote
 
 DATA = Path(__file__).parent
@@ -139,6 +140,84 @@ def test_middle_is_detected_across_two_books():
     assert 0 < m.breakeven_hit_pct < 100
 
 
+def test_stale_alt_ladders_needs_at_least_two_points_to_call_it_a_ladder():
+    """One point plus a known main line is just the main line itself, seen
+    twice -- nothing to compare it against yet."""
+    b, _ = board_with(("totals", None, 62.5, "over", "draftkings", 1.90),
+                      ("totals", None, 62.5, "under", "draftkings", 1.90))
+    b.record_main_point("e1", "totals", "draftkings", 62.5)
+    assert stale_alt_ladders(b, max_drift=3.0) == {}
+
+
+def test_stale_alt_ladders_respects_the_configured_drift():
+    b, _ = board_with(("totals", None, 62.5, "over", "draftkings", 1.90),
+                      ("totals", None, 62.5, "under", "draftkings", 1.90),
+                      ("totals", None, 60.5, "over", "draftkings", 1.95),
+                      ("totals", None, 60.5, "under", "draftkings", 1.95))
+    b.record_main_point("e1", "totals", "draftkings", 62.5)
+    assert stale_alt_ladders(b, max_drift=3.0) == {}, "2 points off is within a generous drift"
+    assert stale_alt_ladders(b, max_drift=1.0) == {("e1", "totals", "draftkings"): 62.5}, \
+        "the same 2-point drift must trip a tighter setting"
+
+
+def test_a_middle_on_a_drifted_alt_ladder_is_flagged_and_warns():
+    """Reproduces the real failure: a DraftKings alternate-total ladder whose
+    own best-priced (tightest-vig) rung sits at 52.5 while the board's known
+    main line for the same book/event/market is 62.5 -- ten points off, the
+    exact shape that reported a 52.5-55 free middle against Fanatics on a
+    game whose real total DraftKings' own app showed as 62.5."""
+    b, _ = board_with(
+        ("totals", None, 62.5, "over", "draftkings", 1.90),
+        ("totals", None, 62.5, "under", "draftkings", 1.90),
+        ("totals", None, 52.5, "over", "draftkings", 1.95),
+        ("totals", None, 52.5, "under", "draftkings", 1.95),
+        ("totals", None, 55.0, "under", "fanduel", 1.91),
+    )
+    b.record_main_point("e1", "totals", "draftkings", 62.5)
+    mids = find_middles(b, cfg())
+    assert mids, "52.5 over / 55.0 under is still a middle on its face"
+    m = mids[0]
+    assert m.stale_alt_line
+    dk_leg = next(l for l in m.legs if l.book == "draftkings")
+    assert dk_leg.off_main_line
+    assert any("looks stale" in w for w in m.warnings)
+
+
+def test_a_middle_is_not_flagged_when_the_ladder_tracks_its_main_line():
+    """The same shape, but the alternate rung used is close to the known main
+    line -- a healthy, freshly-repriced ladder, which must not be flagged
+    just for having other rungs further out (that is what alt ladders are
+    FOR)."""
+    b, _ = board_with(
+        ("totals", None, 62.5, "over", "draftkings", 1.90),
+        ("totals", None, 62.5, "under", "draftkings", 1.90),
+        ("totals", None, 61.5, "over", "draftkings", 1.95),
+        ("totals", None, 61.5, "under", "draftkings", 1.95),
+        ("totals", None, 63.5, "under", "fanduel", 1.91),
+    )
+    b.record_main_point("e1", "totals", "draftkings", 62.5)
+    mids = find_middles(b, cfg())
+    assert mids
+    assert not mids[0].stale_alt_line
+    assert not any(l.off_main_line for l in mids[0].legs)
+
+
+def test_a_book_with_no_recorded_main_line_is_never_flagged():
+    """Fanatics has no is_main_line signal yet (see stale_alt_ladders), so its
+    ladders must not be checked against a main line the board never
+    recorded -- silence here, not a false positive."""
+    b, _ = board_with(
+        ("totals", None, 52.5, "over", "fanatics", 1.95),
+        ("totals", None, 52.5, "under", "fanatics", 1.95),
+        ("totals", None, 30.5, "over", "fanatics", 1.90),
+        ("totals", None, 30.5, "under", "fanatics", 1.90),
+        ("totals", None, 55.0, "under", "fanduel", 1.91),
+    )
+    mids = find_middles(b, cfg())
+    assert mids
+    assert not mids[0].stale_alt_line
+
+
 def test_boosts_stack_on_a_middle_across_two_books():
     """DraftKings' and FanDuel's tokens each land on their own leg of a
     middle, same as they would on a straight arbitrage -- an ordinary
@@ -202,6 +281,38 @@ def test_draftkings_milestones_become_over_lines():
     hr = sorted(k.point for k in board.groups
                 if k.market == "batter_home_runs" and k.subject == "Yordan Alvarez")
     assert hr == [0.5, 1.5, 2.5], "1+/2+/3+ must become Over 0.5/1.5/2.5"
+
+
+def _dk_total_payload(point: float) -> dict:
+    return {
+        "markets": [{"id": "m1", "eventId": "e1", "name": "Total",
+                    "marketType": {"name": "Total"}}],
+        "selections": [
+            {"id": "s1", "marketId": "m1", "label": "Over", "points": point, "trueOdds": 1.90},
+            {"id": "s2", "marketId": "m1", "label": "Under", "points": point, "trueOdds": 1.90},
+        ],
+    }
+
+
+def test_main_line_ingestion_records_the_books_own_point():
+    from edge.arb.draftkings_nash import ingest_sportscontent
+    ev = EventMeta("e1", "baseball_mlb", "MLB",
+                   datetime.now(timezone.utc) + timedelta(hours=2), "H", "A")
+    board = Board(); board.events["e1"] = ev
+    ingest_sportscontent(board, _dk_total_payload(62.5), sport_key="baseball_mlb",
+                         event=ev, is_main_line=True)
+    assert board.main_points[("e1", "totals", "draftkings")] == 62.5
+
+
+def test_an_alternate_line_pull_does_not_get_mistaken_for_the_main_line():
+    """The default -- a caller that forgets to say is_main_line=True must not
+    silently record whatever it happened to fetch as gospel."""
+    from edge.arb.draftkings_nash import ingest_sportscontent
+    ev = EventMeta("e1", "baseball_mlb", "MLB",
+                   datetime.now(timezone.utc) + timedelta(hours=2), "H", "A")
+    board = Board(); board.events["e1"] = ev
+    ingest_sportscontent(board, _dk_total_payload(52.5), sport_key="baseball_mlb", event=ev)
+    assert board.main_points == {}
 
 
 def test_truncated_outright_field_is_refused():

@@ -63,6 +63,19 @@ class Detect:
     max_hours_to_start: float = 240.0
     min_books: int = 2
     max_legs: int = 3
+    # A book's alternate ladder is built AROUND its own current main line --
+    # the rung closest to a fair coin flip (lowest two-sided vig) should sit
+    # at or within a point of it. When that rung is instead this far from the
+    # main line the board separately recorded for the same book/event/market,
+    # the whole ladder has drifted: DraftKings moved a total from 52.5 to 62.5
+    # and the alternate-total subcategory kept serving the OLD ladder for
+    # hours afterward, unrelated to any of the flat-ladder/placeholder checks
+    # those already catch a differently-shaped failure. Every rung in a
+    # drifted ladder is suspect, not just the far ones -- alt ladders are
+    # SUPPOSED to span a wide range on purpose, so a rung being far from main
+    # is normal; a rung being where the book's OWN vig says the truth is, and
+    # that spot being far from main, is the actual signal.
+    alt_line_max_drift: float = 3.0
     middles_enabled: bool = True
     middle_min_width: float = 0.5    # a whole number must also fall inside the window
     middle_max_cost_pct: float = 5.0

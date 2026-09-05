@@ -217,12 +217,20 @@ def market_players(sels: list[dict]) -> set[str]:
 
 def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
                          sport_key: str | None = None, strict_match: bool = True,
-                         event: object | None = None) -> dict:
+                         event: object | None = None,
+                         is_main_line: bool = False) -> dict:
     """Join `selections` to `markets` on marketId and fold onto the board.
 
     Shape is inferred from DraftKings' newer sportscontent API: two parallel
     top-level arrays rather than nested offers. `arb scrape inspect` reports
     what actually parsed, so a mismatch surfaces immediately.
+
+    `is_main_line` marks this call as the book's own full-game Spread/Total
+    fetch, as opposed to an alternate-line pull -- the caller knows which one
+    it asked for, and that is the only place the distinction still exists,
+    since a totals/spreads GroupKey looks identical either way once it is on
+    the board. Recorded on the board so a later alternate-ladder rung can be
+    checked against the number DraftKings itself currently posts as the line.
     """
     stats = {"markets": 0, "selections": 0, "quotes": 0,
              "markets_unmapped": set(), "unmatched": 0}
@@ -362,4 +370,6 @@ def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
             board.group(GroupKey(target.event_id, mkey, subject, gpoint), target).add(
                 Quote(book=book, side=side, decimal=price, point=gpoint, last_update=now))
             stats["quotes"] += 1
+            if is_main_line and mkey in ("totals", "spreads"):
+                board.record_main_point(target.event_id, mkey, book, gpoint)
     return stats

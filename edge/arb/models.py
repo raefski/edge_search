@@ -176,6 +176,20 @@ class Board:
     """Everything currently priced, keyed by group."""
     groups: dict[GroupKey, MarketGroup] = field(default_factory=dict)
     events: dict[str, EventMeta] = field(default_factory=dict)
+    # (event_id, market, book) -> the point that book's OWN full-game line
+    # currently posts, set only by the ingestion call that fetches THAT
+    # market (never an alternate-line pull). This is what lets an alternate
+    # ladder be checked against the number it is supposed to be built around,
+    # rather than trusted just because its own prices are internally
+    # consistent -- an internally-consistent ladder can still be one DraftKings
+    # has already moved past and not yet pulled or repriced. See
+    # engine.stale_alt_ladders.
+    main_points: dict[tuple[str, str, str], float] = field(default_factory=dict)
+
+    def record_main_point(self, event_id: str, market: str, book: str,
+                          point: float | None) -> None:
+        if point is not None:
+            self.main_points[(event_id, market, book)] = point
 
     def group(self, key: GroupKey, event: EventMeta) -> MarketGroup:
         """Groups sharing an event_id share ONE EventMeta.

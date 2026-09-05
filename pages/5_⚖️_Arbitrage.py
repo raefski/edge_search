@@ -458,6 +458,17 @@ with st.sidebar:
         "Filter by sport", options=_opp_sports, default=[],
         help="Leave empty to rank every sport together, which is the point of "
              "the ordering. Pick one or more to narrow it.")
+    show_stale_alt_lines = st.checkbox(
+        "Show alt lines far from the book's main line", value=False,
+        help="Off by default. A book's alternate-total/spread ladder is built "
+             "around its own current main line; when the ladder's own "
+             "best-priced rung has drifted more than a few points from that "
+             "line, the book has moved the real number and not yet repriced "
+             "or pulled the ladder -- the price is real, but likely to "
+             "vanish before you can bet it, the same way an alt total sat at "
+             "52.5 for hours after DraftKings moved the real total to 62.5. "
+             "Flagged opportunities carry a warning explaining which leg and "
+             "by how much; turn this on to see them anyway.")
 
 snap = load_snapshot()
 
@@ -801,6 +812,8 @@ if date_range:
 if casino_mode:
     opps = [o for o in opps
            if all(l.get("book") in CASINO_BOOKS for l in o.get("legs", []))]
+if not show_stale_alt_lines:
+    opps = [o for o in opps if not o.get("stale_alt_line")]
 
 if not opps:
     if not boost_rows:
