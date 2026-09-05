@@ -122,18 +122,46 @@ class MarketGroup:
     # actually been caught: a team total at 4.30 against the game total at
     # 1.32, "Either Pitcher 11.5+ K" at 19.00 against "Combined 11.5+" at 1.61.
     CONFLICT_RATIO = 1.25
+    # How far apart in wall-clock time two conflicting reads have to be before
+    # the newer one might be a genuine price move rather than the book's own
+    # feed contradicting itself. Found live: DraftKings' alt-total subcategory
+    # for one NCAAF event returned TWO market objects (ids one digit apart,
+    # both named "Total Alternate", both claiming the same eventId) in a
+    # single response -- one the current ladder, the other a stale leftover
+    # with the SAME point (62.5) priced at +281/-420 against the real -110
+    # both ways. 2 seconds apart in last_update, nowhere near a real move.
+    # Below this gap a conflict is dropped rather than resolved by recency,
+    # since "newer wins" cannot distinguish a genuine update from two reads
+    # of the same broken instant; above it (a watch loop's actual re-check
+    # interval) the newer reading is kept, same as always.
+    CONFLICT_MIN_GAP_SECONDS = 60.0
 
     def add(self, q: Quote) -> None:
         prev = self.quotes.setdefault(q.side, {}).get(q.book)
         if prev is not None and prev.decimal > 0:
             ratio = max(q.decimal, prev.decimal) / min(q.decimal, prev.decimal)
             if ratio > self.CONFLICT_RATIO:
-                # Counted, never raised: a bad mapping must not take the scan
-                # down, and the count is the smoke alarm. In a one-shot scan
-                # every quote is seconds old, so this can only be a collision;
-                # in a long-running watch loop a real move could trip it, which
-                # is why run.scan() reports it rather than acting on it.
+                # Counted, never silently dropped without a trace: a bad
+                # mapping must not take the scan down, and the count is the
+                # smoke alarm. In a one-shot scan every quote is seconds old,
+                # so this can only be a collision; in a long-running watch
+                # loop a real move could trip it too -- the gap below tells
+                # the two apart.
                 self.conflicts.append((q.side, q.book, prev.decimal, q.decimal))
+                gap = abs((q.last_update - prev.last_update).total_seconds())
+                if gap < self.CONFLICT_MIN_GAP_SECONDS:
+                    # Neither reading is trustworthy: the book's own feed
+                    # disagreed with itself too soon for a real move to
+                    # explain it. Drop the quote rather than pick a winner by
+                    # recency, which would just be a coin flip over which of
+                    # the two broken reads happened to arrive last.
+                    del self.quotes[q.side][q.book]
+                    if not self.quotes[q.side]:
+                        del self.quotes[q.side]
+                    self.book_sides.get(q.book, set()).discard(q.side)
+                    if not self.book_sides.get(q.book):
+                        self.book_sides.pop(q.book, None)
+                    return
         # The board is long-lived, so a newer quote must always displace an
         # older one -- otherwise a stale high price would sit here forever and
         # manufacture arbs that no longer exist. Equal timestamps mean the same

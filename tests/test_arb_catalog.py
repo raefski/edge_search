@@ -705,6 +705,49 @@ def test_one_book_quoting_one_side_twice_is_counted_as_a_conflict():
     side, book, old, new = g.conflicts[0]
     assert (side, book) == ("over", "draftkings")
     assert {round(old, 4), round(new, 4)} == {1.3226, 4.30}
+    # Simultaneous means neither reading is trustworthy -- see
+    # test_a_same_book_conflict_within_a_scan_drops_the_quote_entirely for
+    # why keeping either one (even by a recency tie-break) is a coin flip.
+    assert "draftkings" not in g.quotes.get("over", {})
+
+
+def test_a_same_book_conflict_within_a_scan_drops_the_quote_entirely():
+    """Reproduces the live bug: DraftKings' alt-total subcategory returned
+    TWO market objects for one NCAAF event in a single response (ids one
+    digit apart, both named "Total Alternate") -- the real ladder (no 62.5
+    entry) and a stale leftover that DID have one, priced at +281 against
+    the actual -110 both ways, last_update 2 seconds apart. "Newer wins"
+    would have reported the leftover's price as real just as easily as the
+    correct one -- there is no way to tell which of two near-simultaneous
+    reads is the truth, so neither is kept."""
+    from edge.arb.models import GroupKey, MarketGroup, EventMeta, Quote
+    now = datetime.now(timezone.utc)
+    ev = EventMeta("e1", "americanfootball_ncaaf", "NCAAF", now + timedelta(hours=5),
+                   "Portland State", "San Diego State")
+    g = MarketGroup(GroupKey("e1", "totals", None, 62.5), ev)
+    g.add(Quote("draftkings", "over", 1.90909091, 62.5, now))
+    g.add(Quote("draftkings", "under", 1.90909091, 62.5, now))
+    g.add(Quote("draftkings", "over", 3.81, 62.5, now + timedelta(seconds=2)))
+    g.add(Quote("draftkings", "under", 1.23809524, 62.5, now + timedelta(seconds=2)))
+    assert len(g.conflicts) == 2
+    assert "draftkings" not in g.quotes.get("over", {})
+    assert "draftkings" not in g.quotes.get("under", {})
+    assert "draftkings" not in g.book_sides
+
+
+def test_a_same_book_conflict_far_apart_in_time_keeps_the_newer_reading():
+    """The gap this all hinges on: a watch loop's real re-check, minutes
+    later, can legitimately move a price this much. Above
+    CONFLICT_MIN_GAP_SECONDS the existing recency behaviour is unchanged --
+    this is what the drop-on-conflict fix must NOT break."""
+    from edge.arb.models import GroupKey, MarketGroup, EventMeta, Quote
+    now = datetime.now(timezone.utc)
+    ev = EventMeta("9", "baseball_mlb", "MLB", now + timedelta(hours=6), "CIN", "SD")
+    g = MarketGroup(GroupKey("9", "totals", None, 6.5), ev)
+    g.add(Quote("draftkings", "over", 1.32, 6.5, now))
+    g.add(Quote("draftkings", "over", 4.30, 6.5, now + timedelta(minutes=10)))
+    assert len(g.conflicts) == 1
+    assert g.quotes["over"]["draftkings"].decimal == 4.30
 
 
 def test_an_ordinary_reprice_is_not_a_conflict():
