@@ -174,6 +174,21 @@ _MIN_AI_RUNGS = 3
 STALLED_RUN_LINES = 2.0
 
 
+# How far a ladder may move BACKWARDS before it is not a ladder.
+#
+# A ladder is monotone by arithmetic, not by convention: P(over) must fall as
+# the total rises, because {over 12.5} is a strict subset of {over 11.5}. A
+# rung that reverses that is not a price the book could settle consistently.
+#
+# MEASURED 2026-09-06, not guessed. Across 160 two-sided ladders from
+# DraftKings and FanDuel -- 33 + 47 spreads and 33 + 47 totals -- the worst
+# backward step was EXACTLY 0.0000. Over the same scan Fanatics reversed on
+# 2 of 27 spread ladders (worst 0.0213) and 2 of 25 total ladders (worst
+# 0.0071). So the honest books leave the whole range below this free, and the
+# threshold sits an order of magnitude under the smallest real defect.
+LADDER_REVERSAL_TOLERANCE = 0.001
+
+
 # How far this ladder's OWN implied centre may sit from another book's ALREADY
 # on the board for the same event and market before the whole ladder is not
 # trusted. Reasoned, not measured the way STALLED_RUN_LINES was against
@@ -283,6 +298,94 @@ def _stalled_runs(rungs: dict) -> set:
             out.update(order[i:j + 1])
         i = j + 1
     return out
+
+
+def _reversed_rungs(rungs: dict) -> set:
+    """Rungs where the ladder's implied probability moves the WRONG WAY.
+
+    THE CHECK IS ARITHMETIC, NOT A HEURISTIC. {over 12.5} is a strict subset
+    of {over 11.5}, so P(over) must fall as the total rises; a spread is the
+    same statement on its own axis. A ladder that reverses is quoting two
+    prices that cannot both be right, whatever the book's model thinks.
+
+    Found live 2026-09-06 on Boston @ Baltimore, which reported a +0.68%
+    "guaranteed" arbitrage that did not exist. Fanatics' total ladder ran:
+
+        11.0  +370 / -525
+        11.5  +380 / -550
+        12.0  +380 / -550
+        12.5  +370 / -525     <- the 11.0 price, 1.5 runs from where it belongs
+
+    The over at 12.5 was SHORTER than at 11.5, which is impossible. Paired
+    against FanDuel's genuine Over 12.5 at +560 it summed under 1.00 and was
+    reported with correct stakes and correct arithmetic. The book's own app
+    showed the ladder stopping at 11.0 -- exactly the price our 12.5 carried.
+
+    WHY THE EXISTING GUARDS MISSED IT. `_stalled_runs` wants CONSECUTIVE
+    identical prices spanning >= 2.0 of line; here 11.5 and 12.0 are identical
+    but span 0.5, and the 11.0/12.5 pair is not adjacent. The flat-ladder rule
+    wants <= 2 distinct prices in the whole market; this one has plenty. The
+    vig rules pass because every rung is individually well formed -- 1.0528 is
+    a perfectly ordinary overround. Nothing looked wrong rung by rung; only
+    the ORDER was wrong.
+
+    THE RUNGS DROPPED ARE THE SMALLEST SET THAT RESTORES ORDER. Keep the
+    longest monotone run of rungs and drop what contradicts it, trying both
+    directions and taking whichever keeps more. That does three jobs at once:
+
+      * it INFERS the direction instead of assuming one, so there is no
+        over/under or home/away sign convention to get backwards -- the
+        mistake that once put both teams on the same side of a spread;
+      * it infers the direction ROBUSTLY. Reading direction off the ladder's
+        endpoints looks equivalent and is not: when the phantom IS an
+        endpoint, it inverts the answer. An early version did exactly that on
+        the North Carolina A&T ladder in tests/test_arb_catalog.py and flagged
+        the three sound rungs while sparing the fake one;
+      * it names the CULPRIT rather than condemning a pair. Dropping both
+        sides of every reversal would also have taken the genuine 12.0 below,
+        and the real 56.5 on that A&T ladder.
+
+    A tie between the two directions means the ladder carries no majority
+    order to appeal to. Nothing is dropped there -- a market that broken is
+    the flat / stalled / aiProbability rules' business, and two guards
+    claiming one defect would double-count it.
+    """
+    priced = {}
+    for rung, prices in rungs.items():
+        if len(prices) != 2 or not isinstance(rung, (int, float)):
+            continue
+        decs = [d for d, _ai in prices.values()]
+        overround = sum(1.0 / d for d in decs)
+        if overround <= 0:
+            continue
+        # Devigged probability of ONE side, chosen deterministically by name.
+        # Which side does not matter: the other is 1 - p, monotone in the
+        # opposite direction, so a reversal in one is a reversal in both.
+        first = sorted(prices)[0]
+        priced[rung] = (1.0 / prices[first][0]) / overround
+
+    order = sorted(priced)
+    if len(order) < 3:
+        return set()
+
+    def longest_run(non_increasing: bool) -> list:
+        """Longest subsequence holding one direction, within tolerance."""
+        best: list[list] = [[] for _ in order]
+        for i, point in enumerate(order):
+            best[i] = [point]
+            for j in range(i):
+                gap = priced[point] - priced[order[j]]
+                ok = (gap <= LADDER_REVERSAL_TOLERANCE if non_increasing
+                      else gap >= -LADDER_REVERSAL_TOLERANCE)
+                if ok and len(best[j]) + 1 > len(best[i]):
+                    best[i] = best[j] + [point]
+        return max(best, key=len)
+
+    down, up = longest_run(True), longest_run(False)
+    if len(down) == len(up):
+        return set()
+    keep = down if len(down) > len(up) else up
+    return set(order) - set(keep)
 
 
 def _contradicted_rungs(rungs: dict) -> set:
@@ -592,7 +695,19 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                     f"{label} (ladder does not reprice across {sorted(stalled)})")
                 stats["stalled_rungs"] = stats.get("stalled_rungs", 0) + len(stalled)
 
-            placeholder = placeholder | contradicted | overround_bad | stalled | out_of_range
+            # A LADDER MUST MOVE ONE WAY. P(over) cannot rise as the total
+            # rises; that is set inclusion, not a model opinion. See
+            # _reversed_rungs for the Boston @ Baltimore ladder that reported a
+            # +0.68% arbitrage which did not exist.
+            reversed_ = _reversed_rungs(rungs)
+            if reversed_:
+                stats["markets_unmapped"].add(
+                    f"{label} (ladder reverses at {sorted(reversed_)})")
+                stats["reversed_rungs"] = (stats.get("reversed_rungs", 0)
+                                           + len(reversed_))
+
+            placeholder = (placeholder | contradicted | overround_bad | stalled
+                           | out_of_range | reversed_)
 
             for bet in market.get("bets") or []:
                 raw_line = (bet.get("line") or {}).get("name")

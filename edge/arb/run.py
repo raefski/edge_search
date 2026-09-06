@@ -246,7 +246,7 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
     quotes = 0
     scanned = 0
     dropped_flat = dropped_rungs = dropped_ai = dropped_vig = 0
-    dropped_stalled = dropped_offset = dropped_range = 0
+    dropped_stalled = dropped_offset = dropped_range = dropped_reversed = 0
     for league in leagues:
         key = league["sport_key"]
         if wanted is not None and key not in wanted:
@@ -272,6 +272,7 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
         dropped_stalled += st.get("stalled_rungs", 0)
         dropped_offset += st.get("offset_ladders", 0)
         dropped_range += st.get("out_of_range_rungs", 0)
+        dropped_reversed += st.get("reversed_rungs", 0)
     stats["fanatics_leagues_scanned"] = scanned
     stats["fanatics_flat_ladders"] = dropped_flat
     stats["fanatics_placeholder_rungs"] = dropped_rungs
@@ -283,6 +284,12 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
     # watch. offset_ladders in particular is new and unmeasured at scale;
     # this is what lets its real hit rate be observed over real scans instead
     # of guessed at.
+    # A ladder that runs BACKWARDS. Unlike the others this one is not a
+    # threshold at all -- P(over) rising as the total rises contradicts set
+    # inclusion, so any hit is a defect rather than a judgement call. Watch it:
+    # on 2026-09-06 it was the difference between reporting a +0.68% Boston @
+    # Baltimore arbitrage and not.
+    stats["fanatics_reversed_rungs"] = dropped_reversed
     stats["fanatics_stalled_rungs"] = dropped_stalled
     stats["fanatics_offset_ladders"] = dropped_offset
     # New alongside the DraftKings "main" tag work: Oddschecker's feed tracks
