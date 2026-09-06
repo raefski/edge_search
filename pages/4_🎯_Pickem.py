@@ -113,20 +113,47 @@ with st.sidebar:
     st.header("🎯 Pick'em")
     week = st.number_input("Week", min_value=1, max_value=18, value=1, step=1)
 
-    api_key = st.text_input("ODDS_API_KEY", value=os.environ.get("ODDS_API_KEY", ""),
-                            type="password", help="Stored only for this session.")
-    if api_key:
-        os.environ["ODDS_API_KEY"] = api_key
+    # Where the market line actually comes from. Since edge/odds landed, the
+    # free scrape and the paid feed produce identical-looking output, so a
+    # silent fallback to the paid client was invisible -- and here it spends
+    # real credits. State the source rather than leaving it to be inferred.
+    try:
+        from edge.odds.cli import scraped_client as _scraped
+        _free = _scraped("americanfootball_nfl", "pickem")
+        if type(_free).__name__ == "SnapshotOddsClient":
+            _mins = _free.age_seconds / 60.0
+            st.success(f"🟢 Free scraped lines · {_mins:.0f} min old")
+            if _mins > 24 * 60:
+                st.caption("Over a day old. Tap **Request a desktop scan** on "
+                           "the Arbitrage page — it refreshes these too.")
+        else:
+            st.success("🟢 Free scraped lines (local store)")
+        st.caption("DraftKings · FanDuel · Fanatics")
+    except Exception as _exc:                               # noqa: BLE001
+        st.warning(f"🟡 Free lines unavailable ({_exc}). Using the Odds API.")
 
-    _remaining = OddsAPIClient(cache_dir=CACHE_DIR, ledger_path=LEDGER).remaining_credits()
-    if _remaining is not None:
-        st.caption(f"Odds API: {_remaining} credits remaining this cycle")
+    # Paid path folded away: it is the fallback now, not how this page works.
+    # Kept because the pool line is frozen all week and a missed collection
+    # should not leave the model with no market line at all.
+    with st.expander("💰 Paid fallback (Odds API)"):
+        st.caption("Only needed if the free lines above are missing or stale.")
+        api_key = st.text_input("ODDS_API_KEY",
+                                value=os.environ.get("ODDS_API_KEY", ""),
+                                type="password",
+                                help="Stored only for this session.")
+        if api_key:
+            os.environ["ODDS_API_KEY"] = api_key
 
-    pull_fresh = st.button(
-        "💰 Pull fresh lines (~2 credits)", use_container_width=True,
-        help="One call covers the whole week's slate: spreads + totals across every "
-             "available book (markets × regions = 2), then free for 10 minutes. "
-             "Nothing spends unless you tap this.")
+        _remaining = OddsAPIClient(cache_dir=CACHE_DIR,
+                                   ledger_path=LEDGER).remaining_credits()
+        if _remaining is not None:
+            st.caption(f"Odds API: {_remaining} credits remaining this cycle")
+
+        pull_fresh = st.button(
+            "Pull fresh lines (~2 credits)", use_container_width=True,
+            help="One call covers the whole week's slate: spreads + totals across "
+                 "every available book (markets × regions = 2), then free for 10 "
+                 "minutes. Nothing spends unless you tap this.")
 
 if not CURRENT_WEEK_CSV.exists():
     st.warning(f"No {CURRENT_WEEK_CSV.name} committed yet for this week.")

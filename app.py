@@ -248,8 +248,43 @@ def _entry_csv_bytes(rows: list[dict]) -> bytes:
 
 
 # ── sidebar ───────────────────────────────────────────────────────────────
+def price_source_badge():
+    """Say where the prices actually came from, every time.
+
+    Added 2026-09-06. Since edge/odds landed, the free scrape and the paid
+    Odds API produce IDENTICAL-LOOKING output -- same payload shape, same
+    projections, same lineups -- so a silent fallback to the paid client was
+    indistinguishable from the free path working. That is the exact failure
+    this repo keeps meeting (HANDOFF.md section 8), and here it costs real
+    credits rather than just being wrong. So the page states its source.
+    """
+    try:
+        client = make_client(False)
+    except Exception as exc:                                # noqa: BLE001
+        st.sidebar.error(f"No price source available: {exc}")
+        return None
+    kind = type(client).__name__
+    if kind == "ScrapedOddsClient":
+        st.sidebar.success("🟢 Free scraped prices (local store)")
+    elif kind == "SnapshotOddsClient":
+        mins = client.age_seconds / 60.0
+        st.sidebar.success(f"🟢 Free scraped prices · {mins:.0f} min old")
+        if mins > 90:
+            st.sidebar.caption(
+                "Getting stale. Tap **Request a desktop scan** on the "
+                "Arbitrage page — it refreshes these prices too.")
+    else:
+        rem = client.remaining_credits()
+        st.sidebar.warning(
+            "🟡 Falling back to the paid Odds API"
+            + (f" · {rem:,} credits left" if rem is not None else "")
+            + ". The free snapshot is missing or stale.")
+    return client
+
+
 with st.sidebar:
     st.header("⚾ DK MLB DFS")
+    price_source_badge()
 
     # Key input BEFORE the action buttons -- found 2026-07-17: a user reported
     # "I had my API key entered" but a live pull still didn't spend credits or
@@ -263,29 +298,55 @@ with st.sidebar:
     # into a single interaction could see the button's check run against a
     # not-yet-committed value. Reordering removes that window entirely,
     # regardless of whether it was the actual cause this time.
-    api_key = st.text_input("ODDS_API_KEY", value=os.environ.get("ODDS_API_KEY", ""),
-                            type="password", help="Stored only for this session.")
-    if api_key:
-        os.environ["ODDS_API_KEY"] = api_key
-
     if st.button("🔄 Refresh (free)", use_container_width=True,
-                 help="Re-fetch salaries + confirmed lineups (0 credits). Props stay from cache."):
+                 help="Re-fetch salaries + confirmed lineups (0 credits). "
+                      "Props come from the scraped snapshot."):
         st.cache_data.clear()
         st.session_state.live = False
         st.rerun()
 
-    if st.button("💰 Pull fresh pitcher props (spends credits)", use_container_width=True,
-                 help="One paid live pull of sportsbook props for the projections, then cached."):
-        if not os.environ.get("ODDS_API_KEY"):
-            # A missing key here used to fail silently (build_slate would just
-            # come back with 0 pitchers, no explanation of why) -- clear
-            # upfront instead, since the whole point of tapping this button is
-            # to spend credits on a real pull, not sit at 0.
-            st.error("No ODDS_API_KEY set — paste your key above first, then tap this again.")
-        else:
-            st.cache_data.clear()
-            st.session_state.live = True
-            st.rerun()
+    # The paid path is now a FALLBACK, not the way this app works, so it is
+    # folded away rather than sitting beside the free button looking like an
+    # equal option. Kept, not deleted: if a desktop collection is missed and
+    # the snapshot goes stale, spending a credit is still better than an empty
+    # pitcher pool before lock.
+    with st.expander("💰 Paid fallback (Odds API)"):
+        st.caption(
+            "Only needed if the badge above says the free prices are missing "
+            "or stale. Props normally come from the desktop scrape at no cost.")
+        # Key input BEFORE the action button -- found 2026-07-17: a user
+        # reported "I had my API key entered" but a live pull still didn't
+        # spend credits or pull props. Tested that exact key directly against
+        # the real Odds API at the same time: it worked fine (28 real events),
+        # ruling out an expired/bad key or an API outage. The most likely
+        # remaining explanation is a mobile-browser interaction race -- this
+        # code used to check os.environ["ODDS_API_KEY"] in the button
+        # (rendered FIRST) before the text_input that actually sets it
+        # (rendered AFTER), so a key typed and a button tapped in a way the
+        # phone browser merges into one interaction could see the button's
+        # check run against a not-yet-committed value. Reordering removes that
+        # window entirely, regardless of whether it was the actual cause.
+        api_key = st.text_input("ODDS_API_KEY",
+                                value=os.environ.get("ODDS_API_KEY", ""),
+                                type="password",
+                                help="Stored only for this session.")
+        if api_key:
+            os.environ["ODDS_API_KEY"] = api_key
+
+        if st.button("Pull fresh pitcher props (spends credits)",
+                     use_container_width=True,
+                     help="One paid live pull of sportsbook props, then cached."):
+            if not os.environ.get("ODDS_API_KEY"):
+                # A missing key here used to fail silently (build_slate would
+                # just come back with 0 pitchers and no explanation) -- clear
+                # upfront instead, since the whole point of tapping this is to
+                # spend credits on a real pull, not sit at 0.
+                st.error("No ODDS_API_KEY set — paste your key above first, "
+                         "then tap this again.")
+            else:
+                st.cache_data.clear()
+                st.session_state.live = True
+                st.rerun()
 
     st.divider()
     slate_date = st.date_input("Slate date", value=datetime.date.today()).isoformat()
