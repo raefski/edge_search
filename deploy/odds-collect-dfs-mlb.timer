@@ -1,0 +1,22 @@
+# MLB DFS props, on the cadence the slate actually needs.
+#
+# Salaries are FROZEN once a slate posts; props keep moving until lock. So the
+# value of a scan rises as lock approaches, and the profile's own freshness
+# contract is 600s (edge/odds/profiles.py) -- a scan older than that is refused
+# rather than served.
+#
+# Hourly through the day keeps history accumulating (which cannot be
+# backfilled -- see ODDS_LAYER.md section 6); every 15 minutes across the
+# US afternoon/evening window covers the run-up to every main slate lock
+# without hammering the books.
+[Unit]
+Description=Collect MLB DFS props
+[Timer]
+Unit=odds-collect@dfs_mlb.service
+OnCalendar=*-*-* 00/1:05:00
+OnCalendar=*-*-* 15..23:00/15:00
+# Two collectors starting in the same second would both scrape; stagger them.
+RandomizedDelaySec=90
+Persistent=true
+[Install]
+WantedBy=timers.target

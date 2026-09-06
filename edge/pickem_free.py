@@ -98,6 +98,56 @@ def board_to_events(board: Board) -> list[dict]:
     return out
 
 
+def _free_events(sport_key: str) -> list[dict]:
+    """Odds-API-shaped events for one league, from whichever free path is ready.
+
+    PREFERRED: the market data store (edge/odds). It carries THREE books --
+    DraftKings, FanDuel and Fanatics (NFL id 11730, found by the Oddschecker
+    sweep) -- against the two this module could reach on its own, which is the
+    whole accuracy argument for dropping the paid feed: most of the gain from
+    averaging arrives by the third or fourth book, and two was below that.
+    It also costs no network call at all, because the agent already scraped it.
+
+    FALLBACK: scrape DraftKings and FanDuel inline, exactly as before. Kept so
+    this module still works on a machine with no collection scheduled -- a
+    missed scan degrades to the old two-book reading rather than to nothing.
+    """
+    try:
+        # scraped_client resolves store-then-snapshot, so this works on the
+        # desktop AND on Streamlit Cloud, which has neither a store nor the
+        # ability to scrape.
+        from edge.odds.cli import scraped_client
+
+        client = scraped_client(sport_key, "pickem")
+        events = client.get_featured_odds(sport_key, ["spreads", "totals"])
+        if events:
+            log.info("pickem_free: %d events from the odds store", len(events))
+            return events
+    except Exception as exc:
+        log.info("pickem_free: odds store unavailable (%s); scraping inline", exc)
+
+    cfg = ArbConfig()
+    board = Board()
+
+    fd = FanDuelScrape(state=cfg.state)
+    try:
+        league = fd.league_page(sport_key)
+        fd.ingest_event(board, league, sport_key, strict_match=False)
+    except Exception as exc:
+        log.warning("fanduel nfl: %s", exc)
+
+    # FanDuel above created the events; DraftKings must MATCH onto them rather
+    # than create its own, or every game ends up with one book and the
+    # consensus is a single reading dressed up as an average.
+    dk = DraftKingsLeague(state=cfg.state)
+    try:
+        dk.ingest(board, dk.fetch(sport_key), sport_key, strict_match=True)
+    except Exception as exc:
+        log.warning("draftkings nfl: %s", exc)
+
+    return board_to_events(board)
+
+
 def _within_window(kickoff: str | None, start: datetime, end: datetime) -> bool:
     if not kickoff:
         return False
@@ -177,26 +227,7 @@ def fetch_week_free(sport_key: str = SPORT_KEY, max_events: int = 0,
     want -- and scripts/pickem_capture.py does, from
     data/pickem_current_week.csv -- should pass the real kickoff range.
     """
-    cfg = ArbConfig()
-    board = Board()
-
-    fd = FanDuelScrape(state=cfg.state)
-    try:
-        league = fd.league_page(sport_key)
-        fd.ingest_event(board, league, sport_key, strict_match=False)
-    except Exception as exc:
-        log.warning("fanduel nfl: %s", exc)
-
-    # FanDuel above created the events; DraftKings must MATCH onto them rather
-    # than create its own, or every game ends up with one book and the
-    # consensus is a single reading dressed up as an average.
-    dk = DraftKingsLeague(state=cfg.state)
-    try:
-        dk.ingest(board, dk.fetch(sport_key), sport_key, strict_match=True)
-    except Exception as exc:
-        log.warning("draftkings nfl: %s", exc)
-
-    games = _parse_events(board_to_events(board))
+    games = _parse_events(_free_events(sport_key))
 
     games = filter_to_slate(games, window_start, window_end, days_ahead,
                             allow_duplicates)

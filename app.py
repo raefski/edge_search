@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import datetime
 import io
+import logging
 import os
 import platform
 import sys
@@ -38,7 +39,10 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from edge.client import OddsAPIClient  # noqa: E402
+from edge.odds.cli import scraped_client as odds_client_for  # noqa: E402
 from edge import dfs, dfs_opt, dfs_run, dfs_swap  # noqa: E402
+
+log = logging.getLogger("edge.app")
 
 CACHE_DIR = ROOT / "data/cache"
 LEDGER = ROOT / "data/odds_api_credits.json"
@@ -136,9 +140,32 @@ def _et_label(date_str: str, hhmm: str) -> str:
         return "?"
 
 
-def make_client(live: bool) -> OddsAPIClient:
-    """live=False -> dry-run + effectively infinite TTL (reads cache, spends 0).
-    live=True -> real paid pull (10 min TTL), same as the CLI without --from-cache."""
+def make_client(live: bool, source: str = "scrape"):
+    """The one place the app decides where prices come from.
+
+    source="scrape"  -> free, from data/odds.db (edge/odds), 0 credits ever.
+    source="oddsapi" -> the paid path, unchanged:
+                        live=False is dry-run + effectively infinite TTL (reads
+                        cache, spends 0); live=True is a real paid pull (10 min
+                        TTL), same as the CLI without --from-cache.
+
+    Both satisfy the same surface, so `build_slate` and everything under it is
+    identical either way -- which is what makes edge/odds/parity.py able to run
+    one slate through both and attribute any difference to the SOURCE rather
+    than to a second code path.
+
+    Scraped is the default because it costs nothing and covers the whole slate
+    (the paid path's per-event prop calls are the expensive part). It falls
+    back to the paid client when the store has nothing fresh, so a missed
+    collection degrades to "spend a credit" rather than to an empty pool.
+    """
+    if source == "scrape":
+        try:
+            client = odds_client_for("baseball_mlb", "dfs")
+            client.get_events("baseball_mlb")     # proves a fresh scan exists
+            return client
+        except Exception as exc:
+            log.warning("scraped odds unavailable (%s); falling back to Odds API", exc)
     return OddsAPIClient(cache_dir=CACHE_DIR, ledger_path=LEDGER,
                          dry_run=not live, live_ttl=600 if live else 10**9)
 

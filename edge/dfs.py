@@ -38,8 +38,19 @@ def _get(url):
 
 # --- salaries (public draftables API; no auth) -------------------------------
 
+def draft_groups(sport: str) -> list[dict]:
+    """DraftKings draft groups for any sport code (MLB, NFL, NBA, ...).
+
+    The lobby endpoint is the same for every sport and takes the code as a
+    query parameter, so this needed generalising rather than duplicating --
+    see edge/dfs_sport.py for why the sport-specific parts are a table now.
+    """
+    return _get(f"https://www.draftkings.com/lobby/getcontests?sport={sport}").get("DraftGroups", [])
+
+
 def mlb_draft_groups() -> list[dict]:
-    return _get("https://www.draftkings.com/lobby/getcontests?sport=MLB").get("DraftGroups", [])
+    """Back-compat alias. Every existing MLB call site uses this name."""
+    return draft_groups("MLB")
 
 
 def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
@@ -104,6 +115,41 @@ def player_markets(dk_bookmaker: dict, player_name: str) -> dict:
         if d:
             out[m["key"]] = d
     return out
+
+
+def pick_priced_group(sport: str, groups: list[dict] | None = None,
+                      max_probe: int = 8) -> tuple[int | None, dict]:
+    """The biggest slate that DraftKings has actually PRICED, for any sport.
+
+    `main_slate_group` picks the group with no ContestStartTimeSuffix, which is
+    right for MLB and wrong for NFL: NFL's real main slates are suffixed
+    " (Wed-Mon)" / " (Sun-Mon)", and the unsuffixed group is next week's, listed
+    with every player but priced at salary=None. Verified live 2026-09-06 --
+    the unsuffixed NFL group had 580 players and 0 salaries while the
+    "(Wed-Mon)" group beside it had 813 priced.
+
+    So the rule here is a PROPERTY rather than a name: a group whose players
+    carry no salary is not a slate anything can be built from, whatever it is
+    called. Candidates are tried biggest-and-soonest first and the first priced
+    one wins, so the usual case costs a single extra request.
+
+    Returns (draft_group_id, salaries) so the caller does not fetch twice.
+    """
+    groups = groups if groups is not None else draft_groups(sport)
+    # Most games first (a main slate is the big one), then soonest.
+    ranked = sorted(groups, key=lambda g: (-(g.get("GameCount") or 0),
+                                           (g.get("StartDate") or "9999")))
+    for g in ranked[:max_probe]:
+        gid = g.get("DraftGroupId")
+        if gid is None:
+            continue
+        try:
+            salaries = fetch_draftables(gid)
+        except Exception:
+            continue
+        if any(v.get("salary") for v in salaries.values()):
+            return int(gid), salaries
+    return None, {}
 
 
 def main_slate_group(groups: list[dict]) -> int | None:

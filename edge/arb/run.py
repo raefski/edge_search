@@ -135,7 +135,7 @@ def _fanduel_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
 
     for key, eid in prop_queue:
         time.sleep(cfg.request_gap_seconds)
-        for tab in cfg.fanduel_tabs:
+        for tab in cfg.tabs_for(key):
             try:
                 payload = fd.event_markets(eid, tab=tab)
             except Exception:                      # noqa: BLE001

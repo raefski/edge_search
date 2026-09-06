@@ -161,6 +161,48 @@ THRESHOLD_RE = re.compile(r"(?:TO_RECORD|TO_HIT)_(?:(\d+)\+|AN?)_(.+)$")
 PITCHER_RE = re.compile(
     r"^PITCHER_[A-Z]_(?:TOTAL_)?(STRIKEOUTS|OUTS|WALKS|HITS|EARNED_RUNS)"
     r"(?:_RECORDED)?(?:_SB)?$")
+
+# FanDuel's generic single-player prop shape outside baseball:
+#   PLAYER_X_PASSING_YARDS_HIGH        the main line
+#   PLAYER_X_ALT_RECEIVING_YARDS_LOW   an alternate ladder rung
+# HIGH/MEDIUM/LOW are FanDuel's own line-TIER variants of ONE stat, not
+# different stats, so they are absorbed the way PITCHER_RE absorbs
+# _RECORDED/_SB. Verified live 2026-09-06 across three NFL matchups: 34
+# distinct marketTypes, 22 of this shape, and NOT ONE of them mapped -- so
+# FanDuel contributed zero NFL player props against DraftKings' 6,372 and the
+# board looked exactly like a book that posts no football props.
+#
+# THE ANCHOR IS LOAD-BEARING. Three FIELD markets sit right beside these and
+# must never match: MOST_PASSING_YARDS (who leads -- a field with no opposing
+# side), PLAYERS_WITH_10+_YARDS_RECEPTION (also a field), and
+# AWAY_TEAM_DRIVE_X_-_PLAYER_TO_CATCH_A_PASS (one drive, not the full game).
+# None of the three begins "PLAYER_<letter>_", so requiring that prefix
+# excludes them by construction rather than by a deny-list to maintain.
+PLAYER_PROP_RE = re.compile(
+    r"^PLAYER_[A-Z]_(?:ALT_)?(?P<stat>[A-Z0-9_]+?)(?:_(?:HIGH|MEDIUM|LOW))?$")
+# One table serves every sport FanDuel writes this way, which is the point:
+# adding NBA is adding rows here, not writing a second parser.
+PLAYER_PROP_STATS = {
+    # NFL -- verified live 2026-09-06.
+    "PASSING_YARDS": "player_pass_yds",
+    "PASSING_TOUCHDOWNS": "player_pass_tds",
+    "PASSING_ATTEMPTS": "player_pass_attempts",
+    "PASSING_COMPLETIONS": "player_pass_completions",
+    "INTERCEPTIONS": "player_pass_interceptions",
+    "RUSHING_YARDS": "player_rush_yds",
+    "RUSHING_ATTEMPTS": "player_rush_attempts",
+    "RECEIVING_YARDS": "player_reception_yds",
+    "RECEPTIONS": "player_receptions",
+    # Combined stats keep their OWN key so they cannot collide with the part
+    # they contain -- see marketmap.PLAYER_STATS for what it costs when they do.
+    "PASSING_RUSHING_YARDS": "player_pass_rush_yds",
+    "RUSHING_RECEIVING_YARDS": "player_rush_reception_yds",
+    # NBA -- NOT verified: out of season as of 2026-09-06. Probe a real matchup
+    # before NBA DFS ships, exactly the way the NFL rows above were.
+    "POINTS": "player_points",
+    "REBOUNDS": "player_rebounds",
+    "ASSISTS": "player_assists",
+}
 # On alternate ladders the line is in the runner NAME, not the handicap field,
 # which stays 0: "Over 2.5", "Minnesota Twins +6.5".
 OU_NAME_RE = re.compile(r"^(Over|Under)\s+([+-]?[\d.]+)\s*$", re.I)
@@ -237,6 +279,18 @@ def classify(market_type: str) -> tuple[str, float | None] | None:
         return {"STRIKEOUTS": "pitcher_strikeouts", "OUTS": "pitcher_outs",
                 "WALKS": "pitcher_walks", "HITS": "pitcher_hits_allowed",
                 "EARNED_RUNS": "pitcher_earned_runs"}[pm.group(1)], None
+    # Before the tolerant game-market fallback below, deliberately: a player
+    # prop that reached that fallback would be keyed `totals` with no subject
+    # and merge straight into the real game total.
+    ppm = PLAYER_PROP_RE.match(mt)
+    if ppm:
+        key = PLAYER_PROP_STATS.get(ppm.group("stat"))
+        if key:
+            return key, None
+        # A PLAYER_X_ market whose stat is not in the table is DROPPED, never
+        # guessed at, and never allowed to fall through to the game-market
+        # fallback -- that is the whole failure this branch exists to prevent.
+        return None
     # tolerant fallback for game markets whose exact name varies by sport,
     # but never for a period or team-specific variant
     if not any(marker in mt for marker in PERIOD_MARKERS):

@@ -44,6 +44,31 @@ data/dfs_entries_*.csv
 data/*.json
 data/*.parquet
 data/*.duckdb
+
+# The market data store (edge/odds) and its write-ahead log. Deliberately NOT
+# committed, for two separate reasons:
+#   1. THIS REPO IS PUBLIC. The store is an accumulating corpus of scraped
+#      prices -- what the models are built on, and the one asset here that
+#      cannot be re-derived after the fact, because scraping cannot reach
+#      backwards. Committing it publishes it.
+#   2. It grows without bound by design and is binary, so every scan would
+#      write a full-file delta into git history.
+# Back it up outside git. See ODDS_LAYER.md.
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
+# ...but the PUBLISHED SNAPSHOTS are committed, and must be. Streamlit Cloud
+# deploys from git and cannot scrape (DraftKings 403s datacenter IPs), so these
+# are the only free price source it has -- without them the cloud app silently
+# falls back to the paid Odds API, which is the thing being removed.
+# One scan each, current prices only, trimmed to the markets a consumer reads
+# (29-412 KB, against arb_snapshot.json's 4.6 MB). Distinct from the store
+# above: a snapshot is ephemeral and re-derivable, the accumulated history is
+# not. Same mechanism as data/arb_snapshot.json, which has shipped this way
+# for months. See edge/odds/publish.py.
+!data/odds_snapshot_*.json
+
 data/bullpen_cache/
 data/actuals_cache/
 

@@ -12,7 +12,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.wnba_scout import load_env  # noqa: E402
-from edge.client import OddsAPIClient  # noqa: E402
+from edge.odds.cli import (add_source_args, client_from_args,  # noqa: E402
+                          describe)
 from edge import dfs  # noqa: E402
 
 SPORT = "baseball_mlb"
@@ -34,11 +35,11 @@ def pmkts_for(dk_markets, pitcher):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--from-cache", action="store_true", help="reuse cached props (0 credits)")
+    add_source_args(ap)
     args = ap.parse_args()
     load_env()
-    c = OddsAPIClient(cache_dir=ROOT / "data/cache", ledger_path=ROOT / "data/odds_api_credits.json",
-                      dry_run=args.from_cache, live_ttl=10**9 if args.from_cache else 600)
+    c = client_from_args(args, SPORT, spend=True)
+    print(describe(c))
 
     gid = dfs.main_slate_group(dfs.mlb_draft_groups())
     salaries = dfs.fetch_draftables(gid)

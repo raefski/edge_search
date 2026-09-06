@@ -21,13 +21,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.wnba_scout import load_env  # noqa: E402
-from edge.client import OddsAPIClient  # noqa: E402
+from edge.odds.cli import (add_source_args, client_from_args,  # noqa: E402
+                          describe)
 from edge import dfs, dfs_opt, dfs_run  # noqa: E402
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--from-cache", action="store_true")
+    add_source_args(ap)
     ap.add_argument("--iters", type=int, default=800)
     ap.add_argument("--date", default=datetime.date.today().isoformat())
     ap.add_argument("--draft-group", default=None,
@@ -51,8 +52,8 @@ def main():
                     help="print every team in the slate (with a game-status warning if applicable) and exit")
     args = ap.parse_args()
     load_env()
-    c = OddsAPIClient(cache_dir=ROOT / "data/cache", ledger_path=ROOT / "data/odds_api_credits.json",
-                      dry_run=args.from_cache, live_ttl=10**9 if args.from_cache else 600)
+    c = client_from_args(args, "baseball_mlb", spend=True)
+    print(describe(c))
 
     if args.draft_group is not None:
         gid, is_main, meta = dfs_run.resolve_slate(args.draft_group, date=args.date)

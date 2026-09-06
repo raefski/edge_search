@@ -1,0 +1,21 @@
+# NFL lines for pick'em.
+#
+# The pool line is frozen all week and the model reads the MOVE against it, so
+# freshness matters far less here than it does for DFS -- the profile's
+# contract is a full day. PICKEM_WEEKLY.md's own checklist captures twice a
+# week, which is what this matches: a Wednesday reading and a Sunday-morning
+# one, either side of the week's real line movement.
+#
+# Daily rather than exactly twice weekly because the history is the point: a
+# day not collected cannot be bought back later at any price, and each run is
+# ~10 seconds (ODDS_LAYER.md section 5).
+[Unit]
+Description=Collect NFL lines for pick'em
+[Timer]
+Unit=odds-collect@pickem_nfl.service
+OnCalendar=*-*-* 12:20:00
+OnCalendar=*-*-* 23:20:00
+RandomizedDelaySec=300
+Persistent=true
+[Install]
+WantedBy=timers.target

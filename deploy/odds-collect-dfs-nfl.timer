@@ -1,0 +1,18 @@
+# NFL props for DFS and for cross-book prop arbitrage.
+#
+# NFL is a WEEKLY sport, so the shape is different from MLB's daily one: lines
+# open Tuesday/Wednesday and move all week, and the slate locks Sunday
+# afternoon. Hourly through the week keeps the history that a line-movement
+# feature would need (and which cannot be backfilled -- ODDS_LAYER.md section
+# 6); every 15 minutes on Sunday morning covers the run-up to lock, when
+# inactives land and props move fastest.
+[Unit]
+Description=Collect NFL props
+[Timer]
+Unit=odds-collect@dfs_nfl.service
+OnCalendar=*-*-* 00/1:35:00
+OnCalendar=Sun *-*-* 10..13:00/15:00
+RandomizedDelaySec=120
+Persistent=true
+[Install]
+WantedBy=timers.target

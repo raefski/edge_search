@@ -21,6 +21,23 @@ python3 scripts/wnba_scout.py --confirm  # pulls + scans (spends credits)
 Options: `--regions`, `--props`, `--ev-threshold`, `--method {multiplicative,power,shin}`,
 `--min-books`, `--top`.
 
+## Free prices for every model (`edge/odds`)
+
+The arbitrage scrapers are the price source for DFS and pick'em too, replacing
+The Odds API. `edge/arb/marketmap.py` already emits that API's own market keys,
+so this is a change of shape rather than of meaning. **Read `ODDS_LAYER.md`
+before touching any of it.**
+
+```bash
+python3 scripts/odds_collect.py --profile dfs_mlb     # scrape + persist
+python3 scripts/odds_collect.py --status              # what the store holds
+```
+
+```python
+from edge.odds import client_for
+pool = dfs_run.build_slate(client_for("dfs", "baseball_mlb"), date)  # 0 credits
+```
+
 ## Credit discipline
 - `/sports` & `/events` are **free**. Live odds cost `markets × regions`;
   historical is **10×** that. Estimates print before any spend.
@@ -93,8 +110,10 @@ frozen line is login-gated and has to be captured by hand into
 ## Layout
 | Path | Role |
 |---|---|
+| `edge/odds/` | **market data layer** — free scraped prices for every model (`ODDS_LAYER.md`) |
+| `edge/arb/` | the scrapers: DraftKings, FanDuel, Fanatics + arbitrage engine |
 | `edge/oddsmath.py` | odds conversion + de-vig (multiplicative / power / shin) |
-| `edge/client.py` | Odds API client: cache, credit ledger, dry-run guard |
+| `edge/client.py` | Odds API client: cache, credit ledger, dry-run guard (**being retired**) |
 | `edge/fairodds.py` | consensus fair prob, excluding the target book |
 | `edge/scanner.py` | normalise payloads, de-vig, flag +EV vs consensus |
 | `edge/pickem.py` | pick'em spread-edge model (see PICKEM_STATUS.md) |

@@ -149,12 +149,42 @@ class ArbConfig:
     fanduel_max_events: int = 40
     # See arb/config.py FanDuelScrapeConfig.tabs: "popular" alone misses
     # pitcher Outs Recorded entirely and the deeper batter thresholds.
-    fanduel_tabs: list[str] = field(default_factory=lambda: [
-        "popular", "pitcher-props", "batter-props"])
+    #
+    # THE TAB NAMES ARE PER SPORT, and an unknown one fails SILENTLY: FanDuel
+    # answers a tab it does not recognise with a small generic payload rather
+    # than a 404, so asking an NFL event for "pitcher-props" returns 9 markets
+    # and no error. This list was MLB's, applied to every sport, which is why
+    # FanDuel contributed zero NFL player props -- verified 2026-09-06, when a
+    # real NFL matchup returned 12 passing / 18 rushing / 48 receiving markets
+    # under its own tab names and 9 under each MLB one.
+    fanduel_tabs: list[str] = field(default_factory=lambda: ["popular"])
+    fanduel_tabs_by_sport: dict = field(default_factory=lambda: {
+        "baseball_mlb": ["popular", "pitcher-props", "batter-props"],
+        "americanfootball_nfl": ["popular", "passing-props", "rushing-props",
+                                 "receiving-props"],
+        "americanfootball_ncaaf": ["popular", "passing-props", "rushing-props",
+                                   "receiving-props"],
+        # NOT verified -- NBA is out of season as of 2026-09-06. Probe a real
+        # matchup with scripts/fd_tabs.py before NBA DFS ships, the same way
+        # the NFL names above were checked.
+        "basketball_nba": ["popular", "player-points", "player-rebounds",
+                           "player-assists"],
+    })
     # Profit-boost tokens offered to YOUR account. Not discoverable: both books
     # put promotions behind a login and issue them per account. Set from the
     # Streamlit sidebar, scripts/arb_scan.py --boost, or here.
     boosts: list = field(default_factory=list)          # list[engine.Boost]
+
+    def tabs_for(self, sport_key: str) -> list[str]:
+        """FanDuel prop tabs for one sport, falling back to the generic list.
+
+        A sport with no entry gets `fanduel_tabs` ("popular"), which is
+        correct-but-shallow rather than wrong: it returns that sport's real
+        markets, just not the deeper prop tabs. The failure this avoids is
+        asking for ANOTHER sport's tab names, which returns a small generic
+        payload and no error at all.
+        """
+        return list(self.fanduel_tabs_by_sport.get(sport_key) or self.fanduel_tabs)
     # 37 tennis leagues are listed; most are outright containers months out.
     # Each costs one call, so the list is capped rather than pulled whole.
     tennis_max_leagues: int = 14

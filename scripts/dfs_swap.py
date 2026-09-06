@@ -34,7 +34,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.wnba_scout import load_env  # noqa: E402
-from edge.client import OddsAPIClient  # noqa: E402
+from edge.odds.cli import (add_source_args, client_from_args,  # noqa: E402
+                          describe)
 from edge import dfs_run, dfs_swap  # noqa: E402
 
 
@@ -63,12 +64,14 @@ def main():
                     help="save this run's lineup as the pinned entry, so the phone app sees it too")
     ap.add_argument("--draft-group", default=None)
     ap.add_argument("--top", type=int, default=4, help="replacement suggestions per OUT player")
+    add_source_args(ap)
     args = ap.parse_args()
     load_env()
 
     # FREE refresh: cache-mode client => pitcher props from disk, lineups/pool live.
-    c = OddsAPIClient(cache_dir=ROOT / "data/cache", ledger_path=ROOT / "data/odds_api_credits.json",
-                      dry_run=True, live_ttl=10**9)
+    # Late swap runs repeatedly as lineups post, so it must never spend.
+    c = client_from_args(args, "baseball_mlb", spend=False)
+    print(describe(c))
     res = dfs_run.build_slate(c, args.date, draft_group=args.draft_group, iters=1)
     if res.get("error") or res.get("unpriced"):
         sys.exit(f"could not load fresh pool: {res.get('error') or 'slate not priced'}")

@@ -150,7 +150,19 @@ post_totals = {
     and r.get("market_total")
 }
 
-client = OddsAPIClient(cache_dir=CACHE_DIR, ledger_path=LEDGER, dry_run=not pull_fresh)
+# Free prices first. On the desktop that is data/odds.db; on Streamlit Cloud,
+# which cannot scrape and has no store, it is the committed snapshot published
+# by edge/odds/publish.py. Only if neither exists does this fall back to the
+# paid client -- so the "Pull fresh lines" button stays as the deliberate
+# escape hatch rather than the default path.
+client = None
+try:
+    from edge.odds.cli import scraped_client
+    client = scraped_client("americanfootball_nfl", "pickem")
+except Exception as _exc:  # noqa: BLE001
+    st.caption(f"Free scraped lines unavailable ({_exc}); using the Odds API.")
+if client is None or pull_fresh:
+    client = OddsAPIClient(cache_dir=CACHE_DIR, ledger_path=LEDGER, dry_run=not pull_fresh)
 live_by_abbr = {}
 try:
     live_games = fetch_week(client)

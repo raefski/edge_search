@@ -20,7 +20,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.wnba_scout import load_env  # noqa: E402
-from edge.client import OddsAPIClient  # noqa: E402
+from edge.odds.cli import (add_source_args, client_from_args,  # noqa: E402
+                          describe)
 from edge.oddsmath import devig, decimal_to_american  # noqa: E402
 from edge.sgp import load_phi_table, lookup_phi, joint_prob  # noqa: E402
 
@@ -61,12 +62,11 @@ def two_way(market, desc=None):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--from-cache", action="store_true",
-                    help="rebuild the file from the last cached pull (0 credits)")
+    add_source_args(ap)
     args = ap.parse_args()
     load_env()
-    c = OddsAPIClient(cache_dir=ROOT / "data/cache", ledger_path=ROOT / "data/odds_api_credits.json",
-                      dry_run=args.from_cache, live_ttl=10**9 if args.from_cache else 600)
+    c = client_from_args(args, SPORT, spend=True)
+    print(describe(c))
     table = load_phi_table(ROOT / "data/phi_table.csv")
     pp = probable_pitchers(date.today().isoformat())
 

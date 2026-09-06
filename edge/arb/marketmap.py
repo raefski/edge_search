@@ -171,6 +171,17 @@ RULES: list[tuple[str, str]] = [
 # and Fanatics uses commas.
 _SEP = r"(?:\s*[+,&/]\s*|\s+and\s+|\s+)"
 
+# "Yards" is abbreviated by some books and not others, and the cost of missing
+# the abbreviation is bigger than a dropped market. `split_player` decides
+# which half of "Drake Maye - Passing Yds" is the PERSON by finding the half
+# that names a statistic; when neither half matches, it falls back to "a short
+# Title Case fragment is a name" and picks "Passing Yds" as the player. So
+# `yards?` alone did not merely fail to map FanDuel's passing markets -- it
+# inverted them, and every FanDuel NFL passing/rushing/receiving YARDS market
+# was dropped while the TOUCHDOWN ones (spelled "TDs", which did match) came
+# through. Verified live 2026-09-06: FanDuel contributed 0 NFL yardage props.
+_YDS = r"(?:yards?|yds?)\b"
+
 # player prop stat -> canonical suffix, matched against the market name
 PLAYER_STATS: list[tuple[str, str]] = [
     # ---- ORDER MATTERS: specific and combo markets before general ones.
@@ -234,13 +245,40 @@ PLAYER_STATS: list[tuple[str, str]] = [
     (r"\bhits\b|to get a hit", "batter_hits"),
 
     # football
-    (r"pass(ing)? yards?", "player_pass_yds"),
+    #
+    # COMBOS FIRST, for the same reason the MLB combos above come first, and
+    # caught the same way. Verified live 2026-09-06, when the DraftKings NFL
+    # prop categories were corrected and the board went from 0 price conflicts
+    # to 93 in a single scan:
+    #   "Bijan Robinson Rushing + Receiving Yards O/U" fell past these patterns
+    #   to `receiving yards?` and became player_reception_yds. A back's rush+rec
+    #   over 39.5 is priced 1.13 where his receiving yards alone over 39.5 is
+    #   3.03 -- so DraftKings appeared to quote one side of one group at two
+    #   prices three times apart, on every RB on the slate.
+    #   "Brock Purdy Passing + Rushing Yards O/U" did the same into
+    #   player_rush_yds.
+    # Given their own canonical keys rather than dropped: they are real
+    # two-sided markets a projection can use, and a separate key is exactly
+    # what stops them colliding with the part they contain.
+    (rf"pass(ing)?{_SEP}rush(ing)? {_YDS}", "player_pass_rush_yds"),
+    (rf"rush(ing)?{_SEP}rec(eiving)? {_YDS}", "player_rush_reception_yds"),
+    (rf"rec(eiving)?{_SEP}rush(ing)? {_YDS}", "player_rush_reception_yds"),
+
+    (rf"pass(ing)? {_YDS}", "player_pass_yds"),
     (r"pass(ing)? touchdowns?|pass(ing)? tds?", "player_pass_tds"),
     (r"pass(ing)? attempts?", "player_pass_attempts"),
     (r"pass(ing)? completions?", "player_pass_completions"),
-    (r"rush(ing)? yards?", "player_rush_yds"),
+    # "Interceptions Thrown" is a QUARTERBACK prop. Without this it matched no
+    # football rule, fell through to the tolerant total-words fallback in RULES
+    # and was filed as the GAME TOTAL -- four QBs' 0.5 interception lines
+    # sitting on `totals`, the same shape as the team-total-read-as-game-total
+    # and PLAYER_A_TOTAL_POINTS bugs in HANDOFF.md section 8. Claimed for the
+    # thrower only; a defence's interceptions are a different market and carry
+    # neither "thrown" nor a passer as subject.
+    (r"interceptions? thrown|pass(ing)? interceptions?", "player_pass_interceptions"),
+    (rf"rush(ing)? {_YDS}", "player_rush_yds"),
     (r"rush(ing)? attempts?", "player_rush_attempts"),
-    (r"receiving yards?|rec(eption)? yards?", "player_reception_yds"),
+    (rf"receiving {_YDS}|rec(eption)? {_YDS}", "player_reception_yds"),
     (r"receptions?", "player_receptions"),
     (r"anytime touchdown|anytime td|to score a touchdown", "player_anytime_td"),
 

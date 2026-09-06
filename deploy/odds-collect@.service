@@ -1,0 +1,35 @@
+# Templated collector for the market data layer -- one instance per profile.
+#
+#   mkdir -p ~/.config/systemd/user
+#   cp deploy/odds-collect@.service deploy/odds-collect-*.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now odds-collect-dfs-mlb.timer
+#   systemctl --user enable --now odds-collect-pickem-nfl.timer
+#   systemctl --user list-timers 'odds-collect*'
+#   journalctl --user -u 'odds-collect@*' -f
+#
+# Same linger requirement as arb-agent.service:
+#   sudo loginctl enable-linger $USER
+#
+# WHY A TEMPLATE RATHER THAN ONE SERVICE
+# Each profile has its own freshness contract and its own cadence (see
+# edge/odds/profiles.py). One unit running everything hourly would over-scrape
+# pick'em, which needs twice a week, and under-scrape DFS, which needs ten
+# minutes before lock. The instance name IS the profile.
+[Unit]
+Description=Collect odds profile %i into the market data store
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+# --no-strict is deliberately NOT set: a scan missing a market the profile
+# declared required is refused rather than committed, because a partial board
+# looks exactly like a thin slate. The timer will simply try again.
+ExecStart=/usr/bin/env python3 scripts/odds_collect.py --profile %i --verbose
+# A failed collection is not an emergency -- the previous scan stays readable
+# and consumers fall back to the paid client. Do not spin.
+Restart=no
+Nice=10
+# The wide arb profile takes ~200s; the model profiles 10-65s. Well inside this.
+TimeoutStartSec=900

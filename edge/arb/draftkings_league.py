@@ -34,13 +34,45 @@ LEAGUE_IDS = {
     "americanfootball_ncaaf": 87637, "basketball_ncaab": 92483,
 }
 FULL_GAME_CATEGORY = 493       # "Game Lines"
-# Prop categories worth pulling. The league payload lists all 27 categories and
-# 241 subcategories for free, so these are filtered from it rather than guessed.
+# Prop categories worth pulling. The league payload lists every category and
+# subcategory for free, so these are filtered from it rather than guessed --
+# but a category id that does not EXIST filters to nothing and looks exactly
+# like a league that posts no props, which is how the NFL ids below were wrong
+# for as long as nothing consumed them.
+#
+# VERIFY THESE AGAINST A LIVE LEAGUE PAYLOAD, per sport, before trusting them:
+#   dk.fetch(sport_key)["categories"]        <- names and ids, free, one call
+# `scripts/dk_categories.py` prints exactly that and flags any id here that the
+# book no longer serves.
 PROP_CATEGORIES = {
+    # MLB -- verified live 2026-09-06.
     743: "Batter Props", 1031: "Pitcher Props",
-    1342: "Passing Props", 1343: "Rushing Props", 1344: "Receiving Props",
+    # NFL -- verified live 2026-09-06, and CORRECTED. The previous values
+    # (1342 "Passing", 1343 "Rushing", 1344 "Receiving") were carried over from
+    # DFS_MULTISPORT_PLAN.md without a live check and were wrong in the worst
+    # possible way: 1343 and 1344 do not exist at all, and 1342 is RECEIVING,
+    # not passing. So the scan asked for one real category out of three, and
+    # NFL came back with receptions and receiving yards and nothing else --
+    # no pass yards, no pass TDs, no rush yards. A QB cannot be projected from
+    # that, and the shortfall was invisible because "category returned nothing"
+    # and "league posts no props" are the same empty list.
+    1000: "Passing Props", 1001: "Rushing Props", 1342: "Receiving Props",
+    # NBA -- NOT verified. Out of season as of 2026-09-06 (DraftKings serves 12
+    # futures-only categories), so these three carry exactly the provenance
+    # that made the NFL ids wrong. Re-run scripts/dk_categories.py once the
+    # season opens and correct them before NBA DFS ships.
     1215: "Player Points", 1216: "Player Rebounds", 1217: "Player Assists",
 }
+# DELIBERATELY EXCLUDED, with reasons:
+#   1003 "TD Scorers"  -- Anytime TD is a FIELD (a list of players, no opposing
+#       side), not a two-sided market. Fanatics' equivalent is already dropped
+#       for the same reason (HANDOFF.md section 7), and a field cannot be
+#       arbitraged or devigged pairwise. NFL DFS imputes TDs from a rate model
+#       instead and marks them imputed, the same way project_pitcher imputes
+#       earned runs. Adding it means teaching the board about fields first.
+#   1744 "Defensive Props", 1743 "Special Teams", 638 "Kicking" -- real
+#       two-sided markets (Tackles O/U, Sacks O/U), but nothing consumes them
+#       yet: DK Classic scores no defensive player, only a team DST.
 HEADERS = {
     "Accept": "application/json",
     "Referer": "https://sportsbook.draftkings.com/",
