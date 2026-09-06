@@ -26,13 +26,17 @@ WorkingDirectory=%h/edge_search
 # --no-strict is deliberately NOT set: a scan missing a market the profile
 # declared required is refused rather than committed, because a partial board
 # looks exactly like a thin slate. The timer will simply try again.
-# --push publishes the trimmed snapshot and pushes it, which is the ONLY way
-# the cloud app gets free prices: Streamlit Cloud deploys from git, cannot
-# scrape (DraftKings 403s datacenter IPs), and cannot see data/odds.db, which
-# is gitignored. Without this the phone silently falls back to the paid Odds
-# API. Same mechanism as arb-agent.service. Drop --push for a desktop-only
-# collection that still feeds the store and the history.
-ExecStart=/usr/bin/env python3 scripts/odds_collect.py --profile %i --push --verbose
+# DELIBERATELY NO --push. These timers feed the STORE, whose value is the
+# accumulating history -- the one thing that cannot be backfilled, because
+# scraping does not reach backwards. They are frequent for that reason.
+#
+# Pushing a cloud snapshot on every one of them would be ~98 commits a day and
+# roughly 10GB of git objects a year on a public repo, past GitHub's own soft
+# limit. So the cloud snapshots are published ON DEMAND instead, by arb-agent
+# when the phone asks for a scan:
+#     arb_agent.py --odds-profiles dfs_mlb pickem_nfl
+# which is the same trade the arbitrage page has always made.
+ExecStart=/usr/bin/env python3 scripts/odds_collect.py --profile %i --verbose
 # A failed collection is not an emergency -- the previous scan stays readable
 # and consumers fall back to the paid client. Do not spin.
 Restart=no

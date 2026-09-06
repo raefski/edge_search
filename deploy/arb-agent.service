@@ -15,7 +15,13 @@ After=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=%h/edge_search
-ExecStart=/usr/bin/env python3 scripts/arb_agent.py --interval 30
+# --odds-profiles makes one phone request refresh all three products in ONE
+# commit: the arbitrage snapshot, plus the DFS and pick'em price snapshots the
+# cloud pages read (Streamlit Cloud cannot scrape and cannot see data/odds.db).
+# Publishing those here rather than on the collection timers is what keeps this
+# public repo from growing ~10GB a year -- see arb_agent.py's docstring.
+ExecStart=/usr/bin/env python3 scripts/arb_agent.py --interval 30 \
+          --odds-profiles dfs_mlb pickem_nfl
 Restart=always
 RestartSec=15
 # The scan is network-bound and polite by design; keep it off the CPU governor's

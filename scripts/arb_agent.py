@@ -20,9 +20,25 @@ is latency: a request is picked up within one interval, the scan itself takes
 ~40s, then Streamlit Cloud has to redeploy. Budget a couple of minutes.
 
 WHAT IT COMMITS
-Only data/arb_snapshot.json, and only by explicit path -- it will not sweep up
-whatever else you were editing. It rebases on origin before pushing so a scan
-never clobbers work pushed from elsewhere.
+Only data/arb_snapshot.json plus any odds snapshots it was asked to refresh,
+and only by explicit path -- it will not sweep up whatever else you were
+editing. It rebases on origin before pushing so a scan never clobbers work
+pushed from elsewhere.
+
+WHY THE ODDS SNAPSHOTS RIDE ALONG HERE
+Streamlit Cloud cannot scrape and cannot see data/odds.db (gitignored), so the
+DFS and pick'em pages read committed snapshots -- see edge/odds/publish.py.
+Publishing those on a TIMER would mean ~98 commits a day and roughly 10GB of
+git objects a year on a public repo, past GitHub's own soft limit. Publishing
+them HERE means a push happens only when you actually open the app and ask for
+one -- the same trade the arbitrage page has always made, on machinery that
+already works:
+
+    python3 scripts/arb_agent.py --odds-profiles dfs_mlb pickem_nfl
+
+The collection timers still run on their own cadence. They feed the store and
+the accumulating history, which is the thing that cannot be backfilled later.
+They just no longer push.
 """
 from __future__ import annotations
 
@@ -117,16 +133,44 @@ def run_scan(cfg: ArbConfig) -> dict:
     return snap
 
 
-def publish(message: str) -> bool:
-    """Commit the snapshot alone and push, rebasing on whatever landed first."""
-    git("add", "--", str(SNAPSHOT.relative_to(ROOT)))
-    staged = git("diff", "--cached", "--quiet", "--", str(SNAPSHOT.relative_to(ROOT)),
-                 check=False)
+def refresh_odds(profiles: list[str]) -> list[str]:
+    """Collect and export the model profiles. Returns repo-relative paths.
+
+    Fails SOFT, per profile: a DFS snapshot that could not be refreshed must
+    not stop the arbitrage snapshot from reaching the phone, which is what the
+    request was actually for. A stale odds snapshot degrades to the cloud
+    refusing it and falling back; a missed arb push degrades to a dead button.
+    """
+    from edge.odds import OddsStore, collect
+    from edge.odds.profiles import get as get_profile
+    from edge.odds.publish import export
+
+    written: list[str] = []
+    with OddsStore() as store:
+        for name in profiles:
+            try:
+                prof = get_profile(name)
+                res = collect(prof, store, strict=False)
+                info = export(store, name, list(prof.publish_markets) or None)
+                written.append(str(Path(info["path"]).relative_to(ROOT)))
+                log(f"  odds/{name}: {res['quotes']:,} quotes · "
+                    f"{info['events']} events · {info['bytes'] / 1024:.0f} KB")
+            except Exception as exc:                        # noqa: BLE001
+                log(f"  ! odds/{name} failed: {type(exc).__name__}: {exc}")
+    return written
+
+
+def publish(message: str, extra_paths: list[str] | None = None) -> bool:
+    """Commit the snapshot(s) alone and push, rebasing on whatever landed first."""
+    paths = [str(SNAPSHOT.relative_to(ROOT))] + list(extra_paths or [])
+    # -f because data/*.json is gitignored by default; both the arb snapshot
+    # and the odds ones live behind explicit exceptions in .gitignore.
+    git("add", "-f", "--", *paths)
+    staged = git("diff", "--cached", "--quiet", "--", *paths, check=False)
     if staged.returncode == 0:
         log("  snapshot unchanged — nothing to push")
         return True
-    git("commit", "--quiet", "-m", message, "--",
-        str(SNAPSHOT.relative_to(ROOT)))
+    git("commit", "--quiet", "-m", message, "--", *paths)
     # autostash so an unrelated dirty tree does not block the rebase, and is
     # put back exactly as it was afterwards
     pull = git("-c", "rebase.autoStash=true", "pull", "--rebase", "--quiet",
@@ -142,7 +186,8 @@ def publish(message: str) -> bool:
     return True
 
 
-def tick(cfg: ArbConfig, max_age: float, also_every: float) -> None:
+def tick(cfg: ArbConfig, max_age: float, also_every: float,
+         odds_profiles: list[str] | None = None) -> None:
     state = read_state()
     req = pending_request()
     ok, why = should_handle(req, state.get("last_handled_id"), max_age_seconds=max_age)
@@ -165,11 +210,14 @@ def tick(cfg: ArbConfig, max_age: float, also_every: float) -> None:
         if req.state:
             scan_cfg.state = req.state
         run_scan(scan_cfg)
+        # Model profiles ride along in the SAME commit, so the phone gets one
+        # redeploy rather than one per product.
+        extra = refresh_odds(odds_profiles or [])
         # record BEFORE pushing: a push that fails must not cause the same
         # request to be scraped again on the next tick
         write_state(last_handled_id=req.request_id,
                     last_handled_at=datetime.now(timezone.utc).isoformat())
-        publish(f"arb: snapshot for scan request {req.request_id}")
+        publish(f"arb: snapshot for scan request {req.request_id}", extra)
         return
 
     if also_every > 0:
@@ -185,8 +233,9 @@ def tick(cfg: ArbConfig, max_age: float, also_every: float) -> None:
         if due:
             log("scheduled scan")
             run_scan(cfg)
+            extra = refresh_odds(odds_profiles or [])
             write_state(last_auto_at=datetime.now(timezone.utc).isoformat())
-            publish("arb: scheduled snapshot")
+            publish("arb: scheduled snapshot", extra)
             return
 
     # Log a skip only when the reason CHANGES. A stale request that nobody
@@ -213,6 +262,11 @@ def main() -> int:
     ap.add_argument("--bankroll", type=float, default=1000.0)
     ap.add_argument("--state", help="default book-skin state when a request names none "
                                     "(default: ArbConfig's own default, CT)")
+    ap.add_argument("--odds-profiles", nargs="*", default=[],
+                    help="also collect these edge/odds profiles and commit their "
+                         "cloud snapshots in the same push (e.g. dfs_mlb pickem_nfl). "
+                         "This is how the DFS and pick'em pages get free prices on "
+                         "Streamlit Cloud -- see the module docstring.")
     args = ap.parse_args()
 
     cfg = ArbConfig()
@@ -225,10 +279,11 @@ def main() -> int:
     started_head = head()
     log(f"agent up · {started_head[:8]} · poll {args.interval:g}s · sports {cfg.sports} "
         f"· state {cfg.state}"
-        + (f" · auto-scan every {args.also_every:g}s" if args.also_every else ""))
+        + (f" · auto-scan every {args.also_every:g}s" if args.also_every else "")
+        + (f" · odds {args.odds_profiles}" if args.odds_profiles else ""))
     while True:
         try:
-            tick(cfg, args.max_age, args.also_every)
+            tick(cfg, args.max_age, args.also_every, args.odds_profiles)
         except KeyboardInterrupt:
             log("stopped")
             return 0
