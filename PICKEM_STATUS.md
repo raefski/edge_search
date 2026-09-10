@@ -127,6 +127,73 @@ plumbing instead. **None of this changes the 55.9% model.**
 5. **No live forward-test yet.** Everything above is backtested on history. Week 1 2026
    is the first real-time run — see "Immediate next step" below.
 
+## Model concerns raised 2026-09-10 — WRITTEN DOWN, DELIBERATELY NOT APPLIED
+
+`edge/pickem.py` is frozen. These are observations to weigh against a real sample
+later, not changes. Recording them here so they are not re-discovered as if new.
+
+1. **NE@SEA (Week 1, the opener) would have been a WIN at the true closing line,
+   and it is n=1.** CBS froze Seahawks -3.5. The Tuesday `post` reading was -3.188,
+   an edge of +0.312 — under `MOVE_FLOOR`, so the model fell through to the
+   coin-flip fallback, took the market favourite (Seahawks -3.5), and lost: NE 10
+   SEA 13, home margin +3 against a -3.5 line. The line kept moving toward New
+   England after the freeze; at the true close the edge lands at exactly 0.50, i.e.
+   on the floor. **This is not a reason to touch `MOVE_FLOOR`.** One game is worth
+   nothing against a floor fitted on 543. Tuning a threshold because the single
+   game it excluded would have won is the purest form of the overfitting this
+   project's rules exist to prevent. The honest use of this observation is as one
+   data point in the *capture-timing* question (section 6: how late can we legally
+   read the market), not the threshold question.
+2. **The fallback is doing more work than the backtest implies, and in a worse
+   spot.** `_coinflip_side` returns the market favourite, and it backtested at
+   50.6% — i.e. no edge at all. On a live slate where a game has NO market reading
+   (a book pulling a game, or the game having kicked off) it used to return CBS's
+   frozen favourite instead, which is not the same object: it is the side the
+   market moved AWAY from. That path is now closed on the page (no reading, no
+   pick), but the same substitution is still available to any future caller that
+   passes `pool_line` as `live_line`. A guard inside `make_pick` — refuse, rather
+   than fall back, when the two arguments are the identical object — would make it
+   unrepresentable. Not applied: the file is frozen.
+3. **`stale_gap` in the tracker is not the model's edge.** The hand-typed rows carry
+   `0.0` where the log-derived edge is `+0.312`. `scripts/pickem_grade.py` now
+   prints a MISMATCH line for every such disagreement rather than silently keeping
+   the old number, but the old numbers themselves are still there and are still
+   what a spreadsheet formula over that column would read.
+
+## Capture plumbing — rebuilt 2026-09-08, and it had never run
+
+The weekly capture had banked **nothing** as of the first Tuesday of the season.
+`data/pickem_line_log.csv` did not exist, locally or on the remote, and every experiment in
+`scripts/pickem_blocked.py` read 0/N. Four separate reasons, all found the same evening:
+
+1. **The GitHub workflow could never have worked for free.** It was the only scheduled
+   capture, and a runner cannot read `data/odds.db` (gitignored, 1.5GB) or rebuild it
+   (DraftKings 403s datacenter IPs). It can only capture through the paid API, and its
+   `ODDS_API_KEY` secret was never added — so every scheduled run failed by design.
+   Capture now runs on the desktop, `deploy/pickem-capture@.service`, six timers.
+2. **`pickem_capture.py` could not find the API key by hand either.** It built
+   `OddsAPIClient` directly, and `edge/client.py` only reads the environment; the key lives
+   in `~/arbitrage/.env`. The documented Tuesday command raised `NoApiKey` unless you had
+   exported it yourself. Now goes through `edge.odds.cli.load_key()`.
+3. **The market join silently dropped two teams.** The market side spells them the nflverse
+   way (`LA`, `WAS`), the pool side the CBS way (`LAR`, `WSH`). Unaliased, the Rams and
+   Commanders logged a CBS line with no market reading beside it — the exact pairing a
+   snapshot exists to create.
+4. **The board spans more than one week, and the capture keyed on home team alone.** On
+   2026-09-08 the feed held weeks 1 AND 2, five teams hosted in both, and all five resolved
+   to the **week 2** game — including DEN@KC and BUF@HOU. Had the capture run, week 1's
+   `post` snapshot would have carried next week's lines against this week's CBS numbers,
+   in an append-only file. It now uses `edge.pickem_free.filter_to_slate`, the guard added
+   on 2026-08-24 for this same bug in the live path, which refuses rather than guesses.
+
+Also: the pool's deadline is per DAY, so a week has up to four locks, but
+`edge.pickem_log.append` de-dupes on `(season, week, snapshot, home_team)` — one shared
+`lock` label would have kept the first reading of the week and dropped the rest. Each
+deadline now has its own label (`lock-wed`/`lock-thu`/`lock-sun`/`lock-mon`), and both
+`pickem_transferability.py` and `pickem_blocked.py` accept the `lock*` family. The
+transferability collector also refuses a reading captured after that game kicked off, since
+a Monday capture still returns Sunday's games.
+
 ## Immediate next step, not yet done
 
 Run a real week live and grade it: capture CBS's actual Week 1 lines (in progress —
@@ -134,6 +201,15 @@ Run a real week live and grade it: capture CBS's actual Week 1 lines (in progres
 re-verification Tuesday Sep 8 after 1pm ET per CBS's posting rule), let the model pick,
 log results to `data/pickem/tracker.csv` (gitignored, real pool data), and see whether
 live performance tracks the 55.7% backtest or comes in under it per caveat #2 above.
+
+**The grading half of that now exists** (`scripts/pickem_grade.py`, added 2026-09-09): it
+takes CBS's frozen line and the last `lock*` reading before each kickoff, runs the *shipped*
+`make_pick`, joins nflverse scores, and grades with the backtest's own `ats_result`. Prints
+W-L-P overall / by tier / signal-vs-fallback against 55.9% / 56.7% / 50.6% with a Wilson
+interval; `--write` fills the blank graded columns of `tracker.csv`. Today it correctly
+prints "no results yet" — Week 1 completes Monday 9/14. What it still needs is the *input*:
+CBS's verified lines in the log, which arrive by re-running the `post` label once
+`data/pickem_current_week.csv` is filled in ("wrote 0 new, completed 16").
 
 ## App / deployment
 
@@ -181,8 +257,13 @@ manual reboot step.
 
 ## Quick facts easy to forget
 
-- Uses ZERO Odds-API credits — pick'em's live data is ESPN's free scoreboard, not the
-  Odds API. Doesn't compete with the DFS side's 500-credit/month budget at all.
+- Uses ZERO Odds-API credits — **true again since 2026-09-08, for a different reason
+  than this line originally claimed.** It was written when live data came from ESPN's
+  free scoreboard; ESPN then 403'd and the project moved to the paid Odds API at 2
+  credits a capture (see "App / deployment" above, which contradicted this bullet for
+  two weeks). Captures now read the scraped DK / FanDuel / Fanatics board that
+  `odds-collect-pickem-nfl.timer` already collects, so the cost is genuinely zero.
+  `--source paid` is still there as a fallback and does spend.
 - `data/pickem/` (tracker, standings) is gitignored — TOO-GOODE's real opponents,
   standings, and $ amounts never get committed. `data/pickem_current_week.csv` and
   `data/pickem_backtest_results.json` ARE committed (just spreads + aggregate stats,

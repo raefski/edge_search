@@ -1,5 +1,15 @@
 name: Pick'em line capture
 
+# STATUS 2026-09-08: this is the PAID FALLBACK, not the primary capture.
+# ------------------------------------------------------------------------
+# The free path (deploy/pickem-capture@.service on the desktop) reads the
+# scraped board in data/odds.db, which a runner cannot use: the file is
+# gitignored and 1.5GB, and a runner cannot rebuild it because DraftKings 403s
+# datacenter IPs. So a capture from here can only go through the paid Odds API,
+# and only if ODDS_API_KEY is set as a repository secret -- which it is not, as
+# of 2026-09-08. Until then every scheduled run fails by design and banks
+# nothing. Use the systemd timers; keep this for when the desktop is off.
+#
 # WHY THIS EXISTS
 # ---------------
 # data/pickem_line_log.csv is the project's only accumulating dataset, and the
@@ -31,10 +41,20 @@ on:
         required: true
         default: midweek
   schedule:
-    # times are UTC. Season runs Sept-Jan.
-    - cron: "0 18 * * 2"      # Tue 14:00 ET -- just after CBS posts
-    - cron: "0 16 * * 5"      # Fri 12:00 ET -- the mid-week reading
-    - cron: "0 16 * * 0"      # Sun 12:00 ET -- ~1h before the first kickoff
+    # Times are UTC; the season runs Sept-Jan, so it spans a DST change. Every
+    # time below is chosen to stay on the SAME UTC calendar day in both EDT and
+    # EST -- an evening cron at 23:00 UTC would be Thursday in EDT and Friday in
+    # EST, silently relabelling itself midway through the season. The ET times
+    # in each comment are EDT / EST.
+    #
+    # There is one cron per DEADLINE, because the pool's deadline is per day --
+    # the start of that day's first game - not one a week.
+    - cron: "0 18 * * 2"      # Tue 14:00 / 13:00 ET -- just after CBS posts
+    - cron: "0 22 * * 3"      # Wed 18:00 / 17:00 ET -- before a Wed opener (wk1)
+    - cron: "0 22 * * 4"      # Thu 18:00 / 17:00 ET -- before the Thursday nighter
+    - cron: "0 16 * * 5"      # Fri 12:00 / 11:00 ET -- the mid-week reading
+    - cron: "0 16 * * 0"      # Sun 12:00 / 11:00 ET -- before the 1pm ET slate
+    - cron: "0 22 * * 1"      # Mon 18:00 / 17:00 ET -- before Monday night
 
 jobs:
   capture:
@@ -58,11 +78,25 @@ jobs:
             echo "week=${{ github.event.inputs.week }}" >> "$GITHUB_OUTPUT"
             echo "snap=${{ github.event.inputs.snapshot }}" >> "$GITHUB_OUTPUT"
           else
-            # NFL week 1 of the 2026 season starts Tue 2026-09-08
-            WEEK=$(( ( $(date -u +%s) - $(date -u -d 2026-09-08 +%s) ) / 604800 + 1 ))
-            case "$(date -u +%u)" in
+            # Everything below is decided in ET, because the pool is: CBS posts
+            # on ET Tuesday and every deadline is an ET kickoff. Deriving the
+            # week from UTC puts a Monday-night game in the following week.
+            # Kept in sync with scripts/pickem_capture.py::current_week, which
+            # is the authority -- this only exists to skip the off-season early.
+            NOW=$(TZ=America/New_York date +%s)
+            START=$(TZ=America/New_York date -d 2026-09-08 +%s)   # Tue of week 1
+            WEEK=$(( (NOW - START) / 604800 + 1 ))
+            # Each deadline gets its OWN label. edge/pickem_log.append() de-dupes
+            # on (season, week, snapshot, home_team), so reusing a bare "lock"
+            # would keep the first reading of the week and silently discard
+            # every later one -- the opposite of what a per-day deadline needs.
+            case "$(TZ=America/New_York date +%u)" in
               2) SNAP=post ;;
+              3) SNAP=lock-wed ;;
+              4) SNAP=lock-thu ;;
               5) SNAP=midweek ;;
+              7) SNAP=lock-sun ;;
+              1) SNAP=lock-mon ;;
               *) SNAP=lock ;;
             esac
             echo "week=$WEEK" >> "$GITHUB_OUTPUT"
@@ -84,7 +118,7 @@ jobs:
           fi
           python3 scripts/pickem_capture.py \
             --snapshot "${{ steps.ctx.outputs.snap }}" \
-            --week "$W" --market-only --confirm
+            --week "$W" --market-only --confirm --source paid
 
       - name: Commit the new rows
         run: |

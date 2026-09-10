@@ -1,0 +1,10 @@
+# Before Monday night.
+[Unit]
+Description=Pick'em capture: lock-mon
+[Timer]
+Unit=pickem-capture@lock-mon.service
+OnCalendar=Mon *-*-* 19:00:00 America/New_York
+RandomizedDelaySec=120
+Persistent=true
+[Install]
+WantedBy=timers.target

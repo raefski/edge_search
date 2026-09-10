@@ -1,0 +1,10 @@
+# Before the Thursday nighter. The pool's deadline is that day's first kickoff, not a fixed weekly one.
+[Unit]
+Description=Pick'em capture: lock-thu
+[Timer]
+Unit=pickem-capture@lock-thu.service
+OnCalendar=Thu *-*-* 19:00:00 America/New_York
+RandomizedDelaySec=120
+Persistent=true
+[Install]
+WantedBy=timers.target

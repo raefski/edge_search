@@ -1,0 +1,11 @@
+# Before the 1pm ET slate -- the week's biggest deadline, and late enough that inactives (T-90min) are out.
+# Moved 12:00 -> 12:35 on 2026-09-09: odds-collect-pickem-nfl.timer runs at 12:20, so 12:00 fired TWENTY MINUTES BEFORE the day's collection and read Saturday 23:20 prices -- the week's biggest deadline, measured 12h40m stale. The service now collects first too; this is the belt to that unit's braces, and the only defence if the ExecStartPre is ever dropped.
+[Unit]
+Description=Pick'em capture: lock-sun
+[Timer]
+Unit=pickem-capture@lock-sun.service
+OnCalendar=Sun *-*-* 12:35:00 America/New_York
+RandomizedDelaySec=120
+Persistent=true
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,10 @@
+# Before a Wednesday opener. 2026 week 1 has one (NE@SEA, 8:20pm ET); most weeks this fires and finds nothing kicking off, which costs nothing.
+[Unit]
+Description=Pick'em capture: lock-wed
+[Timer]
+Unit=pickem-capture@lock-wed.service
+OnCalendar=Wed *-*-* 19:00:00 America/New_York
+RandomizedDelaySec=120
+Persistent=true
+[Install]
+WantedBy=timers.target

@@ -42,6 +42,7 @@ Costs nothing and needs no API key.
 """
 from __future__ import annotations
 
+import datetime
 import math
 import sys
 from collections import defaultdict
@@ -96,6 +97,24 @@ def _f(v):
         return None
 
 
+def _before_kickoff(row: dict) -> bool:
+    """Was this snapshot taken before the game started?
+
+    Missing or unparseable timestamps count as in-time: the guard exists to
+    reject a demonstrably late reading, not to discard rows whose provenance
+    simply cannot be checked.
+    """
+    cap, kick = row.get("captured_at"), row.get("kickoff_utc")
+    if not cap or not kick:
+        return True
+    try:
+        c = datetime.datetime.fromisoformat(cap.replace("Z", "+00:00"))
+        k = datetime.datetime.fromisoformat(kick.replace("Z", "+00:00"))
+    except ValueError:
+        return True
+    return c < k
+
+
 def collect(path=LINE_LOG) -> list[dict]:
     """One row per game: CBS's frozen line, the market at post, and at the
     LAST lock snapshot before kickoff."""
@@ -113,8 +132,17 @@ def collect(path=LINE_LOG) -> list[dict]:
             continue
         if snap == "post":
             g["post"] = mkt
-        elif snap == "lock":
-            g["lock"] = mkt                       # later locks overwrite earlier
+        elif snap.startswith("lock"):
+            # The pool's deadline is PER DAY, so a week has up to four of them
+            # and each is captured under its own label (lock-thu, lock-sun...).
+            # append() de-dupes on the label, so one shared "lock" would keep
+            # only the first reading of the week and silently drop the rest.
+            #
+            # Only count a reading taken BEFORE this game kicked off: a Monday
+            # capture still returns Sunday's games, and without this guard it
+            # would overwrite their good Sunday reading with a post-kickoff one.
+            if _before_kickoff(r):
+                g["lock"] = mkt                   # later locks overwrite earlier
         else:
             g.setdefault("mid", {})[r.get("captured_at", "")] = mkt
     out = []
@@ -142,13 +170,21 @@ def main(path=LINE_LOG) -> None:
     if not usable:
         print("\nNothing to measure yet. What this needs, per week:")
         print("  1. Transcribe the CBS screenshot into data/pickem_current_week.csv")
+        print("     (or paste the Picks page into scripts/pickem_pool_import.py)")
         print("  2. python3 scripts/pickem_capture.py --snapshot post --week N --confirm")
         print("     (run it WITHIN MINUTES of step 1 -- 'the market when CBS posted'")
         print("      is only that if it is contemporaneous)")
         print("  3. python3 scripts/pickem_capture.py --snapshot midweek --week N --confirm")
         print("     (Thursday or Friday -- see the note at the bottom)")
-        print("  4. python3 scripts/pickem_capture.py --snapshot lock --week N --confirm")
-        print("     (before the first game of each day)")
+        print("  4. ONE LABEL PER DEADLINE, never a bare `lock`:")
+        print("     python3 scripts/pickem_capture.py --snapshot lock-thu --week N --confirm")
+        print("     python3 scripts/pickem_capture.py --snapshot lock-sun --week N --confirm")
+        print("     (the log de-dupes on the label, so a shared `lock` keeps only")
+        print("      the first reading of the week; the six timers already do this)")
+        print("\n  If rows EXIST but this still says nothing to measure, they are")
+        print("  market-only rows with no CBS line. Re-run the same --snapshot")
+        print("  label once data/pickem_current_week.csv is filled in; the second")
+        print("  run completes them in place ('wrote 0 new, completed N').")
         print(f"\nAfter ~4 weeks this script prints the answer. A missed week is a")
         print("permanently missing row -- the historical file cannot substitute.")
         return

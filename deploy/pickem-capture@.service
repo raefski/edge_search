@@ -1,0 +1,81 @@
+# One pick'em line snapshot -- the instance name IS the snapshot label.
+#
+#   cp deploy/pickem-capture@.service deploy/pickem-capture-*.timer \
+#      ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now pickem-capture-post.timer \
+#     pickem-capture-lock-wed.timer pickem-capture-lock-thu.timer \
+#     pickem-capture-midweek.timer pickem-capture-lock-sun.timer \
+#     pickem-capture-lock-mon.timer
+#   systemctl --user list-timers 'pickem-capture*'
+#
+# Same linger requirement as arb-agent.service:
+#   sudo loginctl enable-linger $USER
+#
+# WHY THIS RUNS HERE AND NOT IN GITHUB ACTIONS
+# .github/workflows/pickem-capture.yml was built for this job, but it cannot do
+# it for free: the scraped board lives in data/odds.db, which is gitignored and
+# 1.5GB, and a runner cannot rebuild it because DraftKings 403s datacenter IPs
+# (the same block ODDS_LAYER.md and PICKEM_STATUS.md both document). A runner
+# can therefore only capture through the PAID Odds API. This desktop already
+# scrapes the board on odds-collect-pickem-nfl.timer, so it is the only machine
+# that can bank a reading for nothing. The workflow stays as a paid fallback.
+#
+# COMMITTING THE LOG
+# git IS this file's database: PICKEM_WEEKLY.md's own table says an
+# uncommitted row does not survive, and the Streamlit page reads the repo. But
+# --push is NOT on the ExecStart line: this repo is PUBLIC and a timer pushing
+# to it unattended is a decision the owner has to make once, explicitly, not a
+# side effect of installing a unit. Commit data/pickem_line_log.csv by hand, or
+# re-add `--push` here deliberately.
+#
+# WHY ExecStartPre COLLECTS FIRST -- the finding that made these timers wrong
+# The board is collected by odds-collect-pickem-nfl.timer at 12:20 and 23:20
+# ONLY. Every capture therefore read a board hours old and, until 2026-09-09,
+# stamped it `captured_at = utcnow()`:
+#
+#   lock-sun   fired Sun 12:00 -> Saturday 23:20 prices   (12h40m stale)
+#   midweek    fired Fri 12:00 -> Thursday  23:20 prices  (12h40m stale)
+#   the 19:00 locks             -> that day's 12:20 board  (6h40m stale)
+#   post       fired Tue 13:15 -> the 12:20 board, i.e. BEFORE CBS's 1pm freeze
+#
+# edge/odds/profiles.py gives pickem_nfl max_age_seconds=86400 on purpose (the
+# pool line is frozen all week), so the freshness contract never objected. The
+# model's input is `live_line - pool_line`, so WHEN the board was read is a
+# model parameter, and PICKEM_MODEL.md section 6 ranks "capture as late as
+# legally possible" as the single largest remaining upside.
+#
+# The leading `-` is load-bearing: if the collection fails (DraftKings 403,
+# network down) the capture must STILL run and bank the older board -- now
+# honestly stamped, and with board_age_seconds recording the gap. A stale
+# reading recorded truthfully beats no reading, which is gone forever.
+[Unit]
+Description=Capture pick'em line snapshot %i
+After=network-online.target
+# A failed capture used to be completely silent: Restart=no, `raise
+# SystemExit(1)` on any fetch error, no OnFailure anywhere in deploy/ or
+# ~/.config/systemd/user/, and no capture timer had ever executed. A StaleOdds
+# at Sunday noon loses the week's most valuable reading and nothing says so.
+OnFailure=pickem-capture-failed@%i.service
+StartLimitIntervalSec=3600
+StartLimitBurst=3
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+# --market-only: CBS's numbers are behind a login and get filled in by hand
+# afterwards; the two halves join on (season, week, home_team). The MARKET half
+# is the time-critical one -- a reading not taken at its moment is gone for
+# good -- so it must never wait for the manual half.
+ExecStartPre=-/usr/bin/env python3 scripts/odds_collect.py --profile pickem_nfl
+ExecStart=/usr/bin/env python3 scripts/pickem_capture.py \
+    --snapshot %i --week auto --market-only --confirm
+# A deadline reading cannot be taken again later, so a transient failure IS
+# worth retrying -- but only briefly and only a few times, bounded by the
+# StartLimit above. Five minutes apart, three attempts, then OnFailure records
+# it where a human will see it (data/pickem_capture_failures.log, surfaced at
+# the top of pages/4_🎯_Pickem.py).
+Restart=on-failure
+RestartSec=300
+Nice=10
+TimeoutStartSec=300

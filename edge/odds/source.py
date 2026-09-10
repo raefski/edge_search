@@ -79,15 +79,44 @@ class ScrapedOddsClient:
     silently fall back to the wide arbitrage scan, whose
     `prop_events_per_league=6` cap would cover part of a slate and look like a
     thin one.
+
+    `scan_id` PINS the client to one historical scan instead of the newest.
+    That is what makes a MISSED capture recoverable: the store keeps 400 days
+    of scans, so a snapshot that should have been taken at 1:11pm Tuesday can
+    still be reconstructed from the scan that ran then -- see
+    scripts/pickem_capture.py --scan-id. A backfill MUST also stamp the row
+    with `scan_finished_at()`, not with now(), or the log lies about when the
+    reading was taken and every downstream "was this before kickoff?" test
+    reads a timestamp that never happened.
     """
 
     def __init__(self, store: OddsStore, profile: str | None = None,
                  max_age_seconds: float | None = None,
-                 main_line_only: bool = True):
+                 main_line_only: bool = True,
+                 scan_id: int | None = None):
         self.store = store
         self.profile = profile
         self.max_age_seconds = max_age_seconds
         self.main_line_only = main_line_only
+        self.scan_id = scan_id
+        # ONE CLIENT SERVES ONE SCAN. `_scan_id()` used to re-resolve on every
+        # call, and the two calls a capture makes -- get_featured_odds() for
+        # the PRICES and scan_finished_at() for the TIMESTAMP -- each ran
+        # store.latest_scan() independently:
+        #
+        #     _scan_id resolved 1 times   ->   after scan_finished_at: 2
+        #
+        # scripts/arb_agent.py publishes a scan on phone demand, i.e. exactly
+        # when someone is looking at their phone on a Sunday at noon, which is
+        # when the lock timers fire. A scan committing between those two calls
+        # stamped scan N's prices with scan N+1's finish time -- a row claiming
+        # prices it never observed, at a moment it never observed them, and
+        # nothing downstream can detect it.
+        #
+        # Memoised per INSTANCE, not per process: scraped_client() builds a new
+        # client per call and the Streamlit page builds one per render, so the
+        # next run still picks up the newer scan.
+        self._resolved_scan_id: int | None = None
         # API-compatibility surface: the app prints these next to the paid
         # client's numbers, so they must exist and must not lie.
         self.spent_this_session = 0
@@ -98,7 +127,32 @@ class ScrapedOddsClient:
 
     # --- scan resolution -----------------------------------------------------
 
+    @property
+    def resolved_scan_id(self) -> int | None:
+        """The scan this client has committed to, or None before first use."""
+        return self._resolved_scan_id
+
     def _scan_id(self) -> int:
+        if self._resolved_scan_id is not None:
+            return self._resolved_scan_id
+        self._resolved_scan_id = self._resolve_scan_id()
+        return self._resolved_scan_id
+
+    def _resolve_scan_id(self) -> int:
+        if self.scan_id is not None:
+            row = self.store.scan(self.scan_id)
+            if row is None or not row["ok"]:
+                raise StaleOdds(
+                    f"scan {self.scan_id} is not a committed scan in this "
+                    f"store. Readers only ever see ok=1 scans; a crashed or "
+                    f"half-written one is invisible on purpose.")
+            if self.profile and row["profile"] != self.profile:
+                raise StaleOdds(
+                    f"scan {self.scan_id} belongs to profile "
+                    f"{row['profile']!r}, not {self.profile!r}. Profiles have "
+                    f"different coverage caps, so serving one as the other "
+                    f"looks like a thin slate rather than the wrong scan.")
+            return int(row["id"])
         row = self.store.latest_scan(self.profile, self.max_age_seconds)
         if row is None:
             newest = self.store.latest_scan(self.profile)
@@ -112,6 +166,17 @@ class ScrapedOddsClient:
                 f"Collect a fresh one with `python3 scripts/odds_collect.py "
                 f"--profile {self.profile}`, or pass --max-age to accept it.")
         return int(row["id"])
+
+    def scan_finished_at(self) -> str | None:
+        """When the scan this client is serving actually finished, ISO UTC.
+
+        A backfill has to stamp its rows with this rather than with now(), or
+        the log records a Tuesday-afternoon market reading as having been taken
+        on Wednesday evening -- and scripts/pickem_transferability.py's
+        before-kickoff guard then trusts a timestamp that never happened.
+        """
+        row = self.store.scan(self._scan_id())
+        return row["finished_at"] if row is not None else None
 
     # --- payload construction ------------------------------------------------
 

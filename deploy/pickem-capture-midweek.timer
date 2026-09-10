@@ -1,0 +1,11 @@
+# The mid-week reading. NOT optional housekeeping: the 2014-2024 archive holds only two snapshots per game, so it can never show WHEN post-freeze drift happens. This is the only source of the time profile (PICKEM_MODEL.md 5j round 6d).
+# Moved 12:00 -> 12:35 on 2026-09-09 for the same reason as lock-sun: 12:00 preceded the 12:20 collection, so every 'Friday midweek' reading was really Thursday 23:20. That is fatal here specifically -- this snapshot's ONLY purpose is the time profile of drift, and a time profile built from timestamps offset backwards by 12h40m measures nothing.
+[Unit]
+Description=Pick'em capture: midweek
+[Timer]
+Unit=pickem-capture@midweek.service
+OnCalendar=Fri *-*-* 12:35:00 America/New_York
+RandomizedDelaySec=120
+Persistent=true
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,35 @@
+# Records a pick'em capture that failed, where a human will actually see it.
+#
+# WHY THIS UNIT EXISTS
+# Until 2026-09-09 a failed capture was completely silent. The service had
+# Restart=no, scripts/pickem_capture.py does `raise SystemExit(1)` on any fetch
+# exception (StaleOdds, an empty board, a DraftKings 403), and there was no
+# OnFailure= line anywhere in deploy/ or ~/.config/systemd/user/. Nor had any
+# capture timer ever executed, so the failure mode had never been observed.
+#
+# The cost of that silence is not an outage -- it is a permanently missing row.
+# The whole premise of scripts/pickem_capture.py is that "a market reading
+# missed is gone forever": data/odds.db can backfill a scan the collector took,
+# but if Sunday noon passes with no reading of the market at the pool's biggest
+# deadline, no amount of later work reconstructs it. Four such misses is a
+# month of PICKEM_MODEL.md 5f.
+#
+# A journal entry is not a notification -- nobody reads `journalctl` on a
+# Sunday morning. Adam reads pages/4_🎯_Pickem.py, so the file this appends to
+# is surfaced at the top of that page.
+#
+# Installed alongside the others:
+#   cp deploy/pickem-capture-failed@.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+[Unit]
+Description=Record a failed pick'em capture (%i)
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+# One line per failure: when, which deadline, and how it ended. %% escapes a
+# literal percent for systemd; %i is the snapshot label of the unit that
+# failed. Appending (not overwriting) keeps a repeated Sunday failure visible
+# as a pattern rather than as a single line that looks like a one-off.
+ExecStart=/bin/sh -c 'mkdir -p data && echo "$(date -u +%%Y-%%m-%%dT%%H:%%M:%%SZ) | %i | $(systemctl --user show -p Result --value pickem-capture@%i.service 2>/dev/null || echo unknown)" >> data/pickem_capture_failures.log'
+Nice=10

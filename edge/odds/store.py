@@ -155,6 +155,18 @@ class OddsStore:
 
     # --- reading -------------------------------------------------------------
 
+    def scan(self, scan_id: int) -> sqlite3.Row | None:
+        """One scan by id, committed or not -- callers check `ok` themselves.
+
+        The counterpart to latest_scan, for a reader that wants a SPECIFIC
+        moment rather than the newest one: a capture missed at its deadline is
+        still recoverable from the scan that ran then, because prune() keeps
+        400 days. Returns the raw row so `finished_at` is available to stamp
+        the backfilled record with the time it was really taken.
+        """
+        return self.conn.execute("SELECT * FROM scan WHERE id=?",
+                                 (scan_id,)).fetchone()
+
     def latest_scan(self, profile: str | None = None,
                     max_age_seconds: float | None = None) -> sqlite3.Row | None:
         """The newest committed scan, optionally for one profile.

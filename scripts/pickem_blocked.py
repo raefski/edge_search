@@ -55,7 +55,8 @@ def main() -> None:
           f"{len(snaps_per_week)} week(s) captured)\n")
 
     lock_games = len({(r.get("season"), r.get("week"), r.get("home_team"))
-                      for r in rows if r.get("snapshot") == "lock"
+                      for r in rows
+                      if str(r.get("snapshot", "")).startswith("lock")
                       and r.get("market_line_home") and r.get("cbs_line_home")})
 
     items = [

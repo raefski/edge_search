@@ -1,0 +1,10 @@
+# CBS posts by 1pm ET Tuesday and freezes for the week. This is the reading that has to be contemporaneous with that freeze -- it is what makes cbs_offset measurable at all (PICKEM_MODEL.md 5f).
+[Unit]
+Description=Pick'em capture: post
+[Timer]
+Unit=pickem-capture@post.service
+OnCalendar=Tue *-*-* 13:15:00 America/New_York
+RandomizedDelaySec=120
+Persistent=true
+[Install]
+WantedBy=timers.target
