@@ -41,6 +41,51 @@ from typing import NamedTuple
 ROOT = Path(__file__).resolve().parents[1]
 LINE_LOG = ROOT / "data" / "pickem_line_log.csv"
 
+#: Where a capture that did not happen gets recorded. Read and rendered at the
+#: top of pages/4_*_Pickem.py, and appended to by
+#: deploy/pickem-capture-failed@.service.
+#:
+#: ONE IMPLEMENTATION, because there are now three writers -- this module's
+#: callers, scripts/pickem_pool_fetch.py, and the systemd unit -- and the
+#: module docstring of edge/pickem_week.py records what happened the last time
+#: two copies of a shared rule were allowed to drift.
+FAILURES_LOG = ROOT / "data" / "pickem_capture_failures.log"
+
+
+def record_failure(source: str, reason: str,
+                   path: Path | str | None = None) -> None:
+    """Append one line about a capture that did not happen. Never raises.
+
+    WHY A LOG LINE AND NOT JUST A NON-ZERO EXIT
+    The alerting chain (OnFailure= -> pickem-capture-failed@.service -> this
+    file -> the page banner) is armed by the UNIT failing. Two of the unit's
+    four commands are deliberately soft-failing `ExecStartPre=-` /
+    `ExecStartPost=-`, so that a dead CBS session can never cancel the
+    market-half capture -- which means a failure in one of those exits
+    non-zero into a `-` that discards it, the unit goes green, and nothing
+    anywhere says a word.
+
+    That mattered more after 2026-09-11. comm_pct_* used to be backfillable
+    from pickem_current_week.csv at any later time, so a lost merge pass cost
+    nothing; now that `complete` refuses a non-contemporaneous CBS half (see
+    CBS_TIMED_FILLABLE), a merge that silently does not happen at the deadline
+    loses those percentages permanently.
+
+    Best-effort by construction: this runs on the failure path, and a problem
+    writing the log must not replace the original error with a confusing
+    second one.
+    """
+    target = Path(path) if path is not None else FAILURES_LOG
+    try:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        stamp = datetime.datetime.now(datetime.timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%SZ")
+        one_line = " ".join(str(reason).split())[:300]
+        with target.open("a") as fh:
+            fh.write(f"{stamp} | {source} | {one_line}\n")
+    except OSError:
+        pass
+
 # 'post' = the moment CBS's line is first seen (Tuesday, the freeze).
 # 'lock' = last reading before that day's picks deadline.
 # anything else = a free-form mid-week reading, useful for velocity.

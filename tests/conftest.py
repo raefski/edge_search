@@ -23,10 +23,22 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def _never_touch_the_real_failure_log(tmp_path, monkeypatch):
-    try:
-        from scripts import pickem_pool_fetch
-    except Exception:                                   # noqa: BLE001
-        return
-    monkeypatch.setattr(pickem_pool_fetch, "FAILURES_LOG",
-                        tmp_path / "pickem_capture_failures.log",
-                        raising=False)
+    """Redirect EVERY writer of the failures log, not just one.
+
+    There are three module attributes naming that file -- the shared
+    implementation in edge.pickem_log and the two scripts that wrap it -- and
+    a guard that covers only some of them is a guard that stops working the
+    next time a writer is added. That is not hypothetical: this fixture was
+    written for scripts.pickem_pool_fetch alone, and scripts.pickem_capture
+    became a writer the same week.
+    """
+    redirected = tmp_path / "pickem_capture_failures.log"
+    for mod, attr in (("edge.pickem_log", "FAILURES_LOG"),
+                      ("scripts.pickem_pool_fetch", "FAILURES_LOG"),
+                      ("scripts.pickem_capture", "FAILURES_LOG")):
+        try:
+            import importlib
+            monkeypatch.setattr(importlib.import_module(mod), attr,
+                                redirected, raising=False)
+        except Exception:                               # noqa: BLE001
+            continue

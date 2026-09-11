@@ -74,7 +74,18 @@ sys.path.insert(0, str(ROOT))
 
 from edge.pickem_free import filter_to_slate  # noqa: E402
 from edge.pickem_live import MARKETS, REGIONS, fetch_week  # noqa: E402
-from edge.pickem_log import LINE_LOG, Snapshot, append, complete, utcnow  # noqa: E402
+from edge import pickem_log as _pickem_log  # noqa: E402
+from edge.pickem_log import (  # noqa: E402
+    LINE_LOG, Snapshot, append, complete, utcnow)
+from edge.pickem_log import record_failure as _record_failure  # noqa: E402
+
+#: Module-level so tests can redirect it; see tests/conftest.py.
+FAILURES_LOG = _pickem_log.FAILURES_LOG
+
+
+def log_failure(reason: str) -> None:
+    _record_failure('pickem-capture', reason, path=FAILURES_LOG)
+
 # The pool calendar and the CBS/market team alias live in edge/pickem_week.py
 # so that pages/4_🎯_Pickem.py runs the SAME logic. They were private to this
 # script until 2026-09-09, and the page -- lacking them -- joined a two-week
@@ -634,5 +645,55 @@ def main() -> None:
             print("    as drift (5j round 3c). Run scripts/pickem_transferability.py.")
 
 
+def _main_recording_failures() -> None:
+    """Run main(), and make sure a deadline that failed leaves a trace.
+
+    WHY THE EXIT CODE IS NOT ENOUGH ON ITS OWN
+    The alerting chain is armed by the UNIT failing (OnFailure= ->
+    pickem-capture-failed@.service -> the failures log -> the page banner).
+    But deploy/pickem-capture@.service runs this script TWICE, and the second
+    invocation -- the ExecStartPost merge pass that joins the CBS half onto
+    the market rows -- is deliberately soft-failing (`-`), so that it can
+    never fail a unit whose market half is already safely banked. A failure
+    there exits non-zero into a `-` that discards it: green unit, empty log,
+    silent page.
+
+    That was survivable while comm_pct_* could be backfilled from
+    pickem_current_week.csv at any later time. Since 2026-09-11 they cannot
+    (edge/pickem_log.CBS_TIMED_FILLABLE refuses a CBS half from another
+    moment), so a merge pass that quietly does not happen at the deadline
+    loses those percentages for good. Recording is what makes that visible.
+
+    Only deadline labels, and the exit status is passed through untouched --
+    this observes, it does not change what the unit sees.
+    """
+    try:
+        main()
+    except SystemExit as exc:
+        if exc.code not in (0, None) and _is_deadline(_snapshot_arg()):
+            log_failure(f"{_snapshot_arg()}: exited {exc.code}")
+        raise
+    except BaseException as exc:                            # noqa: BLE001
+        if _is_deadline(_snapshot_arg()):
+            log_failure(f"{_snapshot_arg()}: {type(exc).__name__}: {exc}")
+        raise
+
+
+def _snapshot_arg() -> str:
+    """The --snapshot value, read off argv without re-parsing.
+
+    argparse has already exited by the time the handler above runs in the
+    failure case, and re-running it could itself raise. This only needs the
+    label well enough to name it.
+    """
+    argv = sys.argv
+    for i, a in enumerate(argv):
+        if a == "--snapshot" and i + 1 < len(argv):
+            return argv[i + 1]
+        if a.startswith("--snapshot="):
+            return a.split("=", 1)[1]
+    return "?"
+
+
 if __name__ == "__main__":
-    main()
+    _main_recording_failures()

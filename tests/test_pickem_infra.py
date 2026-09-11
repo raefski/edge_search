@@ -1,7 +1,10 @@
 """Tests for the pick'em infrastructure added 2026-08-22:
 multi-book consensus, the snapshot log, and standings strategy."""
+import sys
 import tempfile
 from pathlib import Path
+
+import pytest
 
 from edge.pickem_live import BOOK_WEIGHTS, _parse_events, weighted_consensus
 from edge.pickem_log import Snapshot, append, cbs_offset, load
@@ -1371,3 +1374,93 @@ def test_the_pool_csv_records_when_it_was_fetched():
     assert "fetched_at" in FIELDS
     assert FIELDS[-1] == "fetched_at", (
         "a column inserted mid-row silently re-keys the committed history")
+
+
+# --- FINDING 5: the soft-failing merge pass could fail silently --------------
+# Found 2026-09-11, as a consequence of FINDING 4's own fix.
+#
+# deploy/pickem-capture@.service runs this script TWICE. The second call --
+# the ExecStartPost merge pass that joins the CBS half onto the market rows --
+# is deliberately `-` prefixed so it can never fail a unit whose market half is
+# already banked. But `-` discards the exit status, so the whole alerting chain
+# (OnFailure= -> pickem-capture-failed@.service -> the failures log -> the page
+# banner) never arms for it: green unit, empty log, silent page.
+#
+# That was survivable while comm_pct_* could be backfilled at any later time.
+# FINDING 4 removed exactly that property -- a CBS half from another moment is
+# now refused -- so a merge pass that quietly does not happen AT the deadline
+# loses those percentages permanently. The fix that made the data honest made
+# this silence expensive, so the silence had to go too.
+
+def _run_capture(monkeypatch, argv, boom):
+    from scripts import pickem_capture as cap
+    monkeypatch.setattr(sys, "argv", argv)
+    monkeypatch.setattr(cap, "main", boom)
+    return cap
+
+
+def test_a_failed_deadline_capture_records_itself(monkeypatch, tmp_path):
+    log = tmp_path / "failures.log"
+    cap = _run_capture(monkeypatch, ["pickem_capture.py", "--snapshot", "lock-sun"],
+                       lambda: (_ for _ in ()).throw(SystemExit(1)))
+    monkeypatch.setattr(cap, "FAILURES_LOG", log)
+
+    with pytest.raises(SystemExit) as exc:
+        cap._main_recording_failures()
+
+    assert exc.value.code == 1, "the exit status must pass through untouched"
+    assert "lock-sun" in log.read_text()
+    assert "pickem-capture" in log.read_text()
+
+
+def test_an_exception_is_recorded_and_still_raised(monkeypatch, tmp_path):
+    """A traceback never reaches _missed() at all, so it would otherwise be
+    the one failure mode with no record anywhere."""
+    log = tmp_path / "failures.log"
+    cap = _run_capture(monkeypatch, ["pickem_capture.py", "--snapshot", "post"],
+                       lambda: (_ for _ in ()).throw(RuntimeError("board gone")))
+    monkeypatch.setattr(cap, "FAILURES_LOG", log)
+
+    with pytest.raises(RuntimeError):
+        cap._main_recording_failures()
+
+    assert "RuntimeError: board gone" in log.read_text()
+
+
+def test_a_free_form_label_is_not_recorded(monkeypatch, tmp_path):
+    """Only labels a TIMER passes. A human-typed label is being watched by the
+    human who typed it; recording those trains the reflex that a red capture
+    is normal, which is what stops the real one being noticed."""
+    log = tmp_path / "failures.log"
+    cap = _run_capture(monkeypatch, ["pickem_capture.py", "--snapshot", "scratch"],
+                       lambda: (_ for _ in ()).throw(SystemExit(1)))
+    monkeypatch.setattr(cap, "FAILURES_LOG", log)
+
+    with pytest.raises(SystemExit):
+        cap._main_recording_failures()
+
+    assert not log.exists()
+
+
+def test_a_successful_capture_records_nothing(monkeypatch, tmp_path):
+    log = tmp_path / "failures.log"
+    cap = _run_capture(monkeypatch, ["pickem_capture.py", "--snapshot", "lock-sun"],
+                       lambda: None)
+    monkeypatch.setattr(cap, "FAILURES_LOG", log)
+
+    cap._main_recording_failures()
+
+    assert not log.exists()
+
+
+@pytest.mark.parametrize("argv,expected", [
+    (["x", "--snapshot", "lock-sun"], "lock-sun"),
+    (["x", "--snapshot=midweek"], "midweek"),
+    (["x", "--week", "1"], "?"),
+])
+def test_the_label_is_read_off_argv(monkeypatch, argv, expected):
+    """argparse has already exited by the time the handler runs, and re-running
+    it could raise on its own. This only has to name the label."""
+    from scripts import pickem_capture as cap
+    monkeypatch.setattr(sys, "argv", argv)
+    assert cap._snapshot_arg() == expected
