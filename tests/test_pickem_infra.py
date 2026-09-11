@@ -425,7 +425,12 @@ def test_complete_fills_a_market_only_row_with_cbs_numbers():
                         captured_at="2026-09-08T17:11:20Z",
                         away_team="BUF", home_team="HOU",
                         kickoff_utc="2026-09-13T17:00:00Z",
-                        cbs_line_home=-1.5, comm_pct_away=78, comm_pct_home=22)
+                        cbs_line_home=-1.5, comm_pct_away=78, comm_pct_home=22,
+                        # The real second half of this workflow runs minutes
+                        # after the first -- ExecStartPost, same unit run --
+                        # so it carries the instant it read CBS at. Without
+                        # one, comm_pct_* are refused; see the test below.
+                        cbs_fetched_at="2026-09-08T17:14:02Z")
 
     # append alone is a no-op -- that is the whole bug
     assert append([cbs_half], path=log) == 0
@@ -467,7 +472,8 @@ def test_complete_never_overwrites_a_recorded_measurement():
     # Nothing here is fillable: the CBS line was already recorded, and
     # market_total -- blank though it is -- belongs to the market half, which
     # cannot be dated with someone else's instant (see CBS_FILLABLE).
-    assert complete([contradicting], path=log) == (0, 0)
+    res = complete([contradicting], path=log)
+    assert (res.changed, res.skipped) == (0, 0)
 
     row = load(log)[0]
     assert float(row["cbs_line_home"]) == -1.5, "a recorded CBS line is final"
@@ -696,13 +702,23 @@ def test_complete_still_fills_the_cbs_half_and_the_kickoff():
                              away_team="BUF", home_team="HOU",
                              kickoff_utc="2026-09-13T17:00:00Z",
                              cbs_line_home=-1.5, comm_pct_away=78,
-                             comm_pct_home=22)], path=log)
+                             comm_pct_home=22,
+                             # Read two days AFTER the row it is merging into.
+                             cbs_fetched_at="2026-09-10T12:00:00Z")], path=log)
     assert (res.changed, res.skipped) == (1, 0)
 
     row = load(log)[0]
+    # Frozen facts fill from any later reading: CBS sets its line once and a
+    # kickoff is the published schedule, so learning them late does not make
+    # them less true of Tuesday.
     assert float(row["cbs_line_home"]) == -1.5
-    assert float(row["comm_pct_away"]) == 78
     assert row["kickoff_utc"] == "2026-09-13T17:00:00Z"
+    # The MOVING half must not. These percentages were read on the 10th; the
+    # row is stamped the 8th. Filling it would file Thursday's vote under
+    # Tuesday's instant, undetectably.
+    assert row["comm_pct_away"] == "", "a later comm_pct must not backfill"
+    assert row["comm_pct_home"] == ""
+    assert res.refused_timed == 1
     assert row["captured_at"] == "2026-09-08T17:11:20Z", "the instant is final"
     assert float(row["market_line_home"]) == 1.375, "market half untouched"
 
@@ -862,11 +878,12 @@ def test_every_log_column_is_classified_as_fillable_or_not():
 # that cannot be right.
 # ===========================================================================
 
-def _cap_harness(monkeypatch, argv, games=(), written=0, completed=0,
+def _cap_harness(monkeypatch, argv, games=(), written=0, completed=0, refused_timed=0,
                  skipped=0, cbs_rows=(), logged=0):
     """Run scripts.pickem_capture.main() with the world stubbed out."""
     import sys as _sys
 
+    from edge.pickem_log import CompleteResult
     from scripts import pickem_capture
 
     monkeypatch.setattr(pickem_capture, "_client", lambda _a: object())
@@ -874,8 +891,12 @@ def _cap_harness(monkeypatch, argv, games=(), written=0, completed=0,
                         lambda *_a, **_k: list(games))
     monkeypatch.setattr(pickem_capture, "load_cbs", lambda _w: list(cbs_rows))
     monkeypatch.setattr(pickem_capture, "append", lambda _s: written)
+    # CompleteResult, not a bare tuple: a stub that is a looser shape than
+    # the function it replaces lets a signature change pass the suite and
+    # fail in production, which is what happened when `refused_timed` was
+    # added on 2026-09-11.
     monkeypatch.setattr(pickem_capture, "complete",
-                        lambda _s: (completed, skipped))
+                        lambda _s: CompleteResult(completed, skipped, refused_timed))
     monkeypatch.setattr(pickem_capture, "_already_logged",
                         lambda *_a, **_k: logged)
     monkeypatch.setattr(_sys, "argv", ["pickem_capture.py"] + argv)
@@ -1239,3 +1260,114 @@ def test_a_partial_board_at_a_deadline_still_banks(monkeypatch, capsys):
     out = capsys.readouterr().out
     assert "wrote 2 new" in out
     assert "no live market found for: SF@LAR" in out
+
+
+# --- FINDING 4: complete() backfilled a MOVING CBS field ---------------------
+# Found 2026-09-11, one command before it would have happened for real.
+#
+# FINDING 3 (above) established that a MARKET half cannot be merged into a row
+# stamped with another instant. The same argument applies to half of the CBS
+# half, and that half was left fillable:
+#
+#   cbs_line_home  CBS freezes it at post and never moves it     -> frozen
+#   kickoff_utc    the published schedule                        -> frozen
+#   comm_pct_*     the pool's vote, moving all week              -> NOT frozen
+#
+# Measured on week 1 of this very log: TEN 23/77 Thursday -> 38/62 Friday,
+# fifteen points in a day; LAR 19/81 -> 27/73.
+#
+# PICKEM_STATUS.md's "Immediate next step" is to re-run the `post` label now
+# that data/pickem_current_week.csv holds CBS's verified lines. On 2026-09-11
+# that file held FRIDAY's percentages, and `post` is stamped Tuesday
+# 17:11:20Z -- so the documented next step would have written Friday's vote
+# into a Tuesday row, under a Tuesday captured_at, with nothing downstream
+# able to tell. cbs_offset consumes these rows directly.
+
+def _post_row(log):
+    from edge.pickem_log import Snapshot, append
+    append([Snapshot(season=2026, week=1, snapshot="post",
+                     captured_at="2026-09-08T17:11:20Z",
+                     away_team="NYJ", home_team="TEN",
+                     market_line_home=-1.5, market_total=38.5, n_books=3)],
+           path=log)
+
+
+def test_a_cbs_half_from_days_later_fills_the_frozen_fields_only():
+    import tempfile
+    from pathlib import Path
+    from edge.pickem_log import Snapshot, complete, load
+
+    log = Path(tempfile.mkdtemp()) / "log.csv"
+    _post_row(log)
+
+    res = complete([Snapshot(season=2026, week=1, snapshot="post",
+                             away_team="NYJ", home_team="TEN",
+                             kickoff_utc="2026-09-13T17:01:00Z",
+                             cbs_line_home=-2.5,
+                             comm_pct_away=38, comm_pct_home=62,
+                             cbs_fetched_at="2026-09-11T16:35:00Z")],
+                   path=log)
+
+    row = load(log)[0]
+    assert float(row["cbs_line_home"]) == -2.5, "the frozen line still fills"
+    assert row["kickoff_utc"] == "2026-09-13T17:01:00Z"
+    assert row["comm_pct_away"] == "", "Friday's vote must not reach a Tuesday row"
+    assert row["comm_pct_home"] == ""
+    assert res.refused_timed == 1, "and the refusal has to be reported, not silent"
+
+
+def test_a_contemporaneous_cbs_half_fills_everything():
+    """The refusal must not win by refusing everything -- the two-half capture
+    the timers actually run (ExecStart banks the market, ExecStartPost merges
+    CBS minutes later) has to keep working."""
+    import tempfile
+    from pathlib import Path
+    from edge.pickem_log import Snapshot, complete, load
+
+    log = Path(tempfile.mkdtemp()) / "log.csv"
+    _post_row(log)
+
+    res = complete([Snapshot(season=2026, week=1, snapshot="post",
+                             away_team="NYJ", home_team="TEN",
+                             cbs_line_home=-2.5,
+                             comm_pct_away=23, comm_pct_home=77,
+                             cbs_fetched_at="2026-09-08T17:13:44Z")],
+                   path=log)
+
+    row = load(log)[0]
+    assert float(row["comm_pct_away"]) == 23
+    assert float(row["comm_pct_home"]) == 77
+    assert res.refused_timed == 0
+
+
+def test_an_undated_cbs_half_is_not_assumed_contemporaneous():
+    """Every row written before 2026-09-11 has no fetched_at, including all of
+    committed week 1. 'Probably fine' is exactly how a fifteen-point swing
+    gets filed under the wrong day, so unknown refuses."""
+    import tempfile
+    from pathlib import Path
+    from edge.pickem_log import Snapshot, complete, load
+
+    log = Path(tempfile.mkdtemp()) / "log.csv"
+    _post_row(log)
+
+    res = complete([Snapshot(season=2026, week=1, snapshot="post",
+                             away_team="NYJ", home_team="TEN",
+                             cbs_line_home=-2.5,
+                             comm_pct_away=38, comm_pct_home=62)],
+                   path=log)
+
+    assert float(load(log)[0]["cbs_line_home"]) == -2.5
+    assert load(log)[0]["comm_pct_away"] == ""
+    assert res.refused_timed == 1
+
+
+def test_the_pool_csv_records_when_it_was_fetched():
+    """The evidence the whole decision rests on. Without this column there is
+    no way to tell a merge that belongs to this instant from one arriving
+    days later -- which is why it was added."""
+    from scripts.pickem_pool_import import FIELDS
+
+    assert "fetched_at" in FIELDS
+    assert FIELDS[-1] == "fetched_at", (
+        "a column inserted mid-row silently re-keys the committed history")

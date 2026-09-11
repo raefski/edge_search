@@ -103,6 +103,11 @@ class Snapshot:
     book_disagreement: float | None = None
     book_lines: dict[str, float] | None = None
     board_age_seconds: int | None = None
+    #: When the CBS half of this snapshot was actually read, ISO-8601. Not a
+    #: log column -- it is the evidence `complete` uses to decide whether
+    #: comm_pct_* may be merged into an existing row. Empty means unknown,
+    #: which is treated as "cannot prove contemporaneous" and so refuses.
+    cbs_fetched_at: str = ""
 
     def as_row(self) -> dict:
         d = {
@@ -232,8 +237,43 @@ KEY_FIELDS = ("season", "week", "snapshot", "home_team")
 #: scripts/pickem_capture.py's --scan-id branch was written to prevent.
 #: A genuinely new market reading needs a NEW LABEL (lock-sun-2), which
 #: `append` will happily write as its own row with its own captured_at.
-CBS_FILLABLE = ("cbs_line_home", "comm_pct_away", "comm_pct_home",
-                "kickoff_utc")
+#: SPLIT 2026-09-11. These two groups used to be one tuple, and the whole
+#: group was fillable whenever it was blank.
+#:
+#: cbs_line_home and kickoff_utc are FROZEN FACTS. CBS sets its line once and
+#: never moves it -- that is the entire premise of this project -- and a
+#: kickoff is the published schedule. Learning either one later does not make
+#: it less true of the moment the row describes, so they fill from any
+#: reading, at any distance in time.
+#:
+#: comm_pct_* are NOT frozen. They move all week as the pool votes. On this
+#: file's own week 1, TEN went 23/77 Thursday to 38/62 Friday -- fifteen
+#: points in a day -- and LAR 19/81 to 27/73.
+#:
+#: Filling them from a later reading is therefore the SAME bug MARKET_FIELDS
+#: exists to refuse, just wearing the CBS half's clothes: the Tuesday `post`
+#: row would carry Friday's percentages under a Tuesday captured_at, and
+#: nothing downstream could tell. It was live and one command away -- the
+#: project's stated next step is re-running the `post` label to fill in CBS's
+#: verified lines, and doing that on 2026-09-11 would have written Friday's
+#: numbers into a Tuesday row.
+CBS_FROZEN_FILLABLE = ("cbs_line_home", "kickoff_utc")
+CBS_TIMED_FILLABLE = ("comm_pct_away", "comm_pct_home")
+
+#: Kept as the union so existing callers and tests that ask "what is the CBS
+#: half" still get one answer.
+CBS_FILLABLE = CBS_FROZEN_FILLABLE + CBS_TIMED_FILLABLE
+
+#: How far apart a CBS reading and a row's captured_at may be and still
+#: describe the same instant.
+#:
+#: The normal flow is one systemd unit run: ExecStartPre fetches CBS,
+#: ExecStart banks the market half, ExecStartPost merges them -- minutes
+#: apart, and TimeoutStartSec is 300s. The gap this must REJECT is days.
+#: Two hours is comfortably above the first and far below the second; it is
+#: not a claim that percentages are stable for two hours, only that beyond
+#: it there is no case for calling two readings contemporaneous.
+CONTEMPORANEOUS_SECONDS = 2 * 3600
 
 #: Filling any of these would date-stamp a measurement with someone else's
 #: instant. `complete` counts them and refuses.
@@ -253,6 +293,36 @@ class CompleteResult(NamedTuple):
 
     changed: int
     skipped: int
+    #: Rows whose comm_pct_* were left blank because the CBS reading offered
+    #: for them came from a different moment. Reported rather than silently
+    #: dropped: it means those percentages were never measured at that
+    #: deadline and never can be, which is an operator fact, not a no-op.
+    refused_timed: int = 0
+
+
+def _parse_iso(value: str):
+    """ISO-8601 with or without a trailing Z, or None if it is not a time."""
+    if not value:
+        return None
+    try:
+        ts = datetime.datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return None
+    return ts if ts.tzinfo else ts.replace(tzinfo=datetime.timezone.utc)
+
+
+def _contemporaneous(fetched_at: str, captured_at: str) -> bool:
+    """Do these two readings describe the same instant?
+
+    Unknown is NOT contemporaneous. A CBS half with no timestamp is every row
+    written before 2026-09-11, including the whole committed week 1, and
+    guessing "probably fine" for those is how a fifteen-point swing gets
+    filed under the wrong day.
+    """
+    a, b = _parse_iso(fetched_at), _parse_iso(captured_at)
+    if a is None or b is None:
+        return False
+    return abs((a - b).total_seconds()) <= CONTEMPORANEOUS_SECONDS
 
 
 def _is_blank(field: str, value) -> bool:
@@ -318,18 +388,34 @@ def complete(snapshots: list[Snapshot],
     with path.open() as f:
         rows = list(csv.DictReader(f))
 
-    incoming = {tuple(str(getattr(s, k)) for k in KEY_FIELDS): s.as_row()
+    incoming = {tuple(str(getattr(s, k)) for k in KEY_FIELDS): (s.as_row(), s)
                 for s in snapshots}
-    changed = skipped = 0
+    changed = skipped = refused_timed = 0
     for r in rows:
-        new = incoming.get(tuple(str(r.get(k, "")) for k in KEY_FIELDS))
-        if new is None:
+        found = incoming.get(tuple(str(r.get(k, "")) for k in KEY_FIELDS))
+        if found is None:
             continue
+        new, snap = found
         touched = False
-        for field in CBS_FILLABLE:
+        for field in CBS_FROZEN_FILLABLE:
             if _is_blank(field, r.get(field)) and not _is_blank(field, new.get(field)):
                 r[field] = new[field]
                 touched = True
+
+        # The moving half. Only merge it when the CBS reading and this row
+        # describe the same instant; otherwise leave the column blank and say
+        # so. Blank is the honest answer -- those percentages were never read
+        # at this deadline, and unlike the frozen fields they cannot be
+        # recovered from a later look.
+        offered = [f for f in CBS_TIMED_FILLABLE
+                   if _is_blank(f, r.get(f)) and not _is_blank(f, new.get(f))]
+        if offered:
+            if _contemporaneous(snap.cbs_fetched_at, r.get("captured_at", "")):
+                for field in offered:
+                    r[field] = new[field]
+                touched = True
+            else:
+                refused_timed += 1
         changed += touched
         # A market half this row does not have and cannot be given. Keyed on
         # market_line_home alone -- the number the model actually consumes --
@@ -345,7 +431,7 @@ def complete(snapshots: list[Snapshot],
             skipped += 1
 
     if not changed:
-        return CompleteResult(0, skipped)
+        return CompleteResult(0, skipped, refused_timed)
 
     tmp = path.with_suffix(path.suffix + ".tmp")
     with tmp.open("w", newline="") as f:
@@ -354,7 +440,7 @@ def complete(snapshots: list[Snapshot],
         for r in rows:
             w.writerow({k: r.get(k, "") for k in FIELDS})
     os.replace(tmp, path)
-    return CompleteResult(changed, skipped)
+    return CompleteResult(changed, skipped, refused_timed)
 
 
 def load(path: Path | str = LINE_LOG) -> list[dict]:

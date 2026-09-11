@@ -517,6 +517,11 @@ def main() -> None:
             cbs_line_home=None if args.market_only else _f(r.get("cbs_line_home")),
             comm_pct_away=None if args.market_only else _f(r.get("comm_pct_away")),
             comm_pct_home=None if args.market_only else _f(r.get("comm_pct_home")),
+            # WHEN the CBS half was read, so complete() can tell a merge that
+            # belongs to this instant from one arriving days later. Blank on
+            # every row written before 2026-09-11, which complete() correctly
+            # treats as "cannot prove contemporaneous" and refuses.
+            cbs_fetched_at=("" if args.market_only else str(r.get("fetched_at", "") or "")),
             market_line_home=(g.live_line if g else None),
             market_line_mean=(g.live_line_mean if g else None),
             market_line_median=(g.live_line_median if g else None),
@@ -556,7 +561,7 @@ def main() -> None:
     # add CBS's numbers later under the same label. complete() is that second
     # half -- it fills columns never measured and refuses to overwrite ones
     # that were, so the log stays append-only in the sense that matters.
-    completed, skipped = complete(snaps)
+    completed, skipped, refused_timed = complete(snaps)
     print(f"\nwrote {written} new, completed {completed} -> {LINE_LOG.name}")
     if not written and not completed and not skipped:
         # Every counter zero has TWO causes and they are opposites. If the log
@@ -580,6 +585,18 @@ def main() -> None:
     elif completed:
         print("  (completed = existing rows that gained a column they were "
               "missing, e.g. CBS's line arriving after the market half)")
+    if refused_timed:
+        # CBS's LINE is frozen and can be merged in from any later reading.
+        # The community percentages are not -- they move all week (TEN went
+        # 23/77 to 38/62 in a day on week 1), so merging a later reading into
+        # an older row would file those percentages under an instant at which
+        # nobody observed them, and nothing downstream could detect it.
+        print(f"  !! {refused_timed} row(s) kept comm_pct_* BLANK: the CBS "
+              f"reading offered for them is not contemporaneous with their "
+              f"captured_at (edge/pickem_log.CONTEMPORANEOUS_SECONDS).")
+        print("     CBS's line and kickoff still filled -- those are frozen "
+              "facts. The percentages were simply never read at that "
+              "deadline, and unlike the line they cannot be recovered later.")
     if skipped:
         # complete() fills the CBS half only. A market half is a claim about
         # one instant and cannot be moved onto a row stamped with another.

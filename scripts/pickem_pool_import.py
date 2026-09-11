@@ -53,8 +53,25 @@ sys.path.insert(0, str(ROOT))
 from edge.pickem_cbs import parse_pool_text  # noqa: E402
 
 OUT = ROOT / "data" / "pickem_current_week.csv"
+#: `fetched_at` is at the END so every row already written keeps its meaning,
+#: the same rule edge/pickem_log.py's FIELDS follows.
+#:
+#: WHY THE FILE HAS TO CARRY AN INSTANT (2026-09-11)
+#: cbs_line_home is frozen by CBS and never moves, so a row can be merged
+#: into a snapshot from any later moment and still be true. comm_pct_* are
+#: the OPPOSITE: they move all week. Measured on this file's own week 1,
+#: TEN went 23/77 on Thursday to 38/62 on Friday -- fifteen points in a day.
+#:
+#: Without a timestamp there was no way for edge/pickem_log.complete() to
+#: tell "the CBS half read minutes ago, during this capture" from "the CBS
+#: half read three days after the row it is being merged into", and it
+#: treated both as fillable. That would have written Friday's percentages
+#: into the Tuesday `post` row under a Tuesday captured_at -- the same
+#: undetectable falsehood MARKET_FIELDS already refuses, arriving through
+#: the one door left open.
 FIELDS = ["week", "away_abbr", "home_abbr", "away_name", "home_name",
-          "cbs_line_home", "kickoff_utc", "tv", "comm_pct_away", "comm_pct_home", "note"]
+          "cbs_line_home", "kickoff_utc", "tv", "comm_pct_away", "comm_pct_home",
+          "note", "fetched_at"]
 
 #: What a row with no kickoff renders as on the page. Named so the warning and
 #: the renderer cannot drift apart.
@@ -193,6 +210,7 @@ def run(text: str, week: int, no_enrich: bool = False, write: bool = False) -> N
 
     print(f"parsed {len(games)} games for week {week}\n")
     print(f"{'matchup':<16}{'CBS line':>10}{'community':>14}  kickoff")
+    fetched_at = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     rows = []
     for i, g in enumerate(games):
         key = (g["away_abbr"], g["home_abbr"])
@@ -215,6 +233,10 @@ def run(text: str, week: int, no_enrich: bool = False, write: bool = False) -> N
             # marker clears; any other annotation on the row it replaces is
             # kept. See carry_note.
             "note": carry_note(old.get("note", "")),
+            # This paste/fetch IS the reading, so it is stamped now -- not
+            # carried from the row being replaced, whose percentages these
+            # are about to overwrite.
+            "fetched_at": fetched_at,
             "_order": i,
         })
         comm = (f'{g["comm_pct_away"]}/{g["comm_pct_home"]}'
