@@ -92,3 +92,58 @@ def test_week_auto_outside_season_refuses_rather_than_guessing(monkeypatch):
         fetch_cli.main()
     assert exc.value.code == 1
     assert not called
+
+
+def test_a_browser_that_cannot_start_is_recorded_not_swallowed(monkeypatch, tmp_path):
+    """The regression this file exists for after 2026-09-10.
+
+    The unit runs this on `ExecStartPre=-`, which throws the exit status
+    away -- so a failure that only shows up as a non-zero exit is invisible.
+    For a year of Sundays that is indistinguishable from success. Anything
+    that stops the fetch has to leave a line in the file the page reads.
+    """
+    log = tmp_path / "pickem_capture_failures.log"
+    monkeypatch.setattr(fetch_cli, "FAILURES_LOG", log)
+
+    def _boom(*_a, **_k):
+        raise RuntimeError("chrome-headless-shell: libnspr4.so: cannot open "
+                           "shared object file")
+    monkeypatch.setattr(fetch_cli, "fetch_pool_text", _boom)
+
+    called = []
+    monkeypatch.setattr(pool_import, "run", lambda *a, **k: called.append(a))
+    monkeypatch.setattr(sys, "argv", ["pickem_pool_fetch.py", "--week", "3", "--write"])
+
+    with pytest.raises(SystemExit) as exc:
+        fetch_cli.main()
+
+    assert exc.value.code == 1
+    assert called == [], "a failed fetch must never reach the CSV writer"
+    assert log.exists(), "a failed fetch left no trace where the page looks"
+    line = log.read_text().strip()
+    assert "cbs-pool-fetch" in line
+    assert "libnspr4" in line, "the line has to say what actually broke"
+
+
+def test_an_expired_session_is_recorded_too(monkeypatch, tmp_path):
+    """Same channel for the expected failure as for the unexpected one --
+    a session silently expiring mid-season is the likeliest way this stops
+    working, and it must not be the quietest."""
+    log = tmp_path / "pickem_capture_failures.log"
+    monkeypatch.setattr(fetch_cli, "FAILURES_LOG", log)
+    monkeypatch.setattr(fetch_cli, "fetch_pool_text",
+                        lambda *a, **k: (_ for _ in ()).throw(SessionExpired("landed on /join")))
+    monkeypatch.setattr(sys, "argv", ["pickem_pool_fetch.py", "--week", "3", "--write"])
+
+    with pytest.raises(SystemExit):
+        fetch_cli.main()
+
+    assert "session expired" in log.read_text()
+
+
+def test_recording_a_failure_never_raises(monkeypatch, tmp_path):
+    """It runs on the failure path. A log that cannot be written must not
+    replace the real error with a confusing second one."""
+    monkeypatch.setattr(fetch_cli, "FAILURES_LOG", tmp_path / "nope" / "x.log")
+    (tmp_path / "nope").write_text("not a directory")
+    fetch_cli.record_failure("anything")      # must not raise

@@ -33,7 +33,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from edge.pickem_cbs import (  # noqa: E402
-    DEFAULT_SESSION_PATH, STEALTH_ARGS, UA, patch_automation_tells, pool_url,
+    DEFAULT_SESSION_PATH, STEALTH_ARGS, UA, ensure_chromium_libs,
+    patch_automation_tells, pool_url,
 )
 
 LOGIN_URL = "https://www.cbssports.com/login/"
@@ -62,6 +63,10 @@ def main() -> None:
               "save the session -- it cannot verify it reaches your pool. "
               "Log in, then come back here and press Enter.\n")
 
+    # Same loader fix the automated fetch needs. Harmless here (this one
+    # is always run by hand, from a shell that has it) but keeping the
+    # two launch paths identical is what stops one from being fixed alone.
+    ensure_chromium_libs()
     with sync_playwright() as p:
         b = p.chromium.launch(headless=False, args=STEALTH_ARGS)
         ctx = b.new_context(user_agent=UA)

@@ -136,6 +136,7 @@ def fetch_public_odds(week: int | None = None, timeout: int = 30) -> list[CBSGam
         ) from e
 
     url = ODDS_URL if week is None else f"{ODDS_URL}?week={week}"
+    ensure_chromium_libs()
     with sync_playwright() as p:
         b = p.chromium.launch(headless=True, args=["--no-sandbox"])
         pg = b.new_page(user_agent=UA)
@@ -261,6 +262,61 @@ class SessionExpired(RuntimeError):
     """
 
 
+#: Chromium's own shared libraries (libnspr4, libnss3, libatk...) are NOT
+#: installed as system packages on this machine -- `dpkg -l libnss3` returns
+#: nothing and `ldconfig -p` cannot see them. They were unpacked by hand into
+#: ~/.local/chromium-deps, and the loader is pointed at them by an
+#: LD_LIBRARY_PATH exported from ~/.bashrc.
+#:
+#: WHY THAT IS A BUG AND NOT A SETUP DETAIL
+#: ~/.bashrc runs for INTERACTIVE shells only. A systemd user service gets
+#: none of it -- the real environment of a running unit is HOME, LANG, LOGNAME,
+#: PATH, SHELL, USER, XDG_*, and nothing else. So every Playwright call here
+#: worked when Adam ran it by hand and failed 100% of the time under
+#: deploy/pickem-capture@.service, with:
+#:
+#:     chrome-headless-shell: error while loading shared libraries:
+#:     libnspr4.so: cannot open shared object file
+#:
+#: and that failure was SILENT, because the CBS fetch is deliberately a
+#: soft-failing `ExecStartPre=-` (an expired session must never cancel the
+#: market-half capture). The visible symptom was the opposite of an error:
+#: pickem_current_week.csv kept its `provisional` notes and its Tuesday
+#: comm_pct_* values forever, so every later snapshot filed stale community
+#: percentages under a fresh timestamp -- exactly the failure
+#: scripts/pickem_pool_fetch.py's docstring says it was built to prevent
+#: ("13 of 16 games moved between Tuesday's reading and Wednesday night's,
+#: one by 14 points").
+#:
+#: Fixing it in the PARENT's os.environ is enough: Playwright hands its own
+#: environment to the chrome child it spawns, so the loader in that child
+#: sees this. Verified from a process started with `env -i`.
+CHROMIUM_DEPS_DIR = Path(
+    os.environ.get("CHROMIUM_DEPS_DIR")
+    or (Path.home() / ".local" / "chromium-deps")
+)
+
+
+def ensure_chromium_libs() -> None:
+    """Point the loader at the hand-unpacked Chromium libraries, if present.
+
+    A no-op on a machine where Chromium's dependencies are installed
+    normally (the directory simply will not exist), and idempotent -- so it
+    is safe to call before every launch rather than once at import, which is
+    what keeps it from depending on module import order.
+    """
+    libs = [CHROMIUM_DEPS_DIR / "usr" / "lib" / "x86_64-linux-gnu",
+            CHROMIUM_DEPS_DIR / "lib" / "x86_64-linux-gnu"]
+    present = [str(d) for d in libs if d.is_dir()]
+    if not present:
+        return
+    current = [seg for seg in os.environ.get("LD_LIBRARY_PATH", "").split(":") if seg]
+    missing = [d for d in present if d not in current]
+    if not missing:
+        return
+    os.environ["LD_LIBRARY_PATH"] = ":".join(missing + current)
+
+
 #: Launch flag that quiets the single most common automation tell
 #: (`navigator.webdriver` and the blink-level flag behind it). Shared by
 #: fetch_pool_text and scripts/pickem_session_bootstrap.py so a fix to one
@@ -355,6 +411,7 @@ def fetch_pool_text(url: str | None = None,
             "own Picks page, e.g. "
             "https://picks.cbssports.com/football/pickem/pools/<id>/picks")
 
+    ensure_chromium_libs()
     with sync_playwright() as p:
         b = p.chromium.launch(headless=True, args=["--no-sandbox"] + STEALTH_ARGS)
         ctx = b.new_context(storage_state=str(session_path), user_agent=UA)
