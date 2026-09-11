@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import random
 
+from edge.dfs_roster import assign_slots
+
 SLOTS = ["P", "P", "C", "1B", "2B", "3B", "SS", "OF", "OF", "OF"]
 CAP = 50000
 HITTER_SLOTS = ["C", "1B", "2B", "3B", "SS", "OF"]
@@ -21,32 +23,9 @@ def _eligible(players, slot):
 
 
 def _bipartite_assign(players, slots):
-    """Can `players` each be assigned a distinct slot from `slots` (a multiset,
-    e.g. ["OF","OF","OF"]), one they're individually eligible for? Small
-    backtracking match, <=10 players. Shared by _assign, _hitter_slots_assignable,
-    and _fill's forced-group slot removal -- each used to reimplement this same
-    ~10-line recursion independently (found while auditing the module for
-    duplication). Returns [(player, slot), ...] using one slot per player, or
-    None if no full assignment of `players` exists; leftover unused slots are
-    fine -- callers that need an exact 1:1 match (_assign) only ever pass
-    len(players) == len(slots), where "every player placed" and "every slot
-    used" are the same fact by pigeonhole, so this single success condition
-    covers both the strict and permissive callers correctly."""
-    order = sorted(players, key=lambda p: len(p["pos"]))   # fewest options first
-
-    def bt(ps, remaining):
-        if not ps:
-            return []
-        p = ps[0]
-        for s in list(dict.fromkeys(remaining)):
-            if s in p["pos"]:
-                rest = remaining[:]; rest.remove(s)
-                sub = bt(ps[1:], rest)
-                if sub is not None:
-                    return [(p, s)] + sub
-        return None
-
-    return bt(order, list(slots))
+    """Shared with the NFL optimizer -- see edge/dfs_roster.assign_slots, which
+    is the same recursion this module had already grown three copies of."""
+    return assign_slots(players, slots)
 
 
 def _fill(players, rng, forced=None, obj="proj"):

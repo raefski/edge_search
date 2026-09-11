@@ -65,7 +65,7 @@ def _pair(market: dict) -> tuple[float, float] | None:
 
 
 def project(player_markets: dict, sport: Sport,
-            require_all: bool = False) -> dict:
+            require_all: bool = False, position: str | None = None) -> dict:
     """Project one player from the markets a book posts for them.
 
     `player_markets` is `{market_key: {"Over": dec, "Under": dec, "point": x}}`
@@ -76,6 +76,15 @@ def project(player_markets: dict, sport: Sport,
     present. NFL uses the default (any one), because its positions read
     disjoint markets -- a quarterback has passing yards and no receiving yards,
     and demanding both would project nobody.
+
+    `position` is the player's DK position, passed through to the sport's
+    imputation rule and to nothing else. It is optional because a projection
+    must still be possible without a slate: every rule falls back to a
+    position-blind rate, so an unknown position degrades the imputed term
+    rather than dropping the player. NFL is the only sport that reads it --
+    the touchdown rate per rushing yard is measurably different for a
+    quarterback than for a back, and per receiving yard for a back than for a
+    wide receiver or tight end. See edge/dfs_sport.py::_nfl_impute.
 
     Returns {proj, components, means, have, imputed, bonus}. `proj` is None
     when the requirement is not met, which is the signal to leave the player
@@ -103,7 +112,7 @@ def project(player_markets: dict, sport: Sport,
     # as imputed. A caller that wants only book-priced players can check this.
     imputed: list[str] = []
     if sport.impute:
-        for market, value in (sport.impute({**means, **probs}) or {}).items():
+        for market, value in (sport.impute({**means, **probs}, position) or {}).items():
             stat = sport.stat_for(market)
             if stat is None or market in means or market in probs:
                 continue

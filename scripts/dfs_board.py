@@ -101,7 +101,11 @@ def main() -> int:
         if not info or not info.get("salary"):
             unmatched += 1
             continue
-        res = dfs_project.project(player_markets, sport)
+        # position feeds the sport's imputation rule -- NFL's touchdown rate
+        # per yard differs by position, and the slate is the only place the
+        # position is known. See edge/dfs_sport.py::_nfl_impute.
+        res = dfs_project.project(player_markets, sport,
+                                  position=info.get("position"))
         if res["proj"] is None:
             continue
         salary = info["salary"]

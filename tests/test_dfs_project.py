@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import pytest
 
-from edge import dfs, dfs_project
+from edge import dfs, dfs_project, dfs_sport
 from edge.dfs_sport import MLB_PITCHER, NFL, get
 
 
@@ -149,6 +149,99 @@ def test_a_big_rusher_earns_more_bonus_than_a_small_one():
     big = {"player_rush_yds": {"Over": 1.91, "Under": 1.91, "point": 120.0}}
     assert (dfs_project.project(big, NFL)["bonus"]
             > dfs_project.project(small, NFL)["bonus"])
+
+
+# --- NFL touchdown imputation ------------------------------------------------
+# The rates are fitted in scripts/nfl_td_fit.py against nflverse player-weeks;
+# these tests pin the STRUCTURE the fit established, not the digits, so a
+# refit on more seasons moves the constants without rewriting the suite.
+
+def test_td_rates_are_ordered_the_way_the_fit_measured_them():
+    """Three rates, and their ORDER is the finding. A quarterback converts
+    rushing yards to touchdowns faster than a back (goal-line sneaks); a back
+    converts receiving yards slower than a receiver (checkdowns, not red-zone
+    targets). If a refit ever inverts one of these, the fit is wrong or the
+    data changed -- either way it should not land silently."""
+    assert dfs_sport.NFL_RUSH_TD_PER_YARD_QB > dfs_sport.NFL_RUSH_TD_PER_YARD_OTHER
+    assert dfs_sport.NFL_REC_TD_PER_YARD_WR_TE > dfs_sport.NFL_REC_TD_PER_YARD_RB
+    # the position-blind fallbacks must sit between the splits they average
+    assert (dfs_sport.NFL_RUSH_TD_PER_YARD_OTHER
+            < dfs_sport.NFL_RUSH_TD_PER_YARD_ANY
+            < dfs_sport.NFL_RUSH_TD_PER_YARD_QB)
+    assert (dfs_sport.NFL_REC_TD_PER_YARD_RB
+            < dfs_sport.NFL_REC_TD_PER_YARD_ANY
+            < dfs_sport.NFL_REC_TD_PER_YARD_WR_TE)
+
+
+def test_wr_and_te_share_one_receiving_rate():
+    """WR vs TE came back at 161 vs 167 yards per TD, p~0.60 -- inside noise.
+    They are deliberately NOT split. A future refit that gives tight ends
+    their own constant should have to delete this test and say why."""
+    wr = dfs_project.project(WR, NFL, position="WR")
+    te = dfs_project.project(WR, NFL, position="TE")
+    assert wr["components"]["rec TD"] == te["components"]["rec TD"]
+
+
+def test_position_changes_the_imputed_touchdown():
+    """The whole point of threading position through project()."""
+    rush = {"player_rush_yds": {"Over": 1.91, "Under": 1.91, "point": 45.0}}
+    qb = dfs_project.project(rush, NFL, position="QB")
+    rb = dfs_project.project(rush, NFL, position="RB")
+    assert qb["components"]["rush TD"] > rb["components"]["rush TD"]
+    assert "rush TD" in qb["imputed"] and "rush TD" in rb["imputed"]
+
+    rec = {"player_reception_yds": {"Over": 1.91, "Under": 1.91, "point": 55.0}}
+    assert (dfs_project.project(rec, NFL, position="WR")["components"]["rec TD"]
+            > dfs_project.project(rec, NFL, position="RB")["components"]["rec TD"])
+
+
+def test_unknown_position_falls_back_rather_than_dropping_the_player():
+    """A projection with no slate behind it must still happen. The failure
+    mode being avoided is the one HANDOFF.md keeps recording: a lookup that
+    matches nothing, silently producing a player who looks unpriced."""
+    rec = {"player_reception_yds": {"Over": 1.91, "Under": 1.91, "point": 55.0}}
+    r = dfs_project.project(rec, NFL)                    # no position at all
+    assert r["proj"] is not None and "rec TD" in r["imputed"]
+    blind = r["components"]["rec TD"]
+    assert (dfs_project.project(rec, NFL, position="RB")["components"]["rec TD"]
+            < blind
+            < dfs_project.project(rec, NFL, position="WR")["components"]["rec TD"])
+
+
+def test_a_passer_is_read_as_a_quarterback_without_being_told():
+    """Passing yards identify a QB more reliably than a slate lookup does --
+    no other position is priced for them. So the QB rushing rate applies even
+    when nobody supplied a position."""
+    passer = {"player_pass_yds": {"Over": 1.91, "Under": 1.91, "point": 250.0},
+              "player_rush_yds": {"Over": 1.91, "Under": 1.91, "point": 40.0}}
+    inferred = dfs_project.project(passer, NFL)["components"]["rush TD"]
+    told = dfs_project.project(passer, NFL, position="QB")["components"]["rush TD"]
+    assert inferred == told
+
+
+def test_multi_slot_dk_positions_are_parsed():
+    """DK writes eligibility as 'RB/FLEX'; matching the whole string against
+    'RB' would silently fall through to the position-blind rate."""
+    rec = {"player_reception_yds": {"Over": 1.91, "Under": 1.91, "point": 55.0}}
+    assert (dfs_project.project(rec, NFL, position="RB/FLEX")["components"]["rec TD"]
+            == dfs_project.project(rec, NFL, position="RB")["components"]["rec TD"])
+
+
+def test_imputation_never_overrides_a_priced_touchdown_market():
+    """If a book ever does post a two-sided rushing TD market, the price wins
+    and nothing is flagged as imputed."""
+    priced = {"player_rush_yds": {"Over": 1.91, "Under": 1.91, "point": 60.0},
+              "player_rush_tds": {"Over": 1.91, "Under": 1.91, "point": 0.5}}
+    r = dfs_project.project(priced, NFL, position="RB")
+    assert "rush TD" not in r["imputed"]
+    assert r["means"]["player_rush_tds"] == pytest.approx(0.5, abs=1e-6)
+
+
+def test_mlb_imputation_ignores_the_position_argument():
+    """The signature is shared; MLB projects pitchers only. This pins that
+    adding the argument did not change MLB's behaviour."""
+    assert (dfs_sport._mlb_impute({"pitcher_outs": 18.0}, "P")
+            == dfs_sport._mlb_impute({"pitcher_outs": 18.0}))
 
 
 # --- NFL DST ----------------------------------------------------------------

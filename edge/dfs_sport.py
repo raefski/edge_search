@@ -24,17 +24,48 @@ The optimiser. edge/dfs_opt.py is built around MLB batting-order stacking
 (`_consecutive_runs`, `_hitter_slots_assignable`), and NFL's correlation
 structure (QB with his own receivers, against a game total) is a different
 shape rather than a parameter of the same shape. Forcing them together would
-fight the real difference, which is the mistake the plan warned about.
+fight the real difference, which is the mistake the plan warned about. NFL
+therefore has its OWN optimiser, edge/dfs_opt_nfl.py, and the decision is
+argued in that module's docstring against the measured correlations. The one
+piece that genuinely was shared -- the slot matcher -- lives in
+edge/dfs_roster.py rather than in a second copy.
 
 CALIBRATION STATUS -- read before trusting a projection
 MLB's sigmas are the ones edge/dfs.py has used all along, and its projections
-are backtested. The NFL and NBA sigmas below are PRIORS, chosen from the
-typical spread of each stat, and they have not been fitted to outcomes. A
-sigma that is too small overstates how far the implied mean sits from the
-line; too large understates it. `scripts/dfs_calibration.py` is the existing
-harness for checking that against results, and none of these has been through
-it yet. Treat NFL/NBA projections as ranked-order guidance, not as calibrated
-point estimates, until they have.
+are backtested. NFL's touchdown rates and sigmas were FITTED 2026-09-06
+against 11,017 nflverse player-weeks (scripts/nfl_td_fit.py and
+scripts/nfl_sigma_fit.py). NBA's are still PRIORS and nothing about NBA has
+been checked against a live payload.
+
+WHAT THE NFL FIT FOUND, INCLUDING THE PART THAT ARGUES AGAINST ITSELF
+The touchdown rates were badly wrong and are worth having fixed: both were too
+low (1 per 180 rushing yards against a measured 128, 1 per 200 receiving
+against 165), and at 6 points a touchdown that was a systematic 0.4-0.8 DK
+point underprojection of every ball-carrier on the board.
+
+The SIGMAS turned out to be nearly inert, which is the more useful finding
+because it says where not to spend the next hour. A sigma only does work when
+the price is away from even money -- implied_mean = line + sigma*z -- and
+across 13,690 real two-sided NFL prop quotes in data/odds.db the mean |z| is
+0.014 to 0.128 depending on the market. Books post yardage lines at -110/-110
+and move the LINE, not the price. So a 19% error in the passing-yards sigma
+(65 against a measured 75) moved the implied mean by 0.68 yards at the 90th
+percentile of real prices: 0.03 DK points. The sigmas are now measured rather
+than guessed, but nobody should expect that to show up in a projection.
+
+The exception, and it is the reason to run the |z| check per market rather
+than once: RECEPTIONS. Its mean |z| is 0.128 against 0.014-0.025 for the
+yardage markets, because a reception line is a half-integer on a low count, so
+the book has to move the PRICE where it can move a yardage line instead. That
+sigma is the one that earns its keep -- and it was the one furthest out, 1.8
+against a measured 2.05.
+
+Where sigma does do real work is a threshold bonus, which is a genuine tail
+probability. Even at the fitted sigma the normal UNDER-predicts P(100+ yards)
+by 1.3-1.7 percentage points, because yardage is right-skewed and a normal's
+right tail is too thin. That is worth about 0.04-0.05 DK points and is left
+in, but it is the one place the distributional assumption is doing something
+it is not really entitled to do.
 """
 from __future__ import annotations
 
@@ -93,11 +124,12 @@ class Sport:
     #: missing one of these is ABSENT from the pool rather than badly
     #: projected -- the same contract project_pitcher has always had.
     required: tuple[str, ...] = ()
-    #: fills in stats no book posted. Takes the means resolved so far and
-    #: returns {stat_market: mean} for the gaps. Sport-specific by nature:
-    #: MLB scales earned runs off projected innings and a strikeout-implied
-    #: skill factor, NFL scales touchdowns off yardage.
-    impute: Callable[[dict], dict] | None = None
+    #: fills in stats no book posted. Takes the means resolved so far and the
+    #: player's DK position (which may be None) and returns {stat_market: mean}
+    #: for the gaps. Sport-specific by nature: MLB scales earned runs off
+    #: projected innings and a strikeout-implied skill factor, NFL scales
+    #: touchdowns off yardage at a rate that depends on the position.
+    impute: Callable[[dict, str | None], dict] | None = None
     #: DK position strings that map onto roster slots
     positions: Callable[[str], set] | None = None
     flex: dict = field(default_factory=dict)  # slot -> eligible positions
@@ -119,8 +151,11 @@ class Sport:
 # in tests/test_dfs_project.py, which is what makes that claim testable rather
 # than merely asserted.
 # --------------------------------------------------------------------------
-def _mlb_impute(means: dict) -> dict:
+def _mlb_impute(means: dict, position: str | None = None) -> dict:
     """MLB's existing imputation, unchanged in behaviour.
+
+    `position` is accepted to satisfy the shared signature and ignored: this
+    sport projects pitchers only.
 
     Earned runs, hits and walks are scaled off projected innings; aces
     suppress them below league average, so the strikeout-implied K/9 sets a
@@ -166,28 +201,95 @@ MLB_PITCHER = Sport(
 # --------------------------------------------------------------------------
 # NFL
 # --------------------------------------------------------------------------
-#: Touchdowns per yard, by route to the end zone. UNVALIDATED PRIORS.
+#: Touchdowns per yard, by route to the end zone and by position.
+#:
 #: Rushing and receiving TDs have no two-sided prop market -- DraftKings
 #: prices them only as "Anytime TD", which is a FIELD (a list of players with
 #: no opposing side) and so is deliberately not ingested; see
 #: edge/arb/draftkings_league.PROP_CATEGORIES. So they are imputed from
-#: yardage, the same way MLB imputes earned runs from innings.
-#: These two numbers are the least defensible thing in this file. They are
-#: round-number league-shaped priors, NOT fitted: roughly one rushing TD per
-#: 180 rushing yards and one receiving TD per 200 receiving yards. Fit them
-#: against nflverse player-week data before treating any NFL projection as
-#: calibrated, and note that TDs are 6 points each, so this term moves a
-#: projection more than any other imputed one.
-NFL_RUSH_TD_PER_YARD = 1 / 180.0
-NFL_REC_TD_PER_YARD = 1 / 200.0
+#: yardage, the same way MLB imputes earned runs from innings. At 6 points a
+#: touchdown this is the largest imputed term in any NFL projection -- ~13% of
+#: a top receiver's -- which is why it is fitted rather than assumed.
+#:
+#: FITTED 2026-09-06 against nflverse stats_player_week, 2023+2024 regular
+#: season, 11,017 offensive player-weeks (scripts/nfl_td_fit.py). It replaces
+#: two round-number priors (1 per 180 rushing yards, 1 per 200 receiving) that
+#: were both too low: the pooled truth is 1 per 128 and 1 per 165.
+#:
+#: THE REGRESSOR IS AN EXPECTED MEAN, NOT A REALIZED GAME. Fitting on realized
+#: yards is wrong here and wrong in a direction that flatters the low end: a
+#: 5-yard touchdown catch IS 5 receiving yards, so the touchdown inflates its
+#: own predictor and the 0-10 yard bin reads 1 TD per 66 yards. The fit uses a
+#: leave-one-out season mean per player-season as the stand-in for the market's
+#: implied mean, which is the quantity this rate is actually multiplied by.
+#:
+#: THE SHAPE IS PROPORTIONAL AND THAT WAS TESTED, NOT ASSUMED. The rate is flat
+#: across expected-yardage floors -- rushing 131/132/132/131/137 and receiving
+#: 170/178/177/171/167 yards per TD at floors of 0/10/20/30/40 -- so there is
+#: no red-zone non-linearity to model, and a fitted intercept is not defensible
+#: (the RB rushing one comes out NEGATIVE, -0.049 TDs). Constants are measured
+#: over the pool-like population, expected yards >= 20, since a player below
+#: that has no posted prop and is never projected.
+#:
+#: THE POSITION SPLITS ARE THE ONES THAT SURVIVED A BOOTSTRAP, and no more.
+#: 95% CIs on yards per TD, 4,000 resamples:
+#:     rush  QB     95 (80-115)  vs  RB/FB 135 (126-147)   separated, p~0.001
+#:     rec   WR    161 (151-172) vs  TE    167 (149-191)   NOT separated, p~0.60
+#:     rec   WR+TE 162 (153-172) vs  RB/FB 220 (180-281)   separated, p~0.007
+#: So a quarterback's rushing yards convert at a different rate than a back's
+#: (goal-line sneaks), and a back's receiving yards convert at a lower rate
+#: than a receiver's (checkdowns and screens, not red-zone targets). Wide
+#: receivers and tight ends do NOT differ and are deliberately NOT split --
+#: three rates, not five. Splitting on an unmeasured difference costs the same
+#: as leaving a real one out, and is harder to notice.
+NFL_RUSH_TD_PER_YARD_QB = 1 / 95.0
+NFL_RUSH_TD_PER_YARD_OTHER = 1 / 135.0
+NFL_REC_TD_PER_YARD_WR_TE = 1 / 162.0
+NFL_REC_TD_PER_YARD_RB = 1 / 220.0
+
+#: Position-blind fallbacks, for a projection with no slate behind it. Pooled
+#: over the same player-weeks, so a caller that cannot supply a position gets
+#: the league rate rather than a guess at the most common one.
+NFL_RUSH_TD_PER_YARD_ANY = 1 / 128.0
+NFL_REC_TD_PER_YARD_ANY = 1 / 165.0
+
+#: DK writes multi-eligibility as "RB/FLEX", so match on the parts.
+_QB = {"QB"}
+_BACKS = {"RB", "FB"}
 
 
-def _nfl_impute(means: dict) -> dict:
+def _pos_parts(position: str | None) -> set:
+    return {t.strip().upper() for t in (position or "").split("/") if t.strip()}
+
+
+def _nfl_impute(means: dict, position: str | None = None) -> dict:
+    """Touchdowns from yardage, at the rate this player's position converts at.
+
+    Falls back to the pooled rate when the position is unknown, with one
+    exception worth stating: passing yards identify a quarterback more
+    reliably than a slate lookup does, since no other position is priced for
+    them. So a rusher who is also priced to pass gets the QB rate whether or
+    not anyone said he was a QB.
+    """
+    parts = _pos_parts(position)
     out = {}
     if means.get("player_rush_tds") is None and means.get("player_rush_yds"):
-        out["player_rush_tds"] = means["player_rush_yds"] * NFL_RUSH_TD_PER_YARD
+        is_qb = bool(parts & _QB) or (not parts and means.get("player_pass_yds"))
+        if is_qb:
+            rate = NFL_RUSH_TD_PER_YARD_QB
+        elif parts:
+            rate = NFL_RUSH_TD_PER_YARD_OTHER
+        else:
+            rate = NFL_RUSH_TD_PER_YARD_ANY
+        out["player_rush_tds"] = means["player_rush_yds"] * rate
     if means.get("player_reception_tds") is None and means.get("player_reception_yds"):
-        out["player_reception_tds"] = means["player_reception_yds"] * NFL_REC_TD_PER_YARD
+        if parts & _BACKS:
+            rate = NFL_REC_TD_PER_YARD_RB
+        elif parts:
+            rate = NFL_REC_TD_PER_YARD_WR_TE
+        else:
+            rate = NFL_REC_TD_PER_YARD_ANY
+        out["player_reception_tds"] = means["player_reception_yds"] * rate
     return out
 
 
@@ -197,17 +299,19 @@ NFL = Sport(
     flex={"FLEX": {"RB", "WR", "TE"}},
     salary_cap=50000,
     stats=(
+        # Sigmas FITTED 2026-09-06, scripts/nfl_sigma_fit.py -- see the note
+        # below on why they turned out to be nearly inert.
         # passing
-        Stat("player_pass_yds", 0.04, 65.0, "pass yds"),
-        Stat("player_pass_tds", 4.0, 1.0, "pass TD"),
-        Stat("player_pass_interceptions", -1.0, 0.8, "INT"),
+        Stat("player_pass_yds", 0.04, 75.0, "pass yds"),
+        Stat("player_pass_tds", 4.0, 1.1, "pass TD"),
+        Stat("player_pass_interceptions", -1.0, 0.85, "INT"),
         # rushing
-        Stat("player_rush_yds", 0.1, 30.0, "rush yds"),
-        Stat("player_rush_tds", 6.0, 0.7, "rush TD"),
+        Stat("player_rush_yds", 0.1, 29.0, "rush yds"),
+        Stat("player_rush_tds", 6.0, 0.58, "rush TD"),
         # receiving -- DK Classic is full PPR
-        Stat("player_reception_yds", 0.1, 28.0, "rec yds"),
-        Stat("player_receptions", 1.0, 1.8, "rec"),
-        Stat("player_reception_tds", 6.0, 0.7, "rec TD"),
+        Stat("player_reception_yds", 0.1, 30.0, "rec yds"),
+        Stat("player_receptions", 1.0, 2.0, "rec"),
+        Stat("player_reception_tds", 6.0, 0.5, "rec TD"),
     ),
     bonuses=(
         # Each is independent: a 100-rush/100-rec game earns both.
@@ -221,9 +325,10 @@ NFL = Sport(
     # disjoint markets -- see dfs_project.project.
     required=("player_pass_yds", "player_rush_yds", "player_reception_yds"),
     impute=_nfl_impute,
-    notes="Sigmas and TD rates are UNVALIDATED priors. DST has no prop market "
-          "at all and is projected separately from the game total and spread "
-          "-- see dfs_project.project_dst.",
+    notes="TD rates and sigmas fitted 2026-09-06 against 11,017 nflverse "
+          "player-weeks (scripts/nfl_td_fit.py, scripts/nfl_sigma_fit.py). "
+          "DST is still a prior: it has no prop market at all and is projected "
+          "from the game total and spread -- see dfs_project.project_dst.",
 )
 
 
