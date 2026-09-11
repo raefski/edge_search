@@ -296,14 +296,24 @@ def test_a_middle_is_not_flagged_when_the_ladder_tracks_its_main_line():
     assert not any(l.off_main_line for l in mids[0].legs)
 
 
-def test_a_stale_spread_on_the_away_side_does_not_crash_the_warning():
+def test_a_stale_spread_on_the_away_side_reports_both_numbers_on_one_axis():
     """Leg.point on a spread is SIGNED per side (away is the negation of the
     stored home-axis point -- see _leg_point), while stale_alt_ladders and
-    main_points key on the raw, unsigned group point. Looking a stale leg's
-    warning up by its (signed) `point` instead of the value already resolved
-    onto the Leg would KeyError here, since -40.5 is never a key while 40.5
-    is. draftkings' main spread is -39.5 (home); the alternate leg used is
-    the AWAY side of a drifted rung, which displays as +40.5."""
+    main_points key on the raw, unsigned group point. Two things follow, and
+    they pull in opposite directions:
+
+    The LOOKUP must use the unsigned group point. Looking a stale leg's
+    warning up by its (signed) `point` would KeyError here, since -50.5 is
+    never a key while 50.5 is.
+
+    The REPORTED main line must then be moved onto the axis the leg displays
+    its own point on. This once was not, and the warning read "draftkings's
+    50.5 looks stale -- ... its own current main line (-39.5)": an away leg
+    laying 50.5 against a main quoted from the home team's side, two numbers
+    of opposite sign presented as a comparison. Seen live on the NFL board
+    as "fanduel's -8.5 ... main line (2.5)". The sign is the half of a
+    spread that says WHICH TEAM, so getting it backwards in the one sentence
+    explaining why a leg is suspect is worse than not printing it."""
     b, _ = board_with(
         ("spreads", None, -39.5, "home", "draftkings", 1.90),
         ("spreads", None, -39.5, "away", "draftkings", 1.90),
@@ -317,8 +327,12 @@ def test_a_stale_spread_on_the_away_side_does_not_crash_the_warning():
     m = mids[0]
     assert m.stale_alt_line
     dk_leg = next(l for l in m.legs if l.book == "draftkings")
-    assert dk_leg.off_main_line and dk_leg.main_line == -39.5
-    assert any("looks stale" in w for w in m.warnings)
+    assert dk_leg.off_main_line
+    assert dk_leg.side == "away" and dk_leg.point == 50.5
+    # home main -39.5 is away +39.5, the axis this leg's own point is on
+    assert dk_leg.main_line == 39.5
+    warning = next(w for w in m.warnings if "looks stale" in w)
+    assert "50.5" in warning and "39.5" in warning and "-39.5" not in warning
 
 
 def test_a_book_with_no_recorded_main_line_is_never_flagged():
@@ -857,14 +871,13 @@ def test_one_token_never_boosts_both_legs_of_a_same_book_market():
         "one token cannot cover two legs, even when its own terms allow either"
 
 
-def test_a_single_book_boost_candidate_does_not_double_boost_both_legs():
-    """End to end through the real path that produced this: run.candidates
-    marks a same-book two-sided market single_book=True specifically so a
-    boost can turn it into a real arb (see candidates' own docstring), and
-    price_candidates is what the boost slider actually calls. Boosting ONE
-    side against the other's plain price is a genuine, placeable arb here;
-    boosting both would need the same token on two different bet slips."""
-    from edge.arb.engine import Boost, price_candidates
+def test_a_single_book_candidate_is_never_priced_as_an_arb():
+    """End to end through the real path: run.candidates snapshots a same-book
+    two-sided market with single_book=True, and price_candidates is what the
+    boost slider calls. A boost can beat one book's own vig -- the arithmetic
+    clears -- but both bets sit on ONE account on the two sides of one market,
+    which is not a placeable hedge. It belongs in the +EV panel instead."""
+    from edge.arb.engine import Boost, price_candidates, price_boosted_ev
     from edge.arb.run import candidates
     ev = EventMeta("e1", "baseball_mlb", "MLB",
                    datetime.now(timezone.utc) + timedelta(hours=2), "Guardians", "Tigers")
@@ -878,10 +891,12 @@ def test_a_single_book_boost_candidate_does_not_double_boost_both_legs():
     c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0)]
     cands = candidates(b, c)
     assert cands and cands[0]["single_book"]
-    priced = price_candidates(cands, c.boosts, c)
-    assert priced, "one leg boosted against the other's plain price is a real arb"
-    boosted_legs = [l for l in priced[0]["legs"] if l.get("boost_pct")]
-    assert len(boosted_legs) == 1, "one token boosts exactly one leg, never both"
+    assert om.arb_sum([om.boosted(1.8, 0.5), 1.9709]) < 1.0, \
+        "the pair does clear on arithmetic -- that is why it was being reported"
+    assert price_candidates(cands, c.boosts, c) == [], \
+        "one book on both sides is not an arbitrage, boosted or not"
+    assert price_boosted_ev(cands, c.boosts, c), \
+        "the token is not wasted -- the boosted leg alone is still +EV"
 
 
 def test_a_boost_that_cannot_apply_leaves_the_other_leg_alone():
@@ -1174,9 +1189,9 @@ def test_a_bigger_boost_is_worth_more_ev():
     assert got == sorted(got), f"EV must rise with the boost: {got}"
 
 
-def test_a_single_book_market_is_not_an_arb_without_a_boost():
-    """min_books rejects one book on both sides as a data artifact. That guard
-    has to survive: only a boost makes such a pair a real position."""
+def test_a_single_book_market_is_not_an_arb_with_or_without_a_boost():
+    """min_books rejects one book on both sides, and a boost does not lift
+    that: it improves one price without changing where the two bets land."""
     from edge.arb.engine import Boost, price_candidates
     c = cfg()
     single = _cand(over=2.20, under=2.20, over_book="draftkings")
@@ -1184,7 +1199,40 @@ def test_a_single_book_market_is_not_an_arb_without_a_boost():
     assert price_candidates([single], [], c) == [], "priced a one-book pair with no boost"
     b = Boost(book="draftkings", pct=0.5, max_stake=10.0, sides=["over"],
               markets=["batter_hits"])
-    assert price_candidates([single], [b], c), "a boost makes it real and it was still dropped"
+    assert price_candidates([single], [b], c) == [], "priced a one-book pair with a boost"
+
+
+def test_a_boosted_tennis_set_handicap_is_not_an_arb_against_its_own_book():
+    """The live shape this was found on: a 50% DraftKings tennis token on
+    DraftKings' own Arthur Weber -1.5 sets (+105 -> +157), hedged against
+    DraftKings' own Tai Leonard Sach +1.5 at -140. It sums to 0.973 and was
+    reported as a 2.8% lock at the top of the boost panel -- two bets on one
+    account, on the two sides of one market, one of them on a promo.
+
+    Judged by the leg books, not by the snapshot's `single_book` flag, so a
+    snapshot written before that flag existed is refused just the same."""
+    from edge.arb.engine import Boost, price_candidates
+    c = cfg()
+    weber = {
+        "sport_key": "tennis_atp", "sport_title": "tennis_atp",
+        "matchup": "Tai Leonard Sach vs Arthur Weber",
+        "commence_time": (datetime.now(timezone.utc) + timedelta(hours=3)).isoformat(),
+        "market": "spreads_sets", "subject": None, "point": -1.5, "arb_sum": 1.07114,
+        "legs": [{"side": "away", "book": "draftkings", "decimal": 1.7143,
+                  "label": "Tai Leonard Sach", "point": 1.5},
+                 {"side": "home", "book": "draftkings", "decimal": 2.05,
+                  "label": "Arthur Weber", "point": -1.5}],
+        "prices": {"away": {"draftkings": 1.7143}, "home": {"draftkings": 2.05}},
+    }
+    b = Boost(book="draftkings", pct=0.5, max_stake=50.0, sports=["tennis_atp"])
+    assert om.arb_sum([1.7143, om.at_book_price(om.boosted(2.05, 0.5))]) < 1.0
+    assert price_candidates([weber], [b], c) == []
+
+    # ...and the same market with a second book on one side is still an arb.
+    two_book = {**weber, "legs": [{**weber["legs"][0], "book": "fanduel"},
+                                  weber["legs"][1]]}
+    assert price_candidates([two_book], [b], c), \
+        "the guard must only remove same-book pairs, not real two-book ones"
 
 
 # --- golf ------------------------------------------------------------------
@@ -1573,3 +1621,149 @@ def test_an_unreadable_start_time_does_not_block_every_boost():
     tok = Boost(book="fanduel", pct=0.5,
                 expires_at=datetime.now(timezone.utc) + timedelta(hours=2))
     assert tok.applies_to("fanduel", "x", "h2h", "over", 2.0, event_start=None)
+
+
+# --- whole-number lines push ------------------------------------------------
+def test_an_arbitrage_on_a_whole_number_total_reports_a_floor_of_zero():
+    """A bet on a whole number returns the stake when the game lands on it,
+    and both sides of one group share that number -- so at an integer line
+    they push TOGETHER and the position returns nothing.
+
+    Reported as a guaranteed 3.73% with a floor to match, which it is not.
+    profit_pct stays the return on every OTHER result (that is what it means
+    and what gets staked against); the floor is what the position actually
+    guarantees, and a warning names the number.
+
+    This arrived with Fanatics on football. DraftKings and FanDuel hang their
+    alternate ladders on half-points; the Oddschecker feed Fanatics runs on
+    carries whole numbers too, and the ones it puts in play -- 3, 7, 10, 14 on
+    a spread, every integer total -- are the numbers NFL games land on most.
+    """
+    b, _ = board_with(("totals", None, 44.0, "over", "fanatics", 2.10),
+                      ("totals", None, 44.0, "under", "draftkings", 2.05))
+    o = find_arbitrages(b, cfg())[0]
+    assert o.profit_pct == pytest.approx(3.73, abs=0.15), "every result but 44"
+    assert o.floor_pct == 0.0, "a 44 hands every stake back"
+    assert o.pushes and o.push_values == [44]
+    assert any("pushes BOTH legs" in w for w in o.warnings)
+
+
+def test_a_half_point_arbitrage_still_reports_a_guaranteed_floor():
+    """The ordinary case must not be dragged down with it: no whole number
+    can settle a 44.5, so nothing pushes and the floor IS the profit."""
+    b, _ = board_with(("totals", None, 44.5, "over", "fanatics", 2.10),
+                      ("totals", None, 44.5, "under", "draftkings", 2.05))
+    o = find_arbitrages(b, cfg())[0]
+    assert not o.pushes and o.push_values == []
+    assert o.floor_pct == o.profit_pct
+    assert not any("push" in w for w in o.warnings)
+
+
+def test_a_whole_number_spread_pushes_on_the_home_margin_not_the_group_point():
+    """Spreads are stored folded onto the home axis with the sign flipped, so
+    a group point of -3.0 is a home team laying 3 and pushes on a home margin
+    of +3 -- the same negation find_middles applies to report its window."""
+    b, _ = board_with(("spreads", None, -3.0, "home", "fanatics", 2.10),
+                      ("spreads", None, -3.0, "away", "draftkings", 2.05))
+    o = find_arbitrages(b, cfg())[0]
+    assert o.pushes and o.push_values == [3]
+
+
+def test_a_moneyline_has_no_number_to_push_on():
+    """h2h carries no line, so nothing can land on it. Guards the integer
+    check against firing on a group whose point is simply absent."""
+    b, _ = board_with(("h2h", None, None, "home", "fanatics", 2.10),
+                      ("h2h", None, None, "away", "draftkings", 2.05))
+    o = find_arbitrages(b, cfg())[0]
+    assert not o.pushes and o.floor_pct == o.profit_pct
+
+
+# --- the stale-alt check reads a ladder's centre, not its vig ---------------
+def test_a_flat_vig_ladder_that_is_centred_correctly_is_not_stale():
+    """THE 505-FALSE-FLAG REGRESSION, in the shape that caused it.
+
+    FanDuel holds a near-constant overround across its whole alternate ladder
+    and moves the PRICE; DraftKings widens the overround as it goes out. The
+    old rule -- flag a far rung whose own vig is at or under a fixed 1.06 --
+    therefore separated the two BOOKS rather than fresh rungs from stale
+    ones. Measured on a live NFL board, 2026-09-07: 69.9% of FanDuel's 722
+    far rungs sat at or under 1.06 against 0.0% of DraftKings' 1,263, so it
+    flagged 505 sound FanDuel rungs and could not flag a DraftKings rung at
+    all -- hiding 32 of 99 opportunities behind an off-by-default toggle.
+
+    Every rung here is priced at a flat ~1.048 overround, well under that
+    bar, and the ladder centres exactly on its own recorded main line. There
+    is nothing wrong with it.
+    """
+    b, _ = board_with(("totals", None, 44.5, "over", "fanduel", 1.909),
+                      ("totals", None, 44.5, "under", "fanduel", 1.909),
+                      ("totals", None, 50.5, "over", "fanduel", 3.30),
+                      ("totals", None, 50.5, "under", "fanduel", 1.345),
+                      ("totals", None, 38.5, "over", "fanduel", 1.345),
+                      ("totals", None, 38.5, "under", "fanduel", 3.30))
+    b.record_main_point("e1", "totals", "fanduel", 44.5)
+    assert stale_alt_ladders(b, max_drift=3.0, max_vig=1.06) == {}
+
+
+def test_a_ladder_centred_away_from_its_own_main_line_is_stale():
+    """The failure the check exists for, stated as what it actually is: the
+    ladder is internally consistent and prices smoothly, but it is built
+    around a number the book has moved past. Its own devigged prices cross
+    50/50 near 44.5 while its Game market says the total is 54.5, so every
+    far rung on it is suspect -- including ones whose own vig looks fine."""
+    b, _ = board_with(("totals", None, 44.5, "over", "draftkings", 1.909),
+                      ("totals", None, 44.5, "under", "draftkings", 1.909),
+                      ("totals", None, 50.5, "over", "draftkings", 3.30),
+                      ("totals", None, 50.5, "under", "draftkings", 1.345),
+                      ("totals", None, 38.5, "over", "draftkings", 1.345),
+                      ("totals", None, 38.5, "under", "draftkings", 3.30))
+    b.record_main_point("e1", "totals", "draftkings", 54.5)
+    stale = stale_alt_ladders(b, max_drift=3.0, max_vig=1.06)
+    assert set(stale) == {("e1", "totals", "draftkings", 44.5),
+                          ("e1", "totals", "draftkings", 38.5),
+                          ("e1", "totals", "draftkings", 50.5)}
+    assert all(confirmed is False for _main, confirmed in stale.values())
+
+
+def test_the_vig_fallback_only_runs_where_there_is_no_centre_to_read():
+    """A ladder too flat to cross 50/50 gives no centre, so the overround is
+    all there is -- but it is judged against the book's OWN main-line
+    overround rather than an absolute bar, which is the whole point: "no
+    worse than its own main line" means the same thing at either book, where
+    "under 1.06" does not."""
+    b, _ = board_with(("totals", None, 62.5, "over", "draftkings", 1.90),
+                      ("totals", None, 62.5, "under", "draftkings", 1.90),
+                      ("totals", None, 60.5, "over", "draftkings", 1.95),
+                      ("totals", None, 60.5, "under", "draftkings", 1.95))
+    b.record_main_point("e1", "totals", "draftkings", 62.5)
+    assert stale_alt_ladders(b, max_drift=1.0) == {
+        ("e1", "totals", "draftkings", 60.5): (62.5, False)}, \
+        "no crossing: falls back, and 1.0256 is tighter than its own main's 1.0526"
+
+
+def test_the_boost_panel_reports_the_same_push_floor_as_the_scanner():
+    """price_candidates re-prices a SNAPSHOT under a boost, and it sets its own
+    floor. It read the same way find_arbitrages did -- guaranteed, no matter
+    the result -- so a boosted whole-number arb showed a floor it does not
+    have. Both now read the rule through push_value, which is why that
+    function takes primitives rather than a MarketGroup."""
+    from edge.arb.engine import price_candidates
+
+    c = cfg()
+    whole = [{"sport_key": "americanfootball_nfl", "sport_title": "NFL",
+              "matchup": "A @ B", "market": "totals", "subject": None, "point": 44.0,
+              "commence_time": (datetime.now(timezone.utc)
+                                + timedelta(hours=3)).isoformat(),
+              "legs": [{"side": "over", "book": "fanatics", "decimal": 2.10,
+                        "label": "Over", "point": 44.0},
+                       {"side": "under", "book": "draftkings", "decimal": 2.05,
+                        "label": "Under", "point": 44.0}]}]
+    row = price_candidates(whole, [], c)[0]
+    assert row["pushes"] and row["push_values"] == [44]
+    assert row["floor_pct"] == 0.0
+    assert row["profit_pct"] > 0, "every result but 44 still pays"
+
+    half = [{**whole[0], "point": 44.5,
+             "legs": [{**l, "point": 44.5} for l in whole[0]["legs"]]}]
+    row = price_candidates(half, [], c)[0]
+    assert not row["pushes"] and row["floor_pct"] == row["profit_pct"]

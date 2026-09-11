@@ -16,6 +16,18 @@ log = logging.getLogger("arb.engine")
 
 ET = ZoneInfo("America/New_York")
 
+# How much TIGHTER than a book's own main-line overround a far alternate rung
+# has to be priced before it reads as a rung the book has stopped repricing.
+# Only used where the ladder is too flat or too short to give a center to
+# measure instead -- see stale_alt_ladders.
+#
+# Bracketed by the two cases it has to tell apart, both real: the DraftKings
+# NCAAF ladder that kept serving 52.5 after the total moved to 62.5 priced
+# that rung at +0.0013 against its own main, while the tightest genuine far
+# rung across 1,263 live DraftKings NFL ones sat at +0.0129. Anywhere in
+# between separates them; the midpoint is not a number worth tuning.
+STALE_VIG_MARGIN = 0.005
+
 
 @dataclass
 class Leg:
@@ -36,13 +48,14 @@ class Leg:
     # SAME book's current main line while still priced like one -- see
     # stale_alt_ladders. Never true for the main line itself.
     off_main_line: bool = False
-    # The main point off_main_line was measured against, for the warning
-    # message. Looked up and stored here (rather than re-derived by the
-    # caller from `point`) because `point` is the SIGNED, per-side display
-    # value on a spread -- home and away carry opposite signs -- while the
-    # board's own main_points key is the raw, unsigned group point. Reading
-    # it back through `point` on an away spread leg would look up the wrong
-    # sign entirely, which is a KeyError, not just a wrong number.
+    # The main point off_main_line was measured against, on the SAME axis as
+    # this leg's own `point` -- so an away spread leg carries the away-signed
+    # main, and the warning below reads as one number against another rather
+    # than as two with opposite signs. The board's main_points registry keys
+    # on the raw home-axis group point, which is what the LOOKUP uses; the
+    # negation happens after it, in _leg. Doing it the other way round --
+    # looking the main up through the already-signed `point` -- would query
+    # the wrong sign entirely and simply miss.
     main_line: float | None = None
     # True when off_main_line came from DraftKings' own data contradicting
     # itself (its alternate ladder's "main" tag disagrees with its Game
@@ -278,38 +291,61 @@ def stale_alt_ladders(board: Board, max_drift: float, max_vig: float = 1.06
     center is known to be wrong, a rung that happens to look properly
     juiced from that wrong center is not evidence of anything.
 
-    INFERRED -- for a book with no such tag (or a DraftKings ladder that
-    doesn't disagree with itself, or one it happens not to be present on),
-    fall back to price. A genuine alternate rung far from the known main
-    line should price the corresponding tail probability, which means WORSE
-    vig the further out it sits -- that is the entire reason alternate
-    ladders blow out to -2400/+800 a few rungs from center. A rung that is
-    both far from main and STILL carries near-fair vig is what a ladder
-    built around a number the book has since moved past looks like:
-    internally consistent around its own old center, just not the center
-    any more.
+    INFERRED -- for a book with no such tag, ask the ladder where IT thinks
+    the true number is. `oddsmath.pickem_crossing` reads the point at which
+    the book's own devigged prices cross 50/50; a ladder built around a
+    number the book has since moved past still centers on that old number,
+    which is the whole defect stated directly. More than max_drift from the
+    book's own recorded main line and the entire ladder is flagged.
 
-    This was originally ONE inferred check that compared vig ACROSS the
-    whole ladder and trusted whichever point came out tightest. That missed
-    the case it was written for: DraftKings' real main total was 62.5 at
-    1.98/1.85 (vig 1.0462), and the stale rung at 52.5 was 1.89/1.93 (vig
-    1.0475) -- 0.0013 apart, a coin flip that happened to go the right way
-    once and the wrong way live. Comparing each far rung's OWN vig against a
-    fixed bar does not depend on that coin flip.
+    WHY NOT VIG. This check used to compare each far rung's own overround
+    against a fixed bar (`max_vig`, default 1.06), on the reasoning that a
+    genuine tail rung must be priced worse the further out it sits. That
+    reasoning does not survive contact with a second book. Measured on a
+    live NFL board, 2026-09-07:
+
+        book          far rungs   median vig   fraction <= 1.06
+        fanduel             722       1.0591              69.9%
+        draftkings         1263       1.0700               0.0%
+
+    FanDuel holds a flat ~5.9% overround across its whole ladder and moves
+    the PRICE; DraftKings widens to ~7.0%. So a fixed bar at 1.06 separates
+    the two BOOKS, not fresh rungs from stale ones -- it flagged 505 sound
+    FanDuel rungs and could not flag a DraftKings rung at all, which is the
+    exact inversion of what it was written to do (505 flags hid 32 of 99
+    opportunities behind the app's off-by-default "show stale alt lines").
+    Cross-checked against DraftKings' price at the SAME rung, those 505
+    agreed to a median 2.2pp of devigged probability -- ordinary cross-book
+    shading, nothing like a ladder centered ten points away.
+
+    The center test has no such book dependence, because it is measured in
+    POINTS rather than in vig: on that same board every DraftKings and
+    FanDuel ladder centered within 1.45 of its own main line (medians 0.24
+    and 0.30), while the DraftKings NCAAF ladder this check was written for
+    centers on 54.5 against a recorded main of 62.5.
+
+    `max_vig` survives as a FALLBACK, and only where the center cannot be
+    measured at all -- a ladder too flat or too short to cross 50/50, where
+    there is no center to compare. It is applied RELATIVE to the book's own
+    main-line overround rather than as an absolute bar, for the reason the
+    table above gives: a rung priced no worse than that book's own main line
+    despite sitting far from it is the anomaly, and "no worse than its own
+    main" means the same thing at either book.
 
     Only books with a recorded main_points entry (DraftKings, FanDuel) can
     be inferred-checked at all; only DraftKings currently has the "main" tag
     for the confirmed path. Fanatics has neither -- its feed carries its own
     separate battery of ladder checks instead (see books.ingest_oddschecker).
     """
-    by_ladder: dict[tuple[str, str, str], dict[float, list[Quote]]] = {}
+    # (event, market, book) -> point -> side -> quote
+    by_ladder: dict[tuple[str, str, str], dict[float, dict[str, Quote]]] = {}
     for key, group in board.groups.items():
         if key.market not in ("totals", "spreads") or key.point is None:
             continue
-        for per_book in group.quotes.values():
+        for side, per_book in group.quotes.items():
             for book, q in per_book.items():
                 by_ladder.setdefault((key.event_id, key.market, book), {}) \
-                    .setdefault(key.point, []).append(q)
+                    .setdefault(key.point, {})[side] = q
 
     stale: dict[tuple[str, str, str, float], tuple[float, bool]] = {}
     for (event_id, market, book), points in by_ladder.items():
@@ -318,19 +354,80 @@ def stale_alt_ladders(board: Board, max_drift: float, max_vig: float = 1.06
             continue                                  # book never resolved as main-line
         ladder_main = board.ladder_main_points.get((event_id, market, book))
         confirmed = ladder_main is not None and abs(ladder_main - main) > max_drift
-        for point, quotes in points.items():
+
+        # The book's own read of the true number, from its own prices. Either
+        # side works -- the other is 1 - p and crosses the same place -- so
+        # whichever of the two this market names is taken.
+        curve: dict[float, float] = {}
+        vigs: dict[float, float] = {}
+        for point, sides in points.items():
+            a = sides.get("over") or sides.get("home")
+            b = sides.get("under") or sides.get("away")
+            if a is None or b is None or a.decimal <= 1.0 or b.decimal <= 1.0:
+                continue
+            total = 1.0 / a.decimal + 1.0 / b.decimal
+            curve[point] = (1.0 / a.decimal) / total
+            vigs[point] = total
+        center = om.pickem_crossing(curve)
+        off_center = center is not None and abs(center - main) > max_drift
+        main_vig = vigs.get(main)
+
+        for point in points:
             if abs(point - main) <= max_drift:
                 continue                              # close to main: unremarkable either way
             if confirmed:
                 stale[(event_id, market, book, point)] = (main, True)
-                continue
-            prices = [q.decimal for q in quotes if q.decimal > 1.0]
-            if len(prices) < 2:
-                continue
-            vig = sum(1.0 / p for p in prices)
-            if vig <= max_vig:
+            elif center is not None:
+                # The center is the measurement; when it agrees with main the
+                # ladder is sound and no per-rung second opinion is wanted --
+                # that second opinion is what produced the 505 false flags.
+                if off_center:
+                    stale[(event_id, market, book, point)] = (main, False)
+            elif main_vig is not None and point in vigs:
+                # No center to measure: fall back to the rung's overround
+                # against this book's OWN main-line overround.
+                if vigs[point] <= main_vig + STALE_VIG_MARGIN:
+                    stale[(event_id, market, book, point)] = (main, False)
+            elif point in vigs and vigs[point] <= max_vig:
+                # Neither a center nor a priced main rung to compare against:
+                # the original absolute bar, kept only for this last case.
                 stale[(event_id, market, book, point)] = (main, False)
     return stale
+
+
+def push_value(market: str, point: float | None, sides: set[str]) -> float | None:
+    """The result that PUSHES both legs of this group, or None if none can.
+
+    A bet on a whole number returns the stake when the game lands exactly on
+    it. Both sides of one group share the number, so at an integer line they
+    push TOGETHER: every stake comes back and the position returns nothing --
+    not a loss, but not the profit an arbitrage is reported as guaranteeing
+    either.
+
+    Only over/under and home/away groups settle against a number this way
+    (a three-way field or a named outright has no line to land on), and only
+    an integer one can be landed on exactly.
+
+    Spreads live on the home-margin axis with the sign flipped -- the same
+    negation `find_middles` applies to report its window -- so a group point
+    of -3.0 pushes on a home margin of +3.
+
+    This is overwhelmingly a football problem, and it arrived with Fanatics:
+    DraftKings and FanDuel hang their alternate ladders on half-points, while
+    the Oddschecker feed Fanatics runs on carries whole numbers too. The
+    numbers it puts in play -- 3, 7, 10, 14 on a spread, and every integer
+    total -- are precisely the ones NFL games land on most.
+
+    Takes primitives rather than a MarketGroup so `price_candidates` -- which
+    re-prices a SNAPSHOT and has only the stored market/point/sides -- gets
+    the same answer as the live scanner instead of a second reading of the
+    rule that can drift from it.
+    """
+    if point is None or not float(point).is_integer():
+        return None
+    if sides not in ({"over", "under"}, {"home", "away"}):
+        return None
+    return -float(point) if is_spread_market(market) else float(point)
 
 
 def _leg(q: Quote, group: MarketGroup, commission: float, now: datetime,
@@ -339,9 +436,16 @@ def _leg(q: Quote, group: MarketGroup, commission: float, now: datetime,
     eff = om.net_of_commission(q.decimal, commission)
     main_line, confirmed = None, False
     if stale_mains is not None and group.key.point is not None:
+        # Looked up on the RAW group point -- the home axis -- because that is
+        # the key stale_alt_ladders wrote. Only AFTER the lookup succeeds is
+        # the answer moved onto the axis this leg displays its own point on,
+        # so the warning compares two numbers of the same sign. Reading it
+        # back through `point` instead would look the wrong sign up entirely.
         hit = stale_mains.get((group.key.event_id, group.key.market, q.book, group.key.point))
         if hit is not None:
             main_line, confirmed = hit
+            if is_spread_market(group.key.market) and q.side == "away":
+                main_line = -main_line
     return Leg(
         book=q.book,
         side=q.side,
@@ -534,6 +638,12 @@ def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Oppo
         stale_leg = next((l for l in legs if l.off_main_line), None)
         if stale_leg is not None:
             warnings.append(_stale_line_warning(stale_leg))
+        pushes_on = push_value(group.key.market, group.key.point, set(ordered))
+        if pushes_on is not None:
+            warnings.append(
+                f"whole-number line: a result of exactly {pushes_on:g} pushes BOTH legs and "
+                f"returns every stake, so this locks {alloc.worst_profit_pct:.2f}% on every "
+                "other result and 0% on that one")
 
         boost_desc = " + ".join(b.describe() for _, b in sorted(assignment.items())) or None
         out.append(Opportunity(
@@ -547,9 +657,20 @@ def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Oppo
             legs=legs, profit_pct=round(alloc.worst_profit_pct, 3),
             # An arbitrage's guaranteed return IS its expected return.
             expected_pct=round(alloc.worst_profit_pct, 3),
-            floor_pct=round(alloc.worst_profit_pct, 3),
+            # ...except on a whole-number line, where the one result that
+            # lands exactly on it hands every stake back. The floor is what
+            # the position guarantees, so there it is zero -- profit_pct
+            # above stays the return on every OTHER result, which is what
+            # the number means and what gets staked against.
+            floor_pct=(0.0 if pushes_on is not None
+                       else round(alloc.worst_profit_pct, 3)),
             ceiling_pct=round(alloc.best_profit_pct, 3),
-            risk_pct=0.0,          # guaranteed regardless of outcome
+            # Still zero: a push returns the stake, so there is no losing
+            # outcome to carry a probability. The push shows up as a floor
+            # of 0 and a warning, not as risk of loss.
+            risk_pct=0.0,
+            pushes=pushes_on is not None,
+            push_values=([int(pushes_on)] if pushes_on is not None else []),
             stake_total=alloc.total, profit_abs=alloc.worst_profit,
             boost=boost_desc,
             max_age_seconds=round(max(ages), 1), warnings=warnings,
@@ -1169,16 +1290,39 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
     out = []
     for c in cands:
         legs = c["legs"]
+        # Both legs at ONE book is not an arbitrage, whatever a boost does to
+        # one of the prices. Every other path already refuses it --
+        # find_arbitrages through min_books, find_middles and
+        # middle_candidates through an explicit `qlo.book == qhi.book` -- and
+        # the boost slider was the one that did not: it read `single_book` as
+        # "price this, but only with a boost".
+        #
+        # The arithmetic was never wrong. A 50% token really does beat one
+        # book's own vig: DraftKings' own Weber -1.5 sets at +105 boosts to
+        # +157 against its own Sach +1.5 at -140 and sums to 0.973. What the
+        # boost cannot do is make the position placeable -- both bets land on
+        # ONE account, on the two sides of one market, one of them on a promo.
+        # That is the textbook trigger for the book voiding the boosted leg
+        # and leaving the hedge naked, and it is the most legible arbitrage
+        # signal there is to a book that already limits accounts for it (see
+        # HANDOFF §6: losing a book costs more than any boost is worth).
+        #
+        # Found on a 50% DraftKings tennis token, where these were not a
+        # curiosity but the bulk of the panel: 19 of 25 boosted rows on one
+        # live slate, all DraftKings-vs-DraftKings, sorted above the six
+        # genuine two-book ones.
+        #
+        # The token is not wasted. price_boosted_ev reads these same
+        # candidates and prices the single boosted leg as +EV, which is what
+        # a boost no second book can cover actually is -- the app's
+        # "Best +EV" mode is where they belong and where they still appear.
+        if len({l["book"] for l in legs}) < 2:
+            continue
         base = [l["decimal"] for l in legs]
         leg_specs = [(l["book"], l.get("side"), l["decimal"]) for l in legs]
         best = None
         for assignment, priced in _boost_variants(leg_specs, boosts, c["sport_key"], c["market"],
                                                   event_start=_start_of(c)):
-            if not assignment and c.get("single_book"):
-                # One book on both sides is a data artifact on its own -- min_books
-                # exists to reject it -- but a boost can beat that book's own vig, and
-                # then it is a real position. So it is priced only WITH a boost.
-                continue
             s = om.arb_sum(priced)
             if s >= 1.0:
                 continue
@@ -1195,6 +1339,8 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
             continue
         alloc, assignment, priced = best
         boost_desc = " + ".join(b.describe() for _, b in sorted(assignment.items())) or None
+        pushes_on = push_value(c["market"], c.get("point"),
+                               {l.get("side") for l in legs})
         out.append({
             **{k: c[k] for k in ("sport_key", "sport_title", "matchup", "market",
                                  "subject", "point", "commence_time")},
@@ -1203,8 +1349,14 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
             # better-paying leg actually returns -- these differ only when
             # rounded stakes stop exactly equalising the two outcomes, which
             # is small but real, and worth showing rather than assuming away.
-            "floor_pct": round(alloc.worst_profit_pct, 3),
+            # ...and zero on a whole-number line, where the result that lands
+            # exactly on it pushes both legs and returns every stake. Read
+            # through the same push_value the scanner uses.
+            "floor_pct": (0.0 if pushes_on is not None
+                          else round(alloc.worst_profit_pct, 3)),
             "ceiling_pct": round(alloc.best_profit_pct, 3),
+            "pushes": pushes_on is not None,
+            "push_values": [int(pushes_on)] if pushes_on is not None else [],
             "profit_abs": alloc.worst_profit,
             "stake_total": alloc.total,
             "unboosted_pct": round((1.0 / om.arb_sum(base) - 1.0) * 100.0, 3),

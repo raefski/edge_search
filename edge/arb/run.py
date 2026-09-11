@@ -247,6 +247,7 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
     scanned = 0
     dropped_flat = dropped_rungs = dropped_ai = dropped_vig = 0
     dropped_stalled = dropped_offset = dropped_range = dropped_reversed = 0
+    dropped_prop_reversed = 0
     for league in leagues:
         key = league["sport_key"]
         if wanted is not None and key not in wanted:
@@ -273,6 +274,7 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
         dropped_offset += st.get("offset_ladders", 0)
         dropped_range += st.get("out_of_range_rungs", 0)
         dropped_reversed += st.get("reversed_rungs", 0)
+        dropped_prop_reversed += st.get("reversed_prop_rungs", 0)
     stats["fanatics_leagues_scanned"] = scanned
     stats["fanatics_flat_ladders"] = dropped_flat
     stats["fanatics_placeholder_rungs"] = dropped_rungs
@@ -298,6 +300,15 @@ def _fanatics_pass(board: Board, cfg: ArbConfig, stats: dict) -> None:
     # same way as the others, so its real hit rate is observed rather than
     # guessed at.
     stats["fanatics_out_of_range_rungs"] = dropped_range
+    # The reversal check, run one PLAYER at a time. Fanatics' NFL props are
+    # 3-4 rung alternate ladders and every other check here is skipped for
+    # player markets, so until this existed they went on the board with
+    # nothing looked at: the first live NFL board carried a rushing-yards
+    # ladder whose P(over) ROSE from 25.5 to 35.5, and it fed the second-ranked
+    # opportunity on the page. Counted separately from the game-line reversals
+    # above because the two run over different keys and a shared number would
+    # hide which one is firing.
+    stats["fanatics_reversed_prop_rungs"] = dropped_prop_reversed
     stats["fanatics"] = quotes
 
 
@@ -397,7 +408,28 @@ def scan(cfg: ArbConfig | None = None, progress=None,
         wanted = [(g, n) for g, n in tl.items()
                   if "Doubles" not in n and "Quals" not in n]
         stats["tennis_leagues_discovered"] = len(wanted)
-        for gid, name in sorted(wanted, key=lambda kv: kv[1])[: cfg.tennis_max_leagues]:
+        # THE CAP COUNTS LEAGUES THAT PRICED SOMETHING, and the ordering is no
+        # longer the alphabet.
+        #
+        # `sorted(...)[:14]` sorted by NAME, and tennis league names begin with
+        # the four Grand Slams. Live 2026-09-07, 31 leagues were discovered and
+        # the slice spent four of its fourteen slots on Australian Open (M),
+        # Australian Open (W), French Open (M) and French Open (W) -- futures
+        # containers months away, one event each, dropped a line later by the
+        # `< 2` check that runs AFTER the slot is already gone. The alphabet
+        # then cut, in this order: every WTA tour event (Antalya, Barranquilla,
+        # Montreux), both UTR Pro Series -- the two largest leagues on the list
+        # at 17 and 16 events -- and the US Open. 112 events dropped against
+        # 104 scanned, and no WTA coverage at all.
+        #
+        # Nothing here can rank a league before fetching it: dk_discover
+        # returns {id: name} and neither event counts nor dates. So the fix is
+        # not a better sort, it is to stop a dead container from consuming the
+        # budget -- `taken` counts only leagues that actually carried a card.
+        taken = 0
+        for gid, name in sorted(wanted, key=lambda kv: kv[1]):
+            if taken >= cfg.tennis_max_leagues:
+                break
             time.sleep(cfg.request_gap_seconds)
             try:
                 r = dk.session.get(f"{dk.base}/leagues/{gid}", headers=dk.headers,
@@ -407,10 +439,38 @@ def scan(cfg: ArbConfig | None = None, progress=None,
                 payload_t = r.json() or {}
                 if len(payload_t.get("events") or []) < 2:
                     continue          # an outright-only container, months out
+                taken += 1
                 dk_quotes += dk.ingest(board, payload_t, "tennis_atp",
                                        strict_match=False)["quotes"]
+                # DRAFTKINGS' TENNIS LEAGUE FEED IS MONEYLINE AND NOTHING ELSE.
+                # Measured on Challenger - Cassis: 13 events, 13 markets, 26
+                # selections, all "Moneyline". Its handicaps live in
+                # subcategories (534 Sets -> 11127 Set Spread), exactly as
+                # soccer's main lines do -- which is what
+                # draftkings_main_line_subcategories exists for. This block
+                # ingested the base payload and stopped, so DraftKings
+                # contributed 101 tennis h2h groups and zero spreads or totals
+                # to a live board.
+                #
+                # Safe only because marketmap.TENNIS_RULES now keys "Set
+                # Spread" as spreads_sets. Before that it read as bare
+                # `spreads` -- the same key Fanatics' games handicap landed on
+                # -- and turning this loop on would have put a SETS handicap
+                # of -1.5 in one group with a GAMES handicap of -1.5.
+                for cid, sid, sub_name in main_line_subcategories(
+                        payload_t, cfg.draftkings_main_line_subcategories):
+                    time.sleep(cfg.request_gap_seconds)
+                    try:
+                        sub = dk.fetch_league_subcategory(gid, cid, sid)
+                    except Exception:              # noqa: BLE001
+                        continue
+                    sub = dict(sub, events=payload_t.get("events") or [])
+                    dk_quotes += dk.ingest(
+                        board, sub, "tennis_atp", strict_match=False,
+                        is_main_line="alt" not in sub_name.lower())["quotes"]
             except Exception as exc:
                 log.debug("draftkings tennis %s: %s", name, exc)
+        stats["tennis_leagues_scanned"] = taken
         stats["draftkings"] = dk_quotes
 
     # 3. Fanatics via Oddschecker
@@ -492,10 +552,13 @@ def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict
     `prices` carries EVERY book's price per side, not just the best. The best
     is what an arbitrage needs, but a boost is tied to a specific book: a
     DraftKings token is useless if the snapshot only kept FanDuel's better
-    over. `single_book` marks a market only one book prices both sides of --
-    normally a data artifact and excluded by min_books, but with a boost it is
-    a real position (the boost can beat one book's own vig) and it is the only
-    way to devig a fair price where the other book posts one side.
+    over. `single_book` marks a market only one book prices both sides of.
+    Those rows are kept, but NOT as arbitrage candidates: both bets would sit
+    on one account on the two sides of one market, and no boost makes that
+    placeable -- `price_candidates` refuses them for the reasons written out
+    there. They are snapshotted because they are the only way to devig a fair
+    price where the other book posts just one side, and because
+    `price_boosted_ev` prices the boosted leg alone as +EV off exactly that.
     """
     books = set(cfg.books.bettable)
     now = datetime.now(timezone.utc)
