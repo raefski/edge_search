@@ -179,7 +179,7 @@ with st.sidebar:
             st.caption(f"Odds API: {_remaining} credits remaining this cycle")
 
         pull_fresh = st.button(
-            "Pull fresh lines (~2 credits)", use_container_width=True,
+            "Pull fresh lines (~2 credits)", width="stretch",
             help="One call covers the whole week's slate: spreads + totals across "
                  "every available book (markets × regions = 2), then free for 10 "
                  "minutes. Nothing spends unless you tap this.")

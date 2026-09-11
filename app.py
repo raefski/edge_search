@@ -298,7 +298,7 @@ with st.sidebar:
     # into a single interaction could see the button's check run against a
     # not-yet-committed value. Reordering removes that window entirely,
     # regardless of whether it was the actual cause this time.
-    if st.button("🔄 Refresh (free)", use_container_width=True,
+    if st.button("🔄 Refresh (free)", width="stretch",
                  help="Re-fetch salaries + confirmed lineups (0 credits). "
                       "Props come from the scraped snapshot."):
         st.cache_data.clear()
@@ -334,7 +334,7 @@ with st.sidebar:
             os.environ["ODDS_API_KEY"] = api_key
 
         if st.button("Pull fresh pitcher props (spends credits)",
-                     use_container_width=True,
+                     width="stretch",
                      help="One paid live pull of sportsbook props, then cached."):
             if not os.environ.get("ODDS_API_KEY"):
                 # A missing key here used to fail silently (build_slate would
@@ -483,7 +483,7 @@ def render_app() -> None:
     if res.get("unpriced"):
         st.warning("This slate isn't priced yet (no salaries). Upcoming slates:")
         st.dataframe([{"slate": n, "start": s, "games": gc} for n, i, s, gc in res["upcoming"]],
-                     use_container_width=True, hide_index=True)
+                     width="stretch", hide_index=True)
         st.stop()
 
     # log to disk so scripts/dfs_grade.py always has something to grade, whether
@@ -601,14 +601,14 @@ def render_app() -> None:
         label = "📌 Saved as my DK entry ✓" if is_saved else "📌 Save this as my DK entry"
         col1, col2 = st.columns([3, 2])
         with col1:
-            if st.button(label, key=f"save_{tag}", use_container_width=True,
+            if st.button(label, key=f"save_{tag}", width="stretch",
                          help="Saved to disk. Tap 🔄 Refresh as lineups post — Late-swap flags anyone ruled out."):
                 dfs_swap.save_pinned_entry(ROOT, slate_date, mode, rows)
                 st.rerun()
         with col2:
             st.download_button("⬇️ backup copy", data=_entry_csv_bytes(rows), key=f"dl_entry_{tag}",
                                file_name=f"dfs_entry_{slate_date}_{mode}.csv", mime="text/csv",
-                               use_container_width=True,
+                               width="stretch",
                                help="The saved copy above can be lost if the app sleeps overnight — "
                                     "keep this file too if you want guaranteed next-day grading.")
 
@@ -640,7 +640,7 @@ def render_app() -> None:
                 if rec["suggestions"]:
                     st.dataframe([{"replacement": s["name"], "team": s["team"], "salary": s["salary"],
                                    mode: s["val"], "own%": s["own"], "stack": "✓" if s["same_team"] else ""}
-                                  for s in rec["suggestions"]], use_container_width=True, hide_index=True)
+                                  for s in rec["suggestions"]], width="stretch", hide_index=True)
                 else:
                     st.caption("(no eligible replacement fits the freed salary / unlocked games)")
             if holds:
@@ -733,7 +733,7 @@ def render_app() -> None:
               "val/1k": round(p["proj"] / (p["salary"] / 1000.0), 2) if p.get("salary") else None}
              for p in res["pitchers"]),
             key=lambda r: -(r["val/1k"] or 0))
-        st.dataframe(prows, use_container_width=True, hide_index=True)
+        st.dataframe(prows, width="stretch", hide_index=True)
 
     # ── full pool ────────────────────────────────────────────────────────────
     with st.expander("Full player pool"):
@@ -742,7 +742,7 @@ def render_app() -> None:
               "salary": p["salary"], "proj": p["proj"], "ceil": p["ceiling"],
               "own%": round(p.get("own", 0), 1), "src": p["conf"]} for p in res["pool"]),
             key=lambda r: -(r["proj"] or 0))
-        st.dataframe(pool_rows, use_container_width=True, hide_index=True)
+        st.dataframe(pool_rows, width="stretch", hide_index=True)
 
 
 try:

@@ -331,7 +331,7 @@ with st.sidebar:
     st.caption("A live scan takes ~40s and spends **no** API credits. "
                "It needs a connection the books accept — that usually means "
                "your own machine, not a cloud host.")
-    run_live = st.button("🔄 Scan live", use_container_width=True)
+    run_live = st.button("🔄 Scan live", width="stretch")
 
     st.divider()
     st.header("Ask the desktop")
@@ -352,7 +352,7 @@ with st.sidebar:
 
     _repo, _token = _secret("GITHUB_REPO"), _secret("GITHUB_TOKEN")
     _cred_problem = _check_credentials(_repo, _token)
-    request_scan = st.button("📡 Request a desktop scan", use_container_width=True,
+    request_scan = st.button("📡 Request a desktop scan", width="stretch",
                              disabled=bool(_cred_problem))
     if _cred_problem:
         st.caption(f"⚠️ {_cred_problem}. Set `GITHUB_REPO` and `GITHUB_TOKEN` in "
@@ -793,7 +793,7 @@ if boosts:
                                 "Pays": r["american"],
                                 "Stake": money(r["stake"]),
                                 "Elsewhere": other,
-                            }], hide_index=True, use_container_width=True)
+                            }], hide_index=True, width="stretch")
                     st.caption("Place the boosted leg only. Nothing hedges it, so "
                                "most of these lose — the edge is in the price, not "
                                "in certainty.")
@@ -877,7 +877,7 @@ if boosts:
                                 "Pays": l["american"],
                                 "Stake": money(l["stake"]),
                                 "Returns": money(l["payout"]),
-                            } for l in r["legs"]], hide_index=True, use_container_width=True)
+                            } for l in r["legs"]], hide_index=True, width="stretch")
                     st.caption("Each boosted leg is capped at its token's max "
                                "stake, so the position is small by design. Place "
                                "the boosted leg(s) FIRST and confirm they applied "
@@ -920,7 +920,7 @@ if boosts:
                                 "Pays": l["american"],
                                 "Stake": money(l["stake"]),
                                 "Returns": money(l["payout"]),
-                            } for l in r["legs"]], hide_index=True, use_container_width=True)
+                            } for l in r["legs"]], hide_index=True, width="stretch")
                             if r.get("boost"):
                                 st.caption(
                                     f"Needs {r['boost']} applied — without it this "
@@ -1091,7 +1091,7 @@ for o in opps:
                 "Stake": f"${leg.get('stake', 0) * scale:,.2f}",
                 "Returns": f"${leg.get('payout', 0) * scale:,.2f}",
             })
-        st.dataframe(rows, hide_index=True, use_container_width=True)
+        st.dataframe(rows, hide_index=True, width="stretch")
         for w in o.get("warnings", []):
             st.warning(w, icon="⚠️")
 
