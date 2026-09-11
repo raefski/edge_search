@@ -194,22 +194,54 @@ deadline now has its own label (`lock-wed`/`lock-thu`/`lock-sun`/`lock-mon`), an
 transferability collector also refuses a reading captured after that game kicked off, since
 a Monday capture still returns Sunday's games.
 
-## Immediate next step, not yet done
+## Immediate next step — DONE 2026-09-11, and it produced the first live numbers
 
-Run a real week live and grade it: capture CBS's actual Week 1 lines (in progress —
-`data/pickem_current_week.csv` has provisional numbers from an early screenshot, needs
-re-verification Tuesday Sep 8 after 1pm ET per CBS's posting rule), let the model pick,
+Run a real week live and grade it: capture CBS's actual Week 1 lines, let the model pick,
 log results to `data/pickem/tracker.csv` (gitignored, real pool data), and see whether
 live performance tracks the 55.7% backtest or comes in under it per caveat #2 above.
+
+**CBS's lines are verified and in the log.** The `provisional` markers cleared on
+2026-09-10 when the automated CBS fetch first ran (`scripts/pickem_pool_fetch.py`), and
+every one of the 16 lines matched the hand transcription — the week 1 picks were right
+all along. `post` and `lock-wed` were then completed on 2026-09-11 ("wrote 0 new,
+completed 16" for each), which is the exact step this section used to be waiting on.
+
+**FIRST READINGS — one week, n=16, treat the CI as the answer.** From
+`scripts/pickem_transferability.py`, the measurement PICKEM_MODEL.md 5j r3/r6 calls the
+single largest source of uncertainty in the project (~$400/season):
+
+| quantity | first reading | what it means |
+|---|---|---|
+| implied `w` | **0.29**, 95% CI [0.00, 0.61] | how much of the backtested edge survives CBS freezing before you pick |
+| margin over chalk | **+4.19 to +4.67pp** (backtest assumed w=1.0 → +6.72/+7.70pp) | **~62% of the backtested margin transfers** |
+| `cbs_offset` (market at post − CBS) | **+0.316**, mean abs 0.551, n=16 | near zero ⇒ CBS posts the contemporaneous market, so essentially all the live edge is post-Tuesday **drift**, not CBS shading |
+| drift: freeze → midweek | mean abs move **0.781** | |
+| drift: midweek → lock | mean abs move **0.076** | |
+
+The last two are the thing the 2014–2024 archive can never supply (it holds only two
+snapshots per game) and they matter for section 6's ranking: **drift looks ~10× larger
+before midweek than after it**, which is the front-loading 5j round 3(a) warned about,
+now measured rather than suspected. If it holds up, "capture as late as legally possible"
+buys much less than ranked. One week is not enough to act on — the CI on `w` still spans
+0 to 0.61 — but the direction is now data, and ~4 weeks settles `w` because it needs no
+game results at all.
 
 **The grading half of that now exists** (`scripts/pickem_grade.py`, added 2026-09-09): it
 takes CBS's frozen line and the last `lock*` reading before each kickoff, runs the *shipped*
 `make_pick`, joins nflverse scores, and grades with the backtest's own `ats_result`. Prints
 W-L-P overall / by tier / signal-vs-fallback against 55.9% / 56.7% / 50.6% with a Wilson
-interval; `--write` fills the blank graded columns of `tracker.csv`. Today it correctly
-prints "no results yet" — Week 1 completes Monday 9/14. What it still needs is the *input*:
-CBS's verified lines in the log, which arrive by re-running the `post` label once
-`data/pickem_current_week.csv` is filled in ("wrote 0 new, completed 16").
+interval; `--write` fills the blank graded columns of `tracker.csv`. It now has its input
+and runs clean — the first graded game is wk1 NE@SEA (coin flip, final 10-13). Week 1
+completes Monday 9/14, so the real read comes then.
+
+**It is reporting 4 populated cells in `tracker.csv` that contradict the log**, all on the
+two Wednesday/Thursday games — e.g. `live_line_at_post_home` on file `-3.5` where the log
+computes `-3.188`, and `stale_gap` `0.0` where it computes `0.312`. Those are provisional
+numbers typed before the freeze (CBS's own line pasted into a column that wants the
+*market* at post). The grader keeps what is on file and refuses to overwrite a recorded
+measurement, so **they stand until someone clears those cells by hand** — that is a
+judgement call about your own pool file, not something to automate. Clear them and re-run
+with `--write` to let the computed values in.
 
 ## App / deployment
 

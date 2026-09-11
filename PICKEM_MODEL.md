@@ -1381,6 +1381,13 @@ but unpriceable. Ranked by realistic promise:
    thing that unblocks four separate experiments — including CBS-bias isolation, the one
    with a genuine mechanism nobody else in the pool can exploit. A missed week is a
    permanently missing row.
+   **DONE — it is no longer a habit, it is a timer (2026-09-11).** Six
+   `pickem-capture@*` units run the market half, and the CBS half now runs with them
+   (it had never once executed before 2026-09-10: Chromium could not start under
+   systemd and the soft-failing `ExecStartPre=-` swallowed it silently — see
+   `edge/pickem_cbs.ensure_chromium_libs`). Week 1 has four snapshots on file:
+   `post`, `lock-wed`, `lock-thu`, `midweek`. First readings are tabulated in
+   `PICKEM_STATUS.md`.
 
 1. **Time the picks better.** The backtest approximates "at lock" with the *closing* line,
    but Adam's real deadline is each day's first kickoff — hours earlier for most games.
@@ -1391,6 +1398,14 @@ but unpriceable. Ranked by realistic promise:
    **But see 5j round 3(a), which is a much more serious problem for this project's headline
    number than a ranking question: drift appears to be front-loaded into the first ~2 days
    after the opener, which is BEFORE CBS freezes.**
+   **First live measurement of exactly this, 2026-09-11 (week 1, n=14, PRELIMINARY):**
+   freeze → midweek mean |move| **0.781**; midweek → lock **0.076**. Drift is ~10× larger
+   before midweek than after, which is round 3(a)'s front-loading showing up in real
+   captured data rather than inferred from the archive — and it is the one thing the
+   2014–2024 file can never supply, since it holds two snapshots per game. If it holds,
+   this item is worth much less than its #1 ranking. **One week settles nothing**; the
+   ranking is left alone until there are ~4. Re-run
+   `python3 scripts/pickem_transferability.py` as weeks accumulate.
 2. **Net out CBS's house offset.** CBS sets spreads "at its own discretion," so part of
    the observed gap may be CBS's own methodology rather than drift. Recording a market
    line *at the moment CBS posts* would isolate true movement. The
