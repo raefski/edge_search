@@ -580,3 +580,43 @@ def test_a_corrupt_snapshot_does_not_take_the_page_down(tmp_path):
     (tmp_path / "arb_snapshot.json").write_text("{ this is not json")
     st = run_page(None, tmp_path=tmp_path)
     assert st.drawn
+
+
+# --- the empty board has to say WHICH kind of empty it is --------------------
+# Added 2026-09-11. Every empty board rendered the same sentence: "days with
+# no arbitrage are normal". On 2026-09-10 the snapshot held 30 opportunities
+# and every one had already kicked off, so the page reassured its reader that
+# there was nothing to find while the real answer was "this scan is old, tap
+# Scan". A reassurance shown in place of an action costs the whole session.
+
+def _all_live_snapshot() -> dict:
+    """Every opportunity already under way -- yesterday's scan, read today."""
+    snap = _snapshot(n_opps=3, n_cands=0)
+    live_ct = (datetime.now(timezone.utc) - timedelta(minutes=45)).isoformat()
+    for o in snap["opportunities"]:
+        o["commence_time"] = live_ct
+    return snap
+
+
+def _warnings(st) -> str:
+    return " ".join(str(a) for kind, a in st.drawn if kind == "warning")
+
+
+def test_an_all_live_board_says_the_scan_is_stale_not_that_nothing_was_found(tmp_path):
+    st = run_page(_all_live_snapshot(), tmp_path=tmp_path)
+    msg = _warnings(st)
+
+    assert "already kicked off" in msg
+    assert "stale scan, not a quiet board" in msg
+    assert "days with no" not in msg, (
+        "the reassurance must not be shown when the real problem is an old scan")
+
+
+def test_a_genuinely_empty_scan_still_gets_the_reassurance(tmp_path):
+    """The other half: when the scan really did find nothing, saying so is
+    correct and the user should not be sent chasing a fresh scan."""
+    st = run_page(_snapshot(n_opps=0, n_cands=0), tmp_path=tmp_path)
+    msg = _warnings(st)
+
+    assert "days with no" in msg
+    assert "already kicked off" not in msg

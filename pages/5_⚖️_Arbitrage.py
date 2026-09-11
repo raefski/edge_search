@@ -932,13 +932,19 @@ if boosts:
 # picker above -- that is the whole point of turning it on -- so it is added
 # to whatever kinds are already checked rather than requiring a second click.
 _effective_kinds = set(kinds) | ({"gap"} if casino_mode else set())
-opps = [o for o in snap.get("opportunities", [])
+_all_opps = snap.get("opportunities", [])
+opps = [o for o in _all_opps
         if o.get("kind") in _effective_kinds and o.get("profit_pct", 0) >= min_profit]
 if sport_filter:
     opps = [o for o in opps
             if (o.get("sport_title") or o.get("sport_key")) in sport_filter]
+# Counted before the live filter runs, because "everything in this snapshot
+# has already kicked off" and "there was nothing to find" are opposite
+# situations that used to render the same sentence -- see _empty_reason.
+_before_live = len(opps)
 if not show_live:
     opps = [o for o in opps if not is_live(o.get("commence_time", ""))]
+_lost_to_live = _before_live - len(opps)
 if date_range:
     opps = [o for o in opps if in_date_range(o.get("commence_time", ""), date_range)]
 if casino_mode:
@@ -947,14 +953,41 @@ if casino_mode:
 if not show_stale_alt_lines:
     opps = [o for o in opps if not o.get("stale_alt_line")]
 
+
+def _empty_reason() -> str:
+    """Why the board is empty, in the words that tell you what to DO about it.
+
+    Added 2026-09-11. The page used to say one thing for every empty board:
+    "days with no arbitrage are normal". That is true and reassuring, and on
+    2026-09-10 it was also wrong -- the snapshot held 30 live opportunities
+    and every one had already commenced, so the honest answer was "this scan
+    is old, ask for a new one", the opposite of "nothing to find here".
+
+    Reading a reassurance when the real answer is "tap Scan" costs a whole
+    session, so the reassurance is now only printed when it is actually true:
+    the scan genuinely found nothing that matches.
+    """
+    if _lost_to_live and not _before_live - _lost_to_live:
+        return (f"All {_lost_to_live} opportunit{'y' if _lost_to_live == 1 else 'ies'} "
+                f"in this scan have already kicked off — you cannot take these "
+                f"prices any more. This is a **stale scan, not a quiet board**: "
+                f"request a fresh one above, or tick *Show live* to look at them "
+                f"anyway.")
+    if casino_mode:
+        return ("Nothing clears these filters, and only DraftKings/FanDuel legs "
+                "qualify in Casino mode — try widening the date range or "
+                "turning it off.")
+    if _all_opps:
+        return (f"This scan found {len(_all_opps)} opportunit"
+                f"{'y' if len(_all_opps) == 1 else 'ies'}, but none clear the "
+                f"filters above — widen the date range, lower the minimum "
+                f"profit, or add a sport.")
+    return ("Nothing clears these filters. With three books, days with no "
+            "arbitrage are normal — middles and +EV are the usual finds.")
+
 if not opps:
     if not boost_rows:
-        st.warning(
-            "Nothing clears these filters, and only DraftKings/FanDuel legs "
-            "qualify in Casino mode — try widening the date range or "
-            "turning it off." if casino_mode else
-            "Nothing clears these filters. With three books, days with no "
-            "arbitrage are normal — middles and +EV are the usual finds.")
+        st.warning(_empty_reason())
     st.stop()
 
 
