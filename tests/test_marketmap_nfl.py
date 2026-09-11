@@ -36,6 +36,13 @@ from edge.arb.marketmap import canonical_market
     ("Puka Nacua Receiving Yards", "player_reception_yds"),
     ("Puka Nacua Rec Yards O/U", "player_reception_yds"),
     ("Travis Kelce Receptions O/U", "player_receptions"),
+    # A "Longest X" market is a DISTANCE, not a count of X. Read off the same
+    # live board on 2026-09-06: Puka Nacua's receptions came back at a point of
+    # 26.5 because `receptions?` matched the word inside "Longest Reception".
+    ("Puka Nacua Longest Reception O/U", "player_reception_longest"),
+    ("Terrance Ferguson Longest Reception", "player_reception_longest"),
+    ("Saquon Barkley Longest Rush O/U", "player_rush_longest"),
+    ("Josh Allen Longest Passing Completion O/U", "player_pass_longest_completion"),
 ])
 def test_nfl_player_market_names(name, want):
     assert canonical_market(name, player="X") == want
@@ -67,3 +74,33 @@ def test_combo_and_its_parts_get_different_keys():
     pr_combo = canonical_market("Brock Purdy Passing + Rushing Yards O/U", player="X")
     assert pr_combo not in (canonical_market("Brock Purdy Passing Yards", player="X"),
                             canonical_market("Brock Purdy Rushing Yards", player="X"))
+
+
+@pytest.mark.parametrize("longest,count", [
+    ("Puka Nacua Longest Reception O/U", "Puka Nacua Receptions O/U"),
+    ("Saquon Barkley Longest Rush O/U", "Saquon Barkley Rushing Attempts O/U"),
+    ("Josh Allen Longest Passing Completion O/U",
+     "Josh Allen Passing Completions O/U"),
+])
+def test_a_longest_market_never_shares_a_key_with_the_count_it_names(longest, count):
+    """The property, stated the way the combo one is.
+
+    This family is nastier than the combos because `price_conflicts` cannot
+    see it. group_key is event|market|subject|point, so 5.5 receptions and a
+    26.5-yard longest reception differ in `point` and never land in one group.
+    What breaks instead is edge/dfs.py::player_markets, which keeps one entry
+    per market key and lets the last outcome win: the longest line silently
+    REPLACES the real one, and in full PPR that was +21 DK points on Nacua.
+    """
+    a = canonical_market(longest, player="X")
+    b = canonical_market(count, player="X")
+    assert a is not None and b is not None
+    assert a != b, f"{longest} and {count} both map to {a}"
+
+
+def test_longest_markets_are_not_projected_as_the_stat_they_name():
+    """Belt and braces on the consumer side: the NFL DFS spec must not read a
+    longest-anything as a scoring stat, whatever the map does."""
+    from edge.dfs_sport import NFL
+    keys = set(NFL.market_keys())
+    assert not {k for k in keys if "longest" in k}, keys

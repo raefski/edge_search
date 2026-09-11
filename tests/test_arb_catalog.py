@@ -1805,3 +1805,62 @@ def test_the_cap_handles_boosted_ev_rows_too():
     assert len(top_rows_per_sport(rows, 0)) == 3
     kept = top_rows_per_sport(rows, 1)
     assert {r["ev_pct"] for r in kept} == {5.0, 4.0}
+
+
+# --- where the Fanatics app-width window is centred --------------------------
+def test_known_main_point_takes_the_median_not_the_first_book_found():
+    """DraftKings' Game market used to be the sole authority on where the
+    +/-7 window sits, with FanDuel consulted only if DraftKings had nothing.
+    They disagree more often than that survives -- 14 of 36 NFL game lines on
+    a live board, by up to 3 points -- and DraftKings disagrees with ITSELF:
+    on Arizona at the Chargers its Game market said -10.0 while its own
+    alternate ladder tagged -9.5 and FanDuel said -9.5. First-found took the
+    outlier and shifted the whole window.
+
+    Three readings vote, and the ladder tag is a genuinely independent third:
+    a different endpoint, and the rung the app itself pre-selects.
+    """
+    from edge.arb.books import _known_main_point
+    from edge.arb.models import Board
+
+    b = Board()
+    b.record_main_point("e1", "spreads", "draftkings", -10.0)
+    b.record_main_point("e1", "spreads", "fanduel", -9.5)
+    b.record_ladder_main_point("e1", "spreads", "draftkings", -9.5)
+    assert _known_main_point(b, "e1", "spreads") == -9.5, "two of three outvote one"
+
+
+def test_known_main_point_falls_back_to_whatever_single_reading_exists():
+    from edge.arb.books import _known_main_point
+    from edge.arb.models import Board
+
+    b = Board()
+    b.record_main_point("e1", "totals", "fanduel", 47.5)
+    assert _known_main_point(b, "e1", "totals") == 47.5
+    assert _known_main_point(Board(), "e1", "totals") is None
+
+
+def test_the_fanatics_alt_width_is_per_sport_and_defaults_to_the_measurement():
+    """7.0 was measured on three NCAAF games. It is applied to NFL as an
+    inherited default rather than a measured one, and the table is the place
+    that distinction is recorded -- on a live NFL board this number, not the
+    feed, is what bounds Fanatics' depth (1,729 rungs dropped, every
+    surviving ladder exactly 14.0 wide)."""
+    from edge.arb.books import FANATICS_ALT_LINE_MAX_WIDTH, fanatics_alt_width
+
+    assert fanatics_alt_width("americanfootball_ncaaf") == 7.0
+    assert fanatics_alt_width(None) == FANATICS_ALT_LINE_MAX_WIDTH
+
+
+def test_a_baseball_total_is_not_measured_in_football_points():
+    """7 units of line is a different bet per sport. An MLB total sits near
+    7.5 runs, so +/-7 spans 0.5 to 14.5 and admits everything Oddschecker
+    serves -- measured 2026-09-07, the check dropped ZERO MLB rungs. It was
+    inert on the sport, not conservative on it, which is how Under 13 on a
+    7.5 main reached the board."""
+    from edge.arb.books import fanatics_alt_width
+
+    assert fanatics_alt_width("baseball_mlb") < fanatics_alt_width("americanfootball_nfl")
+    main = 7.5
+    assert abs(13.0 - main) > fanatics_alt_width("baseball_mlb"), "Under 13 is out of range"
+    assert abs(11.5 - main) <= fanatics_alt_width("baseball_mlb"), "11.5 is a real rung"

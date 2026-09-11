@@ -60,6 +60,13 @@ NOT_FULL_GAME = re.compile("|".join((
     # put Joint 2-1 at 6.8 against Samsonova 2-1 at 4.0 in one group -- an
     # arb_sum of 0.397.
     r"\bodd/even\b|\bcorrect score\b|\bset betting\b|\bdouble chance\b|\bboth halves\b",
+    # DraftKings' "Moneyline - Listed Set" is the winner of ONE set, not of the
+    # match. It carries no ordinal and no digit, so every period pattern above
+    # steps over it, and the bare `money ?line` rule then files a set winner as
+    # the match h2h -- two different bets on one GroupKey, at prices nowhere
+    # near each other. Named here rather than in the tennis rules because it
+    # is the same defect those patterns exist for, just spelled differently.
+    r"\blisted set\b",
     r"\binterval\b|\bbands?\b|\bexact\b",
     # Same-game parlays. FanDuel's NRL page carries "Head to Head / Total
     # Points Parlay" and friends, whose marketTypes contain TOTAL_POINTS and
@@ -264,6 +271,34 @@ PLAYER_STATS: list[tuple[str, str]] = [
     (rf"rush(ing)?{_SEP}rec(eiving)? {_YDS}", "player_rush_reception_yds"),
     (rf"rec(eiving)?{_SEP}rush(ing)? {_YDS}", "player_rush_reception_yds"),
 
+    # "LONGEST X" IS A DISTANCE, NOT A COUNT, and must be claimed before the
+    # bare `receptions?` / `pass completions?` rules below. Found 2026-09-06 on
+    # a live NFL board while fitting the touchdown rates: Puka Nacua's
+    # `player_receptions` came back with a point of 26.5 and Terrance
+    # Ferguson's 15.5. Nobody catches 26 passes -- those are LONGEST RECEPTION
+    # lines in yards, and `receptions?` matched the word "Reception" inside
+    # "Longest Reception".
+    #
+    # It is the exact shape HANDOFF.md section 8 catalogues -- two different
+    # bets on one GroupKey -- with the twist that makes this family survive:
+    # `price_conflicts` CANNOT see it. group_key is event|market|subject|point,
+    # so 5.5 receptions and a 26.5-yard longest reception differ in `point`,
+    # land in different groups, and never collide. What actually happens is
+    # quieter and worse: edge/dfs.py::player_markets keeps ONE entry per market
+    # key and the last outcome wins it, so on 17 of 140 receptions markets the
+    # longest-reception line silently replaced the real one. In full PPR that
+    # is 1 DK point per unit, so Nacua projected 26.5 points of receptions
+    # instead of ~5.5 -- +21 points -- and every corrupted player went straight
+    # to the top of the value board where an optimiser would take them all.
+    #
+    # Given their own keys rather than dropped, for the reason the combos above
+    # are: they are real two-sided markets, and a separate key is precisely
+    # what stops them colliding with the stat whose name they contain. Keys
+    # follow The Odds API's own spelling, like everything else here.
+    (r"longest rec(eption)?", "player_reception_longest"),
+    (r"longest rush(ing)?", "player_rush_longest"),
+    (r"longest pass(ing)? completion", "player_pass_longest_completion"),
+
     (rf"pass(ing)? {_YDS}", "player_pass_yds"),
     (r"pass(ing)? touchdowns?|pass(ing)? tds?", "player_pass_tds"),
     (r"pass(ing)? attempts?", "player_pass_attempts"),
@@ -298,6 +333,45 @@ PLAYER_STATS: list[tuple[str, str]] = [
     (r"\bgoals?\b", "player_goals"),
 ]
 
+# TENNIS COUNTS THREE DIFFERENT THINGS AND CALLS THEM ALL HANDICAPS AND TOTALS.
+#
+# The rules in RULES catch the two spelled out in full -- "Sets Handicap",
+# "Games Handicap" -- and nothing else, because they require the literal word
+# "handicap". Books do not oblige:
+#
+#     Oddschecker / Fanatics   "Handicaps"     -- bare, no unit named
+#     DraftKings               "Set Spread"    -- says spread, not handicap
+#
+# Both fell through to the generic `spreads` rule. That did two separate kinds
+# of damage, measured on a live tennis board 2026-09-07:
+#
+#   * IT SPLIT ONE MARKET IN HALF. FanDuel's games handicap keys
+#     `spreads_games` and Fanatics' identical market keyed `spreads`, so 21
+#     rungs that name the same bet at the same line sat in different groups
+#     and could never pair -- against 39 two-book tennis groups on the whole
+#     board.
+#   * IT WOULD HAVE MERGED TWO DIFFERENT ONES. "Set Spread" landing on the
+#     same `spreads` key as "Handicaps" puts a SETS handicap of -1.5 in the
+#     same group as a GAMES handicap of -1.5. A set favourite at -1.5 prices
+#     around 2.5-4.0 where a games favourite at -1.5 prices around 1.3-1.5,
+#     so that is not a near miss, it is a manufactured arbitrage. It has not
+#     fired yet only because DraftKings' tennis subcategories were never
+#     fetched; enabling them without this would have set it off.
+#
+# THE DEFAULT IS GAMES, and that is domain fact rather than a guess: the
+# standard tennis handicap is a game handicap, and a book pricing the set
+# version says so in the name. So "set" is claimed first and everything left
+# over is games.
+TENNIS_RULES: list[tuple[str, str]] = [
+    (r"\bsets?\b.{0,12}\b(handicaps?|spreads?|line betting)\b", "spreads_sets"),
+    (r"\b(handicaps?|spreads?)\b.{0,12}\bsets?\b", "spreads_sets"),
+    (r"\btotals?\b.{0,12}\bsets?\b|\bsets?\b.{0,12}\btotals?\b", "totals_sets"),
+    (r"\bgames?\b.{0,12}\b(handicaps?|spreads?|line betting)\b", "spreads_games"),
+    (r"\b(handicaps?|spreads?|line betting)\b", "spreads_games"),
+    (r"\btotals?\b|\bover ?/? ?under\b|\bo ?/ ?u\b", "totals_games"),
+]
+
+
 def _first_match(rules, text: str) -> str | None:
     """First matching rule wins. A rule may map to None, meaning "recognised,
     but there is no canonical key for it" -- that stops a later, looser pattern
@@ -308,13 +382,20 @@ def _first_match(rules, text: str) -> str | None:
     return None
 
 
-def canonical_market(name: str, group: str = "", player: str | None = None) -> str | None:
+def canonical_market(name: str, group: str = "", player: str | None = None,
+                     sport_key: str | None = None) -> str | None:
     """Return a canonical market key, or None if we cannot say confidently.
 
     Precedence depends on whether a player is in play. "Total Points" is a game
     total; "Total Points" attached to Nikola Jokic is a player prop. Guessing
     that wrong pairs a game total against a player line and invents an arb, so
     the player context decides which rule set wins rather than rule ordering.
+
+    `sport_key` is optional and only tennis reads it today, because tennis is
+    the one sport here whose handicaps and totals count a unit the market name
+    does not always state -- see TENNIS_RULES. A caller that cannot supply it
+    gets exactly the old behaviour, which is why it is a keyword with a
+    default rather than a required argument threaded through every book.
     """
     text = f"{group} {name}".lower().strip()
     # Checked here rather than as a None-mapping rule in RULES, because
@@ -323,6 +404,12 @@ def canonical_market(name: str, group: str = "", player: str | None = None) -> s
     # PLAYER_STATS and the guard would not hold.
     if not is_full_game(text):
         return None
+    if sport_key and sport_key.startswith("tennis"):
+        # Ahead of RULES, not instead of it: a name no tennis rule claims
+        # ("Win Market", "Moneyline") still needs the ordinary map.
+        tennis = _first_match(TENNIS_RULES, text)
+        if tennis is not None:
+            return tennis
     if player:
         return _first_match(PLAYER_STATS, text) or _first_match(RULES, text)
     return _first_match(RULES, text) or _first_match(PLAYER_STATS, text)

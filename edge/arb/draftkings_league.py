@@ -108,6 +108,15 @@ MAIN_LINE_ORDER = (
     r"^(point )?spread$", r"^total( goals| points| runs)?$", r"^run line$",
     r"^puck line$", r"^alt(ernate)? (spread|run line|puck line)",
     r"^alt(ernate)? total",
+    # Tennis, which names its main lines after the unit it counts. Every
+    # pattern above is anchored, so "Set Spread" matched none of them and this
+    # function returned [] for every tennis league -- which meant the tennis
+    # pass had no subcategory to fetch even once it started asking for them,
+    # and DraftKings contributed 101 h2h groups and no handicap at all to a
+    # live tennis board. Ranked last because no sport has both these and the
+    # patterns above, so the order between them never arises.
+    r"^(set|game) spread$", r"^total (games|sets)$",
+    r"^alt(ernate)? (set|game) spread", r"^alt(ernate)? total (games|sets)",
 )
 
 

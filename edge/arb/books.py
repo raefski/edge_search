@@ -119,7 +119,8 @@ def ingest_pointsbet(board: Board, payload, book: str = "fanatics",
 
             # a player name may sit on the market label or on each outcome
             _, label_player = split_player(label)
-            mkey = canonical_market(label, group, player=label_player)
+            mkey = canonical_market(label, group, player=label_player,
+                                    sport_key=sport_key)
             if mkey is None:
                 stats["markets_unmapped"].add(f"{group} | {label}".strip(" |"))
                 continue
@@ -247,7 +248,7 @@ def _other_book_points(board: Board, event_id: str, market: str,
 
 # Fanatics' feed comes from Oddschecker, which carries every line the market
 # comparison tracks -- not the narrower set Fanatics' own app actually lets
-# you bet. Confirmed on three separate games rather than assumed: Rhode
+# you bet. Confirmed on three separate NCAAF games rather than assumed: Rhode
 # Island at Temple's spread (main -14.5) is offered -7.5 to -21.5 on the
 # Fanatics app, but Oddschecker's feed for the same market runs -3.5 to
 # -22.5; another game's spread (main 20.5) was 13.5-27.5 on the app; a third's
@@ -256,19 +257,79 @@ def _other_book_points(board: Board, event_id: str, market: str,
 # not a pricing question, so nothing here checks whether the excluded rungs
 # are internally consistent. They can be perfectly priced and still not be a
 # bet Fanatics will let you place.
-FANATICS_ALT_LINE_MAX_WIDTH = 7.0
+#
+# WHAT IS MEASURED AND WHAT IS INHERITED. Those three games are all NCAAF.
+# The limit is per SPORT here rather than one global constant because the
+# cost of applying it where it was not measured is large and one-directional:
+# on a live NFL board (2026-09-07) it dropped 1,729 rungs, and every one of
+# the 32 Fanatics NFL game-line ladders that survived came out exactly 14.0
+# points wide -- so on NFL this number, not the feed, is what bounds Fanatics'
+# depth, and alternate ladders are where middles come from. Each entry below
+# says which it is. Widening one is a one-line change once the app has been
+# read on that sport: open a game, note the first and last alternate rung.
+FANATICS_ALT_LINE_MAX_WIDTH = 7.0            # default, = the NCAAF measurement
+FANATICS_ALT_LINE_MAX_WIDTH_BY_SPORT: dict[str, float] = {
+    "americanfootball_ncaaf": 7.0,           # MEASURED, three games, 2026-09-06
+    # INHERITED, not measured. Same book on the same platform, and NFL spreads
+    # and totals live on the same scale as NCAAF's, so this is the honest
+    # default -- but it is a guess about a product limit, and it is the term
+    # that decides how much of Fanatics' NFL ladder is usable.
+    "americanfootball_nfl": 7.0,
+    # INFERRED, and the weakest entry here -- say so rather than let it read
+    # as measured. A BASEBALL total is ~7.5 runs where a football total is
+    # ~50 points, so 7 units of line is a completely different bet: +/-7 runs
+    # spans 0.5 to 14.5 and admits every rung Oddschecker serves. Measured
+    # 2026-09-07: the check dropped ZERO MLB rungs, i.e. it was inert on the
+    # sport rather than conservative on it.
+    #
+    # Two things bound it, neither of them the Fanatics app itself:
+    #   * DraftKings' own MLB alternate-total ladder reaches +/-5.0 from its
+    #     main (median 4.5) across 11 live games -- a comparable US book's
+    #     actual product depth on the same market.
+    #   * The owner checked one game (Cleveland at Baltimore, main ~7.5) and
+    #     Fanatics does not offer Under 13, which is 5.5 out.
+    # Both point below 5.5 and DraftKings' number is 5.0, so that is what
+    # this is. VERIFY IT: open an MLB game on Fanatics, note the first and
+    # last alternate total, and replace this with the measurement.
+    "baseball_mlb": 5.0,
+}
+
+
+def fanatics_alt_width(sport_key: str | None) -> float:
+    return FANATICS_ALT_LINE_MAX_WIDTH_BY_SPORT.get(
+        sport_key or "", FANATICS_ALT_LINE_MAX_WIDTH)
 
 
 def _known_main_point(board: Board, event_id: str, market: str) -> float | None:
-    """The main line for this event+market, if DraftKings or FanDuel (both
-    ingested before Fanatics, see run.py) has already resolved one -- the
-    same registry engine.stale_alt_ladders reads, reused here as the centre
-    Fanatics' own app-width limit is measured from."""
-    for book in ("draftkings", "fanduel"):
-        point = board.main_points.get((event_id, market, book))
-        if point is not None:
-            return point
-    return None
+    """The main line for this event+market, as the books that have already
+    been ingested agree on it -- the same main_points registry
+    engine.stale_alt_ladders reads, reused here as the centre Fanatics' own
+    app-width limit is measured from.
+
+    THE MEDIAN, NOT THE FIRST ONE FOUND. This used to return DraftKings' if
+    DraftKings had one and FanDuel's only otherwise, which quietly made one
+    book's Game market the sole authority on where a +/-7 window sits. They
+    disagree more often than that assumption survives: on a live NFL board,
+    14 of 36 game lines, by up to 3 full points. Worse, DraftKings disagrees
+    with ITSELF -- on Arizona at the Chargers its Game market said -10.0
+    while its own alternate ladder tagged -9.5 as main and FanDuel said -9.5,
+    so first-found took the outlier and shifted the whole window half a point.
+
+    So all three readings vote: both books' Game markets, plus DraftKings'
+    own ladder "main" tag, which is a genuinely independent third source
+    (a different endpoint, and the field its own app pre-selects on). Two of
+    the three agreeing is enough to outvote a stale or lagging one, which is
+    exactly what the median does.
+    """
+    seen = [p for p in (board.main_points.get((event_id, market, "draftkings")),
+                        board.main_points.get((event_id, market, "fanduel")),
+                        board.ladder_main_points.get((event_id, market, "draftkings")))
+            if p is not None]
+    if not seen:
+        return None
+    seen.sort()
+    mid = len(seen) // 2
+    return seen[mid] if len(seen) % 2 else (seen[mid - 1] + seen[mid]) / 2.0
 
 
 def _stalled_runs(rungs: dict) -> set:
@@ -300,7 +361,7 @@ def _stalled_runs(rungs: dict) -> set:
     return out
 
 
-def _reversed_rungs(rungs: dict) -> set:
+def _reversed_rungs(rungs: dict, non_increasing: bool | None = None) -> set:
     """Rungs where the ladder's implied probability moves the WRONG WAY.
 
     THE CHECK IS ARITHMETIC, NOT A HEURISTIC. {over 12.5} is a strict subset
@@ -349,6 +410,30 @@ def _reversed_rungs(rungs: dict) -> set:
     order to appeal to. Nothing is dropped there -- a market that broken is
     the flat / stalled / aiProbability rules' business, and two guards
     claiming one defect would double-count it.
+
+    INFER THE DIRECTION ONLY WHERE IT IS ACTUALLY UNKNOWN. On an over/under
+    ladder it is not: P(over) must FALL as the line rises, full stop, and the
+    alphabetically-first side name is the "over" one by construction at both
+    call sites. Inferring anyway is not merely redundant, it inverts on a
+    short broken ladder, because the majority can be the broken half. Live
+    Fanatics NFL, 2026-09-07 -- TreVeyon Henderson rushing yards, whose real
+    line DraftKings had at 18.5:
+
+        20.5  over 1.7407 / under 2.0000   P(over)=0.5347
+        25.5  over 2.1500 / under 1.6452   P(over)=0.4335
+        30.5  over 2.0500 / under 1.7143   P(over)=0.4554
+        35.5  over 1.9091 / under 1.8333   P(over)=0.4899
+
+    The longest run is the RISING one (25.5/30.5/35.5, three rungs against
+    two), so inference keeps the three impossible rungs -- 35.5 yards priced
+    at nearly even money for a back lined at 18.5 -- and drops 20.5, the one
+    rung that matches the market. Passing `non_increasing=True` drops the
+    three instead.
+
+    Spreads still infer, and deliberately: the ladder is folded onto the home
+    axis and which way P(home) runs depends on a sign convention this
+    function must not have an opinion about -- that opinion is what once put
+    both teams on the same side of a spread.
     """
     priced = {}
     for rung, prices in rungs.items():
@@ -381,11 +466,131 @@ def _reversed_rungs(rungs: dict) -> set:
                     best[i] = best[j] + [point]
         return max(best, key=len)
 
-    down, up = longest_run(True), longest_run(False)
-    if len(down) == len(up):
-        return set()
-    keep = down if len(down) > len(up) else up
-    return set(order) - set(keep)
+    direction = None
+    if non_increasing is not None:
+        # Pinned by the caller. Only honoured when the side this function
+        # devigged really is the "over" one -- otherwise the pin would be
+        # backwards, which is worse than inferring, so fall through instead.
+        firsts = {sorted(prices)[0].lower() for prices in rungs.values() if len(prices) == 2}
+        if all("over" in name for name in firsts):
+            direction = non_increasing
+    if direction is None:
+        down, up = longest_run(True), longest_run(False)
+        if len(down) == len(up):
+            return set()
+        direction = len(down) > len(up)
+    spine = longest_run(direction)
+
+    # WALK OUTWARD FROM THE MONEY; DO NOT JUST KEEP THE LONGEST RUN.
+    #
+    # The longest run is the right way to find the ladder's DIRECTION -- it is
+    # a majority vote, and a majority is what makes it robust. It is the wrong
+    # way to choose which rungs to DROP, because it maximises a count, and a
+    # phantom tail that is internally consistent has a count on its side.
+    #
+    # Live Fanatics MLB, 2026-09-07, Cleveland at Baltimore -- P(over) by rung:
+    #
+    #     11.0  0.2021        11.5  0.1933
+    #     12.0  0.1976        12.5  0.2105        13.0  0.1976
+    #
+    # The ladder stops declining after 11.5 and oscillates. Dropping
+    # {11.5, 12.5} leaves 11.0 > 12.0 = 13.0, which is monotone and retains
+    # TWO rungs; dropping {12.0, 12.5, 13.0} leaves 11.0 > 11.5 and retains
+    # one. So the longest run kept the phantoms and threw away the real
+    # 11.5 -- and Under 13 went to the board and was reported as a middle
+    # against DraftKings' Over 11.5. The owner checked: Fanatics does not
+    # offer Under 13 on that game.
+    #
+    # A ladder is not an abstract monotone sequence. It is priced outward
+    # from the money, and it is the FAR rungs that go stale, never the near
+    # ones -- which is the whole premise engine.stale_alt_ladders is built on
+    # too. So anchor at the rung the book is pricing hardest and walk out in
+    # both directions, dropping anything that does not continue the order and
+    # carrying the last GOOD value forward.
+    #
+    # Carrying the last good value forward rather than cutting the ladder at
+    # the first violation is what keeps this surgical: on the Boston at
+    # Baltimore ladder the phantom sits in the MIDDLE (12.5 carrying 11.0's
+    # price) and the genuine 13.0 below it still continues the sequence from
+    # 12.0, so only 12.5 is dropped -- the guard names the culprit rather
+    # than condemning everything past it.
+    #
+    # THE ANCHOR IS TAKEN FROM THE SPINE, not from the ladder at large. The
+    # rung nearest a coin flip is normally the main line, but when the phantom
+    # IS that rung -- the North Carolina A&T ladder, whose 55.0 devigs to
+    # 0.489 against three sound rungs at 0.64 -- anchoring on it would invert
+    # the answer exactly the way reading direction off the endpoints once did.
+    # A phantom that contradicts the majority is not in the majority run, so
+    # taking the anchor from the run cannot select it.
+    anchor = min(spine, key=lambda r: abs(priced[r] - 0.5))
+
+    # `direction` is True when the probability must FALL as the rung rises.
+    # Walking up the ladder that means it may not rise; walking down, the
+    # statement is the same one read backwards, so it may not fall.
+    keep = {anchor}
+    passes = (([r for r in order if r > anchor], direction),
+              ([r for r in reversed(order) if r < anchor], not direction))
+    for outward, may_not_rise in passes:
+        last = priced[anchor]
+        for rung in outward:
+            gap = priced[rung] - last
+            ok = (gap <= LADDER_REVERSAL_TOLERANCE if may_not_rise
+                  else gap >= -LADDER_REVERSAL_TOLERANCE)
+            if ok:
+                keep.add(rung)
+                last = priced[rung]
+    return set(order) - keep
+
+
+def _prop_reversed_rungs(bets: list) -> set:
+    """(player, line) rungs a PLAYER PROP ladder contradicts.
+
+    Same arithmetic as `_reversed_rungs` and the same defect, applied one
+    player at a time: {over 45.5 receiving yards} is a strict subset of
+    {over 40.5}, so P(over) must fall as the line rises for that player, and
+    a ladder that reverses is quoting two prices that cannot both settle.
+
+    Split by player first, which is the only reason this needs a function of
+    its own. The game-line `rungs` dict keys on the line alone, and on a prop
+    market several players share a line -- 35% of NFL prop rungs hold two or
+    more -- so running the check over that dict would compare one player's
+    price against another's and call the difference a reversal.
+
+    The direction is PINNED rather than inferred. A prop ladder is 3-4 rungs
+    deep where a game line is 80, so the broken half can be the majority; see
+    `_reversed_rungs` for the live Fanatics NFL ladder where inferring keeps
+    the three impossible rungs and drops the sound one.
+
+    Ladders shorter than three rungs return nothing, exactly as the game-line
+    check does: two points cannot establish an order for a third to break.
+    """
+    from .fanduel import parse_player_runner
+
+    ladders: dict[str, dict] = {}
+    for bet in bets or []:
+        raw = (bet.get("line") or {}).get("name")
+        try:
+            point = float(raw) if raw not in (None, "") else None
+        except (TypeError, ValueError):
+            point = None
+        parsed = parse_player_runner(bet.get("name") or "", point)
+        if parsed is None:
+            continue
+        side, player, line = parsed
+        if side not in ("over", "under") or line is None:
+            continue
+        ai = bet.get("aiProbability")
+        for odd in bet.get("odds") or []:
+            if odd.get("status") == "ACTIVE" and odd.get("decimal"):
+                ladders.setdefault(player, {}).setdefault(
+                    round(float(line), 2), {})[side] = (
+                        round(float(odd["decimal"]), 4), ai)
+
+    out: set = set()
+    for player, rungs in ladders.items():
+        for line in _reversed_rungs(rungs, non_increasing=True):
+            out.add((player, line))
+    return out
 
 
 def _contradicted_rungs(rungs: dict) -> set:
@@ -492,7 +697,7 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
             # the game-totals rule and landed on `totals`, alongside real game
             # totals. Same shape as the PLAYER_A_TOTAL_POINTS bug.
             player_hint = "x" if label.lower().startswith("player ") else None
-            mkey = canonical_market(label, player=player_hint)
+            mkey = canonical_market(label, player=player_hint, sport_key=sport_key)
             if mkey is None:
                 stats["markets_unmapped"].add(label)
                 continue
@@ -510,20 +715,43 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
             # a -110 attached to the wrong number beat DraftKings' genuine
             # +27.5 and the pair summed under 1.00. Dropped rather than
             # guessed at, the same way an unrecognised market is.
-            # THESE LADDER CHECKS ARE FOR GAME LINES ONLY. They assume one
-            # subject per market and a line grid fine enough that a price must
-            # move between rungs; a player prop has neither. Keyed by line,
-            # several PLAYERS pool onto one rung (35% of NFL prop rungs hold
-            # two or more), and a yardage ladder legitimately repeats a price
-            # across five yards, which the stalled-run check would read as a
-            # ladder that had stopped updating. Oddschecker's aiProbability is
-            # unreliable there too -- p90 residual 17pp against 4pp on game
-            # lines. Props are protected instead by parse_player_runner, which
-            # refuses anything it cannot attach to one named player.
+            # MOST OF THESE LADDER CHECKS ARE FOR GAME LINES ONLY. They assume
+            # one subject per market and a line grid fine enough that a price
+            # must move between rungs; a player prop has neither. Keyed by
+            # line, several PLAYERS pool onto one rung (35% of NFL prop rungs
+            # hold two or more), and a yardage ladder legitimately repeats a
+            # price across five yards, which the stalled-run check would read
+            # as a ladder that had stopped updating. Oddschecker's
+            # aiProbability is unreliable there too -- p90 residual 17pp
+            # against 4pp on game lines.
+            #
+            # THE REVERSAL CHECK IS THE EXCEPTION, and it runs on props too --
+            # see _prop_reversed_rungs. Pooling was never a reason the
+            # ARITHMETIC does not apply, only a reason this rungs dict cannot
+            # express it: {over 45.5 yards} is a strict subset of {over 40.5}
+            # for one named player exactly as {over 12.5} is for one game
+            # total. Keying by (player, line) instead of by line says the same
+            # thing about the right subject. Fanatics NFL props are 3-4 rung
+            # alternate ladders, they arrive with no other guard on them at
+            # all, and one of them was reversed on the first live board looked
+            # at.
             rungs: dict = {}
             placeholder: set = set()
-            bets_iter = ([] if mkey.startswith(PLAYER_MARKETS)
-                         else (market.get("bets") or []))
+            is_prop = mkey.startswith(PLAYER_MARKETS)
+            bets_iter = [] if is_prop else (market.get("bets") or [])
+
+            # (player, line) rungs a prop ladder contradicts. Empty for a game
+            # line, where `placeholder` carries the same job keyed on the line
+            # alone.
+            prop_placeholder: set = set()
+            if is_prop:
+                prop_placeholder = _prop_reversed_rungs(market.get("bets") or [])
+                if prop_placeholder:
+                    stats["markets_unmapped"].add(
+                        f"{label} (prop ladder reverses at "
+                        f"{sorted(prop_placeholder)})")
+                    stats["reversed_prop_rungs"] = (
+                        stats.get("reversed_prop_rungs", 0) + len(prop_placeholder))
 
             # rung -> {side: (decimal, aiProbability)}, keyed on the line as
             # the HOME side sees it.
@@ -600,14 +828,15 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
             out_of_range: set = set()
             if mkey in ("totals", "spreads"):
                 main = _known_main_point(board, target.event_id, mkey)
+                width = fanatics_alt_width(sport_key)
                 if main is not None:
                     out_of_range = {rung for rung in rungs
                                    if isinstance(rung, (int, float))
-                                   and abs(rung - main) > FANATICS_ALT_LINE_MAX_WIDTH}
+                                   and abs(rung - main) > width}
                     if out_of_range:
                         stats["markets_unmapped"].add(
                             f"{label} (main {main:g}, {len(out_of_range)} rung(s) "
-                            f"beyond the app's {FANATICS_ALT_LINE_MAX_WIDTH:g}-point "
+                            f"beyond the app's {width:g}-point "
                             f"range: {sorted(out_of_range)})")
                         stats["out_of_range_rungs"] = (
                             stats.get("out_of_range_rungs", 0) + len(out_of_range))
@@ -699,7 +928,13 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
             # rises; that is set inclusion, not a model opinion. See
             # _reversed_rungs for the Boston @ Baltimore ladder that reported a
             # +0.68% arbitrage which did not exist.
-            reversed_ = _reversed_rungs(rungs)
+            # A game TOTAL knows its own direction: P(over) falls as the
+            # total rises, and the feed names the two sides "Over"/"Under" so
+            # the devigged side is the over one. A spread does not -- it is
+            # folded onto the home axis and the sign convention is exactly
+            # what _reversed_rungs must not assume -- so it still infers.
+            reversed_ = _reversed_rungs(
+                rungs, non_increasing=True if mkey == "totals" else None)
             if reversed_:
                 stats["markets_unmapped"].add(
                     f"{label} (ladder reverses at {sorted(reversed_)})")
@@ -715,9 +950,15 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                     point = float(raw_line) if raw_line not in (None, "") else None
                 except (TypeError, ValueError):
                     point = None
-                if point is not None and placeholder:
+                if placeholder:
+                    # Keyed exactly as the builder above keyed it, INCLUDING
+                    # the non-numeric fallback: a line that does not parse is
+                    # stored under its raw string, and looking only at numeric
+                    # points let a rung the overround or aiProbability rules
+                    # had condemned survive the drop.
                     _gn = (bet.get("genericName") or "").strip().upper()
-                    _rung = (point if _gn == "HOME"
+                    _rung = (raw_line if point is None
+                             else point if _gn == "HOME"
                              else -point if _gn == "AWAY" else abs(point))
                     if _rung in placeholder:
                         continue
@@ -750,6 +991,12 @@ def ingest_oddschecker(board: Board, payload, book: str | None = None,
                             stats["markets_unmapped"].add(f"{label} (no player)")
                             continue
                         side, subject, gpoint = parsed
+                        # A rung this player's own ladder contradicts. Keyed by
+                        # (player, line) because the line alone belongs to
+                        # several players at once -- see _prop_reversed_rungs.
+                        if gpoint is not None and (subject, round(float(gpoint), 2)) \
+                                in prop_placeholder:
+                            continue
                         # The line often lives in the bet NAME ("Shohei Ohtani
                         # Under 2.5") with the line field empty, and the quote
                         # kept that empty value -- so the app showed a leg with
@@ -872,7 +1119,7 @@ def ingest_draftkings(board: Board, payload, book: str = "draftkings",
         target = resolved.get(eid, default_target)
 
         _, label_player = split_player(label)
-        mkey = canonical_market(label, sub, player=label_player)
+        mkey = canonical_market(label, sub, player=label_player, sport_key=sport_key)
         if mkey is None:
             stats["markets_unmapped"].add(f"{sub} | {label}".strip(" |"))
             continue

@@ -48,18 +48,42 @@ sys.path.insert(0, str(ROOT))
 # forced `edge.arb.engine` back in sync with disk. `_from_scan_request` below
 # only reloads on a MISSING name, which never catches this.
 #
-# Reload every edge.arb module already resident, every run, before anything
-# below binds a name off one. Three passes because reload order here is not
+# Reload every edge.arb module already resident, before anything below binds
+# a name off one. Three passes because reload order here is not
 # dependency-sorted: a module reloaded before something it does
 # `from .x import y` on picks up that something's PRE-reload value the first
 # time round, and only catches up once that something is reloaded too.
-for _pass in range(3):
-    for _name in sorted(k for k in sys.modules
-                        if k == "edge.arb" or k.startswith("edge.arb.")):
-        try:
-            importlib.reload(sys.modules[_name])
-        except Exception:                               # noqa: BLE001
-            pass
+#
+# Gated on a fingerprint of the source files' mtimes, via st.cache_resource --
+# a PROCESS-wide cache, the same scope as sys.modules itself, so it is shared
+# across every session and every rerun. Doing this unconditionally on every
+# rerun (the original shape) reran 20 modules' top-level code 3x per single
+# widget click with nothing to show for it locally, where the file on disk
+# never changes between clicks. st.session_state would be the wrong tool
+# here: it is per-BROWSER-SESSION, and a Streamlit Cloud redeploy that keeps
+# the process (and an already-open tab's session_state) alive across the
+# deploy is exactly the case this reload exists to catch -- a session-scoped
+# gate would skip the reload for precisely the session that needs it.
+def _arb_source_fingerprint() -> float:
+    try:
+        return max(p.stat().st_mtime for p in (ROOT / "edge" / "arb").glob("*.py"))
+    except ValueError:
+        return 0.0
+
+
+@st.cache_resource(show_spinner=False)
+def _reload_edge_arb(fingerprint: float) -> float:
+    for _pass in range(3):
+        for _name in sorted(k for k in sys.modules
+                            if k == "edge.arb" or k.startswith("edge.arb.")):
+            try:
+                importlib.reload(sys.modules[_name])
+            except Exception:                               # noqa: BLE001
+                pass
+    return fingerprint
+
+
+_reload_edge_arb(_arb_source_fingerprint())
 
 from edge.arb import ArbConfig                      # noqa: E402
 
@@ -125,18 +149,34 @@ CASINO_BOOKS = {"draftkings", "fanduel"}
 # one slate produced 2,568 of them. Ranking them all is right; RENDERING them
 # all is a hung page, so the panel draws the best of them and says so.
 BOOST_ROWS_SHOWN = 50
+# Same reasoning applies to the plain opportunity list below, which had no cap
+# at all -- every row is a full st.container + st.dataframe, and each of those
+# carries real fixed component overhead. Unbounded rendering of that list was
+# a direct cause of choppy scrolling; see HANDOFF.md §7.
+OPP_ROWS_SHOWN = 100
 
 st.set_page_config(page_title="Arbitrage", page_icon="⚖️", layout="wide")
 st.title("⚖️ Arbitrage · DraftKings / FanDuel / Fanatics")
 
 
-def load_snapshot() -> dict | None:
-    if not SNAPSHOT.exists():
-        return None
+@st.cache_data(show_spinner=False, max_entries=4)
+def _parse_snapshot(mtime: float) -> dict | None:
+    # mtime, not a TTL: this is a 20-30MB file re-read from disk and
+    # re-json.loads'd on every widget interaction otherwise -- twice per
+    # rerun, since the sidebar peeks at it separately from the main render.
+    # Keying on mtime means a rerun that changes nothing about the file
+    # costs nothing, while a fresh scan (live button, agent push, git pull
+    # redeploy) is picked up on the very next rerun, no TTL to wait out.
     try:
         return json.loads(SNAPSHOT.read_text())
     except (OSError, ValueError):
         return None
+
+
+def load_snapshot() -> dict | None:
+    if not SNAPSHOT.exists():
+        return None
+    return _parse_snapshot(SNAPSHOT.stat().st_mtime)
 
 
 def age_str(iso: str) -> str:
@@ -362,24 +402,69 @@ with st.sidebar:
             return 1.0
         return 1.0 + (american / 100.0 if american > 0 else 100.0 / abs(american))
 
+    # Boost fields are seeded from the URL's query string, not just a literal
+    # default, and written back to it on every rerun. `st.session_state` lives
+    # only as long as this browser tab's session on the server, and that
+    # session can vanish with no warning: backgrounding this tab (switching
+    # to another app on a phone) commonly suspends it, and reconnecting can
+    # land on a brand-new server-side session with everything back at
+    # defaults -- which reads exactly like an unwanted page refresh, because
+    # for widget state it effectively is one. The query string is part of the
+    # URL itself, so it survives that; seeding widgets from it turns "boosts
+    # silently vanished" into "boosts silently restored." Scoped to the boost
+    # panels because that's what was reported lost -- the same pattern would
+    # apply to the Scan/Results filters below if those start disappearing too.
+    def _qp_str(name: str, default: str) -> str:
+        v = st.query_params.get(name)
+        return v if v is not None else default
+
+    def _qp_int(name: str, default: int) -> int:
+        try:
+            return int(st.query_params.get(name, default))
+        except (TypeError, ValueError):
+            return default
+
+    def _qp_bool(name: str, default: bool) -> bool:
+        v = st.query_params.get(name)
+        return default if v is None else v == "1"
+
+    def _qp_list(name: str) -> list[str]:
+        v = st.query_params.get(name, "")
+        return [s for s in v.split(",") if s]
+
     from edge.arb.engine import Boost
 
     _boost_book_order = {1: ["draftkings", "fanduel", "fanatics"],
                          2: ["fanduel", "draftkings", "fanatics"]}
     boosts: list[Boost] = []
     for _n in (1, 2):
+        _qp = f"b{_n}_"
         with st.expander(f"Boost {_n}", expanded=True):
-            _pct = st.slider(f"Boost {_n} %", 0, 100, 0, 5,
+            _pct = st.slider(f"Boost {_n} %", 0, 100, _qp_int(_qp + "pct", 0), 5,
+                             key=_qp + "pct",
                              help="0 turns this boost off. Profit boosts multiply "
                                   "your NET winnings, not the total return.")
-            _book = st.selectbox(f"Boost {_n} book", _boost_book_order[_n],
-                                 format_func=lambda b: BOOK_NAMES.get(b, b))
+            st.query_params[_qp + "pct"] = str(_pct)
+
+            _book_opts = _boost_book_order[_n]
+            _book_default = _qp_str(_qp + "book", _book_opts[0])
+            _book = st.selectbox(
+                f"Boost {_n} book", _book_opts,
+                index=_book_opts.index(_book_default) if _book_default in _book_opts else 0,
+                key=_qp + "book", format_func=lambda b: BOOK_NAMES.get(b, b))
+            st.query_params[_qp + "book"] = _book
             _max_stake = st.number_input(
-                f"Boost {_n} max stake ($)", 1, 5_000, 10, step=5,
+                f"Boost {_n} max stake ($)", 1, 5_000, _qp_int(_qp + "stake", 10), step=5,
+                key=_qp + "stake",
                 help="The token's cap. This bounds the WHOLE position, not just "
                      "the boosted leg — the hedge is sized off it.")
+            st.query_params[_qp + "stake"] = str(_max_stake)
+            _sport_opts = ["(every sport)"] + list(_sport_titles)
+            _sport_default = _qp_str(_qp + "sport", "(every sport)")
             _sport = st.selectbox(
-                f"Boost {_n} sport", ["(every sport)"] + list(_sport_titles),
+                f"Boost {_n} sport", _sport_opts,
+                index=_sport_opts.index(_sport_default) if _sport_default in _sport_opts else 0,
+                key=_qp + "sport",
                 format_func=lambda k: (
                     "(every sport)" if k == "(every sport)"
                     # a sport the current snapshot cannot answer for is still
@@ -388,29 +473,40 @@ with st.sidebar:
                 help="The sport this token is tied to. Sports missing from the "
                      "current snapshot are still listed — request a desktop "
                      "scan to cover them.")
+            st.query_params[_qp + "sport"] = _sport
             _sport = "" if _sport == "(every sport)" else _sport
             if _sport and _sport not in _in_snapshot:
                 st.caption(f"⚠️ The current snapshot has no {_sport_titles[_sport]} "
                            "markets, so nothing can be found for it yet.")
+            _market_opts = ["(every market)"] + list(_market_groups)
+            _market_default = _qp_str(_qp + "market", "(every market)")
             _market = st.selectbox(
-                f"Boost {_n} markets", ["(every market)"] + list(_market_groups),
+                f"Boost {_n} markets", _market_opts,
+                index=_market_opts.index(_market_default) if _market_default in _market_opts else 0,
+                key=_qp + "market",
                 help="Boosts are often scoped to a market type as well as a "
                      "sport — a batter-props token cannot be used on a game line.")
+            st.query_params[_qp + "market"] = _market
             _markets = _market_groups.get(_market, [])
             _min_odds = st.number_input(
-                f"Boost {_n} min odds on the boosted leg (American)", -1000, 1000, -200,
-                step=10,
+                f"Boost {_n} min odds on the boosted leg (American)", -1000, 1000,
+                _qp_int(_qp + "odds", -200), step=10, key=_qp + "odds",
                 help="Most tokens carry a floor — 'Min Total Odds of -200'. A "
                      "shorter leg does not qualify and the book refuses it at the slip.")
+            st.query_params[_qp + "odds"] = str(_min_odds)
             _sides = st.multiselect(
-                f"Boost {_n} side", ["over", "under", "home", "away", "yes", "no"], default=[],
+                f"Boost {_n} side", ["over", "under", "home", "away", "yes", "no"],
+                default=_qp_list(_qp + "sides"), key=_qp + "sides",
                 help="Leave empty for any. DraftKings' 'Batter Props Milestones' "
                      "are the over-only ladders, so that token is over only.")
+            st.query_params[_qp + "sides"] = ",".join(_sides)
             _parlay = st.checkbox(
-                f"Boost {_n} parlay only", value=False,
+                f"Boost {_n} parlay only", value=_qp_bool(_qp + "parlay", False),
+                key=_qp + "parlay",
                 help="Books offer the same headline boost twice — straight bets "
                      "and parlays. Only the straight-bet one can be hedged, "
                      "because each side of an arbitrage is its own single bet.")
+            st.query_params[_qp + "parlay"] = "1" if _parlay else "0"
             if _pct > 0:
                 boosts.append(Boost(
                     book=_book, pct=_pct / 100.0, max_stake=float(_max_stake),
@@ -892,6 +988,12 @@ if int(per_sport) > 0:
 
 # stakes were sized for the bankroll at scan time; rescale for this one
 scale = float(bankroll) / max(float(snap.get("stats", {}).get("bankroll", 1000.0) or 1000.0), 1.0)
+
+if len(opps) > OPP_ROWS_SHOWN:
+    st.caption(f"Showing the best {OPP_ROWS_SHOWN} of {len(opps)}. Narrow with "
+               "the sport filter, a per-sport cap, or a higher minimum % in "
+               "the sidebar.")
+    opps = opps[:OPP_ROWS_SHOWN]
 
 for o in opps:
     kind = o.get("kind", "")

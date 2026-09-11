@@ -98,13 +98,52 @@ def team_similarity(a: str, b: str) -> float:
     return jaccard
 
 
+# Sports where the start time is an ESTIMATE, not an appointment.
+#
+# A tennis match is "third on Court 5": it begins when the one before it ends,
+# so every book publishes a guess and the guesses diverge down the order of
+# play. Measured on a live board 2026-09-07, DraftKings ran 70-100 minutes
+# later than FanDuel on fixtures whose player names matched at 1.00 -- and the
+# gap widened through the day, which is what a different assumed match length
+# looks like. At the 30-minute default this dropped EVERY one of them: 0 of 84
+# DraftKings tennis events found their FanDuel twin.
+#
+# MMA and boxing are the same shape -- a card's bouts start when the previous
+# one finishes. Golf is not listed because it never reaches here: field_event
+# collapses a tour to one synthetic event and the pairing carries the identity.
+#
+# WHY WIDENING IS SAFE, measured rather than argued. Both participants must
+# match independently, so confusing two events means finding the same two
+# players in a different match -- a rematch, which is another day. Sweeping
+# the tolerance over that live board:
+#
+#     30 min ->  0 of 84 matched, 0 ambiguous
+#    120 min -> 10 of 84 matched, 0 ambiguous
+#   1440 min -> 10 of 84 matched, 0 ambiguous
+#
+# Flat from two hours to twenty-four with nothing ever ambiguous: the name
+# test is doing all the discriminating and the clock is only a tie-breaker.
+# Six hours covers a full day's order-of-play slip and stops well short of the
+# next day's card, which is the only thing on the other side of it.
+NO_FIXED_START = ("tennis", "mma", "boxing")
+NO_FIXED_START_TOLERANCE_MINUTES = 360.0
+DEFAULT_TOLERANCE_MINUTES = 30.0
+
+
+def start_tolerance_minutes(sport_key: str | None) -> float:
+    """How far apart two books' start times may be and still be one event."""
+    if sport_key and sport_key.startswith(NO_FIXED_START):
+        return NO_FIXED_START_TOLERANCE_MINUTES
+    return DEFAULT_TOLERANCE_MINUTES
+
+
 def match_event(
     board: Board,
     home: str,
     away: str,
     commence: datetime | None,
     sport_key: str | None = None,
-    tolerance_minutes: float = 30.0,
+    tolerance_minutes: float | None = None,
     min_similarity: float = 0.7,
     min_team_similarity: float = 0.6,
 ) -> EventMeta | None:
@@ -112,7 +151,14 @@ def match_event(
 
     None means "do not merge" -- the scrape is then dropped rather than
     attached to a guess.
+
+    `tolerance_minutes` defaults to whatever the SPORT warrants rather than to
+    one number, because a scheduled fixture and a match that starts when the
+    one before it ends are not the same problem -- see NO_FIXED_START. An
+    explicit value still wins, so a caller that knows better can say so.
     """
+    if tolerance_minutes is None:
+        tolerance_minutes = start_tolerance_minutes(sport_key)
     best, best_score = None, 0.0
     for ev in board.events.values():
         if sport_key and ev.sport_key != sport_key:

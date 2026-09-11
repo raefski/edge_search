@@ -68,6 +68,12 @@ class FakeStreamlit(types.ModuleType):
         self.session_state: dict = {}
         self.secrets: dict = {}
         self.sidebar = _Ctx()
+        # A plain dict covers the page's usage: .get(key, default) to read,
+        # [key] = value to write back. Real st.query_params also reflects
+        # writes into the browser URL, which is exactly why the page uses it
+        # to survive a lost session -- irrelevant here, where only the
+        # read/write contract needs to hold.
+        self.query_params: dict = {}
 
     # -- widgets that must return a value ---------------------------------
     def _answer(self, label, default):

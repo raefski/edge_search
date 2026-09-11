@@ -63,24 +63,38 @@ class Detect:
     max_hours_to_start: float = 240.0
     min_books: int = 2
     max_legs: int = 3
-    # A genuine alternate rung far from a book's own current main line should
-    # be priced with correspondingly worse vig -- that is the whole reason a
-    # ladder blows out to -2400/+800 a few rungs from center, and it is what
-    # makes a rung a real tail outcome rather than a coin flip. alt_line_max_drift
-    # is "far" (points/goals/runs from the main line the board separately
-    # recorded); alt_line_max_vig is "still priced like a main line" (total
-    # implied probability at or below this). A rung past BOTH thresholds is
-    # flagged: DraftKings moved a total from 52.5 to 62.5 and the
-    # alternate-total subcategory kept serving 52.5 at 1.90/1.93 (vig 1.0475,
-    # essentially main-line-grade) for hours afterward -- comparing vig
-    # ACROSS the ladder to find its "true" center does not catch this, because
-    # the real main line (1.98/1.85, vig 1.0462) and the stale rung differ by
-    # 0.0013, a coin flip that happens to go the right way as often as not.
-    # Checking a far rung's OWN vig against a fixed bar sidesteps that: it does
-    # not matter which of the two is tighter, only whether the far one is
-    # tight at all. A legitimate rung that far out (e.g. -2400/+800, vig
-    # ~1.07) fails max_vig and is correctly left alone -- that is exactly what
-    # a real tail rung should look like.
+    # A book's alternate ladder is built around its own current main line, and
+    # the failure worth catching is a ladder still centred on a number the
+    # book has moved past: DraftKings moved a total from 52.5 to 62.5 and its
+    # alternate-total subcategory kept serving 52.5 at main-line-grade prices
+    # for hours afterward.
+    #
+    # alt_line_max_drift does BOTH halves of that. It is how far a rung must
+    # sit from the recorded main line to be worth questioning at all, and it
+    # is also how far the ladder's OWN price-implied centre may sit from that
+    # main line before every rung on it is suspect. The centre is what the
+    # check actually reads -- see engine.stale_alt_ladders.
+    #
+    # alt_line_max_vig is now a FALLBACK ONLY, for a ladder too flat or too
+    # short to cross 50/50 and therefore to have a centre to measure. It used
+    # to be the primary test -- flag a far rung whose own overround is at or
+    # under this -- on the reasoning that a genuine tail rung must be priced
+    # worse the further out it sits. That reasoning does not survive a second
+    # book. Measured live on NFL, 2026-09-07:
+    #
+    #     book          far rungs   median vig   fraction <= 1.06
+    #     fanduel             722       1.0591              69.9%
+    #     draftkings         1263       1.0700               0.0%
+    #
+    # FanDuel holds a flat overround across its whole ladder and moves the
+    # price; DraftKings widens. So a fixed bar separates the two BOOKS, not
+    # fresh rungs from stale ones -- it flagged 505 sound FanDuel rungs and
+    # could not flag a DraftKings rung at all, hiding a third of the NFL board
+    # behind the app's off-by-default "show stale alt lines" toggle. Where the
+    # fallback does still run it is applied relative to that book's own
+    # main-line overround (engine.STALE_VIG_MARGIN), which means the same
+    # thing at either book; this absolute value survives only for a ladder
+    # with neither a centre nor a priced main rung to compare against.
     alt_line_max_drift: float = 3.0
     alt_line_max_vig: float = 1.06
     middles_enabled: bool = True
@@ -185,9 +199,24 @@ class ArbConfig:
         payload and no error at all.
         """
         return list(self.fanduel_tabs_by_sport.get(sport_key) or self.fanduel_tabs)
-    # 37 tennis leagues are listed; most are outright containers months out.
-    # Each costs one call, so the list is capped rather than pulled whole.
-    tennis_max_leagues: int = 14
+    # Tennis is a league PER TOURNAMENT, and DraftKings lists ~31 of them once
+    # doubles and qualifying draws are dropped. This caps how many are SCANNED,
+    # and it now counts only leagues that actually carried a card -- an
+    # outright container months out no longer spends a slot (see run.scan).
+    #
+    # 14 was the old value and it was cutting the sport in half. Leagues are
+    # taken in name order because nothing can rank them before they are
+    # fetched, and tennis league names begin with the four Grand Slams: live
+    # 2026-09-07 the first fourteen were four dead Grand Slam containers plus
+    # Challengers and ITFs, and the cut dropped every WTA tour event, both UTR
+    # Pro Series (17 and 16 events, the two largest on the list) and the US
+    # Open -- 112 events against 104 scanned.
+    #
+    # 30 is therefore "all of them" in practice, and stays a cap only so a
+    # listing that suddenly grows cannot turn one sport into a hundred
+    # requests. Cost measured at ~1-2 subcategory calls per live league on top
+    # of the league call itself.
+    tennis_max_leagues: int = 30
     draftkings_props: bool = True
     draftkings_max_prop_subcategories: int = 40   # covers all 31 MLB tabs; see prop_subcategories
     # Soccer keeps its spreads and totals in subcategories rather than in the

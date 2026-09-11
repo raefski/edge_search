@@ -311,3 +311,34 @@ def allocate(
         ideal_profit_pct=round(ideal_pct, 4),
         capped=capped,
     )
+
+
+# --------------------------------------------------------------------------
+# ladders
+# --------------------------------------------------------------------------
+def pickem_crossing(curve: dict[float, float], target: float = 0.5) -> float | None:
+    """The line at which a ladder's own devigged price crosses `target`.
+
+    `curve` is {line: probability of the side whose chance moves monotonically
+    with the line} -- P(over) for a total, P(home covers) for a spread folded
+    onto the home axis. Which side is used does not matter: the other is
+    1 - p and crosses the same place.
+
+    This is a book's OWN read of the true number, taken from its prices alone
+    and nothing else. It is the load-bearing measurement behind two separate
+    checks -- `books._ladder_center` (is this Fanatics ladder centred where
+    the rest of the market is?) and `engine.stale_alt_ladders` (is this
+    book's ladder centred where its OWN main line is?) -- so it lives here
+    rather than in either of them.
+
+    Interpolates between the two rungs that straddle `target`, so the answer
+    is not restricted to landing on a priced rung. Returns None when the
+    ladder never crosses in the range fetched, and -- deliberately -- when
+    the two straddling rungs carry the SAME probability: a flat pair names an
+    interval, not a point, and picking either end of it would be a guess.
+    """
+    points = sorted(curve.items())
+    for (r0, p0), (r1, p1) in zip(points, points[1:]):
+        if (p0 - target) * (p1 - target) <= 0 and p1 != p0:
+            return r0 + (target - p0) / (p1 - p0) * (r1 - r0)
+    return None

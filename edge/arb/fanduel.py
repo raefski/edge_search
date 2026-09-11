@@ -260,7 +260,45 @@ def parse_player_runner(name: str, handicap) -> tuple[str, str, float] | None:
     return None
 
 
-def classify(market_type: str) -> tuple[str, float | None] | None:
+def classify(market_type: str, sport_key: str | None = None
+             ) -> tuple[str, float | None] | None:
+    """Map a FanDuel marketType to (canonical market, line) or None.
+
+    `sport_key` only matters for tennis: a bare `spreads` or `totals` is the
+    wrong key there, whichever route produced it. See _tennis_unit.
+    """
+    hit = _classify(market_type)
+    if hit is None or not (sport_key or "").startswith("tennis"):
+        return hit
+    return _tennis_unit(market_type, hit[0]), hit[1]
+
+
+def _tennis_unit(market_type: str, mkey: str) -> str:
+    """Re-key a bare tennis spread/total onto the unit it actually counts.
+
+    Tennis handicaps and totals count GAMES or SETS, and those are different
+    bets at wildly different prices -- a set favourite at -1.5 prices around
+    2.5-4.0 where a games favourite at -1.5 prices around 1.3-1.5. The market
+    map already keeps them apart (marketmap.TENNIS_RULES); this is the same
+    statement on FanDuel's side, applied AFTER classification rather than
+    inside it so it catches both routes that produce a bare key:
+
+      * the explicit table -- MATCH_HANDICAP_(2-WAY) and
+        ALTERNATE_MATCH_HANDICAP are tennis market types mapped to `spreads`,
+        and on a live board they put three FanDuel tennis handicaps on a key
+        no other book writes, where they could pair with nothing;
+      * the tolerant SPREAD_WORDS / TOTAL_WORDS fallback, which keys an
+        unrecognised type by the single word HANDICAP or TOTAL in it.
+
+    GAMES IS THE DEFAULT because the standard tennis handicap is a game
+    handicap; a book pricing the set version says SET in the type name.
+    """
+    if "SET" in market_type.upper():
+        return {"spreads": "spreads_sets", "totals": "totals_sets"}.get(mkey, mkey)
+    return {"spreads": "spreads_games", "totals": "totals_games"}.get(mkey, mkey)
+
+
+def _classify(market_type: str) -> tuple[str, float | None] | None:
     """Map a FanDuel marketType to (canonical market, line) or None.
 
     Threshold markets are converted the same way DraftKings milestones are:
@@ -472,7 +510,7 @@ class FanDuelScrape:
             if not is_full_game(m.get("marketName") or ""):
                 stats["unmapped"].add(m.get("marketName"))
                 continue
-            hit = classify(m.get("marketType") or "")
+            hit = classify(m.get("marketType") or "", sport_key)
             if hit is None:
                 stats["unmapped"].add(m.get("marketType"))
                 continue

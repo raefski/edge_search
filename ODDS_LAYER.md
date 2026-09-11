@@ -348,7 +348,7 @@ profiles, which is the required value in a one-shot scan.
 
 ---
 
-## 8a. What extending to NFL found — three silent bugs
+## 8a. What extending to NFL found — four silent bugs
 
 Turning on NFL exposed three defects that had been live for as long as
 anything had looked, all of the same family: **a wrong id or pattern filters to
@@ -380,6 +380,40 @@ and that did not merely drop those markets, it **inverted** them:
 by finding the half that names a statistic, and with neither half matching it
 fell back to "a short Title Case fragment is a name" and chose *Passing Yds*
 as the player.
+
+### A fourth, found 2026-09-06 while fitting the touchdown rates
+
+**"Longest Reception" was being filed as `player_receptions`.** The rule is
+`(r"receptions?", "player_receptions")`, unanchored, and "Longest Reception"
+contains the word. Puka Nacua's receptions line came back with a point of
+**26.5** and Terrance Ferguson's **15.5** — nobody catches 26 passes; those are
+distances in yards. "Longest Passing Completion" landed on
+`player_pass_completions` the same way.
+
+**Why this one is nastier than the three above: `price_conflicts` cannot see
+it.** `group_key` is `event|market|subject|point`, so 5.5 receptions and a
+26.5-yard longest reception differ in `point`, land in different groups, and
+never collide. The counter that caught the category-id bug stays at 0. What
+breaks instead is quieter — `dfs.player_markets` keeps one entry per market key
+and the last outcome wins it (§4), so on **17 of 140** receptions markets the
+longest-reception line silently *replaced* the real one. DK Classic is full
+PPR at 1 point per reception, so Nacua projected **+21 DK points** and every
+corrupted player went straight to the top of the value board, which is exactly
+where an optimiser would take them all.
+
+Fixed by claiming the longest markets first, with their own Odds-API-spelled
+keys (`player_reception_longest`, `player_rush_longest`,
+`player_pass_longest_completion`) rather than dropping them — the same decision
+the combos got, and for the same reason: a separate key is what stops a market
+colliding with the stat whose name it contains. Pinned in
+`tests/test_marketmap_nfl.py`, including the property directly — a "Longest X"
+market must never share a key with the count it names.
+
+**The generalisable bit.** Three of these four bugs are now a bare stat word
+matching inside a longer market name. The check that finds them is not a
+counter, it is reading the book's own vocabulary back: enumerate every market
+name a league serves and print what each maps to. That is a dozen lines and it
+found this in one pass.
 
 ### And then the smoke alarm went off
 
@@ -451,18 +485,77 @@ Two things the generic engine does that the MLB one did not need:
 | sport | status |
 |---|---|
 | MLB | backtested; sigmas unchanged from `edge/dfs.py` |
-| NFL | **sigmas and TD rates are unvalidated priors** |
+| NFL | TD rates and sigmas **fitted 2026-09-06** — see below |
 | NBA | **nothing verified** — see below |
 
-The NFL board is live and its ordering is credible (Gibbs 20.2, Bijan 19.6 at
-RB; Nacua 20.3, Chase 19.9 at WR; QBs 13–21). But rushing and receiving
-touchdowns have **no two-sided market** — DraftKings prices them only as
-"Anytime TD", which is a field with no opposing side — so they are imputed from
-yardage at round-number priors (1 rush TD per 180 yards, 1 rec TD per 200).
-At 6 points each this is the largest imputed term: it is ~13% of a top
-receiver's projection. **Fit it against nflverse player-week data before
-treating any NFL projection as calibrated.** Every affected player is flagged
-with `*` on the board rather than silently scored.
+### The NFL fit, 2026-09-06
+
+Rushing and receiving touchdowns have **no two-sided market** — DraftKings
+prices them only as "Anytime TD", a field with no opposing side — so they are
+imputed from yardage. That was two round-number priors; it is now fitted
+against 11,017 nflverse player-weeks (2023+2024 REG) by
+`scripts/nfl_td_fit.py`. Both priors were too low:
+
+| | prior | measured |
+|---|---|---|
+| rushing TD | 1 per **180** yds | 1 per **128** |
+| receiving TD | 1 per **200** yds | 1 per **165** |
+
+**One rate per route is also the wrong shape.** Bootstrapped 95% CIs over the
+pool-like population (expected yards ≥ 20) separate three groups and refuse a
+fourth:
+
+```
+rush  QB     95 (80-115)  vs  RB/FB 135 (126-147)   separated, p~0.001
+rec   WR    161 (151-172) vs  TE    167 (149-191)   NOT separated, p~0.60
+rec   WR+TE 162 (153-172) vs  RB/FB 220 (180-281)   separated, p~0.007
+```
+
+So `_nfl_impute` now takes a position and carries three rates. Wide receivers
+and tight ends are deliberately **not** split — splitting on an unmeasured
+difference costs the same as missing a real one and is harder to notice.
+
+Two methodological points that changed the answer:
+
+* **The regressor is an expected mean, not a realized game.** A 5-yard
+  touchdown catch *is* 5 receiving yards, so fitting on realized yardage lets
+  the touchdown inflate its own predictor — the 0–10 yard bin reads 1 TD per 66
+  yards. The fit uses a leave-one-out season mean instead.
+* **The proportional shape survived testing.** Yards per TD by expected-yardage
+  floor is flat (rushing 131/132/132/131/137, receiving 170/178/177/171/167 at
+  floors 0/10/20/30/40), so there is no red-zone non-linearity to model and no
+  defensible intercept — the fitted RB rushing one is *negative*.
+
+**What it bought, stated honestly: not accuracy.** Out of sample (fit 2023,
+test 2024) the touchdown term's MSE improves with CIs clear of zero, but at the
+whole-projection level MAE gets slightly *worse* (4.669 → 4.704) and rank
+correlation is unchanged (0.6917 → 0.6920). A touchdown is a 0/1/2 count whose
+median is 0, so MAE is minimised by a rate biased toward zero. What the fit
+actually removes is **bias**: −0.41 → −0.11 DK points overall, and per position
+from −0.82 on rushing quarterbacks to near zero. That matters where offence is
+compared against a DST projected on a different scale, and in the cross-position
+trade the optimiser makes under a cap.
+
+### The sigmas are nearly inert, which is the more useful finding
+
+`scripts/nfl_sigma_fit.py`. A sigma only does work when the price is away from
+even money — `implied_mean = line + sigma*z` — and across 13,690 real two-sided
+NFL prop quotes in `data/odds.db` the mean |z| is **0.014–0.128**. Books post
+yardage props at −110/−110 and move the *line*. So the passing-yards sigma
+being 19% low (65 against a measured 75) moved the implied mean by 0.68 yards
+at the 90th percentile of real prices: **0.03 DK points**.
+
+The exception is **receptions** — mean |z| 0.128 against 0.014–0.025 for the
+yardage markets, because a reception line is a half-integer on a low count, so
+the book must move the price where it could move a line. That sigma was also
+the furthest out (1.8 against a measured 2.05).
+
+Where sigma does real work is a threshold bonus. Even at the fitted sigma the
+normal **under**-predicts P(100+ yards) by 1.3–1.7pp, because yardage is
+right-skewed and a normal's right tail is too thin — about 0.05 DK points, left
+in and named.
+
+Every player with an imputed component is still flagged `*` on the board.
 
 ### Before NBA ships
 
@@ -476,11 +569,9 @@ matchup **first**. Double-double and triple-double bonuses are not modelled.
 
 ## 10. What is not built
 
-* **A cross-sport optimiser.** `edge/dfs_opt.py` is built around MLB
-  batting-order stacking (`_consecutive_runs`, `_hitter_slots_assignable`).
-  NFL's correlation structure — a QB with his own receivers, against a game
-  total — is a different shape, not a parameter of the same one. `dfs_board.py`
-  prints a projected board; lineups for NFL need that optimiser.
+* ~~**A cross-sport optimiser.**~~ **Built 2026-09-06** as
+  `edge/dfs_opt_nfl.py`, a separate module rather than a mode of
+  `edge/dfs_opt.py` — see §11.
 * **The WNBA paid call sites.** `scripts/{clv_log,clv_close,wnba_scout,
   pilot_threes_2025}.py` still build `OddsAPIClient` directly. They are WNBA
   and NBA-pilot, not MLB, and WNBA currently maps NO DraftKings prop category
@@ -490,7 +581,74 @@ matchup **first**. Double-double and triple-double bonuses are not modelled.
   hold what the CLV harness pays 10x for, and every scan adds to it. Nothing
   reads them yet.
 
-## 10. Scheduling
+## 11. The NFL optimiser
+
+`edge/dfs_opt_nfl.py`, built 2026-09-06. `scripts/dfs_lineups_nfl.py` drives it.
+
+**It is a separate module, not a mode of `edge/dfs_opt.py`, and that was the
+call to make.** Almost nothing in the MLB optimiser is a parameter of NFL:
+`_consecutive_runs` walks a *batting order*, `MAX_HITTERS_PER_TEAM` is a DK MLB
+entry rule, `_hitter_slots_assignable` splits the roster into pitchers and
+everyone else, `_secondary_stack` builds a second batting-order run. Those are
+not MLB-flavoured settings of a general stacker — they are a different theory
+of what correlates. Parameterising would put a `sport` branch inside every one.
+
+What *is* shared is the slot matcher, and that is now `edge/dfs_roster.py`
+rather than a fourth copy. `edge/dfs_opt.py`'s own docstring records that this
+recursion had already been reimplemented three times inside that one module;
+NFL needing it again is where extraction earns itself.
+
+### The correlation model is measured
+
+`scripts/nfl_correlation.py`, nflverse 2023+2024, 544 games, 291 players
+averaging 5+ DK points. Pearson r between DK totals in the same game:
+
+```
+QB  <-> own WR/TE      +0.249     the stack
+QB  <-> own RB         +0.065     a back is NOT a stack partner
+WR/TE <-> own WR/TE    -0.029     teammates COMPETE for targets
+QB  <-> OPPOSING WR/TE +0.089     the bring-back
+DST <-> OPPOSING QB    -0.351     the strongest number here
+```
+
+Two of those contradict the folk wisdom, which is why it was worth measuring:
+
+* **A second pass-catcher is worth less than the first.** Teammates are
+  slightly *anti*-correlated — one football — so QB+2 buys two exposures to the
+  quarterback, not a compounding one. `stack_n` defaults to **2**, and the
+  ceiling function charges the −0.029 rather than letting a whole receiving
+  corps pile onto the cheapest passing game.
+* **A defence facing your own offence is a hard constraint, not a preference.**
+  At −0.351 against the opposing quarterback it is a *stronger* relationship
+  than the +0.249 stack it would cancel. Same rule, same reason, as the MLB
+  pitcher-versus-hitter check.
+
+### Two things it refuses to do quietly
+
+* **An impossible stack returns `None`**, not a silently unstacked lineup.
+* **`n` lineups means a portfolio, not one lineup `n` times.** Varying the seed
+  converges to the same optimum — asking for three and getting one three times
+  looks like it worked. `portfolio()` enforces a max overlap and a distinct
+  stack quarterback per lineup, and returns *fewer* rather than padding.
+
+### Known gaps
+
+* The ceiling is a correlation-weighted sum, **not a simulation**. It ranks
+  lineups in the direction the measurements point; it is not a distribution.
+* **DST big plays are still a flat prior** (`DST_BIG_PLAY_POINTS = 5.2`),
+  unfitted — the one NFL number that is still a guess. The same team-week data
+  that produced the correlations above can fit it.
+* Ownership and leverage are not modelled at all, so "gpp" mode means
+  *correlated*, not *contrarian*.
+* `DK_ALIAS` in `scripts/dfs_lineups_nfl.py` exists because DraftKings writes
+  the Rams **LAR** where nflverse writes **LA**. Unaliased, every Rams player
+  found no game line and was dropped — which silently removed the highest
+  projected receiver on the slate. The script now reports missing teams **by
+  name**, because a whole team vanishing and a thin slate look identical.
+
+---
+
+## 12. Scheduling
 
 `deploy/odds-collect@.service` is a systemd **template** — the instance name is
 the profile — with one timer per profile, because each profile has its own

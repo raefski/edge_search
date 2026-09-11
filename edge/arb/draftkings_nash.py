@@ -294,11 +294,11 @@ def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
             stats["markets_unmapped"].add(f"{label} (not the full game)")
             continue
 
-        mkey = canonical_market(label, player=player)
+        mkey = canonical_market(label, player=player, sport_key=sport_key)
         if mkey is None and market.get("name"):
             # A marketType can be uninformative where the display name is not:
             # "Win Probability" against "Will Shane McClanahan Record a Win?".
-            mkey = canonical_market(market["name"], player=player)
+            mkey = canonical_market(market["name"], player=player, sport_key=sport_key)
         if mkey is None:
             stats["markets_unmapped"].add(label)
             continue
