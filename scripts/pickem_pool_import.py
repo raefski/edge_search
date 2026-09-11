@@ -145,21 +145,15 @@ def _sort_key(row: dict) -> tuple:
         return (week, 1, 0.0, row.get("_order", 0))
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("file", help="text (or HTML) saved from the pool's Picks page")
-    ap.add_argument("--week", type=int, required=True)
-    ap.add_argument("--no-enrich", action="store_true",
-                    help="skip the board lookup for kickoff times. AN IMPORTED "
-                         "ROW THEN HAS NO KICKOFF, and the page groups its "
-                         "per-day deadlines by kickoff -- so the whole slate "
-                         "lands under one TBD header. An escape hatch for an "
-                         "offline import, not a default.")
-    ap.add_argument("--write", action="store_true",
-                    help="actually write the CSV (default is a dry run)")
-    args = ap.parse_args()
+def run(text: str, week: int, no_enrich: bool = False, write: bool = False) -> None:
+    """Turn already-fetched pool-page text into `pickem_current_week.csv` rows.
 
-    text = Path(args.file).read_text(errors="ignore")
+    The one implementation of "parse + merge + write" this repo has, shared
+    by `main()` below (a manual paste) and `scripts/pickem_pool_fetch.py`
+    (the automated, session-based fetch) -- so the truncation/carry-note/
+    kickoff-preservation fixes recorded in this module's docstring cannot
+    drift between the two entry points, only their source of `text` differs.
+    """
     games = parse_pool_text(text)
     if not games:
         print("Parsed 0 games. Copy the PICKS page (the one listing every matchup "
@@ -180,14 +174,14 @@ def main() -> None:
             continue
 
     kick: dict[tuple[str, str], str] = {}
-    if args.no_enrich:
+    if no_enrich:
         print("--no-enrich: NO kickoff times will be looked up. Rows without a "
               f"kickoff already on file render under a single {NO_KICKOFF} day "
               "header on the Pick'em page, which is the pool's per-day deadline "
               "made invisible. Drop --no-enrich once the board is reachable.\n")
     else:
         try:
-            kick = board_kickoffs(args.week)
+            kick = board_kickoffs(week)
             print(f"kickoffs from the scraped board: {len(kick)} game(s)\n")
         except Exception as e:
             print(f"(kickoff lookup skipped: {type(e).__name__}: {e})")
@@ -197,17 +191,17 @@ def main() -> None:
                   "`python3 scripts/odds_collect.py --profile pickem_nfl` and "
                   "re-run.\n")
 
-    print(f"parsed {len(games)} games for week {args.week}\n")
+    print(f"parsed {len(games)} games for week {week}\n")
     print(f"{'matchup':<16}{'CBS line':>10}{'community':>14}  kickoff")
     rows = []
     for i, g in enumerate(games):
         key = (g["away_abbr"], g["home_abbr"])
-        old = prior_by_key.get((args.week,) + key, {})
+        old = prior_by_key.get((week,) + key, {})
         # board first, then whatever the file already knew. NEVER blank an
         # existing kickoff just because this board is thin.
         kickoff = _iso_z(kick[key]) if key in kick else (old.get("kickoff_utc") or "")
         rows.append({
-            "week": args.week, "away_abbr": g["away_abbr"], "home_abbr": g["home_abbr"],
+            "week": week, "away_abbr": g["away_abbr"], "home_abbr": g["home_abbr"],
             "away_name": g["away_name"], "home_name": g["home_name"],
             "cbs_line_home": g["cbs_line_home"], "kickoff_utc": kickoff,
             # No odds feed carries a broadcaster, so `tv` can only ever come
@@ -247,7 +241,7 @@ def main() -> None:
 
     # Everything the paste did NOT cover survives verbatim: other weeks, and
     # games a clipped copy missed.
-    imported_keys = {(args.week, r["away_abbr"], r["home_abbr"]) for r in rows}
+    imported_keys = {(week, r["away_abbr"], r["home_abbr"]) for r in rows}
     carried = [r for k, r in prior_by_key.items() if k not in imported_keys]
     if carried:
         weeks = sorted({str(r.get("week", "?")) for r in carried})
@@ -255,7 +249,7 @@ def main() -> None:
               f"(week(s) {', '.join(weeks)}) — {OUT.name} is not truncated to "
               "the imported week.")
 
-    if not args.write:
+    if not write:
         print(f"\nDRY RUN — nothing written. Re-run with --write to update {OUT.name}.")
         return
 
@@ -267,7 +261,25 @@ def main() -> None:
     print(f"\nwrote {len(rows)} imported + {len(carried)} carried = "
           f"{len(out_rows)} rows -> {OUT.name}")
     print("next: python3 scripts/pickem_capture.py --snapshot post "
-          f"--week {args.week} --confirm")
+          f"--week {week} --confirm")
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("file", help="text (or HTML) saved from the pool's Picks page")
+    ap.add_argument("--week", type=int, required=True)
+    ap.add_argument("--no-enrich", action="store_true",
+                    help="skip the board lookup for kickoff times. AN IMPORTED "
+                         "ROW THEN HAS NO KICKOFF, and the page groups its "
+                         "per-day deadlines by kickoff -- so the whole slate "
+                         "lands under one TBD header. An escape hatch for an "
+                         "offline import, not a default.")
+    ap.add_argument("--write", action="store_true",
+                    help="actually write the CSV (default is a dry run)")
+    args = ap.parse_args()
+
+    text = Path(args.file).read_text(errors="ignore")
+    run(text, args.week, no_enrich=args.no_enrich, write=args.write)
 
 
 if __name__ == "__main__":

@@ -87,12 +87,25 @@ runner cannot rebuild it because DraftKings 403s datacenter IPs. To use it at al
 `ODDS_API_KEY` as a repository secret (Settings → Secrets and variables → Actions) — **it is not
 set as of 2026-09-08, which is why nothing has been captured yet.**
 
-**The CBS half still needs you** — those lines are behind a login. But the two halves join on
-`(season, week, snapshot, home_team)`, so CBS's numbers get filled in *afterwards* by re-running
-the **same** `--snapshot` label, and the time-critical market reading never waits for you:
+**The CBS half is now fetched automatically too (2026-09-10)** — once you've done the
+one-time setup below. `scripts/pickem_pool_fetch.py` runs before every one of the six timers,
+using a saved login session, and merges straight into `pickem_current_week.csv`. The two
+halves still join on `(season, week, snapshot, home_team)`, and the market reading still never
+waits for it — see "One-time setup" for what has to happen before this is true, and the
+manual paste (section 1 below) as the fallback for as long as it doesn't.
 
 ```bash
-# the timer already banked the market half, CBS columns blank:
+# both halves now happen automatically, per deadline:
+#   ExecStartPre  scripts/pickem_pool_fetch.py --week auto --write   (soft-fails)
+#   ExecStartPre  scripts/odds_collect.py --profile pickem_nfl       (soft-fails)
+#   ExecStart     scripts/pickem_capture.py --snapshot %i --week auto --market-only --confirm
+#   ExecStartPost scripts/pickem_capture.py --snapshot %i --week auto --confirm  (soft-fails)
+```
+
+If the CBS fetch has nothing (session dead, not set up yet, or the paste never happened),
+the ExecStartPost re-run just reports what it always has:
+
+```bash
 python3 scripts/pickem_capture.py --snapshot post --week N --confirm
 #   -> wrote 0 new, completed 16
 ```
@@ -119,17 +132,51 @@ python3 scripts/pickem_capture.py --snapshot post --week 1 \
 
 ---
 
+## One-time setup — do this once, before it's automatic
+
+Without this, the CBS half still needs the manual paste in section 1 below. With it, all
+six timers fetch and merge it themselves, every deadline, with no weekly action from you.
+
+1. Add your pool's own Picks page URL to `edge_search/.env` (create the file if it doesn't
+   exist yet — it's gitignored, same as `ODDS_API_KEY`):
+   ```
+   CBS_POOL_URL=https://picks.cbssports.com/football/pickem/pools/<your-pool-id>/picks
+   ```
+2. Save a login session — a real, visible browser window opens; log in there exactly as you
+   would in your own browser. Nothing in this script's code path reads, stores, or transmits
+   what you type — see `scripts/pickem_session_bootstrap.py`'s own docstring for exactly why
+   that's true and where the resulting session file lives (deliberately **outside** both
+   `~/edge_search` and `~/arbitrage`, so no `git add` can ever reach it):
+   ```bash
+   python3 scripts/pickem_session_bootstrap.py
+   ```
+3. Test it:
+   ```bash
+   python3 scripts/pickem_pool_fetch.py --week auto
+   ```
+   Dry run by default — add `--write` once it looks right.
+
+**CBS sessions expire, and nothing can renew one without a human.** When
+`scripts/pickem_pool_fetch.py` (or a timer's log) reports `SESSION EXPIRED`, re-run step 2.
+Every automated call site treats this as routine, not an error — the timers soft-fail past it
+and the market-half reading still banks on schedule either way.
+
+---
+
 ## The five-minute version
 
 ```bash
 cd /home/asr/edge_search
 
-# 1. Tuesday, right after CBS posts — paste the Picks page, import it
+# 1. Tuesday, right after CBS posts — automatic once "One-time setup" above is
+#    done. Otherwise, paste the Picks page and import it by hand:
 python3 scripts/pickem_pool_import.py picks.txt --week N --write
 
 # 2. Immediately after — log the freeze (free).
 #    Steps 3 and 4 now run themselves on timers; this one is still worth doing
-#    by hand, because it should be contemporaneous with step 1.
+#    by hand if you just did step 1 manually, because it should be
+#    contemporaneous with it. Skip it once step 1 is automatic too — the
+#    timer's own post capture already does this at the right moment.
 python3 scripts/pickem_capture.py --snapshot post --week N --confirm
 
 # 3. Thursday or Friday — the mid-week reading (free, automatic).

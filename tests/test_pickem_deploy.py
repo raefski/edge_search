@@ -53,11 +53,50 @@ def test_every_capture_collects_the_board_first():
     src = _service()
     pre = [l for l in src.splitlines() if l.startswith("ExecStartPre=")]
     assert pre, "no ExecStartPre: the capture reads whatever the board last had"
-    assert len(pre) == 1
-    assert pre[0].startswith("ExecStartPre=-"), (
+    board_pre = [l for l in pre if "odds_collect.py" in l]
+    assert len(board_pre) == 1
+    assert board_pre[0].startswith("ExecStartPre=-"), (
         "must be prefixed with '-' so a failed collection does not cancel the "
         "capture -- an unbanked reading cannot be recovered")
-    assert "odds_collect.py" in pre[0] and "pickem_nfl" in pre[0]
+    assert "pickem_nfl" in board_pre[0]
+
+
+def test_the_cbs_half_is_fetched_automatically_but_never_blocks_the_market_reading():
+    """2026-09-10: the CBS half used to need a human to paste the pool page
+    (scripts/pickem_pool_import.py). Automated via a stored login session
+    (scripts/pickem_session_bootstrap.py, scripts/pickem_pool_fetch.py), but
+    it must NEVER be allowed to cost the market reading -- that is the one
+    that can never be retaken, and a CBS session WILL eventually expire with
+    no way to renew it unattended.
+    """
+    src = _service()
+    lines = src.splitlines()
+
+    pre = [l for l in lines if l.startswith("ExecStartPre=")]
+    fetch_pre = [l for l in pre if "pickem_pool_fetch.py" in l]
+    assert len(fetch_pre) == 1
+    assert fetch_pre[0].startswith("ExecStartPre=-"), (
+        "an expired/failed CBS fetch must not cancel the capture below")
+
+    exec_lines = [l for l in lines if l.startswith("ExecStart=")]
+    assert len(exec_lines) == 1
+    exec_i = next(i for i, l in enumerate(lines) if l.startswith("ExecStart="))
+    post_i = next(i for i, l in enumerate(lines) if l.startswith("ExecStartPost="))
+    exec_block = "\n".join(lines[exec_i:post_i])
+    assert "--market-only" in exec_block, (
+        "the primary capture must bank the market half unconditionally, "
+        "whether or not the CBS fetch above got anything")
+
+    post = [lines[post_i]]
+    assert post[0].startswith("ExecStartPost=-"), (
+        "the CBS merge pass must never fail the unit -- it is strictly "
+        "additive to the row ExecStart already committed, and an empty CBS "
+        "half here is 'wrote 0 new', not an error")
+    post_block = "\n".join(lines[post_i:])
+    assert "pickem_capture.py" in post_block
+    assert "--market-only" not in post_block, (
+        "the post-pass must run WITHOUT --market-only, or it can never "
+        "merge in the CBS half it exists to add")
 
 
 def test_no_capture_is_scheduled_before_the_days_collection():
@@ -117,6 +156,7 @@ def test_the_timers_do_not_push():
     the ExecStart line and would have fired on the next timer.
     """
     exec_lines = [l for l in _service().splitlines()
-                  if l.startswith(("ExecStart=", "ExecStartPre=", "    --"))]
+                  if l.startswith(("ExecStart=", "ExecStartPre=",
+                                   "ExecStartPost=", "    --"))]
     assert exec_lines, "no ExecStart at all"
     assert not any("--push" in l for l in exec_lines), exec_lines

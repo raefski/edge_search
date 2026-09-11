@@ -20,12 +20,23 @@ Practical consequence: the pool line still has to come from the pool page.
 `parse_pool_html` removes the tedious half of that -- save the page while
 logged in and it produces the CSV rows, instead of transcribing 16 lines
 by hand.
+
+`fetch_pool_text` (2026-09-10) removes the LAST manual step: given a stored
+login session it fetches that page itself and returns the same text a
+copy-paste would have, so `parse_pool_text` needs no changes and there is
+still only one parser. This is the one place in the whole project that
+stores an authenticated session on purpose -- see DEFAULT_SESSION_PATH's
+docstring for why that is a deliberate, scoped exception and not a change of
+policy for the sportsbook scrapers.
 """
 from __future__ import annotations
 
+import json
+import os
 import re
 import urllib.request
 from dataclasses import dataclass
+from pathlib import Path
 
 ODDS_URL = "https://www.cbssports.com/nfl/odds/"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -212,3 +223,252 @@ def parse_pool_text(text: str) -> list[dict]:
         })
         i += home_j + 2
     return games
+
+
+# ---------------------------------------------------------------------------
+# Automated pool fetch -- a stored session in place of a manual copy-paste
+# ---------------------------------------------------------------------------
+
+#: Where the local-only CBS session lives. Deliberately OUTSIDE both this
+#: repo and ~/arbitrage -- not merely gitignored, simply never present in
+#: either working tree, so there is no path by which `git add -A` or a
+#: careless `git add .` could ever pick it up. Override with CBS_SESSION_PATH
+#: if you want it somewhere else.
+#:
+#: This is the one authenticated session this project stores on purpose.
+#: Every other login-adjacent surface here (DraftKings, FanDuel) explicitly
+#: does NOT -- ~/arbitrage's HANDOFF.md section 6: an automated, authenticated
+#: request pattern is a legible signal to a BOOK that already limits accounts
+#: for arbitrage. That risk is specific to sportsbooks policing arbitrage;
+#: CBS's pick'em pool carries no such incentive, and the session unblocks two
+#: of the project's highest-value open experiments (PICKEM_STATUS.md) that a
+#: sportsbook session never would justify here. Decided explicitly on
+#: 2026-09-10, not defaulted into -- see scripts/pickem_session_bootstrap.py.
+DEFAULT_SESSION_PATH = Path(
+    os.environ.get("CBS_SESSION_PATH")
+    or (Path.home() / ".config" / "edge_search" / "cbs_session.json")
+)
+
+
+class SessionExpired(RuntimeError):
+    """The stored CBS session no longer reaches the pool page.
+
+    Raised instead of silently returning garbage: an anonymous request and a
+    dead session both get HTTP 200 from CBS, redirected to /join rather than
+    401'd (see this module's top docstring) -- so the landed-on URL is the
+    only reliable tell, and a caller that skipped this check would parse a
+    join/settings page as if it were the picks page.
+    """
+
+
+#: Launch flag that quiets the single most common automation tell
+#: (`navigator.webdriver` and the blink-level flag behind it). Shared by
+#: fetch_pool_text and scripts/pickem_session_bootstrap.py so a fix to one
+#: cannot silently miss the other.
+STEALTH_ARGS = ["--disable-blink-features=AutomationControlled"]
+
+
+def patch_automation_tells(ctx) -> None:
+    """CBS's login page blocked Playwright's own browser outright before a
+    human ever typed a password, on the FIRST bootstrap attempt (2026-09-10)
+    -- confirming CBS actually checks these, not merely a theoretical risk.
+    `navigator.webdriver` is the single most common tell; this patches it and
+    its usual companions (an empty plugin list, a missing `window.chrome`) on
+    every page the context opens, via an init script rather than a one-off
+    page.evaluate -- so it applies before CBS's own scripts run, on every
+    navigation, including the redirect a login submits into.
+
+    Not a guarantee against every anti-bot check CBS might run (a visible
+    CAPTCHA still needs the human already at the browser to solve it), but
+    this is the standard, low-risk fix for a real visible browser getting
+    blocked purely for being under automation control.
+    """
+    ctx.add_init_script("""
+        Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+        window.chrome = window.chrome || {runtime: {}};
+        Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+        Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
+    """)
+
+
+def _env(key: str) -> str | None:
+    """Prefer the environment, then this repo's .env, then ~/arbitrage's --
+    the same lookup order scripts/odds_parity.py already uses for
+    ODDS_API_KEY, kept identical so there is one convention, not two."""
+    if os.environ.get(key):
+        return os.environ[key]
+    root = Path(__file__).resolve().parent.parent
+    for env_path in (root / ".env", Path.home() / "arbitrage" / ".env"):
+        if not env_path.exists():
+            continue
+        for line in env_path.read_text().splitlines():
+            if line.strip().startswith(f"{key}="):
+                return line.split("=", 1)[1].strip().strip('"').strip("'")
+    return None
+
+
+def pool_url() -> str | None:
+    """CBS_POOL_URL from the environment or a local .env -- never hardcoded
+    here, since it names Adam's own pool. See PICKEM_WEEKLY.md for where to
+    set it: the pool's own Picks page, e.g.
+    https://picks.cbssports.com/football/pickem/pools/<id>/picks."""
+    return _env("CBS_POOL_URL")
+
+
+def fetch_pool_text(url: str | None = None,
+                    session_path: Path | str = DEFAULT_SESSION_PATH,
+                    timeout: int = 30) -> str:
+    """Fetch the pool's Picks page using a stored login session, and return
+    its visible text -- the same shape a manual copy-paste already produces,
+    so `parse_pool_text` needs no changes and there is one parser, not two.
+
+    Needs a session created by scripts/pickem_session_bootstrap.py. That
+    script is the only place in this project that is ever near your CBS
+    password, and even there it only watches you type it into a real,
+    visible browser window -- nothing here reads, stores, or transmits it.
+    This function replays just the cookies that login already produced.
+
+    Checks the session file's existence BEFORE importing playwright, so a
+    missing session reports plainly even where playwright is not installed,
+    and raises SessionExpired (not a generic error) either way -- the
+    caller's contract is "this needs scripts/pickem_session_bootstrap.py",
+    the same message whether the session never existed or has since died.
+    """
+    session_path = Path(session_path)
+    if not session_path.exists():
+        raise SessionExpired(
+            f"No session at {session_path}. Run "
+            "scripts/pickem_session_bootstrap.py once to create it.")
+
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError as e:  # pragma: no cover - environment dependent
+        raise RuntimeError(
+            "fetch_pool_text needs playwright (pip install playwright && "
+            "playwright install chromium)."
+        ) from e
+
+    url = url or pool_url()
+    if not url:
+        raise RuntimeError(
+            "No pool URL. Set CBS_POOL_URL in edge_search/.env to the pool's "
+            "own Picks page, e.g. "
+            "https://picks.cbssports.com/football/pickem/pools/<id>/picks")
+
+    with sync_playwright() as p:
+        b = p.chromium.launch(headless=True, args=["--no-sandbox"] + STEALTH_ARGS)
+        ctx = b.new_context(storage_state=str(session_path), user_agent=UA)
+        patch_automation_tells(ctx)
+        pg = ctx.new_page()
+        pg.goto(url, wait_until="domcontentloaded", timeout=timeout * 1000)
+        pg.wait_for_timeout(4000)
+        landed = pg.url
+        text = pg.inner_text("body")
+        b.close()
+
+    if "/join" in landed or "/login" in landed or "signin" in landed.lower():
+        raise SessionExpired(
+            f"Session no longer reaches the pool -- landed on {landed} "
+            "instead of the picks page. CBS sessions expire; re-run "
+            "scripts/pickem_session_bootstrap.py.")
+    return text
+
+
+def _parse_cookie_header(text: str) -> list[tuple[str, str]]:
+    """`sid=abc; auth=xyz` -> [("sid","abc"), ("auth","xyz")] -- the Network
+    tab's Cookie REQUEST header shape."""
+    out = []
+    for part in text.split(";"):
+        part = part.strip()
+        if "=" in part:
+            name, value = part.split("=", 1)
+            out.append((name.strip(), value.strip()))
+    return out
+
+
+def _parse_cookie_table(text: str) -> list[tuple[str, str]]:
+    """Rows copied from DevTools' Application/Storage -> Cookies table --
+    one cookie per line, tab-separated, Name then Value then whatever other
+    columns Chrome includes (Domain, Path, Expires, ...), which are ignored
+    since save_cookie_session rebuilds them itself. Easier to point someone
+    at than the Network tab: that tab shows every third-party request on
+    the page (video widgets, analytics, ad beacons), most of which never
+    carry a Cookie header at all, and it is easy to grab the wrong one."""
+    out = []
+    for line in text.splitlines():
+        fields = line.split("\t")
+        if len(fields) >= 2 and fields[0].strip():
+            out.append((fields[0].strip(), fields[1].strip()))
+    return out
+
+
+#: Which parser reads which shape. A TAB is the deciding signal, not "does
+#: it have an `=`" -- a table row's VALUE column can itself contain one
+#: (base64/JWT padding, "abcDEF=="), which would otherwise make
+#: _parse_cookie_header find a garbage-but-nonempty match on a table paste
+#: and never fall through: "authToken\tabcDEF==\tpicks.cbssports.com\t..."
+#: has no semicolon, so header-parsing treats the WHOLE line as one part,
+#: sees an "=" inside the padding, and silently splits there instead of on
+#: tabs. A real Cookie header, built by the browser itself, never contains a
+#: literal tab; a copied table row always does. That is a clean, order-free
+#: dispatch -- not "try header first, fall back to table" -- and it is the
+#: reason for a dedicated test rather than trusting the "try both" instinct.
+def _parse_cookie_data(text: str) -> list[tuple[str, str]]:
+    return _parse_cookie_table(text) if "\t" in text else _parse_cookie_header(text)
+
+
+def save_cookie_session(cookie_data: str, session_path: Path | str = DEFAULT_SESSION_PATH,
+                        domain: str = ".cbssports.com") -> Path:
+    """Build a session file directly from a browser that is ALREADY logged
+    in -- for when picks.cbssports.com's login flow blocks Playwright's own
+    browser outright. Confirmed 2026-09-10: `patch_automation_tells` got
+    past the CAPTCHA, but the page never advanced afterward -- consistent
+    with detection deeper than `navigator.webdriver` (the DevTools protocol
+    itself, most likely), which no amount of JS-property patching reaches.
+
+    Sidesteps the login entirely rather than fighting that: `fetch_pool_text`
+    only ever REPLAYS a session for an ordinary page load, and this module's
+    own top docstring already establishes CBS does not challenge that -- a
+    dead session quietly redirects to /join, it does not CAPTCHA a page
+    view. So a cookie lifted from a browser that passed CBS's login on its
+    own (an everyday Edge or Chrome, already logged in) works exactly as
+    well as one Playwright captured itself, without Playwright ever having
+    to survive the login at all.
+
+    Accepts either shape, auto-detected on whether the text contains a tab
+    (see `_parse_cookie_data`) -- never "try one, fall back to the other",
+    which a table row's own base64-padded value could fool:
+
+      * DevTools -> Application/Storage -> Cookies -> the `picks.cbssports.com`
+        row -> select the rows, copy. RECOMMENDED: one specific place, no
+        sifting through the Network tab's noise of third-party requests that
+        mostly carry no cookie at all.
+      * DevTools -> Network -> a request actually made TO picks.cbssports.com
+        (not a video/embed/analytics request to a different host) -> Request
+        Headers -> the `Cookie:` line, value only.
+
+    NOT `Set-Cookie`, and NOT "Copy as cURL" -- ~/arbitrage/HANDOFF.md
+    section 6 names the reason for sportsbooks and it applies just the same
+    here: a cURL export drags the whole request, headers well beyond the
+    cookie jar.
+    """
+    found = _parse_cookie_data(cookie_data)
+    if not found:
+        raise ValueError(
+            "No cookies found. Paste either the Cookie REQUEST header's "
+            "value (DevTools Network tab), or rows copied from "
+            "Application/Storage -> Cookies -> picks.cbssports.com -- not a "
+            "cURL command, and not a Set-Cookie response header.")
+
+    pairs = [{"name": name, "value": value, "domain": domain, "path": "/",
+             "expires": -1, "httpOnly": True, "secure": True, "sameSite": "Lax"}
+            for name, value in found]
+
+    session_path = Path(session_path)
+    session_path.parent.mkdir(parents=True, exist_ok=True)
+    session_path.write_text(json.dumps({"cookies": pairs, "origins": []}, indent=2))
+    try:
+        session_path.chmod(0o600)
+    except OSError:
+        pass  # best-effort; not fatal on filesystems that don't support it
+    return session_path

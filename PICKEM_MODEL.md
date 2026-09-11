@@ -387,18 +387,43 @@ the pool freezes. Substituting one for the other would delete the signal and qui
 the model to ~50% while still looking like it worked. This is the most dangerous available
 shortcut, which is why it is written down.
 
-**What automation is actually possible.** Two real wins, both shipped:
+**What automation is actually possible.** Three real wins, all shipped:
 
 1. **A free market feed.** `edge/pickem_cbs.fetch_public_odds()` scrapes the public page for
    all 16 games — open line, current line, total — at **zero Odds-API credits and no key**.
    Note it also supplies an *opening* line, which the free Odds-API tier cannot (historical
    endpoints are paid-plan only).
 2. **No more transcription.** `scripts/pickem_pool_import.py` turns text copied from the
-   logged-in Picks page into `pickem_current_week.csv`, community percentages included. The
-   fetch still needs a human session; the tedious part no longer needs a human.
+   logged-in Picks page into `pickem_current_week.csv`, community percentages included.
+3. **No more copy-paste, either (2026-09-10).** `scripts/pickem_pool_fetch.py` fetches the
+   pool page itself, using a login session `scripts/pickem_session_bootstrap.py` saves once —
+   feeding the exact same parser and merge logic as #2, so there is still one implementation
+   of "CBS text → CSV rows". Wired into every `pickem-capture@.service` firing (not just
+   Tuesday's), which is what actually unblocks public-pick fading: the community percentages
+   move all week (13 of 16 games, up to 14 points, measured 2026-09-08→09) and a number typed
+   once on Tuesday and reused by every later snapshot label is a stale reading wearing a fresh
+   timestamp — the same shape of bug this file already records once for `captured_at`.
 
-Nothing in this repo stores, requests, or transmits CBS credentials, and nothing logs in on
-your behalf — the importer parses a page you already opened.
+**This is a deliberate, narrow exception to "nothing here stores a session", not a change of
+policy.** Every OTHER login-adjacent surface in this project (DraftKings, FanDuel) still never
+stores or replays one — see `~/arbitrage/HANDOFF.md` §6: an automated authenticated request
+pattern is a legible signal to a *sportsbook* that already limits accounts for arbitrage. That
+risk is specific to books policing arbitrage; CBS's pick'em pool carries no such incentive, and
+the session unblocks real value (the two highest-value blocked experiments in
+`PICKEM_STATUS.md`) that a sportsbook session never would justify here. Decided explicitly,
+2026-09-10, after being asked for directly — not defaulted into.
+
+`edge/pickem_cbs.py`'s docstring and `DEFAULT_SESSION_PATH`'s own comment carry the mechanics:
+the session file lives **outside both `~/edge_search` and `~/arbitrage`** — not merely
+gitignored, simply never present in either repo's working tree, so no `git add` can ever pick
+it up. `scripts/pickem_session_bootstrap.py` is the only place in this project that is ever
+near your CBS password, and even there it only watches you type it into a real, visible
+browser window it opens — nothing in the code path reads, stores, or transmits it; it asks the
+browser to write down the cookies your own login already produced. A session expires
+eventually with no way to renew it unattended (there is no such thing as a CBS refresh token
+here), and every automated call site treats that as routine, not exceptional: soft-failing
+(`ExecStartPre=-`) so a dead session never blocks the market-half capture, which remains the
+one reading that can never be retaken.
 
 ### 5i. Spread regimes — "should there be several models, one per spread size?" (2026-08-23)
 
@@ -1477,8 +1502,10 @@ python3 -m pytest tests/test_pickem.py -q
 | `edge/pickem_live.py` | Live lines + totals, multi-book weighted consensus (2 credits/week) |
 | `edge/pickem_log.py` | Append-only snapshot log + `cbs_offset` decomposition (5f, 5j r3) |
 | `edge/pickem_strategy.py` | Late-season standings play (section 7). **Unvalidated.** |
-| `edge/pickem_cbs.py` | CBS scrapers: free public odds feed + pool-page parser |
+| `edge/pickem_cbs.py` | CBS scrapers: free public odds feed, pool-page parser, session-based fetch |
 | `scripts/pickem_pool_import.py` | Saved pool page → `pickem_current_week.csv`, no typing |
+| `scripts/pickem_pool_fetch.py` | Automated pool fetch (stored session) → same CSV, no paste |
+| `scripts/pickem_session_bootstrap.py` | One-time (and post-expiry) CBS login → local session file |
 | `scripts/pickem_capture.py` | Weekly capture CLI, dry-run by default |
 | `scripts/pickem_blocked.py` | Progress toward each blocked experiment — run it any time |
 | `scripts/pickem_vs_random.py` | Holdout replay vs a coin-flipping field (seeded) |

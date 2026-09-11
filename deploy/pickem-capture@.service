@@ -49,6 +49,13 @@
 # network down) the capture must STILL run and bank the older board -- now
 # honestly stamped, and with board_age_seconds recording the gap. A stale
 # reading recorded truthfully beats no reading, which is gone forever.
+#
+# THE SAME PRINCIPLE NOW APPLIES TO THE CBS HALF (2026-09-10). See
+# scripts/pickem_pool_fetch.py's ExecStartPre in [Service] below: it is
+# soft-failing for the identical reason, and for a harder version of it --
+# CBS sessions expire outright, not just go briefly stale, and nothing can
+# renew one without a human. The market half must be as indifferent to that
+# failing as it already is to the board collector failing.
 [Unit]
 Description=Capture pick'em line snapshot %i
 After=network-online.target
@@ -63,13 +70,31 @@ StartLimitBurst=3
 [Service]
 Type=oneshot
 WorkingDirectory=%h/edge_search
-# --market-only: CBS's numbers are behind a login and get filled in by hand
-# afterwards; the two halves join on (season, week, home_team). The MARKET half
-# is the time-critical one -- a reading not taken at its moment is gone for
-# good -- so it must never wait for the manual half.
+# CBS HALF, AUTOMATED (2026-09-10). Fetches this week's pool page with a
+# stored login session (scripts/pickem_session_bootstrap.py) and merges it
+# into pickem_current_week.csv -- see scripts/pickem_pool_fetch.py. Leading
+# `-`: a dead/expired session (they do not last forever, and nothing can
+# renew one unattended) must NEVER cancel the capture below, which is the
+# time-critical half and the one that can never be retaken.
+ExecStartPre=-/usr/bin/env python3 scripts/pickem_pool_fetch.py --week auto --write
 ExecStartPre=-/usr/bin/env python3 scripts/odds_collect.py --profile pickem_nfl
+# --market-only: bank the market reading UNCONDITIONALLY, whether or not the
+# CBS fetch above actually got anything. The two halves join on (season,
+# week, snapshot, home_team), so ExecStartPost below still merges in
+# whatever CBS half exists the moment this line runs -- but this line itself
+# must never be made to wait on it.
 ExecStart=/usr/bin/env python3 scripts/pickem_capture.py \
     --snapshot %i --week auto --market-only --confirm
+# Immediately re-run the SAME label without --market-only, so a CBS row
+# fetched above (or already on file from Tuesday) gets merged into the row
+# ExecStart just banked -- automating what used to be "run this again by
+# hand once you've pasted the pool page" (PICKEM_WEEKLY.md). Strictly
+# additive: pickem_log.complete only fills columns never measured and never
+# overwrites one that was, so this can only add data, never corrupt the
+# market-only row above. Leading `-`: must never fail the unit either --
+# an empty CBS half here just means "wrote 0 new, completed N", not an error.
+ExecStartPost=-/usr/bin/env python3 scripts/pickem_capture.py \
+    --snapshot %i --week auto --confirm
 # A deadline reading cannot be taken again later, so a transient failure IS
 # worth retrying -- but only briefly and only a few times, bounded by the
 # StartLimit above. Five minutes apart, three attempts, then OnFailure records
