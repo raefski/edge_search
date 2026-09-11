@@ -432,6 +432,26 @@ with st.sidebar:
         v = st.query_params.get(name, "")
         return [s for s in v.split(",") if s]
 
+    # WRITES ARE COLLECTED, NOT SENT (2026-09-11). Every `st.query_params[k] =
+    # v` is its own ForwardMsg -- streamlit/runtime/state/query_params.py
+    # calls _send_query_param_msg() from __setitem__ unconditionally, even
+    # when the value is identical -- and the browser turns each one into a
+    # history.pushState(). The eight fields per panel across two panels meant
+    # SIXTEEN pushStates on every rerun, changed or not.
+    #
+    # Safari and Brave refuse more than 100 pushStates per 10 seconds, so
+    # seven reruns in ten seconds was enough to break the page with
+    # "Bad message format: Attempt to use history.pushState() more than 100
+    # times per 10 seconds" -- which on a phone is one drag of the boost
+    # slider, or a few taps on the sport filter. Reported from an iPhone on
+    # 2026-09-11.
+    #
+    # So: gather the desired values here, and flush ONCE below, and only if
+    # they actually differ from what the URL already says. A rerun that
+    # changes no boost field now sends nothing at all, which is the common
+    # case (sidebar filters, the Scan button, a reconnect).
+    _qp_want: dict[str, str] = {}
+
     from edge.arb.engine import Boost
 
     _boost_book_order = {1: ["draftkings", "fanduel", "fanatics"],
@@ -444,7 +464,7 @@ with st.sidebar:
                              key=_qp + "pct",
                              help="0 turns this boost off. Profit boosts multiply "
                                   "your NET winnings, not the total return.")
-            st.query_params[_qp + "pct"] = str(_pct)
+            _qp_want[_qp + "pct"] = str(_pct)
 
             _book_opts = _boost_book_order[_n]
             _book_default = _qp_str(_qp + "book", _book_opts[0])
@@ -452,13 +472,13 @@ with st.sidebar:
                 f"Boost {_n} book", _book_opts,
                 index=_book_opts.index(_book_default) if _book_default in _book_opts else 0,
                 key=_qp + "book", format_func=lambda b: BOOK_NAMES.get(b, b))
-            st.query_params[_qp + "book"] = _book
+            _qp_want[_qp + "book"] = _book
             _max_stake = st.number_input(
                 f"Boost {_n} max stake ($)", 1, 5_000, _qp_int(_qp + "stake", 10), step=5,
                 key=_qp + "stake",
                 help="The token's cap. This bounds the WHOLE position, not just "
                      "the boosted leg — the hedge is sized off it.")
-            st.query_params[_qp + "stake"] = str(_max_stake)
+            _qp_want[_qp + "stake"] = str(_max_stake)
             _sport_opts = ["(every sport)"] + list(_sport_titles)
             _sport_default = _qp_str(_qp + "sport", "(every sport)")
             _sport = st.selectbox(
@@ -473,7 +493,7 @@ with st.sidebar:
                 help="The sport this token is tied to. Sports missing from the "
                      "current snapshot are still listed — request a desktop "
                      "scan to cover them.")
-            st.query_params[_qp + "sport"] = _sport
+            _qp_want[_qp + "sport"] = _sport
             _sport = "" if _sport == "(every sport)" else _sport
             if _sport and _sport not in _in_snapshot:
                 st.caption(f"⚠️ The current snapshot has no {_sport_titles[_sport]} "
@@ -486,27 +506,27 @@ with st.sidebar:
                 key=_qp + "market",
                 help="Boosts are often scoped to a market type as well as a "
                      "sport — a batter-props token cannot be used on a game line.")
-            st.query_params[_qp + "market"] = _market
+            _qp_want[_qp + "market"] = _market
             _markets = _market_groups.get(_market, [])
             _min_odds = st.number_input(
                 f"Boost {_n} min odds on the boosted leg (American)", -1000, 1000,
                 _qp_int(_qp + "odds", -200), step=10, key=_qp + "odds",
                 help="Most tokens carry a floor — 'Min Total Odds of -200'. A "
                      "shorter leg does not qualify and the book refuses it at the slip.")
-            st.query_params[_qp + "odds"] = str(_min_odds)
+            _qp_want[_qp + "odds"] = str(_min_odds)
             _sides = st.multiselect(
                 f"Boost {_n} side", ["over", "under", "home", "away", "yes", "no"],
                 default=_qp_list(_qp + "sides"), key=_qp + "sides",
                 help="Leave empty for any. DraftKings' 'Batter Props Milestones' "
                      "are the over-only ladders, so that token is over only.")
-            st.query_params[_qp + "sides"] = ",".join(_sides)
+            _qp_want[_qp + "sides"] = ",".join(_sides)
             _parlay = st.checkbox(
                 f"Boost {_n} parlay only", value=_qp_bool(_qp + "parlay", False),
                 key=_qp + "parlay",
                 help="Books offer the same headline boost twice — straight bets "
                      "and parlays. Only the straight-bet one can be hedged, "
                      "because each side of an arbitrage is its own single bet.")
-            st.query_params[_qp + "parlay"] = "1" if _parlay else "0"
+            _qp_want[_qp + "parlay"] = "1" if _parlay else "0"
             if _pct > 0:
                 boosts.append(Boost(
                     book=_book, pct=_pct / 100.0, max_stake=float(_max_stake),
@@ -515,6 +535,22 @@ with st.sidebar:
                     requires_parlay=_parlay,
                     label=(f"{_pct}% boost on {BOOK_NAMES.get(_book, _book)}"
                           + (f" ({_market.lower()})" if _markets else ""))))
+
+    # The single flush. `update()` exists precisely for this -- its own
+    # comment in streamlit says it overrides MutableMapping's version "to
+    # ensure only one ForwardMsg is sent" -- but the guard in front of it is
+    # what does the real work, because the overwhelming majority of reruns
+    # change no boost field and should touch the URL zero times.
+    #
+    # `get(k, "")` and not `get(k)`: an empty value (the "sides" multiselect
+    # with nothing picked) is stored by dropping the key entirely --
+    # is_empty_url_value() treats "" as "cleared" -- so a missing key and ""
+    # are the same state and must compare equal. Reading it with the same
+    # default _qp_list already uses is what makes the comparison symmetric;
+    # without it the two sides keys never matched and the flush fired on
+    # every single rerun, which is most of the bug still present.
+    if any(st.query_params.get(k, "") != v for k, v in _qp_want.items()):
+        st.query_params.update(_qp_want)
 
     boost_mode = st.radio(
         # Named distinctly from the top "Show" multiselect (arb/middle/ev) --
