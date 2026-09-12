@@ -155,9 +155,34 @@ clears MLB's own ship rule from `dfs_component_eval.py` — corr up, MAE not wor
 look-ahead the live path makes from a posted prop), it is not a lineup ROI, and it is
 **not** a props comparison. Do not quote it as one.
 
-**Immediate next step:** grade the shipped props projection forward, week by week, against
-real DK scores — the props arm, rebuilt from free data. The skill numbers above are the
-baseline it gets held up against.
+### The props arm, rebuilt forwards — HARNESS BUILT 2026-09-12
+
+`scripts/nfl_props_grade.py`. Reads the props out of `data/odds.db` for a chosen scan,
+projects them through the shipped `edge.dfs_project.project`, joins nflverse actuals, and
+prints the **same metrics as the skill backtest** (it imports that module's `metrics`, so
+the two are comparable by construction rather than by agreement).
+
+**It is a pure read-side tool, and that is the point.** `odds-collect-dfs-nfl.timer` has
+banked a `dfs_nfl` scan every hour since 2026-09-06 — 158 finished scans covering Sep 6–12
+continuously, 192 DraftKings-priced players in the latest — and the store is append-only
+with 400-day retention. **Nothing is lost by grading late.**
+
+**Blocked on nflverse, not on us.** `player_stats_2026.csv` was still a 404 on 2026-09-12;
+nflverse publishes player-level stats for an in-progress season on a lag (the same lag the
+2024 collector's docstring recorded for 2025). The script says so and exits 0 — waiting is
+a normal state here, not a failure. The day it appears:
+
+```bash
+python3 scripts/nfl_ground_truth_collect.py --season 2026
+python3 scripts/nfl_props_grade.py --week 1
+```
+
+**The line props have to beat: corr 0.6602 / MAE 4.626** (skill, held out). One week will
+not settle it — a few hundred player-weeks against that model's 2,886, and single-week
+variance swamps the gap. Accumulate weeks.
+
+**Immediate next step:** nothing to do until nflverse publishes. Then run the two commands
+above for each completed week and start accumulating the comparison.
 
 **After that** (see `DFS_MULTISPORT_PLAN.md` for full detail): DK draftables integration
 for both sports, an optimizer, ownership modeling, and eventually a unified app with a
