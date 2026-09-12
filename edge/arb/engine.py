@@ -82,11 +82,20 @@ class Boost:
       * it has a max stake (typically $25-$50), which caps the whole position
         rather than just that leg -- the hedge is sized off it
       * it is usually restricted to a sport, and sometimes a market type
+      * and often to ONE GAME, which is narrower than all of those
     """
     book: str
     pct: float                                                  # 0.5 == +50%
     max_stake: float = 10.0       # a conservative floor; raise per token
     sports: list[str] = field(default_factory=list)             # empty == any
+    # Event ids the token is good on; empty == any game. The narrowest scope
+    # a book issues and the one it issues most: "50% profit boost on Ohio
+    # State vs Michigan" is a single-game token, and a search that ignores
+    # that reports boosted arbitrages in games the token cannot be spent on.
+    # Same failure as requires_parlay and min_decimal -- a number on screen
+    # for a bet the book will refuse -- so it is filtered here rather than
+    # left to the reader to check game by game.
+    events: list[str] = field(default_factory=list)             # empty == any
     markets: list[str] = field(default_factory=list)            # empty == any
     sides: list[str] = field(default_factory=list)              # empty == any
     min_decimal: float = 1.0        # "Min Total Odds of -200" -> 1.5
@@ -101,7 +110,8 @@ class Boost:
 
     def applies_to(self, book: str, sport_key: str, market: str,
                    side: str | None = None, decimal: float | None = None,
-                   event_start: datetime | None = None) -> bool:
+                   event_start: datetime | None = None,
+                   event_id: str | None = None) -> bool:
         # A parlay-only token cannot price a single leg. Books hand these out
         # alongside straight-bet boosts and they look identical in the app
         # ("25% WNBA boost"), but only one of them can be hedged: a two-leg
@@ -112,6 +122,22 @@ class Boost:
         if self.pct <= 0.0 or book != self.book:
             return False
         if self.sports and sport_key not in self.sports:
+            return False
+        # STRICT on a missing event_id, unlike `sides`, `decimal` and
+        # `expires_at` above and below, which all treat None as "the caller
+        # has nothing to say, so do not apply this rule".
+        #
+        # The difference is what None means in each case. Those three can be
+        # unset on a config-defined token or absent from an older snapshot,
+        # where refusing would silently switch every boost off. `events` is
+        # only ever non-empty because someone deliberately said "this token
+        # is for THIS game" -- and every caller that can name a game does.
+        # So an unknown event_id here is not "no opinion", it is "cannot
+        # confirm this is the right game", and confirming is the entire job:
+        # matching anyway would report a boosted arbitrage in a game the
+        # token cannot be spent on, which is the defect this field exists to
+        # remove.
+        if self.events and (event_id is None or event_id not in self.events):
             return False
         if self.markets and market not in self.markets:
             return False
@@ -486,7 +512,8 @@ def _describe(group: MarketGroup) -> str:
 # arbitrage
 # --------------------------------------------------------------------------
 def _boost_variants(leg_specs: list[tuple[str, str | None, float]], boosts: list[Boost],
-                    sport_key: str, market: str, event_start: datetime | None = None):
+                    sport_key: str, market: str, event_start: datetime | None = None,
+                    event_id: str | None = None):
     """(assignment, prices) for the plain market, each singly-boosted leg, and
     (if more than one leg qualifies) every leg boosted at once.
 
@@ -527,7 +554,8 @@ def _boost_variants(leg_specs: list[tuple[str, str | None, float]], boosts: list
     for i, (book, side, decimal) in enumerate(leg_specs):
         applicable = [b for b in boosts
                      if b.applies_to(book, sport_key, market, side=side,
-                                     decimal=decimal, event_start=event_start)]
+                                     decimal=decimal, event_start=event_start,
+                                     event_id=event_id)]
         if not applicable:
             continue
         best_b = max(applicable, key=lambda b: b.pct)
@@ -587,7 +615,8 @@ def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Oppo
         best = None
         for assignment, priced in _boost_variants(
                 leg_specs, getattr(cfg, "boosts", None) or [],
-                ev.sport_key, group.key.market, event_start=ev.commence_time):
+                ev.sport_key, group.key.market, event_start=ev.commence_time,
+                event_id=ev.event_id):
             s = om.arb_sum(priced)
             if s >= 1.0:
                 continue
@@ -807,7 +836,8 @@ def _price_middle_variants(lo_book: str, lo_side: str, d_lo0: float,
                            lo_line: float, hi_line: float, landing: list[int],
                            boosts: list[Boost], bankroll: float, round_to: float,
                            sport_key: str, market: str,
-                           event_start: datetime | None = None) -> tuple[dict, dict]:
+                           event_start: datetime | None = None,
+                           event_id: str | None = None) -> tuple[dict, dict]:
     """The winning boost variant for one middle pairing, plus the unboosted
     reading for comparison. Shared by `find_middles` (live) and
     `price_middle_candidates` (re-pricing a snapshot) so the two cannot drift
@@ -830,7 +860,8 @@ def _price_middle_variants(lo_book: str, lo_side: str, d_lo0: float,
     best = None
     plain = None
     for assignment, (d_lo, d_hi) in _boost_variants(leg_specs, boosts, sport_key, market,
-                                                    event_start=event_start):
+                                                    event_start=event_start,
+                                                    event_id=event_id):
         # Enumerate the real outcomes instead of assuming both legs win: a
         # whole-number line pushes, returning the stake rather than paying it.
         alloc0 = om.allocate([d_lo, d_hi], bankroll=bankroll, round_to=round_to)
@@ -921,7 +952,8 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                     best_gap = None
                     for assignment, priced in _boost_variants(
                             leg_specs, getattr(cfg, "boosts", None) or [],
-                            ev.sport_key, market, event_start=ev.commence_time):
+                            ev.sport_key, market, event_start=ev.commence_time,
+                            event_id=ev.event_id):
                         caps = [cfg.books.max_stake.get(l.book) for l in legs]
                         for i, b in assignment.items():
                             caps[i] = min(c for c in (caps[i], b.max_stake) if c)
@@ -1016,7 +1048,8 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
                     legs[1].book, hi_side, legs[1].decimal,
                     lo_line, hi_line, landing, getattr(cfg, "boosts", None) or [],
                     cfg.bankroll.total, cfg.bankroll.round_to,
-                    ev.sport_key, market, event_start=ev.commence_time)
+                    ev.sport_key, market, event_start=ev.commence_time,
+                    event_id=ev.event_id)
                 if best_variant["cost_pct"] > d.middle_max_cost_pct:
                     continue
                 assignment = best_variant["assignment"]
@@ -1322,7 +1355,8 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
         leg_specs = [(l["book"], l.get("side"), l["decimal"]) for l in legs]
         best = None
         for assignment, priced in _boost_variants(leg_specs, boosts, c["sport_key"], c["market"],
-                                                  event_start=_start_of(c)):
+                                                  event_start=_start_of(c),
+                                                  event_id=c.get("event_id")):
             s = om.arb_sum(priced)
             if s >= 1.0:
                 continue
@@ -1403,7 +1437,8 @@ def price_middle_candidates(cands: list[dict], boosts: list[Boost], cfg) -> list
         best, plain = _price_middle_variants(
             lo["book"], lo["side"], lo["decimal"], hi["book"], hi["side"], hi["decimal"],
             lo["line"], hi["line"], landing, boosts, cfg.bankroll.total, cfg.bankroll.round_to,
-            c["sport_key"], c["market"], event_start=_start_of(c))
+            c["sport_key"], c["market"], event_start=_start_of(c),
+            event_id=c.get("event_id"))
         if best["cost_pct"] > cfg.detect.middle_max_cost_pct:
             continue
         assignment = best["assignment"]
@@ -1485,7 +1520,8 @@ def price_boosted_ev(cands: list[dict], boosts: list[Boost], cfg,
                     continue
                 if not b.applies_to(b.book, c["sport_key"], c["market"],
                                     side=side, decimal=raw,
-                                    event_start=_start_of(c)):
+                                    event_start=_start_of(c),
+                                    event_id=c.get("event_id")):
                     continue
                 fair = fair_by_side.get(side)
                 if not fair:

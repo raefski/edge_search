@@ -1767,3 +1767,239 @@ def test_the_boost_panel_reports_the_same_push_floor_as_the_scanner():
              "legs": [{**l, "point": 44.5} for l in whole[0]["legs"]]}]
     row = price_candidates(half, [], c)[0]
     assert not row["pushes"] and row["floor_pct"] == row["profit_pct"]
+
+
+# --- a token scoped to ONE GAME ---------------------------------------------
+# Books issue profit boosts per game far more often than per sport: "50%
+# profit boost on Ohio State vs Michigan" is one matchup, not one league.
+# Before `Boost.events` the search had no way to say so, so a one-game token
+# was priced against every game in its sport and the panel filled with
+# boosted arbitrages the token could not be spent on. Same defect class as
+# requires_parlay and min_decimal -- a number on screen for a bet the book
+# would refuse.
+
+def _two_game_board(sport="americanfootball_ncaaf"):
+    """Two separate games, same sport, same market, identical vig-laden
+    prices. Neither arbs on its own; a 50% token turns whichever game it
+    covers into one, which makes "which games got boosted" directly
+    readable off the result."""
+    now = datetime.now(timezone.utc)
+    start = now + timedelta(hours=6)
+    b = Board()
+    for event_id, home, away in (("g_osu", "Michigan", "Ohio State"),
+                                 ("g_bama", "Auburn", "Alabama")):
+        ev = EventMeta(event_id, sport, "NCAAF", start, home, away)
+        b.events[event_id] = ev
+        g = b.group(GroupKey(event_id, "totals", None, 50.5), ev)
+        g.add(Quote(book="draftkings", side="over", decimal=1.909,
+                    point=50.5, last_update=now))
+        g.add(Quote(book="fanduel", side="under", decimal=1.909,
+                    point=50.5, last_update=now))
+    return b
+
+
+def test_a_game_scoped_boost_refuses_every_other_game():
+    from edge.arb.engine import Boost
+    tok = Boost(book="draftkings", pct=0.5, events=["g_osu"])
+    ok = dict(book="draftkings", sport_key="americanfootball_ncaaf", market="totals")
+
+    assert tok.applies_to(**ok, event_id="g_osu")
+    assert not tok.applies_to(**ok, event_id="g_bama")
+
+
+def test_a_game_scoped_boost_refuses_a_caller_that_cannot_name_the_game():
+    """Deliberately STRICTER than `sides`, `decimal` and `expires_at`, which
+    all read None as "the caller has nothing to say, skip this rule".
+
+    `events` is only ever set because someone said "this token is for THIS
+    game", and every caller that can name a game does. So None here is not
+    "no opinion", it is "cannot confirm" -- and matching anyway would report
+    exactly the unplaceable bet the field exists to remove."""
+    from edge.arb.engine import Boost
+    tok = Boost(book="draftkings", pct=0.5, events=["g_osu"])
+
+    assert not tok.applies_to("draftkings", "americanfootball_ncaaf", "totals")
+    assert not tok.applies_to("draftkings", "americanfootball_ncaaf", "totals",
+                              event_id=None)
+
+
+def test_a_boost_with_no_game_still_covers_every_game():
+    """Existing tokens carry no `events` and must keep working unchanged --
+    including against callers that pass no event_id at all."""
+    from edge.arb.engine import Boost
+    b = Boost(book="fanduel", pct=0.25)
+
+    assert b.applies_to("fanduel", "x", "h2h")
+    assert b.applies_to("fanduel", "x", "h2h", event_id="anything")
+
+
+def test_the_game_and_sport_terms_both_have_to_be_satisfied():
+    """A token scoped to one game AND a sport that game is not in can never
+    match. The page warns about the combination; the engine simply ANDs
+    them, which is what makes the warning safe to be only a warning."""
+    from edge.arb.engine import Boost
+    tok = Boost(book="draftkings", pct=0.5, sports=["baseball_mlb"],
+                events=["g_osu"])
+
+    assert not tok.applies_to("draftkings", "americanfootball_ncaaf", "totals",
+                              event_id="g_osu")
+    assert not tok.applies_to("draftkings", "baseball_mlb", "totals",
+                              event_id="g_bama")
+
+
+def test_a_one_game_token_only_boosts_that_game_on_a_live_board():
+    """The whole point, through `find_arbitrages`. Both games price
+    identically, so an unscoped token arbs both and a scoped one arbs only
+    its own."""
+    from edge.arb.engine import Boost
+    c = cfg()
+
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0)]
+    assert {o.event_id for o in find_arbitrages(_two_game_board(), c)} == {"g_osu", "g_bama"}, \
+        "an unscoped token should still reach both games"
+
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0, events=["g_osu"])]
+    found = find_arbitrages(_two_game_board(), c)
+    assert {o.event_id for o in found} == {"g_osu"}, \
+        "a one-game token created an arbitrage in a game it cannot be spent on"
+
+
+def test_price_candidates_scopes_a_one_game_token_the_same_way():
+    """The snapshot path has to agree with the live one, or the boost panel
+    shows games the scanner would not."""
+    from edge.arb.engine import Boost, price_candidates
+    from edge.arb.run import candidates
+    c = cfg()
+    cands = candidates(_two_game_board(), c, max_sum=2.0)
+    assert {x["event_id"] for x in cands} == {"g_osu", "g_bama"}, "fixture"
+
+    tok = [Boost(book="draftkings", pct=0.5, max_stake=500.0, events=["g_osu"])]
+    rows = price_candidates(cands, tok, c)
+
+    assert {r["matchup"] for r in rows} == {"Ohio State @ Michigan"}
+    assert all(r["boost"] for r in rows)
+
+
+def test_price_boosted_ev_scopes_a_one_game_token_too():
+    """+EV is where a token that no second book can hedge still gets used, so
+    it needs the same scope or it recommends the wrong game."""
+    from edge.arb.engine import Boost, price_boosted_ev
+    from edge.arb.run import candidates
+    c = cfg()
+    cands = candidates(_two_game_board(), c, max_sum=2.0)
+
+    tok = [Boost(book="draftkings", pct=0.5, max_stake=500.0, events=["g_bama"])]
+    rows = price_boosted_ev(cands, tok, c, min_ev_pct=0.0)
+
+    assert rows, "the scoped game should still produce +EV rows"
+    assert {r["matchup"] for r in rows} == {"Alabama @ Auburn"}
+
+
+def test_price_middle_candidates_scopes_a_one_game_token_too():
+    from edge.arb.engine import Boost, price_middle_candidates
+    from edge.arb.run import middle_candidates
+    now = datetime.now(timezone.utc)
+    start = now + timedelta(hours=6)
+    b = Board()
+    for event_id, home, away in (("g_osu", "Michigan", "Ohio State"),
+                                 ("g_bama", "Auburn", "Alabama")):
+        ev = EventMeta(event_id, "americanfootball_ncaaf", "NCAAF", start, home, away)
+        b.events[event_id] = ev
+        b.group(GroupKey(event_id, "totals", None, 45.5), ev).add(
+            Quote(book="draftkings", side="over", decimal=1.91, point=45.5,
+                  last_update=now))
+        b.group(GroupKey(event_id, "totals", None, 47.5), ev).add(
+            Quote(book="fanduel", side="under", decimal=1.91, point=47.5,
+                  last_update=now))
+    c = cfg()
+    mids = middle_candidates(b, c)
+    assert {m["event_id"] for m in mids} == {"g_osu", "g_bama"}, "fixture"
+
+    tok = [Boost(book="draftkings", pct=0.5, max_stake=500.0, events=["g_osu"])]
+    rows = price_middle_candidates(mids, tok, c)
+    boosted = {r["matchup"] for r in rows
+               if any(l.get("boost_pct") for l in r["legs"])}
+
+    assert boosted == {"Ohio State @ Michigan"}, \
+        "a one-game token boosted a middle in another game"
+
+
+def test_a_one_game_token_does_not_suppress_a_real_arb_elsewhere():
+    """`_boost_variants` always offers the unboosted reading first, so
+    scoping a token must narrow what the BOOST reaches without hiding a game
+    that already arbs on its own price. Getting this wrong would turn a
+    filter into a blindfold."""
+    from edge.arb.engine import Boost
+    now = datetime.now(timezone.utc)
+    start = now + timedelta(hours=6)
+    b = _two_game_board()
+    # make the other game arb without any help
+    g = b.group(GroupKey("g_bama", "totals", None, 50.5), b.events["g_bama"])
+    g.add(Quote(book="draftkings", side="over", decimal=2.2, point=50.5,
+                last_update=now + timedelta(seconds=120)))
+    g.add(Quote(book="fanduel", side="under", decimal=2.2, point=50.5,
+                last_update=now + timedelta(seconds=120)))
+
+    c = cfg()
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0, events=["g_osu"])]
+    by_event = {o.event_id: o for o in find_arbitrages(b, c)}
+
+    assert "g_bama" in by_event, "a genuine unboosted arb was hidden by a game-scoped token"
+    assert by_event["g_bama"].boost is None
+    assert by_event["g_osu"].boost is not None
+
+
+def _two_game_board_of(*quotes, sport="americanfootball_ncaaf"):
+    """`board_with`, but the same quotes duplicated across two games.
+
+    Every live boost path is reached through `find_middles`/`find_arbitrages`
+    walking one event at a time, so proving a token stays inside its own
+    game needs two identical games to tell "scoped correctly" apart from
+    "found nothing anywhere".
+    """
+    now = datetime.now(timezone.utc)
+    start = now + timedelta(hours=6)
+    b = Board()
+    for event_id, home, away in (("g_osu", "Michigan", "Ohio State"),
+                                 ("g_bama", "Auburn", "Alabama")):
+        ev = EventMeta(event_id, sport, "NCAAF", start, home, away)
+        b.events[event_id] = ev
+        for market, subject, point, side, book, dec in quotes:
+            b.group(GroupKey(event_id, market, subject, point), ev).add(
+                Quote(book=book, side=side, decimal=dec, point=point, last_update=now))
+    return b
+
+
+def test_a_one_game_token_only_boosts_its_own_games_middle():
+    """The live middles path. `find_middles` reaches `_boost_variants`
+    through `_price_middle_variants`, which is a different thread of the
+    event id than `find_arbitrages` takes."""
+    from edge.arb.engine import Boost
+    b = _two_game_board_of(("totals", None, 45.5, "over", "draftkings", 1.91),
+                           ("totals", None, 47.5, "under", "fanduel", 1.91))
+    c = cfg()
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0, events=["g_osu"])]
+
+    boosted = {o.event_id for o in find_middles(b, c)
+               if any(l.boost_pct for l in o.legs)}
+
+    assert boosted == {"g_osu"}, \
+        "a one-game token boosted a middle in a game it is not valid on"
+
+
+def test_a_one_game_token_only_boosts_its_own_games_gap():
+    """The gap path takes its own third route to `_boost_variants`, with its
+    own copy of the event id -- so it gets its own test rather than being
+    assumed to follow the middle above."""
+    from edge.arb.engine import Boost
+    b = _two_game_board_of(("spreads", None, -44.5, "home", "draftkings", 2.05),
+                           ("spreads", None, -42.5, "away", "fanduel", 2.00))
+    c = cfg()
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0, events=["g_bama"])]
+
+    gaps = [o for o in find_middles(b, c) if o.kind == "gap"]
+    assert {o.event_id for o in gaps} == {"g_osu", "g_bama"}, "fixture: both games gap"
+    boosted = {o.event_id for o in gaps if any(l.boost_pct for l in o.legs)}
+
+    assert boosted == {"g_bama"}, \
+        "a one-game token boosted a gap in a game it is not valid on"

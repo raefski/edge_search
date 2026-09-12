@@ -235,6 +235,85 @@ def date_range_label(date_range) -> str:
     return f"{lo}" if lo == hi else f"{lo} – {hi}"
 
 
+def kickoff_label(iso: str) -> str:
+    """'Sat 3:30 PM' in US/Eastern, for picking one game out of a list.
+
+    ET for the same reason `event_date_et` uses it: it is the books' own
+    timezone and the one every CT bettor reads a kickoff in. Built by hand
+    rather than with strftime's `%-I` because that flag is a glibc
+    extension -- it is fine on Streamlit Community Cloud and raises on
+    Windows, and this is the kind of line nobody would think to test there.
+    """
+    try:
+        dt = datetime.fromisoformat(iso)
+    except (TypeError, ValueError):
+        return ""
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    dt = dt.astimezone(ET)
+    return f"{dt:%a} {dt.hour % 12 or 12}:{dt:%M} {'AM' if dt.hour < 12 else 'PM'}"
+
+
+@st.cache_data(show_spinner=False, max_entries=4)
+def game_choices(mtime: float, titles: dict) -> dict[str, tuple[str, str, str]]:
+    """{event_id: (dropdown label, matchup on its own, sport_key)}.
+
+    The label is 'NCAAF · Illinois State @ Northern Illinois · Sat 7:00 PM'.
+    The bare matchup is carried alongside rather than sliced back out of the
+    label, because a message that has to name the picked game wants the short
+    form and splitting on " · " would break on the first matchup containing
+    one. The sport_key rides along so the boost panels can tell that a token
+    scoped to one game and to a different sport can never match anything.
+
+    Keyed on `event_id`, not on the matchup text: two different games can
+    carry the same matchup string (a doubleheader, or the same two colleges
+    meeting in two sports), and the whole point of this control is to pick
+    ONE game.
+
+    Drawn from `candidates` and `middle_candidates` as well as
+    `opportunities`, because the boost panels are priced from those two --
+    the workflow this exists for is "a token is scoped to one game", and
+    with a boost entered it is the boost panel doing the scrolling. A game
+    that is only in `candidates` is still worth offering; it simply has
+    nothing on the plain board yet, which `_empty_reason` says out loud
+    rather than leaving the picker looking broken.
+
+    Sorted by sport, then kickoff, then matchup. Streamlit's multiselect has
+    no option groups, so sorting is the grouping -- one league's games land
+    together in the dropdown, which is what makes 77 of these thumbable on a
+    phone instead of a wall.
+
+    Cached on the snapshot's mtime for the same reason `_parse_snapshot` is:
+    this walks all three sections (~30,000 rows on a full slate, ~12ms) and
+    would otherwise redo it on every widget click. See HANDOFF.md §7 on the
+    page's choppiness.
+    """
+    snapshot = load_snapshot() or {}
+    seen: dict[str, tuple[str, str, str, str]] = {}
+    for section in ("opportunities", "candidates", "middle_candidates"):
+        for row in (snapshot.get(section) or []):
+            event_id = row.get("event_id")
+            if not event_id or event_id in seen:
+                continue
+            key = row.get("sport_key") or ""
+            # The snapshot's own `sport_title` is frequently just the raw
+            # sport_key ("americanfootball_ncaaf"), so prefer the display
+            # names sport_choices() builds and fall back only if it has none.
+            sport = titles.get(key) or row.get("sport_title") or key
+            seen[event_id] = (sport, row.get("commence_time") or "",
+                              row.get("matchup") or event_id, key)
+    ordered = sorted(seen.items(), key=lambda kv: (kv[1][0], kv[1][1], kv[1][2]))
+    # The sport prefix earns its width only when there is more than one to
+    # tell apart. A Saturday snapshot is routinely all NCAAF -- 77 rows each
+    # opening with the same eight characters, on a screen narrow enough that
+    # the kickoff is what gets truncated instead.
+    one_sport = len({s for _, (s, _, _, _) in ordered}) < 2
+    return {event_id: (" · ".join(p for p in (
+                           "" if one_sport else sport, matchup, kickoff_label(ct)) if p),
+                       matchup, key)
+            for event_id, (sport, ct, matchup, key) in ordered}
+
+
 def is_live(commence_time: str) -> bool:
     """Live at RENDER time, not scan time -- a game that had not started when
     the snapshot was built can easily have kicked off by the time this page
@@ -268,6 +347,15 @@ with st.sidebar:
     _in_snapshot = {c.get("sport_key") for c in (_snap_peek.get("candidates") or [])}
     _market_choices = _from_scan_request("market_choices", lambda snap: {})
     _market_groups = _market_choices(_snap_peek)
+    # One index, two consumers: the per-boost "Boost N game" picker below and
+    # the "Filter by game" display filter further down. Computed here with
+    # the other choice lists rather than next to either widget, so the two
+    # can never end up offering different games out of the same snapshot.
+    _games = game_choices(
+        SNAPSHOT.stat().st_mtime if SNAPSHOT.exists() else 0.0, _sport_titles)
+    _game_titles = {k: v[0] for k, v in _games.items()}
+    _game_names = {k: v[1] for k, v in _games.items()}
+    _games_sport = {k: v[2] for k, v in _games.items()}
 
     st.divider()
     st.subheader("Scan filters")
@@ -498,6 +586,39 @@ with st.sidebar:
             if _sport and _sport not in _in_snapshot:
                 st.caption(f"⚠️ The current snapshot has no {_sport_titles[_sport]} "
                            "markets, so nothing can be found for it yet.")
+
+            # The narrowest scope a book issues, and the one it issues most.
+            # This is NOT the "Filter by game" control further down: that one
+            # hides rows after the fact, this one tells the SEARCH the token
+            # is only good on this game, so a boosted arbitrage is never
+            # reported in a game the token cannot be spent on. Same class of
+            # rule as parlay-only and minimum odds -- a number on screen for
+            # a bet the book would refuse is worse than no number.
+            #
+            # When the picker offers a game the boost sport does not cover,
+            # the game wins on its own: Boost.applies_to ANDs its filters, so
+            # a mismatched pair simply finds nothing. Said out loud below
+            # rather than left as a silently empty panel.
+            _bgame_opts = ["(every game)"] + list(_game_titles)
+            _bgame_default = _qp_str(_qp + "game", "(every game)")
+            _bgame = st.selectbox(
+                f"Boost {_n} game", _bgame_opts,
+                index=(_bgame_opts.index(_bgame_default)
+                       if _bgame_default in _bgame_opts else 0),
+                key=_qp + "game",
+                format_func=lambda g: ("(every game)" if g == "(every game)"
+                                       else _game_titles.get(g, g)),
+                help="For a token scoped to one matchup — \"50% profit boost "
+                     "on Ohio State vs Michigan\". Leave on every game for a "
+                     "sport-wide or market-wide token. Kickoffs are "
+                     "US/Eastern.")
+            _qp_want[_qp + "game"] = _bgame
+            _bgame = "" if _bgame == "(every game)" else _bgame
+            if _bgame and _sport and _games_sport.get(_bgame) not in (None, _sport):
+                st.caption(f"⚠️ {_game_names.get(_bgame, _bgame)} is not "
+                           f"{_sport_titles.get(_sport, _sport)}, and a token "
+                           "has to satisfy both — clear one of them.")
+
             _market_opts = ["(every market)"] + list(_market_groups)
             _market_default = _qp_str(_qp + "market", "(every market)")
             _market = st.selectbox(
@@ -530,27 +651,18 @@ with st.sidebar:
             if _pct > 0:
                 boosts.append(Boost(
                     book=_book, pct=_pct / 100.0, max_stake=float(_max_stake),
-                    sports=[_sport] if _sport else [], markets=_markets,
+                    sports=[_sport] if _sport else [],
+                    events=[_bgame] if _bgame else [], markets=_markets,
                     sides=list(_sides), min_decimal=_min_decimal(_min_odds),
                     requires_parlay=_parlay,
+                    # The game goes in the label too. Every row the panel
+                    # draws says which token it needs, and "50% boost on
+                    # DraftKings" on a board narrowed to one game reads as
+                    # though any DraftKings token would do.
                     label=(f"{_pct}% boost on {BOOK_NAMES.get(_book, _book)}"
-                          + (f" ({_market.lower()})" if _markets else ""))))
-
-    # The single flush. `update()` exists precisely for this -- its own
-    # comment in streamlit says it overrides MutableMapping's version "to
-    # ensure only one ForwardMsg is sent" -- but the guard in front of it is
-    # what does the real work, because the overwhelming majority of reruns
-    # change no boost field and should touch the URL zero times.
-    #
-    # `get(k, "")` and not `get(k)`: an empty value (the "sides" multiselect
-    # with nothing picked) is stored by dropping the key entirely --
-    # is_empty_url_value() treats "" as "cleared" -- so a missing key and ""
-    # are the same state and must compare equal. Reading it with the same
-    # default _qp_list already uses is what makes the comparison symmetric;
-    # without it the two sides keys never matched and the flush fired on
-    # every single rerun, which is most of the bug still present.
-    if any(st.query_params.get(k, "") != v for k, v in _qp_want.items()):
-        st.query_params.update(_qp_want)
+                          + (f" ({_market.lower()})" if _markets else "")
+                          + (f" · {_game_names.get(_bgame, _bgame)} only"
+                             if _bgame else ""))))
 
     boost_mode = st.radio(
         # Named distinctly from the top "Show" multiselect (arb/middle/ev) --
@@ -590,6 +702,35 @@ with st.sidebar:
         "Filter by sport", options=_opp_sports, default=[],
         help="Leave empty to rank every sport together, which is the point of "
              "the ordering. Pick one or more to narrow it.")
+
+    # Books issue profit boosts scoped to ONE GAME ("50% on Ohio State vs
+    # Michigan"), which is the level nothing else on this page filters at.
+    # Without it the workflow is: enter the token in the boost panel above,
+    # then scroll fifty NCAAF games looking for the one it can be spent on --
+    # on a phone, minutes before kickoff, that is the whole session.
+    #
+    # Labelled "Filter by game" and not "Game", distinctly from "Game date"
+    # above and from the boost panels' "Boost N sport": tests/test_arb_page.py
+    # answers widgets BY LABEL and cannot tell two same-labelled controls
+    # apart. See HANDOFF.md on the "Filter by sport" rename.
+    # An event_id seeded from the URL that this snapshot no longer contains
+    # (a fresh scan since the link was made, or a different slate) is dropped
+    # rather than passed through: real Streamlit raises StreamlitAPIException
+    # on a multiselect default that is not among its options, which would
+    # take the whole page down for what is only a stale bookmark.
+    _game_seed = [g for g in _qp_list("arb_games") if g in _game_titles]
+    game_filter = st.multiselect(
+        "Filter by game", options=list(_game_titles), default=_game_seed,
+        key="arb_games", format_func=lambda g: _game_titles.get(g, g),
+        help="For a boost that is tied to one game. Kickoffs are US/Eastern, "
+             "the books' own timezone. Options come from the current "
+             "snapshot only — request a fresh scan to see a later slate.")
+    # Namespaced. The query string belongs to the whole app, not to this
+    # page -- a bare "games" is exactly the key another page would reach for,
+    # and the two would then seed each other with ids neither understands.
+    # (`b1_*`/`b2_*` above get away with it by being distinctive by accident.)
+    _qp_want["arb_games"] = ",".join(game_filter)
+
     show_stale_alt_lines = st.checkbox(
         "Show alt lines far from the book's main line", value=False,
         help="Off by default. A book's alternate-total/spread ladder is built "
@@ -601,6 +742,34 @@ with st.sidebar:
              "52.5 for hours after DraftKings moved the real total to 62.5. "
              "Flagged opportunities carry a warning explaining which leg and "
              "by how much; turn this on to see them anyway.")
+
+    # The single flush, and it has to stay single. `update()` exists
+    # precisely for this -- its own comment in streamlit says it overrides
+    # MutableMapping's version "to ensure only one ForwardMsg is sent" -- but
+    # the guard in front of it is what does the real work, because the
+    # overwhelming majority of reruns change no persisted field and should
+    # touch the URL zero times.
+    #
+    # It sits HERE, at the very end of the sidebar, rather than directly
+    # under the boost panels where it was written: the game filter is the
+    # first persisted field declared outside those panels, and a second
+    # `update()` for it would double this page's pushState count instead of
+    # leaving it at one. Anything else that wants to survive a lost session
+    # goes in `_qp_want` above this line -- never as a bare
+    # `st.query_params[k] = v`, which is its own ForwardMsg and its own
+    # history.pushState(), and which Safari and Brave cap at 100 per 10
+    # seconds. Sixteen per rerun is what broke this page on an iPhone on
+    # 2026-09-11. See tests/test_arb_page_url.py.
+    #
+    # `get(k, "")` and not `get(k)`: an empty value (the "sides" multiselect
+    # with nothing picked, or this game filter) is stored by dropping the key
+    # entirely -- is_empty_url_value() treats "" as "cleared" -- so a missing
+    # key and "" are the same state and must compare equal. Reading it with
+    # the same default _qp_list already uses is what makes the comparison
+    # symmetric; without it the two sides keys never matched and the flush
+    # fired on every single rerun, which is most of the bug still present.
+    if any(st.query_params.get(k, "") != v for k, v in _qp_want.items()):
+        st.query_params.update(_qp_want)
 
 snap = load_snapshot()
 
@@ -723,6 +892,13 @@ if boosts:
     from edge.arb.engine import price_candidates, price_middle_candidates, top_rows_per_sport
 
     def _live_and_date_filtered(rows):
+        # "Filter by game" is applied here and not only to the plain board
+        # below, because with a boost entered THIS is the list being
+        # scrolled -- up to BOOST_ROWS_SHOWN rows priced off `candidates`.
+        # A token scoped to one game whose panel still lists fifty is the
+        # exact problem the control was added for.
+        if game_filter:
+            rows = [c for c in rows if c.get("event_id") in game_filter]
         if not show_live:
             rows = [c for c in rows if not is_live(c.get("commence_time", ""))]
         if date_range:
@@ -739,9 +915,13 @@ if boosts:
         cands = _live_and_date_filtered(cands)
         mid_cands = _live_and_date_filtered(mid_cands)
         if not cands and not mid_cands:
-            st.warning("Nothing remains after the live/date filters in the "
-                       "sidebar — widen \"Include live/in-progress games\" or "
-                       "the game-date range to see boosted candidates.")
+            st.warning(
+                "Nothing remains after the "
+                + ("game, live and date" if game_filter else "live and date")
+                + " filters in the sidebar — widen \"Include live/in-progress "
+                + ("games\", the game-date range, or \"Filter by game\""
+                   if game_filter else "games\" or the game-date range")
+                + " to see boosted candidates.")
         else:
             bcfg = ArbConfig()
             bcfg.bankroll.total = float(bankroll)
@@ -938,6 +1118,11 @@ opps = [o for o in _all_opps
 if sport_filter:
     opps = [o for o in opps
             if (o.get("sport_title") or o.get("sport_key")) in sport_filter]
+# Before the live count below, so that picking a game that has already kicked
+# off is reported as "the game you picked has started", not as "this whole
+# scan is stale" -- see _empty_reason.
+if game_filter:
+    opps = [o for o in opps if o.get("event_id") in game_filter]
 # Counted before the live filter runs, because "everything in this snapshot
 # has already kicked off" and "there was nothing to find" are opposite
 # situations that used to render the same sentence -- see _empty_reason.
@@ -954,6 +1139,17 @@ if not show_stale_alt_lines:
     opps = [o for o in opps if not o.get("stale_alt_line")]
 
 
+def _picked_games() -> str:
+    """The games "Filter by game" is holding, named the way you picked them.
+
+    One game gets its matchup; several get a count, because three matchups
+    inline is longer than the sentence around them on a phone.
+    """
+    if len(game_filter) == 1:
+        return _game_names.get(game_filter[0], game_filter[0])
+    return f"the {len(game_filter)} games you picked"
+
+
 def _empty_reason() -> str:
     """Why the board is empty, in the words that tell you what to DO about it.
 
@@ -968,15 +1164,46 @@ def _empty_reason() -> str:
     the scan genuinely found nothing that matches.
     """
     if _lost_to_live and not _before_live - _lost_to_live:
+        # Scoped to the picked game when there is one. "All N opportunities
+        # in this scan have already kicked off" is a claim about the WHOLE
+        # scan, and with a game filter on it is simply false -- the rest of
+        # the board can be perfectly fresh while the one game you picked has
+        # started, which minutes before kickoff is the likeliest case of all.
+        # Sending someone to request a new scan they do not need is the same
+        # kind of wasted session the honest empty state was written to stop.
+        if game_filter:
+            return (f"{_picked_games()} {'has' if len(game_filter) == 1 else 'have'} "
+                    f"already kicked off — you cannot take these prices any more. "
+                    f"The rest of the board may still be live: clear "
+                    f"*Filter by game*, or tick *Include live/in-progress games* "
+                    f"to look at {'it' if len(game_filter) == 1 else 'them'} anyway.")
         return (f"All {_lost_to_live} opportunit{'y' if _lost_to_live == 1 else 'ies'} "
                 f"in this scan have already kicked off — you cannot take these "
                 f"prices any more. This is a **stale scan, not a quiet board**: "
                 f"request a fresh one above, or tick *Show live* to look at them "
                 f"anyway.")
     if casino_mode:
+        # Casino mode wins the ordering because its rule is the narrowest --
+        # it drops whole legs, not whole games -- but a game filter set on
+        # top of it is still the cheaper thing to relax first, so say so.
         return ("Nothing clears these filters, and only DraftKings/FanDuel legs "
-                "qualify in Casino mode — try widening the date range or "
-                "turning it off.")
+                "qualify in Casino mode — try "
+                + (f"clearing *Filter by game* ({_picked_games()}), widening "
+                   "the date range" if game_filter else "widening the date range")
+                + " or turning it off.")
+    if game_filter:
+        # Named ahead of the generic filters line because it is the filter
+        # most likely to be the one at fault: every other control on this
+        # page keeps whole leagues, and this one keeps a single game out of
+        # a slate. A game can also be offered by the picker while having no
+        # opportunity of its own -- the options come from `candidates` too,
+        # since that is what the boost panels price -- so say that rather
+        # than let the picker look broken.
+        return (f"No opportunity in {_picked_games()} clears the filters above. "
+                f"The boost panels may still have rows for "
+                f"{'it' if len(game_filter) == 1 else 'them'}; otherwise widen "
+                f"the date range, lower the minimum profit, or clear "
+                f"*Filter by game* to see the rest of the board.")
     if _all_opps:
         return (f"This scan found {len(_all_opps)} opportunit"
                 f"{'y' if len(_all_opps) == 1 else 'ies'}, but none clear the "
@@ -1060,8 +1287,8 @@ scale = float(bankroll) / max(float(snap.get("stats", {}).get("bankroll", 1000.0
 
 if len(opps) > OPP_ROWS_SHOWN:
     st.caption(f"Showing the best {OPP_ROWS_SHOWN} of {len(opps)}. Narrow with "
-               "the sport filter, a per-sport cap, or a higher minimum % in "
-               "the sidebar.")
+               "the sport or game filter, a per-sport cap, or a higher "
+               "minimum % in the sidebar.")
     opps = opps[:OPP_ROWS_SHOWN]
 
 for o in opps:
