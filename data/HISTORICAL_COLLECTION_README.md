@@ -11,6 +11,23 @@
 >
 > The props-vs-skill head-to-head this file was written to enable therefore cannot be run
 > backwards. See DFS_STATUS.md for what was built instead and what replaces it.
+>
+> **Regenerated 2026-09-12** — everything free is back on disk and re-validated:
+> - `data/nba_ground_truth/` (15MB): 26,306 player-games + 2,460 team-games for 2024-25.
+>   Re-validated the same way the original was, not merely re-downloaded —
+>   `edge.nba.actual_points` vs stats.nba.com's own `FANTASY_PTS` gives **corr 0.99439**,
+>   matching the 0.994 recorded above. Hand-check: Jokić 31/21/22 on 2025-03-07 scores
+>   98.75 DK against their 94.2, the gap being DK's triple-double bonus.
+> - `data/nfl_ground_truth/games.json` refreshed: now carries 2025 and 2026 schedules,
+>   with 2026's first two games already scored.
+>
+> **Still unavailable upstream, and not our doing**: nflverse's `player_stats` release
+> stops at 2024 — `stats_player_week_2025.csv` and `_2026.csv` are both 404, and the asset
+> listing confirms it is a genuine gap rather than a rename. Seasons **2000–2024** are all
+> published, so a deeper backtest than the current 2023+2024 is available for free whenever
+> it is wanted (~51MB per season).
+>
+> The paid props remain gone. Regeneration cannot bring them back — it never could.
 
 **Final tally**: NFL 2025 season (261/262 games), NFL 2024 season (262/262 games), NBA
 2024-25 sample (572 games). ~79,829 of the key's 91,742 credits spent; 20,171 left
