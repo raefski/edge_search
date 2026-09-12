@@ -1,5 +1,17 @@
 # Historical NFL/NBA Prop Collection — 2026-07-24
 
+> **⚠️ 2026-09-12: THIS DATA IS GONE.** `data/nfl_historical_props_2024/`, `_2025/`, the
+> NBA sample, `data/nba_ground_truth/`, and both `*_model_rows_*.json` are not on this
+> machine. Searched the repo, `$HOME`, `~/arbitrage`, and `/mnt/c/Users/ASR`. The warning
+> below — back it up somewhere durable — was not acted on, and the key expired the same
+> day it was written, so none of it is re-fetchable without buying a new one.
+>
+> `data/nfl_ground_truth/` (109MB) survived and is free to regenerate
+> (`scripts/nfl_ground_truth_collect.py`), but it is likewise the only copy on disk.
+>
+> The props-vs-skill head-to-head this file was written to enable therefore cannot be run
+> backwards. See DFS_STATUS.md for what was built instead and what replaces it.
+
 **Final tally**: NFL 2025 season (261/262 games), NFL 2024 season (262/262 games), NBA
 2024-25 sample (572 games). ~79,829 of the key's 91,742 credits spent; 20,171 left
 deliberately unspent as a reserve, not drained to zero. **This data lives ONLY on local

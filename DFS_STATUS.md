@@ -105,10 +105,59 @@ slate — it isn't.
   suffix stripping) — the first real cross-sport code extraction, earned by hitting the
   identical join bug independently in both NFL and NBA, not designed in advance.
 
-**Immediate next step, not yet done:** run the actual props-vs-skill-model backtest these
-datasets exist for — the same head-to-head test that validated MLB's pitcher-props model
-and killed its original batter-props model. The data and scoring formulas are ready; the
-test itself hasn't been run.
+### ⚠️ THE PAID HISTORICAL PROPS ARE GONE (found 2026-09-12)
+
+`data/nfl_historical_props_2024/`, `_2025/`, the NBA sample, `data/nba_ground_truth/`,
+and both derived `*_model_rows_*.json` files are **not on this machine**. Searched the
+repo, `$HOME`, `~/arbitrage`, and the Windows side under `/mnt/c/Users/ASR` — nothing.
+
+That is the 2026-07-24 pull: ~79,829 credits on a key that expired the same day.
+`data/HISTORICAL_COLLECTION_README.md` said in bold to back it up somewhere durable
+outside this machine/repo; that did not happen. **It is not re-fetchable at any price
+without buying a new key and re-spending the credits.**
+
+What survived is `data/nfl_ground_truth/` (109MB — `player_week_2023.json`,
+`player_week_2024.json`, `games.json`). That half is **free and regenerable**
+(`scripts/nfl_ground_truth_collect.py`), so it is not a loss, but it is also the only
+copy on disk and equally unbacked.
+
+**Consequence for the head-to-head:** the props arm cannot be backtested *backwards* at
+all. It has to be rebuilt *forwards* from `odds-collect-dfs-nfl.timer`, which has been
+banking real NFL props into `data/odds.db` hourly since 2026-09-06.
+
+### The skill model — BUILT AND MEASURED 2026-09-12
+
+`scripts/nfl_skill_backtest.py`. The shipped NFL projection
+(`edge/dfs_project.project`) is purely props-driven and had nothing to be compared
+against; this is that missing arm. Train 2024 wk 1–9, **report 2024 wk 10–18, held out**.
+Per-category means → `edge.dfs_project.points_from_means`, i.e. the *same assembler* the
+props path uses (extracted for exactly this reason), so the only variable is the means.
+
+| model | corr | MAE | RMSE |
+|---|---|---|---|
+| position mean | 0.3057 | 6.392 | 8.377 |
+| player mean (flat) | 0.6319 | 4.816 | 6.825 |
+| **skill, K=0 decay=0.90** | **0.6602** | **4.626** | **6.611** |
+
+n = 2,886 player-weeks, QB/RB/WR/TE, regular season. It improves on the flat average at
+**every position** (QB corr .452→.515, RB .621→.664, WR .608→.627, TE .586→.610) and
+clears MLB's own ship rule from `dfs_component_eval.py` — corr up, MAE not worse.
+
+**Two findings worth keeping:**
+- **Recency is the whole gain.** A 10%/week decay does all the work; `d=1.0` is in the
+  grid and loses. 2023 gets downweighted for free by being ~18 more weeks back, which is
+  the MARCEL-style cross-season decay MLB tested, with no extra parameter.
+- **Shrinkage adds nothing. K=0 won.** Once recency is in, pulling toward the position
+  mean is pure loss. That is the opposite of MLB's hitters (EB K=60) and worth
+  remembering before anyone ports the MLB recipe across.
+
+**What this is NOT:** it measures projection accuracy *given the player played* (the same
+look-ahead the live path makes from a posted prop), it is not a lineup ROI, and it is
+**not** a props comparison. Do not quote it as one.
+
+**Immediate next step:** grade the shipped props projection forward, week by week, against
+real DK scores — the props arm, rebuilt from free data. The skill numbers above are the
+baseline it gets held up against.
 
 **After that** (see `DFS_MULTISPORT_PLAN.md` for full detail): DK draftables integration
 for both sports, an optimizer, ownership modeling, and eventually a unified app with a

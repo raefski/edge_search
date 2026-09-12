@@ -108,6 +108,28 @@ def project(player_markets: dict, sport: Sport,
         elif md.get("point") is not None:
             means[stat.market] = implied_mean(*pair, float(md["point"]), stat.sigma)
 
+    return points_from_means(means, probs, sport, position)
+
+
+def points_from_means(means: dict[str, float], probs: dict[str, float],
+                      sport: Sport, position: str | None = None) -> dict:
+    """Turn per-stat MEANS into a DK projection. The half that is not about odds.
+
+    EXTRACTED 2026-09-12, and the extraction is the point. `project` above
+    converts prop prices into means; everything from here down converts means
+    into points, and knows nothing about where they came from. Splitting them
+    lets a model that produces means WITHOUT a book -- a skill model fitted on
+    nflverse player-weeks, say -- be scored through the identical assembler:
+    same imputation rule, same sigmas, same distribution-scored bonuses, same
+    rounding.
+
+    That matters for the props-vs-skill question specifically. If the two
+    projections went through two assemblers, any difference between them could
+    be the means OR the assembly, and there would be no way to tell which --
+    the same confound DFS_METHODOLOGY warns about and the reason edge/odds's
+    ScrapedOddsClient was made Liskov-substitutable for the paid client rather
+    than merely similar. One assembler, one variable.
+    """
     # Anything no book posted, filled in by the sport's own rule and recorded
     # as imputed. A caller that wants only book-priced players can check this.
     imputed: list[str] = []
