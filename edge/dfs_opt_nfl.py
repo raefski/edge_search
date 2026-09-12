@@ -59,8 +59,10 @@ Three things follow, and two of them are not the folk wisdom:
 """
 from __future__ import annotations
 
+import math
 import random
 
+from edge import dfs_nfl_theory as theory
 from edge.dfs_roster import assign_slots
 
 SLOTS = ["QB", "RB", "RB", "WR", "WR", "WR", "TE", "FLEX", "DST"]
@@ -69,11 +71,12 @@ FLEX_FROM = {"RB", "WR", "TE"}
 #: positions that catch passes from the quarterback being stacked
 CATCHERS = frozenset({"WR", "TE"})
 
-#: Measured Pearson r, same game, DK points. Used for the GPP ceiling bonus and
-#: quoted in this module's docstring with its provenance.
-R_QB_CATCHER = 0.249
-R_QB_OPP_CATCHER = 0.089
-R_CATCHER_TEAMMATE = -0.029
+#: Measured Pearson r, same game, DK points -- re-exported from
+#: edge/dfs_nfl_theory.py, which now owns the whole correlation matrix so the
+#: objective and this module's docstring cannot drift apart.
+R_QB_CATCHER = theory.R_QB_OWN_CATCHER
+R_QB_OPP_CATCHER = theory.R_QB_OPP_CATCHER
+R_CATCHER_TEAMMATE = theory.R_CATCHER_TEAMMATE
 
 
 def eligible_slots(dk_position: str) -> set:
@@ -153,7 +156,120 @@ def _fill(players, rng, forced=None, obj="proj"):
     return lineup if _valid(lineup) else None
 
 
-def _hill_climb(lineup, players, rng, locked=frozenset(), obj="proj"):
+def _sd(p) -> float:
+    """This player's DK-point standard deviation, cached on the dict.
+
+    Looked up thousands of times inside a hill climb, and the fit behind it is
+    a two-term polynomial, so the cache is about the inner loop rather than
+    about the arithmetic.
+    """
+    v = p.get("_sd")
+    if v is None:
+        v = p["_sd"] = theory.player_sd(p)
+    return v
+
+
+def _stats(lineup) -> tuple[float, float]:
+    """(mean, variance) of the lineup total, correlations included."""
+    mean = sum(p["proj"] for p in lineup)
+    var = 0.0
+    for i, a in enumerate(lineup):
+        sa = _sd(a)
+        var += sa * sa
+        for b in lineup[i + 1:]:
+            r = theory.rho(a, b)
+            if r:
+                var += 2.0 * r * sa * _sd(b)
+    return mean, var
+
+
+def _swap_stats(lineup, i, cand, mean, var) -> tuple[float, float]:
+    """(mean, variance) after replacing lineup[i] with `cand`, in O(n).
+
+    Recomputing the whole quadratic form for every candidate swap is what
+    makes a variance-aware hill climb too slow to run before lock. Only the
+    terms involving the swapped player change, so only those are touched.
+    """
+    cur = lineup[i]
+    s_cur, s_new = _sd(cur), _sd(cand)
+    mean = mean - cur["proj"] + cand["proj"]
+    var = var - s_cur * s_cur + s_new * s_new
+    for j, other in enumerate(lineup):
+        if j == i:
+            continue
+        s_o = _sd(other)
+        r_cur, r_new = theory.rho(cur, other), theory.rho(cand, other)
+        if r_cur:
+            var -= 2.0 * r_cur * s_cur * s_o
+        if r_new:
+            var += 2.0 * r_new * s_new * s_o
+    return mean, var
+
+
+def _objective(mean: float, var: float, mode: str,
+               z_cash: float, z_gpp: float) -> float:
+    """mean -/+ z*sd. The whole difference between the two theories."""
+    sd = math.sqrt(max(0.0, var))
+    return mean + z_gpp * sd if mode == "gpp" else mean - z_cash * sd
+
+
+#: How many candidates a hill-climb step considers for one roster spot.
+#:
+#: Not a quality knob so much as a latency one, and it is the difference
+#: between a lineup arriving before lock and not. The unbounded version
+#: evaluated EVERY player in the pool for every slot -- including quarterbacks
+#: as replacements for defences, which can never be legal -- and a 212-player
+#: NFL board times nine slots times a per-swap variance update did not finish
+#: in two minutes on a real slate.
+CLIMB_CANDIDATES = 40
+
+#: How many quarterbacks survive the GPP screen and get a full search. See the
+#: two-stage comment in optimize(): every quarterback is scored, this is only
+#: how many are scored at full resolution.
+GPP_FINALISTS = 5
+
+
+def _candidate_index(players):
+    """{slot: [players eligible there, best first]} for the current mode.
+
+    Built once per optimize() call and read by every hill-climb step: the sort
+    is the expensive part and the ordering does not change while a search runs.
+    """
+    return {slot: sorted(_eligible(players, slot),
+                         key=lambda p: -p.get("_pv", p["proj"]))
+            for slot in set(SLOTS)}
+
+
+def _climb_candidates(index, cur, limit=CLIMB_CANDIDATES):
+    """Best `limit` players who could stand in for `cur`, de-duplicated.
+
+    Restricting to players who share one of `cur`'s slots is what makes the
+    step cheap, and it is very nearly lossless: _valid re-runs the whole slot
+    assignment anyway, so the moves this skips are mostly ones that were going
+    to be rejected as illegal.
+    """
+    out, seen = [], set()
+    for slot in cur["pos"]:
+        for p in index.get(slot, ())[:limit]:
+            if p["name"] not in seen:
+                seen.add(p["name"])
+                out.append(p)
+    return out
+
+
+def _hill_climb(lineup, players, rng, locked=frozenset(), mode="cash",
+                z_cash=theory.Z_CASH, z_gpp=theory.Z_GPP, index=None):
+    """Improve a legal lineup one swap at a time, on the FULL objective.
+
+    Climbing on each player's own projection -- which is what this did before
+    -- cannot see correlation at all, so it produced the same lineup for both
+    modes and left the stack to be bolted on as a constraint. Climbing on
+    `mean -/+ z*sd` is what lets cash walk downhill away from a stack and GPP
+    walk uphill into one, without either being told to.
+    """
+    index = index if index is not None else _candidate_index(players)
+    mean, var = _stats(lineup)
+    best = _objective(mean, var, mode, z_cash, z_gpp)
     improved = True
     while improved:
         improved = False
@@ -163,18 +279,22 @@ def _hill_climb(lineup, players, rng, locked=frozenset(), obj="proj"):
                 continue
             others = sum(p["salary"] for p in lineup) - cur["salary"]
             names = {p["name"] for p in lineup}
-            for cand in players:
-                if cand["name"] in names or cand[obj] <= cur[obj]:
+            for cand in _climb_candidates(index, cur):
+                if cand["name"] in names:
                     continue
                 if others + cand["salary"] > CAP:
+                    continue
+                m, v = _swap_stats(lineup, i, cand, mean, var)
+                obj = _objective(m, v, mode, z_cash, z_gpp)
+                if obj <= best:
                     continue
                 trial = lineup[:]
                 trial[i] = cand
                 if _valid(trial):
-                    lineup = trial
+                    lineup, mean, var, best = trial, m, v, obj
                     improved = True
                     break
-    return lineup, sum(p[obj] for p in lineup)
+    return lineup, best
 
 
 def stack_candidates(players, qb, n, obj="proj"):
@@ -216,56 +336,30 @@ def bring_back_candidates(players, qb, k, obj="proj"):
     cands.sort(key=lambda p: -p.get(obj, p["proj"]))
     return cands[:k]
 
-
-def _ceiling(lineup) -> float:
-    """A correlation-aware ceiling, for ranking lineups that project the same.
-
-    Not a simulation and not presented as one. Sum of projections plus a bonus
-    for each correlated PAIR actually in the lineup, weighted by the measured r
-    and the pair's own size. It exists to break ties in the direction the
-    measurements point, which is what separates a stacked lineup from nine
-    unrelated players at the same projected total.
-    """
-    total = sum(p["proj"] for p in lineup)
-    bonus = 0.0
-    for a in lineup:
-        for b in lineup:
-            if a["name"] >= b["name"]:
-                continue
-            scale = (a["proj"] * b["proj"]) ** 0.5
-            qb_c = ("QB" in a["pos"] and b["pos"] & CATCHERS) or \
-                   ("QB" in b["pos"] and a["pos"] & CATCHERS)
-            same = a["team"] == b["team"]
-            facing = a["team"] == b.get("opp_team")
-            if qb_c and same:
-                bonus += R_QB_CATCHER * scale
-            elif qb_c and facing:
-                bonus += R_QB_OPP_CATCHER * scale
-            elif same and (a["pos"] & CATCHERS) and (b["pos"] & CATCHERS):
-                # Measured at -0.029: two pass-catchers on one team share one
-                # football. Counted because leaving it out is what makes a
-                # ceiling function pile a whole receiving corps onto the
-                # cheapest passing game -- each of them scores the full
-                # QB bonus and nothing charges for the overlap between them.
-                bonus += R_CATCHER_TEAMMATE * scale
-    return total + bonus
-
-
 def optimize(players, mode="cash", stack_qb=None, stack_n=2, bring_back=1,
-             iters=2000, seed=0):
-    """Best NFL lineup found.
+             iters=2000, seed=0, z_cash=theory.Z_CASH, z_gpp=theory.Z_GPP,
+             own_weight=0.0):
+    """Best NFL lineup found, under one of the two game theories.
 
-    mode="cash"  maximize projection; no stack is forced.
-    mode="gpp"   force a QB + `stack_n` of his own pass-catchers, plus
-                 `bring_back` catchers from the opposing team, and rank the
-                 survivors by the correlation-aware ceiling.
+    mode="cash"  maximise `mean - z_cash*sd` of the lineup total. No stack is
+                 forced and none is wanted: correlation raises the spread, so
+                 the objective walks away from a stack on its own and spreads
+                 across games. See edge/dfs_nfl_theory.py.
+    mode="gpp"   maximise `mean + z_gpp*sd`, and force a QB + `stack_n` of his
+                 own pass-catchers plus `bring_back` catchers from the
+                 opposing team. The stack is forced rather than merely
+                 preferred because a randomised search will not reliably find
+                 the one configuration the objective most rewards.
 
     `stack_qb` names the quarterback to stack; None in gpp mode tries every
-    quarterback in the pool and keeps the best result.
+    quarterback in the pool and keeps the best result. In gpp mode the
+    quarterbacks are tried in LEVERAGE order when the pool has been through
+    theory.add_ownership, so a short search reaches the contrarian stacks
+    first rather than the chalk one.
 
-    Returns {lineup: [(player, slot)], proj, ceil, salary, stack} or None --
-    None means no legal lineup exists under the cap, which is a real answer on
-    a short slate and must not be confused with a bad one.
+    Returns {lineup, proj, sd, floor, ceil, salary, stack, own} or None -- None
+    means no legal lineup exists under the cap, which is a real answer on a
+    short slate and must not be confused with a bad one.
     """
     rng = random.Random(seed)
     players = [p for p in players
@@ -273,50 +367,89 @@ def optimize(players, mode="cash", stack_qb=None, stack_n=2, bring_back=1,
     for p in players:
         p.setdefault("opp_team", None)
         p.setdefault("game", p.get("opp_team") or p["team"])
+        p.pop("_sd", None)
     if not players:
         return None
-    obj = "proj"
 
-    def search(forced, locked):
+    # The greedy fill needs a per-player ranking, and it must agree in sign
+    # with the lineup objective or the search spends its time climbing back
+    # out of where the fill put it. Correlation is a property of a PAIR and so
+    # cannot appear here; it enters through the hill climb and the ranking.
+    for p in players:
+        p["_pv"] = (p["proj"] + z_gpp * _sd(p)) if mode == "gpp" \
+            else (p["proj"] - z_cash * _sd(p))
+
+    index = _candidate_index(players)
+
+    def search(forced, locked, n_iters=None):
         best, best_key = None, None
-        for _ in range(iters):
-            lu = _fill(players, rng, forced, obj)
+        for _ in range(n_iters if n_iters is not None else iters):
+            lu = _fill(players, rng, forced, "_pv")
             if not lu:
                 continue
-            lu, _ = _hill_climb(lu, players, rng, locked=locked, obj=obj)
-            key = _ceiling(lu) if mode == "gpp" else sum(p["proj"] for p in lu)
+            lu, key = _hill_climb(lu, players, rng, locked=locked, mode=mode,
+                                  z_cash=z_cash, z_gpp=z_gpp, index=index)
+            if own_weight and mode == "gpp":
+                key -= own_weight * sum(q.get("own", 0.0) for q in lu) / 100.0
             if best_key is None or key > best_key:
                 best, best_key = lu, key
         return best, best_key
 
     if mode != "gpp":
         best, _ = search(None, frozenset())
-        return _result(best, None) if best else None
+        return _result(best, None, z_cash, z_gpp) if best else None
 
     qbs = [p for p in players if "QB" in p["pos"]]
     if stack_qb:
         qbs = [p for p in qbs if p["name"] == stack_qb]
-    # try the strongest quarterbacks first, but do not silently cap the field
-    qbs.sort(key=lambda p: -p["proj"])
-    best, best_key, best_qb = None, None, None
+    # Leverage first where it is known, projection otherwise. Both are only an
+    # ORDER -- every quarterback is still tried, so a short search reaches the
+    # contrarian ones early without the chalk one being silently excluded.
+    qbs.sort(key=lambda p: (-p.get("leverage", 0.0), -p["proj"]))
+
+    # TWO STAGES, so that trying every quarterback stays affordable.
+    #
+    # A slate has ~24 of them and a full search each is ~24x the work of the
+    # cash build -- 33s measured on the live 2026-09-13 board, which is too
+    # long to sit through twice on a phone before lock. So every quarterback
+    # gets a cheap look first and only the best few get the full one. This is
+    # a resolution ladder, NOT a cap: no quarterback is excluded before being
+    # scored, which is the property the previous comment here was defending.
+    groups = {}
     for qb in qbs:
-        group = [qb] + stack_candidates(players, qb, stack_n, obj)
+        group = [qb] + stack_candidates(players, qb, stack_n, "_pv")
         if len(group) < 1 + stack_n:
             continue
-        group += bring_back_candidates(players, qb, bring_back, obj)
+        group += bring_back_candidates(players, qb, bring_back, "_pv")
         if assign_slots(group, SLOTS) is None:
             continue
-        locked = frozenset(p["name"] for p in group)
+        groups[qb["name"]] = (qb, group)
+    if not groups:
+        return None
+
+    screen_iters = max(20, iters // 8)
+    screened = []
+    for name, (qb, group) in groups.items():
+        locked = frozenset(q["name"] for q in group)
+        lu, key = search(group, locked, screen_iters)
+        if lu:
+            screened.append((key, name))
+    screened.sort(reverse=True)
+
+    best, best_key, best_qb = None, None, None
+    for _, name in screened[:GPP_FINALISTS]:
+        qb, group = groups[name]
+        locked = frozenset(q["name"] for q in group)
         lu, key = search(group, locked)
         if lu and (best_key is None or key > best_key):
             best, best_key, best_qb = lu, key, qb
     if best is None:                     # no stack was feasible; say so by
         return None                      # returning nothing rather than a
                                          # silently unstacked lineup
-    return _result(best, best_qb)
+    return _result(best, best_qb, z_cash, z_gpp)
 
 
-def _result(lineup, qb):
+def _result(lineup, qb, z_cash=theory.Z_CASH, z_gpp=theory.Z_GPP):
     stack = None
     if qb is not None:
         mates = [p["name"] for p in lineup
@@ -326,10 +459,17 @@ def _result(lineup, qb):
                 if p["team"] == qb.get("opp_team") and p["pos"] & CATCHERS]
         stack = {"qb": qb["name"], "team": qb["team"],
                  "with": mates, "bring_back": back}
+    mean, var = _stats(lineup)
+    sd = math.sqrt(max(0.0, var))
     return {"lineup": assign_slots(lineup, SLOTS),
-            "proj": round(sum(p["proj"] for p in lineup), 1),
-            "ceil": round(_ceiling(lineup), 1),
+            "proj": round(mean, 1),
+            "sd": round(sd, 1),
+            # Reported from the SAME quadratic form the objective maximises,
+            # so what the app shows and what the search chose cannot disagree.
+            "floor": round(mean - z_cash * sd, 1),
+            "ceil": round(mean + z_gpp * sd, 1),
             "salary": sum(p["salary"] for p in lineup),
+            "own": round(sum(p.get("own", 0.0) for p in lineup), 1),
             "stack": stack}
 
 

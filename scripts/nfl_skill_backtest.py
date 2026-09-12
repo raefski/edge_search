@@ -86,10 +86,16 @@ def _f(v) -> float:
         return 0.0
 
 
-def load_rows() -> list[dict]:
-    """Regular-season player-weeks for the skill positions, both seasons."""
+#: Seasons the head-to-head above is reported on. Other callers pass their own
+#: -- scripts/nfl_variance_fit.py needs 2020/2021, the only seasons for which
+#: real DK salaries also survive (RotoGuru stops after 2021).
+DEFAULT_SEASONS = (2023, 2024)
+
+
+def load_rows(seasons: tuple[int, ...] = DEFAULT_SEASONS) -> list[dict]:
+    """Regular-season player-weeks for the skill positions, across `seasons`."""
     out = []
-    for season in (2023, 2024):
+    for season in seasons:
         path = GT / f"player_week_{season}.json"
         if not path.exists():
             raise SystemExit(

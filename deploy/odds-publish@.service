@@ -1,0 +1,34 @@
+# Collect a profile AND publish/push its snapshot, for the cloud app.
+#
+# WHY THIS IS A SECOND TEMPLATE RATHER THAN A FLAG ON THE FIRST
+# odds-collect@.service deliberately does NOT push: those timers run hourly
+# (and every 15 minutes near lock) and exist to feed the STORE, whose value is
+# accumulating history. Pushing on every one of them would be ~98 commits a
+# day and roughly 10GB of git objects a year on a public repo.
+#
+# But Streamlit Community Cloud can neither scrape (DraftKings 403s a
+# datacenter IP) nor read data/odds.db (gitignored, and the history cannot be
+# re-derived), so the ONLY free price source there is the committed snapshot --
+# and edge/odds/cli.py::scraped_client refuses a snapshot older than 6 hours.
+# A phone opening the NFL page at noon on Sunday therefore needs a push from
+# this machine that morning, or it silently falls back to the paid Odds API.
+#
+# So: collect often, push rarely, and only in the window before a lock.
+#
+#   cp deploy/odds-publish@.service deploy/odds-publish-*.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now odds-publish-dfs-nfl.timer
+#   systemctl --user list-timers 'odds-*'
+[Unit]
+Description=Collect and publish odds profile %i for the cloud app
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/odds_collect.py --profile %i --push --verbose
+# A failed publish is not an emergency: the previous snapshot stays readable
+# and the app says how old it is. Do not spin.
+Restart=no
+Nice=10
+TimeoutStartSec=900

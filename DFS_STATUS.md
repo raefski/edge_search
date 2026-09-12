@@ -56,7 +56,13 @@ them go stale):**
 2. **Does the sim-EV GPP selector actually beat the default?** n=8 backtested slates,
    directionally positive, not significant. Needs either more replay data or live opt-in
    usage tracked via `data/dfs_sim_log.csv`.
-3. **Does the model add real value beyond DK's own salary?** Re-run 2026-07-23 at n=11
+3. **NFL only — does cash mode's floor term (Z_CASH) earn its place?** Swept
+   2026-09-12 over 31 slates: train (2020) picks z=0, test (2021) picks z=0.75, on the
+   same metric. Unresolved, and n is the reason. Re-run
+   `scripts/nfl_lineup_backtest.py --z-grid ...` as real 2026 slates accumulate, or
+   settle it faster with a real DK contest-standings export (which would also fit the
+   ownership model, the other unvalidated NFL piece).
+4. **Does the model add real value beyond DK's own salary?** Re-run 2026-07-23 at n=11
    slates (up from 6): now significant for both hitters (t=2.98) and pitchers (t=2.79),
    but a split-sample check shows the effect is concentrated in the more recent slates,
    not uniform — progress, not a settled fact. **Re-run this test every 5-10 new slates**
@@ -80,9 +86,105 @@ calibration numbers were regenerated. See `DFS_METHODOLOGY.md` §31.
 
 ## NFL / NBA — multi-sport build
 
-**Status: data pipeline built and validated. No live app, no DK draftables integration,
-no optimizer, no backtest results yet.** Do not imply either sport is usable for a real
-slate — it isn't.
+**NFL status (2026-09-12): SHIPPED and usable for a real slate.** DK draftables,
+optimizer, two game theories, a Streamlit page and a lineup-level backtest all exist.
+**NBA remains pipeline-only** — no app, no optimizer, nothing checked against a live
+payload. Do not imply NBA is usable; it isn't.
+
+### NFL shipped 2026-09-12 — what to know in 60 seconds
+
+- `pages/2_🏈_NFL_DFS.py` (cash + GPP, phone-first) and `scripts/dfs_lineups_nfl.py`
+  both call `edge/dfs_run_nfl.py::build_slate`, so the phone and the desktop cannot
+  produce different lineups.
+- Defaults to DK's **Main** Classic slate, resolved as a property (the only Classic
+  group with no ContestStartTimeSuffix) rather than by `pick_priced_group`'s
+  "biggest", which on an NFL lobby is a season-long tournament.
+- `deploy/odds-publish-dfs-nfl.timer` pushes a fresh props snapshot every 30 min on
+  Sunday 08:00–13:00 ET. Without it the cloud app silently falls back to the paid
+  Odds API, because `scraped_client` refuses a snapshot over 6 hours old.
+
+### A LIVE BUG THAT WAS SILENTLY WRONG, found and fixed 2026-09-12
+
+A scraped `dfs_nfl` scan holds every event the books have posted — on 2026-09-12 that
+was 27 events, week 2 **and** week 3. The old `game_lines()` walked all of them into a
+`{team: line}` dict, so for any team playing both weeks the later event overwrote the
+earlier one. Measured on that scan: **21 of 28 slate teams carried the wrong opponent
+and the wrong game total.** Every DST was projected off the wrong game, and the hard
+"a DST never faces your own lineup" rule *silently stopped working* — a wrong opponent
+makes that comparison pass rather than fail.
+
+Fixed by taking opponent and game id from **DraftKings' own draftables** (`matchup`,
+`game`, `start`), and admitting a book's total/spread only when the team pair matches a
+slate game *and* kickoff is within 6 hours of DK's start time. Regression tests:
+`tests/test_dfs_run_nfl.py`. A side effect worth knowing: a missing game total no
+longer drops offensive players, only that game's defences.
+
+### The two game theories — and the backtest is split on them
+
+`edge/dfs_nfl_theory.py`. A lineup is a sum of nine correlated random variables, so
+both modes come out of the same mean/sd through a measured correlation matrix:
+
+    cash = mean − Z_CASH·sd        gpp = mean + Z_GPP·sd
+
+Correlation raises a lineup's spread, so cash walks away from a stack and GPP walks
+into one — neither is told to. Per-player spreads are **measured**
+(`scripts/nfl_variance_fit.py`, 9,979 leak-free player-weeks, 2020+2021): a QB's sd is
+nearly flat in his projection (7.98 + 0.038·proj) while a TE's nearly doubles it
+(2.21 + 0.480·proj), which is where "pay up at QB" comes from without anyone asserting it.
+
+**Backtest** (`scripts/nfl_lineup_backtest.py`): 31 slates, 2020+2021, real DK salaries
+(RotoGuru) + nflverse actuals, leak-free skill projections, ownership-weighted simulated
+field. Join check: our DK scoring vs RotoGuru's own, **corr 0.9982** over 10,340
+player-weeks.
+
+| | mean | realised sd | ≥50th pct | ≥90th | ≥99th | stacked |
+|---|---|---|---|---|---|---|
+| cash | 125.0 | 22.9 | 94% | 35% | 6% | **0%** |
+| gpp | 127.1 | 28.9 | 87% | 45% | **16%** | **100%** |
+| maxproj (pre-rewrite) | 126.9 | 24.1 | 94% | 42% | 10% | 0% |
+
+**GPP's claim is confirmed.** It reaches the 99th percentile 16.1% of slates against
+cash's 6.5% — 2.5× — and carries visibly more realised variance. The 0%/100% stacking
+split is the objective doing it, not a rule.
+
+**CASH's claim is NOT confirmed, and this is the honest finding.** The floor term did
+not beat simply maximising projection: cash − maxproj = **−1.91 DK pts, t=−0.67**, and
+maxproj's own bad-slate floor (p10 field percentile 63.0) was *better* than cash's
+(55.2). Cash did lower realised variance (22.9 vs 24.1) and ties maxproj on the
+cash-relevant ≥50th-percentile rate (94%), so the term is not harmful — it is just not
+yet earning its place. Do not describe cash mode as backtest-validated.
+
+**Z_CASH was then swept, train/test, and the data CANNOT settle it.**
+`--z-grid 0.0,0.25,0.5,0.75,1.0`, chosen on 2020 (14 slates) and read on 2021 (17):
+
+| | train 2020 mean pct | train ≥50th | test 2021 mean pct | test ≥50th |
+|---|---|---|---|---|
+| z=0.00 (no floor term) | **81.9** | **100%** | 79.5 | 88% |
+| z=0.75 (shipped) | 76.0 | 93% | **82.2** | **94%** |
+
+Train says z=0, test says z=0.75, on the same metric. That is a straight
+contradiction across the split, which is the signature of noise rather than signal —
+15-slate halves cannot separate effects this size. **Z_CASH stays 0.75 because it is
+the theoretically motivated value and it survived the held-out half, NOT because the
+backtest chose it.** Do not quote 0.75 as tuned. What IS robust across every cut: cash
+never stacks (0% of 31 slates) and carries lower realised variance than maxproj
+(22.9 vs 24.1), which is the behaviour a double-up wants.
+
+**Caveats that are not decoration:** no rake, no real field, no payout curve; the
+percentile field is built from this repo's own *unvalidated* ownership prior; and the
+projection is the SKILL model, not the props model the live app runs on. These numbers
+compare CONSTRUCTIONS. They are not an ROI and cannot be quoted as one.
+
+### Still missing for NFL
+
+- **Ownership is a prior, not a fit.** No NFL contest exports exist on this machine, so
+  unlike MLB's gammas nothing here is tuned. It is capped and normalised so the output
+  is at least possible (an unclipped version handed a $2,900 TE 99.1% ownership), and it
+  only tilts GPP. Get a real DK contest-standings export and fit it.
+- **No inactive feed.** NFL inactives land 90 min before kickoff; the only thing
+  tracking them is the books pulling a ruled-out player's props, so snapshot freshness
+  IS the inactive check. The page warns when props are over 90 minutes old.
+- **No late-swap** (MLB has one), no field simulator, no real-money log for NFL.
 
 **What exists:**
 - Historical player props (paid, one-shot — the key that fetched this expired

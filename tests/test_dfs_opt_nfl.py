@@ -9,12 +9,16 @@ from __future__ import annotations
 
 import pytest
 
+from edge import dfs_nfl_theory as theory
 from edge import dfs_opt_nfl as opt
 
 
 def mk(name, pos, salary, proj, team, opp, **kw):
+    """`dk_pos` is carried because edge/dfs_nfl_theory keys the measured spread
+    on the real position -- a player built without one would silently be
+    priced as a wide receiver."""
     return {"name": name, "pos": opt.eligible_slots(pos), "salary": salary,
-            "proj": proj, "team": team, "opp_team": opp,
+            "proj": proj, "team": team, "opp_team": opp, "dk_pos": pos,
             "game": "-".join(sorted((team, opp))), **kw}
 
 
@@ -208,19 +212,83 @@ def test_portfolio_returns_short_rather_than_padding():
 
 
 def test_teammate_pass_catchers_are_charged_against_the_ceiling():
-    """Measured at -0.029: two catchers on one team share one football. Without
-    this term the ceiling piles a whole receiving corps onto one cheap passing
-    game, because each of them collects the full QB bonus and nothing charges
-    for the overlap between them."""
-    wr1 = mk("BUF WR0", "WR", 6000, 15.0, "BUF", "MIA")
-    wr2 = mk("BUF WR1", "WR", 6000, 15.0, "BUF", "MIA")
-    other = mk("KC WR0", "WR", 6000, 15.0, "KC", "DEN")
-    # isolate the term: same two projections, differing only in being teammates
-    teammates = opt._ceiling([wr1, wr2])
-    apart = opt._ceiling([wr1, other])
+    """Measured at -0.029: two catchers on one team share one football.
+
+    Without this term a ceiling piles a whole receiving corps onto one cheap
+    passing game, because each of them collects the full QB bonus and nothing
+    charges for the overlap between them. Expressed against the variance now
+    that the ceiling IS mean + z*sd -- a negative correlation lowers the
+    lineup's spread, so it lowers the ceiling.
+    """
+    wr1 = mk("BUF WR0", "WR", 6000, 15.0, "BUF", "MIA", dk_pos="WR")
+    wr2 = mk("BUF WR1", "WR", 6000, 15.0, "BUF", "MIA", dk_pos="WR")
+    other = mk("KC WR0", "WR", 6000, 15.0, "KC", "DEN", dk_pos="WR")
+
+    assert theory.rho(wr1, wr2) == theory.R_CATCHER_TEAMMATE
+    assert theory.rho(wr1, other) == 0.0                # different games
+
+    teammates, apart = theory.lineup_sd([wr1, wr2]), theory.lineup_sd([wr1, other])
     assert teammates < apart
-    assert teammates == pytest.approx(apart + opt.R_CATCHER_TEAMMATE * 15.0, abs=1e-6)
+
+    # the exact quadratic-form identity, not merely the direction
+    sd = theory.player_sd(wr1)
+    assert teammates ** 2 == pytest.approx(
+        apart ** 2 + 2 * theory.R_CATCHER_TEAMMATE * sd * sd, abs=1e-6)
 
     # and in a full stack it must not cancel the QB pairing it comes with
-    qb = mk("BUF QB", "QB", 6000, 20.0, "BUF", "MIA")
-    assert opt._ceiling([qb, wr1, wr2]) > opt._ceiling([qb, wr1, other])
+    qb = mk("BUF QB", "QB", 6000, 20.0, "BUF", "MIA", dk_pos="QB")
+    assert theory.score([qb, wr1, wr2], "gpp") > theory.score([qb, wr1, other], "gpp")
+
+
+# --- the two game theories are actually different ----------------------------
+
+def test_cash_and_gpp_disagree_about_variance():
+    """The whole point of the split. Same pool, same cap, opposite objectives:
+    the GPP lineup must carry MORE spread than the cash one, or `mode` is
+    decorative."""
+    cash = opt.optimize(pool(), mode="cash", iters=400, seed=11)
+    gpp = opt.optimize(pool(), mode="gpp", iters=400, seed=11)
+    assert cash is not None and gpp is not None
+    assert gpp["sd"] > cash["sd"]
+
+
+def test_cash_reports_a_floor_below_its_projection_and_gpp_a_ceiling_above():
+    cash = opt.optimize(pool(), mode="cash", iters=300, seed=12)
+    assert cash["floor"] < cash["proj"] < cash["ceil"]
+
+
+def test_cash_does_not_stack_a_quarterback_with_his_own_receivers():
+    """Not a rule anywhere in the optimizer -- a CONSEQUENCE of maximising
+    mean - z*sd, since the QB/catcher pair is measured at +0.249 and positive
+    correlation is exactly what a floor does not want."""
+    stacked = 0
+    for seed in range(6):
+        r = opt.optimize(pool(), mode="cash", iters=400, seed=seed)
+        if r is None:
+            continue
+        qb = next(p for p, s in r["lineup"] if s == "QB")
+        mates = [p for p, _ in r["lineup"]
+                 if p["team"] == qb["team"] and p["pos"] & opt.CATCHERS]
+        if len(mates) >= 2:
+            stacked += 1
+    assert stacked == 0, f"cash built a QB stack in {stacked} of 6 seeds"
+
+
+def test_a_defence_is_scored_as_anti_correlated_with_the_offence_it_faces():
+    """-0.351 against the opposing quarterback: the strongest pair measured,
+    and the reason the DST rule is hard rather than a preference."""
+    qb = mk("BUF QB", "QB", 6000, 20.0, "BUF", "MIA", dk_pos="QB")
+    opp_dst = mk("MIA DST", "DST", 2800, 7.0, "MIA", "BUF", dk_pos="DST")
+    own_dst = mk("BUF DST", "DST", 2800, 7.0, "BUF", "MIA", dk_pos="DST")
+    assert theory.rho(qb, opp_dst) == theory.R_DST_OPP_QB
+    assert theory.rho(qb, own_dst) == theory.R_DST_OWN_OFFENCE
+
+
+def test_ownership_sums_to_the_slots_each_position_fills():
+    """A field model that does not add up is not a field model. One QB slot
+    means the quarterbacks on the board share 100 points of ownership."""
+    ps = theory.add_ownership(pool())
+    qb_own = sum(p["own"] for p in ps if theory.base_position(p) == "QB")
+    assert qb_own == pytest.approx(100.0, abs=0.5)
+    wr_own = sum(p["own"] for p in ps if theory.base_position(p) == "WR")
+    assert wr_own == pytest.approx(100.0 * theory.SLOTS_BY_POSITION["WR"], abs=0.5)

@@ -1,0 +1,24 @@
+# Push a fresh NFL props snapshot to the cloud app before Sunday's lock.
+#
+# The DK main slate locks at 1:00 PM ET. scraped_client gives a published
+# snapshot a 6-hour bound, so a single early-morning push would already be
+# marginal by kickoff and useless for the 4:25 PM window. Every 30 minutes
+# across the run-up covers both, and inactives land in exactly this window.
+#
+# ~10 commits per Sunday at ~210KB each. That is the trade odds-publish@.service
+# explains: the hourly collectors stay push-free, this one does not.
+[Unit]
+Description=Publish NFL DFS props snapshot for the cloud app
+[Timer]
+# The instance name IS the profile -- without this the timer looks for a
+# service matching its own name, which does not exist (caught on install).
+Unit=odds-publish@dfs_nfl.service
+# Sunday 08:00-13:00 ET. OnCalendar is LOCAL time, which is what this machine
+# runs on, so this tracks the DST shift the NFL season crosses in November.
+OnCalendar=Sun *-*-* 08..13:00/30:00
+# Thursday night football locks at 20:15 ET.
+OnCalendar=Thu *-*-* 18,19:00/30:00
+RandomizedDelaySec=60
+Persistent=true
+[Install]
+WantedBy=timers.target

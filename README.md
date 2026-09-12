@@ -89,6 +89,49 @@ confirmed starter, game not yet locked). Same logic on the CLI:
    For a fully $0 phone session, snapshot props before you leave:
    `git add -f data/cache && git commit -m "cache snapshot" && git push`.
 
+## DK NFL DFS (`pages/2_🏈_NFL_DFS.py`) — cash + GPP, same app
+
+The NFL half of the lineup app, on DK Classic (QB/RB/RB/WR/WR/WR/TE/FLEX/DST,
+$50k). Same sidebar, same phone, **0 credits** — props come from the free
+scraped store (`dfs_nfl` profile) on the desktop and from the committed
+snapshot on Streamlit Cloud; DK salaries come from DraftKings' own draftables
+endpoint.
+
+```bash
+python3 scripts/dfs_lineups_nfl.py                 # cash + gpp, DK's MAIN slate
+python3 scripts/dfs_lineups_nfl.py --list-slates
+python3 scripts/dfs_lineups_nfl.py --mode gpp -n 3 # a diversified portfolio
+```
+
+**The two modes are two game theories, not one with a stack flag.** A lineup is
+a sum of nine correlated random variables, so give each player a mean and a
+standard deviation and both objectives fall out of the same two numbers:
+
+| mode | objective | what it does on its own |
+|---|---|---|
+| cash | `mean − 0.75·sd` | spreads across games, **refuses** a stack, pays up at QB |
+| gpp | `mean + 1.25·sd` | concentrates into a QB stack with a bring-back |
+
+Correlation raises a lineup's spread, so the cash objective walks away from a
+stack and the GPP objective walks into one — neither is told to. The per-player
+spreads are measured (`scripts/nfl_variance_fit.py`, 9,979 leak-free
+player-weeks) and the correlation matrix is measured
+(`scripts/nfl_correlation.py`, 544 games). Everything is in
+`edge/dfs_nfl_theory.py` with its provenance; the head-to-head that tests the
+claim is `scripts/nfl_lineup_backtest.py`.
+
+**Ownership is a PRIOR, not a fit** — there are no NFL contest exports on this
+machine, unlike MLB's gammas. The page says so. Treat leverage as a tilt.
+
+**Deploying it for the phone.** Streamlit Cloud cannot scrape, so it reads
+`data/odds_snapshot_dfs_nfl.json`, and `scraped_client` refuses a snapshot over
+6 hours old. `deploy/odds-publish-dfs-nfl.timer` pushes a fresh one every 30
+minutes on Sunday 08:00–13:00 ET (and Thursday evenings). By hand:
+
+```bash
+python3 scripts/odds_collect.py --profile dfs_nfl --push
+```
+
 ## NFL pick'em (TOO-GOODE pool) — sidebar page, not DFS
 
 `pages/4_🎯_Pickem.py`, added to the app's sidebar automatically by Streamlit's
