@@ -1,12 +1,12 @@
 {
- "requested_at": "2026-09-13T00:17:38.997257+00:00",
- "request_id": "20260913T001738997257",
+ "requested_at": "2026-09-13T12:17:15.529601+00:00",
+ "request_id": "20260913T121715529601",
  "sports": [
   "americanfootball_nfl"
  ],
  "note": "requested from the Streamlit app",
- "date_from": null,
- "date_to": null,
+ "date_from": "2026-09-13",
+ "date_to": "2026-09-13",
  "skip_live": true,
  "state": "CT"
 }
