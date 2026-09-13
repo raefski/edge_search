@@ -57,12 +57,17 @@ slate.
 """
 from __future__ import annotations
 
+import csv
 import logging
 import re
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from edge import dfs, dfs_opt_nfl, dfs_project, dfs_sport
 from edge.nfl import TEAM_NAME_TO_ABBR
+
+ROOT = Path(__file__).resolve().parents[1]
 
 log = logging.getLogger("edge.dfs_run_nfl")
 
@@ -335,13 +340,128 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
 # ---------------------------------------------------------------------------
 # The whole slate, in one call
 # ---------------------------------------------------------------------------
+#: Proj-log columns. Mirrors edge/dfs_run.py::log_forward_test's MLB shape
+#: closely enough that an NFL scripts/dfs_calibration_nfl.py can be written by
+#: adapting that script rather than starting over -- same join, same idea,
+#: different sport's columns (dk_pos, opp_team, leverage in place of MLB's
+#: pitcher-specific outs_mean/k_mean).
+PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp_team", "dk_pos", "salary",
+                 "proj", "sd", "own", "leverage", "game", "games")
+
+
+def _slate_date(meta: dict) -> str | None:
+    """The slate's own calendar date in ET, for keying the forward-test log.
+
+    NFL's cadence is weekly rather than MLB's near-daily, so unlike
+    dfs_calibration.py's ground-truth date-inference machinery (built because
+    MLB genuinely has multiple candidate dates a contest file could be from),
+    a single ISO date is enough here: there is at most one Sunday main slate a
+    week, and the date goes straight into the log so a later contest-standings
+    export can be matched by eye rather than inferred.
+    """
+    dt = _parse_time(meta.get("start"))
+    if dt is None:
+        return None
+    try:
+        return dt.astimezone(ZoneInfo("America/New_York")).date().isoformat()
+    except Exception:                                       # noqa: BLE001
+        return dt.date().isoformat()
+
+
+def log_forward_test(pool: list, cash: dict | None, gpp: dict | None,
+                     gid, meta: dict, root: Path | None = None) -> dict:
+    """Persist a build to disk, so a real contest result has something to be
+    JOINED against later -- the exact gap that made an NFL ownership fit
+    impossible before this existed. See edge/dfs_run.py::log_forward_test,
+    which this mirrors: MLB's OWNERSHIP_GAMMA was tuned against real DK
+    contest exports (data/contest-standings-*.csv) joined against a logged
+    history of that day's predicted pool (data/dfs_proj_log.csv). NFL's
+    edge/dfs_nfl_theory.py ownership model has never had that -- it is a
+    prior with a plausible shape and zero validation, stated as such in its
+    own docstring -- because nothing was ever logged for it to be checked
+    against. This starts that clock; it does nothing for a week already gone.
+
+    data/dfs_proj_log_nfl.csv: every player in the pool, one row per player,
+    for the slate's date. Re-running for the same date overwrites that date's
+    rows in place (the freshest pre-lock build is what a real decision was
+    actually made from), other dates untouched -- same rule as MLB.
+
+    data/dfs_lineups_nfl_<date>.csv: the built CASH/GPP lineups, if any --
+    separate from the pool log because it answers a different question (what
+    did the app actually recommend) from the one the pool log answers (what
+    was every player's predicted own/proj, for joining against a contest's
+    real ownership board regardless of who was rostered).
+
+    A build for a PAST date never overwrites the log -- the identical failure
+    mode MLB's own version guards against (a --date review rebuild clobbering
+    real forward-test data, restored from git once already). Returns
+    {"logged": bool, "n": int, "date": str|None}.
+    """
+    root = root or ROOT
+    result = {"logged": False, "n": 0, "date": None}
+    date = _slate_date(meta)
+    if date is None:
+        return result
+    result["date"] = date
+
+    try:
+        today_et = datetime.now(ZoneInfo("America/New_York")).date().isoformat()
+    except Exception:                                       # noqa: BLE001
+        today_et = datetime.now().date().isoformat()
+    if date < today_et:
+        result["skipped_past_date"] = True
+        return result
+
+    (root / "data").mkdir(parents=True, exist_ok=True)
+    games = meta.get("games")
+
+    def _rows():
+        for p in pool:
+            yield {"date": date, "gid": gid, "player": p["name"], "team": p.get("team", ""),
+                  "opp_team": p.get("opp_team", ""), "dk_pos": p.get("dk_pos", ""),
+                  "salary": p.get("salary", ""), "proj": p.get("proj", ""),
+                  "sd": p.get("_sd", ""), "own": p.get("own", ""),
+                  "leverage": p.get("leverage", ""), "game": p.get("game", ""),
+                  "games": games if games is not None else ""}
+
+    plog = root / "data/dfs_proj_log_nfl.csv"
+    prior = list(csv.DictReader(open(plog))) if plog.exists() else []
+    with plog.open("w", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(list(PROJ_LOG_COLS))
+        for r in [r for r in prior if r.get("date") != date] + list(_rows()):
+            w.writerow([r.get(c, "") for c in PROJ_LOG_COLS])
+    result["logged"] = True
+    result["n"] = len(pool)
+
+    if cash or gpp:
+        lpath = root / f"data/dfs_lineups_nfl_{date}.csv"
+        with lpath.open("w", newline="") as fh:
+            w = csv.writer(fh)
+            w.writerow(["mode", "slot", "player", "team", "opp_team", "salary",
+                       "proj", "own"])
+            for mode, r in (("cash", cash), ("gpp", gpp)):
+                for row in (lineup_rows(r) if r else []):
+                    w.writerow([mode, row["slot"], row["player"], row["team"],
+                               row["opp"], row["salary"], row["proj"], row["own"]])
+        result["lineup_file"] = str(lpath.relative_to(root))
+    return result
+
+
 def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftkings",
                 stack_n: int = 2, bring_back: int = 1, own_gamma: float | None = None,
-                own_weight: float = 0.0, groups: list[dict] | None = None) -> dict:
+                own_weight: float = 0.0, groups: list[dict] | None = None,
+                persist: bool = True) -> dict:
     """Pool + a CASH lineup + a GPP lineup for one DK NFL Classic slate.
 
     The single entry point for both the CLI and the Streamlit page, so the two
     cannot produce different lineups from the same slate.
+
+    `persist=True` (the default) writes the pool and lineups to disk via
+    log_forward_test -- see that function for why. Every caller gets this
+    for free; a caller that wants a dry run (rebuilding a past slate for
+    review, say) passes persist=False rather than relying on the forward-
+    test log's own past-date guard to protect itself silently.
 
     Returns {gid, meta, slates, pool, stats, cash, gpp, teams, games} or, when
     the slate is not priced yet, {unpriced: True, ...}. A `cash` or `gpp` of
@@ -371,10 +491,19 @@ def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftki
     gpp = dfs_opt_nfl.optimize(pool, mode="gpp", iters=iters, seed=0,
                                stack_n=stack_n, bring_back=bring_back,
                                own_weight=own_weight)
+    log_result = None
+    if persist:
+        try:
+            log_result = log_forward_test(pool, cash, gpp, gid, meta)
+        except Exception as exc:                            # noqa: BLE001
+            # A logging failure must never take the lineups down with it --
+            # the whole point is a record for LATER, not a dependency of NOW.
+            log.warning("dfs_run_nfl: forward-test logging failed: %s", exc)
     return {
         "gid": gid, "meta": meta, "slates": slates, "pool": pool,
         "stats": stats, "cash": cash, "gpp": gpp, "games": games,
         "teams": sorted({p["team"] for p in pool if p.get("team")}),
+        "log": log_result,
     }
 
 

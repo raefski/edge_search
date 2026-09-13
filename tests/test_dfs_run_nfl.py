@@ -233,3 +233,117 @@ def test_no_player_is_ever_given_an_impossible_ownership():
     # accumulated rounding error and 13 of them can legitimately miss by 0.65.
     assert sum(p["own"] for p in pool) == pytest.approx(
         100.0 * theory.SLOTS_BY_POSITION["TE"], abs=0.05 * len(pool))
+
+
+# --- forward-test logging -----------------------------------------------------
+
+def _pool_row(name="P1", team="LAC", opp="ARI", proj=15.0, own=10.0, salary=6000):
+    return {"name": name, "team": team, "opp_team": opp, "dk_pos": "WR",
+            "salary": salary, "proj": proj, "own": own, "leverage": 0.0,
+            "game": 101, "_sd": 5.0}
+
+
+TODAY_START = "2099-01-04T17:00:00.0000000Z"  # always "today or later"
+FUTURE_META = {"start": TODAY_START, "games": 12}
+
+
+def test_logging_writes_one_row_per_pool_player(tmp_path):
+    """The whole point: a real contest result needs something to be JOINED
+    against later. If the row count doesn't match the pool, that join silently
+    loses players."""
+    pool = [_pool_row("A"), _pool_row("B"), _pool_row("C")]
+    res = nfl.log_forward_test(pool, None, None, 999, FUTURE_META, root=tmp_path)
+    assert res["logged"] is True
+    assert res["n"] == 3
+    assert res["date"] == "2099-01-04"
+
+    rows = list(__import__("csv").DictReader(
+        open(tmp_path / "data/dfs_proj_log_nfl.csv")))
+    assert {r["player"] for r in rows} == {"A", "B", "C"}
+    assert rows[0]["gid"] == "999"
+
+
+def test_a_past_date_never_overwrites_the_log(tmp_path):
+    """The exact failure MLB's own version guards against: a review rebuild of
+    an old slate silently replacing real forward-test data. Restored from git
+    once already there -- must not happen twice, in either sport."""
+    pool = [_pool_row("Real")]
+    nfl.log_forward_test(pool, None, None, 1, FUTURE_META, root=tmp_path)
+
+    past_meta = {"start": "2020-01-01T17:00:00.0000000Z", "games": 12}
+    res = nfl.log_forward_test([_pool_row("Stale")], None, None, 2, past_meta,
+                                root=tmp_path)
+    assert res["skipped_past_date"] is True
+    assert not res["logged"]
+
+    rows = list(__import__("csv").DictReader(
+        open(tmp_path / "data/dfs_proj_log_nfl.csv")))
+    assert {r["player"] for r in rows} == {"Real"}
+
+
+def test_rerunning_the_same_date_overwrites_in_place_others_untouched(tmp_path):
+    """A slate is built many times as props update before lock -- the freshest
+    pre-lock build should win, and a DIFFERENT date's rows must survive."""
+    other_meta = {"start": "2099-01-11T17:00:00.0000000Z", "games": 12}
+    nfl.log_forward_test([_pool_row("Week1Old", proj=10.0)], None, None, 1,
+                         FUTURE_META, root=tmp_path)
+    nfl.log_forward_test([_pool_row("Week2")], None, None, 2, other_meta,
+                         root=tmp_path)
+    nfl.log_forward_test([_pool_row("Week1New", proj=99.0)], None, None, 1,
+                         FUTURE_META, root=tmp_path)
+
+    rows = list(__import__("csv").DictReader(
+        open(tmp_path / "data/dfs_proj_log_nfl.csv")))
+    by_date = {}
+    for r in rows:
+        by_date.setdefault(r["date"], []).append(r["player"])
+    assert by_date["2099-01-04"] == ["Week1New"]   # old week-1 row is GONE
+    assert by_date["2099-01-11"] == ["Week2"]       # untouched
+
+
+def test_the_lineup_file_is_written_when_a_lineup_exists(tmp_path):
+    from edge import dfs_opt_nfl as opt
+
+    lineup = [(_pool_row("QB1", team="LAC"), "QB"),
+              (_pool_row("WR1", team="LAC", proj=12.0), "WR")]
+    cash = {"lineup": lineup, "proj": 27.0, "sd": 8.0, "floor": 20.0,
+            "ceil": 35.0, "salary": 12000, "own": 15.0, "stack": None}
+
+    res = nfl.log_forward_test([_pool_row()], cash, None, 5, FUTURE_META,
+                                root=tmp_path)
+    assert res["lineup_file"] == "data/dfs_lineups_nfl_2099-01-04.csv"
+    lines = (tmp_path / res["lineup_file"]).read_text().splitlines()
+    assert lines[0].startswith("mode,slot,player")
+    assert any("QB1" in line for line in lines[1:])
+
+
+def test_no_lineup_at_all_still_logs_the_pool_without_a_lineup_file(tmp_path):
+    res = nfl.log_forward_test([_pool_row()], None, None, 1, FUTURE_META,
+                               root=tmp_path)
+    assert res["logged"] is True
+    assert "lineup_file" not in res
+
+
+def test_build_slate_persists_by_default_and_can_be_told_not_to(monkeypatch, tmp_path):
+    """persist=False must actually skip the write -- the guard a caller doing
+    a dry-run rebuild for review depends on."""
+    calls = []
+    monkeypatch.setattr(nfl, "log_forward_test",
+                        lambda *a, **kw: calls.append(1) or {"logged": True})
+    monkeypatch.setattr(nfl, "resolve_slate", lambda *a, **kw: (1, FUTURE_META))
+    monkeypatch.setattr(nfl, "classic_groups", lambda *a, **kw: [])
+    monkeypatch.setattr(nfl.dfs, "fetch_draftables",
+                        lambda gid: {"p": {"salary": 5000, "team": "LAC",
+                                          "position": "WR", "game": 101,
+                                          "matchup": "ARI @ LAC",
+                                          "start": TODAY_START, "name": "P"}})
+    monkeypatch.setattr(nfl, "build_pool", lambda *a, **kw: ([_pool_row()], {}))
+    monkeypatch.setattr(nfl.dfs_opt_nfl, "optimize", lambda *a, **kw: None)
+
+    res = nfl.build_slate(client=None, draft_group=1)
+    assert len(calls) == 1
+    assert res["log"] == {"logged": True}
+
+    res2 = nfl.build_slate(client=None, draft_group=1, persist=False)
+    assert len(calls) == 1          # unchanged -- persist=False actually skipped it
+    assert res2["log"] is None
