@@ -140,9 +140,9 @@ def _source_badge():
         st.sidebar.success(f"🟢 Free scraped prices · {mins:.0f} min old")
         if mins > 120:
             st.sidebar.caption(
-                "Getting stale. On the desktop run "
-                "`python3 scripts/odds_collect.py --profile dfs_nfl --publish` "
-                "and push, or tap **Request a desktop scan** on the Arbitrage page.")
+                "Getting stale. Tap **📡 Request a desktop scan** on the "
+                "Arbitrage page — it refreshes this too. Or on the desktop: "
+                "`python3 scripts/odds_collect.py --profile dfs_nfl --push`.")
     else:
         st.sidebar.warning("🟡 Falling back to the paid Odds API — the free "
                            "snapshot is missing or stale.")
@@ -240,18 +240,38 @@ st.markdown(
 # So the snapshot's AGE is the inactive check, which is why it is stated in
 # the sidebar and why this line is here rather than in a doc nobody opens.
 _age = None
+_is_snapshot = False
 try:
     _c = scraped_client(nfl.SPORT, "dfs")
     _age = getattr(_c, "age_seconds", 0.0) / 60.0
+    _is_snapshot = type(_c).__name__ == "SnapshotOddsClient"
 except Exception:                                           # noqa: BLE001
     pass
 if _age is not None and _age > 90:
-    st.markdown(
-        f"<div class='warn'>⏱️ These props are <b>{_age:.0f} minutes old</b>. "
-        "NFL inactives drop 90 minutes before kickoff and a ruled-out player "
-        "keeps a stale projection until the books pull his markets — tap "
-        "<b>🔄 Refresh</b> inside the last hour before lock.</div>",
-        unsafe_allow_html=True)
+    if _is_snapshot:
+        # On Streamlit Cloud, 🔄 Refresh re-reads whatever snapshot is
+        # CURRENTLY COMMITTED — it does not trigger a new scrape. Telling a
+        # phone user to "just tap Refresh" here would be actively wrong: found
+        # live 2026-09-12 when the app was checked Saturday evening and showed
+        # 333-minute-old props with nothing scheduled to push a newer one
+        # until Sunday 8 AM. Refresh only helps once the desktop's publish
+        # timer (deploy/odds-publish-dfs-nfl.timer) has actually landed a new
+        # commit, so say that instead of implying a tap fixes it.
+        st.markdown(
+            f"<div class='warn'>⏱️ These props are <b>{_age:.0f} minutes "
+            "old</b>. This page reads a snapshot pushed from the desktop — "
+            "🔄 Refresh only helps once a NEWER one has landed, it doesn't "
+            "scrape on its own. A push runs automatically every 2 hours, "
+            "more often near a lock. For one right now, tap 📡 <b>Request a "
+            "desktop scan</b> on the Arbitrage page.</div>",
+            unsafe_allow_html=True)
+    else:
+        st.markdown(
+            f"<div class='warn'>⏱️ These props are <b>{_age:.0f} minutes "
+            "old</b>. NFL inactives drop 90 minutes before kickoff and a "
+            "ruled-out player keeps a stale projection until the books pull "
+            "his markets — tap <b>🔄 Refresh</b> inside the last hour before "
+            "lock.</div>", unsafe_allow_html=True)
 
 if stats.get("missing_games"):
     st.markdown(

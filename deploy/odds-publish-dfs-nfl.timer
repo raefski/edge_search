@@ -1,23 +1,56 @@
-# Push a fresh NFL props snapshot to the cloud app before Sunday's lock.
+# Push a fresh NFL props snapshot to the cloud app -- all week, not just Sunday.
 #
-# The DK main slate locks at 1:00 PM ET. scraped_client gives a published
-# snapshot a 6-hour bound, so a single early-morning push would already be
-# marginal by kickoff and useless for the 4:25 PM window. Every 30 minutes
-# across the run-up covers both, and inactives land in exactly this window.
+# FOUND LIVE 2026-09-12: the first version of this timer only ran Sunday
+# 08:00-13:00 ET plus Thursday evenings, on the theory that Sunday morning was
+# "the" pre-lock window. The user opened the phone app Saturday at 8:39 PM ET
+# and saw a snapshot 333 minutes old -- the one manual push from that
+# afternoon's build session -- because nothing was scheduled to run between
+# Saturday and Sunday 8 AM. The local store was fine (a scrape 4 minutes
+# earlier); the gap was entirely in when this timer chose to PUSH.
 #
-# ~10 commits per Sunday at ~210KB each. That is the trade odds-publish@.service
-# explains: the hourly collectors stay push-free, this one does not.
+# Lines move all week and people check lineups all week, not only in the hour
+# before a lock. So there are now two layers:
+#
+#   1. A BASELINE every 2 hours, every day, 7 AM - 11 PM local -- so the phone
+#      is never more than ~2h (+ RandomizedDelaySec) stale whenever it is
+#      opened, any day.
+#   2. DENSE 30-minute coverage in the run-up to each real DK lock: Thursday
+#      Night Football (~8:15 PM ET), the Sunday early slate (1:00 PM ET), the
+#      Sunday late-afternoon slate (~4:05/4:25 PM ET), Sunday Night Football
+#      (~8:20 PM ET), and Monday Night Football (~8:15 PM ET) -- this is where
+#      inactives land and props move fastest, so it stays denser than the
+#      baseline rather than replacing it.
+#
+# Cost: roughly 100-110 pushes/week at ~210KB each, ~20MB/week. That is a very
+# different scale from the hourly-collector push this repo has deliberately
+# avoided elsewhere (data/odds.db accumulates FAR more often than this profile
+# publishes) -- see odds-collect@.service's own docstring on why THOSE stay
+# push-free. This timer is the one place freshness on the phone actually
+# depends on a push landing, so it is allowed to cost more.
+#
+#   cp deploy/odds-publish@.service deploy/odds-publish-*.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now odds-publish-dfs-nfl.timer
+#   systemctl --user list-timers 'odds-*'
 [Unit]
 Description=Publish NFL DFS props snapshot for the cloud app
 [Timer]
 # The instance name IS the profile -- without this the timer looks for a
 # service matching its own name, which does not exist (caught on install).
 Unit=odds-publish@dfs_nfl.service
-# Sunday 08:00-13:00 ET. OnCalendar is LOCAL time, which is what this machine
-# runs on, so this tracks the DST shift the NFL season crosses in November.
-OnCalendar=Sun *-*-* 08..13:00/30:00
-# Thursday night football locks at 20:15 ET.
-OnCalendar=Thu *-*-* 18,19:00/30:00
+# OnCalendar is LOCAL time, which is what this machine runs on, so every line
+# below tracks the DST shift the NFL season crosses in November for free.
+
+# 1. Baseline: every 2 hours, every day, waking hours.
+OnCalendar=*-*-* 07..23:00/2:00
+
+# 2. Dense pre-lock windows, 30 minutes apart.
+OnCalendar=Thu *-*-* 18..20:00/30:00   # TNF locks ~8:15 PM ET
+OnCalendar=Sun *-*-* 08..13:00/30:00   # early slate locks 1:00 PM ET
+OnCalendar=Sun *-*-* 15..17:00/30:00   # late-afternoon slate, ~4:05/4:25 PM ET
+OnCalendar=Sun *-*-* 19..21:00/30:00   # SNF locks ~8:20 PM ET
+OnCalendar=Mon *-*-* 19..21:00/30:00   # MNF locks ~8:15 PM ET
+
 RandomizedDelaySec=60
 Persistent=true
 [Install]
