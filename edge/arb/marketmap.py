@@ -39,6 +39,15 @@ NOT_FULL_GAME = re.compile("|".join((
     # 1st-quarter number, filed as the full game.
     r"\b\d[qhp]\b",
     r"\bquarters?\b",
+    # Bare "half" needed its own rule, not just the halftime/halves forms
+    # below: DraftKings' "Each Player Rec Yards in Each Half" writes the period
+    # as "Each Half" -- no ordinal, no digit -- so it slipped past both the
+    # ordinal rule and the bare `quarters?` rule (which happens to already
+    # catch the equivalent "in Each Quarter" tabs, since "quarter" alone is
+    # unconditional here). Six two-player markets a game were landing on
+    # `player_reception_yds`/subject=None at whatever point they shared,
+    # logging a "two markets on one key" conflict on every NFL scan.
+    r"\bhalf\b",
     r"\bhalf ?time\b|\bfull ?time\b|\bht/ft\b|\brest of (match|game)\b|\bhalves\b",
     # "(Regular Time)" is a settlement basis, not a decoration. DraftKings
     # prices soccer "Spread" and "Alt Spread (Regular Time)" as two ladders on
@@ -111,7 +120,14 @@ NOT_FULL_GAME = re.compile("|".join((
 # so the name is the only signal. Neither can pair against a single pitcher's
 # line in any case.
 MULTI_SUBJECT = re.compile(
-    r"\beither\b|\bcombined\b|\bboth (pitchers|players|teams|fighters)\b", re.I)
+    r"\beither\b|\bcombined\b|\bboth (pitchers|players|teams|fighters)\b"
+    # DraftKings' "Each Player ... in Each Half" tabs write two names joined
+    # by "&" in the market name ("Jaylen Waddle & Rashee Rice Each To Record
+    # X Receiving Yards in Each Half") and tag no `participants` for either --
+    # caught by the `half`/`quarter` guard above for THAT tab, but the
+    # multi-subject shape is the real defect, so it is named here too in case
+    # a full-game version of this wording ever ships.
+    r"|\beach player\b|\beach to record\b", re.I)
 
 
 def is_full_game(name: str) -> bool:
