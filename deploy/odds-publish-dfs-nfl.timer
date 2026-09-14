@@ -42,14 +42,32 @@ Unit=odds-publish@dfs_nfl.service
 # below tracks the DST shift the NFL season crosses in November for free.
 
 # 1. Baseline: every 2 hours, every day, waking hours.
-OnCalendar=*-*-* 07..23:00/2:00
+# NB: the step belongs on the HOUR field (07..23/2:00:00). Putting it on the
+# minute field instead (07..23:00/2:00, the form this line had 2026-09-12 to
+# 2026-09-14) fires every 2 MINUTES all day -- caught when it had put 352
+# commits on main in one day instead of ~9, hammering DraftKings/FanDuel with
+# a redundant NFL scrape every ~90s and starving the live arb scan of the same
+# endpoints. Verify any edit here with `systemd-analyze calendar '<expr>'`
+# before installing it.
+OnCalendar=*-*-* 07..23/2:00:00
 
-# 2. Dense pre-lock windows, 30 minutes apart.
-OnCalendar=Thu *-*-* 18..20:00/30:00   # TNF locks ~8:15 PM ET
-OnCalendar=Sun *-*-* 08..13:00/30:00   # early slate locks 1:00 PM ET
-OnCalendar=Sun *-*-* 15..17:00/30:00   # late-afternoon slate, ~4:05/4:25 PM ET
-OnCalendar=Sun *-*-* 19..21:00/30:00   # SNF locks ~8:20 PM ET
-OnCalendar=Mon *-*-* 19..21:00/30:00   # MNF locks ~8:15 PM ET
+# 2. Dense pre-lock windows, 30 minutes apart. Each trailing comment used to
+# sit on the same line as its OnCalendar= -- systemd's unit parser does not
+# support inline trailing comments, so the whole line failed to parse and
+# every one of these five was silently dropped (caught alongside the baseline
+# bug above; `systemd-analyze verify` on this file names the failing lines).
+# Comments now live above the directive they describe, the only form the
+# parser accepts.
+# TNF locks ~8:15 PM ET
+OnCalendar=Thu *-*-* 18..20:00/30:00
+# early slate locks 1:00 PM ET
+OnCalendar=Sun *-*-* 08..13:00/30:00
+# late-afternoon slate, ~4:05/4:25 PM ET
+OnCalendar=Sun *-*-* 15..17:00/30:00
+# SNF locks ~8:20 PM ET
+OnCalendar=Sun *-*-* 19..21:00/30:00
+# MNF locks ~8:15 PM ET
+OnCalendar=Mon *-*-* 19..21:00/30:00
 
 RandomizedDelaySec=60
 Persistent=true
