@@ -72,9 +72,8 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
     Checked cleanly on that real data: every legitimate player had a matchup
     populated, every erroneous cross-contaminated one had none -- a safe,
     exact discriminator, not a heuristic."""
-    url = f"https://api.draftkings.com/draftgroups/v1/draftgroups/{draft_group_id}/draftables"
     out = {}
-    for p in _get(url).get("draftables", []):
+    for p in _draftables_raw(draft_group_id):
         k = norm(p["displayName"])
         if k not in out:  # dedupe multi-slot rows
             comp = p.get("competition") or {}
@@ -90,6 +89,39 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
                       "game": comp.get("competitionId"), "matchup": comp.get("name"),
                       "start": comp.get("startTime"), "dk_fppg": dk_fppg}
     return out
+
+
+_SNAP_DIR = __import__("pathlib").Path(__file__).resolve().parents[1] / "data" / "draftables_snapshot"
+
+
+def _draftables_raw(draft_group_id: int) -> list[dict]:
+    """Raw draftables list, falling back to data/draftables_snapshot/<gid>.json.
+
+    DK started returning 403 to Streamlit Cloud's IPs for this endpoint on
+    2026-09-16 (same request works fine from a home IP; the www lobby call
+    still worked from Cloud). Salaries are frozen per draft group, so a
+    snapshot saved locally via save_draftables_snapshot() and pushed is exact,
+    and keying by gid means it can never serve the wrong slate."""
+    url = f"https://api.draftkings.com/draftgroups/v1/draftgroups/{draft_group_id}/draftables"
+    try:
+        return _get(url).get("draftables", [])
+    except Exception:
+        snap = _SNAP_DIR / f"{draft_group_id}.json"
+        if snap.exists():
+            return json.loads(snap.read_text())
+        raise
+
+
+def save_draftables_snapshot(draft_group_id: int) -> int:
+    """Fetch live and write the trimmed snapshot the Cloud fallback reads."""
+    url = f"https://api.draftkings.com/draftgroups/v1/draftgroups/{draft_group_id}/draftables"
+    keep = ("displayName", "salary", "position", "teamAbbreviation", "competition", "draftStatAttributes")
+    rows = [{k: p.get(k) for k in keep} for p in _get(url).get("draftables", [])]
+    for r in rows:
+        r["draftStatAttributes"] = [a for a in (r["draftStatAttributes"] or []) if a.get("id") == 408]
+    _SNAP_DIR.mkdir(parents=True, exist_ok=True)
+    (_SNAP_DIR / f"{draft_group_id}.json").write_text(json.dumps(rows))
+    return len(rows)
 
 
 def parse_pos(s: str) -> set:
