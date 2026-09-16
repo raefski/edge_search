@@ -226,15 +226,28 @@ def event(away_name: str, home_name: str, kickoff: str, home_point: float,
 def run_page(csv_rows: list[dict], events: list[dict] | None,
              tmp_path, answers: dict | None = None,
              line_log: list[dict] | None = None,
-             failures: str | None = None):
+             failures: str | None = None, week: int | None = 1):
     """Execute the real page source. Returns (fake_st, make_pick_calls).
 
     `make_pick_calls` is a list of the kwargs-free positional arguments the
     page handed the model, which is the contract this file exists to pin.
+
+    `week` pins the "Week" selector's default so this stays a test of the
+    PAGE, not of today's date. Every fixture in this file is Week 1 data, so
+    that is the default; pass `week=None` to leave edge.pickem_week.current_week
+    untouched (test_the_week_selector_defaults_to_the_current_week wants that
+    real behaviour, and patches it itself). Found 2026-09-16: thirteen of
+    these tests went red the moment the real season rolled past Week 1 --
+    `value=int(current_week() or 1)` on the page's number_input read the
+    actual wall clock, and every _week1_csv() fixture assumed "today is still
+    week 1" implicitly rather than pinning it. Exactly the class of bug
+    test_the_week_selector_defaults_to_the_current_week was written to guard
+    on the PAGE side; it just hadn't been applied to its own siblings.
     """
     import edge.odds.cli as odds_cli
     import edge.pickem
     import edge.pickem_log
+    import edge.pickem_week
 
     st = FakeStreamlit(answers)
     csv_path = Path(tmp_path) / "pickem_current_week.csv"
@@ -271,11 +284,14 @@ def run_page(csv_rows: list[dict], events: list[dict] | None,
     saved_client = odds_cli.scraped_client
     saved_make_pick = edge.pickem.make_pick
     saved_load = edge.pickem_log.load
+    saved_current_week = edge.pickem_week.current_week
 
     sys.modules["streamlit"] = st
     odds_cli.scraped_client = lambda *_a, **_k: FakeClient(events or [])
     edge.pickem.make_pick = recording_make_pick
     edge.pickem_log.load = lambda *_a, **_k: list(line_log or [])
+    if week is not None:
+        edge.pickem_week.current_week = lambda *_a, **_k: week
     try:
         code = compile(src, str(PAGE), "exec")
         exec(code, {"__name__": "__main__", "__file__": str(PAGE)})
@@ -289,6 +305,7 @@ def run_page(csv_rows: list[dict], events: list[dict] | None,
         odds_cli.scraped_client = saved_client
         edge.pickem.make_pick = saved_make_pick
         edge.pickem_log.load = saved_load
+        edge.pickem_week.current_week = saved_current_week
     return st, calls
 
 
@@ -493,7 +510,10 @@ def test_the_week_selector_defaults_to_the_current_week(tmp_path, monkeypatch):
     board = [event("Buffalo Bills", "Houston Texans",
                    "2026-09-27T17:00:00Z", -2.5)]
 
-    st, calls = run_page(rows, board, tmp_path)
+    # week=None: this test's whole point is the REAL current_week() default,
+    # which the monkeypatch above already set to 3 -- run_page's own pin
+    # (default week=1, for every other test in this file) would overwrite it.
+    st, calls = run_page(rows, board, tmp_path, week=None)
     assert calls, "the page stopped instead of rendering the current week"
     (a, _k, _p) = calls[0]
     assert a[1] == "Texans" and a[2] == -1.5
