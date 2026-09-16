@@ -1380,11 +1380,111 @@ def test_main_line_subcategories_skips_the_quarter_variants():
 
 
 def test_soccers_three_way_moneyline_is_untouched():
-    """Soccer's three-way IS the market, and it is named WIN-DRAW-WIN rather
-    than "3-Way" -- so the guard above must not reach it."""
+    """Soccer's three-way IS the market. FanDuel types it WIN-DRAW-WIN but
+    names it "Moneyline (3-way)", and the name is what the guard reads."""
     from edge.arb.fanduel import classify
     assert classify("WIN-DRAW-WIN")[0] == "h2h"
     assert is_full_game("Win Market") and canonical_market("Win Market") == "h2h"
+    assert is_full_game("Moneyline (3-way)", "soccer_epl")
+    assert canonical_market("Moneyline (3-way)", sport_key="soccer_usa_mls") == "h2h"
+
+
+@pytest.mark.parametrize("name,sport_key", [
+    # the rugby league collision the 3-way guard exists for
+    ("Moneyline (3-Way)", "rugbyleague_nrl"),
+    ("Moneyline (3-Way)", "icehockey_nhl"),
+    # a caller that cannot name the sport gets the sport-blind refusal
+    ("Moneyline (3-way)", None),
+    # soccer's OTHER three-ways are different bets from their two-way cousins:
+    # a three-way handicap pays a handicap draw where the spread pushes
+    ("Handicap (3-Way)", "soccer_epl"),
+    ("3-Way Handicap", "soccer_epl"),
+    ("Moneyline (3-way) - 2 Up Early Payout", "soccer_epl"),
+    ("1st Half Moneyline (3-way)", "soccer_epl"),
+])
+def test_the_soccer_exemption_is_only_the_whole_match_moneyline(name, sport_key):
+    assert not is_full_game(name, sport_key)
+
+
+def _fd_soccer_payload(market_type, market_name, runners):
+    soon = (datetime.now(timezone.utc) + timedelta(hours=6)).strftime(
+        "%Y-%m-%dT%H:%M:%S.000Z")
+    return {"attachments": {
+        "events": {"1": {"name": "Stuttgart v Dortmund", "openDate": soon}},
+        "markets": {"m1": {
+            "eventId": "1", "marketStatus": "OPEN", "marketType": market_type,
+            "marketName": market_name,
+            "runners": [{"runnerName": n, "runnerStatus": "ACTIVE", "handicap": 0,
+                         "winRunnerOdds": {"trueOdds": {"decimalOdds": {"decimalOdds": d}}}}
+                        for n, d in runners]}},
+    }}
+
+
+def _fd_ingest(payload, sport_key):
+    from edge.arb.fanduel import FanDuelScrape
+    from edge.arb.models import Board
+    board = Board()
+    st = FanDuelScrape.ingest_event(FanDuelScrape.__new__(FanDuelScrape), board,
+                                    payload, sport_key, strict_match=False)
+    return board, st
+
+
+def test_fanduel_soccer_moneyline_reaches_the_board_as_a_three_way():
+    """Live 2026-09-16: a soccer-only scan found 130 FanDuel moneylines and
+    ingested 0 quotes from any book, because the name "Moneyline (3-way)" hit
+    the 3-way guard and FanDuel is the spine the other two books attach to."""
+    board, st = _fd_ingest(_fd_soccer_payload(
+        "WIN-DRAW-WIN", "Moneyline (3-way)",
+        [("Stuttgart", 2.25), ("Draw", 3.8), ("Dortmund", 2.75)]), "soccer_germany_bundesliga")
+    assert st["quotes"] == 3
+    (group,) = board.groups.values()
+    assert group.key.market == "h2h"
+    assert group.expected_sides() == {"home", "draw", "away"}
+    # the same market on a rugby league match is still the refused variant
+    board, st = _fd_ingest(_fd_soccer_payload(
+        "WIN-DRAW-WIN", "Moneyline (3-way)",
+        [("Stuttgart", 2.25), ("Draw", 3.8), ("Dortmund", 2.75)]), "rugbyleague_nrl")
+    assert st["quotes"] == 0
+
+
+def test_fanduel_soccer_totals_are_keyed_on_the_line_in_the_runner_name():
+    board, st = _fd_ingest(_fd_soccer_payload(
+        "OVER_UNDER_25", "Over/Under 2.5 Goals",
+        [("Over 2.5 Goals", 1.34), ("Under 2.5 Goals", 3.15)]), "soccer_epl")
+    assert st["quotes"] == 2
+    (group,) = board.groups.values()
+    assert (group.key.market, group.key.point) == ("totals", 2.5)
+    assert set(group.quotes) == {"over", "under"}
+
+
+def test_fanduel_soccer_two_way_spread_is_a_spread_not_a_team_total():
+    """"2 Way Spread Home Team -1.5 Goals" names whose HANDICAP it is, and the
+    team-total guard reads "Home Team" as whose goals are counted."""
+    board, st = _fd_ingest(_fd_soccer_payload(
+        "HOME_TEAM_-1.5_GOALS", "2 Way Spread Home Team -1.5 Goals",
+        [("Stuttgart -1.5 Goals", 3.9), ("Dortmund +1.5 Goals", 1.21)]), "soccer_epl")
+    assert st["quotes"] == 2
+    (group,) = board.groups.values()
+    assert group.key.market == "spreads"
+    assert set(group.quotes) == {"home", "away"}
+    assert abs(group.key.point) == 1.5
+
+
+@pytest.mark.parametrize("market_type,market_name,runners,sport_key", [
+    # hockey's goal total can be regulation time only -- soccer only
+    ("OVER_UNDER_55", "Over/Under 5.5 Goals",
+     [("Over 5.5 Goals", 1.9), ("Under 5.5 Goals", 1.9)], "icehockey_nhl"),
+    # a first-half line is not the match
+    ("1ST_HALF_OVER/UNDER_1.5_GOALS", "1st Half Over/Under 1.5 Goals",
+     [("1st Half Over 1.5 Goals", 2.0), ("1st Half Under 1.5 Goals", 1.76)], "soccer_epl"),
+    # a whole-goal two-way handicap pushes, and books settle it differently
+    ("HOME_TEAM_-1_GOALS", "2 Way Spread Home Team -1 Goals",
+     [("Stuttgart -1 Goals", 2.5), ("Dortmund +1 Goals", 1.5)], "soccer_epl"),
+])
+def test_fanduel_goal_lines_outside_the_soccer_rules_stay_unmapped(
+        market_type, market_name, runners, sport_key):
+    board, st = _fd_ingest(_fd_soccer_payload(market_type, market_name, runners), sport_key)
+    assert st["quotes"] == 0 and not board.groups
 
 
 def test_a_total_without_a_line_is_not_a_moneyline():

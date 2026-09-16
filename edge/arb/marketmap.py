@@ -92,8 +92,9 @@ NOT_FULL_GAME = re.compile("|".join((
     # two-way pushes where the three-way pays a third outcome. DraftKings'
     # golf pairings already had this documented; FanDuel's rugby league page
     # offers "Moneyline" and "Moneyline (3-Way)" on one match, and both were
-    # writing to the same h2h key. Soccer is unaffected -- its three-way IS
-    # the market and is named WIN-DRAW-WIN, not "3-Way".
+    # writing to the same h2h key. Soccer's three-way moneyline IS the market,
+    # and is let back through by sport in `is_full_game` -- see
+    # SOCCER_THREE_WAY_MONEYLINE.
     r"\b3[-  ]?way\b",
     # Soccer's derivatives of the moneyline. "To Win To Nil" is a different bet
     # from "to win" -- it also requires a clean sheet -- and it was mapping to
@@ -130,14 +131,37 @@ MULTI_SUBJECT = re.compile(
     r"|\beach player\b|\beach to record\b", re.I)
 
 
-def is_full_game(name: str) -> bool:
+# Soccer's own moneyline, spelled as the three-way it is. FanDuel names its
+# WIN-DRAW-WIN market "Moneyline (3-way)", and the 3-way guard above refused
+# every soccer moneyline FanDuel posts. FanDuel is the
+# spine the other books attach to, so no soccer event reached the board at
+# all: a live soccer-only scan on 2026-09-16 found 130 moneylines and ingested
+# 0 quotes from any of the three books.
+#
+# Anchored to the WHOLE name and to the moneyline only. Soccer has no two-way
+# moneyline for the three-way to collide with -- the reason the guard exists --
+# but it does have a three-way HANDICAP, whose handicap-draw outcome makes it a
+# different bet from the two-way spread at the same number. That one stays
+# refused.
+SOCCER_THREE_WAY_MONEYLINE = re.compile(
+    r"^\s*(money ?line|match result|match odds|1x2|win[- ]draw[- ]win)"
+    r"\s*[-(]?\s*3[-  ]?way\s*\)?\s*$", re.I)
+
+
+def is_full_game(name: str, sport_key: str | None = None) -> bool:
     """False for a market this map must not key.
 
     Two conditions, both of which end in two different bets sharing one
     GroupKey: the market is not the whole game (a period, a team, a
     moneyline lookalike), or it is not about a single subject.
+
+    `sport_key` only matters for soccer, where the three-way moneyline is the
+    real market rather than a variant of a two-way one. A caller without it
+    gets the sport-blind answer, which refuses it.
     """
     text = name or ""
+    if (sport_key or "").startswith("soccer") and SOCCER_THREE_WAY_MONEYLINE.match(text):
+        return True
     return not (NOT_FULL_GAME.search(text) or MULTI_SUBJECT.search(text))
 
 
@@ -418,7 +442,7 @@ def canonical_market(name: str, group: str = "", player: str | None = None,
     # `_first_match` cannot tell "matched a rule that maps to None" from "no
     # rule matched" -- so a None claimed in RULES falls straight through to
     # PLAYER_STATS and the guard would not hold.
-    if not is_full_game(text):
+    if not is_full_game(text, sport_key):
         return None
     if sport_key and sport_key.startswith("tennis"):
         # Ahead of RULES, not instead of it: a name no tennis rule claims

@@ -290,7 +290,8 @@ def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
         # game Over 6.5 (-310), best() took the +330, and the result was
         # reported as a free middle and a straight arbitrage. The book's own
         # app showed -310 the whole time.
-        if not is_full_game(label) or not is_full_game(market.get("name") or ""):
+        if (not is_full_game(label, sport_key)
+                or not is_full_game(market.get("name") or "", sport_key)):
             stats["markets_unmapped"].add(f"{label} (not the full game)")
             continue
 

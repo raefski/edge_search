@@ -93,7 +93,21 @@ SPORT_WORDS: list[tuple[str, str]] = [
     ("nfl", "americanfootball_nfl"),
     ("mlb", "baseball_mlb"),
     ("nhl", "icehockey_nhl"),
+    # The whole family -- see sports_for. No league names: "premier league" is
+    # also cricket's Caribbean and Indian Premier Leagues, and "champions
+    # league" is CONCACAF's, the AFC's and basketball's. An offer naming only a
+    # league stays unparsed and is set by hand, which is the safe direction.
+    ("soccer", "soccer"),
 ]
+
+
+def sports_for(key: str) -> list[str]:
+    """Boost.sports for a SPORT_WORDS key: a family becomes every catalogued
+    league in it, since Boost.sports matches exactly."""
+    if key == "soccer":
+        from .catalog import LEAGUES
+        return sorted(lg.key for lg in LEAGUES if lg.key.startswith("soccer_"))
+    return [key]
 
 _PCT = re.compile(r"profit\s*boost\s*:?\s*(\d{1,3})\s*%|(\d{1,3})\s*%\s*profit\s*boost",
                   re.I)
@@ -195,7 +209,7 @@ def parse_promotion(promo: dict, default_max_stake: float = 10.0) -> ParsedPromo
         label += f" (parlay only{', min ' + legs.group(1) + ' legs' if legs else ''})"
 
     out.boost = Boost(book="draftkings", pct=pct, max_stake=default_max_stake,
-                      sports=[sport], min_decimal=min_decimal,
+                      sports=sports_for(sport), min_decimal=min_decimal,
                       requires_parlay=parlay, expires_at=out.expires_at,
                       label=label)
     return out

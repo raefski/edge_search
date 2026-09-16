@@ -204,9 +204,33 @@ PLAYER_PROP_STATS = {
     "ASSISTS": "player_assists",
 }
 # On alternate ladders the line is in the runner NAME, not the handicap field,
-# which stays 0: "Over 2.5", "Minnesota Twins +6.5".
-OU_NAME_RE = re.compile(r"^(Over|Under)\s+([+-]?[\d.]+)\s*$", re.I)
-TEAM_LINE_RE = re.compile(r"^(.+?)\s+([+-][\d.]+)\s*$")
+# which stays 0: "Over 2.5", "Minnesota Twins +6.5". Soccer adds the unit:
+# "Over 2.5 Goals", "Dortmund -1.5 Goals".
+OU_NAME_RE = re.compile(r"^(Over|Under)\s+([+-]?[\d.]+)(?:\s+Goals?)?\s*$", re.I)
+TEAM_LINE_RE = re.compile(r"^(.+?)\s+([+-][\d.]+)(?:\s+Goals?)?\s*$")
+
+# Soccer's full-match goal lines. FanDuel types these by the line itself --
+# OVER_UNDER_25, HOME_TEAM_-1.5_GOALS -- so no word in the tolerant fallback
+# reaches them, and the spread's display name ("2 Way Spread Home Team -1.5
+# Goals") trips the team-total guard on "Home Team", which here names whose
+# handicap it is rather than whose goals are counted. Without these FanDuel
+# contributed the soccer moneyline and nothing else, so a FanDuel soccer token
+# had nowhere else to go.
+#
+# Soccer only: "Over/Under 5.5 Goals" in hockey can be regulation time where
+# another book's total includes overtime. Half-goal lines only, because those
+# cannot push, and a whole or quarter line on a two-way handicap settles
+# differently from book to book.
+SOCCER_MARKETS: tuple[tuple[re.Pattern, str], ...] = (
+    (re.compile(r"^OVER_UNDER_\d5$"), "totals"),
+    (re.compile(r"^(HOME|AWAY)_TEAM_[+-]\d+\.5_GOALS$"), "spreads"),
+)
+
+
+def classify_soccer(market_type: str) -> str | None:
+    """The canonical key for one of SOCCER_MARKETS, or None."""
+    mt = (market_type or "").upper().strip()
+    return next((key for pat, key in SOCCER_MARKETS if pat.match(mt)), None)
 # ALTERNATE_HANDICAP writes the line PARENTHESISED inside the runner name --
 # "New England Patriots (-14.5)" -- and leaves `handicap` at 0. Neither of the
 # forms above matches that, so the name stayed whole, the line came back 0, and
@@ -507,10 +531,15 @@ class FanDuelScrape:
             # tennis match's set handicaps are MAIN_SET_GAME_HANDICAP, named
             # "Set 1/2/3 Game Handicap", and they landed on one `spreads` key
             # at the same numbers -- 67 same-book price conflicts in a scan.
-            if not is_full_game(m.get("marketName") or ""):
-                stats["unmapped"].add(m.get("marketName"))
-                continue
-            hit = classify(m.get("marketType") or "", sport_key)
+            soccer_key = (classify_soccer(m.get("marketType") or "")
+                          if target.sport_key.startswith("soccer") else None)
+            if soccer_key is not None:
+                hit = (soccer_key, None)
+            else:
+                if not is_full_game(m.get("marketName") or "", sport_key=target.sport_key):
+                    stats["unmapped"].add(m.get("marketName"))
+                    continue
+                hit = classify(m.get("marketType") or "", sport_key)
             if hit is None:
                 stats["unmapped"].add(m.get("marketType"))
                 continue

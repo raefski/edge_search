@@ -1048,3 +1048,54 @@ def test_the_display_filter_and_the_boost_scope_are_independent(tmp_path):
     assert "Ohio State @ Michigan" in text
     assert "Alabama @ Auburn" not in text
     assert "Yankees @ Red Sox" not in text
+
+
+def _snapshot_with_a_soccer_moneyline() -> dict:
+    """The NCAAF fixture plus one soccer three-way built by the real
+    run.candidates, so the page sees exactly the shape a scan writes."""
+    from edge.arb.config import ArbConfig
+    from edge.arb.models import Board, EventMeta, GroupKey, Quote
+    from edge.arb.run import candidates
+
+    ev = EventMeta("s1", "soccer_epl", "English Premier League",
+                   datetime.now(timezone.utc) + timedelta(hours=6), "Arsenal", "Chelsea")
+    board = Board()
+    g = board.group(GroupKey("s1", "h2h", None, None), ev)
+    now = datetime.now(timezone.utc)
+    for side, per_book in {
+        "home": {"fanduel": 2.75, "draftkings": 2.70, "fanatics": 2.85},
+        "draw": {"fanduel": 3.80, "draftkings": 3.55, "fanatics": 3.75},
+        "away": {"fanduel": 2.25, "draftkings": 2.26, "fanatics": 2.30},
+    }.items():
+        for book, dec in per_book.items():
+            g.add(Quote(book=book, side=side, decimal=dec, point=None, last_update=now))
+    snap = _snapshot(n_opps=0, n_cands=3)
+    snap["candidates"] += candidates(board, ArbConfig())
+    return snap
+
+
+def test_a_soccer_token_prices_the_three_way_moneyline(tmp_path):
+    """A soccer token is issued for the whole sport, and is mostly spent on the
+    moneyline -- which has a third leg, the Draw."""
+    st = FakeStreamlit({"Boost 1 %": 50, "Boost 1 sport": "soccer"})
+    offered: dict = {}
+    original = st.selectbox
+
+    def spy(label, options=(), *a, **k):
+        if label == "Boost 1 sport":
+            offered["options"] = list(options)
+            offered["labels"] = [k["format_func"](o) for o in options]
+        return original(label, options, *a, **k)
+
+    st.selectbox = spy
+    run_page(_snapshot_with_a_soccer_moneyline(), tmp_path=tmp_path, st=st)
+
+    assert "soccer" in offered["options"]
+    assert any("Soccer (every league)" in lbl for lbl in offered["labels"])
+    tables = [a for k, a in st.drawn if k == "dataframe"]
+    three_way = [t for t in tables if len(t) == 3]
+    assert three_way, "the boosted soccer moneyline should render with three legs"
+    assert {row["Bet"] for row in three_way[0]} == {"Arsenal", "Draw", "Chelsea"}
+    assert [row["Book"] for row in three_way[0] if row["Boost"] != "—"] == ["DraftKings"]
+    assert all(len(t) == 3 for t in tables), \
+        "a soccer-only token must not price the NCAAF candidates"

@@ -575,10 +575,63 @@ def _boost_variants(leg_specs: list[tuple[str, str | None, float]], boosts: list
         yield dict(per_leg), priced
 
 
+def _token_shares_account(books: list[str], assignment: dict[int, Boost]) -> bool:
+    """Does a boosted leg's book also carry another leg of this market?
+
+    The same refusal as a same-book pair, for a market with more than two
+    legs. A soccer moneyline has three, so "DraftKings Home boosted, DraftKings
+    Away, FanDuel Draw" spans two books and clears min_books -- but the token
+    still sits on one account beside a bet on the other side of its own market,
+    which is what gets a boosted leg voided and leaves the hedge naked. On a
+    two-leg market with two books this can never be true.
+    """
+    return any(books.count(books[i]) > 1 for i in assignment)
+
+
+def _leg_books(best: dict[str, str], prices: dict[str, dict[str, float]],
+               boosts: list[Boost], sport_key: str, market: str,
+               event_start: datetime | None = None,
+               event_id: str | None = None) -> list[dict[str, str]]:
+    """Which book to take each side at: {side: book}, best-priced first.
+
+    The best price on every side is where an unboosted arbitrage lives, but a
+    token only pays on its OWN book -- and on a market three books price, the
+    book holding the token is usually not the best on any side. A DraftKings
+    token on a soccer moneyline where FanDuel has the best Home, Fanatics the
+    best Draw and FanDuel again the best Away was simply never tried.
+
+    So for each token, and each side it can be spent on, one more set: that
+    side at the token's book, every other side at the best price anywhere
+    ELSE. Excluding the token's book from the hedge is `_token_shares_account`
+    applied up front. A side no other book prices yields no set at all.
+    """
+    sets = [dict(best)]
+    for b in boosts:
+        for side, per_book in prices.items():
+            raw = per_book.get(b.book)
+            if raw is None or not b.applies_to(b.book, sport_key, market, side=side,
+                                               decimal=raw, event_start=event_start,
+                                               event_id=event_id):
+                continue
+            pick = {side: b.book}
+            for other in best:
+                if other == side:
+                    continue
+                rest = {bk: d for bk, d in (prices.get(other) or {}).items() if bk != b.book}
+                if not rest:
+                    break
+                pick[other] = max(rest, key=rest.get)
+            else:
+                if pick not in sets:
+                    sets.append(pick)
+    return sets
+
+
 def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Opportunity]:
     now = now or utcnow()
     d = cfg.detect
     books = set(cfg.books.bettable)
+    boosts = getattr(cfg, "boosts", None) or []
     stale_mains = stale_alt_ladders(board, d.alt_line_max_drift, d.alt_line_max_vig)
     out: list[Opportunity] = []
 
@@ -589,52 +642,58 @@ def find_arbitrages(board: Board, cfg, now: datetime | None = None) -> list[Oppo
         if not (2 <= len(sides) <= d.max_legs):
             continue
 
-        best = {s: group.best(s, books) for s in sides}
-        if any(q is None for q in best.values()):
-            continue                                   # incomplete market: not tradeable
-
         ordered = sorted(sides)
-        quotes = [best[s] for s in ordered]
-        if len({q.book for q in quotes}) < d.min_books:
-            continue                                   # all legs at one book: data artifact
-
-        ages = [q.age_seconds(now) for q in quotes]
-        if max(ages) > d.max_quote_age_seconds:
-            continue
-
-        legs = [_leg(q, group, cfg.books.commission.get(q.book, 0.0), now, stale_mains)
-                for q in quotes]
+        top = {s: group.best(s, books) for s in ordered}
+        if any(q is None for q in top.values()):
+            continue                                   # incomplete market: not tradeable
         ev = group.event
+        prices = {s: {bk: q.decimal for bk, q in group.quotes.get(s, {}).items() if bk in books}
+                  for s in ordered}
 
-        # Each boost applies to ONE slip (its own book's leg), but two
-        # DIFFERENT boosts on two different legs are two separate slips, so
-        # both can be worth placing at once. _boost_variants tries every
-        # single leg alone and, when more than one qualifies, the fully
-        # stacked combination too; the best worst_profit_pct wins.
-        leg_specs = [(l.book, l.side, l.decimal) for l in legs]
         best = None
-        for assignment, priced in _boost_variants(
-                leg_specs, getattr(cfg, "boosts", None) or [],
-                ev.sport_key, group.key.market, event_start=ev.commence_time,
-                event_id=ev.event_id):
-            s = om.arb_sum(priced)
-            if s >= 1.0:
+        for pick in _leg_books({s: q.book for s, q in top.items()}, prices, boosts,
+                               ev.sport_key, group.key.market,
+                               event_start=ev.commence_time, event_id=ev.event_id):
+            quotes = [group.quotes[s][pick[s]] for s in ordered]
+            if len({q.book for q in quotes}) < d.min_books:
+                continue                               # all legs at one book: data artifact
+
+            ages = [q.age_seconds(now) for q in quotes]
+            if max(ages) > d.max_quote_age_seconds:
                 continue
-            profit_pct = (1.0 / s - 1.0) * 100.0
-            if profit_pct < d.min_profit_pct:
-                continue
-            caps = [cfg.books.max_stake.get(l.book) for l in legs]
-            for i, b in assignment.items():
-                # the token's max stake bounds the whole position, not just its
-                # own leg -- allocate() shrinks the total to keep the ratio
-                caps[i] = min(c for c in (caps[i], b.max_stake) if c)
-            alloc = om.allocate(priced, bankroll=cfg.bankroll.total,
-                                round_to=cfg.bankroll.round_to, max_stakes=caps)
-            if best is None or alloc.worst_profit_pct > best[0].worst_profit_pct:
-                best = (alloc, assignment, priced, profit_pct)
+
+            legs = [_leg(q, group, cfg.books.commission.get(q.book, 0.0), now, stale_mains)
+                    for q in quotes]
+
+            # Each boost applies to ONE slip (its own book's leg), but two
+            # DIFFERENT boosts on two different legs are two separate slips, so
+            # both can be worth placing at once. _boost_variants tries every
+            # single leg alone and, when more than one qualifies, the fully
+            # stacked combination too; the best worst_profit_pct wins.
+            leg_specs = [(l.book, l.side, l.decimal) for l in legs]
+            for assignment, priced in _boost_variants(
+                    leg_specs, boosts, ev.sport_key, group.key.market,
+                    event_start=ev.commence_time, event_id=ev.event_id):
+                if _token_shares_account([l.book for l in legs], assignment):
+                    continue
+                s = om.arb_sum(priced)
+                if s >= 1.0:
+                    continue
+                profit_pct = (1.0 / s - 1.0) * 100.0
+                if profit_pct < d.min_profit_pct:
+                    continue
+                caps = [cfg.books.max_stake.get(l.book) for l in legs]
+                for i, b in assignment.items():
+                    # the token's max stake bounds the whole position, not just its
+                    # own leg -- allocate() shrinks the total to keep the ratio
+                    caps[i] = min(c for c in (caps[i], b.max_stake) if c)
+                alloc = om.allocate(priced, bankroll=cfg.bankroll.total,
+                                    round_to=cfg.bankroll.round_to, max_stakes=caps)
+                if best is None or alloc.worst_profit_pct > best[0].worst_profit_pct:
+                    best = (alloc, assignment, priced, profit_pct, legs, ages)
         if best is None:
             continue
-        alloc, assignment, priced, profit_pct = best
+        alloc, assignment, priced, profit_pct, legs, ages = best
 
         for i, (leg, stake, payout) in enumerate(zip(legs, alloc.stakes, alloc.payouts)):
             leg.stake, leg.payout = stake, payout
@@ -1322,7 +1381,6 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
     floor = cfg.detect.min_profit_pct if min_profit_pct is None else min_profit_pct
     out = []
     for c in cands:
-        legs = c["legs"]
         # Both legs at ONE book is not an arbitrage, whatever a boost does to
         # one of the prices. Every other path already refuses it --
         # find_arbitrages through min_books, find_middles and
@@ -1349,29 +1407,43 @@ def price_candidates(cands: list[dict], boosts: list[Boost], cfg,
         # candidates and prices the single boosted leg as +EV, which is what
         # a boost no second book can cover actually is -- the app's
         # "Best +EV" mode is where they belong and where they still appear.
-        if len({l["book"] for l in legs}) < 2:
-            continue
-        base = [l["decimal"] for l in legs]
-        leg_specs = [(l["book"], l.get("side"), l["decimal"]) for l in legs]
+        #
+        # The legs are chosen per token by `_leg_books`, the same helper the
+        # scanner uses: the stored legs are the best price per side, and a
+        # token's own book is often not that.
+        prices = c.get("prices") or {}
+        by_side = {l.get("side"): l for l in c["legs"]}
         best = None
-        for assignment, priced in _boost_variants(leg_specs, boosts, c["sport_key"], c["market"],
-                                                  event_start=_start_of(c),
-                                                  event_id=c.get("event_id")):
-            s = om.arb_sum(priced)
-            if s >= 1.0:
+        for pick in _leg_books({s: l["book"] for s, l in by_side.items()}, prices, boosts,
+                               c["sport_key"], c["market"], event_start=_start_of(c),
+                               event_id=c.get("event_id")):
+            legs = [l if pick[s] == l["book"] else
+                    {**l, "book": pick[s], "decimal": prices[s][pick[s]]}
+                    for s, l in by_side.items()]
+            if len({l["book"] for l in legs}) < 2:
                 continue
-            caps = [cfg.books.max_stake.get(l["book"]) for l in legs]
-            for i, b in assignment.items():
-                caps[i] = min(x for x in (caps[i], b.max_stake) if x)
-            alloc = om.allocate(priced, bankroll=cfg.bankroll.total,
-                                round_to=cfg.bankroll.round_to, max_stakes=caps)
-            if alloc.worst_profit_pct < floor:
-                continue
-            if best is None or alloc.worst_profit_pct > best[0].worst_profit_pct:
-                best = (alloc, assignment, priced)
+            leg_specs = [(l["book"], l.get("side"), l["decimal"]) for l in legs]
+            for assignment, priced in _boost_variants(leg_specs, boosts, c["sport_key"],
+                                                      c["market"], event_start=_start_of(c),
+                                                      event_id=c.get("event_id")):
+                if _token_shares_account([l["book"] for l in legs], assignment):
+                    continue
+                s = om.arb_sum(priced)
+                if s >= 1.0:
+                    continue
+                caps = [cfg.books.max_stake.get(l["book"]) for l in legs]
+                for i, b in assignment.items():
+                    caps[i] = min(x for x in (caps[i], b.max_stake) if x)
+                alloc = om.allocate(priced, bankroll=cfg.bankroll.total,
+                                    round_to=cfg.bankroll.round_to, max_stakes=caps)
+                if alloc.worst_profit_pct < floor:
+                    continue
+                if best is None or alloc.worst_profit_pct > best[0].worst_profit_pct:
+                    best = (alloc, assignment, priced, legs)
         if best is None:
             continue
-        alloc, assignment, priced = best
+        alloc, assignment, priced, legs = best
+        base = [l["decimal"] for l in legs]
         boost_desc = " + ".join(b.describe() for _, b in sorted(assignment.items())) or None
         pushes_on = push_value(c["market"], c.get("point"),
                                {l.get("side") for l in legs})
@@ -1490,9 +1562,10 @@ def price_boosted_ev(cands: list[dict], boosts: list[Boost], cfg,
     over-only Milestones, and FanDuel posts no under on any batter market, so
     nothing can hedge it.
 
-    Fair probability comes from devigging the best over/under pair. Across two
-    books that is a better estimate than either book alone, since each side is
-    the sharpest price available. Where the boosted book's own price on that
+    Fair probability comes from devigging the best price on every side -- the
+    over/under pair, or a soccer moneyline's Home/Draw/Away. Across books that
+    is a better estimate than either book alone, since each side is the
+    sharpest price available. Where the boosted book's own price on that
     side is shorter than the devigged fair, the shorter one wins: the estimate
     should never be more generous than what a book is willing to lay.
     """
@@ -1501,7 +1574,7 @@ def price_boosted_ev(cands: list[dict], boosts: list[Boost], cfg,
     for c in cands:
         prices = c.get("prices") or {}
         legs = c["legs"]
-        if len(legs) != 2:
+        if len(legs) not in (2, 3):
             continue
         # Per-SIDE, not `c["point"]` -- that is the group's home-axis-folded
         # point, and a spread's away side needs it negated. Falls back to the

@@ -28,6 +28,8 @@ from .oddschecker_free import fetch_fanatics_league
 
 log = logging.getLogger("edge.arb")
 
+THREE_WAY_SIDES = {"home", "draw", "away"}
+
 
 def _wanted(cfg: ArbConfig) -> set[str] | None:
     """The sport keys this scan is restricted to, or None for all of them."""
@@ -536,7 +538,8 @@ def _ts_iso(value) -> datetime:
 
 
 def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict]:
-    """Two-way markets with both sides priced at two or more bettable books.
+    """Two-way markets, and soccer's three-way moneyline, with every side
+    priced at two or more bettable books.
 
     Snapshotted alongside the opportunities so the app can apply a profit boost
     WITHOUT re-scanning. A boost only ever improves one leg, so every market
@@ -565,7 +568,12 @@ def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict
     out = []
     for g in board.groups.values():
         sides = g.expected_sides()
-        if len(sides) != 2:
+        # A soccer moneyline is the one three-sided market kept. It is what
+        # soccer boosts are mostly spent on, and without it here the boost
+        # panel had nothing to re-price for a whole sport. Every other
+        # three-plus-sided group is a field, which a partial list of runners
+        # cannot arbitrage.
+        if len(sides) != 2 and sides != THREE_WAY_SIDES:
             continue
         best = {s: g.best(s, books) for s in sides}
         if any(q is None for q in best.values()):

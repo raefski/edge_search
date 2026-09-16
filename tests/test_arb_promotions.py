@@ -140,3 +140,25 @@ def test_discovery_drops_expired_offers_and_fails_soft():
                 def json(self): return payload
             return R()
     assert discover(session=Old()) == []
+
+
+def test_a_soccer_offer_covers_every_soccer_league():
+    """Boost.sports matches exactly, so "soccer" has to become the leagues --
+    one key would scope the token to a sport_key no game carries."""
+    promo = {"publicPromotionId": "SOCCER1", "category": "Boost",
+             "merchandisingData": {"promotionHeadline": "Soccer Profit Boost",
+                                   "terms": "Get a 30% Profit Boost on any soccer "
+                                            "straight bet. Min odds -200."}}
+    p = parse_promotion(promo)
+    assert p.boost is not None and p.boost.pct == pytest.approx(0.30)
+    assert {"soccer_epl", "soccer_uefa_champs_league", "soccer_usa_mls"} <= set(p.boost.sports)
+    assert all(s.startswith("soccer_") for s in p.boost.sports)
+
+
+def test_a_premier_league_offer_is_not_guessed_to_be_soccer():
+    """Cricket has a Caribbean and an Indian Premier League. An offer naming
+    only "Premier League" is left for a person to scope."""
+    promo = {"publicPromotionId": "PL1", "category": "Boost",
+             "merchandisingData": {"terms": "30% Profit Boost on any Premier League bet"}}
+    p = parse_promotion(promo)
+    assert p.boost is None and "sport" in p.unparsed

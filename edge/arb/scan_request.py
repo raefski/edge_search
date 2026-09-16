@@ -199,6 +199,32 @@ def sport_choices(cfg=None, snapshot: dict | None = None) -> dict[str, str]:
     return dict(sorted(titles.items(), key=lambda kv: kv[1]))
 
 
+# A token is issued for a SPORT far more often than for one of its leagues --
+# "30% profit boost on any soccer bet" -- and the catalog files soccer as two
+# dozen leagues, because the league is the cross-book join. Picking one league
+# for that token hid every other one from it, and picking all of them by hand
+# is twenty-four taps on a phone. A family expands to its concrete keys out
+# here, the same way MARKET_GROUP_PREFIXES does below, so Boost.sports keeps
+# matching exactly.
+SPORT_FAMILIES = {"soccer": "⚽ Soccer (every league)"}
+
+
+def expand_sports(selected, known) -> list[str]:
+    """Concrete sport keys for a selection that may name a family.
+
+    `known` is every key on offer -- sport_choices() already unions the
+    catalog with the snapshot, so a league only the snapshot has (FanDuel
+    lists over a hundred soccer competitions) is still covered.
+    """
+    out: list[str] = []
+    for key in selected or []:
+        if key in SPORT_FAMILIES:
+            out += sorted(k for k in known if k.startswith(key + "_"))
+        else:
+            out.append(key)
+    return list(dict.fromkeys(out))
+
+
 # Boosts are frequently scoped to a market type, not just a sport -- "25% on
 # batter props" is a different token from "25% on WNBA". Boost.markets matches
 # exactly, deliberately: keeping that rule dumb is worth more than the

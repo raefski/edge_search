@@ -345,6 +345,16 @@ with st.sidebar:
     _snap_peek = load_snapshot() or {}
     _sport_titles = _sport_choices(ArbConfig(), _snap_peek)
     _in_snapshot = {c.get("sport_key") for c in (_snap_peek.get("candidates") or [])}
+    # "Soccer (every league)" and the like: one pick for a token issued on the
+    # whole sport. Expanded to concrete keys before anything reads it.
+    _families = _from_scan_request("SPORT_FAMILIES", {})
+    _expand = _from_scan_request("expand_sports", lambda sel, _known: list(sel or []))
+
+    def _sport_keys(selected) -> list[str]:
+        return _expand(selected, set(_sport_titles) | _in_snapshot)
+
+    def _sport_label(k: str) -> str:
+        return _families.get(k) or _sport_titles.get(k, k)
     _market_choices = _from_scan_request("market_choices", lambda snap: {})
     _market_groups = _market_choices(_snap_peek)
     # One index, two consumers: the per-boost "Boost N game" picker below and
@@ -364,11 +374,11 @@ with st.sidebar:
                "alone still crawls the full rolling window (10 days by "
                "default), so \"NCAAF\" without a date still fetches every "
                "NCAAF game through next Saturday.")
-    scan_sports = st.multiselect(
-        "Restrict scan to sport(s)", options=list(_sport_titles),
-        format_func=lambda k: _sport_titles.get(k, k), default=[],
+    scan_sports = _sport_keys(st.multiselect(
+        "Restrict scan to sport(s)", options=list(_families) + list(_sport_titles),
+        format_func=_sport_label, default=[],
         help="Leave empty to scan every league. Applies to both Scan live "
-             "and Request a desktop scan.")
+             "and Request a desktop scan."))
 
     _today_et = datetime.now(ET).date()
     date_mode = st.selectbox(
@@ -461,7 +471,9 @@ with st.sidebar:
                 st.caption("No live public boosts found.")
             for _p in _live:
                 _b = _p.boost
-                _bits = [f"**{_b.pct:.0%}**", _sport_titles.get(_b.sports[0], _b.sports[0])]
+                _bits = [f"**{_b.pct:.0%}**",
+                         "Soccer" if len(_b.sports) > 1
+                         else _sport_titles.get(_b.sports[0], _b.sports[0])]
                 if _b.requires_parlay:
                     _bits.append("parlay only — cannot be hedged")
                 if _b.min_decimal > 1:
@@ -567,7 +579,7 @@ with st.sidebar:
                 help="The token's cap. This bounds the WHOLE position, not just "
                      "the boosted leg — the hedge is sized off it.")
             _qp_want[_qp + "stake"] = str(_max_stake)
-            _sport_opts = ["(every sport)"] + list(_sport_titles)
+            _sport_opts = ["(every sport)"] + list(_families) + list(_sport_titles)
             _sport_default = _qp_str(_qp + "sport", "(every sport)")
             _sport = st.selectbox(
                 f"Boost {_n} sport", _sport_opts,
@@ -577,14 +589,20 @@ with st.sidebar:
                     "(every sport)" if k == "(every sport)"
                     # a sport the current snapshot cannot answer for is still
                     # selectable, but say so rather than silently returning nothing
-                    else _sport_titles[k] + ("" if k in _in_snapshot else "  · not in snapshot")),
-                help="The sport this token is tied to. Sports missing from the "
-                     "current snapshot are still listed — request a desktop "
-                     "scan to cover them.")
+                    else _sport_label(k) + ("" if set(_sport_keys([k])) & _in_snapshot
+                                            else "  · not in snapshot")),
+                help="The sport this token is tied to. Pick \"Soccer (every "
+                     "league)\" for a token good on any soccer match. Sports "
+                     "missing from the current snapshot are still listed — "
+                     "request a desktop scan to cover them.")
             _qp_want[_qp + "sport"] = _sport
             _sport = "" if _sport == "(every sport)" else _sport
-            if _sport and _sport not in _in_snapshot:
-                st.caption(f"⚠️ The current snapshot has no {_sport_titles[_sport]} "
+            # Never empty for a picked sport: Boost.sports=[] means EVERY sport,
+            # so a family that expanded to nothing would widen the token
+            # instead of narrowing it. The bare family key matches no game.
+            _sport_set = (_sport_keys([_sport]) or [_sport]) if _sport else []
+            if _sport and not set(_sport_set) & _in_snapshot:
+                st.caption(f"⚠️ The current snapshot has no {_sport_label(_sport)} "
                            "markets, so nothing can be found for it yet.")
 
             # The narrowest scope a book issues, and the one it issues most.
@@ -614,9 +632,9 @@ with st.sidebar:
                      "US/Eastern.")
             _qp_want[_qp + "game"] = _bgame
             _bgame = "" if _bgame == "(every game)" else _bgame
-            if _bgame and _sport and _games_sport.get(_bgame) not in (None, _sport):
+            if _bgame and _sport and _games_sport.get(_bgame) not in (None, *_sport_set):
                 st.caption(f"⚠️ {_game_names.get(_bgame, _bgame)} is not "
-                           f"{_sport_titles.get(_sport, _sport)}, and a token "
+                           f"{_sport_label(_sport)}, and a token "
                            "has to satisfy both — clear one of them.")
 
             _market_opts = ["(every market)"] + list(_market_groups)
@@ -635,11 +653,14 @@ with st.sidebar:
                 help="Most tokens carry a floor — 'Min Total Odds of -200'. A "
                      "shorter leg does not qualify and the book refuses it at the slip.")
             _qp_want[_qp + "odds"] = str(_min_odds)
+            _side_opts = ["over", "under", "home", "away", "draw", "yes", "no"]
             _sides = st.multiselect(
-                f"Boost {_n} side", ["over", "under", "home", "away", "yes", "no"],
-                default=_qp_list(_qp + "sides"), key=_qp + "sides",
+                f"Boost {_n} side", _side_opts,
+                default=[s for s in _qp_list(_qp + "sides") if s in _side_opts],
+                key=_qp + "sides",
                 help="Leave empty for any. DraftKings' 'Batter Props Milestones' "
-                     "are the over-only ladders, so that token is over only.")
+                     "are the over-only ladders, so that token is over only. "
+                     "\"draw\" is a soccer moneyline's third outcome.")
             _qp_want[_qp + "sides"] = ",".join(_sides)
             _parlay = st.checkbox(
                 f"Boost {_n} parlay only", value=_qp_bool(_qp + "parlay", False),
@@ -651,7 +672,7 @@ with st.sidebar:
             if _pct > 0:
                 boosts.append(Boost(
                     book=_book, pct=_pct / 100.0, max_stake=float(_max_stake),
-                    sports=[_sport] if _sport else [],
+                    sports=_sport_set,
                     events=[_bgame] if _bgame else [], markets=_markets,
                     sides=list(_sides), min_decimal=_min_decimal(_min_odds),
                     requires_parlay=_parlay,
@@ -986,7 +1007,7 @@ if boosts:
 
             if not boost_rows and not mid_boost_rows:
                 st.warning(f"No market clears {min_profit:.2f}% with {_boost_summary} "
-                           f"· {len(cands)} two-way and {len(mid_cands)} middle "
+                           f"· {len(cands)} two- or three-way and {len(mid_cands)} middle "
                            "candidates checked.")
             else:
                 # -------------------------------------- highest floor/ceiling

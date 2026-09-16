@@ -558,3 +558,17 @@ def test_side_and_odds_filters_are_inert_when_unset():
     b = Boost(book="fanduel", pct=0.25)
     assert b.applies_to("fanduel", "x", "m")                      # no side/price given
     assert b.applies_to("fanduel", "x", "m", "under", 1.01)
+
+
+def test_a_sport_family_expands_to_every_league_in_it():
+    """A soccer token is good on any soccer match, and soccer is two dozen
+    catalog leagues plus whatever else the snapshot carries."""
+    from edge.arb.scan_request import SPORT_FAMILIES, expand_sports, sport_choices
+    assert "soccer" in SPORT_FAMILIES
+    known = set(sport_choices(None, {"candidates": [{"sport_key": "soccer_brazil_serie_a"}]}))
+    got = expand_sports(["soccer"], known)
+    assert {"soccer_epl", "soccer_usa_mls", "soccer_brazil_serie_a"} <= set(got)
+    assert all(k.startswith("soccer_") for k in got)
+    assert expand_sports(["baseball_mlb", "soccer_epl", "soccer_epl"], known) == \
+        ["baseball_mlb", "soccer_epl"], "a plain key passes through, once"
+    assert expand_sports([], known) == []

@@ -2003,3 +2003,101 @@ def test_a_one_game_token_only_boosts_its_own_games_gap():
 
     assert boosted == {"g_bama"}, \
         "a one-game token boosted a gap in a game it is not valid on"
+
+
+# --- soccer: the three-way moneyline under a boost ----------------------------
+def _soccer_board(prices, sport="soccer_epl"):
+    """One h2h group. `prices` is {side: {book: decimal}} across the books."""
+    ev = EventMeta("s1", sport, sport,
+                   datetime.now(timezone.utc) + timedelta(hours=6), "Dortmund", "Stuttgart")
+    b = Board()
+    b.events["s1"] = ev
+    g = b.group(GroupKey("s1", "h2h", None, None), ev)
+    now = datetime.now(timezone.utc)
+    for side, per_book in prices.items():
+        for book, dec in per_book.items():
+            g.add(Quote(book=book, side=side, decimal=dec, point=None, last_update=now))
+    return b
+
+
+# DraftKings is the best price on NO side: Fanatics has the best Home and Away,
+# FanDuel the best Draw. The shape a DraftKings token meets on most matches.
+_NOT_BEST_AT_DK = {
+    "home": {"fanduel": 2.75, "draftkings": 2.70, "fanatics": 2.85},
+    "draw": {"fanduel": 3.80, "draftkings": 3.55, "fanatics": 3.75},
+    "away": {"fanduel": 2.25, "draftkings": 2.26, "fanatics": 2.30},
+}
+
+
+def test_candidates_keep_soccers_three_way_moneyline():
+    """The boost panel re-prices `candidates`, which kept two-sided markets
+    only -- so a soccer boost had nothing to land on for the market soccer
+    boosts are mostly spent on."""
+    from edge.arb.run import candidates
+    (cand,) = candidates(_soccer_board(_NOT_BEST_AT_DK), cfg())
+    assert cand["market"] == "h2h"
+    assert [l["side"] for l in cand["legs"]] == ["away", "draw", "home"]
+    assert cand["prices"]["draw"] == {"fanduel": 3.80, "draftkings": 3.55, "fanatics": 3.75}
+
+
+def test_a_token_is_tried_on_its_own_book_where_that_book_is_not_the_best_price():
+    """The stored legs are the best price per side, and a token only pays on
+    its own book. Boosting only a leg the token's book already held meant a
+    DraftKings token found nothing here -- while DraftKings Away +50% against
+    the best non-DraftKings Home and Draw is a 4% lock."""
+    from edge.arb.engine import Boost, price_candidates
+    from edge.arb.run import candidates
+    c = cfg()
+    board = _soccer_board(_NOT_BEST_AT_DK)
+    cands = candidates(board, c)
+    assert price_candidates(cands, [], c) == [], "fixture: no arbitrage without the token"
+
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=25.0, sports=["soccer_epl"])]
+    (row,) = price_candidates(cands, c.boosts, c)
+    boosted = [l for l in row["legs"] if l["boost_pct"]]
+    assert [(l["book"], l["side"]) for l in boosted] == [("draftkings", "away")]
+    assert row["legs"][0]["raw_american"] == om.format_american(2.26), \
+        "the leg shows DraftKings' own price, not the best price it replaced"
+    assert {l["book"] for l in row["legs"] if not l["boost_pct"]} == {"fanduel", "fanatics"}
+    assert row["profit_pct"] > 3.0
+
+    scanned = [o for o in find_arbitrages(board, c) if o.boost]
+    assert scanned and scanned[0].profit_pct == pytest.approx(row["profit_pct"], abs=1e-6), \
+        "the scanner and the boost panel must price the same position"
+
+
+def test_a_token_is_never_spent_beside_another_leg_at_its_own_book():
+    """Three legs across two books clears min_books, but "DraftKings Home
+    boosted + DraftKings Away" still puts the token on one account next to a
+    bet on the other side of its own market -- the trigger for voiding it."""
+    from edge.arb.engine import Boost, _token_shares_account, price_candidates
+    from edge.arb.run import candidates
+    c = cfg()
+    c.boosts = [Boost(book="draftkings", pct=0.5, max_stake=500.0)]
+    board = _soccer_board({
+        "home": {"draftkings": 2.90, "fanduel": 2.75},
+        "draw": {"draftkings": 3.50, "fanduel": 3.80},
+        "away": {"draftkings": 2.35, "fanduel": 2.20},
+    })
+    rows = price_candidates(candidates(board, c), c.boosts, c)
+    opps = [o for o in find_arbitrages(board, c) if o.boost]
+    assert rows and opps, "fixture: a placeable boosted position exists"
+    for books, boosted in ([([l["book"] for l in r["legs"]],
+                             [i for i, l in enumerate(r["legs"]) if l["boost_pct"]]) for r in rows]
+                           + [([l.book for l in o.legs],
+                               [i for i, l in enumerate(o.legs) if l.boost_pct]) for o in opps]):
+        assert all(books.count(books[i]) == 1 for i in boosted), books
+
+    assert _token_shares_account(["draftkings", "fanduel", "draftkings"], {0: c.boosts[0]})
+    assert not _token_shares_account(["draftkings", "fanduel", "fanduel"], {0: c.boosts[0]})
+
+
+def test_boosted_ev_prices_a_three_way_moneyline():
+    from edge.arb.engine import Boost, price_boosted_ev
+    from edge.arb.run import candidates
+    c = cfg()
+    b = Boost(book="draftkings", pct=0.5, max_stake=25.0, sides=["draw"])
+    rows = price_boosted_ev(candidates(_soccer_board(_NOT_BEST_AT_DK), c), [b], c)
+    (row,) = rows
+    assert (row["book"], row["side"], row["raw_decimal"]) == ("draftkings", "draw", 3.55)
+    assert 0.2 < row["fair_prob"] < 0.3 and row["ev_pct"] > 0
