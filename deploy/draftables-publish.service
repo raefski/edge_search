@@ -1,0 +1,20 @@
+# Snapshot DK draftables (salaries) and push them for the cloud app.
+#
+# DraftKings' draftables API 403s Streamlit Cloud's IP (found live 2026-09-16),
+# so the cloud MLB/NFL DFS pages fall back to data/draftables_snapshot/. This
+# keeps those snapshots current. Pushes only when a snapshot changed.
+#
+#   cp deploy/draftables-publish.service deploy/draftables-publish.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now draftables-publish.timer
+[Unit]
+Description=Snapshot and publish DK draftables for the cloud app
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/draftables_publish.py --push
+Restart=no
+Nice=10
+TimeoutStartSec=600

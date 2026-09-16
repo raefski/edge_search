@@ -113,14 +113,28 @@ def _draftables_raw(draft_group_id: int) -> list[dict]:
 
 
 def save_draftables_snapshot(draft_group_id: int) -> int:
-    """Fetch live and write the trimmed snapshot the Cloud fallback reads."""
+    """Fetch live and write the trimmed snapshot the Cloud fallback reads.
+
+    Returns rows written; 0 (and no file) for a group DK hasn't priced yet, so
+    the fallback never pins a slate to a pre-salary copy. Rewrites only on
+    change so scripts/draftables_publish.py doesn't commit a no-op."""
     url = f"https://api.draftkings.com/draftgroups/v1/draftgroups/{draft_group_id}/draftables"
     keep = ("displayName", "salary", "position", "teamAbbreviation", "competition", "draftStatAttributes")
-    rows = [{k: p.get(k) for k in keep} for p in _get(url).get("draftables", [])]
-    for r in rows:
+    rows, seen = [], set()
+    for p in _get(url).get("draftables", []):
+        r = {k: p.get(k) for k in keep}
         r["draftStatAttributes"] = [a for a in (r["draftStatAttributes"] or []) if a.get("id") == 408]
+        key = json.dumps(r, sort_keys=True)
+        if key not in seen:  # exact dupes only -- fetch_draftables' first-row-wins stays identical
+            seen.add(key)
+            rows.append(r)
+    if not any(r.get("salary") for r in rows):
+        return 0
     _SNAP_DIR.mkdir(parents=True, exist_ok=True)
-    (_SNAP_DIR / f"{draft_group_id}.json").write_text(json.dumps(rows))
+    path = _SNAP_DIR / f"{draft_group_id}.json"
+    text = json.dumps(rows)
+    if not path.exists() or path.read_text() != text:
+        path.write_text(text)
     return len(rows)
 
 

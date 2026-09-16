@@ -1,0 +1,13 @@
+# Every 30 minutes, 7 AM - 11:30 PM local. Salaries are frozen per draft group,
+# so most ticks push nothing; this bounds how long a newly posted slate can be
+# missing from the cloud app to ~30 minutes.
+# Verify any edit with `systemd-analyze calendar '<expr>'` (see
+# odds-publish-dfs-nfl.timer for what a misplaced step did).
+[Unit]
+Description=Publish DK draftables snapshots for the cloud app
+[Timer]
+OnCalendar=*-*-* 07..23:00/30:00
+RandomizedDelaySec=60
+Persistent=true
+[Install]
+WantedBy=timers.target
