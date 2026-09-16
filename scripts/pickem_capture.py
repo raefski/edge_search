@@ -623,7 +623,17 @@ def main() -> None:
         # it stages one path by name, rebases with autostash, and no-ops on an
         # unchanged file -- all three of which a timer needs.
         from scripts.odds_collect import push_snapshot
-        push_snapshot(LINE_LOG, f"pickem_nfl wk{args.week} {args.snapshot}")
+        if not push_snapshot(LINE_LOG, f"pickem_nfl wk{args.week} {args.snapshot}"):
+            # push_snapshot already printed the reason (rebase or push
+            # failure). Found 2026-09-16: this return value went unchecked
+            # for a week, so three real deadline captures wrote good local
+            # data that never reached origin/main -- the deployed Streamlit
+            # app silently served Week 1's lock-thu snapshot for six days,
+            # and nothing said so. A non-zero exit at least surfaces it in
+            # the unit's status and journal, matching the market-fetch
+            # failure path above.
+            print("\nCapture SUCCEEDED locally but did not reach origin/main.")
+            sys.exit(1)
     if missing:
         print(f"no live market found for: {', '.join(missing)} "
               "(logged with CBS data only)")

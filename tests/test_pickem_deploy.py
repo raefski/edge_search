@@ -149,14 +149,49 @@ def test_a_failed_capture_is_recorded_where_a_human_will_see_it():
         "the failure has to reach the person who reads the page")
 
 
-def test_the_timers_do_not_push():
-    """A push from a timer commits to a PUBLIC repo unattended.
+def test_only_the_final_state_pass_pushes():
+    """Auto-push, authorized 2026-09-16 -- but not from every line that writes.
 
-    Left as an explicit assertion rather than a comment because --push was on
-    the ExecStart line and would have fired on the next timer.
+    Left deliberately off through 2026-09-15: a push from a timer commits to
+    a PUBLIC repo unattended, judged a decision the owner had to make once,
+    explicitly, not a side effect of installing a unit. That decision
+    surfaced its own cost before it got made -- three real deadline captures
+    (Sep 13-15) wrote good local data that sat uncommitted for days, and the
+    deployed Streamlit app silently served a six-day-stale snapshot, because
+    nothing was watching for "captured but not pushed." Adam authorized
+    auto-push explicitly once that cost was visible.
+
+    Still not every Exec* line: --push belongs on whichever line produces a
+    ROW'S FINAL STATE for this label, not on one that will be immediately
+    superseded seconds later by the next line in the same unit. That is
+    pickem_pool_fetch.py's own write (the CBS half, its only write) and the
+    capture script's ExecStartPost merge pass (market + whatever CBS half
+    exists) -- NOT the bare ExecStart market-only pass, which
+    ExecStartPost's merge immediately supersedes.
     """
-    exec_lines = [l for l in _service().splitlines()
-                  if l.startswith(("ExecStart=", "ExecStartPre=",
-                                   "ExecStartPost=", "    --"))]
-    assert exec_lines, "no ExecStart at all"
-    assert not any("--push" in l for l in exec_lines), exec_lines
+    lines = _service().splitlines()
+
+    def find(prefix: str) -> str:
+        # Exec directives here are two physical lines (a trailing `\` splits
+        # the command onto the next), so join them for one substring check.
+        for i, l in enumerate(lines):
+            if l.startswith(prefix):
+                nxt = lines[i + 1] if l.rstrip().endswith("\\") else ""
+                return l + " " + nxt.strip()
+        raise AssertionError(f"no {prefix!r} line found")
+
+    cbs_fetch = find("ExecStartPre=-/usr/bin/env python3 scripts/pickem_pool_fetch.py")
+    market_only = find("ExecStart=/usr/bin/env python3 scripts/pickem_capture.py")
+    final_merge = find("ExecStartPost=-/usr/bin/env python3 scripts/pickem_capture.py")
+
+    assert "--push" in cbs_fetch, cbs_fetch
+    assert "--push" not in market_only, market_only
+    assert "--push" in final_merge, final_merge
+
+    # And the push, when it's there, must be soft-failing (leading `-`) on
+    # BOTH lines that carry it: a lost push is recoverable next capture
+    # (push_snapshot commits the file's whole current diff), unlike a lost
+    # market reading, which is gone forever. It must never hold the same
+    # unit-failing severity as ExecStart's market fetch.
+    assert cbs_fetch.startswith("ExecStartPre=-"), cbs_fetch
+    assert final_merge.startswith("ExecStartPost=-"), final_merge

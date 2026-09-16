@@ -74,6 +74,10 @@ def main() -> None:
                          "pickem_pool_import.py's own flag of the same name")
     ap.add_argument("--write", action="store_true",
                     help="actually write the CSV (default is a dry run)")
+    ap.add_argument("--push", action="store_true",
+                    help="commit and push data/pickem_current_week.csv "
+                         "afterwards. Same helper and same no-op-on-unchanged "
+                         "behaviour as pickem_capture.py --push.")
     args = ap.parse_args()
 
     if args.week == "auto":
@@ -104,6 +108,10 @@ def main() -> None:
         sys.exit(1)
 
     pool_import.run(text, week, no_enrich=args.no_enrich, write=args.write)
+
+    if args.push and args.write:
+        from scripts.odds_collect import push_snapshot
+        push_snapshot(pool_import.OUT, f"pickem_nfl: week {week} CBS lines")
 
 
 if __name__ == "__main__":

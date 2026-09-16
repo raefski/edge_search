@@ -21,13 +21,22 @@
 # scrapes the board on odds-collect-pickem-nfl.timer, so it is the only machine
 # that can bank a reading for nothing. The workflow stays as a paid fallback.
 #
-# COMMITTING THE LOG
+# COMMITTING THE DATA, AND AUTO-PUSH (decided 2026-09-16)
 # git IS this file's database: PICKEM_WEEKLY.md's own table says an
-# uncommitted row does not survive, and the Streamlit page reads the repo. But
-# --push is NOT on the ExecStart line: this repo is PUBLIC and a timer pushing
-# to it unattended is a decision the owner has to make once, explicitly, not a
-# side effect of installing a unit. Commit data/pickem_line_log.csv by hand, or
-# re-add `--push` here deliberately.
+# uncommitted row does not survive, and the Streamlit page reads the repo.
+# --push WAS deliberately left off, on the reasoning that a timer pushing to
+# this public repo unattended was a decision the owner had to make once,
+# explicitly. That decision surfaced its own cost before it got made: three
+# real deadline captures (2026-09-13 lock-sun, -14 lock-mon, -15's Week 2
+# post) wrote good local data that sat uncommitted for days, and the deployed
+# Streamlit app silently served Week 1's lock-thu snapshot the whole time --
+# nothing said so, because nothing was watching for "captured but not
+# pushed." Adam confirmed auto-push explicitly on 2026-09-16; both halves now
+# push (ExecStartPost below, and pickem_pool_fetch.py's own --push). The
+# content is the same category PICKEM_STATUS.md already calls safe to commit
+# -- public spread/total/community-pct data, no picks, no standings, no
+# money -- so the "public repo" concern was about the ACT of push being
+# unattended, not about what it publishes.
 #
 # WHY ExecStartPre COLLECTS FIRST -- the finding that made these timers wrong
 # The board is collected by odds-collect-pickem-nfl.timer at 12:20 and 23:20
@@ -76,7 +85,7 @@ WorkingDirectory=%h/edge_search
 # `-`: a dead/expired session (they do not last forever, and nothing can
 # renew one unattended) must NEVER cancel the capture below, which is the
 # time-critical half and the one that can never be retaken.
-ExecStartPre=-/usr/bin/env python3 scripts/pickem_pool_fetch.py --week auto --write
+ExecStartPre=-/usr/bin/env python3 scripts/pickem_pool_fetch.py --week auto --write --push
 ExecStartPre=-/usr/bin/env python3 scripts/odds_collect.py --profile pickem_nfl
 # --market-only: bank the market reading UNCONDITIONALLY, whether or not the
 # CBS fetch above actually got anything. The two halves join on (season,
@@ -93,8 +102,22 @@ ExecStart=/usr/bin/env python3 scripts/pickem_capture.py \
 # overwrites one that was, so this can only add data, never corrupt the
 # market-only row above. Leading `-`: must never fail the unit either --
 # an empty CBS half here just means "wrote 0 new, completed N", not an error.
+# --push lives HERE, not on ExecStart above: this is the pass that produces
+# the row's final state for this label (market + whatever CBS half exists),
+# so one push per capture rather than an incomplete one immediately
+# superseded by a complete one seconds later.
+#
+# The leading `-` means a PUSH failure here (network, a rebase conflict) does
+# NOT flip the unit to failed and does not trigger OnFailure/Restart -- only
+# a market-fetch failure does that, via ExecStart's hard exit above. That is
+# a deliberate, different severity: the market reading, if missed, is gone
+# forever; a failed push is not -- push_snapshot commits the file's WHOLE
+# current diff, so the very next capture's --push (hours away at most)
+# catches up anything this one couldn't send. pickem_capture.py's own
+# push-failure branch still exits 1 and prints why, so `journalctl --user -u
+# pickem-capture@%i.service` shows it even though the unit reports success.
 ExecStartPost=-/usr/bin/env python3 scripts/pickem_capture.py \
-    --snapshot %i --week auto --confirm
+    --snapshot %i --week auto --confirm --push
 # A deadline reading cannot be taken again later, so a transient failure IS
 # worth retrying -- but only briefly and only a few times, bounded by the
 # StartLimit above. Five minutes apart, three attempts, then OnFailure records
