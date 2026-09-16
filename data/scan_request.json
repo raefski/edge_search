@@ -1,12 +1,10 @@
 {
- "requested_at": "2026-09-15T23:29:55.005165+00:00",
- "request_id": "20260915T232955005165",
- "sports": [
-  "baseball_mlb"
- ],
+ "requested_at": "2026-09-16T22:00:13.888007+00:00",
+ "request_id": "20260916T220013888007",
+ "sports": [],
  "note": "requested from the Streamlit app",
- "date_from": "2026-09-15",
- "date_to": "2026-09-15",
+ "date_from": "2026-09-16",
+ "date_to": "2026-09-16",
  "skip_live": true,
  "state": "CT"
 }
