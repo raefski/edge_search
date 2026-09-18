@@ -8,7 +8,9 @@ markets/selections join as the per-event endpoint, with the event list
 included, so one request covers the slate.
 
 This host refuses datacenter IPs (403). It answers normally from a residential
-connection in-state, so this runs on your machine and not from a server.
+connection in-state, so this runs on your machine and not from a server. It
+can ALSO block a residential IP on request volume -- see DRAFTKINGS_ACCESS.md
+before scaling up anything that calls this module.
 """
 from __future__ import annotations
 

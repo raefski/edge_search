@@ -101,7 +101,10 @@ def _draftables_raw(draft_group_id: int) -> list[dict]:
     2026-09-16 (same request works fine from a home IP; the www lobby call
     still worked from Cloud). Salaries are frozen per draft group, so a
     snapshot saved locally via save_draftables_snapshot() and pushed is exact,
-    and keying by gid means it can never serve the wrong slate."""
+    and keying by gid means it can never serve the wrong slate. This is the
+    datacenter-IP block, not the volume-based one arbitrage hit 2026-09-18 --
+    see DRAFTKINGS_ACCESS.md for the difference before changing this poll's
+    frequency or scope."""
     url = f"https://api.draftkings.com/draftgroups/v1/draftgroups/{draft_group_id}/draftables"
     try:
         return _get(url).get("draftables", [])

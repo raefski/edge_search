@@ -20,6 +20,11 @@ is enough.
 
 Fanatics can be added as a third book once its Oddschecker league id is
 known; NFL is not listed there until the season opens.
+
+The DraftKings call here shares both its client and its host
+(sportsbook-nash.draftkings.com) with edge/arb, and this runs from the same
+residential machine -- see DRAFTKINGS_ACCESS.md before scheduling a capture
+close to a heavy arb scan, or before adding calls here.
 """
 from __future__ import annotations
 

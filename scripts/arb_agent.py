@@ -51,7 +51,10 @@ plus a prop-tab call per league) in one burst, outside this poller's
 one-sport-per-request scoping. Two earlier full scans (9/16, 9/17) did NOT
 trigger a block, so this may be a rolling reputation window rather than a
 single-scan threshold. Until that's better understood, don't stack a manual
-arb_scan.py run on top of what this poller is already doing.
+arb_scan.py run on top of what this poller is already doing. Block cleared
+on its own between 10:27 and 17:18 the same day -- no code change fixed it.
+See DRAFTKINGS_ACCESS.md for the full write-up, shared across every product
+that touches DK.
 """
 from __future__ import annotations
 

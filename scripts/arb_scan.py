@@ -12,6 +12,11 @@ so the Streamlit app can show results even where the books' hosts refuse the
 server (Streamlit Community Cloud is a datacenter; these endpoints are fronted
 by Akamai and Cloudflare, the same wall pickem_live.py hit). Run this on a
 machine in Connecticut and commit the snapshot.
+
+RUN WITH --sports. Bare (no --sports) sweeps DraftKings' entire catalog --
+every league, every prop tab -- in one burst, and is the leading suspect for
+the 2026-09-18 block that took DK's odds API down for ~10 hours on this same
+residential IP. See DRAFTKINGS_ACCESS.md before running this unscoped.
 """
 from __future__ import annotations
 
