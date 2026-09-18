@@ -39,6 +39,19 @@ already works:
 The collection timers still run on their own cadence. They feed the store and
 the accumulating history, which is the thing that cannot be backfilled later.
 They just no longer push.
+
+DRAFTKINGS CAN BLOCK THIS WHOLE MACHINE, NOT JUST DATACENTER IPS
+2026-09-18: every DK odds call, every sport, started coming back Akamai
+"Access Denied" (403) from this residential CT connection -- the same
+connection that had pulled 6,833 DK quotes clean 11 hours earlier. Still
+blocked after 2 hours of light polling (one request per 10 minutes). Root
+cause unconfirmed, but the leading suspect is `scripts/arb_scan.py` run by
+hand with no --sports: that pulls DK's full default sport list (~35 leagues,
+plus a prop-tab call per league) in one burst, outside this poller's
+one-sport-per-request scoping. Two earlier full scans (9/16, 9/17) did NOT
+trigger a block, so this may be a rolling reputation window rather than a
+single-scan threshold. Until that's better understood, don't stack a manual
+arb_scan.py run on top of what this poller is already doing.
 """
 from __future__ import annotations
 
