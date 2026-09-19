@@ -10,13 +10,20 @@ DK MLB Classic: roster 2 P / C / 1B / 2B / 3B / SS / 3 OF, $50,000 cap.
 from __future__ import annotations
 
 import json
+import sys
+import urllib.parse
 import urllib.request
 from statistics import NormalDist
 
+from .arb import http as _http
 from .oddsmath import devig
 
 _N = NormalDist()
-_UA = {"User-Agent": "Mozilla/5.0", "Accept": "application/json"}
+# A REAL browser User-Agent, not "Mozilla/5.0". api.draftkings.com rejects the
+# short form with the same Akamai 403 it gives a datacenter IP -- isolated
+# 2026-09-19: full UA over HTTP/2 -> 200, short UA over HTTP/2 -> 403. Two
+# independent gates, and this is the one that is pure string matching.
+_UA = {"User-Agent": _http.DEFAULT_UA, "Accept": "application/json"}
 
 # DK MLB pitcher scoring (per-out = 2.25/inning ÷ 3). CG/NH ignored (~0 prob).
 P_SCORE = {"out": 0.75, "K": 2.0, "win": 4.0, "ER": -2.0, "hit": -0.6, "bb": -0.6}
@@ -33,7 +40,33 @@ def norm(name: str) -> str:
 
 
 def _get(url):
-    return json.load(urllib.request.urlopen(urllib.request.Request(url, headers=_UA), timeout=30))
+    """One JSON GET for every upstream this module reads.
+
+    DRAFTKINGS TAKES THE curl/HTTP-2 PATH, EVERYTHING ELSE TAKES urllib.
+    2026-09-19: api.draftkings.com enforces two independent gates, and a
+    request has to clear BOTH or it gets an indistinguishable Akamai 403:
+
+      1. HTTP/2. Forced HTTP/1.1 with otherwise-perfect headers -> 403, and
+         urllib can only ever speak HTTP/1.1.
+      2. A full browser User-Agent. "Mozilla/5.0" -> 403 even over HTTP/2.
+
+    This module had its own private urllib `_get` and so failed both, which is
+    why the 2026-09-19 fix to edge/arb/http.py rescued arbitrage and pick'em
+    but left DFS broken for a further day -- the salaries silently came from
+    the previous day's snapshot instead (see _draftables_raw). The transport
+    rule now lives in exactly one place. See DRAFTKINGS_ACCESS.md.
+
+    statsapi.mlb.com and the rest keep the plain urllib path: nothing gates
+    them, and routing them through a subprocess would be strictly worse.
+    """
+    host = urllib.parse.urlparse(url).hostname or ""
+    if not _http.is_draftkings(host):
+        return json.load(urllib.request.urlopen(
+            urllib.request.Request(url, headers=_UA), timeout=30))
+    r = _http.Session().get(url, headers=_UA, timeout=30)
+    if r.status_code >= 400:
+        raise _http.HTTPError(f"HTTP Error {r.status_code}: DraftKings {url}", r)
+    return r.json()
 
 
 # --- salaries (public draftables API; no auth) -------------------------------
@@ -92,6 +125,12 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
 
 
 _SNAP_DIR = __import__("pathlib").Path(__file__).resolve().parents[1] / "data" / "draftables_snapshot"
+_dt_mod = __import__("datetime")
+
+# "live" | "snapshot <when>" | "failed" -- set by _draftables_raw so a caller
+# (the Streamlit pages, scripts/draftables_publish.py) can tell the user which
+# one they are looking at instead of guessing from the numbers.
+LAST_DRAFTABLES_SOURCE = "live"
 
 
 def _draftables_raw(draft_group_id: int) -> list[dict]:
@@ -106,12 +145,27 @@ def _draftables_raw(draft_group_id: int) -> list[dict]:
     see DRAFTKINGS_ACCESS.md for the difference before changing this poll's
     frequency or scope."""
     url = f"https://api.draftkings.com/draftgroups/v1/draftgroups/{draft_group_id}/draftables"
+    global LAST_DRAFTABLES_SOURCE
     try:
-        return _get(url).get("draftables", [])
-    except Exception:
+        rows = _get(url).get("draftables", [])
+        LAST_DRAFTABLES_SOURCE = "live"
+        return rows
+    except Exception as exc:
         snap = _SNAP_DIR / f"{draft_group_id}.json"
         if snap.exists():
+            # Say so. This fallback silently served 2026-09-18 salaries for a
+            # whole day on 09-19 because it looked identical to success from
+            # every caller -- the transport was broken, not the IP, and
+            # nothing surfaced it. A stale snapshot is still the right answer
+            # for Streamlit Cloud (datacenter-blocked by design); it is a
+            # BUG SIGNAL on the desktop, where the live call should work.
+            age = _dt_mod.datetime.fromtimestamp(snap.stat().st_mtime)
+            LAST_DRAFTABLES_SOURCE = f"snapshot {age:%Y-%m-%d %H:%M}"
+            print(f"edge.dfs: DK draftables {draft_group_id} live fetch failed "
+                  f"({type(exc).__name__}: {exc}) -- falling back to snapshot "
+                  f"saved {age:%Y-%m-%d %H:%M}", file=sys.stderr)
             return json.loads(snap.read_text())
+        LAST_DRAFTABLES_SOURCE = "failed"
         raise
 
 
