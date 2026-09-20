@@ -96,6 +96,13 @@ data/actuals_cache/
 # (...history2.csv, ...history3.csv, etc).
 data/draftkings-contest-entry-history*.csv
 
+# NFL DFS calibration: joined pred-vs-actual rows (points + ownership) from
+# scripts/dfs_calibration_nfl.py -- small, aggregate, no personal data, same
+# logic as pickem_backtest_results.json below. (MLB's data/dfs_calibration.json
+# is the same category but has no exception yet -- a pre-existing gap, not
+# fixed here since this pass is NFL-only.)
+!data/dfs_calibration_nfl.json
+
 # Pick'em: the backtest result IS committed (small, aggregate, no personal
 # data -- same category as the DFS calibration JSON above), so it needs an
 # exception to the blanket `data/*.json` rule.
