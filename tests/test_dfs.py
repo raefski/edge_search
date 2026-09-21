@@ -146,6 +146,63 @@ def test_gpp_secondary_stack_degrades_on_salary_infeasibility():
     assert 0 < teams.get("BBB", 0) < 3, f"expected a degraded (not full, not zero) BBB stack: {dict(teams)}"
 
 
+def test_fill_reserve_handles_duplicate_scarce_slots():
+    # Regression, found live 2026-09-21: a 3-game slate with exactly 2
+    # confirmed starters (common well before lock) built GPP fine but cash
+    # came back None every time. Root cause was _fill's budget reserve: it
+    # looked up ONE cheapest salary per slot NAME and reused it for every
+    # occurrence of a repeated slot (P appears twice, OF three times), so
+    # with only 2 real pitchers at different prices it reserved 2x the
+    # CHEAPER arm's salary instead of cheaper+pricier -- under-reserving by
+    # the salary gap between them. A greedy unconstrained fill (cash has no
+    # forced stack to protect it, unlike gpp) can then spend into that gap on
+    # an optional hitter choice and strand the pricier mandatory pitcher.
+    #
+    # Built to FAIL pre-fix: a fixed slot order + a "take the top candidate"
+    # rng (not real randomness -- the actual bug hid behind 200 optimizer
+    # restarts, where one lucky iteration was enough for optimize() to return
+    # non-None even while 198 individual fills failed) puts one flexible OF
+    # choice BEFORE both P slots are placed. The old reserve under-counts by
+    # $18,000 there, letting a $20,000 "expensive" OF (higher proj) get
+    # picked over a $5,000 "cheap" one; the pricier of the two real pitchers
+    # (also $20,000) then can't fit what's left. The fix reserves the true
+    # cost of both remaining pitchers, so it takes the cheap OF instead and
+    # the $20,000 arm still fits.
+    from edge import dfs_opt
+
+    class FixedOrderTopPickRNG:
+        ORDER = ["OF", "P", "P", "C", "1B", "2B", "3B", "SS", "OF", "OF"]
+        def shuffle(self, lst):
+            lst[:] = self.ORDER
+        def choice(self, seq):
+            return seq[0]
+
+    pool = [
+        {"name": "P_pricey", "team": "T1", "pos": {"P"}, "salary": 20000, "proj": 15.0,
+         "ceiling": 15.0, "floor": 15.0, "game": "g1"},
+        {"name": "P_cheap", "team": "T2", "pos": {"P"}, "salary": 2000, "proj": 10.0,
+         "ceiling": 10.0, "floor": 10.0, "game": "g2"},
+        {"name": "OF_expensive", "team": "T3", "pos": {"OF"}, "salary": 20000, "proj": 50.0,
+         "ceiling": 50.0, "floor": 50.0, "game": "g3"},
+        {"name": "OF_cheap", "team": "T4", "pos": {"OF"}, "salary": 5000, "proj": 5.0,
+         "ceiling": 5.0, "floor": 5.0, "game": "g4"},
+    ]
+    for i, pos in enumerate(["C", "1B", "2B", "3B", "SS"]):
+        pool.append({"name": f"fix_{pos}", "team": f"FT{i}", "pos": {pos}, "salary": 2000,
+                     "proj": 3.0, "ceiling": 3.0, "floor": 3.0, "game": f"fg{i % 2}"})
+    for i in range(2):
+        pool.append({"name": f"fix_OF{i}", "team": f"OT{i}", "pos": {"OF"}, "salary": 2000,
+                     "proj": 3.0, "ceiling": 3.0, "floor": 3.0, "game": f"og{i % 2}"})
+
+    lu = dfs_opt._fill(pool, FixedOrderTopPickRNG(), None, "floor")
+    assert lu is not None, "reserve under-count stranded the pricier mandatory pitcher"
+    names = {p["name"] for p in lu}
+    assert "P_pricey" in names and "P_cheap" in names, "both real pitchers must be rostered"
+    assert "OF_cheap" in names and "OF_expensive" not in names, (
+        "must take the affordable OF once the true pitcher reserve is held back")
+    assert sum(p["salary"] for p in lu) <= dfs_opt.CAP
+
+
 def test_gpp_stack_is_consecutive():
     from edge import dfs_opt
     flex = {"C", "1B", "2B", "3B", "SS", "OF"}
@@ -368,6 +425,25 @@ def test_load_contest_type_manifest(tmp_path, monkeypatch):
     monkeypatch.setattr(cal, "CONTEST_META_PATH", manifest)
     assert cal.load_contest_type("data/contest-standings-12345.csv") == "cash"
     assert cal.load_contest_type("data/contest-standings-99999.csv") == "unknown"
+
+
+def test_parse_contest_file_sums_per_slot_rows(tmp_path):
+    # Regression, 2026-09-14: DK lists a player once per roster slot he was
+    # used in (NFL TE + FLEX). Last-row-wins kept Mayer at his 6.35% FLEX
+    # share instead of 31.39%, and a GPP board summed to 300% of 900%.
+    from scripts.dfs_calibration import parse_contest_file
+    f = tmp_path / "contest-standings-1.csv"
+    f.write_text(
+        "﻿Rank,EntryId,EntryName,TimeRemaining,Points,Lineup,,Player,Roster Position,%Drafted,FPTS\n"
+        "1,11,someone,0,200,DST Jets FLEX Michael Mayer,,Michael Mayer,TE,25.04%,9.2\n"
+        "2,12,other,0,190,DST Jets FLEX Chris Olave,,Chris Olave,WR,25.29%,31.2\n"
+        ",,,,,,,Michael Mayer,FLEX,6.35%,9.2\n"
+        ",,,,,,,Jets,DST,23.08%,9\n", encoding="utf-8")
+    board = parse_contest_file(f)
+    assert set(board) == {"michaelmayer", "chrisolave", "jets"}
+    assert board["michaelmayer"]["pct_drafted"] == 31.39
+    assert board["michaelmayer"]["fpts"] == 9.2
+    assert board["chrisolave"]["pct_drafted"] == 25.29
 
 
 def test_load_proj_log_merges_subslate_files(tmp_path, monkeypatch):

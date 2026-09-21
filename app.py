@@ -581,6 +581,29 @@ def render_app() -> None:
                  "conf": p.get("conf", ""), "projected": not p.get("confirmed", True)}
                 for p, slot in sorted(r["lineup"], key=lambda x: dfs_opt.SLOTS.index(x[1]))]
 
+    def _lineup_unready_reason(mode: str) -> str:
+        """Why res[mode] came back None, for that tab's caption specifically.
+        Distinct from the top-level placeholder message just above (only shown
+        when BOTH cash and gpp fail) -- that check passes as soon as len(pitchers)
+        >=2 and len(hitters) >=8, but a thin pitcher board (exactly 2 confirmed
+        starters is common well before lock) can still leave NO valid $50,000
+        roster for one mode while the other happens to fit, since cash's
+        unconstrained fill and gpp's forced-stack fill hit the salary cap from
+        different angles. Found live 2026-09-21: a 3-game slate with only 2
+        confirmed starters built GPP fine but cash came back None, and the tab
+        just said "Cash lineup not ready." with no explanation -- this fills
+        that gap instead of silently pointing at nothing."""
+        n_p, n_h = len(res["pitchers"]), len(res["hitters"])
+        if n_p < 2:
+            return f"only {n_p} pitcher(s) have a full prop board posted so far."
+        if n_h < 8:
+            return f"only {n_h} hitter(s) have a confirmed/projectable batting order."
+        if n_p == 2:
+            return ("the optimizer couldn't fit a valid $50,000 roster around tonight's only "
+                    "2 confirmed starters — with no pitcher choice, salary is razor-thin. "
+                    "Tap 🔄 Refresh as more starters confirm.")
+        return "the optimizer couldn't fit a valid $50,000 roster with the current pool. Tap 🔄 Refresh."
+
     def save_entry_button(mode, rows, key_suffix=None):
         """Pin the lineup you actually entered on DK (saved to disk, shared with
         scripts/dfs_swap.py --pin on your computer) so later refreshes/sessions
@@ -658,7 +681,7 @@ def render_app() -> None:
             render_compact(_rows_for("cash"))
             save_entry_button("cash", _rows_for("cash"))
         else:
-            st.caption("Cash lineup not ready.")
+            st.caption(f"Cash lineup not ready — {_lineup_unready_reason('cash')}")
     with t_gpp:
         if show_ph:
             st.caption("5-man stack + 3-man secondary stack (sample)")
@@ -676,7 +699,7 @@ def render_app() -> None:
             render_compact(_rows_for("gpp"))
             save_entry_button("gpp", _rows_for("gpp"))
         else:
-            st.caption("GPP lineup not ready.")
+            st.caption(f"GPP lineup not ready — {_lineup_unready_reason('gpp')}")
     with t_swap:
         render_swaps()
 

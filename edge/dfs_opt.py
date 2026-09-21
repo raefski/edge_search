@@ -45,8 +45,6 @@ def _fill(players, rng, forced=None, obj="proj"):
         for _, s in pairs:
             remaining.remove(s)
         slots_left = remaining
-    # cheapest eligible per slot, for budget feasibility
-    cheapest = {s: min((p["salary"] for p in _eligible(players, s)), default=CAP) for s in set(slots_left)}
     team_h = {}
     for p in lineup:
         if "P" not in p["pos"]:
@@ -54,7 +52,23 @@ def _fill(players, rng, forced=None, obj="proj"):
     rng.shuffle(slots_left)
     for i, slot in enumerate(slots_left):
         spent = sum(p["salary"] for p in lineup)
-        reserve = sum(cheapest[s] for s in slots_left[i + 1:])
+        # reserve = cheapest DISTINCT-player cost to fill every remaining slot.
+        # A duplicated slot (P,P or OF,OF,OF) needs that many DIFFERENT
+        # players -- reusing one min salary per occurrence (the old
+        # `cheapest[s]` dict, looked up once per slot NAME) under-reserves
+        # whenever eligibility is scarce at that position. Worst case: a
+        # 2-pitcher board (common well before lock, both P slots MANDATORY)
+        # reserved 2x the cheaper arm's salary instead of cheaper+pricier,
+        # so a greedy hitter pick could spend into the gap and strand the
+        # pricier arm -- found live 2026-09-21, a 3-game slate with exactly
+        # 2 confirmed starters built GPP fine (forced-stack fill never hits
+        # this path) but cash's unconstrained fill failed every iteration.
+        remaining = slots_left[i + 1:]
+        reserve = 0
+        for s in set(remaining):
+            k = remaining.count(s)
+            costs = sorted(p["salary"] for p in _eligible(players, s) if p["name"] not in used)
+            reserve += sum(costs[:k]) if len(costs) >= k else CAP  # too few left -> force infeasible now
         budget = CAP - spent - reserve
         cands = [p for p in _eligible(players, slot) if p["name"] not in used and p["salary"] <= budget
                  # respect DK's max-hitters-per-team cap DURING the fill, not just
