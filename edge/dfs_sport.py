@@ -357,7 +357,136 @@ NBA = Sport(
 )
 
 
-SPORTS: dict[str, Sport] = {s.key: s for s in (MLB_PITCHER, NFL, NBA)}
+# --------------------------------------------------------------------------
+# NCAAF -- college football. The roster and the price supply both differ from
+# the NFL more than the shared scoring table suggests.
+# --------------------------------------------------------------------------
+#: Touchdowns per yard in COLLEGE football. FITTED 2026-09-24 against cfbfastR
+#: 2024+2025 (scripts/ncaaf_fit.py --what td), 4,380 player-seasons.
+#:
+#: DraftKings DOES post a passing-touchdown ladder for college, so pass TDs are
+#: priced and need no rate. Rushing and receiving touchdowns have no two-sided
+#: market at any book -- only "Anytime TD", a field with no opposing side --
+#: so they are imputed from yardage exactly as they are for the NFL.
+#:
+#: Fitted against a LEAVE-ONE-OUT SEASON MEAN rather than realized yards, for
+#: the reason the NFL constants record: a 5-yard touchdown catch IS 5 receiving
+#: yards, so realized yardage lets the touchdown inflate its own predictor.
+#:
+#: THE FLATNESS CHECK PASSED, so the proportional model is right and no
+#: intercept is defensible. Yards per TD at expected-yardage floors of
+#: 0/20/40/60/80:
+#:     QB rushing      110 110 115 113 104
+#:     other rushing   130 130 135 134 132
+#:     receiving       193 193 196 196 197
+#:
+#: COLLEGE RECEIVERS NEED MORE YARDS PER SCORE THAN NFL ONES -- 193 against
+#: 162 -- which is the opposite of the intuition that college football is
+#: higher-scoring. It is, but the yards arrive faster than the touchdowns do:
+#: more explosive plays over a longer field, and the same number of end zones.
+NCAAF_RUSH_TD_PER_YARD_QB = 1 / 110.0        # 95% CI 105-116, n=4,167
+NCAAF_RUSH_TD_PER_YARD_OTHER = 1 / 130.2     # 95% CI 126-134, n=12,671
+#: ONE receiving rate, not two, and that is a deliberate refusal to split.
+#: The NFL build splits receiving touchdowns by whether the catcher is a back,
+#: because a bootstrap separated them there (161 vs 220, p~0.007). The same
+#: bootstrap here does NOT separate them: WR 193 (187-199) against RB 216
+#: (169-284), overlapping heavily on 583 back-receiving observations. Splitting
+#: on an unmeasured difference costs the same as leaving a real one out and is
+#: harder to notice, so this stays one number until a sample says otherwise.
+NCAAF_REC_TD_PER_YARD = 1 / 192.9            # 95% CI 187-199, n=22,593
+
+#: Interceptions have NO market of any kind for college -- DraftKings' NCAAF
+#: passing-props category carries Pass Yards, Pass TDs, Attempts, Completions
+#: and Longest Pass, and no interception tab at all (verified live 2026-09-24).
+#: The NFL has one. So this term is imputed rather than priced, off pass
+#: ATTEMPTS: 1 per 48.5 attempts, measured over 6,714 quarterback-games.
+#:
+#: Attempts rather than yards on purpose. Interceptions are a per-throw risk,
+#: and a checkdown offence throwing 45 times for 250 yards is more exposed than
+#: a vertical one throwing 25 times for the same 250. Per-yard (1 per 358) is
+#: recorded here as the fallback for a quarterback whose attempts ladder DK did
+#: not post, which happens on about half the board.
+NCAAF_INT_PER_ATTEMPT = 1 / 48.5
+NCAAF_INT_PER_PASS_YARD = 1 / 358.2
+
+
+def _ncaaf_impute(means: dict, position: str | None = None) -> dict:
+    """Rushing/receiving touchdowns from yardage, and interceptions from volume.
+
+    Mirrors _nfl_impute, with two differences that are both measurements rather
+    than choices: receiving touchdowns are NOT split by position here (the
+    bootstrap did not separate them), and interceptions are imputed at all
+    (college has no interception market where the NFL does).
+    """
+    parts = _pos_parts(position)
+    out = {}
+
+    if means.get("player_rush_tds") is None and means.get("player_rush_yds"):
+        is_qb = bool(parts & _QB) or (not parts and means.get("player_pass_yds"))
+        rate = (NCAAF_RUSH_TD_PER_YARD_QB if is_qb
+                else NCAAF_RUSH_TD_PER_YARD_OTHER)
+        out["player_rush_tds"] = means["player_rush_yds"] * rate
+
+    if means.get("player_reception_tds") is None and means.get("player_reception_yds"):
+        out["player_reception_tds"] = (means["player_reception_yds"]
+                                       * NCAAF_REC_TD_PER_YARD)
+
+    if means.get("player_pass_interceptions") is None:
+        attempts = means.get("player_pass_attempts")
+        if attempts:
+            out["player_pass_interceptions"] = attempts * NCAAF_INT_PER_ATTEMPT
+        elif means.get("player_pass_yds"):
+            out["player_pass_interceptions"] = (means["player_pass_yds"]
+                                                * NCAAF_INT_PER_PASS_YARD)
+    return out
+
+
+NCAAF = Sport(
+    key="americanfootball_ncaaf", dk_sport="CFB",
+    # Read off api.draftkings.com/lineups/v1/gametypes/94/rules, not
+    # transcribed from an article. No TE slot (DraftKings lists college tight
+    # ends as WR) and no DST slot at all -- so the whole points-allowed half of
+    # the NFL build has no counterpart here.
+    roster={"QB": 1, "RB": 2, "WR": 3, "FLEX": 1, "S-FLEX": 1},
+    flex={"FLEX": {"RB", "WR"}, "S-FLEX": {"QB", "RB", "WR"}},
+    salary_cap=50000,
+    stats=(
+        # Scoring VALIDATED against DraftKings' own published FPPG rather than
+        # cross-referenced from articles -- see edge/ncaaf.py's docstring for
+        # the full table. It is DK NFL scoring minus everything defensive.
+        #
+        # The sigmas are per-game standard deviations measured over cfbfastR
+        # 2024+2025, and they matter far less here than in any other sport:
+        # a milestone LADDER supplies the mean directly (edge/dfs_ladder.py),
+        # so no sigma is inverted to get one. They are used only as the
+        # fallback path for a threshold bonus when a ladder does not span the
+        # threshold, which is rare.
+        Stat("player_pass_yds", 0.04, 104.2, "pass yds"),
+        Stat("player_pass_tds", 4.0, 0.91, "pass TD"),
+        Stat("player_pass_interceptions", -1.0, 0.64, "INT"),
+        Stat("player_rush_yds", 0.1, 39.6, "rush yds"),
+        Stat("player_rush_tds", 6.0, 0.61, "rush TD"),
+        Stat("player_reception_yds", 0.1, 32.1, "rec yds"),
+        Stat("player_receptions", 1.0, 1.99, "rec"),
+        Stat("player_reception_tds", 6.0, 0.53, "rec TD"),
+    ),
+    bonuses=(
+        Bonus("player_pass_yds", 300.0, 3.0, "300+ pass"),
+        Bonus("player_rush_yds", 100.0, 3.0, "100+ rush"),
+        Bonus("player_reception_yds", 100.0, 3.0, "100+ rec"),
+    ),
+    # Any ONE is enough, as for the NFL: positions read disjoint markets.
+    required=("player_pass_yds", "player_rush_yds", "player_reception_yds"),
+    impute=_ncaaf_impute,
+    notes="DraftKings posts NCAAF props ONLY as one-sided milestone ladders, "
+          "so edge/dfs_project.project cannot read them at all and "
+          "edge/dfs_ladder.py does the work instead. Scoring validated against "
+          "DK's own FPPG; TD and interception rates fitted 2026-09-24 against "
+          "cfbfastR 2024+2025 (scripts/ncaaf_fit.py). No DST and no TE.",
+)
+
+
+SPORTS: dict[str, Sport] = {s.key: s for s in (MLB_PITCHER, NFL, NBA, NCAAF)}
 
 
 def get(sport_key: str) -> Sport:

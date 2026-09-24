@@ -112,7 +112,8 @@ def project(player_markets: dict, sport: Sport,
 
 
 def points_from_means(means: dict[str, float], probs: dict[str, float],
-                      sport: Sport, position: str | None = None) -> dict:
+                      sport: Sport, position: str | None = None,
+                      bonus_probs: dict[str, float] | None = None) -> dict:
     """Turn per-stat MEANS into a DK projection. The half that is not about odds.
 
     EXTRACTED 2026-09-12, and the extraction is the point. `project` above
@@ -129,6 +130,21 @@ def points_from_means(means: dict[str, float], probs: dict[str, float],
     the same confound DFS_METHODOLOGY warns about and the reason edge/odds's
     ScrapedOddsClient was made Liskov-substitutable for the paid client rather
     than merely similar. One assembler, one variable.
+
+    `bonus_probs` is {market: P(stat >= that bonus's threshold)} supplied by the
+    CALLER, overriding the fitted normal for those bonuses. It exists for
+    college football, where DraftKings posts a milestone LADDER rather than a
+    two-sided line and frequently prices the bonus threshold outright -- a
+    "100+" rushing rung IS P(100+ rushing yards), devigged, with no
+    distributional assumption at all.
+
+    That is a strictly better number than the one computed here, and this
+    module's own docstring says why: the threshold bonus is "the one place the
+    distributional assumption is doing something it is not really entitled to
+    do", and edge/dfs_sport.py measured the normal under-predicting P(100+) by
+    1.3-1.7 percentage points because yardage is right-skewed and a normal's
+    right tail is too thin. So when a real price for the event exists, it wins.
+    Omitted (every sport but NCAAF), nothing changes.
     """
     # Anything no book posted, filled in by the sport's own rule and recorded
     # as imputed. A caller that wants only book-priced players can check this.
@@ -154,9 +170,13 @@ def points_from_means(means: dict[str, float], probs: dict[str, float],
     for b in sport.bonuses:
         stat = sport.stat_for(b.market)
         mean = means.get(b.market)
-        if stat is None or mean is None or stat.sigma is None:
+        if stat is None or mean is None:
             continue
-        bonus += b.points * exceed_prob(mean, stat.sigma, b.threshold)
+        priced = (bonus_probs or {}).get(b.market)
+        if priced is not None:
+            bonus += b.points * priced
+        elif stat.sigma is not None:
+            bonus += b.points * exceed_prob(mean, stat.sigma, b.threshold)
     if bonus:
         components["bonus"] = round(bonus, 2)
 

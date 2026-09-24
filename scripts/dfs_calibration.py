@@ -32,6 +32,7 @@ from collections import defaultdict
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from edge.dfs import norm  # noqa: E402
+from edge.dfs_contest import parse_contest_file as _parse_contest_file  # noqa: E402
 from scripts.dfs_grade import actuals_for_date  # noqa: E402
 
 ACTUALS_CACHE_DIR = ROOT / "data/actuals_cache"
@@ -84,25 +85,12 @@ def games_for_date(pool_rows: list[dict]) -> int | None:
     return len(teams) // 2 if teams else None
 
 
-def parse_contest_file(path):
-    """-> {norm_name: {"name":, "pct_drafted":, "fpts":}} from the ownership
-    board embedded in a DK contest-standings export (ignores leaderboard rows
-    with no Player/%Drafted/FPTS)."""
-    out = {}
-    with open(path, newline="", encoding="utf-8-sig") as fh:
-        for row in csv.DictReader(fh):
-            name = (row.get("Player") or "").strip()
-            pct = (row.get("%Drafted") or "").strip()
-            fpts = (row.get("FPTS") or "").strip()
-            if not name or not pct.endswith("%"):
-                continue
-            try:
-                pct_val = float(pct.rstrip("%"))
-                fpts_val = float(fpts)
-            except ValueError:
-                continue
-            out[norm(name)] = {"name": name, "pct_drafted": pct_val, "fpts": fpts_val}
-    return out
+#: Re-exported from edge/dfs_contest.py, which now owns the only copy.
+#: Moved there 2026-09-24 so that a generated single-sport repo
+#: (scripts/mirror_app.py) can read a contest export without dragging in
+#: scripts.dfs_grade and the MLB actuals cache behind it. Every existing
+#: caller of scripts.dfs_calibration.parse_contest_file keeps working.
+parse_contest_file = _parse_contest_file
 
 
 def load_proj_log():

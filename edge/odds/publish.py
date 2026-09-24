@@ -42,19 +42,31 @@ def snapshot_path(profile: str, root: Path | None = None) -> Path:
 
 
 def export(store: OddsStore, profile: str, markets: list[str] | None = None,
-           path: Path | None = None, sport_key: str | None = None) -> dict:
+           path: Path | None = None, sport_key: str | None = None,
+           main_line_only: bool | None = None) -> dict:
     """Write the latest committed scan for `profile` as an Odds-API payload.
 
     `markets` trims the file to what the consumer actually reads -- pick'em
     needs spreads and totals and nothing else, which is the difference between
     a 100KB file and a 5MB one. None publishes everything in the scan.
+
+    `main_line_only` defaults to the PROFILE's own `full_ladders` setting. It
+    has to, because this exporter and edge/odds/cli.scraped_client are two
+    readers of the same contract and a disagreement between them is invisible:
+    NCAAF needs every rung of a milestone ladder, and a snapshot published with
+    the ladders collapsed projects nobody on Streamlit Cloud while the desktop
+    projects a full board off the live store.
     """
+    if main_line_only is None:
+        from .profiles import PROFILES
+        prof = PROFILES.get(profile)
+        main_line_only = not (prof.full_ladders if prof else False)
     row = store.latest_scan(profile)
     if row is None:
         raise ValueError(f"no committed scan for profile {profile!r}")
     scan_id = int(row["id"])
 
-    client = ScrapedOddsClient(store, profile)
+    client = ScrapedOddsClient(store, profile, main_line_only=main_line_only)
     sports = ([sport_key] if sport_key else
               sorted({r["sport_key"] for r in store.events(scan_id)}))
 

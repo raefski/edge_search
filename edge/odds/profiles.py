@@ -43,6 +43,25 @@ class Profile:
     #: alternate ladders are where middles come from -- pure arbitrage value,
     #: no modelling value. Off for the model profiles, which halves their cost.
     alt_lines: bool = True
+    #: Whether this profile's consumer needs EVERY rung of an alternate
+    #: ladder rather than the main one.
+    #:
+    #: Off everywhere but NCAAF, and it exists because the default is a silent
+    #: trap for that sport. edge/odds/source.py collapses a ladder to its main
+    #: rung by default, for a good reason: dfs.player_markets builds
+    #: {market: {side: price, "point": x}} and the LAST outcome it sees wins
+    #: `point`, so handing it a whole ladder mixes one rung's price with
+    #: another rung's line. But DraftKings posts college player props ONLY as
+    #: ladders, and a college projection is an integral over the whole survival
+    #: curve (edge/dfs_ladder.py) -- collapsed to one rung it is not a worse
+    #: projection, it is a meaningless one.
+    #:
+    #: It lives on the PROFILE rather than at each call site because there are
+    #: two of them -- the live store client and the published snapshot -- and
+    #: they must agree. They did not in the first version of this: the client
+    #: was passed the flag and the exporter was not, so the desktop projected a
+    #: full board and Streamlit Cloud silently projected nobody.
+    full_ladders: bool = False
     #: how old a scan may be before a consumer should refuse it.
     max_age_seconds: float = 3600.0
     #: rough wall-clock, for scheduling. Corrected from real runs.
@@ -130,6 +149,33 @@ PROFILES: dict[str, Profile] = {
         notes="DST has no prop market at all -- see DFS_MULTISPORT_PLAN.md. "
               "That component has to come from team totals and spreads, which "
               "this profile carries as game markets.",
+    ),
+    "dfs_ncaaf": Profile(
+        name="dfs_ncaaf",
+        sports=("americanfootball_ncaaf",),
+        required_markets=("player_pass_yds", "player_rush_yds",
+                          "player_reception_yds", "player_receptions"),
+        props=True, prop_events=SLATE_EVENTS, alt_lines=False,
+        full_ladders=True,
+        # A college slate locks at noon ET on Saturday and DraftKings keeps
+        # adding ladders through Friday night, so a stale scan here is a THIN
+        # POOL rather than a wrong one -- the opposite of the NFL's failure
+        # mode, where a stale scan silently keeps a ruled-out player's
+        # projection alive. 30 minutes matches the NFL profile anyway.
+        max_age_seconds=1800,
+        est_seconds=30,
+        publish_markets=(
+            "player_pass_yds", "player_pass_tds", "player_pass_attempts",
+            "player_pass_completions", "player_rush_yds", "player_rush_attempts",
+            "player_reception_yds", "player_receptions",
+            "spreads", "totals", "h2h"),
+        notes="NCAAF props are ONE-SIDED MILESTONE LADDERS, so a consumer must "
+              "read this profile with main_line_only=False or it gets one rung "
+              "per player and cannot project anyone -- see edge/dfs_ladder.py. "
+              "Cheap: DraftKings serves these at LEAGUE level, so five requests "
+              "cover every college game on the board rather than five per game. "
+              "No DST exists in college DK, so a missing game line costs "
+              "nothing; spreads and totals are carried for display only.",
     ),
     "dfs_nba": Profile(
         name="dfs_nba",

@@ -31,7 +31,19 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from edge import dfs  # noqa: E402
 from odds_collect import push_snapshot  # noqa: E402
 
-SPORTS = ("MLB", "NFL")
+#: DK lobby codes to publish salaries for. NOT the odds-feed sport keys --
+#: college football is "CFB" here and NASCAR is "NAS"; passing "NCAAF" returns
+#: every sport in the lobby, which looks like it worked and is not.
+#:
+#: Each sport costs one lobby call plus one draftables call per NEW or
+#: still-unpriced draft group; a group DK has already priced is frozen and
+#: drops to a 6-hour heartbeat. CFB and NAS are both small lobbies -- ~18 and
+#: ~4 groups against the NFL's 62 -- so the two of them together add well
+#: under 10% to this timer's measured ~160 requests/day. See
+#: DRAFTKINGS_ACCESS.md §2 before raising it further; this poll was once the
+#: largest single source of DK traffic in the repo, by 30x, because nobody
+#: had counted the groups.
+SPORTS = ("MLB", "NFL", "CFB", "NAS")
 
 
 # Last attempt per draft group, for groups DK has not priced yet (those write

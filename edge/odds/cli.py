@@ -93,7 +93,8 @@ def scraped_client(sport: str, consumer: str = "dfs",
 
     if (ROOT / "data" / "odds.db").exists():
         try:
-            client = ScrapedOddsClient(OddsStore(), prof.name, max_age_seconds=age)
+            client = ScrapedOddsClient(OddsStore(), prof.name, max_age_seconds=age,
+                                       main_line_only=not prof.full_ladders)
             if client.get_events(sport):
                 return client
         except Exception as exc:
