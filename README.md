@@ -132,6 +132,59 @@ minutes on Sunday 08:00–13:00 ET (and Thursday evenings). By hand:
 python3 scripts/odds_collect.py --profile dfs_nfl --push
 ```
 
+## DK College Football DFS (`pages/3_🏈_NCAAF_DFS.py`) — cash + GPP
+
+DK CFB Classic: **QB/RB/RB/WR/WR/WR/FLEX/S-FLEX**, $50k. No defence and no
+tight-end slot, and the **S-FLEX takes a quarterback** — which is the whole
+game, because college QBs average 17.2 DK points against 8.9 for receivers.
+
+```bash
+python3 scripts/odds_collect.py --profile dfs_ncaaf --push   # Friday night
+python3 scripts/dfs_lineups_ncaaf.py                         # cash + gpp
+python3 scripts/dfs_lineups_ncaaf.py --board --top 40
+```
+
+**DraftKings posts college props ONLY as one-sided milestone ladders** ("15+",
+"25+", "40+"), so `edge/dfs_project.project` cannot read them at all — it needs
+an Over/Under pair and returns `proj=None` for every player. `edge/dfs_ladder.py`
+projects from the whole ladder instead: `E[X] = ∫P(X ≥ t)dt`, with the rungs
+supplying most of the terms and only the unpriced head and tail modelled. That
+inverts the usual expectation — college's uglier market data yields a
+*better-founded* projection than the NFL's, because a ladder IS the distribution
+where a two-sided line is one point on it.
+
+**Four findings contradict the NFL build** rather than reproducing it: the
+S-FLEX is a second QB, never two QBs from one team (−0.098), team-mate
+receivers are *positively* correlated in college (+0.048 vs the NFL's −0.029)
+so the stack is 3 rather than 2, and QB is the *most* volatile position here
+rather than the least. **`NCAAF_STATUS.md`** has all of it, plus §5 on what is
+not validated.
+
+## DK NASCAR DFS (`pages/6_🏁_NASCAR_DFS.py`) — cash + GPP
+
+Six drivers, $50k, no positions. **No sportsbook is involved**: place
+differential, laps led and fastest laps have no betting market at any book, so
+this build reads NASCAR's own free timing feeds and costs nothing, works from
+any IP, and has no freshness contract.
+
+```bash
+python3 scripts/dfs_lineups_nascar.py --board
+python3 scripts/dfs_lineups_nascar.py            # AFTER qualifying — no late swap
+```
+
+**It is the only sport here with a simulator instead of a correlation matrix**,
+because its scoring components are constrained sums over the whole field:
+finishing position is a permutation, place differential sums to zero, laps led
+sums to the race distance. Six drivers cannot all dominate. The objectives are
+percentiles of the simulated lineup total (25th for cash, 90th for GPP) rather
+than mean ± k·sd, because a NASCAR score is not symmetric — a wreck is in the
+left tail and a dominator in the right.
+
+**A superspeedway is nearly a lottery** (finish model R² 0.029 against 0.287 at
+a short track), fastest laps are *uncorrelated* with leading there (r=0.01), and
+the front of the grid is the most dangerous place to be (28.2% DNF vs 23.3% from
+the back). **`NASCAR_STATUS.md`** has the full table.
+
 ## NFL pick'em (TOO-GOODE pool) — sidebar page, not DFS
 
 `pages/4_🎯_Pickem.py`, added to the app's sidebar automatically by Streamlit's
@@ -159,6 +212,9 @@ frozen line is login-gated and has to be captured by hand into
 | `edge/client.py` | Odds API client: cache, credit ledger, dry-run guard (**being retired**) |
 | `edge/fairodds.py` | consensus fair prob, excluding the target book |
 | `edge/scanner.py` | normalise payloads, de-vig, flag +EV vs consensus |
+| `edge/dfs_ladder.py` | **milestone-ladder -> projection** (NCAAF; see NCAAF_STATUS.md) |
+| `edge/nascar_sim.py` | **race simulator** (NASCAR; see NASCAR_STATUS.md) |
+| `scripts/mirror_app.py` | generates the standalone `ncaaf_fantasy` / `nascar_fantasy` repos |
 | `edge/pickem.py` | pick'em spread-edge model (see PICKEM_STATUS.md) |
 | `edge/pickem_features.py` | as-of-week efficiency + coach features (tested, NOT shipped — see PICKEM_MODEL.md) |
 | `edge/pickem_live.py` | live NFL spreads via The Odds API (~1 credit/week) |

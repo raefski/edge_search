@@ -112,7 +112,15 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
             comp = p.get("competition") or {}
             if not comp.get("name"):
                 continue
-            fppg = next((a.get("value") for a in (p.get("draftStatAttributes") or []) if a.get("id") == 408), None)
+            stats = {a.get("id"): a.get("value")
+                     for a in (p.get("draftStatAttributes") or [])}
+            # DK's "Fantasy Points Per Game" lives under a DIFFERENT stat id
+            # per sport, and asking for the wrong one returns None rather than
+            # an error -- which reads as "this player has no history" for every
+            # player on the board. Verified live 2026-09-24: 408 for MLB and
+            # NFL, 174 for CFB, 653 for NASCAR. A payload carries exactly one
+            # of them, so a priority list is safe rather than ambiguous.
+            fppg = next((stats[i] for i in (408, 174, 653) if i in stats), None)
             try:
                 dk_fppg = float(fppg)
             except (TypeError, ValueError):
@@ -120,7 +128,11 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
             out[k] = {"name": p["displayName"], "salary": p.get("salary"),
                       "position": p.get("position"), "team": p.get("teamAbbreviation"),
                       "game": comp.get("competitionId"), "matchup": comp.get("name"),
-                      "start": comp.get("startTime"), "dk_fppg": dk_fppg}
+                      "start": comp.get("startTime"), "dk_fppg": dk_fppg,
+                      # DK's own player id. For NASCAR this IS NASCAR's
+                      # driver_id (Larson 4030 in both), which is the exact
+                      # join edge/dfs_run_nascar.py relies on.
+                      "player_id": p.get("playerId")}
     return out
 
 

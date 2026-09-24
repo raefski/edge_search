@@ -81,9 +81,19 @@ APPS = {
         "page": "pages/6_🏁_NASCAR_DFS.py",
         "profile": None,          # NASCAR needs no odds profile -- see below
         "docs": ["NASCAR_STATUS.md", "DRAFTKINGS_ACCESS.md"],
-        "scripts": ["dfs_lineups_nascar.py", "nascar_collect.py",
-                    "nascar_fit.py", "nascar_calibration.py",
-                    "draftables_publish.py", "mirror_app.py"],
+        "scripts": ["dfs_lineups_nascar.py", "nascar_fit.py",
+                    "nascar_calibration.py", "draftables_publish.py",
+                    "mirror_app.py"],
+        # The driver-form cache for the seasons the app actually reads. NASCAR's
+        # feeds are reachable from a datacenter IP (they are not DraftKings), so
+        # this is a COLD-START optimisation rather than a requirement: without
+        # it the first build on Streamlit Cloud fetches ~70 race files before it
+        # can compute anyone's form. Only two seasons are carried -- the full
+        # 2022-2026 cache is 23MB and edge/dfs_run_nascar.FORM_SEASONS reads
+        # two.
+        "data_globs": ["nascar_cache/*_2025_*.json",
+                       "nascar_cache/*_2026_*.json",
+                       "nascar_cache/schedule_*.json"],
         "tests": ["test_dfs_nascar.py"],
         "blurb": (
             "NASCAR scores place differential, laps led and fastest laps, none "
@@ -217,6 +227,15 @@ def main() -> int:
             run("git", "init", "-q", cwd=dest)
             run("git", "remote", "add", "origin", spec["repo"], cwd=dest,
                 check=False)
+        # Carry edge_search's own committer identity across. This machine has
+        # no --global user.name, only a per-repo one, so a freshly `git init`ed
+        # mirror cannot commit at all ("Author identity unknown") -- and it
+        # fails at the commit step, after everything has already been copied,
+        # which reads like a mirroring bug rather than a config one.
+        for key in ("user.name", "user.email"):
+            val = run("git", "config", key, cwd=ROOT, check=False).stdout.strip()
+            if val:
+                run("git", "config", key, val, cwd=dest, check=False)
 
     print("\nedge package:")
     copy(ROOT / "edge", dest / "edge", args.dry_run)
@@ -255,6 +274,15 @@ def main() -> int:
          dest / "data" / "draftables_snapshot", args.dry_run)
     for extra in spec.get("data", []):
         copy(ROOT / "data" / extra, dest / "data" / extra, args.dry_run)
+    for pattern in spec.get("data_globs", []):
+        hits = sorted((ROOT / "data").glob(pattern))
+        print(f"  data/{pattern}  ({len(hits)} files)")
+        if not args.dry_run:
+            for src in hits:
+                rel = src.relative_to(ROOT / "data")
+                dst = dest / "data" / rel
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(src, dst)
 
     if not args.dry_run:
         # A .gitignore that does NOT exclude the snapshots -- they are the whole
