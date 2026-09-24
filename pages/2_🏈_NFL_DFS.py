@@ -32,7 +32,6 @@ to the paid Odds API is invisible in the output and costs credits.
 from __future__ import annotations
 
 import csv
-import importlib
 import io
 import sys
 from datetime import datetime, timezone
@@ -50,31 +49,25 @@ st.set_page_config(page_title="DK NFL DFS Lineups", page_icon="🏈",
 
 # Streamlit Community Cloud pulls new commits and RERUNS this script without
 # restarting the Python process, so sys.modules keeps whatever module objects
-# an earlier run imported. A deploy that changes an existing function's BODY
-# -- the ordinary bugfix -- then goes on running the pre-fix code with no
-# error at all. pages/5_⚖️_Arbitrage.py records this happening for real and
-# carries the same guard; the DFS modules need it for the same reason and the
-# stakes here are a wrong lineup rather than a wrong display.
-def _dfs_fingerprint() -> float:
-    try:
-        return max(p.stat().st_mtime for p in (ROOT / "edge").glob("dfs*.py"))
-    except ValueError:
-        return 0.0
+# an earlier run imported. A deploy that changes an existing function's BODY --
+# the ordinary bugfix -- then goes on running the pre-fix code with no error at
+# all. The mechanism, the package list and the fingerprint all live in
+# edge/dfs_pagereload.py; this is only the st.cache_resource gate, which cannot
+# live in edge/ because nothing in edge/ imports streamlit.
+#
+# THIS USED TO BE THREE DIVERGENT COPIES AND THE DIVERGENCE WAS AN OUTAGE: none
+# of them reloaded edge.odds, so the deployed NCAAF page died on
+# "unknown profile 'dfs_ncaaf'" while serving the very commit that added it.
+from edge.dfs_pagereload import reload_packages, source_fingerprint  # noqa: E402
 
 
 @st.cache_resource(show_spinner=False)
-def _reload_dfs(fingerprint: float) -> float:
-    for _pass in range(2):
-        for name in sorted(k for k in sys.modules
-                           if k.startswith("edge.dfs") or k == "edge.nfl"):
-            try:
-                importlib.reload(sys.modules[name])
-            except Exception:                               # noqa: BLE001
-                pass
+def _reload_edge(fingerprint: float) -> float:
+    reload_packages()
     return fingerprint
 
 
-_reload_dfs(_dfs_fingerprint())
+_reload_edge(source_fingerprint())
 
 from edge import dfs_nfl_theory as theory     # noqa: E402
 from edge import dfs_run_nfl as nfl           # noqa: E402
