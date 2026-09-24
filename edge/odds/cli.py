@@ -154,6 +154,23 @@ def describe(client) -> str:
         row = client.store.latest_scan(client.profile)
         when = row["finished_at"] if row else "?"
         return f"prices: FREE scrape (profile {client.profile}, scanned {when})"
+    if name == "SnapshotOddsClient":
+        # THIS BRANCH WAS MISSING AND THE BADGE LIED IN THE WORST DIRECTION.
+        # A snapshot client fell through to the paid wording below and, because
+        # SnapshotOddsClient sets dry_run = False, printed
+        # "prices: Odds API (LIVE, will spend, ? credits left)" for a free,
+        # committed file that cannot spend anything. Found 2026-09-24 on the
+        # NCAAF CLI, but it was never NCAAF-specific: it fires for MLB and NFL
+        # too, every time the local store goes stale between collections, which
+        # is their normal state on the desktop.
+        #
+        # This module's own docstring says a silent fallback to the paid client
+        # is the thing the badge exists to catch. A badge that reports the
+        # opposite is worse than no badge, because it invites someone to go
+        # looking for a spend that never happened -- or to distrust a free run.
+        mins = client.age_seconds / 60.0
+        return (f"prices: FREE published snapshot (profile {client.profile}, "
+                f"{mins:.0f} min old) — spends nothing")
     rem = client.remaining_credits()
     mode = "cache only" if client.dry_run else "LIVE, will spend"
     return f"prices: Odds API ({mode}, {rem if rem is not None else '?'} credits left)"
