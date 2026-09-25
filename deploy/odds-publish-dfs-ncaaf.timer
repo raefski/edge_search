@@ -1,0 +1,64 @@
+# Push a fresh college-football ladder snapshot to the cloud app.
+#
+# WHY THIS EXISTS AT ALL: the dfs_ncaaf profile shipped 2026-09-24 with no
+# publish schedule, and the deployed NCAAF page died the same evening with
+#
+#   StaleOdds: snapshot odds_snapshot_dfs_ncaaf.json was generated
+#              2026-09-24T14:30:30Z, older than this caller's 21600s contract
+#
+# The model was fine; nothing was scheduled to push. edge/odds/cli.py refuses a
+# snapshot over 6 hours old on purpose -- serving yesterday's prices silently is
+# the failure it exists to prevent -- so a profile without a timer is a page
+# that works for six hours and then stops.
+#
+# COLLEGE'S CADENCE IS NOT THE NFL'S, and the difference matters in both
+# directions:
+#
+#   * DraftKings keeps ADDING ladders right through Friday night. An old scan
+#     here is a THIN POOL rather than wrong numbers -- the opposite of the NFL,
+#     where a stale scan keeps a ruled-out player's projection alive. So the
+#     run-up to Saturday lock is where density actually buys something.
+#   * The main slate locks at NOON Saturday, not 1 PM Sunday, and there are
+#     real Thursday and Friday night slates as well.
+#
+# Layers:
+#   1. BASELINE every 2 hours, every day, 07:00-23:00 local, so the phone is
+#      never more than ~2h stale whenever it is opened.
+#   2. DENSE 30-minute coverage before each real lock: Friday evening (ladders
+#      landing), Saturday morning into the noon main-slate lock, and Saturday
+#      afternoon/evening for the later slates.
+#
+#   cp deploy/odds-publish@.service deploy/odds-publish-dfs-ncaaf.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now odds-publish-dfs-ncaaf.timer
+#   systemd-analyze verify ~/.config/systemd/user/odds-publish-dfs-ncaaf.timer
+[Unit]
+Description=Publish NCAAF DFS ladder snapshot for the cloud app
+
+[Timer]
+# The instance name IS the profile -- without this the timer looks for a
+# service matching its own name, which does not exist.
+Unit=odds-publish@dfs_ncaaf.service
+
+# 1. Baseline: every 2 hours, every day, waking hours.
+# The step belongs on the HOUR field. Putting it on the minute field instead
+# (07..23:00/2:00) fires every 2 MINUTES all day -- that mistake put 352
+# commits on main in one day on the NFL timer. Verify any edit with
+# `systemd-analyze calendar '<expr>'` before installing it.
+OnCalendar=*-*-* 07..23/2:00:00
+
+# 2. Dense pre-lock windows, 30 minutes apart.
+# Thursday night games kick ~7:30 PM ET
+OnCalendar=Thu *-*-* 17..19:00/30:00
+# Friday night games, and the evening DK fills in Saturday's ladders
+OnCalendar=Fri *-*-* 17..22:00/30:00
+# the MAIN SLATE locks at noon ET Saturday -- this is the one that matters
+OnCalendar=Sat *-*-* 07..12:00/30:00
+# Saturday afternoon and night slates
+OnCalendar=Sat *-*-* 14..20:00/30:00
+
+RandomizedDelaySec=60
+Persistent=true
+
+[Install]
+WantedBy=timers.target

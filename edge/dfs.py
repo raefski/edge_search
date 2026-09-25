@@ -86,6 +86,20 @@ def mlb_draft_groups() -> list[dict]:
     return draft_groups("MLB")
 
 
+#: DK's "Fantasy Points Per Game" lives under a DIFFERENT stat id per sport,
+#: and asking for the wrong one returns None rather than an error -- which
+#: reads as "this player has no history" for every player on the board.
+#: Verified live 2026-09-24: 408 for MLB and NFL, 174 for CFB, 653 for NASCAR.
+#: A payload carries exactly one of them, so a priority list is safe rather
+#: than ambiguous.
+#:
+#: Read by BOTH fetch_draftables and save_draftables_snapshot. They must agree:
+#: the snapshot writer filtered on a bare 408 while the reader looked for all
+#: three, so college and NASCAR snapshots reached Streamlit Cloud with the FPPG
+#: column already thrown away.
+FPPG_STAT_IDS = (408, 174, 653)
+
+
 def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
     """{normalized name: {name, salary, position, team, dk_fppg}} for a draft group.
     dk_fppg = DK's own "Fantasy Points Per Game" (draftStatAttributes id 408) --
@@ -114,13 +128,7 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
                 continue
             stats = {a.get("id"): a.get("value")
                      for a in (p.get("draftStatAttributes") or [])}
-            # DK's "Fantasy Points Per Game" lives under a DIFFERENT stat id
-            # per sport, and asking for the wrong one returns None rather than
-            # an error -- which reads as "this player has no history" for every
-            # player on the board. Verified live 2026-09-24: 408 for MLB and
-            # NFL, 174 for CFB, 653 for NASCAR. A payload carries exactly one
-            # of them, so a priority list is safe rather than ambiguous.
-            fppg = next((stats[i] for i in (408, 174, 653) if i in stats), None)
+            fppg = next((stats[i] for i in FPPG_STAT_IDS if i in stats), None)
             try:
                 dk_fppg = float(fppg)
             except (TypeError, ValueError):
@@ -188,11 +196,24 @@ def save_draftables_snapshot(draft_group_id: int) -> int:
     the fallback never pins a slate to a pre-salary copy. Rewrites only on
     change so scripts/draftables_publish.py doesn't commit a no-op."""
     url = f"https://api.draftkings.com/draftgroups/v1/draftgroups/{draft_group_id}/draftables"
-    keep = ("displayName", "salary", "position", "teamAbbreviation", "competition", "draftStatAttributes")
+    # `playerId` IS DraftKings' own player id, and for NASCAR it is also
+    # NASCAR's driver_id -- the exact join edge/dfs_run_nascar.py is built on.
+    # Leaving it out of the snapshot made every driver fail that join on
+    # Streamlit Cloud, which is the ONLY environment that reads the snapshot,
+    # so the board came back empty there and full everywhere else. The trimming
+    # here exists to keep a committed file small; an integer per row does not
+    # threaten that.
+    keep = ("displayName", "salary", "position", "teamAbbreviation",
+            "competition", "draftStatAttributes", "playerId")
     rows, seen = [], set()
     for p in _get(url).get("draftables", []):
         r = {k: p.get(k) for k in keep}
-        r["draftStatAttributes"] = [a for a in (r["draftStatAttributes"] or []) if a.get("id") == 408]
+        # FPPG_STAT_IDS, not a bare 408: that is MLB and NFL's id, and keeping
+        # only it silently dropped the FPPG column for college football (174)
+        # and NASCAR (653) from every snapshot. Shared with fetch_draftables so
+        # the writer and the reader cannot disagree about which ids matter.
+        r["draftStatAttributes"] = [a for a in (r["draftStatAttributes"] or [])
+                                    if a.get("id") in FPPG_STAT_IDS]
         key = json.dumps(r, sort_keys=True)
         if key not in seen:  # exact dupes only -- fetch_draftables' first-row-wins stays identical
             seen.add(key)

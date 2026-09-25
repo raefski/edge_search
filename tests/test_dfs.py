@@ -1850,3 +1850,67 @@ def test_save_entry_button_call_sites_use_distinct_tags():
             tags.append(c.args[0].value)   # falls back to `mode` as the tag
     assert len(tags) == len(calls), "every call site must resolve to a static tag for this test to check"
     assert len(set(tags)) == len(tags), f"duplicate save_entry_button tags would collide: {tags}"
+
+
+# ---------------------------------------------------------------------------
+# The Cloud draftables snapshot must carry everything fetch_draftables reads.
+# ---------------------------------------------------------------------------
+def _fake_draftable(pid, name, salary, pos, stat_id, stat_val):
+    return {"playerId": pid, "displayName": name, "salary": salary,
+            "position": pos, "teamAbbreviation": "XYZ", "rosterSlotId": 1,
+            "competition": {"competitionId": 999, "name": "A @ B",
+                            "startTime": "2026-09-27T19:08:00.0000000Z"},
+            "draftStatAttributes": [{"id": stat_id, "value": stat_val},
+                                    {"id": -2, "value": "noise"}],
+            "playerImage50": "https://example/x.png"}
+
+
+def test_snapshot_round_trip_preserves_every_field_the_reader_uses(tmp_path,
+                                                                  monkeypatch):
+    """Save a snapshot, read it back, and require it to equal the live parse.
+
+    THIS IS THE TEST THAT WAS MISSING. save_draftables_snapshot TRIMS the DK
+    payload to keep the committed file small, and Streamlit Cloud is the only
+    environment that ever reads the result -- so a field dropped here is
+    invisible everywhere it is developed and broken in the one place it runs.
+
+    It happened twice in one change:
+      * `playerId` was not kept, and for NASCAR that field IS NASCAR's own
+        driver_id. Every driver failed the entry-list join on Cloud and the
+        board came back empty ("No drivers on this slate") while being full on
+        the desktop.
+      * draftStatAttributes was filtered to a bare id 408, which is MLB and
+        NFL's FPPG. College football's is 174 and NASCAR's is 653, so both new
+        sports lost the column entirely.
+    """
+    from edge import dfs
+
+    for sport_stat_id in dfs.FPPG_STAT_IDS:
+        payload = {"draftables": [
+            _fake_draftable(4030, "Kyle Larson", 11000, "D", sport_stat_id, "35.4"),
+            _fake_draftable(1361, "Denny Hamlin", 10500, "D", sport_stat_id, "55.4"),
+        ]}
+        monkeypatch.setattr(dfs, "_get", lambda _url, _p=payload: _p)
+        monkeypatch.setattr(dfs, "_SNAP_DIR", tmp_path)
+
+        live = dfs.fetch_draftables(1)          # reads _get directly
+        assert dfs.save_draftables_snapshot(1) == 2
+
+        # Now force the live path to fail so the snapshot is what gets read.
+        def boom(_url):
+            raise RuntimeError("simulated datacenter 403")
+        monkeypatch.setattr(dfs, "_get", boom)
+        from_snapshot = dfs.fetch_draftables(1)
+
+        assert from_snapshot == live, f"stat id {sport_stat_id}"
+        assert all(v["player_id"] for v in from_snapshot.values())
+        assert all(v["dk_fppg"] is not None for v in from_snapshot.values())
+
+
+def test_every_sports_fppg_id_survives_the_snapshot():
+    """A bare 408 filter is the bug; the shared tuple is the fix."""
+    from edge import dfs
+    import inspect
+    src = inspect.getsource(dfs.save_draftables_snapshot)
+    assert "FPPG_STAT_IDS" in src
+    assert "== 408" not in src
