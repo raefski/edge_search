@@ -515,7 +515,11 @@ def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftki
     if gid is None:
         return {"error": meta.get("error"), "slates": slates}
 
-    salaries = dfs.fetch_draftables(gid)
+    try:
+        salaries = dfs.fetch_draftables(gid)
+    except dfs.DraftablesUnavailable as exc:
+        return {"unpriced": True, "unpriced_reason": str(exc), "gid": gid,
+                "meta": meta, "slates": slates}
     priced = {k: v for k, v in salaries.items() if v.get("salary")}
     if not priced:
         return {"unpriced": True, "gid": gid, "meta": meta, "slates": slates}

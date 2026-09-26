@@ -79,13 +79,13 @@ table.lu td.num {text-align:right; font-variant-numeric:tabular-nums; white-spac
 
 
 @st.cache_data(ttl=300, show_spinner=False)
-def _slates(_nonce: int):
+def _mma_slates(_nonce: int):
     from edge import dfs
     return R.classic_groups(dfs.draft_groups(R.DK_SPORT))
 
 
 @st.cache_data(ttl=300, show_spinner=False)
-def _build(gid, sims: int, _nonce: int):
+def _mma_build(gid, sims: int, _nonce: int):
     res = R.build_slate(draft_group=gid, n_sims=sims)
     # The per-sim matrices are for the CLI's portfolio; the page does not
     # need them and they are the bulk of what st.cache_data would pickle.
@@ -117,7 +117,7 @@ with st.sidebar:
         st.cache_data.clear()
         st.rerun()
     try:
-        slates = _slates(st.session_state.mma_nonce)
+        slates = _mma_slates(st.session_state.mma_nonce)
     except Exception as exc:                                # noqa: BLE001
         slates = []
         st.error(f"DraftKings lobby unreachable: {exc}")
@@ -146,7 +146,7 @@ if not slates:
 
 with st.spinner("Simulating the card…"):
     try:
-        res = _build(gid, sims, st.session_state.mma_nonce)
+        res = _mma_build(gid, sims, st.session_state.mma_nonce)
     except Exception as exc:                                # noqa: BLE001
         st.error(f"Build failed: {exc}")
         st.exception(exc)

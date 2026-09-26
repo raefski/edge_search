@@ -97,7 +97,7 @@ def mlb_draft_groups() -> list[dict]:
 #: the snapshot writer filtered on a bare 408 while the reader looked for all
 #: three, so college and NASCAR snapshots reached Streamlit Cloud with the FPPG
 #: column already thrown away.
-FPPG_STAT_IDS = (408, 174, 653)
+FPPG_STAT_IDS = (408, 174, 653, 635)     # 635: MMA's "per fight"
 
 
 def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
@@ -146,6 +146,17 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
 
 _SNAP_DIR = __import__("pathlib").Path(__file__).resolve().parents[1] / "data" / "draftables_snapshot"
 
+class DraftablesUnavailable(RuntimeError):
+    """No salaries for a draft group: the live call failed AND no snapshot exists.
+
+    On Streamlit Cloud (datacenter IP, always 403'd) that almost always means DK
+    has not PRICED the slate yet -- the desktop only publishes a snapshot once
+    salaries exist. Every build_slate turns this into {"unpriced": True}; before
+    this it surfaced as a raw 403 traceback ("Build failed") on the phone for
+    NCAAF, NASCAR and MMA on 2026-09-26, each time for next week's slate.
+    """
+
+
 # "live" | "snapshot <when>" | "failed" -- set by _draftables_raw so a caller
 # (the Streamlit pages, scripts/draftables_publish.py) can tell the user which
 # one they are looking at instead of guessing from the numbers.
@@ -191,7 +202,16 @@ def _draftables_raw(draft_group_id: int) -> list[dict]:
                   file=sys.stderr)
             return found.json()
         LAST_DRAFTABLES_SOURCE = "failed"
-        raise
+        raise DraftablesUnavailable(
+            f"DraftKings salaries for draft group {draft_group_id} are not "
+            f"available here: the live request failed ({type(exc).__name__}) "
+            "and no snapshot has been published. Usually DK has not priced "
+            "this slate yet.") from exc
+
+
+#: playerGameAttributes the snapshot keeps: MMA fight number (115, 1 = main
+#: event) and weigh-in weight (150). See edge/dfs_run_mma.py.
+SNAPSHOT_GAME_ATTR_IDS = (115, 150)
 
 
 def save_draftables_snapshot(draft_group_id: int) -> int:
@@ -210,6 +230,10 @@ def save_draftables_snapshot(draft_group_id: int) -> int:
     # threaten that.
     keep = ("displayName", "salary", "position", "teamAbbreviation",
             "competition", "draftStatAttributes", "playerId")
+    # MMA reads fight order and weigh-in weight (playerGameAttributes 115 and
+    # 150) and a scratch flag; without them Cloud's MMA board was built from
+    # less than the desktop's. Kept only when present, so no other sport's
+    # snapshot changes.
     rows, seen = [], set()
     for p in _get(url).get("draftables", []):
         r = {k: p.get(k) for k in keep}
@@ -219,6 +243,12 @@ def save_draftables_snapshot(draft_group_id: int) -> int:
         # the writer and the reader cannot disagree about which ids matter.
         r["draftStatAttributes"] = [a for a in (r["draftStatAttributes"] or [])
                                     if a.get("id") in FPPG_STAT_IDS]
+        extra = [a for a in (p.get("playerGameAttributes") or [])
+                 if a.get("id") in SNAPSHOT_GAME_ATTR_IDS]
+        if extra:
+            r["playerGameAttributes"] = extra
+        if p.get("isDisabled"):
+            r["isDisabled"] = True
         key = json.dumps(r, sort_keys=True)
         if key not in seen:  # exact dupes only -- fetch_draftables' first-row-wins stays identical
             seen.add(key)

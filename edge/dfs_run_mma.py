@@ -86,7 +86,6 @@ def _parse_time(value) -> datetime | None:
 # The slate
 # ---------------------------------------------------------------------------
 CAPTAIN_GAME_TYPE = mma.CAPTAIN_GAME_TYPE
-CPT_SLOT = 614
 
 
 def classic_groups(groups: list[dict] | None = None) -> list[dict]:
@@ -135,11 +134,9 @@ def read_board(gid: int) -> tuple[list[dict], list[dict], list[str]]:
     """
     try:
         raw = dfs._draftables_raw(gid)
-    except Exception:                                       # noqa: BLE001
-        # Streamlit Cloud cannot reach DK's draftables (Akamai 403s a
-        # datacenter IP) and reads the desktop's snapshot instead -- which
-        # does not exist for a group DK has not PRICED yet. That is "not
-        # priced", not a crash (2026-09-26: next week's card, the day before).
+    except dfs.DraftablesUnavailable:
+        # Cloud cannot reach DK's draftables and reads the desktop's snapshot,
+        # which does not exist for a group DK has not PRICED yet.
         return [], [], []
     by_comp: dict = {}
     scratched = []
@@ -158,12 +155,15 @@ def read_board(gid: int) -> tuple[list[dict], list[dict], list[str]]:
             weight = int(float(at.get(ATTR_WEIGHT) or 0))
         except ValueError:
             weight = 0
-        cpt = p.get("rosterSlotId") == CPT_SLOT
+        # Captain Mode lists every fighter twice, CPT at 1.5x the salary. The
+        # CPT row is told apart by SALARY, not rosterSlotId: the Cloud
+        # snapshot does not carry the slot, and a fighter's two rows are
+        # otherwise identical.
         prev = by_comp.get(comp.get("competitionId"), {}).get(p.get("displayName"))
+        sals = sorted({int(p.get("salary") or 0)} | set((prev or {}).get("_sals", ())))
         f = {"name": p.get("displayName"), "dk_id": p.get("playerId"),
-             "salary": (prev or {}).get("salary", 0) if cpt else int(p.get("salary") or 0),
-             "cpt_salary": int(p.get("salary") or 0) if cpt else (prev or {}).get("cpt_salary"),
-             "dk_fppf": fppf,
+             "salary": sals[0], "cpt_salary": sals[-1] if len(sals) > 1 else None,
+             "_sals": tuple(sals), "dk_fppf": fppf,
              "record": st.get(-1), "weight": weight,
              "fight_no": int(at.get(ATTR_FIGHT_NUMBER) or 0) or None,
              "comp": comp.get("competitionId"), "matchup": comp.get("name"),
@@ -172,6 +172,8 @@ def read_board(gid: int) -> tuple[list[dict], list[dict], list[str]]:
     bouts, fighters = [], []
     for comp, fs in by_comp.items():
         fs = list(fs.values())
+        for f in fs:
+            f.pop("_sals", None)
         if len(fs) != 2:
             scratched += [f["name"] for f in fs]
             continue

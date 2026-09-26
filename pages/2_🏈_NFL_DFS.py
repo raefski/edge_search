@@ -102,13 +102,13 @@ table.lu td.num {text-align:right; font-variant-numeric:tabular-nums; white-spac
 
 # ── data ────────────────────────────────────────────────────────────────────
 @st.cache_data(ttl=300, show_spinner=False)
-def _slates(_nonce: int):
+def _nfl_slates(_nonce: int):
     from edge import dfs
     return nfl.classic_groups(dfs.draft_groups("NFL"))
 
 
 @st.cache_data(ttl=300, show_spinner=False)
-def _build(gid, iters: int, _nonce: int):
+def _nfl_build(gid, iters: int, _nonce: int):
     client = scraped_client(nfl.SPORT, "dfs")
     return nfl.build_slate(client, draft_group=gid, iters=iters)
 
@@ -174,7 +174,7 @@ with st.sidebar:
         st.rerun()
 
     try:
-        slates = _slates(st.session_state.nfl_nonce)
+        slates = _nfl_slates(st.session_state.nfl_nonce)
     except Exception as exc:                                # noqa: BLE001
         slates = []
         st.error(f"DraftKings lobby unreachable: {exc}")
@@ -182,8 +182,12 @@ with st.sidebar:
     gid = None
     if slates:
         labels = [f"{s['label']} · {s['games']}g · {_et(s['start'])}" for s in slates]
+        # A slate with games first: once the Main slate locks, DK's "Main" is
+        # next week's, listed with 0 games and no salaries (2026-09-26 NCAAF
+        # opened on it with tonight's Late Night slate still to play).
         default = max(range(len(slates)),
-                      key=lambda i: (slates[i]["label"] == "Main",
+                      key=lambda i: (slates[i]["games"] > 0,
+                                     slates[i]["label"] == "Main",
                                      slates[i]["games"]))
         choice = st.selectbox("Slate", labels, index=default,
                               help="DK Classic slates only. 'Main' is the one "
@@ -207,7 +211,7 @@ if not slates:
 
 with st.spinner("Building cash + GPP lineups…"):
     try:
-        res = _build(gid, iters, st.session_state.nfl_nonce)
+        res = _nfl_build(gid, iters, st.session_state.nfl_nonce)
     except Exception as exc:                                # noqa: BLE001
         st.error(f"Build failed: {exc}")
         st.exception(exc)
@@ -219,6 +223,8 @@ if res.get("error"):
 if res.get("unpriced"):
     st.warning("DraftKings lists this slate but has not PRICED it yet — that is "
                "normal a few days out. Try again closer to kickoff.")
+    if res.get("unpriced_reason"):
+        st.caption(res["unpriced_reason"])
     st.stop()
 
 meta, stats = res["meta"], res["stats"]

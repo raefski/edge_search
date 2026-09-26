@@ -119,13 +119,13 @@ table.lu td.num {text-align:right; font-variant-numeric:tabular-nums; white-spac
 
 
 @st.cache_data(ttl=300, show_spinner=False)
-def _slates(_nonce: int):
+def _nascar_slates(_nonce: int):
     from edge import dfs
     return R.classic_groups(dfs.draft_groups(R.DK_SPORT))
 
 
 @st.cache_data(ttl=300, show_spinner=False)
-def _build(gid, sims: int, iters: int, _nonce: int):
+def _nascar_build(gid, sims: int, iters: int, _nonce: int):
     return R.build_slate(draft_group=gid, n_sims=sims, iters=iters)
 
 
@@ -159,7 +159,7 @@ with st.sidebar:
         st.rerun()
 
     try:
-        slates = _slates(st.session_state.nas_nonce)
+        slates = _nascar_slates(st.session_state.nas_nonce)
     except Exception as exc:                                # noqa: BLE001
         slates = []
         st.error(f"DraftKings lobby unreachable: {exc}")
@@ -192,7 +192,7 @@ if not slates:
 
 with st.spinner("Simulating the race…"):
     try:
-        res = _build(gid, sims, iters, st.session_state.nas_nonce)
+        res = _nascar_build(gid, sims, iters, st.session_state.nas_nonce)
     except Exception as exc:                                # noqa: BLE001
         st.error(f"Build failed: {exc}")
         st.exception(exc)
@@ -201,6 +201,9 @@ with st.spinner("Simulating the race…"):
 if res.get("unpriced"):
     st.warning("DraftKings lists this slate but has not PRICED it yet — that is "
                "normal a few days out.")
+    _why = res.get("unpriced_reason") or (res.get("stats") or {}).get("unpriced_reason")
+    if _why:
+        st.caption(_why)
     st.stop()
 if res.get("error"):
     st.error(res["error"])
