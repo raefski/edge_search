@@ -185,6 +185,30 @@ a short track), fastest laps are *uncorrelated* with leading there (r=0.01), and
 the front of the grid is the most dangerous place to be (28.2% DNF vs 23.3% from
 the back). **`NASCAR_STATUS.md`** has the full table.
 
+## DK MMA DFS (`pages/7_🥊_MMA_DFS.py`) — cash + GPP
+
+Six fighters, $50k, no positions, **no late swap — lock is the first fight's
+bell**. The win bonus (90/70/45 by round, 30 for a decision) is most of a DK MMA
+score, and DraftKings Sportsbook prices exactly what it pays on: winner ×
+method × round. So the build reads those prices, **de-biases them** (the method
+market has underpriced decisions by 3–4 points in every era since 2013 — the
+expensive direction, since a finish pays up to three times a decision),
+simulates whole fights with UFCStats style indices, and scores every legal
+lineup against a **simulated field** on the same simulated cards: cash =
+P(beat the double-up line), GPP = P(top 1%).
+
+```bash
+python3 scripts/dfs_lineups_mma.py --capture     # fresh DK prices, then cash + gpp
+python3 scripts/dfs_lineups_mma.py --board
+python3 scripts/mma_calibration.py --grade --refresh   # the day after
+```
+
+Scoring reproduces DK's own FPPF to the decimal for 15 of 18 fighters.
+Backtested end to end on 3,454 held-out fighter-fights (2022–26): MAE **30.0**
+against **36.5** for the career average DK prints in its lobby, with the
+simulated distribution calibrated at every percentile checked. Ownership is a
+prior. **`MMA_STATUS.md`** has everything.
+
 ## NFL pick'em (TOO-GOODE pool) — sidebar page, not DFS
 
 `pages/4_🎯_Pickem.py`, added to the app's sidebar automatically by Streamlit's
@@ -214,7 +238,8 @@ frozen line is login-gated and has to be captured by hand into
 | `edge/scanner.py` | normalise payloads, de-vig, flag +EV vs consensus |
 | `edge/dfs_ladder.py` | **milestone-ladder -> projection** (NCAAF; see NCAAF_STATUS.md) |
 | `edge/nascar_sim.py` | **race simulator** (NASCAR; see NASCAR_STATUS.md) |
-| `scripts/mirror_app.py` | generates the standalone `ncaaf_fantasy` / `nascar_fantasy` repos |
+| `edge/mma_sim.py` | **fight simulator** (MMA; see MMA_STATUS.md) |
+| `scripts/mirror_app.py` | generates the standalone `ncaaf_fantasy` / `nascar_fantasy` / `mma_fantasy` repos |
 | `edge/pickem.py` | pick'em spread-edge model (see PICKEM_STATUS.md) |
 | `edge/pickem_features.py` | as-of-week efficiency + coach features (tested, NOT shipped — see PICKEM_MODEL.md) |
 | `edge/pickem_live.py` | live NFL spreads via The Odds API (~1 credit/week) |

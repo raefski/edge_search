@@ -43,7 +43,8 @@ from odds_collect import push_snapshot  # noqa: E402
 #: DRAFTKINGS_ACCESS.md §2 before raising it further; this poll was once the
 #: largest single source of DK traffic in the repo, by 30x, because nobody
 #: had counted the groups.
-SPORTS = ("MLB", "NFL", "CFB", "NAS")
+#: MMA added 2026-09-26: its lobby is ~3 draft groups, one card a week.
+SPORTS = ("MLB", "NFL", "CFB", "NAS", "MMA")
 
 
 # Last attempt per draft group, for groups DK has not priced yet (those write

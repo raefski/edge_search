@@ -1,0 +1,25 @@
+# Capture DraftKings Sportsbook's UFC markets and push the snapshot the cloud
+# MMA page prices from (data/odds_snapshot_dfs_mma.json).
+#
+# WHY A SEPARATE UNIT RATHER THAN odds-publish@dfs_mma: the MMA build does not
+# go through edge/odds. It stores DraftKings' own round-and-method payload,
+# which has no Odds-API vocabulary to be mapped into -- see
+# scripts/mma_odds_capture.py. Eight requests a run.
+#
+#   cp deploy/mma-odds-publish.service deploy/mma-odds-publish.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now mma-odds-publish.timer
+#   systemctl --user list-timers 'mma-*'
+[Unit]
+Description=Capture and publish DK Sportsbook UFC markets for the MMA DFS page
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/mma_odds_capture.py --push
+# A failed capture is not an emergency: the previous snapshot stays readable
+# and the page says how old it is. Do not spin.
+Restart=no
+Nice=10
+TimeoutStartSec=300

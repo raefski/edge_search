@@ -1,0 +1,32 @@
+# When to capture UFC prices. A UFC card is almost always a Saturday, and DK
+# MMA LOCKS AT THE FIRST FIGHT -- 4-7 PM ET for a US card, late morning for
+# Europe and the Gulf, the small hours for Asia and Australia. There is no late
+# swap, so the capture that matters is the last one before that first bell.
+#
+# Layers:
+#   1. BASELINE every 4 hours every day, so a mid-week look is never stale by
+#      more than that (lines barely move before fight week).
+#   2. FRIDAY every 2 hours: weigh-ins, the day a fight gets cancelled or a
+#      replacement is booked, and the day DK posts the full prop set.
+#   3. SATURDAY hourly through the morning (international cards) and every 30
+#      minutes 12:00-21:00 (every US lock).
+#   4. SUNDAY morning, for the odd Sunday card.
+#
+# Volume: 8 DK requests a run -> ~32/day mid-week, ~250 on a fight Saturday,
+# 30 minutes apart. Against DRAFTKINGS_ACCESS.md's measured budgets that is a
+# fraction of the draftables poll alone. Verify any edit with
+# `systemd-analyze calendar '<expr>'` -- the step goes on the HOUR field.
+[Unit]
+Description=Publish DK Sportsbook UFC markets for the MMA DFS page
+
+[Timer]
+OnCalendar=*-*-* 08..20/4:00:00
+OnCalendar=Fri *-*-* 10..22/2:00:00
+OnCalendar=Sat *-*-* 06..11:00:00
+OnCalendar=Sat *-*-* 12..21:00/30:00
+OnCalendar=Sun *-*-* 06..14/2:00:00
+RandomizedDelaySec=60
+Persistent=true
+
+[Install]
+WantedBy=timers.target

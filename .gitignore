@@ -141,3 +141,14 @@ data/nflverse_games.csv
 # Local bookkeeping for scripts/arb_agent.py (which request it last handled).
 # Per-machine, and committing it would make two desktops fight over state.
 data/.arb_agent_state.json
+
+# MMA (edge/mma.py). The UFCStats mirror + the historical odds file are public
+# and re-downloadable (~14MB), so they are cache, not source. The raw DK
+# Sportsbook captures in mma_raw/ and mma_odds_history/ are scraped prices --
+# the same "this repo is public, and scraping cannot reach backwards" call as
+# data/odds.db above: kept, backed up outside git, never committed. The one
+# MMA price file that IS committed is data/odds_snapshot_dfs_mma.json, which
+# the cloud page needs (see the exception for odds_snapshot_*.json above).
+data/mma_cache/
+data/mma_raw/
+data/mma_odds_history/
