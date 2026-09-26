@@ -449,6 +449,67 @@ def test_an_existing_file_is_updated_with_its_sha():
     assert sent.get("sha") == "deadbeef"
 
 
+# --- the page reads the snapshot off GitHub ----------------------------------
+def test_latest_snapshot_commit_asks_for_one_commit_touching_the_snapshot():
+    from edge.arb.scan_request import latest_snapshot_commit
+    seen = {}
+
+    class FakeSession:
+        def get(self, url, params=None, **k):
+            seen.update(url=url, params=params)
+            return _Resp(200, [{"sha": "c0ffee"}])
+
+    assert latest_snapshot_commit("a/b", "github_pat_x", session=FakeSession()) == "c0ffee"
+    assert seen["url"] == "https://api.github.com/repos/a/b/commits"
+    assert seen["params"] == {"path": "data/arb_snapshot.json", "sha": "main",
+                              "per_page": 1}
+
+
+def test_a_snapshot_never_committed_has_no_latest_commit():
+    from edge.arb.scan_request import latest_snapshot_commit
+
+    class FakeSession:
+        def get(self, *a, **k):
+            return _Resp(200, [])
+
+    assert latest_snapshot_commit("a/b", "github_pat_x", session=FakeSession()) is None
+
+
+def test_fetch_snapshot_retries_anonymously_when_the_token_is_refused():
+    """raw.githubusercontent.com answers 404 to a token it will not honour,
+    even on a public repo that needs none -- seen live 2026-09-26."""
+    from edge.arb.scan_request import fetch_snapshot
+    calls = []
+
+    class FakeSession:
+        def get(self, url, headers=None, **k):
+            calls.append((url, headers))
+            return _Resp(404) if headers else _Resp(200, {"generated_at": "x"})
+
+    out = fetch_snapshot("a/b", "github_pat_x", "c0ffee", session=FakeSession())
+    assert out == {"generated_at": "x"}
+    assert calls[0][0] == ("https://raw.githubusercontent.com/a/b/c0ffee/"
+                           "data/arb_snapshot.json")
+    assert calls[0][1] and calls[1][1] is None
+
+
+def test_fetch_snapshot_raises_when_github_itself_fails():
+    """A 5xx is not a token problem, so no anonymous retry -- it raises, and
+    the page falls back to its deployed copy."""
+    from edge.arb.http import HTTPError
+    from edge.arb.scan_request import fetch_snapshot
+    calls = []
+
+    class FakeSession:
+        def get(self, *a, **k):
+            calls.append(1)
+            return _Resp(502)
+
+    with pytest.raises(HTTPError):
+        fetch_snapshot("a/b", "github_pat_x", "c0ffee", session=FakeSession())
+    assert len(calls) == 1
+
+
 # --- market-scoped boosts ---------------------------------------------------
 def test_market_groups_expand_to_concrete_keys():
     """Boost.markets matches exactly, on purpose -- keeping that rule dumb is

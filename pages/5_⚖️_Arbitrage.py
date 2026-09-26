@@ -12,7 +12,9 @@ Numbered 5_ to sit after Pickem; DFS_MULTISPORT_PLAN.md reserves 2_/3_.
 Two data paths, the same free-vs-manual split app.py and Pickem already use:
   * Snapshot (default): data/arb_snapshot.json, written by
     `python3 scripts/arb_scan.py`. This is what makes the page work on
-    Streamlit Community Cloud.
+    Streamlit Community Cloud. Read off GitHub's main when the app has
+    credentials, so a pushed scan shows without waiting on a redeploy; the
+    deployed copy on disk is the fallback.
   * Live scan (button): runs the scrapers in-process. Works from a machine in
     Connecticut. It will likely FAIL on Community Cloud -- these endpoints sit
     behind Akamai and Cloudflare, the same wall that blocked ESPN and
@@ -26,7 +28,9 @@ from __future__ import annotations
 
 import importlib
 import json
+import re
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -159,6 +163,21 @@ st.set_page_config(page_title="Arbitrage", page_icon="⚖️", layout="wide")
 st.title("⚖️ Arbitrage · DraftKings / FanDuel / Fanatics")
 
 
+def _secret(name: str) -> str:
+    # st.secrets raises rather than returning empty when no secrets file
+    # exists at all, which is the normal case running locally
+    try:
+        return str(st.secrets.get(name, "") or "")
+    except Exception:                              # noqa: BLE001
+        return ""
+
+
+# Read up here rather than in the sidebar: the scan-request button needs them
+# to WRITE a request, and the snapshot loader below needs them to READ the
+# answer.
+_repo, _token = _secret("GITHUB_REPO"), _secret("GITHUB_TOKEN")
+
+
 @st.cache_data(show_spinner=False, max_entries=4)
 def _parse_snapshot(mtime: float) -> dict | None:
     # mtime, not a TTL: this is a 20-30MB file re-read from disk and
@@ -173,10 +192,121 @@ def _parse_snapshot(mtime: float) -> dict | None:
         return None
 
 
-def load_snapshot() -> dict | None:
-    if not SNAPSHOT.exists():
+# The snapshot straight off GitHub, added 2026-09-26. The copy on this host's
+# disk only changes when Streamlit Cloud redeploys, and its redeploy-on-push
+# has twice left every viewer on a days-old snapshot while the desktop's
+# answers sat on main: 9/14 during a push storm, then 39 hours from 9/24 to
+# 9/26 with no storm to blame. Asking GitHub directly shows a pushed scan
+# within REMOTE_CHECK_SECONDS of it landing, redeploy or not. No credentials
+# (running locally) or GitHub being unreachable falls back to the disk copy.
+REMOTE_CHECK_SECONDS = 30
+REMOTE_RETRY_SECONDS = 60
+
+
+@st.cache_data(show_spinner=False, ttl=REMOTE_CHECK_SECONDS)
+def _remote_snapshot_sha(repo: str, _token: str, _latest) -> tuple[str | None, str]:
+    """(newest snapshot commit on main, why there is none).
+
+    A failure is cached for the TTL like a success is -- otherwise every
+    widget click during a GitHub outage would sit out the request timeout.
+    """
+    try:
+        return _latest(repo, _token), ""
+    except Exception as exc:                       # noqa: BLE001
+        return None, f"{type(exc).__name__}: {exc}"
+
+
+@st.cache_data(show_spinner=False, max_entries=2)
+def _remote_snapshot(repo: str, sha: str, _token: str, _fetch) -> dict:
+    # Keyed on the commit sha, so no TTL: the file at a commit never changes.
+    # Raises rather than returning None, because a cached None would pin one
+    # transient failure to this sha until the next push -- _remote_failures
+    # rate-limits the retries instead.
+    return _fetch(repo, _token, sha)
+
+
+@st.cache_resource(show_spinner=False)
+def _remote_failures() -> dict:
+    """{sha: (time.monotonic(), error)} -- process-wide, like the caches."""
+    return {}
+
+
+def _load_remote() -> tuple[dict | None, str, str]:
+    """(main's snapshot, its commit sha, why not) -- the why is '' when there
+    is nothing worth saying, e.g. no credentials on this host."""
+    if not (_repo and _token):
+        return None, "", ""
+    latest = _from_scan_request("latest_snapshot_commit")
+    fetch = _from_scan_request("fetch_snapshot")
+    if latest is None or fetch is None:
+        return None, "", ""                        # _STALE already says reboot
+    sha, why = _remote_snapshot_sha(_repo, _token, latest)
+    if not sha:
+        return None, "", why
+    failures = _remote_failures()
+    failed = failures.get(sha)
+    if failed and time.monotonic() - failed[0] < REMOTE_RETRY_SECONDS:
+        return None, "", failed[1]
+    try:
+        snap = _remote_snapshot(_repo, sha, _token, fetch)
+    except Exception as exc:                       # noqa: BLE001
+        why = f"{type(exc).__name__}: {exc}"
+        failures[sha] = (time.monotonic(), why)
+        return None, "", why
+    failures.pop(sha, None)
+    return snap, sha, ""
+
+
+def _as_utc(iso) -> datetime | None:
+    try:
+        dt = datetime.fromisoformat(iso)
+    except (TypeError, ValueError):
         return None
-    return _parse_snapshot(SNAPSHOT.stat().st_mtime)
+    return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+
+
+def _disk_generated_at() -> datetime | None:
+    """The disk copy's generated_at off the first few hundred bytes.
+
+    Only needed to break a tie with GitHub's copy, so not worth unpickling a
+    second 20-30MB snapshot per call for. run.snapshot() writes generated_at
+    first; a file that does not is parsed in full rather than guessed at.
+    """
+    try:
+        with SNAPSHOT.open() as f:
+            m = re.search(r'"generated_at":\s*"([^"]+)"', f.read(512))
+    except OSError:
+        return None
+    if m:
+        return _as_utc(m.group(1))
+    return _as_utc((_parse_snapshot(SNAPSHOT.stat().st_mtime) or {}).get("generated_at"))
+
+
+def _current_snapshot() -> tuple[dict | None, str, str]:
+    """(snapshot, cache key for things derived from it, GitHub problem).
+
+    The newer of main's copy on GitHub and the one on this host's disk. On
+    Cloud the disk copy is never the newer one -- a live scan there is
+    refused by the books -- but running locally with credentials it is right
+    after a Scan live, which must not be hidden behind main's older copy.
+    """
+    remote, sha, problem = _load_remote()
+    if remote is not None:
+        disk_at = _disk_generated_at() if SNAPSHOT.exists() else None
+        remote_at = _as_utc(remote.get("generated_at"))
+        if disk_at is None or remote_at is None or disk_at <= remote_at:
+            return remote, f"github:{sha}", ""
+    if not SNAPSHOT.exists():
+        return None, "", problem
+    mtime = SNAPSHOT.stat().st_mtime
+    disk = _parse_snapshot(mtime)
+    if disk is None and remote is not None:        # corrupt on disk
+        return remote, f"github:{sha}", ""
+    return disk, f"disk:{mtime}", problem
+
+
+def load_snapshot() -> dict | None:
+    return _current_snapshot()[0]
 
 
 def age_str(iso: str) -> str:
@@ -255,7 +385,7 @@ def kickoff_label(iso: str) -> str:
 
 
 @st.cache_data(show_spinner=False, max_entries=4)
-def game_choices(mtime: float, titles: dict) -> dict[str, tuple[str, str, str]]:
+def game_choices(snap_key: str, titles: dict) -> dict[str, tuple[str, str, str]]:
     """{event_id: (dropdown label, matchup on its own, sport_key)}.
 
     The label is 'NCAAF · Illinois State @ Northern Illinois · Sat 7:00 PM'.
@@ -283,7 +413,8 @@ def game_choices(mtime: float, titles: dict) -> dict[str, tuple[str, str, str]]:
     together in the dropdown, which is what makes 77 of these thumbable on a
     phone instead of a wall.
 
-    Cached on the snapshot's mtime for the same reason `_parse_snapshot` is:
+    Cached on the snapshot's key (its commit sha, or its mtime on disk -- see
+    `_current_snapshot`) for the same reason `_parse_snapshot` is:
     this walks all three sections (~30,000 rows on a full slate, ~12ms) and
     would otherwise redo it on every widget click. See HANDOFF.md §7 on the
     page's choppiness.
@@ -342,7 +473,8 @@ with st.sidebar:
     _sport_choices = _from_scan_request(
         "sport_choices", lambda cfg, snap: dict(sorted(FALLBACK_SPORTS.items(),
                                                        key=lambda kv: kv[1])))
-    _snap_peek = load_snapshot() or {}
+    _snap_peek, _snap_key, _ = _current_snapshot()
+    _snap_peek = _snap_peek or {}
     _sport_titles = _sport_choices(ArbConfig(), _snap_peek)
     _in_snapshot = {c.get("sport_key") for c in (_snap_peek.get("candidates") or [])}
     # "Soccer (every league)" and the like: one pick for a token issued on the
@@ -361,8 +493,7 @@ with st.sidebar:
     # the "Filter by game" display filter further down. Computed here with
     # the other choice lists rather than next to either widget, so the two
     # can never end up offering different games out of the same snapshot.
-    _games = game_choices(
-        SNAPSHOT.stat().st_mtime if SNAPSHOT.exists() else 0.0, _sport_titles)
+    _games = game_choices(_snap_key, _sport_titles)
     _game_titles = {k: v[0] for k, v in _games.items()}
     _game_names = {k: v[1] for k, v in _games.items()}
     _games_sport = {k: v[2] for k, v in _games.items()}
@@ -439,16 +570,6 @@ with st.sidebar:
     _check_credentials = _from_scan_request(
         "check_credentials",
         lambda repo, token: "" if (repo and token) else "GITHUB_REPO/GITHUB_TOKEN not set")
-
-    def _secret(name: str) -> str:
-        # st.secrets raises rather than returning empty when no secrets file
-        # exists at all, which is the normal case running locally
-        try:
-            return str(st.secrets.get(name, "") or "")
-        except Exception:                              # noqa: BLE001
-            return ""
-
-    _repo, _token = _secret("GITHUB_REPO"), _secret("GITHUB_TOKEN")
     _cred_problem = _check_credentials(_repo, _token)
     request_scan = st.button("📡 Request a desktop scan", width="stretch",
                              disabled=bool(_cred_problem))
@@ -792,7 +913,7 @@ with st.sidebar:
     if any(st.query_params.get(k, "") != v for k, v in _qp_want.items()):
         st.query_params.update(_qp_want)
 
-snap = load_snapshot()
+snap, _snap_key, _remote_problem = _current_snapshot()
 
 # ------------------------------------------------------- desktop scan request
 if request_scan:
@@ -809,10 +930,10 @@ if request_scan:
         put_request(_repo, _token, req)
         st.session_state["last_scan_request"] = req.requested_at
         st.success("Asked the desktop to scan. It polls every ~30s, the scan "
-                   "takes 1–2 min, it refreshes the DFS odds before pushing, "
-                   "then this page picks up the new snapshot on its next "
-                   "redeploy — expect about 5 minutes. Still the old snapshot "
-                   "after ~10? Reboot the app on share.streamlit.io.")
+                   "takes 1–2 min, and it refreshes the DFS odds before "
+                   "pushing — expect about 5 minutes. This page reads the new "
+                   "snapshot straight from GitHub, so tap anything or refresh "
+                   "after that to see it.")
     except Exception as exc:                      # noqa: BLE001 - surface, don't hide
         _refused = getattr(_sr, "RequestRefused", None)
         if _refused is not None and isinstance(exc, _refused):
@@ -903,6 +1024,10 @@ if _skipped:
 st.caption(f"Snapshot {age_str(snap.get('generated_at', ''))} · "
            f"FanDuel {stats.get('fanduel', 0):,} · DraftKings {stats.get('draftkings', 0):,} · "
            f"Fanatics {stats.get('fanatics', 0):,} · anchor {stats.get('anchor', 0):,}")
+if _remote_problem:
+    st.caption(f"⚠️ Could not read the latest snapshot from GitHub "
+               f"({_remote_problem}), so this is the copy deployed with the "
+               "app — it only updates when Streamlit Cloud redeploys.")
 
 # --------------------------------------------------------------- boosts
 # Re-priced from the snapshot's `candidates`/`middle_candidates` rather than

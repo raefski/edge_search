@@ -1099,3 +1099,90 @@ def test_a_soccer_token_prices_the_three_way_moneyline(tmp_path):
     assert [row["Book"] for row in three_way[0] if row["Boost"] != "—"] == ["DraftKings"]
     assert all(len(t) == 3 for t in tables), \
         "a soccer-only token must not price the NCAAF candidates"
+
+
+# --- the snapshot is read off GitHub, not only the deployed disk -------------
+# Added 2026-09-26. Streamlit Cloud's redeploy-on-push left the page on a
+# 39-hour-old disk copy while two fresh scans sat on main. With credentials
+# the page now asks GitHub for main's snapshot and shows the newer copy.
+
+def _github(monkeypatch, snapshot=None, fail=False) -> list[str]:
+    """Stand in for GitHub at urllib itself -- the one hook the page's reload
+    of every edge.arb module cannot reset. Returns the URLs asked for."""
+    import urllib.request
+    asked: list[str] = []
+
+    class _Reply:
+        status = 200
+        headers: dict = {}
+
+        def __init__(self, body: bytes):
+            self._body = body
+
+        def read(self):
+            return self._body
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    def urlopen(req, timeout=None):
+        asked.append(req.full_url)
+        if fail:
+            raise OSError("network is unreachable")
+        if "/commits" in req.full_url:
+            return _Reply(json.dumps([{"sha": "c0ffee"}]).encode())
+        return _Reply(json.dumps(snapshot).encode())
+
+    monkeypatch.setattr(urllib.request, "urlopen", urlopen)
+    return asked
+
+
+def _with_credentials() -> FakeStreamlit:
+    st = FakeStreamlit()
+    st.secrets = {"GITHUB_REPO": "a/b", "GITHUB_TOKEN": "github_pat_x"}
+    return st
+
+
+def _generated(hours_ago: float, fanduel: int) -> dict:
+    snap = _snapshot()
+    snap["generated_at"] = (datetime.now(timezone.utc)
+                            - timedelta(hours=hours_ago)).isoformat()
+    snap["stats"] = dict(snap["stats"], fanduel=fanduel)
+    return snap
+
+
+def test_a_newer_snapshot_on_main_is_shown_over_the_deployed_copy(tmp_path, monkeypatch):
+    _github(monkeypatch, _generated(0.1, fanduel=4242))
+    st = run_page(_generated(39, fanduel=1111), tmp_path=tmp_path,
+                  st=_with_credentials())
+    captions = " ".join(_captions(st))
+    assert "FanDuel 4,242" in captions, "the page is still on the deployed copy"
+    assert "Could not read" not in captions
+
+
+def test_github_unreachable_falls_back_to_the_deployed_copy_and_says_so(tmp_path, monkeypatch):
+    _github(monkeypatch, fail=True)
+    st = run_page(_generated(39, fanduel=1111), tmp_path=tmp_path,
+                  st=_with_credentials())
+    captions = " ".join(_captions(st))
+    assert "FanDuel 1,111" in captions
+    assert "Could not read the latest snapshot from GitHub" in captions
+
+
+def test_a_local_live_scan_is_not_hidden_behind_mains_older_copy(tmp_path, monkeypatch):
+    """Running locally with credentials, Scan live writes a disk copy newer
+    than anything on main -- that one has to win."""
+    _github(monkeypatch, _generated(5, fanduel=4242))
+    st = run_page(_generated(0.1, fanduel=1111), tmp_path=tmp_path,
+                  st=_with_credentials())
+    assert "FanDuel 1,111" in " ".join(_captions(st))
+
+
+def test_no_credentials_never_asks_github(tmp_path, monkeypatch):
+    asked = _github(monkeypatch, _generated(0.1, fanduel=4242))
+    st = run_page(_generated(39, fanduel=1111), tmp_path=tmp_path)
+    assert asked == []
+    assert "FanDuel 1,111" in " ".join(_captions(st))

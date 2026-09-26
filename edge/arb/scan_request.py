@@ -6,13 +6,14 @@ This is the message bus between them, and it is a file in the repo:
 
     phone  -> GitHub contents API -> data/scan_request.json
     desktop poller sees it        -> scrapes -> data/arb_snapshot.json -> push
-    phone  -> reads the new snapshot on the next Cloud redeploy
+    phone  -> reads the new snapshot straight off GitHub (the deployed copy
+              is only the fallback -- Cloud's redeploy-on-push is unreliable)
 
 Git rather than a queue because both ends already have credentials for it and
 it works through a home router with no inbound ports. The costs are real and
 worth naming: a round trip is minutes, not seconds, and every scan is a commit.
 
-Everything here is pure except the two functions that name GitHub in their
+Everything here is pure except the functions that name GitHub in their
 docstring, so the button and the poller share one definition of "is this
 request worth acting on" instead of each guessing.
 """
@@ -26,7 +27,9 @@ from datetime import datetime, timezone
 from . import http
 
 REQUEST_PATH = "data/scan_request.json"
+SNAPSHOT_PATH = "data/arb_snapshot.json"
 API = "https://api.github.com"
+RAW = "https://raw.githubusercontent.com"
 
 # The file is committed so the path exists in a fresh clone, but an empty repo
 # must not look like it has a scan pending. This id means "nothing asked for" --
@@ -376,3 +379,44 @@ def put_request(repo: str, token: str, req: ScanRequest, branch: str = "main",
     if r.status_code >= 400:
         raise RequestRefused(_explain(r.status_code, "write", repo))
     return r.json() or {}
+
+
+def latest_snapshot_commit(repo: str, token: str, branch: str = "main",
+                           path: str = SNAPSHOT_PATH, session=None) -> str | None:
+    """Sha of the newest commit on `branch` that touched `path` -- GitHub.
+
+    The cheap half of reading the snapshot off GitHub instead of off the
+    deployed disk: ~4KB and ~0.6s (measured 2026-09-26), so the page can ask
+    every 30 seconds. None if the file has never been committed.
+    """
+    s = session or http
+    r = s.get(f"{API}/repos/{repo}/commits",
+              params={"path": path, "sha": branch, "per_page": 1},
+              headers=_headers(token), timeout=10)
+    r.raise_for_status()
+    rows = r.json() or []
+    return rows[0].get("sha") if rows else None
+
+
+def fetch_snapshot(repo: str, token: str, ref: str, path: str = SNAPSHOT_PATH,
+                   session=None) -> dict:
+    """The snapshot as of commit `ref`, parsed -- GitHub.
+
+    raw.githubusercontent.com, not the contents API. Measured 2026-09-26 on a
+    15.7MB snapshot: the contents API's raw media type is served uncompressed
+    and was still downloading after 100s, while this host gzips it to 0.95MB
+    and was done in 2s. Pinned to a commit sha rather than a branch, so the
+    CDN in front of it cannot hand back a stale copy -- the file at a given
+    commit never changes.
+
+    A token this host will not honour gets a 404, even on a public repo that
+    needs no token at all, so a 4xx is retried once anonymously before giving
+    up: a public repo still answers that, and a private one fails either way.
+    """
+    s = session or http
+    url = f"{RAW}/{repo}/{ref}/{path}"
+    r = s.get(url, headers={"Authorization": f"Bearer {token}"}, timeout=60)
+    if r.status_code in (401, 403, 404):
+        r = s.get(url, timeout=60)
+    r.raise_for_status()
+    return r.json()
