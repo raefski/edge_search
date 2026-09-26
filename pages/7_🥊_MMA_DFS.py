@@ -125,7 +125,9 @@ with st.sidebar:
     if slates:
         labels = [f"{s['label']} · {s['fights']} fights · {_et(s['start'])}" for s in slates]
         choice = st.selectbox("Slate", labels, index=0,
-                              help="DK MMA Classic slates. 'Main' is the full card.")
+                              help="'Main' is the full card (Classic). DK's 'Late' "
+                                   "slate is Captain Mode: the late fights only, "
+                                   "one CPT at 1.5x points for 1.5x salary.")
         gid = slates[labels.index(choice)]["gid"]
     sims = st.select_slider("Simulated cards", options=[5000, 10000, 20000],
                             value=10000,
@@ -210,7 +212,7 @@ def render(result: dict, mode: str) -> None:
         f"exp. wins <b>{result['exp_wins']}</b> · <b>${result['salary']:,}</b></div>",
         unsafe_allow_html=True)
     body = "".join(
-        f"<tr><td class='nm'>{r['fighter']}<small>vs {r['opponent']}"
+        f"<tr><td class='nm'>{'<b>CPT</b> ' if r.get('cpt') else ''}{r['fighter']}<small>vs {r['opponent']}"
         f"{' · 5 rds' if r['sched'] == 5 else ''}"
         f"{' · no mkt' if r['source'] in ('salary', 'none') else ''}</small></td>"
         f"<td class='num'>{r['salary']:,}</td>"
@@ -220,6 +222,9 @@ def render(result: dict, mode: str) -> None:
     st.markdown("<div class='lu-wrap'><table class='lu'>"
                 "<tr><th>Fighter</th><th>$</th><th>Win</th><th>Pts</th><th>Own</th></tr>"
                 f"{body}</table></div>", unsafe_allow_html=True)
+    if result.get("captain"):
+        st.caption("Captain Mode: the **CPT** scores 1.5× and costs 1.5× — "
+                   "the $ and Pts shown for the CPT already include it.")
     if result.get("same_fight"):
         st.caption("⚠️ Holds **both corners of one fight** — one guaranteed "
                    "winner, one guaranteed loser. The objective chose it; in a "
@@ -239,11 +244,12 @@ def render(result: dict, mode: str) -> None:
 def _csv() -> bytes:
     buf = io.StringIO()
     w = csv.writer(buf)
-    w.writerow(["mode", "fighter", "opponent", "salary", "p_win", "p_finish",
+    w.writerow(["mode", "slot", "fighter", "opponent", "salary", "p_win", "p_finish",
                 "proj", "floor", "ceil", "own"])
     for mode in ("cash", "gpp"):
         for r in R.lineup_rows(res.get(mode)):
-            w.writerow([mode, r["fighter"], r["opponent"], r["salary"], r["p_win"],
+            w.writerow([mode, "CPT" if r.get("cpt") else "F", r["fighter"],
+                        r["opponent"], r["salary"], r["p_win"],
                         r["p_finish"], r["proj"], r["floor"], r["ceil"], r["own"]])
     return buf.getvalue().encode()
 

@@ -94,8 +94,15 @@ def pair_free(lineups: np.ndarray, opponent: np.ndarray) -> np.ndarray:
     return ok
 
 
-def lineup_weights(pub: np.ndarray, lineups: np.ndarray, tau: float) -> np.ndarray:
+#: Captain Mode: the CPT slot (column 0 of a captain lineup) scores 1.5x.
+CPT_MULT = 1.5
+
+
+def lineup_weights(pub: np.ndarray, lineups: np.ndarray, tau: float,
+                   captain: bool = False) -> np.ndarray:
     tot = pub[lineups].sum(axis=1)
+    if captain:
+        tot = tot + (CPT_MULT - 1.0) * pub[lineups[:, 0]]
     w = np.exp((tot - tot.max()) / tau)
     return w / w.sum()
 
@@ -108,11 +115,20 @@ def ownership(n_fighters: int, lineups: np.ndarray, weights: np.ndarray) -> np.n
 
 
 def field_model(pool: list, lineups: np.ndarray, opponent: np.ndarray,
-                tau: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """(ownership %, field lineups, their weights) for one field."""
+                tau: float, captain: bool = False
+                ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """(ownership %, field lineups, their weights) for one field. Ownership is
+    inclusion in ANY slot; captain_ownership() splits out the CPT share."""
     fl = lineups[pair_free(lineups, opponent)]
-    w = lineup_weights(public_projection(pool), fl, tau)
+    w = lineup_weights(public_projection(pool), fl, tau, captain)
     return ownership(len(pool), fl, w), fl, w
+
+
+def captain_ownership(n_fighters: int, lineups: np.ndarray, weights: np.ndarray) -> np.ndarray:
+    """Percent of the field with each fighter in the CPT slot (column 0)."""
+    own = np.zeros(n_fighters)
+    np.add.at(own, lineups[:, 0], weights)
+    return 100.0 * own
 
 
 def sample_field(lineups: np.ndarray, weights: np.ndarray, n: int = FIELD_SIZE,
@@ -122,12 +138,14 @@ def sample_field(lineups: np.ndarray, weights: np.ndarray, n: int = FIELD_SIZE,
     return lineups[rng.choice(len(lineups), size=n, p=weights)]
 
 
-def field_scores(points: np.ndarray, field: np.ndarray) -> np.ndarray:
+def field_scores(points: np.ndarray, field: np.ndarray,
+                 captain: bool = False) -> np.ndarray:
     """(n_sims, n_field) total DK points of every field lineup, per sim, as a
     matrix product (the gather version allocated a sims x field x 6 array)."""
     ind = np.zeros((points.shape[1], len(field)), dtype=np.float32)
     for c in range(field.shape[1]):
-        np.add.at(ind, (field[:, c], np.arange(len(field))), 1.0)
+        np.add.at(ind, (field[:, c], np.arange(len(field))),
+                  CPT_MULT if (captain and c == 0) else 1.0)
     return points.astype(np.float32) @ ind
 
 
@@ -136,9 +154,9 @@ def _row_quantile(a: np.ndarray, q: float) -> np.ndarray:
     return np.partition(a, k, axis=1)[:, k]
 
 
-def cash_line(points: np.ndarray, field: np.ndarray) -> np.ndarray:
-    return _row_quantile(field_scores(points, field), 1.0 - CASH_PAID_FRACTION)
+def cash_line(points: np.ndarray, field: np.ndarray, captain: bool = False) -> np.ndarray:
+    return _row_quantile(field_scores(points, field, captain), 1.0 - CASH_PAID_FRACTION)
 
 
-def gpp_line(points: np.ndarray, field: np.ndarray) -> np.ndarray:
-    return _row_quantile(field_scores(points, field), 1.0 - GPP_TOP_FRACTION)
+def gpp_line(points: np.ndarray, field: np.ndarray, captain: bool = False) -> np.ndarray:
+    return _row_quantile(field_scores(points, field, captain), 1.0 - GPP_TOP_FRACTION)

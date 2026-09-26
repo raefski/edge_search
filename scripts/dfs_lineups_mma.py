@@ -55,7 +55,8 @@ def show(res: dict, mode: str, title: str | None = None) -> None:
     print(f"  {'fighter':<23}{'vs':<18}{'$':>7}{'win':>7}{'fin':>6}{'proj':>7}"
           f"{'p25':>6}{'p90':>6}{'own':>6}  src")
     for r in R.lineup_rows(res):
-        print(f"  {r['fighter'][:22]:<23}{r['opponent'][:17]:<18}{r['salary']:>7,}"
+        tag = "CPT " if r.get("cpt") else ""
+        print(f"  {(tag + r['fighter'])[:22]:<23}{r['opponent'][:17]:<18}{r['salary']:>7,}"
               f"{_pct(r['p_win']):>7}{100 * r['p_finish']:>5.0f}%{r['proj']:>7.1f}"
               f"{r['floor']:>6.0f}{r['ceil']:>6.0f}{r['own']:>5.0f}%  "
               f"{r['source']}{' 5R' if r['sched'] == 5 else ''}")
@@ -97,7 +98,7 @@ def main() -> int:
     groups = dfs.draft_groups(R.DK_SPORT)
     if args.list_slates:
         for s in R.classic_groups(groups):
-            print(f"{s['gid']}  {s['label']:<8} {s['fights']:>2} fights  {s['start']}")
+            print(f"{s['gid']}  {s['label']:<16} {s['fights']:>2} fights  {s['start']}")
         return 0
     if args.capture:
         subprocess.run([sys.executable, str(ROOT / "scripts/mma_odds_capture.py")],
@@ -132,9 +133,15 @@ def main() -> int:
         pool, pts, lines = res["pool"], res["points"], res["_lines"]
         import numpy as np
         sal = np.array([d["salary"] for d in pool])
+        cap = res.get("captain", False)
+        lus = None
+        if cap:
+            cpt = np.array([d.get("cpt_salary") or round(1.5 * d["salary"]) for d in pool])
+            lus = dfs_opt_mma.legal_captain_lineups(sal, cpt)
         for mode in (("cash", "gpp") if args.mode == "both" else (args.mode,)):
-            for k, lu in enumerate(dfs_opt_mma.portfolio(pts, sal, lines, args.n, mode), 1):
-                show(R._lineup_result(pool, pts, lu["idx"], lines), mode,
+            for k, lu in enumerate(dfs_opt_mma.portfolio(pts, sal, lines, args.n, mode,
+                                                          lineups=lus, captain=cap), 1):
+                show(R._lineup_result(pool, pts, lu["idx"], lines, cap), mode,
                      f"{mode.upper()} #{k}")
     else:
         for mode in (("cash", "gpp") if args.mode == "both" else (args.mode,)):

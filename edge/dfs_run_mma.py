@@ -85,19 +85,29 @@ def _parse_time(value) -> datetime | None:
 # ---------------------------------------------------------------------------
 # The slate
 # ---------------------------------------------------------------------------
+CAPTAIN_GAME_TYPE = mma.CAPTAIN_GAME_TYPE
+CPT_SLOT = 614
+
+
 def classic_groups(groups: list[dict] | None = None) -> list[dict]:
-    """Every DK MMA Classic draft group, soonest first. The main card group
-    has an empty suffix; " (Late)" and friends are the other variants."""
+    """Every DK MMA salary-cap draft group this builds, soonest first: Classic
+    (168) and Captain Mode (169). The main card is a Classic group with an
+    empty suffix; DK's " (Late)" slate is CAPTAIN MODE -- the late fights only,
+    one fighter at 1.5x points for 1.5x salary."""
     groups = groups if groups is not None else dfs.draft_groups(DK_SPORT)
     out = []
     for g in groups:
-        if g.get("GameTypeId") != CLASSIC_GAME_TYPE:
+        gt = g.get("GameTypeId")
+        if gt not in (CLASSIC_GAME_TYPE, CAPTAIN_GAME_TYPE):
             continue
         suffix = (g.get("ContestStartTimeSuffix") or "").strip().strip("()")
-        out.append({"gid": g.get("DraftGroupId"), "label": suffix or "Main",
+        captain = gt == CAPTAIN_GAME_TYPE
+        label = (suffix or "Main") + (" · Captain" if captain else "")
+        out.append({"gid": g.get("DraftGroupId"), "label": label,
+                    "mode": "captain" if captain else "classic",
                     "fights": g.get("GameCount") or 0, "start": g.get("StartDate"),
                     "featured": g.get("DraftGroupTag") == "Featured"})
-    out.sort(key=lambda r: (r["start"] or "", r["label"] != "Main"))
+    out.sort(key=lambda r: (r["start"] or "", r["mode"] != "classic"))
     return out
 
 
@@ -123,7 +133,14 @@ def read_board(gid: int) -> tuple[list[dict], list[dict], list[str]]:
     a disabled fighter, one with no competition, a competition with only one
     fighter left -- is a scratch.
     """
-    raw = dfs._draftables_raw(gid)
+    try:
+        raw = dfs._draftables_raw(gid)
+    except Exception:                                       # noqa: BLE001
+        # Streamlit Cloud cannot reach DK's draftables (Akamai 403s a
+        # datacenter IP) and reads the desktop's snapshot instead -- which
+        # does not exist for a group DK has not PRICED yet. That is "not
+        # priced", not a crash (2026-09-26: next week's card, the day before).
+        return [], [], []
     by_comp: dict = {}
     scratched = []
     for p in raw:
@@ -141,8 +158,12 @@ def read_board(gid: int) -> tuple[list[dict], list[dict], list[str]]:
             weight = int(float(at.get(ATTR_WEIGHT) or 0))
         except ValueError:
             weight = 0
+        cpt = p.get("rosterSlotId") == CPT_SLOT
+        prev = by_comp.get(comp.get("competitionId"), {}).get(p.get("displayName"))
         f = {"name": p.get("displayName"), "dk_id": p.get("playerId"),
-             "salary": int(p.get("salary") or 0), "dk_fppf": fppf,
+             "salary": (prev or {}).get("salary", 0) if cpt else int(p.get("salary") or 0),
+             "cpt_salary": int(p.get("salary") or 0) if cpt else (prev or {}).get("cpt_salary"),
+             "dk_fppf": fppf,
              "record": st.get(-1), "weight": weight,
              "fight_no": int(at.get(ATTR_FIGHT_NUMBER) or 0) or None,
              "comp": comp.get("competitionId"), "matchup": comp.get("name"),
@@ -235,10 +256,26 @@ def build_board(gid: int, n_sims: int = 20000, seed: int = 0) -> tuple:
     hist = mma.fighter_history(before=today)
     style = msim.style_indices(before=today)
 
+    # The salary -> win-probability slope for bouts with no market, fitted on
+    # THIS board's priced bouts. DraftKings spreads salaries differently by
+    # game type: the same fight was a $2,400 gap on the 2026-09-26 Classic
+    # board and $4,200 on the Captain board, so a Classic-fitted slope put a
+    # no-market favourite at 80% on the Captain board against 71.5% on Classic.
+    matched = [(b, *match_bout(b, events)) for b in bouts]
+    xs, ys = [], []
+    for b, ev, flip, _s in matched:
+        if ev is not None and ev.get("ml"):
+            pa = mk.win_prob(*ev["ml"])
+            pa = 1 - pa if flip else pa
+            xs.append((b["fighters"][0]["salary"] - b["fighters"][1]["salary"]) / 1000.0)
+            ys.append(math.log(pa / (1 - pa)))
+    k_local = (sum(x * y for x, y in zip(xs, ys)) / sum(x * x for x in xs)
+               if len(xs) >= 4 and sum(x * x for x in xs) > 0 else mk.SALARY_LOGIT_PER_K)
+    info["salary_logit_per_k"] = round(k_local, 3)
+
     pool, sim_bouts = [], []
     no_market, replaced, unmatched = [], [], []
-    for b in bouts:
-        ev, flip, score = match_bout(b, events)
+    for b, ev, flip, score in matched:
         wt = max(f["weight"] for f in b["fighters"])
         lbs = division(wt)
         keys = []
@@ -264,7 +301,7 @@ def build_board(gid: int, n_sims: int = 20000, seed: int = 0) -> tuple:
         else:
             sal_a, sal_b = (f["salary"] for f in b["fighters"])
             tbl = mk.outcome_table(None, None, lbs, women, sched,
-                                   salary_diff=sal_a - sal_b)
+                                   salary_diff=(sal_a - sal_b) * k_local / mk.SALARY_LOGIT_PER_K)
             source = tbl["source"]
             names = [f["name"] for f in b["fighters"]]
             # One side matched a sportsbook fight and the other did not: the
@@ -293,9 +330,9 @@ def build_board(gid: int, n_sims: int = 20000, seed: int = 0) -> tuple:
             if ev is not None:
                 ev_side = (i + flip) % 2
             pool.append({
-                **{k: f[k] for k in ("name", "dk_id", "salary", "dk_fppf", "record",
-                                     "weight", "fight_no", "start", "key",
-                                     "ufc_fights")},
+                **{k: f[k] for k in ("name", "dk_id", "salary", "cpt_salary",
+                                     "dk_fppf", "record", "weight", "fight_no",
+                                     "start", "key", "ufc_fights")},
                 "opponent": opp["name"], "bout": b["matchup"], "sched": sched,
                 "lbs": lbs, "women": women, "source": source,
                 "p_win": round(pa if i == 0 else pb, 4),
@@ -350,29 +387,41 @@ def build_slate(draft_group=None, n_sims: int = 20000, seed: int = 0,
 
     sal = np.array([d["salary"] for d in pool])
     opp = _opponents(pool)
-    everything = dfs_opt_mma.legal_lineups(sal)
-    own_gpp, fl_gpp, w_gpp = theory.field_model(pool, everything, opp,
-                                                theory.FIELD_TAU_GPP)
-    own_cash, fl_cash, w_cash = theory.field_model(pool, everything, opp,
-                                                   theory.FIELD_TAU_CASH)
-    for d, og, oc in zip(pool, own_gpp, own_cash):
-        d["own"] = round(float(og), 1)
-        d["own_cash"] = round(float(oc), 1)
-    field_gpp = theory.sample_field(fl_gpp, w_gpp, seed=seed + 1)
-    field_cash = theory.sample_field(fl_cash, w_cash, seed=seed + 2)
-    lines = {"cash": theory.cash_line(points, field_cash),
-             "gpp": theory.gpp_line(points, field_gpp)}
-
+    captain = meta.get("mode") == "captain" or all(d.get("cpt_salary") for d in pool)
     name_idx = {d["name"]: i for i, d in enumerate(pool)}
     lk = [name_idx[n] for n in (locked or []) if n in name_idx]
     bn = [name_idx[n] for n in (banned or []) if n in name_idx]
-    lineups = (dfs_opt_mma.legal_lineups(sal, locked=lk, banned=bn)
-               if (lk or bn) else everything)
-    cash = dfs_opt_mma.optimize(points, sal, lines, "cash", lineups=lineups)
-    gpp = dfs_opt_mma.optimize(points, sal, lines, "gpp", lineups=lineups)
+    if captain:
+        cpt_sal = np.array([d.get("cpt_salary") or round(1.5 * d["salary"]) for d in pool])
+        everything = dfs_opt_mma.legal_captain_lineups(sal, cpt_sal)
+        lineups = (dfs_opt_mma.legal_captain_lineups(sal, cpt_sal, locked=lk, banned=bn)
+                   if (lk or bn) else everything)
+    else:
+        everything = dfs_opt_mma.legal_lineups(sal)
+        lineups = (dfs_opt_mma.legal_lineups(sal, locked=lk, banned=bn)
+                   if (lk or bn) else everything)
+    own_gpp, fl_gpp, w_gpp = theory.field_model(pool, everything, opp,
+                                                theory.FIELD_TAU_GPP, captain)
+    own_cash, fl_cash, w_cash = theory.field_model(pool, everything, opp,
+                                                   theory.FIELD_TAU_CASH, captain)
+    cpt_own = (theory.captain_ownership(len(pool), fl_gpp, w_gpp) if captain
+               else np.zeros(len(pool)))
+    for d, og, oc, cp in zip(pool, own_gpp, own_cash, cpt_own):
+        d["own"] = round(float(og), 1)
+        d["own_cash"] = round(float(oc), 1)
+        d["own_cpt"] = round(float(cp), 1)
+    field_gpp = theory.sample_field(fl_gpp, w_gpp, seed=seed + 1)
+    field_cash = theory.sample_field(fl_cash, w_cash, seed=seed + 2)
+    lines = {"cash": theory.cash_line(points, field_cash, captain),
+             "gpp": theory.gpp_line(points, field_gpp, captain)}
+
+    cash = dfs_opt_mma.optimize(points, sal, lines, "cash", lineups=lineups,
+                                captain=captain)
+    gpp = dfs_opt_mma.optimize(points, sal, lines, "gpp", lineups=lineups,
+                               captain=captain)
     for res in (cash, gpp):
         if "idx" in res:
-            res.update(_lineup_result(pool, points, res["idx"], lines))
+            res.update(_lineup_result(pool, points, res["idx"], lines, captain))
 
     log_result = None
     if persist:
@@ -383,14 +432,29 @@ def build_slate(draft_group=None, n_sims: int = 20000, seed: int = 0,
     return {"gid": gid, "meta": meta, "slates": slates, "pool": pool,
             "points": points, "stats": info, "cash": cash, "gpp": gpp,
             "lines": {k: {"median": round(float(np.median(v)), 1)} for k, v in lines.items()},
-            "_lines": lines, "log": log_result}
+            "_lines": lines, "captain": captain, "log": log_result}
 
 
-def _lineup_result(pool, points, idx, lines) -> dict:
-    t = points[:, idx].sum(axis=1)
+def _lineup_result(pool, points, idx, lines, captain: bool = False) -> dict:
+    """`idx` in slot order; for Captain Mode idx[0] IS the captain."""
+    w = np.ones(len(idx))
+    if captain:
+        w[0] = dfs_opt_mma.CPT_MULT
+    t = points[:, idx] @ w
     fights = {pool[i]["bout"] for i in idx}
-    return {"lineup": [pool[i] for i in sorted(idx, key=lambda i: -pool[i]["proj"])],
-            "salary": int(sum(pool[i]["salary"] for i in idx)),
+    order = list(idx) if captain else sorted(idx, key=lambda i: -pool[i]["proj"])
+    rows = []
+    for k, i in enumerate(order):
+        d = dict(pool[i])
+        if captain and k == 0:
+            d.update({"cpt": True, "salary": pool[i].get("cpt_salary") or d["salary"],
+                      "proj": round(dfs_opt_mma.CPT_MULT * d["proj"], 2),
+                      "floor": round(dfs_opt_mma.CPT_MULT * d["floor"], 1),
+                      "ceil": round(dfs_opt_mma.CPT_MULT * d["ceil"], 1),
+                      "own": d.get("own_cpt", d["own"])})
+        rows.append(d)
+    return {"lineup": rows, "captain": captain,
+            "salary": int(sum(d["salary"] for d in rows)),
             "proj": round(float(t.mean()), 1), "sd": round(float(t.std()), 1),
             "floor": round(float(np.percentile(t, 25)), 1),
             "median": round(float(np.percentile(t, 50)), 1),
@@ -398,7 +462,7 @@ def _lineup_result(pool, points, idx, lines) -> dict:
             "p99": round(float(np.percentile(t, 99)), 1),
             "p_cash": round(float((t > lines["cash"]).mean()), 4),
             "p_top1": round(float((t > lines["gpp"]).mean()), 4),
-            "own": round(float(sum(pool[i]["own"] for i in idx)), 1),
+            "own": round(float(sum(d["own"] for d in rows)), 1),
             "exp_wins": round(float(sum(pool[i]["p_win"] for i in idx)), 2),
             "same_fight": len(fights) < len(idx)}
 
@@ -458,13 +522,20 @@ def log_forward_test(pool, cash, gpp, gid, meta, info,
                         d.get("dk_fppf") or "", d["off"], d["def_opp"]])
     result.update({"logged": True, "n": len(pool)})
     lpath = root / "data" / f"dfs_lineups_mma_{day}.csv"
+    # One file per DAY holds every slate that day (the main card AND the late
+    # Captain slate), so another group's rows are kept, not overwritten.
+    others = ([r for r in csv.DictReader(lpath.open()) if str(r.get("gid")) != str(gid)]
+              if lpath.exists() else [])
     with lpath.open("w", newline="") as fh:
         w = csv.writer(fh)
-        w.writerow(["gid", "mode", "fighter", "salary", "proj", "p_win", "own"])
+        w.writerow(["gid", "mode", "fighter", "salary", "proj", "p_win", "own", "cpt"])
+        for r in others:
+            w.writerow([r.get(c, "") for c in ("gid", "mode", "fighter", "salary",
+                                               "proj", "p_win", "own", "cpt")])
         for mode, res in (("cash", cash), ("gpp", gpp)):
             for d in (res or {}).get("lineup", []):
                 w.writerow([gid, mode, d["name"], d["salary"], d["proj"],
-                            d["p_win"], d["own"]])
+                            d["p_win"], d["own"], int(bool(d.get("cpt")))])
     result["lineup_file"] = str(lpath.relative_to(root))
     return result
 
@@ -472,7 +543,8 @@ def log_forward_test(pool, cash, gpp, gid, meta, info,
 def lineup_rows(result: dict) -> list[dict]:
     if not result or "lineup" not in result:
         return []
-    return [{"fighter": d["name"], "opponent": d["opponent"], "salary": d["salary"],
+    return [{"fighter": d["name"], "cpt": bool(d.get("cpt")),
+             "opponent": d["opponent"], "salary": d["salary"],
              "p_win": d["p_win"], "p_finish": d["p_finish"], "proj": d["proj"],
              "floor": d["floor"], "ceil": d["ceil"], "own": d["own"],
              "sched": d["sched"], "source": d["source"]} for d in result["lineup"]]

@@ -57,15 +57,45 @@ def legal_lineups(salaries: np.ndarray, cap: int = CAP,
     return combos[sal <= cap]
 
 
-def _indicator(n: int, lineups: np.ndarray) -> np.ndarray:
+#: Captain Mode (gametype 169): the CPT slot scores 1.5x and costs 1.5x.
+CPT_MULT = 1.5
+
+
+def legal_captain_lineups(salaries: np.ndarray, cpt_salaries: np.ndarray,
+                          cap: int = CAP, locked=None, banned=None) -> np.ndarray:
+    """(m, 6) every Captain Mode lineup under the cap; COLUMN 0 IS THE CAPTAIN.
+
+    Eight fights is sixteen fighters, so 16 x C(15,5) = 48,048 before the cap
+    -- still exhaustive. `locked` fighters must appear (in any slot)."""
+    n = len(salaries)
+    banned = set(banned or [])
+    locked = set(locked or [])
+    out = []
+    for c in range(n):
+        if c in banned:
+            continue
+        rest = [i for i in range(n) if i != c and i not in banned]
+        five = np.fromiter(itertools.chain.from_iterable(
+            itertools.combinations(rest, 5)), dtype=np.int16).reshape(-1, 5)
+        lu = np.hstack([np.full((len(five), 1), c, dtype=np.int16), five])
+        sal = cpt_salaries[c] + salaries[five].sum(axis=1)
+        lu = lu[sal <= cap]
+        for k in locked:
+            lu = lu[(lu == k).any(axis=1)]
+        out.append(lu)
+    return np.vstack(out) if out else np.zeros((0, 6), dtype=np.int16)
+
+
+def _indicator(n: int, lineups: np.ndarray, captain: bool = False) -> np.ndarray:
     ind = np.zeros((n, len(lineups)), dtype=np.float32)
     cols = np.arange(len(lineups))
     for c in range(lineups.shape[1]):
-        ind[lineups[:, c], cols] = 1.0
+        ind[lineups[:, c], cols] = CPT_MULT if (captain and c == 0) else 1.0
     return ind
 
 
-def _score(points: np.ndarray, lineups: np.ndarray, line: np.ndarray) -> np.ndarray:
+def _score(points: np.ndarray, lineups: np.ndarray, line: np.ndarray,
+           captain: bool = False) -> np.ndarray:
     """P(lineup total > line) per lineup, over the rows of `points`. A matrix
     product per chunk -- (sims x fighters) @ (fighters x lineups) -- because
     the gather it replaced cost 5.6s a theory on a 101,701-lineup card."""
@@ -74,19 +104,22 @@ def _score(points: np.ndarray, lineups: np.ndarray, line: np.ndarray) -> np.ndar
     out = np.empty(len(lineups))
     for s in range(0, len(lineups), CHUNK):
         chunk = lineups[s:s + CHUNK]
-        tot = pts @ _indicator(pts.shape[1], chunk)
+        tot = pts @ _indicator(pts.shape[1], chunk, captain)
         out[s:s + CHUNK] = (tot > line).mean(axis=0)
     return out
 
 
-def _mean(points: np.ndarray, lineups: np.ndarray) -> np.ndarray:
+def _mean(points: np.ndarray, lineups: np.ndarray, captain: bool = False) -> np.ndarray:
     means = points.mean(axis=0)
-    return means[lineups].sum(axis=1)
+    tot = means[lineups].sum(axis=1)
+    if captain:
+        tot = tot + (CPT_MULT - 1.0) * means[lineups[:, 0]]
+    return tot
 
 
 def optimize(points: np.ndarray, salaries: np.ndarray, lines: dict,
              mode: str = "cash", locked=None, banned=None,
-             lineups: np.ndarray | None = None) -> dict:
+             lineups: np.ndarray | None = None, captain: bool = False) -> dict:
     """The best legal lineup for one theory.
 
     `lines` = {"cash": (n_sims,), "gpp": (n_sims,)} from
@@ -99,30 +132,33 @@ def optimize(points: np.ndarray, salaries: np.ndarray, lines: dict,
         return {"error": "no legal lineup under the cap"}
     line = lines[mode]
     n_screen = min(SCREEN_SIMS, len(points))
-    screen = _score(points[:n_screen], lineups, line[:n_screen])
+    screen = _score(points[:n_screen], lineups, line[:n_screen], captain)
     # Tie-break on the mean so a flat screen (rare in cash, common in a thin
     # GPP) still orders sensibly.
-    key = screen + 1e-6 * _mean(points, lineups)
+    key = screen + 1e-6 * _mean(points, lineups, captain)
     top = np.argsort(-key)[:FINAL_K]
-    final = _score(points, lineups[top], line)
-    final = final + 1e-6 * _mean(points, lineups[top])
+    final = _score(points, lineups[top], line, captain)
+    final = final + 1e-6 * _mean(points, lineups[top], captain)
     best = top[int(np.argmax(final))]
     ranked = top[np.argsort(-final)]
-    return {"idx": [int(i) for i in lineups[best]], "objective": float(final.max()),
+    return {"idx": [int(i) for i in lineups[best]], "captain": captain,
+            "objective": float(final.max()),
             "runners_up": [[int(i) for i in lineups[j]] for j in ranked[1:6]],
             "n_legal": int(len(lineups)), "mode": mode}
 
 
 def portfolio(points: np.ndarray, salaries: np.ndarray, lines: dict, n: int,
-              mode: str = "gpp", max_overlap: int = 4) -> list[dict]:
+              mode: str = "gpp", max_overlap: int = 4,
+              lineups: np.ndarray | None = None, captain: bool = False) -> list[dict]:
     """`n` lineups for one theory, greedily, each sharing at most
     `max_overlap` fighters with every lineup already taken."""
-    lineups = legal_lineups(salaries)
+    if lineups is None:
+        lineups = legal_lineups(salaries)
     line = lines[mode]
     n_screen = min(SCREEN_SIMS, len(points))
-    screen = _score(points[:n_screen], lineups, line[:n_screen])
-    top = np.argsort(-(screen + 1e-6 * _mean(points, lineups)))[:FINAL_K * 3]
-    final = _score(points, lineups[top], line)
+    screen = _score(points[:n_screen], lineups, line[:n_screen], captain)
+    top = np.argsort(-(screen + 1e-6 * _mean(points, lineups, captain)))[:FINAL_K * 3]
+    final = _score(points, lineups[top], line, captain)
     order = top[np.argsort(-final)]
     score_of = dict(zip(top.tolist(), final.tolist()))
     picked: list[set] = []
@@ -131,7 +167,8 @@ def portfolio(points: np.ndarray, salaries: np.ndarray, lines: dict, n: int,
         s = set(int(i) for i in lineups[j])
         if all(len(s & p) <= max_overlap for p in picked):
             picked.append(s)
-            out.append({"idx": sorted(s), "objective": float(score_of[j])})
+            out.append({"idx": [int(i) for i in lineups[j]], "captain": captain,
+                        "objective": float(score_of[j])})
         if len(out) >= n:
             break
     return out
