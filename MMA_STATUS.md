@@ -16,7 +16,7 @@ Read off `api.draftkings.com/lineups/v1/gametypes/168/rules`.
 | Cap | $50,000 |
 | **Late swap** | **NOT ALLOWED.** Lock is the **first fight's** opening bell — the main event is 3–4 hours later |
 | DK lobby sport code | **`MMA`** (`UFC` returns every sport in the lobby) |
-| Classic game type id | **168**. 169 is Captain Mode (1.5× CPT, a separate late-card slate — not built), 373 is Snake (no cap) |
+| Game types built | **168 Classic** (the main card) and **169 Captain Mode** — DK's "(Late)" MMA slate: the late fights only, one CPT at 1.5× points for 1.5× salary. 373 is Snake (no cap, not built) |
 | FPPF stat id | **635** (`draftStatAttributes`) — a different id from every other sport |
 | Other board fields | `playerGameAttributes` 111 = opponent, **115 = fight number (1 = main event)**, **150 = weigh-in weight** |
 
@@ -220,7 +220,7 @@ constants are one grid search away from fitted.
 | **Salary-implied fallback** | one card, eleven bouts |
 | **Sig-strike / takedown props** | parsed and captured but NOT used: their calibration is unmeasured. Displayed for reference in the log only |
 | **Round-and-Method grid** | parsed, not used for timing: the fitted hazard is validated, the grid's pricing is not |
-| **Captain Mode (169)** | not built |
+| **Captain Mode (169)** | built 2026-09-26 (exhaustive, 48,048 lineups on 8 fights). Same model; the CPT's field ownership is a prior like the rest |
 | **Weight-miss / short-notice effects** | not modelled beyond what the market prices |
 
 ## 10. Weekly checklist
