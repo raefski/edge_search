@@ -472,7 +472,12 @@ def log_forward_test(pool: list, cash: dict | None, gpp: dict | None,
     with plog.open("w", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(list(PROJ_LOG_COLS))
-        for r in [r for r in prior if r.get("date") != date] + list(_rows()):
+        # Replace only THIS slate's rows. Dropping the whole date wiped the
+        # day's other slates -- NCAAF 2026-09-26 lost slate 153831's 106 rows
+        # when 153951 was built that evening.
+        for r in [r for r in prior
+                  if not (r.get("date") == date and str(r.get("gid")) == str(gid))
+                  ] + list(_rows()):
             w.writerow([r.get(c, "") for c in PROJ_LOG_COLS])
     result["logged"] = True
     result["n"] = len(pool)
