@@ -145,7 +145,6 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
 
 
 _SNAP_DIR = __import__("pathlib").Path(__file__).resolve().parents[1] / "data" / "draftables_snapshot"
-_dt_mod = __import__("datetime")
 
 # "live" | "snapshot <when>" | "failed" -- set by _draftables_raw so a caller
 # (the Streamlit pages, scripts/draftables_publish.py) can tell the user which
@@ -171,20 +170,26 @@ def _draftables_raw(draft_group_id: int) -> list[dict]:
         LAST_DRAFTABLES_SOURCE = "live"
         return rows
     except Exception as exc:
-        snap = _SNAP_DIR / f"{draft_group_id}.json"
-        if snap.exists():
+        from edge import repo_files
+        # main's copy on GitHub when Cloud has missed the redeploy that would
+        # have brought it -- which is also what makes a slate DK priced AFTER
+        # the last deploy show up at all (edge/repo_files.py).
+        found = repo_files.read(_SNAP_DIR / f"{draft_group_id}.json")
+        if found is not None:
             # Say so. This fallback silently served 2026-09-18 salaries for a
             # whole day on 09-19 because it looked identical to success from
             # every caller -- the transport was broken, not the IP, and
             # nothing surfaced it. A stale snapshot is still the right answer
             # for Streamlit Cloud (datacenter-blocked by design); it is a
             # BUG SIGNAL on the desktop, where the live call should work.
-            age = _dt_mod.datetime.fromtimestamp(snap.stat().st_mtime)
+            age = found.updated_at.astimezone()
             LAST_DRAFTABLES_SOURCE = f"snapshot {age:%Y-%m-%d %H:%M}"
             print(f"edge.dfs: DK draftables {draft_group_id} live fetch failed "
                   f"({type(exc).__name__}: {exc}) -- falling back to snapshot "
-                  f"saved {age:%Y-%m-%d %H:%M}", file=sys.stderr)
-            return json.loads(snap.read_text())
+                  f"saved {age:%Y-%m-%d %H:%M}"
+                  + (f" (GitHub unreadable: {found.problem})" if found.problem else ""),
+                  file=sys.stderr)
+            return found.json()
         LAST_DRAFTABLES_SOURCE = "failed"
         raise
 

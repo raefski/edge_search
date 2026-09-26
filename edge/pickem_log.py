@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import csv
 import datetime
+import io
 import json
 import os
 from dataclasses import dataclass
@@ -489,11 +490,13 @@ def complete(snapshots: list[Snapshot],
 
 
 def load(path: Path | str = LINE_LOG) -> list[dict]:
-    path = Path(path)
-    if not path.exists():
+    # main's copy on GitHub when Cloud has missed a redeploy; the disk
+    # otherwise, and always on the desktop (edge/repo_files.py)
+    from edge import repo_files
+    found = repo_files.read(path)
+    if found is None:
         return []
-    with path.open() as f:
-        return list(csv.DictReader(f))
+    return list(csv.DictReader(io.StringIO(found.data)))
 
 
 def cbs_offset(season: int, week: int, home_team: str,

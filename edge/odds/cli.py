@@ -83,6 +83,7 @@ def scraped_client(sport: str, consumer: str = "dfs",
     fallback the cloud app silently reverts to the paid API, which is the whole
     thing being removed.
     """
+    from edge import repo_files
     from edge.odds.profiles import for_sport
     from edge.odds.publish import SnapshotOddsClient, snapshot_path
     from edge.odds.source import ScrapedOddsClient
@@ -101,14 +102,18 @@ def scraped_client(sport: str, consumer: str = "dfs",
             log.info("odds store unusable (%s); trying the published snapshot", exc)
 
     snap = snapshot_path(prof.name)
-    if snap.exists():
+    # main's copy on GitHub when it is newer than the deployed one -- Cloud's
+    # redeploy-on-push is unreliable (edge/repo_files.py); the disk otherwise.
+    found = repo_files.read(snap)
+    if found is not None:
         # The snapshot is deliberately given a LOOSER age bound than the store.
         # It is published by a desktop collection and reaches the cloud through
         # a git push, so it is always somewhat behind by construction; holding
         # it to the store's contract would reject every snapshot that ever
         # arrives. What must not happen is serving yesterday's prices silently,
         # so the bound is real -- just sized for the transport.
-        return SnapshotOddsClient(snap, max_age_seconds=max(age, 6 * 3600))
+        return SnapshotOddsClient(snap, max_age_seconds=max(age, 6 * 3600),
+                                  payload=found.json(), problem=found.problem)
 
     raise RuntimeError(
         f"no free odds for {prof.name!r}: no data/odds.db and no {snap.name}. "

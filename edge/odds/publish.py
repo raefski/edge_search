@@ -101,9 +101,15 @@ class SnapshotOddsClient:
     old its prices are rather than implying they are live.
     """
 
-    def __init__(self, path: str | Path, max_age_seconds: float | None = None):
+    def __init__(self, path: str | Path, max_age_seconds: float | None = None,
+                 payload: dict | None = None, problem: str = ""):
         self.path = Path(path)
-        self.payload = json.loads(self.path.read_text())
+        # `payload` when the caller already has the file's content -- off
+        # GitHub's main via edge/repo_files, which is newer than the deployed
+        # disk copy whenever Cloud has missed a redeploy. `problem` is why
+        # GitHub could not be used, for the page to say so.
+        self.payload = payload if payload is not None else json.loads(self.path.read_text())
+        self.problem = problem
         self.profile = self.payload.get("profile")
         self.generated_at = self.payload.get("generated_at")
         self.max_age_seconds = max_age_seconds

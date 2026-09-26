@@ -136,6 +136,9 @@ def _source_badge():
                 "Getting stale. Tap **📡 Request a desktop scan** on the "
                 "Arbitrage page — it refreshes this too. Or on the desktop: "
                 "`python3 scripts/odds_collect.py --profile dfs_nfl --push`.")
+        if client.problem:
+            st.sidebar.caption(f"⚠️ Could not read GitHub ({client.problem}), "
+                               "so these are the prices deployed with the app.")
     else:
         st.sidebar.warning("🟡 Falling back to the paid Odds API — the free "
                            "snapshot is missing or stale.")

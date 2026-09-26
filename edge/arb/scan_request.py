@@ -24,12 +24,13 @@ import json
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 
+from edge import repo_files
+
 from . import http
 
 REQUEST_PATH = "data/scan_request.json"
 SNAPSHOT_PATH = "data/arb_snapshot.json"
 API = "https://api.github.com"
-RAW = "https://raw.githubusercontent.com"
 
 # The file is committed so the path exists in a fresh clone, but an empty repo
 # must not look like it has a scan pending. This id means "nothing asked for" --
@@ -387,36 +388,15 @@ def latest_snapshot_commit(repo: str, token: str, branch: str = "main",
 
     The cheap half of reading the snapshot off GitHub instead of off the
     deployed disk: ~4KB and ~0.6s (measured 2026-09-26), so the page can ask
-    every 30 seconds. None if the file has never been committed.
+    every 30 seconds. None if the file has never been committed. The request
+    itself lives in edge/repo_files.py, shared with the DFS and pick'em data.
     """
-    s = session or http
-    r = s.get(f"{API}/repos/{repo}/commits",
-              params={"path": path, "sha": branch, "per_page": 1},
-              headers=_headers(token), timeout=10)
-    r.raise_for_status()
-    rows = r.json() or []
-    return rows[0].get("sha") if rows else None
+    found = repo_files.latest_commit(repo, token, path, branch, session=session)
+    return found[0] if found else None
 
 
 def fetch_snapshot(repo: str, token: str, ref: str, path: str = SNAPSHOT_PATH,
                    session=None) -> dict:
-    """The snapshot as of commit `ref`, parsed -- GitHub.
-
-    raw.githubusercontent.com, not the contents API. Measured 2026-09-26 on a
-    15.7MB snapshot: the contents API's raw media type is served uncompressed
-    and was still downloading after 100s, while this host gzips it to 0.95MB
-    and was done in 2s. Pinned to a commit sha rather than a branch, so the
-    CDN in front of it cannot hand back a stale copy -- the file at a given
-    commit never changes.
-
-    A token this host will not honour gets a 404, even on a public repo that
-    needs no token at all, so a 4xx is retried once anonymously before giving
-    up: a public repo still answers that, and a private one fails either way.
-    """
-    s = session or http
-    url = f"{RAW}/{repo}/{ref}/{path}"
-    r = s.get(url, headers={"Authorization": f"Bearer {token}"}, timeout=60)
-    if r.status_code in (401, 403, 404):
-        r = s.get(url, timeout=60)
-    r.raise_for_status()
-    return r.json()
+    """The snapshot as of commit `ref`, parsed -- GitHub. See
+    edge/repo_files.fetch for why raw.githubusercontent.com, pinned to a sha."""
+    return json.loads(repo_files.fetch(repo, token, ref, path, session=session))

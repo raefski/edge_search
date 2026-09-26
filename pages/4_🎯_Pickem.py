@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import csv
 import datetime
+import io
 import os
 import sys
 from pathlib import Path
@@ -39,6 +40,7 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from edge import repo_files  # noqa: E402
 from edge.client import CreditFloorError, DryRunBlocked, NoApiKey, OddsAPIClient  # noqa: E402
 from edge.odds.source import StaleOdds  # noqa: E402
 from edge.pickem import make_pick  # noqa: E402
@@ -155,6 +157,9 @@ with st.sidebar:
             if _mins > 24 * 60:
                 st.caption("Over a day old. Tap **Request a desktop scan** on "
                            "the Arbitrage page — it refreshes these too.")
+            if _free.problem:
+                st.caption(f"⚠️ Could not read GitHub ({_free.problem}), so "
+                           "these are the lines deployed with the app.")
         else:
             st.success("🟢 Free scraped lines (local store)")
         st.caption("DraftKings · FanDuel · Fanatics")
@@ -202,12 +207,15 @@ if _failures:
         f"clear `{FAILURES_LOG.name}`. Check the run with "
         "`journalctl --user -u 'pickem-capture@*'`.")
 
-if not CURRENT_WEEK_CSV.exists():
+# main's copy on GitHub when Cloud has missed the redeploy that would have
+# brought the latest capture; the disk otherwise (edge/repo_files.py).
+_current_week = repo_files.read(CURRENT_WEEK_CSV)
+if _current_week is None:
     st.warning(f"No {CURRENT_WEEK_CSV.name} committed yet for this week.")
     st.stop()
 
-with CURRENT_WEEK_CSV.open() as f:
-    cbs_rows = [r for r in csv.DictReader(f) if int(r["week"]) == week]
+cbs_rows = [r for r in csv.DictReader(io.StringIO(_current_week.data))
+            if int(r["week"]) == week]
 
 if not cbs_rows:
     st.info(f"No Week {week} lines captured yet.")

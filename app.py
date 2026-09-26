@@ -273,6 +273,9 @@ def price_source_badge():
             st.sidebar.caption(
                 "Getting stale. Tap **Request a desktop scan** on the "
                 "Arbitrage page — it refreshes these prices too.")
+        if client.problem:
+            st.sidebar.caption(f"⚠️ Could not read GitHub ({client.problem}), "
+                               "so these are the prices deployed with the app.")
     else:
         rem = client.remaining_credits()
         st.sidebar.warning(

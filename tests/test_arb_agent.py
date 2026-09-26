@@ -374,6 +374,10 @@ class _Resp:
     def json(self):
         return self._payload
 
+    @property
+    def text(self):
+        return json.dumps(self._payload)
+
     def raise_for_status(self):
         if self.status_code >= 400:
             from edge.arb.http import HTTPError

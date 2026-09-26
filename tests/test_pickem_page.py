@@ -681,3 +681,41 @@ def test_a_live_card_keeps_its_pick_tier_and_probability(tmp_path):
     assert "NO READING" not in body
     assert body.count('class="pk-nolive"') == 0
     assert len(calls) == 2
+
+
+# --- the CBS lines are read off GitHub, not only the deployed disk -----------
+# Added 2026-09-26: Streamlit Cloud sat on a 39-hour-old deploy while the
+# desktop's captures piled up on main. edge/repo_files.py reads main's copy
+# when it is newer than the deployed one.
+
+def test_a_capture_pushed_since_the_deploy_is_what_the_page_uses(tmp_path, monkeypatch):
+    from datetime import datetime, timezone
+
+    from edge import repo_files
+
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=CSV_FIELDS)
+    w.writeheader()
+    for r in _week1_csv():
+        w.writerow({k: r.get(k, "") for k in CSV_FIELDS})
+
+    class GitHub:
+        def get(self, url, params=None, headers=None, timeout=None):
+            if "/commits" in url:
+                now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+                return types.SimpleNamespace(
+                    status_code=200, raise_for_status=lambda: None,
+                    json=lambda: [{"sha": "c0ffee",
+                                   "commit": {"committer": {"date": now}}}])
+            return types.SimpleNamespace(status_code=200, text=buf.getvalue(),
+                                         raise_for_status=lambda: None)
+
+    monkeypatch.setattr(repo_files, "ROOT", tmp_path)
+    monkeypatch.setattr(repo_files, "http", GitHub())
+    monkeypatch.setenv("GITHUB_REPO", "a/b")
+    monkeypatch.setenv("GITHUB_TOKEN", "github_pat_x")
+
+    # the deployed copy predates Week 1's capture entirely
+    st, calls = run_page([], _two_week_board(), tmp_path)
+    assert set(picks_by_home(calls)) == {"Texans", "Rams"}, \
+        "the page read the deployed CSV instead of main's"

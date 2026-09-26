@@ -42,3 +42,21 @@ def _never_touch_the_real_failure_log(tmp_path, monkeypatch):
                                 redirected, raising=False)
         except Exception:                               # noqa: BLE001
             continue
+
+
+@pytest.fixture(autouse=True)
+def _never_read_github(monkeypatch):
+    """Keep edge.repo_files on the disk copy unless a test opts in.
+
+    It reads main off GitHub whenever GITHUB_REPO and GITHUB_TOKEN are in the
+    environment, so a shell that happens to export them would otherwise send
+    every test that loads an odds snapshot or the pick'em CSVs to the network.
+    Its caches are process-wide, so they are emptied too: one test's fake
+    GitHub must not answer the next test's read.
+    """
+    monkeypatch.delenv("GITHUB_REPO", raising=False)
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    from edge import repo_files
+    repo_files.clear()
+    yield
+    repo_files.clear()

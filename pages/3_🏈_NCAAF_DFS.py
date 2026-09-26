@@ -130,6 +130,9 @@ def _source_badge():
             st.sidebar.caption(
                 "Getting stale. On the desktop: `python3 scripts/odds_collect.py "
                 "--profile dfs_ncaaf --push`.")
+        if client.problem:
+            st.sidebar.caption(f"⚠️ Could not read GitHub ({client.problem}), "
+                               "so these are the prices deployed with the app.")
     else:
         st.sidebar.warning("🟡 Falling back to the paid Odds API — and it cannot "
                            "serve ladders, so the board will be empty.")
