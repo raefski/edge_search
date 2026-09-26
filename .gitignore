@@ -152,3 +152,17 @@ data/.arb_agent_state.json
 data/mma_cache/
 data/mma_raw/
 data/mma_odds_history/
+
+# Local caches and third-party files that must never be committed.
+#   * nascar_cache/ -- NASCAR's public timing feeds, re-downloaded on demand
+#     (~360 files, 23MB). scripts/mirror_app.py copies what the NASCAR mirror
+#     needs from disk, not from git.
+#   * ncaaf_ground_truth/ -- free, regenerable box scores; 125MB, with single
+#     files over GitHub's 50MB warning. Same call as nfl_ground_truth/ above.
+#   * Dans_Projections_*.csv -- a PAID product, kept locally for the ownership
+#     research. This repo is public.
+#   * dfs_calibration.html -- output of scripts/dfs_calibration_plot.py.
+data/nascar_cache/
+data/ncaaf_ground_truth/
+Dans_Projections_*.csv
+data/dfs_calibration.html
