@@ -19,7 +19,7 @@ Two data paths, the same free-vs-manual split app.py and Pickem already use:
     DraftKings for pickem_live.py. The button surfaces the error rather than
     pretending, and the snapshot stays available.
 
-A scan takes ~40s, which is why the snapshot is the default rather than
+A scan takes 1-2 min, which is why the snapshot is the default rather than
 scanning on every page load.
 """
 from __future__ import annotations
@@ -426,7 +426,7 @@ with st.sidebar:
              "low-risk volume toward casino comps, not for expected value.")
 
     st.divider()
-    st.caption("A live scan takes ~40s and spends **no** API credits. "
+    st.caption("A live scan takes 1–2 min and spends **no** API credits. "
                "It needs a connection the books accept — that usually means "
                "your own machine, not a cloud host.")
     run_live = st.button("🔄 Scan live", width="stretch")
@@ -809,8 +809,10 @@ if request_scan:
         put_request(_repo, _token, req)
         st.session_state["last_scan_request"] = req.requested_at
         st.success("Asked the desktop to scan. It polls every ~30s, the scan "
-                   "takes ~40s, then this page picks up the new snapshot on "
-                   "its next redeploy — give it a couple of minutes.")
+                   "takes 1–2 min, it refreshes the DFS odds before pushing, "
+                   "then this page picks up the new snapshot on its next "
+                   "redeploy — expect about 5 minutes. Still the old snapshot "
+                   "after ~10? Reboot the app on share.streamlit.io.")
     except Exception as exc:                      # noqa: BLE001 - surface, don't hide
         _refused = getattr(_sr, "RequestRefused", None)
         if _refused is not None and isinstance(exc, _refused):
@@ -830,8 +832,8 @@ if st.session_state.get("last_scan_request") and snap:
         st.success("✅ The desktop answered — this snapshot is newer than your request.")
         st.session_state.pop("last_scan_request", None)
     else:
-        st.info("⏳ Waiting on the desktop. Refresh in a minute; the snapshot "
-                "below is still the previous one.")
+        st.info("⏳ Waiting on the desktop — about 5 minutes from the request. "
+                "The snapshot below is still the previous one.")
 
 if run_live:
     prog = st.progress(0.0, text="starting…")
