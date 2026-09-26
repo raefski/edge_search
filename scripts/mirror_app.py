@@ -311,9 +311,15 @@ def main() -> int:
     if not args.dry_run:
         # A .gitignore that does NOT exclude the snapshots -- they are the whole
         # point of the mirror. Deliberately much shorter than edge_search's.
+        # Also excluded: what a RUN of the app writes into the checkout -- the
+        # UFCStats download (~11MB) and the forward logs, which belong to
+        # edge_search. Found when a test run of the MMA mirror left both
+        # behind for the next `git add -A` to sweep up.
         (dest / ".gitignore").write_text(
             "__pycache__/\n*.pyc\n.env\n.venv/\ndata/cache/\ndata/odds.db*\n"
-            ".pytest_cache/\n")
+            ".pytest_cache/\ndata/mma_cache/\ndata/mma_raw/\n"
+            "data/mma_odds_history/\ndata/dfs_proj_log_*.csv\n"
+            "data/dfs_lineups_*.csv\n")
 
     if args.push and not args.dry_run:
         msg = args.message or f"mirror {args.app} from edge_search"
