@@ -327,3 +327,25 @@ def test_a_past_date_never_overwrites_the_log(tmp_path):
                              root=tmp_path)
     assert res.get("skipped_past_date")
     assert not (tmp_path / "data" / "dfs_proj_log_mma.csv").exists()
+
+
+def test_a_locked_slate_never_overwrites_its_log(tmp_path):
+    """The first card: twenty minutes after the first bell the sportsbook had
+    dropped that bout's market, and a rebuild would have replaced the clean
+    pre-bell forward test with a salary-priced one."""
+    import datetime as dt
+    today = dt.datetime.now(R.ET).date().isoformat()
+    started = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=1)).isoformat()
+    row = {"bout": "A vs B", "name": "A", "key": "a", "salary": 8000, "sched": 3,
+           "source": "moneyline+method", "p_win": 0.5, "p_finish": 0.3, "p_r1": 0.1,
+           "proj": 60, "sd": 30, "floor": 40, "median": 60, "ceil": 100, "own": 20,
+           "own_cash": 20, "dk_fppf": 55, "off": 1.0, "def_opp": 1.0, "start": started}
+    (tmp_path / "data").mkdir()
+    log = tmp_path / "data" / "dfs_proj_log_mma.csv"
+    log.write_text(",".join(R.PROJ_LOG_COLS) + "\n"
+                   + f"{today},7,A vs B,A,a,8000,3,moneyline+method,0.5,0.3,0.1,"
+                     "61,30,40,60,100,20,20,55,1.0,1.0\n")
+    res = R.log_forward_test([dict(row, proj=99)], {}, {}, 7,
+                             {"start": started}, {}, root=tmp_path)
+    assert res.get("skipped_after_lock")
+    assert ",61," in log.read_text() and ",99," not in log.read_text()

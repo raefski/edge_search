@@ -434,6 +434,16 @@ def log_forward_test(pool, cash, gpp, gid, meta, info,
     plog = root / "data" / "dfs_proj_log_mma.csv"
     plog.parent.mkdir(parents=True, exist_ok=True)
     prior = list(csv.DictReader(open(plog))) if plog.exists() else []
+    mine = [r for r in prior if r.get("date") == day and str(r.get("gid")) == str(gid)]
+    # AFTER LOCK, AN EXISTING LOG IS NEVER OVERWRITTEN. Once the first bout
+    # starts, the sportsbook drops its market, so a rebuild prices that bout
+    # from salaries and quietly replaces a clean pre-bell forward test with a
+    # contaminated one -- found on the first card, 2026-09-26, twenty minutes
+    # in. The date guard above cannot see it: it is still the same day.
+    starts = [t for t in (_parse_time(d.get("start")) for d in pool) if t]
+    if mine and starts and datetime.now(timezone.utc) >= min(starts):
+        result["skipped_after_lock"] = True
+        return result
     keep = [r for r in prior if not (r.get("date") == day and str(r.get("gid")) == str(gid))]
     with plog.open("w", newline="") as fh:
         w = csv.writer(fh)
