@@ -159,10 +159,14 @@ data/mma_odds_history/
 #     needs from disk, not from git.
 #   * ncaaf_ground_truth/ -- free, regenerable box scores; 125MB, with single
 #     files over GitHub's 50MB warning. Same call as nfl_ground_truth/ above.
-#   * Dans_Projections_*.csv -- a PAID product, kept locally for the ownership
-#     research. This repo is public.
+#   * Dan[s]_Projections_*.csv -- a PAID product, kept locally for the
+#     ownership research (scripts/dfs_compare_dan.py). This repo is public.
+#     Both spellings: the file has arrived as "Dans_Projections_..." and as
+#     "Dan_Projections_Main_DK_...", and the singular form slipped through
+#     untracked-but-not-ignored once (2026-09-27) before this line existed.
 #   * dfs_calibration.html -- output of scripts/dfs_calibration_plot.py.
 data/nascar_cache/
 data/ncaaf_ground_truth/
+Dan_Projections_*.csv
 Dans_Projections_*.csv
 data/dfs_calibration.html

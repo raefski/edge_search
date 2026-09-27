@@ -311,7 +311,7 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
             "salary": info["salary"], "proj": res["proj"], "team": team,
             "opp_team": opp, "game": gid, "dk_pos": info.get("position") or "",
             "components": res.get("components", {}), "means": res.get("means", {}),
-            "dk_fppg": info.get("dk_fppg"),
+            "imputed": res.get("imputed", []), "dk_fppg": info.get("dk_fppg"),
         })
         stats["offense"] += 1
 

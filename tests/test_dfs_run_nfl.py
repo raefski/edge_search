@@ -220,6 +220,64 @@ def test_a_stack_raises_the_lineup_spread_and_that_is_the_whole_mechanism():
     assert theory.score([qb, mate], "cash") < theory.score([qb, apart], "cash")
 
 
+def prop_event(event_id, home, away, commence):
+    return {"id": event_id, "home_team": home, "away_team": away,
+            "commence_time": commence}
+
+
+def market(key, outcomes):
+    return {"key": key, "outcomes": outcomes}
+
+
+def outcome(name, description, price, point=None):
+    o = {"name": name, "description": description, "price": price}
+    if point is not None:
+        o["point"] = point
+    return o
+
+
+class FakeFullClient(FakeClient):
+    """FakeClient plus the player-props surface collect_player_markets needs."""
+
+    def __init__(self, featured_events, prop_events, prop_payloads):
+        super().__init__(featured_events)
+        self._prop_events = prop_events
+        self._prop_payloads = prop_payloads
+
+    def get_events(self, sport):
+        return self._prop_events
+
+    def get_event_odds(self, sport, event_id, markets, region):
+        return self._prop_payloads.get(event_id, {"bookmakers": []})
+
+
+def test_build_pool_flags_a_touchdown_rate_that_was_never_priced():
+    """No book prices rushing/receiving TDs as a two-sided line (confirmed live
+    2026-09-27: none of DraftKings, FanDuel post player_rush_tds or
+    player_reception_tds at all right now), so every skill player's TD total
+    is IMPUTED from yardage at a population rate -- see edge/dfs_sport.py's
+    _nfl_impute. build_pool used to drop that fact on the floor: it copied
+    `components` and `means` from the projection into the pool row but never
+    `imputed`, so nothing downstream (app, CLI, forward log) could tell a
+    priced number from a guessed one for the single largest guessed term in
+    an NFL skill-position projection."""
+    sal = salaries()
+    events = [event("LAC", "ARI", WEEK2), event("DET", "NO", WEEK2)]
+    prop_events = [prop_event(101, "LAC", "ARI", WEEK2)]
+    payload = {"bookmakers": [{"key": "draftkings", "markets": [
+        market("player_rush_yds", [
+            outcome("Over", "RB One", 1.9, point=45.5),
+            outcome("Under", "RB One", 1.9, point=45.5)]),
+    ]}]}
+    # RB One is on team DET in salaries(), matched by name only -- the props
+    # feed does not need to agree with the salary list's own team split.
+    client = FakeFullClient(events, prop_events, {101: payload})
+    pool, stats = nfl.build_pool(client, sal)
+    row = next(p for p in pool if p["name"] == "RB One")
+    assert row["imputed"] == ["rush TD"]
+    assert "rush yds" not in row["imputed"]
+
+
 def test_no_player_is_ever_given_an_impossible_ownership():
     """An unclipped softmax handed a $2,900 value outlier 99.1% on the live
     2026-09-13 board. No NFL main-slate player has ever been 99% owned."""
