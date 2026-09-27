@@ -22,6 +22,10 @@ import csv
 from edge.names import norm
 
 
+#: DraftKings' Captain / Showdown multiplier on the CPT slot's points.
+CPT_MULT = 1.5
+
+
 def parse_contest_file(path) -> dict:
     """{norm_name: {"name", "pct_drafted", "fpts"}} from one DK export.
 
@@ -56,11 +60,21 @@ def parse_contest_file(path) -> dict:
                 fpts_val = float(fpts)
             except ValueError:
                 continue
+            # A Captain / Showdown CPT row scores 1.5x. `fpts` is the player's
+            # BASE score whichever row comes first (an MMA export listed
+            # Brady Hiestand's CPT row first: 132.79 for an 88.53 night), and
+            # the CPT share of `pct_drafted` is kept separately as `cpt_pct`.
+            cpt = (row.get("Roster Position") or "").strip().upper() == "CPT"
+            base = round(fpts_val / CPT_MULT, 4) if cpt else fpts_val
             key = norm(name)
             if key in out:
                 out[key]["pct_drafted"] = round(
                     out[key]["pct_drafted"] + pct_val, 4)
+                if not cpt:
+                    out[key]["fpts"] = fpts_val
             else:
                 out[key] = {"name": name, "pct_drafted": pct_val,
-                            "fpts": fpts_val}
+                            "fpts": base, "cpt_pct": 0.0}
+            if cpt:
+                out[key]["cpt_pct"] = round(out[key]["cpt_pct"] + pct_val, 4)
     return out

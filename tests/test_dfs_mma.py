@@ -349,3 +349,21 @@ def test_a_locked_slate_never_overwrites_its_log(tmp_path):
                              {"start": started}, {}, root=tmp_path)
     assert res.get("skipped_after_lock")
     assert ",61," in log.read_text() and ",99," not in log.read_text()
+
+
+def test_a_captain_export_reports_base_points_and_cpt_share(tmp_path):
+    """DK lists a Captain-slate fighter once per slot, and the CPT row's FPTS
+    is 1.5x. Brady Hiestand's CPT row came first on 2026-09-26 (132.79 for an
+    88.53 night) and used to become his score."""
+    from edge.dfs_contest import parse_contest_file
+    f = tmp_path / "contest-standings-1.csv"
+    f.write_text(
+        "Rank,EntryId,EntryName,TimeRemaining,Points,Lineup,,Player,Roster Position,%Drafted,FPTS\n"
+        "1,1,a,0,600,x,,Brady Hiestand,CPT,2.54%,132.79\n"
+        "2,2,b,0,500,y,,Brady Hiestand,F,12.71%,88.53\n"
+        "3,3,c,0,400,z,,Norma Dumont,F,22.88%,35.8\n")
+    b = parse_contest_file(f)
+    assert b["bradyhiestand"]["fpts"] == pytest.approx(88.53)
+    assert b["bradyhiestand"]["pct_drafted"] == pytest.approx(15.25)
+    assert b["bradyhiestand"]["cpt_pct"] == pytest.approx(2.54)
+    assert b["normadumont"]["cpt_pct"] == 0.0

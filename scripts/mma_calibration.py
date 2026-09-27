@@ -86,16 +86,44 @@ def actuals_for(date: str) -> dict:
     return out
 
 
+def actuals_from_exports(rows: list[dict]) -> dict:
+    """{fighter: (DK points, None, False)} from any export played on this board.
+
+    DraftKings' own scoring, available the night of the card -- a day before
+    UFCStats has it. It does not say who WON, so the win-probability check
+    waits for UFCStats."""
+    names = {norm(r["fighter"]) for r in rows}
+    out: dict = {}
+    for path in sorted(glob.glob(str(ROOT / "data" / "contest-standings-*.csv"))):
+        board = parse_contest_file(path)
+        # A contest lists only fighters someone drafted, so one export can miss
+        # a fighter another has: take the union of every export on this board.
+        # Every fighter the export lists must be on this board. A fighter's
+        # points are the same on every slate that night, so a late-slate
+        # export legitimately grades those fights on the main-card board too.
+        if board and set(board) <= names:
+            for k, v in board.items():
+                out.setdefault(k, (v["fpts"], None, False))
+    return out
+
+
 def grade(dates: list[str] | None) -> None:
     log = load_log()
     rows = []
+    by_slate: dict = {}
     for (date, gid), rs in sorted(log.items()):
         if dates and date not in dates:
             continue
         act = actuals_for(date)
+        source = "UFCStats"
+        by_slate[(date, gid)] = act
         if not act:
-            print(f"{date} gid {gid}: UFCStats has no fights for this date yet "
-                  "(the mirror lags the event by about a day) -- run with --refresh")
+            act = actuals_from_exports(rs)
+            source = "DK contest export"
+            by_slate[(date, gid)] = act
+        if not act:
+            print(f"{date} gid {gid}: no results yet -- UFCStats lags the event by "
+                  "about a day (run with --refresh) and no contest export matches")
             continue
         got = 0
         for r in rs:
@@ -104,9 +132,18 @@ def grade(dates: list[str] | None) -> None:
                 continue
             got += 1
             rows.append({**r, "actual": a[0], "won": a[1], "void": a[2]})
-        print(f"{date} gid {gid}: {got}/{len(rs)} logged fighters found in UFCStats")
+        print(f"{date} gid {gid}: {got}/{len(rs)} logged fighters graded from {source}")
     if not rows:
         return
+    # One fight is one data point: a fighter on both the main card and the
+    # late Captain slate is logged twice that night. Keep the first.
+    seen, uniq = set(), []
+    for r in rows:
+        k = (r["date"], norm(r["fighter"]))
+        if k not in seen:
+            seen.add(k)
+            uniq.append(r)
+    rows = uniq
     y = np.array([r["actual"] for r in rows])
     p = np.array([_f(r["proj"]) for r in rows])
     print(f"\n  n={len(rows)} fighter-fights")
@@ -121,7 +158,9 @@ def grade(dates: list[str] | None) -> None:
     above = np.mean([r["actual"] > _f(r["ceil"]) for r in rows])
     print(f"  spread       {100 * below:.0f}% below p25 (target 25%), "
           f"{100 * above:.0f}% above p90 (target 10%)")
-    wp = [(_f(r["p_win"]), 1.0 if r["won"] else 0.0) for r in rows if not r["void"]]
+    # An export gives points, not results: the winner is unknown there.
+    wp = [(_f(r["p_win"]), 1.0 if r["won"] else 0.0) for r in rows
+          if not r["void"] and r["won"] is not None]
     if wp:
         brier = statistics.fmean((q - o) ** 2 for q, o in wp)
         print(f"  win prob     Brier {brier:.4f} (coin flip 0.25), "
@@ -136,16 +175,20 @@ def grade(dates: list[str] | None) -> None:
         f = lp / f"dfs_lineups_mma_{date}.csv"
         if (dates and date not in dates) or not f.exists():
             continue
-        act = actuals_for(date)
+        act = by_slate.get((date, gid)) or {}
         by_mode = collections.defaultdict(list)
         for r in csv.DictReader(f.open()):
             if r.get("gid") and r["gid"] != gid:
                 continue
             a = act.get(mma.fighter_key(r["fighter"])) or act.get(norm(r["fighter"]))
-            by_mode[r["mode"]].append((r["fighter"], a[0] if a else None))
+            mult = dfs_opt_mma.CPT_MULT if str(r.get("cpt")) == "1" else 1.0
+            label = ("CPT " if mult > 1 else "") + r["fighter"]
+            by_mode[r["mode"]].append((label, mult * a[0] if a else None))
         for mode, fs in by_mode.items():
             tot = sum(x for _, x in fs if x is not None)
-            print(f"\n  {date} {mode.upper()} lineup scored {tot:.1f}: "
+            miss = sum(1 for _, x in fs if x is None)
+            print(f"\n  {date} gid {gid} {mode.upper()} (last logged build) scored "
+                  f"{tot:.1f}{f' ({miss} not graded)' if miss else ''}: "
                   + ", ".join(f"{n} {x:.0f}" if x is not None else f"{n} ?" for n, x in fs))
 
 
@@ -160,19 +203,32 @@ def _contest_type(path: str) -> str:
         return "unknown"
 
 
+def _match_board(contest: dict, boards: dict):
+    """(key, board) of the logged board this export was played on, or (None, {})."""
+    # Jaccard, not raw overlap: every late-slate (Captain) fighter is also on
+    # the main card, so raw overlap tied the two boards and picked the wrong
+    # one. A board fighter missing from the export has to count against it.
+    def score(kv):
+        b = set(kv[1])
+        return len(set(contest) & b) / max(1, len(set(contest) | b))
+    best = max(boards.items(), key=score, default=(None, {}))
+    k, board = best
+    if k is None or len(set(contest) & set(board)) < 0.6 * len(board):
+        return None, {}
+    return k, board
+
+
 def fit_ownership(paths: list[str]) -> None:
     log = load_log()
     boards = {k: {norm(r["fighter"]): r for r in rs} for k, rs in log.items()}
     fits = collections.defaultdict(list)
     for path in paths:
         contest = parse_contest_file(path)
-        best = max(boards.items(), key=lambda kv: len(set(contest) & set(kv[1])),
-                   default=(None, {}))
-        k, board = best
-        overlap = len(set(contest) & set(board))
-        if k is None or overlap < 0.6 * len(board):
+        k, board = _match_board(contest, boards)
+        if k is None:
             continue                                   # not an MMA export we logged
         ctype = _contest_type(path)
+        captain = any(v.get("cpt_pct") for v in contest.values())
         rows = list(board.values())
         pool = [{"name": r["fighter"], "salary": int(_f(r["salary"], 0)),
                  "proj": _f(r["proj"], 0.0), "dk_fppf": _f(r["dk_fppf"]),
@@ -186,32 +242,61 @@ def fit_ownership(paths: list[str]) -> None:
                 opp[ids[0]], opp[ids[1]] = ids[1], ids[0]
         actual = np.array([contest.get(norm(d["name"]), {}).get("pct_drafted", 0.0)
                            for d in pool])
+        act_cpt = np.array([contest.get(norm(d["name"]), {}).get("cpt_pct", 0.0)
+                            for d in pool])
         sal = np.array([d["salary"] for d in pool])
-        lineups = dfs_opt_mma.legal_lineups(sal)
-        print(f"\n{Path(path).name}: {ctype}, logged board {k[0]} gid {k[1]}, "
-              f"{overlap}/{len(board)} fighters, field ownership sums to "
-              f"{actual.sum():.0f}%")
+        if captain:
+            # DK's CPT salary is exactly 1.5x (8,000 -> 12,000 on 2026-09-26).
+            lineups = dfs_opt_mma.legal_captain_lineups(
+                sal, np.round(dfs_opt_mma.CPT_MULT * sal).astype(int))
+        else:
+            lineups = dfs_opt_mma.legal_lineups(sal)
+        shipped_tau = theory.FIELD_TAU_CASH if ctype == "cash" else theory.FIELD_TAU_GPP
+        shipped_alpha = theory.PUBLIC_FPPF_WEIGHT
+        n_entries = _entries(path)
+        print(f"\n{Path(path).name}: {ctype}, {n_entries} entries, "
+              f"{'Captain' if captain else 'Classic'}, logged board {k[0]} gid {k[1]}, "
+              f"field ownership sums to {actual.sum():.0f}%")
         grid = []
-        for alpha in (0.0, 0.1, 0.15, 0.2, 0.3, 0.45):
+        for alpha in (0.0, 0.15, 0.3, 0.5, 0.7, 1.0):
             theory.PUBLIC_FPPF_WEIGHT = alpha
-            for tau in (3, 4, 5, 6, 8, 10, 12, 15, 20):
-                own, _fl, _w = theory.field_model(pool, lineups, opp, tau)
-                grid.append((float(np.mean(np.abs(own - actual))), alpha, tau))
+            for tau in (3, 5, 8, 12, 16, 20, 25, 30, 40, 60):
+                own, fl, w = theory.field_model(pool, lineups, opp, tau, captain)
+                cpt_mae = (float(np.mean(np.abs(theory.captain_ownership(len(pool), fl, w)
+                                                - act_cpt))) if captain else float("nan"))
+                grid.append((float(np.mean(np.abs(own - actual))), alpha, tau, cpt_mae))
+        theory.PUBLIC_FPPF_WEIGHT = shipped_alpha
+        prior = min(grid, key=lambda g: (abs(g[1] - shipped_alpha), abs(g[2] - shipped_tau)))
         grid.sort()
-        mae, alpha, tau = grid[0]
-        fits[ctype].append((mae, alpha, tau))
-        print(f"  best: fppf weight {alpha}, tau {tau} -> ownership MAE {mae:.2f} pts "
-              f"(shipped {theory.FIELD_TAU_GPP if ctype != 'cash' else theory.FIELD_TAU_CASH})")
+        mae, alpha, tau, cpt_mae = grid[0]
+        fits[ctype].append({"mae": mae, "alpha": alpha, "tau": tau, "n": n_entries,
+                            "file": Path(path).name})
+        print(f"  shipped: fppf weight {shipped_alpha}, tau {shipped_tau} -> ownership "
+              f"MAE {prior[0]:.1f} pts" + (f", CPT MAE {prior[3]:.1f}" if captain else ""))
+        print(f"  best:    fppf weight {alpha}, tau {tau} -> ownership MAE {mae:.1f} pts"
+              + (f", CPT MAE {cpt_mae:.1f}" if captain else ""))
+        for g in grid[1:4]:
+            print(f"           fppf weight {g[1]}, tau {g[2]} -> {g[0]:.1f}")
         theory.PUBLIC_FPPF_WEIGHT = alpha
-        own, _fl, _w = theory.field_model(pool, lineups, opp, tau)
-        for i in np.argsort(-actual)[:10]:
-            print(f"    {pool[i]['name']:<24} actual {actual[i]:5.1f}%  fitted {own[i]:5.1f}%")
+        own, _fl, _w = theory.field_model(pool, lineups, opp, tau, captain)
+        theory.PUBLIC_FPPF_WEIGHT = shipped_alpha
+        print(f"    {'fighter':<22}{'field':>7}{'fitted':>8}")
+        for i in np.argsort(-actual):
+            print(f"    {pool[i]['name'][:21]:<22}{actual[i]:6.1f}%{own[i]:7.1f}%")
     for ctype, fs in fits.items():
-        print(f"\n{ctype}: {len(fs)} exports; per-export best (MAE, fppf weight, tau): {fs}")
+        print(f"\n{ctype}: {len(fs)} export(s)")
+        for f in fs:
+            print(f"   {f['file']}: {f['n']} entries -> fppf weight {f['alpha']}, "
+                  f"tau {f['tau']} (MAE {f['mae']:.1f})")
     if not fits:
         print("No MMA contest export matched a logged board. Export contest standings "
               "from DraftKings into data/ (contest-standings-<id>.csv) and tag each "
               "one cash/gpp in data/contest_meta.json.")
+
+
+def _entries(path: str) -> int:
+    with open(path, newline="", encoding="utf-8-sig") as fh:
+        return sum(1 for r in csv.DictReader(fh) if (r.get("EntryId") or "").strip())
 
 
 def main() -> int:

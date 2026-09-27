@@ -62,12 +62,21 @@ GPP_TOP_FRACTION = 0.01
 FIELD_SIZE = 1000
 
 #: Temperature of the field's lineup softmax, in DK points of PUBLIC lineup
-#: projection. At 8 the top fighter on the 2026-09-26 card came out ~60%
-#: owned and ~650 lineups carried the weight; at 12, ~49% and ~2,700. PRIOR.
-FIELD_TAU_GPP = 8.0
-#: A cash field concentrates harder: measured in MLB (never MMA), 23-entry
-#: cash games put 80-95% on the top pitcher where GPPs put 40-65%. PRIOR.
-FIELD_TAU_CASH = 5.0
+#: projection. Higher is a flatter field.
+#:
+#: FITTED ON ONE EXPORT (scripts/mma_calibration.py --fit-ownership): the
+#: 2026-09-26 late Captain slate, 118-entry GPP. The prior of 8 missed the
+#: field by 11.0 points of ownership per fighter; the fit is flat from 16 to
+#: 20 (9.6-9.9) and 16 is shipped as the smaller move. The field was FLATTER
+#: than the prior everywhere: 56% on the chalk the prior had at 81% (Perez),
+#: 39% on a cheap underdog it had at 8% (Bryczek). Refit as exports arrive;
+#: one Captain slate is not yet a Classic main card.
+FIELD_TAU_GPP = 16.0
+#: A cash field concentrates harder: measured in MLB, 23-entry cash games put
+#: 80-95% on the top pitcher where GPPs put 40-65%. The one MMA cash export so
+#: far (20 entries, same slate) agrees on direction and fits 8 (13.6 pts MAE,
+#: against 16.2 for the prior of 5). Twenty entries is 5% granularity.
+FIELD_TAU_CASH = 8.0
 #: Weight of DK's own lobby FPPF in the projection the field is assumed to
 #: be optimising. PRIOR -- the field reads it, how much is unmeasured. 0.3
 #: was tried first and put 32% on a $6,900, 21%-to-win fighter because his
