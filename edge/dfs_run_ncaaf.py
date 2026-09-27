@@ -80,6 +80,28 @@ def subject_key(subject: str) -> str:
     return ncaaf.norm(_TEAM_SUFFIX.sub("", subject or ""))
 
 
+def salary_index(salaries: dict) -> tuple[dict, list]:
+    """(DK salaries keyed the way a prop subject is, ambiguous keys).
+
+    edge/dfs.fetch_draftables keys with edge.dfs.norm, which KEEPS "Jr." and
+    "III"; a college prop subject drops the suffix ("Michael Hawkins (WVU)"),
+    and subject_key strips it anyway. Joined directly, every suffixed player
+    fell out of the pool: 10 of the 75 with ladders on the 2026-09-26 Night
+    slate, including the quarterback 91% of the cash field played. A key two
+    DK players share is left out rather than guessed.
+    """
+    out: dict = {}
+    dup: set = set()
+    for info in salaries.values():
+        k = ncaaf.norm(info.get("name") or "")
+        if k in out:
+            dup.add(k)
+        out[k] = info
+    for k in dup:
+        out.pop(k, None)
+    return out, sorted(dup)
+
+
 def _parse_time(value) -> datetime | None:
     """DK's '...0000000Z' and a book's '+00:00' into one comparable instant."""
     if not value:
@@ -359,14 +381,15 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
     games = slate_games(salaries)
     opponents = team_opponents(games)
     ladders, event_players = collect_ladders(client, book=book)
+    by_key, ambiguous = salary_index(salaries)
 
     pool: list[dict] = []
     stats = {"projected": 0, "no_proj": 0, "no_salary": 0, "not_on_slate": 0,
              "one_rung": 0, "priced_players": len(ladders),
-             "slate_players": len(salaries)}
+             "slate_players": len(salaries), "ambiguous_names": ambiguous}
 
     for key, by_market in ladders.items():
-        info = salaries.get(key)
+        info = by_key.get(key)
         if not info:
             stats["not_on_slate"] += 1
             continue
@@ -396,7 +419,7 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
         })
         stats["projected"] += 1
 
-    lines, line_report = game_lines(client, games, event_players, salaries)
+    lines, line_report = game_lines(client, games, event_players, by_key)
     for p in pool:
         line = lines.get(p.get("game"))
         if line:

@@ -212,8 +212,8 @@ Full correlation matrix with sample sizes: `edge/dfs_ncaaf_theory.py`.
 
 | thing | status |
 |---|---|
-| **Ownership** | a **PRIOR**, completely unfitted. Shape inherited from MLB (where it *was* fitted); the parameter and especially the S-FLEX split (`QB 1.6 / RB 2.3 / WR 4.1`) are guesses. The single number most worth replacing. |
-| **Ladder overrounds** | fitted against **FanDuel's** two-sided lines — a cross-book anchor, an assumption about a second book, not ground truth. n is 22–81 per market. |
+| **Ownership** | fitted on **one** slate (2026-09-26 Night, a 594-entry GPP); see §8. Sharpness 1.1 confirmed; the S-FLEX split is now **measured** (QB 1.9 / RB 2.3 / WR 3.8 — a QB in the S-FLEX ~90% of the time, not the guessed 60%), and 12% of the field's slots go to players with no DK ladder (`MODELED_SHARE` 0.88). Fitted to GPP only: the cash field is far sharper and cash lineups do not read ownership. |
+| **Ladder overrounds** | fitted against **FanDuel's** two-sided lines — a cross-book anchor, an assumption about a second book, not ground truth. n is 22–81 per market. The first graded slate (§8) had projections **3.9 points LOW** on 63 players (RB −5.5, QB −3.4, WR −3.3) — the direction too-high overrounds would produce, and the check this row was waiting for. Seven games that move together is not enough to refit on. |
 | **`SD_FIT` spreads** | regressed against a leave-one-out **season mean**, not a real projection, because no projection log existed. A season mean knows nothing about the opponent, so these are if anything biased **high**. |
 | **Lineup head-to-head** | the NFL build has `scripts/nfl_lineup_backtest.py` testing cash-vs-GPP objectives against real outcomes. **College has no equivalent yet** — the objectives are argued from measured correlations and spreads, not from a backtested edge. |
 | **Fumbles / 2-pt conversions** | not in the cfbfastR feed; left at zero. Worth about −0.1 and +0.05 points per player-game. |
@@ -263,3 +263,29 @@ python3 scripts/ncaaf_fit.py                      # TD rates, spreads, correlati
 | `scripts/ncaaf_calibration.py` | predicted vs actual, from a contest export |
 | `tests/test_dfs_ladder.py` | the ladder engine, incl. both regressions above |
 | `tests/test_dfs_ncaaf.py` | scoring, roster, theory, optimiser rules |
+
+## 8. First graded slate — 2026-09-26 Night (7 games, draft group 153951)
+
+Both model lineups were entered. **Cash 171.9, 21st of 23** (the line was 185).
+**GPP 119.0, 548th of 594.**
+
+**The cause was a bug, not the model.** DK's salary list keeps name suffixes
+("Michael Hawkins **Jr.**") and a college prop subject drops them
+("Michael Hawkins (WVU)"), so every suffixed player fell out of the pool:
+**10 of the 75 players with ladders**, including the two players the cash
+field built around — Michael Hawkins Jr. (QB, **91%** in cash, scored 35.6) and
+Anthony Evans III (74%) — and JC French IV (74%). DK had posted their ladders
+all day. Fixed in `edge/dfs_run_ncaaf.py::salary_index`. NFL is unaffected:
+its prop subjects keep the suffix.
+
+Replayed from the 6:31 PM odds snapshot, the fixed build's cash lineup puts
+Hawkins Jr. at S-FLEX and scores **186.0 against the 185 line** (the buggy
+build's replay: 165.0). One replay, cleared by a point: direction, not proof.
+
+| check | result |
+|---|---|
+| projection (63 players) | MAE 7.16, r 0.51, **bias −3.88** (see §5, overrounds) |
+| ladder `band` as a risk measure | high-band half MAE 7.38 vs low-band 6.94 — worse, as it should be |
+| ownership, shipped prior on the fixed pool | 5.00 pts/player; with the measured slots + modelled share **4.58** |
+| field ownership on players with no DK ladder | 12% GPP, 8% cash (after the fix; 25% / 36% before it) |
+| cash field sharpness | gamma 3+ with a 90% cap — recorded, not shipped (cash does not read ownership) |

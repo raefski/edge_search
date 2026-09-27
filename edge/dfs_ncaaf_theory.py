@@ -247,15 +247,25 @@ def score(lineup: list, mode: str = "cash", z_cash: float = Z_CASH,
 #: distributed over the positions eligible for them. Summed ownership within a
 #: position must come to this many lineups' worth, and these must sum to 8.
 #:
-#: The split of the S-FLEX is the assumption doing the work. Finding 1 says a
-#: quarterback is worth about two receivers per slot, so a sharp field would put
-#: a QB there almost always; a real field contains many entries that never
-#: consider it. 0.6 is a guess at that mix and it is the single number most
-#: worth replacing with a fitted one from a real contest export.
-SLOTS_BY_POSITION = {"QB": 1.6, "RB": 2.3, "WR": 4.1}
+#: MEASURED on the first export (2026-09-26 Night slate, 594-entry GPP): the
+#: field used 1.9 QB, 2.3 RB and 3.8 WR slots per lineup -- a quarterback in
+#: the S-FLEX about 90% of the time. The prior guessed 0.6 (QB 1.6, WR 4.1).
+#: A 23-entry cash game on the same slate put 2.0 in QB.
+SLOTS_BY_POSITION = {"QB": 1.9, "RB": 2.3, "WR": 3.8}
+
+#: Share of the field's slots that go to players THIS model projects. DK posts
+#: ladders for only some of a slate, and the field also plays the rest: on the
+#: 2026-09-26 Night slate 12% of GPP ownership went to players with no ladder
+#: (Kayden Dixon-Wyatt 19.5%, Wyatt Young 9.6%). Spreading all eight slots
+#: over the modelled players inflated every one of them. Per-player ownership
+#: MAE 5.00 -> 4.49 on that GPP. One slate; refit as exports arrive.
+MODELED_SHARE = 0.88
 
 #: Softmax sharpness on value, and the guards around it. Shape inherited from
 #: edge/dfs_nfl_theory.py, which inherited it from MLB where it WAS fitted.
+#: The 2026-09-26 GPP confirms 1.1 (best fit 1.05-1.2). A CASH field is far
+#: sharper -- the 23-entry export fits 3.0+ with a 90% cap -- but cash
+#: lineups do not read ownership, so this board is fitted to GPP only.
 #:
 #: MAX_OWN is higher than the NFL's 45 because a college main slate is 12 games
 #: and DraftKings prices only ~110 of its ~860 players with a prop at all, so
@@ -309,7 +319,7 @@ def add_ownership(pool: list, gamma: float = OWNERSHIP_GAMMA,
         by_pos.setdefault(base_position(p.get("dk_pos")), []).append(p)
 
     for pos, players in by_pos.items():
-        target = 100.0 * SLOTS_BY_POSITION.get(pos, 1.0)
+        target = 100.0 * SLOTS_BY_POSITION.get(pos, 1.0) * MODELED_SHARE
         values = []
         for p in players:
             salary = float(p.get("salary") or 0) / 1000.0

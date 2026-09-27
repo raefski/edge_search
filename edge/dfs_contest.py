@@ -67,14 +67,18 @@ def parse_contest_file(path) -> dict:
             cpt = (row.get("Roster Position") or "").strip().upper() == "CPT"
             base = round(fpts_val / CPT_MULT, 4) if cpt else fpts_val
             key = norm(name)
+            slot = (row.get("Roster Position") or "").strip()
             if key in out:
                 out[key]["pct_drafted"] = round(
                     out[key]["pct_drafted"] + pct_val, 4)
                 if not cpt:
                     out[key]["fpts"] = fpts_val
+                if slot and slot not in out[key]["slots"]:
+                    out[key]["slots"].append(slot)
             else:
                 out[key] = {"name": name, "pct_drafted": pct_val,
-                            "fpts": base, "cpt_pct": 0.0}
+                            "fpts": base, "cpt_pct": 0.0,
+                            "slots": [slot] if slot else []}
             if cpt:
                 out[key]["cpt_pct"] = round(out[key]["cpt_pct"] + pct_val, 4)
     return out

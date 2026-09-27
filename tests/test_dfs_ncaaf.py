@@ -275,3 +275,26 @@ def test_a_priced_bonus_overrides_the_fitted_normal():
         bonus_probs={"player_reception_yds": 0.60})
     assert priced["bonus"] == pytest.approx(0.60 * 3.0)
     assert priced["bonus"] != fitted["bonus"]
+
+
+def test_a_suffixed_player_joins_his_ladder():
+    """2026-09-26: 10 of 75 players with ladders fell out of the Night slate's
+    pool because DK's salary list keeps "Jr."/"IV" and a college prop subject
+    drops it -- including the QB 91% of the cash field played."""
+    from edge import dfs
+    from edge.dfs_run_ncaaf import salary_index, subject_key
+    salaries = {dfs.norm(n): {"name": n, "salary": 7500}
+                for n in ("Michael Hawkins Jr.", "JC French IV", "Caleb Hawkins")}
+    by_key, ambiguous = salary_index(salaries)
+    for subject, name in (("Michael Hawkins (WVU)", "Michael Hawkins Jr."),
+                          ("JC French (CIN)", "JC French IV"),
+                          ("Caleb Hawkins (OKST)", "Caleb Hawkins")):
+        assert by_key[subject_key(subject)]["name"] == name
+    assert ambiguous == []
+
+
+def test_two_players_one_key_are_left_out_not_guessed():
+    from edge.dfs_run_ncaaf import salary_index
+    by_key, ambiguous = salary_index({
+        "a": {"name": "John Smith"}, "b": {"name": "John Smith Jr."}})
+    assert "johnsmith" not in by_key and ambiguous == ["johnsmith"]
