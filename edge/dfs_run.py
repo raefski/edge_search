@@ -349,8 +349,9 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
             continue
         # sorted() so pool order is reproducible across machines/processes (a bare
         # set iterates in hash-randomized order, which can shift optimizer tie-breaks).
+        lookup = dfs.SalaryLookup(salaries)
         for nm in sorted({o["description"] for m in dkp["markets"] for o in m["outcomes"] if o.get("description")}):
-            info = salaries.get(dfs.norm(nm))
+            info = lookup.get(nm)
             if not info or not info.get("salary") or "P" not in dfs.parse_pos(info["position"]):
                 continue
             pp_proj = dfs.project_pitcher(dfs.player_markets(dkp, nm))

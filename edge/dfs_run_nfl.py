@@ -291,8 +291,9 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
     stats = {"offense": 0, "dst": 0, "no_proj": 0, "no_salary": 0,
              "not_on_slate": 0, **line_report}
 
+    lookup = dfs.SalaryLookup(salaries)
     for name, markets in props.items():
-        info = salaries.get(dfs.norm(name))
+        info = lookup.get(name)
         if not info:
             stats["not_on_slate"] += 1
             continue

@@ -85,3 +85,16 @@ def test_mma_reports_unpriced(monkeypatch):
     res = M.build_slate(draft_group=999999, groups=[_group(M.CLASSIC_GAME_TYPE, 0)],
                         persist=False)
     assert res.get("unpriced")
+
+
+def test_salary_lookup_tolerates_a_dropped_suffix():
+    """2026-09-27: DK's sportsbook said "James Cook", DK DFS "James Cook III";
+    seven NFL main-slate players fell out of the pool."""
+    lk = dfs.SalaryLookup({dfs.norm(n): {"name": n} for n in (
+        "James Cook III", "Deebo Samuel Sr.", "Josh Allen", "John Smith", "John Smith Jr.")})
+    assert lk.get("James Cook")["name"] == "James Cook III"
+    assert lk.get("Deebo Samuel")["name"] == "Deebo Samuel Sr."
+    assert lk.get("John Smith")["name"] == "John Smith"          # exact wins
+    assert lk.get("John Smith Jr.")["name"] == "John Smith Jr."
+    assert lk.ambiguous == ["johnsmith"]
+    assert lk.get("Nobody") is None

@@ -146,6 +146,38 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
 
 _SNAP_DIR = __import__("pathlib").Path(__file__).resolve().parents[1] / "data" / "draftables_snapshot"
 
+class SalaryLookup:
+    """Find a sportsbook subject in fetch_draftables' salaries, suffix-tolerant.
+
+    Salaries are keyed with norm(), which KEEPS "Jr."/"Sr."/"III"; the books do
+    not agree on suffixes. On 2026-09-27 DraftKings' own sportsbook listed
+    "James Cook", "Deebo Samuel", "Chris Godwin" and "Aaron Jones" while DK's
+    DFS board had "James Cook III", "Deebo Samuel Sr.", ... -- seven NFL main-
+    slate players silently fell out of the pool, as ten college players had
+    the night before. The exact key is tried FIRST, so every name that matched
+    before matches identically; the suffix-free key is only a fallback, and a
+    suffix-free key two DK players share is never guessed.
+    """
+
+    def __init__(self, salaries: dict):
+        from edge.names import norm as _bare
+        self._bare = _bare
+        self.exact = salaries
+        self.bare: dict = {}
+        dup: set = set()
+        for info in salaries.values():
+            k = _bare(info.get("name") or "")
+            if k in self.bare:
+                dup.add(k)
+            self.bare[k] = info
+        for k in dup:
+            self.bare.pop(k, None)
+        self.ambiguous = sorted(dup)
+
+    def get(self, name: str):
+        return self.exact.get(norm(name)) or self.bare.get(self._bare(name))
+
+
 class DraftablesUnavailable(RuntimeError):
     """No salaries for a draft group: the live call failed AND no snapshot exists.
 
