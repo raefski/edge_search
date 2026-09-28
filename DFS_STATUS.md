@@ -175,12 +175,35 @@ percentile field is built from this repo's own *unvalidated* ownership prior; an
 projection is the SKILL model, not the props model the live app runs on. These numbers
 compare CONSTRUCTIONS. They are not an ROI and cannot be quoted as one.
 
+### NFL ownership now reads YouTube buzz (2026-09-28)
+
+The field plays who the week's DFS shows told it to play. `scripts/buzz_nfl.py` counts
+how often ~70 public NFL DFS YouTube videos per week name each player before lock
+(free: YouTube search via yt-dlp, transcripts via the `get_panel` call YouTube's own
+"Show transcript" button makes), and `add_ownership` uses it as a second softmax term
+whenever `data/buzz_nfl.csv` has the slate. Held out across the first three main-slate
+GPPs it cut mean ownership error per player 2.73 -> 2.32 and lifted rank correlation
+0.739 -> 0.790; refitting the value-only gamma gained nothing (2.71). Dan's Est Own% on
+9/27: 2.04 -- buzz closed about half that gap. Full table on `BUZZ_BETA`.
+
+- **Captions spell names by sound** ("Bejon" = Bijan ~600x a slate, "Baitman" = Bateman,
+  "Shuck" = Shough). `edge/buzz.py::learn_variants` learns each slate's spellings from
+  its own transcripts; counting exact spellings only was worth ~3%, not ~15%.
+- **Weekly:** `deploy/buzz-publish.timer` collects and pushes Sat 8 PM and Sun 9:00,
+  10:30, 11:45 ET. Sunday-morning live shows have no transcript until they end, so a
+  pre-lock collection sees somewhat less than the backfills this was fitted on.
+- **YouTube's caption API** (youtube-transcript-api, yt-dlp subs) 429'd this IP for 8+
+  hours after ~20 fast requests; `get_panel` was unaffected. Keep the 5 s pacing.
+- Known miss: a player whose first AND last name are both garbled and whose garbled
+  surname is close to someone else's (Oronde Gadsden II, "Aronda Gadston", 9/27).
+
 ### Still missing for NFL
 
-- **Ownership is a prior, not a fit.** No NFL contest exports exist on this machine, so
-  unlike MLB's gammas nothing here is tuned. It is capped and normalised so the output
-  is at least possible (an unclipped version handed a $2,900 TE 99.1% ownership), and it
-  only tilts GPP. Get a real DK contest-standings export and fit it.
+- **Ownership without buzz is still a prior.** Three GPP exports now exist
+  (`scripts/dfs_calibration_nfl.py`); refitting OWNERSHIP_GAMMA on them changes nothing
+  measurable, so it stays. The calibration join was silently dropping every "Jr."/"III"
+  player (up to 49.8% owned) until 2026-09-28 -- `scripts/dfs_calibration.py` (MLB)
+  keys its log the same way and has not been checked.
 - **No inactive feed.** NFL inactives land 90 min before kickoff; the only thing
   tracking them is the books pulling a ruled-out player's props, so snapshot freshness
   IS the inactive check. The page warns when props are over 90 minutes old.

@@ -1,0 +1,14 @@
+# Saturday evening, then three times Sunday morning before the 1:00 PM ET main
+# slate lock. Morning live shows have no transcript until they end, so each
+# later run picks up what the earlier one could not; a run takes 5-15 minutes.
+# Verify any edit with `systemd-analyze calendar '<expr>'`.
+[Unit]
+Description=Collect NFL DFS YouTube buzz before Sunday lock
+[Timer]
+OnCalendar=Sat *-*-* 20:00
+OnCalendar=Sun *-*-* 09:00
+OnCalendar=Sun *-*-* 10:30
+OnCalendar=Sun *-*-* 11:45
+Persistent=true
+[Install]
+WantedBy=timers.target

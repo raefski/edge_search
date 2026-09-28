@@ -1,0 +1,19 @@
+# Collect NFL DFS YouTube buzz for the coming Sunday's main slate and push it
+# for the cloud app, whose ownership model reads data/buzz_nfl.csv
+# (edge/dfs_run_nfl.attach_buzz). Runs on this machine because it needs a
+# residential IP for YouTube.
+#
+#   cp deploy/buzz-publish.service deploy/buzz-publish.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now buzz-publish.timer
+[Unit]
+Description=Collect and publish NFL DFS YouTube buzz for the cloud app
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/buzz_nfl.py --push
+Restart=no
+Nice=10
+TimeoutStartSec=2400

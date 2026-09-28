@@ -272,21 +272,49 @@ def _normalise(players, weights, target, cap):
     return owns
 
 
-def add_ownership(pool: list, gamma: float = OWNERSHIP_GAMMA,
-                  cap: float = MAX_OWN) -> list:
+#: YouTube BUZZ -- how often the week's public DFS shows named a player before
+#: lock (scripts/buzz_nfl.py -> data/buzz_nfl.csv) -- as a second softmax term,
+#: z-scored on log(1 + mentions) within position. The field plays who it was
+#: told to play; points per dollar only sees half of that. Used only when the
+#: pool carries a `buzz` for this slate; otherwise the value-only model runs
+#: exactly as before.
+#:
+#: Fitted on the 2026-09-13/20/27 main-slate GPPs (17,835 entries on 9/27),
+#: scripts/buzz_fit_nfl.py. Each slate scored with constants fitted on the
+#: OTHER two, mean abs ownership error per player:
+#:
+#:   | held out | value only (shipped) | value only, refit | value + buzz |
+#:   |----------|----------------------|-------------------|--------------|
+#:   | 9/13     | 2.53                 | 2.54              | 2.15         |
+#:   | 9/20     | 2.88                 | 2.87              | 2.42         |
+#:   | 9/27     | 2.80                 | 2.73              | 2.40         |
+#:
+#: Rank correlation 0.739 -> 0.790. For scale, Dan's Projections' Est Own% on
+#: the 9/27 board: 2.04. Refitting OWNERSHIP_GAMMA alone gains nothing, so
+#: the value-only fallback keeps its prior.
+BUZZ_GAMMA = 0.6
+BUZZ_BETA = 1.0
+BUZZ_Z_CLIP = 3.0
+
+
+def add_ownership(pool: list, gamma: float | None = None,
+                  cap: float = MAX_OWN, buzz_beta: float = BUZZ_BETA) -> list:
     """Annotate every player with `own` (percent) and `leverage`.
 
     Ownership is a power-softmax over VALUE (projected points per $1,000),
     normalised within a position so the position's total equals the number of
-    lineup slots it fills, then capped. That shape is MLB's, which was fitted;
-    the parameter is not. Read OWNERSHIP_GAMMA's note before using the number
-    for anything load-bearing.
+    lineup slots it fills, then capped. When the pool carries `buzz` (YouTube
+    mentions, see BUZZ_BETA) that is a second term and `gamma` defaults to
+    BUZZ_GAMMA; without it, to OWNERSHIP_GAMMA, whose note says it is unfitted.
 
     `leverage` is the projection percentile minus the ownership percentile
     within position. Positive means the field is underweighting him relative to
     how good the model thinks he is -- the quantity a GPP wants and a cash
     lineup should completely ignore.
     """
+    has_buzz = any(p.get("buzz") is not None for p in pool)
+    if gamma is None:
+        gamma = BUZZ_GAMMA if has_buzz else OWNERSHIP_GAMMA
     by_pos: dict[str, list] = {}
     for p in pool:
         by_pos.setdefault(base_position(p), []).append(p)
@@ -299,10 +327,16 @@ def add_ownership(pool: list, gamma: float = OWNERSHIP_GAMMA,
             values.append((float(p.get("proj") or 0.0) / salary) if salary else 0.0)
         mean_v = sum(values) / len(values) if values else 0.0
         spread = (sum((v - mean_v) ** 2 for v in values) / len(values)) ** 0.5 or 1.0
+        buzz_z = [0.0] * len(players)
+        if has_buzz:
+            logs = [math.log1p(float(p.get("buzz") or 0.0)) for p in players]
+            mean_b = sum(logs) / len(logs)
+            sd_b = (sum((b - mean_b) ** 2 for b in logs) / len(logs)) ** 0.5 or 1.0
+            buzz_z = [max(-BUZZ_Z_CLIP, min(BUZZ_Z_CLIP, (b - mean_b) / sd_b)) for b in logs]
         weights = []
-        for v in values:
+        for v, zb in zip(values, buzz_z):
             z = max(-OWNERSHIP_Z_CLIP, min(OWNERSHIP_Z_CLIP, (v - mean_v) / spread))
-            weights.append(math.exp(gamma * z))
+            weights.append(math.exp(gamma * z + buzz_beta * zb))
         for p, own in zip(players, _normalise(players, weights, target, cap)):
             p["own"] = round(own, 1)
 

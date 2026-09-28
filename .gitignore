@@ -121,6 +121,10 @@ data/pickem/
 # data/pbp_team_game.csv (small, aggregated) IS committed.
 data/nflverse_games.csv
 
+# Hand-prunable list of YouTube channels scripts/buzz_nfl.py reads (set
+# "active": false to drop one). Public channel ids, nothing personal.
+!data/buzz_channels_nfl.json
+
 # Arbitrage snapshot: the Streamlit page reads this
 !data/arb_snapshot.json
 

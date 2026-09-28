@@ -26,7 +26,11 @@ from collections import defaultdict
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from edge.dfs import norm  # noqa: E402
+# edge.names.norm, NOT edge.dfs.norm: the contest board is keyed with the
+# suffix-free one (edge/dfs_contest.py), and keying the log with the other
+# silently dropped every "Jr."/"III" player from calibration -- 11 on the
+# 2026-09-13 GPP alone, up to 9.8% owned (Luther Burden III).
+from edge.names import norm  # noqa: E402
 from scripts.dfs_calibration import (  # noqa: E402
     parse_contest_file, load_contest_meta, load_contest_type, games_for_date,
 )

@@ -454,6 +454,34 @@ def log_forward_test(pool: list, cash: dict | None, gpp: dict | None,
     return result
 
 
+BUZZ_FILE = Path(__file__).resolve().parents[1] / "data" / "buzz_nfl.csv"
+
+
+def attach_buzz(pool: list, date: str | None, path: Path = BUZZ_FILE) -> int:
+    """Give every player his YouTube mentions for this slate (scripts/buzz_nfl.py),
+    which edge.dfs_nfl_theory.add_ownership then uses. Returns how many buzz
+    rows the slate had; 0 leaves the pool untouched, so a slate nobody
+    collected buzz for gets the value-only field model exactly as before.
+
+    Read through repo_files, so the phone app sees a Sunday-morning collection
+    as soon as it is pushed rather than whenever Cloud next redeploys.
+    """
+    import io
+
+    from edge import repo_files
+    from edge.names import norm as bare
+    found = repo_files.read(path) if date else None
+    if found is None:
+        return 0
+    rows = [r for r in csv.DictReader(io.StringIO(found.data)) if r.get("date") == date]
+    if not rows:
+        return 0
+    mentions = {bare(r["player"]): float(r.get("mentions") or 0) for r in rows}
+    for p in pool:
+        p["buzz"] = mentions.get(bare(p["name"]), 0.0)
+    return len(rows)
+
+
 def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftkings",
                 stack_n: int = 2, bring_back: int = 1, own_gamma: float | None = None,
                 own_weight: float = 0.0, groups: list[dict] | None = None,
@@ -495,6 +523,12 @@ def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftki
 
     pool, stats = build_pool(client, salaries, book=book)
     games = slate_games(salaries)
+    try:
+        stats["buzz_rows"] = attach_buzz(pool, _slate_date(meta))
+    except Exception as exc:                                # noqa: BLE001
+        # Buzz sharpens ownership; it must never stop a lineup being built.
+        log.warning("dfs_run_nfl: buzz unavailable: %s", exc)
+        stats["buzz_rows"] = 0
     theory.add_ownership(pool, **({"gamma": own_gamma} if own_gamma else {}))
 
     cash = dfs_opt_nfl.optimize(pool, mode="cash", iters=iters, seed=0)
