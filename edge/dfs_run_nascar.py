@@ -160,17 +160,21 @@ _FORM_CACHE: dict = {}
 
 
 def driver_form(season: int, series: int = nascar.NASCAR_CUP,
-                seasons: int = FORM_SEASONS) -> dict:
+                seasons: int = FORM_SEASONS, before: str | None = None) -> dict:
     """{driver_id: form dict} from that driver's most recent races.
 
-    Prior races only, by construction -- this is built from completed races and
-    applied to an upcoming one, so there is nothing to leak. A driver with
-    fewer than MIN_FORM_RACES gets None and the simulator falls back to
-    nascar_sim.DEFAULT_FORM, which is deliberately mediocre rather than
+    For an upcoming race every completed race is prior, so there is nothing to
+    leak. Rebuilding a PAST race is different: its own result is in the feed by
+    then, so `before` (the race's ISO date) must cut form off there -- without
+    it, rebuilding Kansas 2026-09-27 fed all 36 of that race's own results
+    into the form it was projected from.
+
+    A driver with fewer than MIN_FORM_RACES gets None and the simulator falls
+    back to nascar_sim.DEFAULT_FORM, which is deliberately mediocre rather than
     average: an unknown part-time entry is far more likely to be a backmarker
     than a contender, and guessing average would put him in cash lineups.
     """
-    ck = (season, series, seasons)
+    ck = (season, series, seasons, before)
     if ck in _FORM_CACHE:
         return _FORM_CACHE[ck]
     rows: list[dict] = []
@@ -179,7 +183,8 @@ def driver_form(season: int, series: int = nascar.NASCAR_CUP,
             rows.extend(nascar.season_rows(yr, series))
         except Exception as exc:                            # noqa: BLE001
             log.warning("nascar form: season %s unavailable (%s)", yr, exc)
-    rows = [r for r in rows if r["scored"]]
+    rows = [r for r in rows if r["scored"]
+            and (before is None or (r["race_date"] or "") < before)]
     rows.sort(key=lambda r: (r["season"], r["race_date"] or "", r["race_id"]))
 
     by_driver: dict = collections.defaultdict(list)
@@ -311,14 +316,62 @@ def build_board(gid: int, meta: dict, n_sims: int = 2000, seed: int = 0):
         estimate_starts(pool, sess.get("practice") or {},
                         sess.get("practice_rank") or {})
 
-    race_meta = {"track_type": info["track_type"],
+    pool, sim = _simulate_board(pool, race, n_sims, seed)
+    return pool, sim, info
+
+
+def _simulate_board(pool: list, race: dict, n_sims: int, seed: int):
+    race_meta = {"track_type": nascar.track_type(race),
                  "actual_laps": int(race.get("scheduled_laps") or 300),
                  "green_laps": nascar.green_laps(
                      {**race, "actual_laps": race.get("scheduled_laps")})}
     sim = nascar_sim.simulate(pool, race_meta, n_sims=n_sims, seed=seed)
     pool = nascar_sim.summarise(sim, pool)
     theory.add_ownership(pool)
-    return pool, sim, info
+    return pool, sim
+
+
+def rebuild_board(logged: list[dict], series: int = nascar.NASCAR_CUP,
+                  n_sims: int = 1500, seed: int = 0):
+    """(pool, sim, info) for a PAST slate, as it stood at the green flag.
+
+    The forward-test log only holds builds made on this machine, and the one
+    that matters is usually the post-qualifying rebuild made in the phone app,
+    which never comes back here. For Kansas 2026-09-27 the log held a Saturday
+    build on an estimated grid while the lineups actually entered came from
+    the real one. This reconstructs that board from the logged salaries, the
+    real qualifying grid and form from earlier races only. At the app's
+    defaults (1,500 races, seed 0) it reproduced both lineups entered at
+    Kansas driver for driver.
+
+    `logged` is one slate's rows from data/dfs_proj_log_nascar.csv.
+    """
+    date, name = logged[0]["date"], (logged[0].get("race") or "").strip()
+    season = int(date[:4])
+    race = next((r for r in nascar.schedule(season, series)
+                 if (r.get("race_date") or "").startswith(date)
+                 and (r.get("race_name") or "").strip() == name), None)
+    if race is None:
+        return [], None, {"error": f"no NASCAR race '{name}' on {date}"}
+    # refresh: a feed cached before qualifying has no grid in it
+    rows = {r["driver_id"]: r
+            for r in nascar.race_rows(race["race_id"], season, series, refresh=True)}
+    grid = (nascar.sessions(race["race_id"], season, series, refresh=True)
+            .get("qualifying") or {})
+    form = driver_form(season, series, before=race["race_date"])
+    pool = []
+    for lr in logged:
+        did = int(lr["driver_id"])
+        start = grid.get(did) or (rows.get(did) or {}).get("start") or 0
+        pool.append({"name": lr["driver"], "driver_id": did,
+                     "salary": int(float(lr["salary"])),
+                     "team": (rows.get(did) or {}).get("team"),
+                     "car": (rows.get(did) or {}).get("car"),
+                     **(form.get(did) or {}),
+                     "start": int(start), "start_estimated": not start})
+    pool, sim = _simulate_board(pool, race, n_sims, seed)
+    return pool, sim, {"race": name, "qualified": bool(grid),
+                       "track_type": nascar.track_type(race)}
 
 
 # ---------------------------------------------------------------------------

@@ -116,6 +116,13 @@ def grade(rows: list[dict], tag: str) -> None:
           f"above ceiling {100 * above:5.1f}% (target 10)")
 
 
+def _own_fit(rows: list[dict], sw: float, gw: float) -> tuple[float, float]:
+    pool = [dict(r) for r in rows]
+    theory.add_ownership(pool, salary_weight=sw, start_weight=gw)
+    err = statistics.fmean(abs(p["own"] - r["own_actual"]) for p, r in zip(pool, rows))
+    return err, _spearman([(p["own"], r["own_actual"]) for p, r in zip(pool, rows)])
+
+
 def fit_ownership(rows: list[dict]) -> None:
     """Sweep the field model against what the field actually did."""
     print("\nOWNERSHIP")
@@ -124,22 +131,16 @@ def fit_ownership(rows: list[dict]) -> None:
           f"{summed / 100:.2f} lineups' worth (must be ~6 for a single-entry "
           f"board; more means multi-entry)")
 
-    best = None
-    for gamma in [x / 20.0 for x in range(6, 61)]:
-        for vw in (0.4, 0.5, 0.6, 0.7, 0.8, 1.0):
-            pool = [dict(r, proj=r["proj"], ceil=r["ceil"], salary=r["salary"])
-                    for r in rows]
-            theory.add_ownership(pool, gamma=gamma, value_weight=vw,
-                                 ceiling_weight=1.0 - vw)
-            err = statistics.fmean(abs(p["own"] - r["own_actual"])
-                                  for p, r in zip(pool, rows))
-            if best is None or err < best[0]:
-                best = (err, gamma, vw)
-    err, gamma, vw = best
-    print(f"  best fit: OWNERSHIP_GAMMA={gamma:.2f}  VALUE_WEIGHT={vw:.2f}  "
-          f"CEILING_WEIGHT={1 - vw:.2f}   (mean abs error {err:.1f} points)")
-    print(f"  currently shipped: {theory.OWNERSHIP_GAMMA:.2f} / "
-          f"{theory.VALUE_WEIGHT:.2f} / {theory.CEILING_WEIGHT:.2f}")
+    grid = [x / 10.0 for x in range(0, 31)]
+    err, sw, gw = min((_own_fit(rows, sw, gw)[0], sw, gw) for sw in grid for gw in grid)
+    uniform = statistics.fmean(abs(100.0 * theory.ROSTER_SLOTS / len(rows) - r["own_actual"])
+                               for r in rows)
+    shipped = _own_fit(rows, theory.SALARY_WEIGHT, theory.START_WEIGHT)
+    print(f"  uniform guess:     MAE {uniform:5.1f}")
+    print(f"  currently shipped: MAE {shipped[0]:5.1f}  rank {shipped[1]:+.3f}   "
+          f"SALARY_WEIGHT={theory.SALARY_WEIGHT:.1f}  START_WEIGHT={theory.START_WEIGHT:.1f}")
+    print(f"  best fit here:     MAE {err:5.1f}  rank {_own_fit(rows, sw, gw)[1]:+.3f}   "
+          f"SALARY_WEIGHT={sw:.1f}  START_WEIGHT={gw:.1f}")
 
     worst = sorted(rows, key=lambda r: -abs((r["own"] or 0) - r["own_actual"]))[:6]
     print("\n  biggest ownership misses (predicted vs actual):")
@@ -148,6 +149,21 @@ def fit_ownership(rows: list[dict]) -> None:
               f"pred {(r['own'] or 0):5.1f}%  actual {r['own_actual']:5.1f}%")
     print("\n  A cash board and a GPP board concentrate very differently -- do "
           "not pool them.\n  Re-run per contest type.")
+
+
+def rebuild(logged: list[dict]) -> dict:
+    """{norm(driver): row} for the board as played -- see
+    edge/dfs_run_nascar.rebuild_board. {} if the race can't be found."""
+    from edge import dfs_run_nascar
+    pool, _sim, info = dfs_run_nascar.rebuild_board(logged)
+    if not pool or not info.get("qualified"):
+        print(f"  rebuild unavailable: {info.get('error', 'no qualifying grid in the feed')}")
+        return {}
+    return {norm(d["name"]): {"driver": d["name"], "start": d["start"],
+                              "start_estimated": int(bool(d["start_estimated"])),
+                              "salary": d["salary"], "proj": d["proj"],
+                              "floor": d["floor"], "ceil": d["ceil"], "own": d["own"]}
+            for d in pool}
 
 
 def main() -> int:
@@ -168,6 +184,7 @@ def main() -> int:
     files = args.files or sorted(
         glob.glob(str(ROOT / "data" / "contest-standings-*.csv")))
     pooled: list[dict] = []
+    rebuilt: dict = {}
     for path in files:
         contest = parse_contest_file(path)
         date, overlap = ((args.date, len(set(contest) & set(log.get(args.date, {}))))
@@ -176,8 +193,16 @@ def main() -> int:
             print(f"\n{Path(path).name}: no NASCAR race matches "
                   f"({overlap} drivers overlap) — skipped")
             continue
+        board = log[date]
+        if all(str(r.get("start_estimated")) == "1" for r in board.values()):
+            if date not in rebuilt:
+                rebuilt[date] = rebuild(list(board.values()))
+            if rebuilt[date]:
+                print(f"\n  logged build for {date} used an ESTIMATED grid; grading the "
+                      f"board rebuilt on the real grid instead")
+                board = rebuilt[date]
         joined = []
-        for key, row in log[date].items():
+        for key, row in board.items():
             real = contest.get(key)
             proj = _f(row.get("proj"))
             if not real or proj is None:

@@ -266,6 +266,19 @@ def test_an_impossible_cap_returns_none_rather_than_an_illegal_lineup():
 # ---------------------------------------------------------------------------
 # the field model
 # ---------------------------------------------------------------------------
+def test_field_skips_the_cheapest_cars_however_deep_they_start():
+    """Kansas 2026-09-27: Cole Custer ($4,900, P29) was 2.6% owned while Alex
+    Bowman ($7,300, P33) was 52.5% and Denny Hamlin ($10,500, P6) 51.0%."""
+    pool = [{"name": "custer", "salary": 4900, "start": 29},
+            {"name": "bowman", "salary": 7300, "start": 33},
+            {"name": "hamlin", "salary": 10500, "start": 6}]
+    pool += [{"name": f"filler{i}", "salary": 6000 + 100 * i, "start": 10 + i}
+             for i in range(12)]
+    own = {d["name"]: d["own"] for d in theory.add_ownership(pool)}
+    assert own["bowman"] > own["custer"]
+    assert own["hamlin"] > own["custer"]
+
+
 def test_ownership_sums_to_six_lineups_worth():
     drivers = _field()
     sim = nascar_sim.simulate(drivers, _race(), n_sims=300, seed=10)

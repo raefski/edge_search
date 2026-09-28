@@ -186,7 +186,8 @@ most important action in the weekly loop.
 
 | thing | status |
 |---|---|
-| **Ownership** | a **PRIOR**, never fitted against any NASCAR contest. The first export is the most valuable file this build will receive — the whole field picks six of ~37, so one file pins the curve across the entire pool. |
+| **Ownership** | **fitted on ONE race** (Kansas 2026-09-27, §7a): salary + starting position. Intermediate track only; a superspeedway may need a steeper start weight. |
+| **Projection order** | rank correlation +0.27 on one race; the flat 12-race form average under-rates a hot elite driver (Larson, §7a). Open. |
 | **Drafting partners** | at a superspeedway, teammates' and manufacturer allies' finishes are genuinely correlated beyond what the permutation implies. **Not modelled.** A known gap, not an oversight. |
 | **Lineup head-to-head** | no backtest of cash-vs-GPP objectives against real contest outcomes yet. The objectives are argued from the measured distribution, not from a demonstrated edge. |
 | **Pit strategy, fuel windows, caution timing** | absorbed into the residual spread rather than simulated. |
@@ -194,6 +195,48 @@ most important action in the weekly loop.
 
 `data/dfs_proj_log_nascar.csv` is written on every build and records whether
 the grid was provisional, so the calibration script can split on it.
+
+## 7a. First contest: Kansas, 2026-09-27
+
+Exports: GPP `195973145` (891 entries), cash `195973140` (229 entries).
+
+**The logged build was not the one played.** The only local build was
+Saturday's, on an estimated grid; the lineups entered came from the
+post-qualifying rebuild in the phone app, which never reaches this machine.
+`edge/dfs_run_nascar.rebuild_board` now reconstructs a past board from the
+logged salaries, the real qualifying grid and form from earlier races only
+(`driver_form(before=...)`; without the cut, the race's own 36 results leak
+into its form). At the app defaults it reproduced both entered lineups
+driver for driver. `scripts/nascar_calibration.py` rebuilds automatically
+whenever the logged build was provisional.
+
+**Projections, real grid, 36 drivers:** bias +0.4, MAE 19.3, rank correlation
+**+0.27** (the provisional-grid log: +0.09). Floor/ceiling calibrated: 25%
+below the floor (target 25), 6% above the ceiling (target 10).
+
+**The miss that decided the slate:** Kyle Larson, $11,000 from P2, projected
+23.3 — he won, led 235 of 267 laps, 144.3 points, 38% owned. His 12-race form
+read average finish 17.4 and 7% laps led because two early wrecks sit inside
+the window, while his last three races were 5th, 1st, 2nd with 224 laps led.
+Average finish is a noisy speed signal. NASCAR's loop data (§9) carries
+average running position and driver rating for every race since 2020; testing
+those as form inputs in `scripts/nascar_fit.py --validate`, against the full
+2022-2026 sample rather than this one race, is the next projection step.
+
+**Ownership:** the value/ceiling prior was worse than a uniform guess (MAE
+12.8 vs 10.5, rank -0.04). Replaced by salary + start, `SALARY_WEIGHT` 0.7 /
+`START_WEIGHT` 0.3, MAE 5.9 and rank +0.78 on the GPP; the cash game fits
+much steeper (1.9 / 1.5, MAE 7.7). The full table and reasoning are on the
+constants in `edge/dfs_nascar_theory.py`. The app's GPP objective runs with
+`own_weight=0`, so this changes the ownership and leverage shown, not the
+lineups built.
+
+**Entries (gorillabiscuit):** GPP 215.4, rank 647/891 (median 254.2, ~22%
+paid near 317). Cash 223.8, rank 199/229 (median 273.7, a ~44% cash line near
+282). Blaney (70.8) and Briscoe (74.7) were right; Logano from P1 finished 20th
+for 4.0 points in both lineups, Custer scored 11.0 in both, Ty Gibbs 14.0 in
+the GPP. The winning GPP lineup (403.1) was Larson, Blaney, Briscoe, Elliott,
+Nemechek, Ty Dillon.
 
 ## 8. Weekly checklist
 
@@ -205,8 +248,10 @@ python3 scripts/dfs_lineups_nascar.py --board
 python3 scripts/dfs_lineups_nascar.py
 python3 scripts/dfs_lineups_nascar.py --mode gpp -n 3
 
-# after the race: export the contest standings from DK into data/, then
-python3 scripts/nascar_calibration.py --fit-ownership
+# after the race: export the contest standings from DK into data/, then ONE
+# CONTEST AT A TIME (cash and GPP boards concentrate differently). A build
+# logged on an estimated grid is rebuilt on the real one automatically.
+python3 scripts/nascar_calibration.py data/contest-standings-<id>.csv --fit-ownership
 ```
 
 Re-fitting:

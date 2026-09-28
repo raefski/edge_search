@@ -96,75 +96,75 @@ def describe(sim: np.ndarray, idx) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# The field model. A PRIOR -- nothing here has been fitted.
+# The field model. FITTED on one race -- see SALARY_WEIGHT.
 # ---------------------------------------------------------------------------
 #: Six roster slots, so summed ownership across the board comes to 600%.
 ROSTER_SLOTS = 6.0
 
-#: Softmax sharpness on value. Shape inherited from MLB, where it WAS fitted
-#: against real contest exports; the parameter here is a guess.
-OWNERSHIP_GAMMA = 1.15
-OWNERSHIP_Z_CLIP = 2.0
+OWNERSHIP_Z_CLIP = 2.5
 #: A NASCAR field concentrates harder than any other sport in this repo: six
-#: slots out of ~37 drivers, and the obvious value play is obvious to everyone.
-#: Real boards routinely show a driver above 50%.
+#: slots out of ~37 drivers. Kansas 2026-09-27 had Bowman at 52.5% in an 891-
+#: entry GPP and 73.8% in a 229-entry cash game (which this cap clips).
 MAX_OWN = 65.0
 
-#: How the field's attention splits between VALUE and CEILING.
+#: The field picks on SALARY and STARTING POSITION -- what it can see in the
+#: lobby -- not on this build's projection.
 #:
-#: A pure value softmax -- which is what the other three sports in this repo
-#: use -- is wrong here, and visibly so. NASCAR compresses scoring: place
-#: differential is zero-sum, so an elite car starting on the front row can only
-#: LOSE positions while a backmarker starting 30th can only gain them, and the
-#: projections across a whole field land in a narrow band (25-38 DK points on
-#: the live 2026-09-27 Kansas board). Divide that narrow band by a salary range
-#: that runs 2:1 and value is almost entirely a function of salary. Run the
-#: softmax on that and every cheap car is chalk and every good one is invisible:
-#: the first version of this put Christopher Bell at 1.3% and Todd Gilliland at
-#: 56.1%, which is not a board any real contest has ever produced.
+#: The first version was a softmax on a blend of value (simulated points per
+#: $1,000) and simulated ceiling. On the first real export (Kansas 2026-09-27,
+#: 891-entry GPP, board rebuilt on the real qualifying grid) it was WORSE than
+#: guessing every driver equally owned: mean abs error 12.8 points against
+#: 10.5 for uniform, rank correlation -0.04. It made the cheapest deep starters
+#: chalk (Custer 57% predicted, 2.6% real; Ty Dillon 38%, 13.9%) because our
+#: simulator gives a backmarker real place-differential points. The field does
+#: not buy that. It played good cars starting deep (Bowman P33 52.5%, Blaney
+#: P25 39.7%, Briscoe P23 38.3%) and the expensive favourites (Hamlin 51.0%,
+#: Larson 38.0%), and left the $4-5K cars alone however far back they started.
 #:
-#: What the field actually does is chase both. It plays the cheap deep starter
-#: for the place differential AND the expensive front-runner for the laps-led
-#: ceiling, and a real NASCAR ownership board has two humps rather than one. So
-#: the softmax runs on a blend of value and the driver's own simulated CEILING.
+#: Salary is the field's read on car quality and start is its read on place
+#: differential. On the same GPP:
 #:
-#: UNFITTED, like everything else in this block. The SHAPE is argued from the
-#: scoring system; the 0.6/0.4 split is a guess and is the first thing
-#: scripts/nascar_calibration.py should replace.
-VALUE_WEIGHT = 0.6
-CEILING_WEIGHT = 0.4
+#:   | model                         | MAE  | rank corr |
+#:   |-------------------------------|------|-----------|
+#:   | value/ceiling blend (shipped) | 12.8 | -0.04     |
+#:   | same, refitted                |  8.1 | +0.51     |
+#:   | uniform                       | 10.5 |           |
+#:   | salary + start (this)         |  5.9 | +0.78     |
+#:
+#: Adding the simulated ceiling or projection as a third term moved MAE by
+#: under 0.1, so neither is in. The fit is flat around its optimum (0.6-0.8 /
+#: 0.3-0.4 all score within 0.1), not a spike.
+#:
+#: ONE RACE. An intermediate track; a superspeedway, where the whole field
+#: stacks deep starters, may want a steeper START_WEIGHT. The same race's
+#: 229-entry cash game fits much steeper (1.9 / 1.5, MAE 7.5) -- small-field
+#: cash concentrates harder, as in every other sport here -- and these are
+#: the GPP numbers because only the GPP objective reads ownership.
+SALARY_WEIGHT = 0.7
+START_WEIGHT = 0.3
 
 
-def add_ownership(pool: list, gamma: float = OWNERSHIP_GAMMA,
-                  cap: float = MAX_OWN,
-                  value_weight: float = VALUE_WEIGHT,
-                  ceiling_weight: float = CEILING_WEIGHT) -> list:
+def add_ownership(pool: list, cap: float = MAX_OWN,
+                  salary_weight: float = SALARY_WEIGHT,
+                  start_weight: float = START_WEIGHT) -> list:
     """Annotate every driver with `own` (percent) and `leverage`.
 
-    A power-softmax over a blend of VALUE (simulated points per $1,000) and
-    CEILING (the driver's own 90th-percentile simulated score), normalised so
-    the board sums to six lineups' worth, then capped with the excess
+    A softmax over z-scored salary and starting position, normalised so the
+    board sums to six lineups' worth, then capped with the excess
     redistributed -- the field has to play somebody, so points taken off a
-    capped driver belong on the others rather than nowhere.
-
-    UNVALIDATED for NASCAR. Read it as a tilt, not a number, until
-    scripts/nascar_calibration.py has been run against a real contest export.
+    capped driver belong on the others rather than nowhere. Before qualifying
+    `start` is the provisional grid, the best guess there is at where the
+    field will see each car line up.
     """
     if not pool:
         return pool
-    values, ceilings = [], []
-    for d in pool:
-        salary = float(d.get("salary") or 0) / 1000.0
-        values.append((float(d.get("proj") or 0.0) / salary) if salary else 0.0)
-        ceilings.append(float(d.get("ceil") or d.get("proj") or 0.0))
-
-    v_mean, v_sd = _mean_sd(values)
-    c_mean, c_sd = _mean_sd(ceilings)
-    weights = []
-    for v, c in zip(values, ceilings):
-        z = (value_weight * _clip((v - v_mean) / v_sd)
-             + ceiling_weight * _clip((c - c_mean) / c_sd))
-        weights.append(math.exp(gamma * _clip(z)))
+    salaries = [float(d.get("salary") or 0.0) for d in pool]
+    starts = [float(d.get("start") or 0.0) for d in pool]
+    s_mean, s_sd = _mean_sd(salaries)
+    g_mean, g_sd = _mean_sd(starts)
+    weights = [math.exp(salary_weight * _clip((s - s_mean) / s_sd)
+                        + start_weight * _clip((g - g_mean) / g_sd))
+               for s, g in zip(salaries, starts)]
 
     target = 100.0 * ROSTER_SLOTS
     for d, own in zip(pool, _normalise(weights, target, cap)):
