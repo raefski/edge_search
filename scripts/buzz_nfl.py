@@ -20,22 +20,18 @@ it aired, and a live stream that ran past lock is cut at lock using the
 caption timestamps. Sunday-morning live shows have no captions until they
 end, so a run made BEFORE lock misses them; rerun after lock for the record.
 
-Needs `pip install --user yt-dlp` for search and channel listing. Captions
-are standard library only -- see Transcripts for which YouTube call still
-answers and which ones don't.
+All YouTube access goes through packages/transcripts (standard library only,
+shared with other projects); its youtube.py records which YouTube calls answer
+and which do not.
 """
 from __future__ import annotations
 
 import argparse
-import base64
 import csv
 import glob
 import json
 import re
 import sys
-import time
-import urllib.parse
-import urllib.request
 from collections import Counter
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -46,6 +42,9 @@ sys.path.insert(0, str(ROOT))
 from edge.buzz import (  # noqa: E402
     _name_parts, aggregate, build_aliases, count_mentions, learn_variants,
 )
+sys.path.insert(0, str(ROOT / "packages" / "transcripts"))
+from transcripts import Blocked, Cache, YouTube  # noqa: E402
+
 # Suffix-free, like the contest board's own keys: with edge.dfs.norm every
 # "Jr."/"II" player was on the board twice ("Oronde Gadsden II" from the pool,
 # "Oronde Gadsden" from the export), so his bare surname never counted.
@@ -70,14 +69,13 @@ PLAYER_FIELDS = ["date", "player", "dk_pos", "team", "in_pool",
 VIDEO_FIELDS = ["date", "video_id", "channel_id", "channel", "aired", "views", "live",
                 "via", "title", "player", "mentions"]
 SEARCH_N = 40
-CHANNEL_LISTING_N = 100
+CHANNEL_LISTING_N = 40
 WINDOW_DAYS = 6
 MIN_VIEWS = 300
 
-#: Seconds between requests. The caption API cut a home IP off after ~20
-#: requests in two minutes, so nothing here is fired back to back.
-PACE_PAGE = 3
-PACE_CAPTIONS = 5
+#: Seconds between YouTube requests. The caption API cut a home IP off after
+#: ~20 requests in two minutes, so nothing here is fired back to back.
+PACE = 3
 
 _DFS = re.compile(r"\b(dfs|draft\s?kings|fan\s?duel|dk|fd|gpps?|cash games?|lineups?|milly|"
                   r"millionaire|core plays?|chalk|ownership|value plays?|stacks?|stacking|"
@@ -89,9 +87,6 @@ _OFF_TOPIC = re.compile(r"\b(mlb|nba|nhl|wnba|cfb|college|ncaa[fb]?|pga|golf|nas
 _WEEK = re.compile(r"\b(?:week|wk)\s*(\d{1,2})\b", re.I)
 _YEAR = re.compile(r"\b(20\d\d)\b")
 
-UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/126 Safari/537.36",
-      "Accept-Language": "en-US,en;q=0.9"}
 
 
 def title_ok(title: str, week: int) -> bool:
@@ -200,213 +195,60 @@ def first_name_history() -> Counter:
     return counts
 
 
-# --- YouTube ----------------------------------------------------------------
+# --- YouTube (packages/transcripts, shared with other projects) --------------
 
-def _ydl(n: int):
-    import yt_dlp
-    return yt_dlp.YoutubeDL({"quiet": True, "no_warnings": True, "extract_flat": True,
-                             "skip_download": True, "playlistend": n})
+_YT = None
+
+
+def youtube() -> YouTube:
+    global _YT
+    if _YT is None:
+        _YT = YouTube(Cache(CACHE), pace=PACE)
+    return _YT
 
 
 def _keep(entry: dict, week: int, year: int, found: dict, via: str) -> None:
     """Title and reach checks that need no request of their own. A video too
     small to move ownership is not worth a page load or a caption fetch."""
-    if not entry or not entry.get("id") or entry["id"] in found:
+    if not entry.get("id") or entry["id"] in found:
         return
     title = entry.get("title") or ""
     if not title_ok(title, week) or any(int(y) != year for y in _YEAR.findall(title)):
         return
-    views = entry.get("view_count")
-    if views is not None and views < MIN_VIEWS:
+    if entry.get("views") and entry["views"] < MIN_VIEWS:
         return
-    found[entry["id"]] = {"title": title, "via": via, "views": views or 0}
+    found[entry["id"]] = {"title": title, "via": via, "views": entry.get("views") or 0}
 
 
 def search_candidates(week: int, year: int) -> dict:
     found: dict = {}
-    with _ydl(SEARCH_N) as y:
-        for q in QUERIES:
-            q = urllib.parse.quote(q.format(w=week))
-            # relevance order, then newest first (sp=CAI%3D)
-            for url in (f"https://www.youtube.com/results?search_query={q}",
-                        f"https://www.youtube.com/results?search_query={q}&sp=CAI%253D"):
-                try:
-                    res = y.extract_info(url, download=False)
-                except Exception as e:  # noqa: BLE001 -- one failed query shouldn't end the run
-                    print(f"  search failed: {e}")
-                    continue
-                for e in res.get("entries") or []:
-                    _keep(e, week, year, found, "search")
-                time.sleep(1)
+    for q in QUERIES:
+        for sort in ("relevance", "date"):
+            try:
+                for v in youtube().search(q.format(w=week), sort=sort, limit=SEARCH_N):
+                    _keep(v, week, year, found, "search")
+            except Blocked:
+                raise
+            except Exception as e:  # noqa: BLE001 -- one failed query shouldn't end the run
+                print(f"  search failed ({q}): {e}")
     return found
 
 
 def channel_candidates(channels: list[dict], week: int, year: int) -> dict:
     found: dict = {}
-    with _ydl(CHANNEL_LISTING_N) as y:
-        for ch in channels:
-            if not ch.get("active", True):
-                continue
-            for tab in ("videos", "streams"):
-                url = f"https://www.youtube.com/channel/{ch['id']}/{tab}"
-                try:
-                    res = y.extract_info(url, download=False)
-                except Exception:  # noqa: BLE001 -- most channels have no streams tab
-                    continue
-                for e in res.get("entries") or []:
-                    _keep(e, week, year, found, "channel")
-                time.sleep(1)
+    for ch in channels:
+        if not ch.get("active", True):
+            continue
+        for tab in ("videos", "streams"):
+            for v in youtube().channel_videos(ch["id"], tab, limit=CHANNEL_LISTING_N):
+                _keep(v, week, year, found, "channel")
     return found
-
-
-def _get(url: str) -> str:
-    req = urllib.request.Request(url, headers=UA)
-    return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
-
-
-def video_meta(vid: str, title: str) -> dict:
-    """Air time, views and channel from the watch page, cached. A live stream
-    is timed by when it started, not by when it was scheduled."""
-    path = CACHE / "meta" / f"{vid}.json"
-    if path.exists():
-        return json.loads(path.read_text())
-    html = _get(f"https://www.youtube.com/watch?v={vid}")
-
-    def grab(pat):
-        m = re.search(pat, html)
-        return m.group(1) if m else None
-
-    owner = grab(r'"ownerChannelName":"((?:[^"\\]|\\.)*)"') or ""
-    meta = {
-        "id": vid,
-        "title": title,
-        "channel_id": grab(r'"channelId":"(UC[\w-]{22})"'),
-        "channel": json.loads('"' + owner + '"'),
-        "published": grab(r'"publishDate":"([^"]+)"'),
-        "live": grab(r'"isLiveContent":(true|false)') == "true",
-        "live_start": grab(r'"startTimestamp":"([^"]+)"'),
-        "live_end": grab(r'"endTimestamp":"([^"]+)"'),
-        "views": int(grab(r'"viewCount":"(\d+)"') or 0),
-        "fetched": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-    }
-    time.sleep(PACE_PAGE)
-    if meta["live"] and not meta["live_end"]:
-        return meta   # still live or upcoming: don't cache, it will change
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(meta))
-    return meta
-
-
-def aired_at(meta: dict) -> datetime | None:
-    stamp = (meta["live_start"] if meta["live"] else None) or meta["published"]
-    return datetime.fromisoformat(stamp).astimezone(timezone.utc) if stamp else None
-
-
-class Blocked(RuntimeError):
-    pass
 
 
 def cached_transcript(vid: str):
     """(True, segments-or-None) if this video was already fetched, else (False, None)."""
-    path = CACHE / "transcripts" / f"{vid}.json"
-    if path.exists():
-        return True, json.loads(path.read_text()).get("segments")
-    return False, None
-
-
-def _store(vid: str, aired: datetime, segments: list | None, error: str = ""):
-    """Cache a result. A missing track is only cached once the video is two
-    days old -- a fresh live stream's captions arrive hours after it ends."""
-    if not segments and datetime.now(timezone.utc) - aired < timedelta(days=2):
-        return None
-    path = CACHE / "transcripts" / f"{vid}.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps({"segments": segments or None, "error": error}))
-    return segments or None
-
-
-def _seconds(stamp: str) -> int:
-    total = 0
-    for part in stamp.split(":"):
-        total = total * 60 + int(part)
-    return total
-
-
-class Transcripts:
-    """Captions through youtubei/v1/get_panel -- the call YouTube's own
-    "Show transcript" panel makes.
-
-    The caption API (api/timedtext, what youtube-transcript-api and yt-dlp
-    use) 429'd this home IP on 2026-09-27 and stayed blocked for 8+ hours,
-    Chrome TLS impersonation and a real headless Chromium included. The
-    panel's older call, get_transcript, answers FAILED_PRECONDITION to every
-    client. get_panel answered a plain HTTP request with the full timestamped
-    transcript. Its params are just the video id in a small protobuf, so no
-    per-video token has to be scraped first.
-    """
-    UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-          "(KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36")
-
-    def __init__(self):
-        import http.cookiejar
-        self.opener = urllib.request.build_opener(
-            urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
-        self.client = None
-
-    def _session(self, vid: str) -> dict:
-        """Client version and visitor id from one watch page, reused for the run."""
-        if self.client is None:
-            html = self.opener.open(urllib.request.Request(
-                f"https://www.youtube.com/watch?v={vid}",
-                headers={"User-Agent": self.UA, "Accept-Language": "en-US,en;q=0.9"}),
-                timeout=30).read().decode("utf-8", "replace")
-            self.client = {
-                "version": re.search(r'"INNERTUBE_CLIENT_VERSION":"([^"]+)"', html).group(1),
-                "visitor": re.search(r'"VISITOR_DATA":"([^"]+)"', html).group(1),
-            }
-        return self.client
-
-    @staticmethod
-    def params(vid: str) -> str:
-        inner = b"\x0a" + bytes([len(vid)]) + vid.encode() + b"\x18\x01"
-        return base64.b64encode(b"\xaa\x09" + bytes([len(inner)]) + inner).decode()
-
-    def fetch(self, vid: str, aired: datetime) -> list | None:
-        c = self._session(vid)
-        body = {"context": {"client": {"clientName": "WEB", "clientVersion": c["version"],
-                                       "hl": "en", "gl": "US", "visitorData": c["visitor"]}},
-                "panelId": "PAmodern_transcript_view", "params": self.params(vid)}
-        req = urllib.request.Request(
-            "https://www.youtube.com/youtubei/v1/get_panel?prettyPrint=false",
-            data=json.dumps(body).encode(),
-            headers={"User-Agent": self.UA, "Content-Type": "application/json",
-                     "Origin": "https://www.youtube.com",
-                     "Referer": f"https://www.youtube.com/watch?v={vid}",
-                     "X-Youtube-Client-Name": "1", "X-Youtube-Client-Version": c["version"],
-                     "X-Goog-Visitor-Id": c["visitor"]})
-        try:
-            data = json.loads(self.opener.open(req, timeout=60).read())
-        except urllib.error.HTTPError as e:
-            if e.code in (403, 429):
-                raise Blocked(f"get_panel HTTP {e.code}") from e
-            return _store(vid, aired, None, f"HTTP {e.code}")
-        finally:
-            time.sleep(PACE_CAPTIONS)
-        segs: list = []
-
-        def walk(o):
-            if isinstance(o, dict):
-                seg = o.get("transcriptSegmentViewModel")
-                if seg and seg.get("timestamp"):
-                    segs.append([_seconds(seg["timestamp"]), seg.get("simpleText", "")])
-                    return
-                for v in o.values():
-                    walk(v)
-            elif isinstance(o, list):
-                for v in o:
-                    walk(v)
-        walk(data)
-        return _store(vid, aired, segs, "" if segs else "no transcript")
+    hit = Cache(CACHE).get("transcripts", vid)
+    return (True, hit.get("segments")) if hit is not None else (False, None)
 
 
 def previous_videos(slate: str):
@@ -419,11 +261,10 @@ def previous_videos(slate: str):
                     seen.setdefault(r["video_id"], r)
     in_window, cands = [], {}
     for vid, r in seen.items():
-        path = CACHE / "meta" / f"{vid}.json"
-        if not path.exists():
+        meta = Cache(CACHE).get("meta", vid)
+        if meta is None:
             continue
-        meta = json.loads(path.read_text())
-        in_window.append((meta, aired_at(meta)))
+        in_window.append((meta, YouTube.aired(meta)))
         cands[vid] = {"via": r["via"], "title": r["title"], "views": meta["views"]}
     return in_window, cands
 
@@ -488,11 +329,11 @@ def main():
         in_window, skipped = [], Counter()
         for vid in sorted(cands, key=lambda k: -cands[k]["views"]):
             try:
-                meta = video_meta(vid, cands[vid]["title"])
+                meta = youtube().video(vid, cands[vid]["title"])
             except Exception as e:  # noqa: BLE001 -- one bad page shouldn't end the run
                 skipped[f"page error: {type(e).__name__}"] += 1
                 continue
-            aired = aired_at(meta)
+            aired = YouTube.aired(meta)
             if not aired or not start <= aired < lock:
                 skipped["aired outside window"] += 1
                 continue
@@ -500,7 +341,7 @@ def main():
         print(f"{len(in_window)} videos aired in the window; skipped: {dict(skipped)}")
 
     videos, missing = [], Counter()
-    fetcher, blocked = Transcripts(), False
+    blocked = False
     for meta, aired in sorted(in_window, key=lambda m: -m[0]["views"]):
         vid = meta["id"]
         hit, segs = cached_transcript(vid)
@@ -509,7 +350,7 @@ def main():
                 missing["not fetched"] += 1
                 continue
             try:
-                segs = fetcher.fetch(vid, aired)
+                segs = youtube().transcript(vid, aired)
             except Blocked as e:
                 blocked = True
                 print(f"  YouTube stopped answering ({e}); counting what's cached", flush=True)

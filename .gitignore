@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .venv/
+*.egg-info/
 
 # Paid Odds-API responses — large, ephemeral, regenerate. Kept local so the
 # repo (and Streamlit Cloud) stay small; the app defaults to reading whatever is

@@ -90,13 +90,6 @@ def test_uncased_track_only_matches_full_names():
     assert got == Counter({"Jahmyr Gibbs": 1})
 
 
-def test_transcript_panel_request_matches_what_youtube_sends():
-    from scripts.buzz_nfl import Transcripts, _seconds
-    # captured from YouTube's own "Show transcript" click, 2026-09-28
-    assert Transcripts.params("daO1JNzRPn0") == "qgkPCgtkYU8xSk56UlBuMBgB"
-    assert [_seconds(s) for s in ("0:01", "12:34", "2:27:10")] == [1, 754, 8830]
-
-
 def test_caption_misspellings_are_learned_from_the_slate():
     board = BOARD + [{"name": "Wan'Dale Robinson", "pos": "WR"},
                      {"name": "Brian Robinson Jr.", "pos": "RB"},

@@ -127,13 +127,64 @@ def fit(slates: list[dict], with_buzz: bool) -> tuple[float, float]:
     return best[1], best[2]
 
 
+LEDGER = ROOT / "data" / "source_ledger.csv"
+
+
+def channel_report(slates: dict, ledger_path: Path = LEDGER, min_videos: int = 3) -> None:
+    """Which channels' mentions actually help the ownership fit.
+
+    For each channel, its mentions are taken out of every player's buzz and
+    the shipped model (BUZZ_GAMMA/BETA) is rescored on each slate. `gain` is
+    how much WORSE ownership MAE gets without the channel: positive means the
+    channel carries signal, near zero or negative means it is noise. Each
+    (channel, slate) result goes into the source ledger so a channel can be
+    pruned (data/buzz_channels_nfl.json, "active": false) on evidence.
+    """
+    sys.path.insert(0, str(ROOT / "packages" / "transcripts"))
+    from transcripts import Ledger
+
+    per: dict = defaultdict(lambda: defaultdict(lambda: defaultdict(float)))
+    names, videos = {}, defaultdict(set)
+    with (ROOT / "data/buzz_nfl_videos.csv").open(newline="") as fh:
+        for r in csv.DictReader(fh):
+            if r["date"] in slates and r["player"]:
+                per[r["channel_id"]][r["date"]][norm(r["player"])] += float(r["mentions"])
+                names[r["channel_id"]] = r["channel"]
+                videos[r["channel_id"]].add(r["video_id"])
+    g, b = theory.BUZZ_GAMMA, theory.BUZZ_BETA
+    base = {d: mae(predict(s, g, b)) for d, s in slates.items()}
+    ledger = Ledger(ledger_path)
+    rows = []
+    for cid, by_date in per.items():
+        if len(videos[cid]) < min_videos:
+            continue
+        gains = []
+        for d, drop in by_date.items():
+            cut = {pos: [dict(p, buzz=max(0.0, p["buzz"] - drop.get(norm(p["player"]), 0.0)))
+                         for p in ps] for pos, ps in slates[d].items()}
+            gain = mae(predict(cut, g, b)) - base[d]
+            gains.append(gain)
+            ledger.record("nfl_dfs_ownership", cid, names[cid], d, "own_mae_gain", round(gain, 4))
+        rows.append((sum(gains) / len(gains), names[cid], len(videos[cid]), len(gains)))
+    print(f"\nCHANNELS -- ownership MAE lost without each one (positive = signal), "
+          f"-> {ledger_path.relative_to(ROOT)}")
+    print(f"  {'channel':44} {'videos':>6} {'slates':>6} {'gain':>8}")
+    for gain, name, nv, ns in sorted(rows, reverse=True):
+        print(f"  {name[:44]:44} {nv:6} {ns:6} {gain:+8.4f}")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--type", default="gpp", choices=("gpp", "cash"))
     ap.add_argument("--feature", default="mentions", choices=FEATURES)
+    ap.add_argument("--channels", action="store_true",
+                    help="grade each YouTube channel's contribution into data/source_ledger.csv")
     args = ap.parse_args()
 
     slates = load_slates(args.type, args.feature)
+    if args.channels:
+        channel_report(slates)
+        return
     if len(slates) < 2:
         raise SystemExit(f"need 2+ slates with a {args.type} contest AND buzz; have {sorted(slates)}")
     print(f"{args.type.upper()} ownership, buzz feature = {args.feature}, slates {sorted(slates)}\n")

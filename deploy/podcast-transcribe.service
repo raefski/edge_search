@@ -1,0 +1,19 @@
+# Transcribe the newest episodes of followed podcasts into the shared
+# transcripts cache (~/.cache/transcripts), so they are ready to search.
+# Speech-to-text runs on this machine's CPU: low priority, 4 threads
+# (packages/transcripts/transcripts/podcasts.py WHISPER_THREADS), ~10 minutes
+# per 70-minute episode. Add a show with another ExecStart line.
+#
+#   cp deploy/podcast-transcribe.service deploy/podcast-transcribe.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now podcast-transcribe.timer
+[Unit]
+Description=Transcribe new episodes of followed podcasts
+After=network-online.target
+
+[Service]
+Type=oneshot
+Nice=15
+ExecStart=/usr/bin/env python3 -m transcripts podcast "Jeff Mans" --latest 2
+Restart=no
+TimeoutStartSec=3600

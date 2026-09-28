@@ -1,0 +1,8 @@
+# One MANS Opinion posts Wednesdays. Verify edits with `systemd-analyze calendar`.
+[Unit]
+Description=Transcribe new podcast episodes weekly
+[Timer]
+OnCalendar=Thu *-*-* 04:00
+Persistent=true
+[Install]
+WantedBy=timers.target
