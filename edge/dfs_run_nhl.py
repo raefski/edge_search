@@ -310,8 +310,10 @@ def build_slate(draft_group=None, client=None, n_sims: int = 2000, iters: int = 
                 persist: bool = True) -> dict:
     """Board + a CASH lineup + a GPP lineup for one DK NHL Classic slate."""
     if client is None:
-        from edge.odds.source import client_for
-        client = client_for("dfs", SPORT)
+        # The local store on the desktop, the published snapshot on the cloud
+        # (which has no store) -- the same resolution the NFL page uses.
+        from edge.odds.cli import scraped_client
+        client = scraped_client(SPORT, "dfs")
     all_groups = groups if groups is not None else dfs.draft_groups(nhl.DK_SPORT)
     gid, meta = resolve_slate(draft_group, all_groups)
     slates = classic_groups(all_groups)
@@ -322,6 +324,9 @@ def build_slate(draft_group=None, client=None, n_sims: int = 2000, iters: int = 
     except dfs.DraftablesUnavailable as exc:
         return {"unpriced": True, "unpriced_reason": str(exc), "gid": gid, "meta": meta,
                 "slates": slates}
+    info["odds_source"] = type(client).__name__
+    info["odds_age_min"] = (round(client.age_seconds / 60.0)
+                            if getattr(client, "age_seconds", None) is not None else None)
     if not pool:
         return {"error": "No NHL players could be projected for this slate.", "gid": gid,
                 "meta": meta, "slates": slates, "stats": info}

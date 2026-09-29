@@ -147,6 +147,8 @@ st.markdown(
     f"dressing ({info.get('imputed')} estimated from last season) of {info.get('priced')} "
     f"priced · implied goals: "
     + ", ".join(f"{t} {g:.2f}" for t, g in sorted(imp.items(), key=lambda kv: -kv[1]))
+    + (f"<br>props: published snapshot, {info['odds_age_min']} min old"
+       if info.get("odds_age_min") is not None else "<br>props: live local store")
     + "</div>", unsafe_allow_html=True)
 
 # 1. Goalies: the late news that decides a slate.
