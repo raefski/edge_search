@@ -107,6 +107,26 @@ def game_lines(client, games: dict) -> dict:
     return out
 
 
+def player_props(client, markets: list[str], book: str = "draftkings") -> dict:
+    """{player: {market: {Over, Under, point}}} for one book. The same walk as
+    scripts/dfs_board.collect_player_markets, kept here so the NHL app (and its
+    standalone mirror, which carries no scripts/dfs_board.py) needs nothing
+    outside edge/."""
+    out: dict = {}
+    for ev in client.get_events(SPORT):
+        payload = client.get_event_odds(SPORT, ev["id"], markets, "us")
+        for bk in payload.get("bookmakers", []):
+            if bk.get("key") != book:
+                continue
+            names = {o["description"] for m in bk.get("markets", [])
+                     for o in m.get("outcomes", []) if o.get("description")}
+            for name in names:
+                pm = dfs.player_markets(bk, name)
+                if pm:
+                    out.setdefault(name, {}).update(pm)
+    return out
+
+
 def _season_rates() -> dict:
     """{norm(name): per-game rates} from last season's NHL reports."""
     try:
@@ -148,14 +168,12 @@ def attach_buzz(pool: list, date: str, path: Path = BUZZ_FILE) -> int:
 
 def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0):
     """(pool, sim, info) for one DK NHL Classic slate."""
-    from scripts.dfs_board import collect_player_markets
     salaries = dfs.fetch_draftables(gid)
     games = slate_games(salaries)
     teams = {nhl.team(g[s]) for g in games.values() for s in ("home", "away")}
     implied = game_lines(client, games)
-    props = collect_player_markets(client, SPORT, ["player_shots_on_goal", "player_points",
-                                                   "player_assists", "player_total_saves"]
-                                   ).get("draftkings", {})
+    props = player_props(client, ["player_shots_on_goal", "player_points",
+                                  "player_assists", "player_total_saves"])
     props = {norm(k): v for k, v in props.items()}
     start = _parse_time(meta.get("start") or next(iter(games.values()), {}).get("start"))
     date = (start.astimezone(ZoneInfo("America/New_York")).date().isoformat()
