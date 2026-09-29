@@ -129,7 +129,8 @@ def test_every_lineup_is_legal(mode):
     pos = Counter(r["pos"] for r in rows)
     assert len(rows) == 9 and pos["G"] == 1 and pos["C"] >= 2 and pos["W"] >= 3 and pos["D"] >= 2
     assert sum(r["salary"] for r in rows) <= nhl.SALARY_CAP
-    assert len({r["team"] for r in rows}) >= 3 and len({r["game"] for r in rows}) >= 2
+    assert len({r["team"] for r in rows if r["pos"] != "G"}) >= 3   # skaters only
+    assert len({r["game"] for r in rows}) >= 2
     goalie = next(r for r in rows if r["pos"] == "G")
     assert not any(r["team"] == goalie["opp"] for r in rows if r["pos"] != "G")
     assert [s for s, _ in res["slots"]] == ["C", "C", "W", "W", "W", "D", "D", "G", "UTIL"]

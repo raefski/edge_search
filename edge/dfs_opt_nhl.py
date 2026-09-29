@@ -49,7 +49,12 @@ def _valid(pool, idx, min_stack=()) -> bool:
         return False
     if sum(r["salary"] for r in rows) > nhl.SALARY_CAP:
         return False
-    if len({r["team"] for r in rows}) < nhl.MIN_TEAMS or len({r["game"] for r in rows}) < nhl.MIN_GAMES:
+    # DK counts the 3-team minimum over SKATERS only -- a goalie's team does not
+    # count ("NHL lineups require selecting skaters from at least 3 different
+    # teams", DK's own rejection of a 2026-09-29 lineup that had two skater
+    # teams plus a third team's goalie).
+    if (len({r["team"] for r in rows if r["pos"] != "G"}) < nhl.MIN_TEAMS
+            or len({r["game"] for r in rows}) < nhl.MIN_GAMES):
         return False
     goalie = next(r for r in rows if r["pos"] == "G")
     if any(r["team"] == goalie.get("opp") for r in rows if r["pos"] != "G"):
