@@ -1,12 +1,12 @@
 {
- "requested_at": "2026-09-28T22:37:00.489531+00:00",
- "request_id": "20260928T223700489531",
+ "requested_at": "2026-09-29T11:37:07.220485+00:00",
+ "request_id": "20260929T113707220485",
  "sports": [
-  "basketball_wnba"
+  "baseball_mlb"
  ],
  "note": "requested from the Streamlit app",
  "date_from": "2026-09-29",
- "date_to": "2026-09-30",
+ "date_to": "2026-09-29",
  "skip_live": true,
  "state": "CT"
 }
