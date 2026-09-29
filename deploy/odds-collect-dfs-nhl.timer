@@ -1,0 +1,14 @@
+# Collect NHL props into the local store. Hourly all day, every 15 minutes in
+# the run-up to the usual 7:00 PM ET puck drop, when goalies are confirmed and
+# a scratched skater's props come down.
+# Verify any edit with `systemd-analyze calendar '<expr>'`.
+[Unit]
+Description=Collect NHL props
+[Timer]
+Unit=odds-collect@dfs_nhl.service
+OnCalendar=*-*-* 00/1:40:00
+OnCalendar=*-*-* 16..19:00/15:00
+RandomizedDelaySec=120
+Persistent=true
+[Install]
+WantedBy=timers.target

@@ -189,6 +189,24 @@ PROFILES: dict[str, Profile] = {
               "parity harness should be re-run once Fanatics resolves.",
     ),
 
+    "dfs_nhl": Profile(
+        name="dfs_nhl",
+        sports=("icehockey_nhl",),
+        required_markets=("player_shots_on_goal", "player_points"),
+        props=True, prop_events=SLATE_EVENTS, alt_lines=False,
+        # Hockey's late news is the starting goalie, confirmed an hour or two
+        # before puck drop, and a scratched skater's props come down with it.
+        max_age_seconds=1800,
+        est_seconds=40,
+        publish_markets=(
+            "player_shots_on_goal", "player_points", "player_assists",
+            "player_total_saves", "player_goals", "spreads", "totals", "h2h"),
+        notes="DraftKings NHL categories 1189/1675/1676/1064 (verified live "
+              "2026-09-28). Goals come from Points minus Assists; blocked shots "
+              "have no market at any book and are modelled from the NHL's own "
+              "box scores -- see edge/nhl_sim.py.",
+    ),
+
     # --- pick'em: narrowest ------------------------------------------------
     "pickem_nfl": Profile(
         name="pickem_nfl",

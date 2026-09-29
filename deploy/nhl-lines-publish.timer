@@ -1,0 +1,12 @@
+# Goalies are confirmed through the afternoon and evening; lines move after
+# morning skate. Every 30 minutes 9 AM - 11 PM, every 15 minutes 4-7 PM local.
+# Verify any edit with `systemd-analyze calendar '<expr>'`.
+[Unit]
+Description=Publish NHL lines and starting goalies
+[Timer]
+OnCalendar=*-*-* 09..23:00/30:00
+OnCalendar=*-*-* 16..19:00/15:00
+RandomizedDelaySec=45
+Persistent=true
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,17 @@
+# Snapshot DailyFaceoff's NHL lines and starting goalies and push them for the
+# cloud app, only when something changed (scripts/nhl_lines_publish.py).
+#
+#   cp deploy/nhl-lines-publish.service deploy/nhl-lines-publish.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now nhl-lines-publish.timer
+[Unit]
+Description=Publish NHL lines and starting goalies for the cloud app
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/nhl_lines_publish.py --push
+Restart=no
+Nice=10
+TimeoutStartSec=600

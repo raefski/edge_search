@@ -1,0 +1,16 @@
+# Push a fresh NHL props snapshot for the cloud app (DraftKings 403s cloud IPs,
+# so the phone reads this committed snapshot). Every 2 hours all day, every 30
+# minutes 3-7 PM local before the 7 PM ET slates, and 12-1 PM for weekend
+# matinees. Same shape and reasoning as odds-publish-dfs-nfl.timer; comments
+# stay ABOVE directives (systemd has no trailing comments).
+[Unit]
+Description=Publish NHL DFS props snapshot for the cloud app
+[Timer]
+Unit=odds-publish@dfs_nhl.service
+OnCalendar=*-*-* 07..23/2:00:00
+OnCalendar=*-*-* 15..19:00/30:00
+OnCalendar=Sat,Sun *-*-* 11..13:00/30:00
+RandomizedDelaySec=60
+Persistent=true
+[Install]
+WantedBy=timers.target

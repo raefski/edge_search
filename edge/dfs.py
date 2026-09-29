@@ -97,7 +97,7 @@ def mlb_draft_groups() -> list[dict]:
 #: the snapshot writer filtered on a bare 408 while the reader looked for all
 #: three, so college and NASCAR snapshots reached Streamlit Cloud with the FPPG
 #: column already thrown away.
-FPPG_STAT_IDS = (408, 174, 653, 635)     # 635: MMA's "per fight"
+FPPG_STAT_IDS = (408, 174, 653, 635, 341)  # 635: MMA's "per fight"; 341: NHL (2026-09-28)
 
 
 def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
@@ -140,7 +140,9 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
                       # DK's own player id. For NASCAR this IS NASCAR's
                       # driver_id (Larson 4030 in both), which is the exact
                       # join edge/dfs_run_nascar.py relies on.
-                      "player_id": p.get("playerId")}
+                      "player_id": p.get("playerId"),
+                      # "OUT" / "IR" / "O" when DraftKings itself has ruled him out.
+                      "dk_status": (p.get("status") or "").upper() or None}
     return out
 
 

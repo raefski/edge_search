@@ -126,6 +126,10 @@ data/nflverse_games.csv
 # "active": false to drop one). Public channel ids, nothing personal.
 !data/buzz_channels_nfl.json
 
+# DailyFaceoff NHL lines + starting goalies for the cloud app
+# (scripts/nhl_lines_publish.py; edge/nhl.py falls back to it).
+!data/nhl_lines_snapshot.json
+
 # Arbitrage snapshot: the Streamlit page reads this
 !data/arb_snapshot.json
 
@@ -171,6 +175,9 @@ data/mma_odds_history/
 #     untracked-but-not-ignored once (2026-09-27) before this line existed.
 #   * dfs_calibration.html -- output of scripts/dfs_calibration_plot.py.
 data/nascar_cache/
+#   * nhl_cache/ -- NHL API box scores and season reports, DailyFaceoff pages;
+#     free and re-downloadable (scripts/nhl_fit.py rebuilds it).
+data/nhl_cache/
 data/ncaaf_ground_truth/
 Dan_Projections_*.csv
 Dans_Projections_*.csv

@@ -1,0 +1,12 @@
+# Most NHL slates lock at 7:00 PM ET; shows post from morning skate on. Four
+# passes, the last in time to matter. Verify with `systemd-analyze calendar`.
+[Unit]
+Description=Collect NHL DFS YouTube buzz before lock
+[Timer]
+OnCalendar=*-*-* 12:30:00
+OnCalendar=*-*-* 15:00:00
+OnCalendar=*-*-* 17:00:00
+OnCalendar=*-*-* 18:15:00
+Persistent=true
+[Install]
+WantedBy=timers.target

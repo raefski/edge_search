@@ -125,6 +125,31 @@ APPS = {
             "market underprices decisions), simulates whole fights, and scores "
             "lineups against a simulated field. Read `MMA_STATUS.md` first."),
     },
+    "nhl": {
+        "repo": "https://github.com/raefski/nhl_fantasy.git",
+        "title": "DK NHL DFS",
+        "page": "pages/8_🏒_NHL_DFS.py",
+        "profile": "dfs_nhl",
+        "docs": ["NHL_STATUS.md", "DRAFTKINGS_ACCESS.md"],
+        # buzz_nhl.py is NOT carried: it needs packages/transcripts and a
+        # residential IP for YouTube, so it runs on the desktop and pushes
+        # data/buzz_nhl.csv, which IS carried below.
+        "scripts": ["dfs_lineups_nhl.py", "nhl_fit.py", "nhl_calibration.py",
+                    "nhl_lines_publish.py", "odds_collect.py", "draftables_publish.py",
+                    "dk_categories.py", "mirror_app.py"],
+        # DailyFaceoff lines/goalies and tonight's buzz, both pushed from the
+        # desktop; edge/nhl.py and edge/dfs_run_nhl.py read them through
+        # repo_files when the live source is out of reach.
+        "data": ["nhl_lines_snapshot.json", "buzz_nhl.csv"],
+        "tests": ["test_dfs_nhl.py"],
+        "blurb": (
+            "Hockey DFS is correlation: a goal pays a scorer and up to two "
+            "linemates at once. The build simulates every game on the slate -- "
+            "team goals from the betting market, scorers and linemate-weighted "
+            "assists from DraftKings' player props, DailyFaceoff's lines and "
+            "starting goalies -- and scores lineups on percentiles of the "
+            "simulated total. Read `NHL_STATUS.md` first."),
+    },
 }
 
 COMMON = [

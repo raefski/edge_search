@@ -1,0 +1,18 @@
+# Collect tonight's NHL DFS YouTube buzz and push it for the app
+# (scripts/buzz_nhl.py). Home machine only: YouTube is reached from a
+# residential IP.
+#
+#   cp deploy/buzz-nhl-publish.service deploy/buzz-nhl-publish.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now buzz-nhl-publish.timer
+[Unit]
+Description=Collect and publish NHL DFS YouTube buzz
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/buzz_nhl.py --push
+Restart=no
+Nice=10
+TimeoutStartSec=1800
