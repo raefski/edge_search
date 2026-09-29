@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-09-29T15:59:51+00:00",
+"generated_at": "2026-09-29T16:30:46+00:00",
 "goalies": {
 "2026-09-29": {
 "BOS": {
@@ -2832,7 +2832,7 @@
 "toiSeconds": 16
 },
 "line": "F1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "c",
 "pp": "PP1"
 },
@@ -2969,7 +2969,7 @@
 "toiMinutes": 71,
 "toiSeconds": 4
 },
-"line": "F4",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -3071,9 +3071,9 @@
 "toiMinutes": 107,
 "toiSeconds": 17
 },
-"line": "F1",
-"pk": null,
-"pos": "rw",
+"line": "F2",
+"pk": "PK2",
+"pos": "c",
 "pp": "PP1"
 },
 "Mathieu Joseph": {
@@ -3144,6 +3144,40 @@
 "pos": "ld",
 "pp": "PP2"
 },
+"Max Jones": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 97,
+"toiSeconds": 29
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 48,
+"toiSeconds": 36
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Owen Michaels": {
 "gtd": false,
 "injury": null,
@@ -3177,40 +3211,6 @@
 "pk": null,
 "pos": "c",
 "pp": null
-},
-"Ryan Nugent-Hopkins": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 6,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 9,
-"powerplayAssists": 0,
-"powerplayGoals": 2,
-"powerplayPoints": 2,
-"shots": 14,
-"toiMinutes": 184,
-"toiSeconds": 3
-},
-"last5": {
-"assists": 5,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 6,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 6,
-"toiMinutes": 90,
-"toiSeconds": 25
-},
-"line": "F2",
-"pk": "PK1",
-"pos": "c",
-"pp": "PP1"
 },
 "Ryan Shea": {
 "gtd": false,
@@ -3312,7 +3312,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Tristan Jarry": {
 "gtd": false,
@@ -3379,10 +3379,10 @@
 "toiMinutes": 82,
 "toiSeconds": 20
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK2",
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Zach Hyman": {
 "gtd": false,
@@ -3413,9 +3413,9 @@
 "toiMinutes": 89,
 "toiSeconds": 5
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 }
 },
@@ -6796,7 +6796,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Carl Grundstrom": {
 "gtd": false,
@@ -7344,7 +7344,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Trevor Zegras": {
 "gtd": false,
