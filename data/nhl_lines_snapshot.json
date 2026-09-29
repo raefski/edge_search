@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-09-29T20:44:40+00:00",
+"generated_at": "2026-09-29T21:14:39+00:00",
 "goalies": {
 "2026-09-29": {
 "BOS": {
@@ -8788,38 +8788,38 @@
 }
 },
 "VAN": {
-"Aatu Raty": {
+"Arshdeep Bains": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 1,
+"assists": 2,
 "blocks": 4,
 "gamesPlayed": 10,
-"goals": 0,
-"points": 1,
+"goals": 3,
+"points": 5,
 "powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 14,
-"toiMinutes": 130,
-"toiSeconds": 18
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 9,
+"toiMinutes": 117,
+"toiSeconds": 34
 },
 "last5": {
 "assists": 1,
-"blocks": 4,
+"blocks": 2,
 "gamesPlayed": 5,
-"goals": 0,
-"points": 1,
+"goals": 2,
+"points": 3,
 "powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 68,
-"toiSeconds": 22
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 8,
+"toiMinutes": 69,
+"toiSeconds": 40
 },
 "line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Brendan Gallagher": {
@@ -9401,7 +9401,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Tom Willander": {
