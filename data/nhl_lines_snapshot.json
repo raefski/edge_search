@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-09-29T15:29:48+00:00",
+"generated_at": "2026-09-29T15:59:51+00:00",
 "goalies": {
 "2026-09-29": {
 "BOS": {
@@ -54,7 +54,7 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": null
+"status": "Likely"
 },
 "PHI": {
 "goalie": "Dan Vladar",
@@ -5748,7 +5748,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Ilya Sorokin": {
 "gtd": false,
@@ -6112,7 +6112,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 }
 },
 "NYR": {
@@ -6759,7 +6759,7 @@
 "toiMinutes": 69,
 "toiSeconds": 34
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -6901,40 +6901,6 @@
 "pk": null,
 "pos": "g",
 "pp": null
-},
-"David Jiricek": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 132,
-"toiSeconds": 14
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 84,
-"toiSeconds": 12
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": "PP2"
 },
 "Jamie Drysdale": {
 "gtd": false,
@@ -7278,6 +7244,40 @@
 "pos": "c",
 "pp": null
 },
+"Simon Benoit": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 16,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 17,
+"toiMinutes": 179,
+"toiSeconds": 23
+},
+"last5": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 91,
+"toiSeconds": 14
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Travis Konecny": {
 "gtd": false,
 "injury": null,
@@ -7344,7 +7344,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Trevor Zegras": {
 "gtd": false,
@@ -7409,7 +7409,7 @@
 "toiMinutes": 94,
 "toiSeconds": 59
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP1"
@@ -7586,7 +7586,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Elmer Soderblom": {
 "gtd": false,
@@ -7858,7 +7858,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": null
 },
 "Rickard Rakell": {
 "gtd": false,
@@ -7926,7 +7926,7 @@
 "line": "D3",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Sergei Murashov": {
 "gtd": false,
