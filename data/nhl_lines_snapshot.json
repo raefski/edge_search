@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-09-29T19:29:40+00:00",
+"generated_at": "2026-09-29T20:44:40+00:00",
 "goalies": {
 "2026-09-29": {
 "BOS": {
@@ -20,7 +20,7 @@
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
-"status": null
+"status": "Confirmed"
 },
 "MTL": {
 "goalie": "Jakub Dobes",
@@ -1199,7 +1199,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Nikolaj Ehlers": {
@@ -1439,7 +1439,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 }
 },
@@ -3589,7 +3589,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Brady Tkachuk": {
@@ -3759,7 +3759,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Gustav Forsling": {
