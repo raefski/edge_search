@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-09-30T18:30:07+00:00",
+"generated_at": "2026-09-30T18:59:50+00:00",
 "goalies": {
 "2026-09-30": {
 "COL": {
@@ -12944,6 +12944,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Daniil But": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 10,
+"toiMinutes": 123,
+"toiSeconds": 13
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 4,
+"toiMinutes": 62,
+"toiSeconds": 25
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
 "Dmitri Simashev": {
 "gtd": false,
 "injury": null,
@@ -13054,40 +13088,6 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": "PP2"
-},
-"Kailer Yamamoto": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 5,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 7,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 142,
-"toiSeconds": 24
-},
-"last5": {
-"assists": 2,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 77,
-"toiSeconds": 51
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
 "pp": "PP2"
 },
 "Karel Vejmelka": {
