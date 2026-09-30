@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-09-30T14:00:00+00:00",
+"generated_at": "2026-09-30T15:00:07+00:00",
 "goalies": {
 "2026-09-30": {
 "COL": {
@@ -16,7 +16,7 @@
 },
 "PHI": {
 "goalie": "Dan Vladar",
-"status": null
+"status": "Confirmed"
 },
 "PIT": {
 "goalie": "Arturs Silovs",
@@ -11501,7 +11501,7 @@
 "toiMinutes": 90,
 "toiSeconds": 48
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
@@ -11574,6 +11574,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Charle-Edouard D'Astous": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 14,
+"toiMinutes": 170,
+"toiSeconds": 55
+},
+"last5": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 7,
+"toiMinutes": 83,
+"toiSeconds": 38
+},
+"line": "D2",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Conor Geekie": {
 "gtd": false,
 "injury": null,
@@ -11603,7 +11637,7 @@
 "toiMinutes": 72,
 "toiSeconds": 47
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -11707,7 +11741,7 @@
 "toiMinutes": 81,
 "toiSeconds": 9
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -11843,7 +11877,7 @@
 "toiMinutes": 52,
 "toiSeconds": 58
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -11877,7 +11911,7 @@
 "toiMinutes": 65,
 "toiSeconds": 1
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -11915,40 +11949,6 @@
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
-},
-"Maxwell Crozier": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 17,
-"toiMinutes": 177,
-"toiSeconds": 40
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 90,
-"toiSeconds": 43
-},
-"line": "D2",
-"pk": null,
-"pos": "rd",
-"pp": null
 },
 "Nikita Kucherov": {
 "gtd": false,
@@ -12013,7 +12013,7 @@
 "toiMinutes": 67,
 "toiSeconds": 59
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -12115,7 +12115,7 @@
 "toiMinutes": 65,
 "toiSeconds": 12
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
 "pos": "c",
 "pp": null
