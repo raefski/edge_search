@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-09-30T16:29:55+00:00",
+"generated_at": "2026-09-30T17:29:56+00:00",
 "goalies": {
 "2026-09-30": {
 "COL": {
@@ -12192,6 +12192,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Bo Groulx": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 152,
+"toiSeconds": 26
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 73,
+"toiSeconds": 41
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Brandon Duhaime": {
 "gtd": false,
 "injury": null,
@@ -12223,7 +12257,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Chris Tanev": {
@@ -12771,40 +12805,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
-},
-"Zack MacEwen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 68,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 36,
-"toiSeconds": 33
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 }
 },
 "UTA": {
