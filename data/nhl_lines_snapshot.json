@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-09-30T15:00:07+00:00",
+"generated_at": "2026-09-30T16:01:00+00:00",
 "goalies": {
 "2026-09-30": {
 "COL": {
@@ -24,7 +24,7 @@
 },
 "TOR": {
 "goalie": "Anthony Stolarz",
-"status": null
+"status": "Confirmed"
 }
 },
 "2026-10-01": {
@@ -208,7 +208,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Josh Doan": {
 "gtd": false,
@@ -286,7 +286,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Louis Crevier": {
 "gtd": false,
@@ -555,7 +555,7 @@
 "toiMinutes": 87,
 "toiSeconds": 43
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
@@ -589,7 +589,7 @@
 "toiMinutes": 48,
 "toiSeconds": 32
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -804,6 +804,40 @@
 "pos": "g",
 "pp": null
 },
+"Carson Soucy": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 161,
+"toiSeconds": 19
+},
+"last5": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 75,
+"toiSeconds": 34
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Charlie Coyle": {
 "gtd": false,
 "injury": null,
@@ -1005,7 +1039,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Erik Gudbranson": {
@@ -1037,44 +1071,10 @@
 "toiMinutes": 90,
 "toiSeconds": 42
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
-},
-"Ivan Provorov": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 13,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 23,
-"toiMinutes": 249,
-"toiSeconds": 21
-},
-"last5": {
-"assists": 1,
-"blocks": 11,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 132,
-"toiSeconds": 53
-},
-"line": "D2",
-"pk": "PK1",
-"pos": "ld",
-"pp": "PP2"
 },
 "Jake Christiansen": {
 "gtd": false,
@@ -1106,8 +1106,8 @@
 "toiSeconds": 45
 },
 "line": "D2",
-"pk": null,
-"pos": "rd",
+"pk": "PK2",
+"pos": "ld",
 "pp": null
 },
 "Jet Greaves": {
@@ -1212,7 +1212,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Mathieu Olivier": {
 "gtd": false,
@@ -1414,7 +1414,7 @@
 "toiSeconds": 15
 },
 "line": "D1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": "PP1"
 }
