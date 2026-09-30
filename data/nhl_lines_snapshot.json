@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-09-30T20:00:07+00:00",
+"generated_at": "2026-09-30T20:15:01+00:00",
 "goalies": {
 "2026-09-30": {
 "COL": {
@@ -30,7 +30,7 @@
 "2026-10-01": {
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
-"status": null
+"status": "Likely"
 },
 "CBJ": {
 "goalie": "Jet Greaves",
@@ -45,7 +45,7 @@
 "status": null
 },
 "EDM": {
-"goalie": "Tristan Jarry",
+"goalie": "Devon Levi",
 "status": null
 },
 "FLA": {
@@ -3563,7 +3563,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -4007,7 +4007,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10775,7 +10775,7 @@
 },
 "SJS": {
 "Alex Nedeljkovic": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
@@ -10839,7 +10839,7 @@
 "toiMinutes": 101,
 "toiSeconds": 4
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP1"
@@ -10907,7 +10907,7 @@
 "toiMinutes": 83,
 "toiSeconds": 11
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
 "pos": "rw",
 "pp": null
@@ -10941,8 +10941,8 @@
 "toiMinutes": 114,
 "toiSeconds": 34
 },
-"line": "D2",
-"pk": "PK2",
+"line": "D1",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -11009,9 +11009,9 @@
 "toiMinutes": 76,
 "toiSeconds": 48
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Ivar Stenberg": {
@@ -11019,7 +11019,7 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -11053,7 +11053,7 @@
 "toiMinutes": 111,
 "toiSeconds": 29
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -11223,7 +11223,7 @@
 "toiMinutes": 72,
 "toiSeconds": 16
 },
-"line": "D2",
+"line": "D1",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -11257,42 +11257,42 @@
 "toiMinutes": 72,
 "toiSeconds": 24
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
 },
-"Sam Dickinson": {
+"Nolan Allan": {
 "gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
-"blocks": 7,
+"blocks": 15,
 "gamesPlayed": 10,
 "goals": 0,
 "points": 2,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 177,
-"toiSeconds": 37
+"shots": 5,
+"toiMinutes": 174,
+"toiSeconds": 16
 },
 "last5": {
 "assists": 1,
-"blocks": 5,
+"blocks": 7,
 "gamesPlayed": 5,
 "goals": 0,
 "points": 1,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 95,
-"toiSeconds": 23
+"shots": 3,
+"toiMinutes": 96,
+"toiSeconds": 17
 },
-"line": "D1",
-"pk": "PK1",
+"line": "D2",
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -11325,9 +11325,9 @@
 "toiMinutes": 64,
 "toiSeconds": 0
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Will Smith": {
