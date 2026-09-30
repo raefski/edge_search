@@ -197,6 +197,23 @@ GPPs it cut mean ownership error per player 2.73 -> 2.32 and lifted rank correla
 - Known miss: a player whose first AND last name are both garbled and whose garbled
   surname is close to someone else's (Oronde Gadsden II, "Aronda Gadston", 9/27).
 
+### Small slates concentrate: the ownership cap scales with games (2026-09-30)
+
+The 2026-09-27 Sun-Mon primetime slate (SNF + MNF, draft group 153774) was
+built on the phone, so nothing was logged here. It was rebuilt from the odds
+store's last scan before kickoff (scan 3342, 8:00 PM ET) and the git copy of
+its DK salaries, and the rebuild reproduced both lineups Adam entered exactly.
+Projections held (rank corr +0.67, bias −0.96); ownership did not — the field
+put 80-89% on three skill players and 61% on the Eagles DST against a flat 45%
+cap. `dfs_nfl_theory.slate_cap(games)` now scales it (45 on a main slate, ~89
+at two games): MAE 19.1 -> 15.4 on that GPP. The best fit also wanted a much
+sharper gamma for small slates; not shipped on one contest.
+
+To rebuild a past NFL slate the same way: restore
+`data/draftables_snapshot/<gid>.json` from git history, then
+`build_slate(ScrapedOddsClient(OddsStore(), 'dfs_nfl', scan_id=<pre-lock scan>),
+draft_group=<gid>, persist=False)`.
+
 ### Still missing for NFL
 
 - **Ownership without buzz is still a prior.** Three GPP exports now exist

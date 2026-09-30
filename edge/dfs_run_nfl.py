@@ -529,7 +529,8 @@ def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftki
         # Buzz sharpens ownership; it must never stop a lineup being built.
         log.warning("dfs_run_nfl: buzz unavailable: %s", exc)
         stats["buzz_rows"] = 0
-    theory.add_ownership(pool, **({"gamma": own_gamma} if own_gamma else {}))
+    theory.add_ownership(pool, cap=theory.slate_cap(len(games)),
+                         **({"gamma": own_gamma} if own_gamma else {}))
 
     cash = dfs_opt_nfl.optimize(pool, mode="cash", iters=iters, seed=0)
     gpp = dfs_opt_nfl.optimize(pool, mode="gpp", iters=iters, seed=0,

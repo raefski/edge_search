@@ -245,6 +245,29 @@ OWNERSHIP_GAMMA = 1.1
 OWNERSHIP_Z_CLIP = 2.0
 MAX_OWN = 45.0
 
+#: ...on a MAIN slate. A small slate concentrates far harder: on the
+#: 2026-09-27 Sun-Mon primetime slate (SNF + MNF, two games, 2,060-entry GPP)
+#: the field put 89% on DeVonta Smith, 86% on Davante Adams, 80% on Kyren
+#: Williams and 61% on the Eagles DST, against a flat 45% cap that held them
+#: all to 45 (ownership MAE 19.1). Main slates top out at 40-50% (Gibbs 45.5,
+#: Henry 39.9, Walker 49.8 on the three 2026 main slates).
+#:
+#: So the cap scales with the number of games, anchored to stay 45 on a 12-13
+#: game main slate -- the fitted main-slate constants (BUZZ_*) are untouched --
+#: and reaching ~89 at two games. On the primetime GPP that alone took MAE
+#: 19.1 -> 15.4 (rank corr .53 -> .58). ONE small-slate contest: the best fit
+#: there also wanted a much sharper gamma (3.0), which is NOT shipped until a
+#: second small slate agrees.
+MAIN_SLATE_GAMES = 12.5
+CAP_EXPONENT = 0.37
+
+
+def slate_cap(games: int | None) -> float:
+    """Ownership cap for a slate of `games` games (MAX_OWN on a main slate)."""
+    if not games:
+        return MAX_OWN
+    return min(95.0, MAX_OWN * (MAIN_SLATE_GAMES / games) ** CAP_EXPONENT)
+
 
 def _normalise(players, weights, target, cap):
     """Scale `weights` to sum to `target`, then cap and redistribute.

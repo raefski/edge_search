@@ -93,6 +93,33 @@ own OUT/IR status is honoured).
 | Short-handed points, shootout goals | not simulated (small; see §2). |
 | Depth players without props | last season's rates, not current role. |
 
+## 6a. First contest: opening night 2026-09-29 (main, 229-entry cash)
+
+Export `195958188`, graded against the build logged at 6:35 PM ET (after the
+skater-team fix below). `scripts/nhl_calibration.py --fit-ownership`:
+
+| | n | bias | MAE | rank corr | below floor (25) | above 95th (5) |
+|---|---|---|---|---|---|---|
+| skaters | 113 | +0.47 | 5.14 | +0.23 | 26% | **11%** |
+| goalies | 8 | −0.34 | 7.18 | +0.26 | | |
+
+- The floor is calibrated; **the upper tail is too thin** — 11% of skaters
+  beat their 95th percentile against 5% expected. One slate, so not tuned yet;
+  the first suspects are the linemate-affinity prior and per-player goal
+  variance. Watch it on the next exports.
+- Props-priced skaters ran +0.87 high, last-season estimates +0.11.
+- Ownership (cash field): prior MAE 4.28, rank +0.67; best fit on this
+  contest VALUE 1.5 / SALARY 0.8 / PP1 0.8 (MAE 3.84). NOT shipped — the model's
+  ownership serves GPP, and cash concentrates differently.
+- YouTube buzz (77 players collected) showed no relationship with cash
+  ownership (rank corr −0.00, −0.21 against the prior's residual). One cash
+  slate; revisit with GPP exports.
+- The corrected cash lineup would have scored 170.8 and **won the contest**
+  (1st of 229; the winner had 167.4) — Bouchard 60.4 did much of it.
+- **Bug found and fixed on the night:** DK counts the 3-team minimum over
+  SKATERS only. The first GPP lineup (EDM + BOS skaters, TOR goalie) was
+  rejected by DraftKings; `_valid` counted the goalie's team.
+
 ## 7. Nightly workflow
 
 ```bash

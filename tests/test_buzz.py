@@ -1,3 +1,4 @@
+import pytest
 from collections import Counter
 
 from edge.buzz import aggregate, build_aliases, count_mentions, learn_variants
@@ -167,3 +168,10 @@ def test_new_spelling_rules_from_the_2026_09_27_slate():
     assert ("rashad",) not in learned                        # mostly someone else's name
     got = count_mentions("Everyone is on Rashad Baitman.", {**aliases, **learned})
     assert got == Counter({"Rashod Bateman": 1})
+
+
+def test_small_slates_may_concentrate_past_the_main_slate_cap():
+    from edge import dfs_nfl_theory as theory
+    assert theory.slate_cap(13) == pytest.approx(theory.MAX_OWN, abs=1.0)
+    assert theory.slate_cap(2) > 85
+    assert theory.slate_cap(None) == theory.MAX_OWN
