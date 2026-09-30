@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-09-30T19:29:43+00:00",
+"generated_at": "2026-09-30T20:00:07+00:00",
 "goalies": {
 "2026-09-30": {
 "COL": {
@@ -2140,40 +2140,6 @@
 "pos": "ld",
 "pp": null
 },
-"Andrew Mangiapane": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 119,
-"toiSeconds": 46
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 58,
-"toiSeconds": 30
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Anton Frondell": {
 "gtd": false,
 "injury": null,
@@ -2203,7 +2169,7 @@
 "toiMinutes": 92,
 "toiSeconds": 11
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -2477,7 +2443,7 @@
 "toiMinutes": 69,
 "toiSeconds": 4
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -2511,9 +2477,9 @@
 "toiMinutes": 59,
 "toiSeconds": 34
 },
-"line": "F1",
+"line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Patrick Kane": {
@@ -2579,7 +2545,7 @@
 "toiMinutes": 68,
 "toiSeconds": 38
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -2722,6 +2688,40 @@
 "pos": "g",
 "pp": null
 },
+"Teuvo Teravainen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 13,
+"toiMinutes": 172,
+"toiSeconds": 12
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 81,
+"toiSeconds": 50
+},
+"line": "F2",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Tyler Bertuzzi": {
 "gtd": false,
 "injury": null,
@@ -2751,7 +2751,7 @@
 "toiMinutes": 87,
 "toiSeconds": 41
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
