@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-09-30T23:00:03+00:00",
+"generated_at": "2026-09-30T23:14:50+00:00",
 "goalies": {
 "2026-09-30": {
 "COL": {
@@ -12,7 +12,7 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": "Likely"
+"status": "Confirmed"
 },
 "PHI": {
 "goalie": "Dan Vladar",
@@ -8877,7 +8877,7 @@
 "pp": null
 },
 "Dan Vladar": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
