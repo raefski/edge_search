@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-01T18:59:54+00:00",
+"generated_at": "2026-10-01T19:30:17+00:00",
 "goalies": {
 "2026-10-01": {
 "BUF": {
@@ -24,7 +24,7 @@
 },
 "FLA": {
 "goalie": "Akira Schmid",
-"status": "Likely"
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -6198,7 +6198,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Colton Dach": {
 "gtd": false,
@@ -6232,7 +6232,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Connor McDavid": {
 "gtd": false,
@@ -6439,6 +6439,16 @@
 "pk": null,
 "pos": "ld",
 "pp": "PP2"
+},
+"Josh Samanski": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
 },
 "Kasperi Kapanen": {
 "gtd": false,
@@ -11015,7 +11025,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Frederick Gaudreau": {
@@ -11083,7 +11093,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Jared McCann": {
@@ -11393,7 +11403,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Ryker Evans": {
@@ -11461,7 +11471,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Vince Dunn": {
@@ -13634,7 +13644,7 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Clayton Keller": {
 "gtd": false,
@@ -14020,7 +14030,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Mikhail Sergachev": {
 "gtd": false,
@@ -14925,7 +14935,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Brayden McNabb": {
@@ -15165,7 +15175,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Mark Stone": {
