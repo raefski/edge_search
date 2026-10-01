@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-01T18:00:11+00:00",
+"generated_at": "2026-10-01T18:59:54+00:00",
 "goalies": {
 "2026-10-01": {
 "BUF": {
@@ -20,11 +20,11 @@
 },
 "EDM": {
 "goalie": "Devon Levi",
-"status": null
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Akira Schmid",
-"status": null
+"status": "Likely"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -6195,10 +6195,10 @@
 "toiMinutes": 77,
 "toiSeconds": 28
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Colton Dach": {
 "gtd": false,
@@ -6229,7 +6229,7 @@
 "toiMinutes": 59,
 "toiSeconds": 57
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -6404,7 +6404,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Jake Walman": {
 "gtd": false,
@@ -6435,7 +6435,7 @@
 "toiMinutes": 95,
 "toiSeconds": 23
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "ld",
 "pp": "PP2"
@@ -6503,9 +6503,9 @@
 "toiMinutes": 106,
 "toiSeconds": 47
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK2",
-"pos": "c",
+"pos": "rw",
 "pp": "PP1"
 },
 "Mathieu Joseph": {
@@ -6605,7 +6605,7 @@
 "toiMinutes": 53,
 "toiSeconds": 28
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -6639,7 +6639,7 @@
 "toiMinutes": 65,
 "toiSeconds": 1
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -6673,7 +6673,7 @@
 "toiMinutes": 101,
 "toiSeconds": 28
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
@@ -6811,43 +6811,9 @@
 "toiMinutes": 83,
 "toiSeconds": 30
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK2",
 "pos": "lw",
-"pp": "PP1"
-},
-"Zach Hyman": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 5,
-"powerplayAssists": 1,
-"powerplayGoals": 1,
-"powerplayPoints": 2,
-"shots": 22,
-"toiMinutes": 185,
-"toiSeconds": 59
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 11,
-"toiMinutes": 93,
-"toiSeconds": 53
-},
-"line": "F1",
-"pk": null,
-"pos": "rw",
 "pp": "PP1"
 }
 },
