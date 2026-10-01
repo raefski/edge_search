@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-01T17:30:00+00:00",
+"generated_at": "2026-10-01T18:00:11+00:00",
 "goalies": {
 "2026-10-01": {
 "BUF": {
@@ -44,7 +44,7 @@
 },
 "PHI": {
 "goalie": "Joseph Woll",
-"status": null
+"status": "Likely"
 },
 "SEA": {
 "goalie": "Joey Daccord",
@@ -52,7 +52,7 @@
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
-"status": null
+"status": "Confirmed"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -64,7 +64,7 @@
 },
 "VAN": {
 "goalie": "Kevin Lankinen",
-"status": null
+"status": "Likely"
 }
 },
 "2026-10-02": {
@@ -488,40 +488,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Nick Jensen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 13,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 187,
-"toiSeconds": 16
-},
-"last5": {
-"assists": 1,
-"blocks": 8,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 92,
-"toiSeconds": 36
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "rd",
-"pp": null
-},
 "Nikita Nesterenko": {
 "gtd": false,
 "injury": null,
@@ -554,6 +520,40 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
+"pp": null
+},
+"Noah Warren": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 91,
+"toiSeconds": 36
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 48,
+"toiSeconds": 26
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "rd",
 "pp": null
 },
 "Pavel Mintyukov": {
@@ -4842,6 +4842,40 @@
 }
 },
 "DAL": {
+"Arttu Hyry": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 15,
+"toiMinutes": 140,
+"toiSeconds": 37
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 68,
+"toiSeconds": 10
+},
+"line": "F3",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "Casey DeSmith": {
 "gtd": false,
 "injury": null,
@@ -5351,9 +5385,9 @@
 "toiMinutes": 75,
 "toiSeconds": 51
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Thomas Harley": {
