@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-01T15:00:00+00:00",
+"generated_at": "2026-10-01T15:30:04+00:00",
 "goalies": {
 "2026-10-01": {
 "BUF": {
@@ -56,7 +56,7 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": null
+"status": "Likely"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -5674,40 +5674,6 @@
 "pos": "ld",
 "pp": null
 },
-"Carter Mazur": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 110,
-"toiSeconds": 52
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 61,
-"toiSeconds": 23
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Daniil Tarasov": {
 "gtd": false,
 "injury": null,
@@ -6014,7 +5980,7 @@
 "toiSeconds": 20
 },
 "line": "F3",
-"pk": "PK2",
+"pk": null,
 "pos": "lw",
 "pp": null
 },
@@ -6027,6 +5993,40 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
+},
+"Michael Rasmussen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 12,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 129,
+"toiSeconds": 37
+},
+"last5": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 65,
+"toiSeconds": 24
+},
+"line": "F4",
+"pk": "PK2",
+"pos": "lw",
+"pp": null
 },
 "Moritz Seider": {
 "gtd": false,
@@ -13018,7 +13018,7 @@
 "line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Conor Geekie": {
 "gtd": false,
@@ -13496,7 +13496,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Zemgus Girgensons": {
 "gtd": false,
