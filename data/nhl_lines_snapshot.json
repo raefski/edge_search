@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-01T13:00:07+00:00",
+"generated_at": "2026-10-01T13:30:13+00:00",
 "goalies": {
 "2026-10-01": {
 "BUF": {
@@ -8366,42 +8366,8 @@
 "toiSeconds": 23
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
-"pp": null
-},
-"Connor Brown": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 6,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 23,
-"toiMinutes": 189,
-"toiSeconds": 18
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 88,
-"toiSeconds": 47
-},
-"line": "F4",
-"pk": "PK1",
-"pos": "rw",
 "pp": null
 },
 "Dawson Mercer": {
@@ -8434,7 +8400,7 @@
 "toiSeconds": 32
 },
 "line": "F3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rw",
 "pp": null
 },
@@ -8815,6 +8781,40 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP1"
+},
+"Stefan Noesen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 16,
+"toiMinutes": 115,
+"toiSeconds": 53
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 8,
+"toiMinutes": 65,
+"toiSeconds": 21
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Timo Meier": {
 "gtd": false,
