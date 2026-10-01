@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-01T17:00:03+00:00",
+"generated_at": "2026-10-01T17:30:00+00:00",
 "goalies": {
 "2026-10-01": {
 "BUF": {
@@ -9626,6 +9626,42 @@
 "pos": "rd",
 "pp": null
 },
+"Dylan Garand": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 15,
+"goalieGoalsAgainstAvg": "2.7",
+"goalieLosses": 2,
+"goalieMinutes": 332,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.915",
+"goalieSaves": 161,
+"goalieSeconds": 6,
+"goalieShotsAgainst": 176,
+"goalieShutouts": 0,
+"goalieWins": 3
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 9,
+"goalieGoalsAgainstAvg": "2.04",
+"goalieLosses": 1,
+"goalieMinutes": 264,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.934",
+"goalieSaves": 128,
+"goalieSeconds": 38,
+"goalieShotsAgainst": 137,
+"goalieShutouts": 0,
+"goalieWins": 3
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Eeli Tolvanen": {
 "gtd": false,
 "injury": null,
@@ -9772,42 +9808,6 @@
 "line": "F4",
 "pk": "PK2",
 "pos": "c",
-"pp": null
-},
-"Joonas Korpisalo": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 28,
-"goalieGoalsAgainstAvg": "3.12",
-"goalieLosses": 1,
-"goalieMinutes": 537,
-"goalieOvertimeLosses": 4,
-"goalieSavePercentage": "0.89",
-"goalieSaves": 226,
-"goalieSeconds": 44,
-"goalieShotsAgainst": 254,
-"goalieShutouts": 0,
-"goalieWins": 4
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 8,
-"goalieGoalsAgainstAvg": "2.05",
-"goalieLosses": 0,
-"goalieMinutes": 233,
-"goalieOvertimeLosses": 2,
-"goalieSavePercentage": "0.929",
-"goalieSaves": 104,
-"goalieSeconds": 19,
-"goalieShotsAgainst": 112,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
 "pp": null
 },
 "Marcus Pettersson": {
@@ -13920,40 +13920,6 @@
 "pos": "lw",
 "pp": null
 },
-"Liam O'Brien": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 98,
-"toiSeconds": 55
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 50,
-"toiSeconds": 8
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Logan Cooley": {
 "gtd": false,
 "injury": null,
@@ -14020,6 +13986,40 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
+"pp": null
+},
+"Michael Carcone": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 17,
+"toiMinutes": 143,
+"toiSeconds": 33
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 77,
+"toiSeconds": 31
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Mikhail Sergachev": {
