@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-02T13:00:10+00:00",
+"generated_at": "2026-10-02T13:59:56+00:00",
 "goalies": {
 "2026-10-02": {
 "ANA": {
@@ -3049,9 +3049,9 @@
 "toiMinutes": 69,
 "toiSeconds": 55
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Danton Heinen": {
@@ -3151,9 +3151,9 @@
 "toiMinutes": 55,
 "toiSeconds": 47
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Emil Andrae": {
@@ -4455,7 +4455,7 @@
 "toiMinutes": 90,
 "toiSeconds": 49
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
@@ -4557,9 +4557,9 @@
 "toiMinutes": 65,
 "toiSeconds": 23
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Oliver Moore": {
@@ -4661,7 +4661,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP1"
 },
 "Ryan Donato": {
@@ -4695,7 +4695,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Ryan Greene": {
@@ -11778,6 +11778,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Jaroslav Chmelar": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 112,
+"toiSeconds": 32
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 55,
+"toiSeconds": 42
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Joe Veleno": {
 "gtd": false,
 "injury": null,
@@ -11844,40 +11878,6 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
-},
-"Matt Rempe": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 103,
-"toiSeconds": 24
-},
-"last5": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 60,
-"toiSeconds": 13
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
 "pp": null
 },
 "Mika Zibanejad": {
@@ -12926,7 +12926,7 @@
 "line": "F1",
 "pk": "PK1",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Dan Vladar": {
 "gtd": false,
@@ -13134,7 +13134,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Noel Acciari": {
 "gtd": false,
