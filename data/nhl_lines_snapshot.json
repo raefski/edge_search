@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-02T16:30:12+00:00",
+"generated_at": "2026-10-02T17:00:20+00:00",
 "goalies": {
 "2026-10-02": {
 "ANA": {
@@ -8,7 +8,7 @@
 },
 "BOS": {
 "goalie": "Jeremy Swayman",
-"status": null
+"status": "Confirmed"
 },
 "CAR": {
 "goalie": "Brandon Bussi",
@@ -28,7 +28,7 @@
 },
 "STL": {
 "goalie": "Joel Hofer",
-"status": null
+"status": "Likely"
 },
 "VGK": {
 "goalie": "Carter Hart",
@@ -1745,7 +1745,7 @@
 "toiMinutes": 91,
 "toiSeconds": 43
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -1851,6 +1851,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP2"
+},
+"Olen Zellweger": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 14,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 135,
+"toiSeconds": 5
+},
+"last5": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 64,
+"toiSeconds": 28
+},
+"line": "D2",
+"pk": null,
+"pos": "rd",
+"pp": null
 },
 "Owen Power": {
 "gtd": false,
@@ -2125,40 +2159,6 @@
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP1"
-},
-"Zach Metsa": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 1,
-"powerplayGoals": 1,
-"powerplayPoints": 2,
-"shots": 3,
-"toiMinutes": 156,
-"toiSeconds": 6
-},
-"last5": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 1,
-"toiMinutes": 78,
-"toiSeconds": 19
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
 }
 },
 "CAR": {
@@ -10350,7 +10350,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Filip Forsberg": {
 "gtd": false,
@@ -10657,9 +10657,9 @@
 "toiMinutes": 73,
 "toiSeconds": 16
 },
-"line": "D3",
+"line": "D1",
 "pk": "PK1",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Nils Hoglander": {
@@ -10832,40 +10832,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Ryan Ufko": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 7,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 7,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 8,
-"toiMinutes": 157,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 5,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 5,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 5,
-"toiMinutes": 87,
-"toiSeconds": 31
-},
-"line": "D1",
-"pk": null,
-"pos": "rd",
-"pp": "PP2"
-},
 "Steven Stamkos": {
 "gtd": false,
 "injury": null,
@@ -10899,6 +10865,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"William Trudeau": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 66,
+"toiSeconds": 6
+},
+"last5": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 47,
+"toiSeconds": 31
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
 }
 },
 "NYI": {
@@ -15488,6 +15488,16 @@
 }
 },
 "STL": {
+"Adam  Ji\u0159\u00ed\u010dek": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
+"line": "D1",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Alexey Toropchenko": {
 "gtd": false,
 "injury": null,
@@ -15619,7 +15629,7 @@
 "toiMinutes": 100,
 "toiSeconds": 52
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -15655,7 +15665,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Dalibor Dvorsky": {
@@ -15691,40 +15701,6 @@
 "pk": null,
 "pos": "c",
 "pp": "PP2"
-},
-"Dillon Dube": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 84,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 46,
-"toiSeconds": 58
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Dylan Holloway": {
 "gtd": false,
@@ -15934,40 +15910,6 @@
 "pos": "g",
 "pp": null
 },
-"Justin Barron": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 17,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 178,
-"toiSeconds": 38
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 92,
-"toiSeconds": 3
-},
-"line": "D2",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Mason McTavish": {
 "gtd": false,
 "injury": null,
@@ -16033,7 +15975,7 @@
 },
 "line": "F2",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Philip Broberg": {
@@ -16065,7 +16007,7 @@
 "toiMinutes": 121,
 "toiSeconds": 18
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "ld",
 "pp": "PP1"
@@ -16138,6 +16080,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Ross Johnston": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 102,
+"toiSeconds": 32
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 53,
+"toiSeconds": 41
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Theo Lindstein": {
 "gtd": false,
 "injury": null,
@@ -16167,7 +16143,7 @@
 "toiMinutes": 92,
 "toiSeconds": 7
 },
-"line": "D1",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": null
