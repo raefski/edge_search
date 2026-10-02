@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-02T15:30:21+00:00",
+"generated_at": "2026-10-02T16:00:04+00:00",
 "goalies": {
 "2026-10-02": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": null
+"status": "Likely"
 },
 "DET": {
 "goalie": "John Gibson",
@@ -102,7 +102,7 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": null
+"status": "Likely"
 },
 "OTT": {
 "goalie": "Linus Ullmark",
@@ -5612,7 +5612,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Jake Oettinger": {
 "gtd": false,
@@ -5747,9 +5747,9 @@
 "toiMinutes": 52,
 "toiSeconds": 45
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Justin Hryckowian": {
@@ -6053,10 +6053,10 @@
 "toiMinutes": 75,
 "toiSeconds": 51
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
-"pos": "rw",
-"pp": "PP2"
+"pos": "lw",
+"pp": null
 },
 "Thomas Harley": {
 "gtd": false,
@@ -13580,7 +13580,7 @@
 "line": "F4",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Connor Dewar": {
 "gtd": false,
@@ -13682,7 +13682,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Erik Karlsson": {
 "gtd": false,
@@ -13818,7 +13818,7 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Kaedan Korczak": {
 "gtd": false,
@@ -13988,7 +13988,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Sergei Murashov": {
 "gtd": false,
