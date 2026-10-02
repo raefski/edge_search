@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-02T20:30:09+00:00",
+"generated_at": "2026-10-02T22:14:59+00:00",
 "goalies": {
 "2026-10-02": {
 "ANA": {
@@ -20,7 +20,7 @@
 },
 "DET": {
 "goalie": "John Gibson",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -14198,6 +14198,40 @@
 "pos": "rd",
 "pp": null
 },
+"Ben Meyers": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 125,
+"toiSeconds": 44
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 70,
+"toiSeconds": 41
+},
+"line": "F4",
+"pk": "PK2",
+"pos": "rw",
+"pp": null
+},
 "Berkly Catton": {
 "gtd": false,
 "injury": null,
@@ -14376,40 +14410,6 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "c",
-"pp": null
-},
-"Jacob Melanson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 92,
-"toiSeconds": 5
-},
-"last5": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 53,
-"toiSeconds": 53
-},
-"line": "F4",
-"pk": "PK2",
-"pos": "rw",
 "pp": null
 },
 "Jared McCann": {
