@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-02T14:30:14+00:00",
+"generated_at": "2026-10-02T14:59:58+00:00",
 "goalies": {
 "2026-10-02": {
 "ANA": {
@@ -11,8 +11,8 @@
 "status": null
 },
 "CAR": {
-"goalie": "Pyotr Kochetkov",
-"status": null
+"goalie": "Brandon Bussi",
+"status": "Likely"
 },
 "DAL": {
 "goalie": "Jake Oettinger",
@@ -20,7 +20,7 @@
 },
 "DET": {
 "goalie": "John Gibson",
-"status": null
+"status": "Likely"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -53,7 +53,7 @@
 "status": null
 },
 "CAR": {
-"goalie": "Pyotr Kochetkov",
+"goalie": "Brandon Bussi",
 "status": null
 },
 "CBJ": {
@@ -2227,7 +2227,7 @@
 "goalieShutouts": 2,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2671,7 +2671,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6303,9 +6303,9 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "D2",
+"line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Axel Sandin-Pellikka": {
@@ -6337,7 +6337,7 @@
 "toiMinutes": 95,
 "toiSeconds": 1
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -6371,7 +6371,7 @@
 "toiMinutes": 99,
 "toiSeconds": 48
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -6545,9 +6545,9 @@
 "toiMinutes": 103,
 "toiSeconds": 15
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": "PP2"
 },
 "Keegan Kolesar": {
