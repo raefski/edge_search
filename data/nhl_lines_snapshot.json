@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-02T14:59:58+00:00",
+"generated_at": "2026-10-02T15:30:21+00:00",
 "goalies": {
 "2026-10-02": {
 "ANA": {
@@ -12,7 +12,7 @@
 },
 "CAR": {
 "goalie": "Brandon Bussi",
-"status": "Likely"
+"status": "Confirmed"
 },
 "DAL": {
 "goalie": "Jake Oettinger",
@@ -36,7 +36,7 @@
 },
 "WPG": {
 "goalie": "Stuart Skinner",
-"status": null
+"status": "Likely"
 },
 "WSH": {
 "goalie": "Logan Thompson",
@@ -10999,7 +10999,7 @@
 "toiMinutes": 71,
 "toiSeconds": 3
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -11169,9 +11169,9 @@
 "toiMinutes": 76,
 "toiSeconds": 30
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Ilya Sorokin": {
@@ -11341,9 +11341,9 @@
 "toiMinutes": 81,
 "toiSeconds": 9
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Matthew Schaefer": {
@@ -11489,7 +11489,7 @@
 "toiMinutes": 90,
 "toiSeconds": 18
 },
-"line": "F1",
+"line": "F3",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
@@ -11533,7 +11533,7 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -12154,40 +12154,6 @@
 }
 },
 "OTT": {
-"Cameron Crotty": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 137,
-"toiSeconds": 50
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 73,
-"toiSeconds": 36
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Carter Yakemchuk": {
 "gtd": false,
 "injury": null,
@@ -12217,7 +12183,7 @@
 "toiMinutes": 91,
 "toiSeconds": 22
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -12368,6 +12334,40 @@
 "pos": "rw",
 "pp": null
 },
+"Jake Sanderson": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 6,
+"blocks": 22,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 9,
+"powerplayAssists": 2,
+"powerplayGoals": 2,
+"powerplayPoints": 4,
+"shots": 24,
+"toiMinutes": 235,
+"toiSeconds": 54
+},
+"last5": {
+"assists": 3,
+"blocks": 11,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 9,
+"toiMinutes": 124,
+"toiSeconds": 50
+},
+"line": "D1",
+"pk": "PK1",
+"pos": "ld",
+"pp": "PP1"
+},
 "Jordan Spence": {
 "gtd": false,
 "injury": null,
@@ -12397,8 +12397,8 @@
 "toiMinutes": 120,
 "toiSeconds": 21
 },
-"line": "D1",
-"pk": "PK1",
+"line": "D2",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -12535,9 +12535,9 @@
 "toiMinutes": 98,
 "toiSeconds": 55
 },
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
+"line": "D1",
+"pk": "PK1",
+"pos": "rd",
 "pp": null
 },
 "Samuel Ersson": {
@@ -12642,7 +12642,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Thomas Chabot": {
 "gtd": false,
@@ -12673,10 +12673,10 @@
 "toiMinutes": 149,
 "toiSeconds": 37
 },
-"line": "D1",
-"pk": "PK2",
+"line": "D2",
+"pk": null,
 "pos": "ld",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Tim St\u00fctzle": {
 "gtd": false,
@@ -12717,8 +12717,8 @@
 "toiMinutes": 80,
 "toiSeconds": 26
 },
-"line": "D2",
-"pk": "PK1",
+"line": "D3",
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -13478,6 +13478,40 @@
 }
 },
 "PIT": {
+"Andrei Kuzmenko": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 6,
+"powerplayAssists": 0,
+"powerplayGoals": 3,
+"powerplayPoints": 3,
+"shots": 11,
+"toiMinutes": 140,
+"toiSeconds": 18
+},
+"last5": {
+"assists": 3,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 2,
+"powerplayPoints": 2,
+"shots": 6,
+"toiMinutes": 69,
+"toiSeconds": 27
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
 "Arturs Silovs": {
 "gtd": false,
 "injury": null,
@@ -13546,7 +13580,7 @@
 "line": "F4",
 "pk": "PK2",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Connor Dewar": {
 "gtd": false,
@@ -13650,40 +13684,6 @@
 "pos": "lw",
 "pp": "PP1"
 },
-"Elmer Soderblom": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 16,
-"toiMinutes": 126,
-"toiSeconds": 46
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 72,
-"toiSeconds": 28
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Erik Karlsson": {
 "gtd": false,
 "injury": null,
@@ -13783,7 +13783,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Hendrix Lapierre": {
@@ -13818,7 +13818,7 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Kaedan Korczak": {
 "gtd": false,
@@ -14159,8 +14159,8 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
-"pp": "PP2"
+"pos": "lw",
+"pp": null
 }
 },
 "SEA": {
