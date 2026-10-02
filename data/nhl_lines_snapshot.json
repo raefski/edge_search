@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-02T13:59:56+00:00",
+"generated_at": "2026-10-02T14:30:14+00:00",
 "goalies": {
 "2026-10-02": {
 "ANA": {
@@ -7072,7 +7072,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Jake Walman": {
 "gtd": false,
@@ -7150,7 +7150,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Leon Draisaitl": {
 "gtd": false,
@@ -18271,7 +18271,7 @@
 "toiMinutes": 52,
 "toiSeconds": 35
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -18543,7 +18543,7 @@
 "toiMinutes": 66,
 "toiSeconds": 21
 },
-"line": "F1",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -18683,7 +18683,7 @@
 "toiMinutes": 79,
 "toiSeconds": 13
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -18751,10 +18751,10 @@
 "toiMinutes": 78,
 "toiSeconds": 46
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Max Sasson": {
 "gtd": false,
@@ -18819,7 +18819,7 @@
 "toiMinutes": 63,
 "toiSeconds": 16
 },
-"line": "F4",
+"line": "F2",
 "pk": "PK2",
 "pos": "c",
 "pp": null
@@ -18866,7 +18866,7 @@
 "line": "D1",
 "pk": null,
 "pos": "ld",
-"pp": "PP1"
+"pp": "PP2"
 }
 },
 "VGK": {
