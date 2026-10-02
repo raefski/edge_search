@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-02T17:30:02+00:00",
+"generated_at": "2026-10-02T18:29:51+00:00",
 "goalies": {
 "2026-10-02": {
 "ANA": {
@@ -217,7 +217,7 @@
 },
 "line": "F2",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Beckett Sennecke": {
@@ -251,7 +251,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Cutter Gauthier": {
@@ -3703,7 +3703,7 @@
 "toiMinutes": 87,
 "toiSeconds": 41
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -3741,6 +3741,40 @@
 "pk": "PK1",
 "pos": "rw",
 "pp": "PP1"
+},
+"Joel Hanley": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 16,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 161,
+"toiSeconds": 50
+},
+"last5": {
+"assists": 0,
+"blocks": 12,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 84,
+"toiSeconds": 8
+},
+"line": "D2",
+"pk": "PK2",
+"pos": "ld",
+"pp": null
 },
 "Kevin Bahl": {
 "gtd": false,
@@ -4077,44 +4111,10 @@
 "toiMinutes": 111,
 "toiSeconds": 58
 },
-"line": "D1",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
-},
-"Yan Kuznetsov": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 16,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 185,
-"toiSeconds": 34
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 89,
-"toiSeconds": 13
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
-"pp": null
 },
 "Yegor Sharangovich": {
 "gtd": false,
@@ -4179,7 +4179,7 @@
 "toiMinutes": 90,
 "toiSeconds": 54
 },
-"line": "D3",
+"line": "D1",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -4213,7 +4213,7 @@
 "toiMinutes": 103,
 "toiSeconds": 14
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -15496,7 +15496,7 @@
 "line": "D1",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Alexey Toropchenko": {
 "gtd": false,
@@ -15598,7 +15598,7 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Colton Parayko": {
 "gtd": false,
@@ -16010,7 +16010,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP1"
+"pp": null
 },
 "Pius Suter": {
 "gtd": false,
