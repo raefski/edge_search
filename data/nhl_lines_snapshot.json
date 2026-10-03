@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-03T23:15:14+00:00",
+"generated_at": "2026-10-03T23:45:13+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -56,7 +56,7 @@
 },
 "NSH": {
 "goalie": "Juuse Saros",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
@@ -5575,9 +5575,43 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
+"pp": null
+},
+"Colin Blackwell": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 121,
+"toiSeconds": 6
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 60,
+"toiSeconds": 25
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Esa Lindell": {
@@ -5645,7 +5679,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5717,40 +5751,6 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
-},
-"Joel Kiviranta": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 17,
-"toiMinutes": 105,
-"toiSeconds": 40
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 54,
-"toiSeconds": 3
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Justin Hryckowian": {
 "gtd": false,
@@ -11140,42 +11140,6 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Justus Annunen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 18,
-"goalieGoalsAgainstAvg": "1.82",
-"goalieLosses": 5,
-"goalieMinutes": 593,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.939",
-"goalieSaves": 275,
-"goalieSeconds": 31,
-"goalieShotsAgainst": 293,
-"goalieShutouts": 1,
-"goalieWins": 5
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 8,
-"goalieGoalsAgainstAvg": "1.6",
-"goalieLosses": 2,
-"goalieMinutes": 299,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.944",
-"goalieSaves": 134,
-"goalieSeconds": 18,
-"goalieShotsAgainst": 142,
-"goalieShutouts": 1,
-"goalieWins": 3
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
-},
 "Juuse Saros": {
 "gtd": false,
 "injury": null,
@@ -11208,6 +11172,16 @@
 "goalieWins": 0
 },
 "line": "G1",
+"pk": null,
+"pos": "g",
+"pp": null
+},
+"Matthew Murray": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -11380,40 +11354,6 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": null
-},
-"Reid Schaefer": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 104,
-"toiSeconds": 31
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 60,
-"toiSeconds": 53
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
 "pp": null
 },
 "Roman Josi": {
