@@ -122,6 +122,7 @@ class ParlayPromo:
 
 
 CFB_STEPPED = {4: .20, 5: .25, 6: .30, 7: .40, 8: .55, 9: .70, 10: .85, 11: 1.05}
+FD_CFB_STEPPED = {2: .05, 3: .10, 4: .15, 5: .20, 6: .25, 7: .30, 8: .35, 9: .40, 10: .45, 11: .50, 12: .55}
 
 # The offers Adam pasted on 2026-10-03. DraftKings reruns these shapes weekly,
 # so they are presets rather than one-offs; the numbers are editable in the app.
@@ -135,6 +136,9 @@ PRESETS: dict[str, ParlayPromo] = {
     "DK Tennis 30% (2+ legs, total −200 or longer)": ParlayPromo(
         book="draftkings", sports=["tennis_atp"], boost_by_legs={2: .30},
         min_legs=2, max_legs=5, min_total_decimal=1.5, max_stake=10.0),
+    "FanDuel stepped-up CFB (2–12 legs, 5%→55%, −400 or longer per leg)": ParlayPromo(
+        book="fanduel", sports=["americanfootball_ncaaf"], boost_by_legs=dict(FD_CFB_STEPPED),
+        min_legs=2, max_legs=12, min_leg_decimal=1.40, max_stake=10.0),
     "FanDuel 25% parlay boost (2+ legs)": ParlayPromo(
         book="fanduel", sports=[], boost_by_legs={2: .25},
         min_legs=2, max_legs=6, max_stake=10.0),
