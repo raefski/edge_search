@@ -28,6 +28,13 @@ from edge import dfs, dfs_opt
 SPORT = "baseball_mlb"
 
 
+#: Discount a PROJECTED (lineup not yet posted) hitter's projection by his
+#: predicted chance of starting (edge/dfs_lineup_projection.py). Set False to
+#: restore the pre-2026-10-03 behaviour of valuing every projected hitter as a
+#: certain starter.
+P_START_DISCOUNT = True
+
+
 def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
                      cash: dict | None, gpp: dict | None, games: int | None = None) -> dict:
     """Persist a build to disk for forward-testing, regardless of whether the
@@ -95,7 +102,11 @@ def log_forward_test(root: Path, date: str, is_main: bool, gid, pool: list,
     def _pool_rows():
         for p in pool:
             yield {"date": date, "player": p["name"], "team": p["team"],
-                  "pos": "/".join(sorted(p["pos"])), "salary": p["salary"], "proj": p["proj"],
+                  "pos": "/".join(sorted(p["pos"])), "salary": p["salary"],
+                  # the CONDITIONAL projection (if he starts), as the log has always
+                  # held: calibration compares it with real points, so the
+                  # start-probability discount must not leak into it
+                  "proj": p.get("proj_if_start", p["proj"]),
                   "ceiling": p.get("ceiling"), "own": p.get("own", ""), "conf": p["conf"],
                   "dk_fppg": p.get("dk_fppg", ""), "games": games if games is not None else "",
                   "outs_mean": p.get("outs_mean", ""), "k_mean": p.get("k_mean", "")}
@@ -440,12 +451,20 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
         # are untouched.
         floor = round(proj + dfs.BB_FLOOR_WEIGHT * bb_rate * pa_slot, 1)
         confirmed = lu.get("confirmed", True)
+        # A PROJECTED hitter is worth his start probability times his points: a
+        # bench bat who sits scores 0 and DraftKings does not substitute him. A
+        # confirmed lineup is p=1, so confirmed and projected players are on the
+        # same expected-value scale (edge/dfs_lineup_projection.py).
+        p_start = 1.0 if (confirmed or not P_START_DISCOUNT) else float(lu.get("p_start", 1.0))
+        proj_if_start = proj
+        if p_start < 1.0:
+            proj, ceil, floor = (round(v * p_start, 1) for v in (proj, ceil, floor))
         pool.append({"name": lu["name"], "pos": pos, "salary": info["salary"], "proj": proj, "ceiling": ceil,
-                     "floor": floor,
+                     "floor": floor, "p_start": p_start, "proj_if_start": proj_if_start,
                      "team": team_abbr, "game": lu["game"],
                      "opp_team": abbr.get(str(lu.get("opp_team_id")), None),
                      "slot": lu["slot"], "home": is_home, "confirmed": confirmed,
-                     "conf": f"H-slot{lu['slot']}" + ("" if confirmed else "*PROJ"),
+                     "conf": f"H-slot{lu['slot']}" + ("" if confirmed else f"*PROJ{p_start:.0%}"),
                      "dk_fppg": info.get("dk_fppg")})
 
     if exclude_teams:

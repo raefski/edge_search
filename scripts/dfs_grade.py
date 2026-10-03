@@ -80,7 +80,7 @@ def date_all_final(date: str) -> bool:
     computed from it."""
     sched = dfs._get(f"https://statsapi.mlb.com/api/v1/schedule?sportId=1&date={date}")
     games = [g for d in sched.get("dates", []) for g in d.get("games", [])
-             if g.get("gameType", "R") == "R"]
+             if g.get("gameType", "R") in ("R", "F", "D", "L", "W")]
     return bool(games) and all(g.get("status", {}).get("abstractGameState") == "Final" for g in games)
 
 

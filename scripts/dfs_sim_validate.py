@@ -266,7 +266,7 @@ def contest_layer(n_sims=2000, field_mult=3.0, seed=11):
             conf = r.get("conf") or ""
             if "slot" in conf:
                 try:
-                    slot = int(conf.split("slot")[1].rstrip("*PROJ").rstrip("*"))
+                    slot = int(conf.split("slot")[1].split("*")[0])
                 except ValueError:
                     slot = None
             own_real = contest.get(key, {}).get("pct_drafted")

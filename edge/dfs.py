@@ -1091,7 +1091,7 @@ def team_game_status(date: str) -> dict:
                 # "A" etc, confirmed real: 2026-07-14) has "AL"/"NL" in place of
                 # a real team abbreviation, which isn't a crash but would
                 # pollute this dict with bogus non-DK-team keys.
-                if g.get("gameType", "R") != "R":
+                if g.get("gameType", "R") not in _REAL_TYPES:
                     continue
                 detail = g.get("status", {}).get("detailedState", "")
                 flag = "" if detail in _NORMAL_GAME_STATES else detail
@@ -1131,7 +1131,10 @@ def lineups_for_date(date: str, project: bool = True) -> dict:
     # regular season only -- an All-Star/exhibition entry (gameType "A" etc,
     # confirmed real: 2026-07-14) uses "AL"/"NL" pseudo-teams that won't
     # collide with real team ids, but there's no reason to process it at all.
-    games = [g for d in s.get("dates", []) for g in d.get("games", []) if g.get("gameType", "R") == "R"]
+    # POSTSEASON INCLUDED (F/D/L/W): this used to keep only "R", so on the first
+    # Division Series day (2026-10-03) it returned ZERO players and no hitter
+    # pool could be built at all.
+    games = [g for d in s.get("dates", []) for g in d.get("games", []) if g.get("gameType", "R") in _REAL_TYPES]
 
     # Doubleheaders: a team can appear in 2 games the same date. Without this,
     # a finished game 1's CONFIRMED lineup gets keyed by player name same as
@@ -1169,14 +1172,44 @@ def lineups_for_date(date: str, project: bool = True) -> dict:
                     out[(team_id, norm(pl["fullName"]))] = {"id": pl["id"], "name": pl["fullName"], "slot": i + 1,
                                                  "team_id": team_id, "park_team_id": home_id,
                                                  "opp_pitcher_id": opp_pid, "opp_team_id": opp_team_id,
-                                                 "game": g["gamePk"], "confirmed": True}
+                                                 "game": g["gamePk"], "confirmed": True, "p_start": 1.0}
             elif project:
-                for pid, name, slot in _team_recent_lineup(team_id, date):
-                    if (team_id, norm(name)) not in out:
-                        out[(team_id, norm(name))] = {"id": pid, "name": name, "slot": slot, "team_id": team_id,
-                                           "park_team_id": home_id, "opp_pitcher_id": opp_pid,
-                                           "opp_team_id": opp_team_id, "game": g["gamePk"], "confirmed": False}
+                nine = _projected_nine(team_id, date, opp_pid)
+                if not nine:   # no history to predict from: the old last-game fallback
+                    nine = [{"id": pid, "name": name, "slot": slot, "p_start": 1.0}
+                            for pid, name, slot in _team_recent_lineup(team_id, date)]
+                for pl in nine:
+                    if (team_id, norm(pl["name"])) not in out:
+                        out[(team_id, norm(pl["name"]))] = {
+                            "id": pl["id"], "name": pl["name"], "slot": pl["slot"], "team_id": team_id,
+                            "park_team_id": home_id, "opp_pitcher_id": opp_pid,
+                            "opp_team_id": opp_team_id, "game": g["gamePk"], "confirmed": False,
+                            "p_start": pl["p_start"]}
     return out
+
+
+_REAL_TYPES = {"R", "F", "D", "L", "W"}   # regular season + every postseason round
+_HISTORY_MEMO: dict = {}
+
+
+def _projected_nine(team_id, date: str, opp_pitcher_id) -> list[dict]:
+    """Platoon-aware projected batting order for a team whose lineup is not
+    posted (edge/dfs_lineup_projection.py). [] when there is too little history."""
+    from edge import dfs_lineup_projection as lp
+    try:
+        if date not in _HISTORY_MEMO:
+            _HISTORY_MEMO.clear()
+            _HISTORY_MEMO[date] = lp.fetch_history(date)
+        hist = _HISTORY_MEMO[date]
+        games = lp.team_games(hist, team_id)
+        if len(games) < 5:
+            return []
+        ids = {sp for g in games for sp in [g["opp_sp"]] if sp} | ({opp_pitcher_id} if opp_pitcher_id else set())
+        hands = player_hands(ids, cache_path=str(_os.path.join(_os.path.dirname(__file__), "..", "data", "dfs_hands.json")))
+        opp_hand = (hands.get(str(opp_pitcher_id)) or {}).get("throw") if opp_pitcher_id else None
+        return lp.predict_lineup(games, opp_hand, hands)
+    except Exception:
+        return []
 
 
 import datetime as _dt

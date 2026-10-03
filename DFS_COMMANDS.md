@@ -39,6 +39,18 @@ python3 scripts/dfs_lineups.py --date $(date +%Y-%m-%d) --draft-group Turbo --li
 python3 scripts/dfs_lineups.py --date $(date +%Y-%m-%d) --exclude-teams BAL --from-cache
 ```
 
+## Staggered / postseason slates (lineups post hours apart)
+
+```bash
+python3 scripts/dfs_lineups.py --date $(date +%Y-%m-%d) --draft-group Main --list-teams   # which games, which slate
+python3 scripts/dfs_lineups.py --date $(date +%Y-%m-%d) --draft-group Afternoon --from-cache
+```
+
+Hitters not yet in a posted order are PROJECTED from the team's recent games
+against that starter's handedness; `conf` shows `*PROJ91%` (chance he starts) and
+the projection is already multiplied by it. Rebuild after lineups post; swap with
+`scripts/dfs_swap.py`. Backtest: `scripts/dfs_lineup_projection_backtest.py`.
+
 ## Get scores / grade a date
 
 ```

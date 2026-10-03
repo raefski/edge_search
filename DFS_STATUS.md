@@ -84,6 +84,58 @@ calibration numbers were regenerated. See `DFS_METHODOLOGY.md` §31.
 
 ---
 
+### MLB postseason / staggered slates: build BEFORE lineups post (2026-10-03)
+
+**The bug that came first:** `dfs.lineups_for_date` kept only `gameType "R"`, so on
+the first Division Series day it returned **zero hitters** and no pool could be
+built. It now takes every real game type (`R,F,D,L,W`), here and in
+`team_game_status` and `dfs_grade.date_all_final`.
+
+**The predictor** (`edge/dfs_lineup_projection.py`, no new data source -- one
+statsapi schedule call with the `lineups` + `probablePitcher` hydrations returns
+every recent game's order and starter): each recent game votes for the players
+who started it. Games against the SAME-HANDED starter count in full with the
+all-games rate as a 3-game prior, so a platoon bat who sat every lefty start is
+ruled out of a lefty game and a regular is not; recent games weigh more, and
+postseason games count double. Output is the nine most likely starters in their
+usual slot with `p_start`.
+
+**Backtest** (`scripts/dfs_lineup_projection_backtest.py`, 372 team-games,
+2026-09-15..10-02, scored against the orders actually posted):
+
+| | starters right of 9 | all nine | 8+ right |
+|---|---|---|---|
+| **platoon-aware (shipped)** | **7.32** | 12% | 45% |
+| hand-blind | 7.03 | | |
+| last game's order (old fallback) | 6.61 | 5% | 24% |
+
+Calibrated: players given p 0.9+ started 92% of the time, 0.8-0.9 86%, 0.7-0.8
+74%, 0.5-0.6 57%. The grid over window / decay / prior moved the score by less
+than 0.15, so those are not tuned. Caveat: the window is the end of the regular
+season, when rest games depress everyone's accuracy; the postseason sample is 9
+wild-card games, too few to score on its own. Live check 2026-10-03: CLE and CWS,
+both posted, were each predicted 9/9 (n=2, an anecdote).
+
+**In the pool:** a projected hitter is worth `p_start x projection` (a bench bat
+who sits scores 0 and DK does not substitute him), so confirmed (p=1) and
+projected players are on one expected-value scale. The `conf` label shows it:
+`H-slot5*PROJ91%`. `proj_if_start` keeps the unscaled number.
+
+**Workflow for a staggered slate:** build each slate as early as you like;
+rebuild as lineups post (confirmed players flip to p=1 and their opponents'
+projected orders tighten); after posting, `scripts/dfs_swap.py` swaps anyone
+ruled out whose game has not started. The Main slate is the hard one -- it locks
+at the first game, so every other game is projected.
+
+**Known gaps:** a probable pitcher not yet announced (ATL on 2026-10-03) makes
+that opponent's projection hand-blind.
+
+**Regular season is unaffected except for better projected orders:** the calibration
+log still records the CONDITIONAL projection (`proj_if_start`), a team with no
+history falls back to the old last-game order undiscounted, and
+`dfs_run.P_START_DISCOUNT = False` restores certain-starter valuation of
+projected hitters.
+
 ## NFL / NBA — multi-sport build
 
 **NFL status (2026-09-12): SHIPPED and usable for a real slate.** DK draftables,
