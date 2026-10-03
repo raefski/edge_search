@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-03T17:59:59+00:00",
+"generated_at": "2026-10-03T18:30:06+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -32,15 +32,15 @@
 },
 "DAL": {
 "goalie": "Casey DeSmith",
-"status": null
+"status": "Confirmed"
 },
 "EDM": {
 "goalie": "Tristan Jarry",
 "status": null
 },
 "LAK": {
-"goalie": "Darcy Kuemper",
-"status": null
+"goalie": "Anton Forsberg",
+"status": "Likely"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -80,7 +80,7 @@
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "STL": {
 "goalie": "Jordan Binnington",
@@ -15763,7 +15763,7 @@
 "pp": "PP2"
 },
 "Jacob Trouba": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 0,
@@ -18870,6 +18870,40 @@
 }
 },
 "VAN": {
+"Aatu Raty": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 130,
+"toiSeconds": 18
+},
+"last5": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 68,
+"toiSeconds": 22
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Arshdeep Bains": {
 "gtd": false,
 "injury": null,
@@ -18936,7 +18970,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Brock Boeser": {
 "gtd": false,
@@ -19108,40 +19142,6 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Jake DeBrusk": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 5,
-"points": 9,
-"powerplayAssists": 1,
-"powerplayGoals": 3,
-"powerplayPoints": 4,
-"shots": 35,
-"toiMinutes": 169,
-"toiSeconds": 25
-},
-"last5": {
-"assists": 3,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 4,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 15,
-"toiMinutes": 78,
-"toiSeconds": 28
-},
-"line": "F1",
-"pk": null,
-"pos": "lw",
-"pp": "PP1"
-},
 "Jamie Oleksiak": {
 "gtd": false,
 "injury": null,
@@ -19205,10 +19205,10 @@
 "toiMinutes": 66,
 "toiSeconds": 21
 },
-"line": "F4",
+"line": "F1",
 "pk": null,
-"pos": "rw",
-"pp": "PP2"
+"pos": "lw",
+"pp": "PP1"
 },
 "Kevin Lankinen": {
 "gtd": false,
