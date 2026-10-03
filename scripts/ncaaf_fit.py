@@ -304,6 +304,11 @@ def fit_rb_rec(ps: dict) -> None:
                   f"  rec yds {statistics.fmean(g['rec_yds'] for g in gs):.1f}"
                   f"  rec TD {statistics.fmean(g['rec_td'] for g in gs):.3f}")
 
+    for pos in ("WR", "RB"):
+        grp = [v for v in ps.values() if v["position"] == pos]
+        print(f"\n== {pos} receptions from receiving yards ({len(grp)} seasons) ==")
+        fit(grp, "rec_yds", (("rec", "receptions"),), "rec yds/g")
+
     qbs = [v for v in ps.values() if v["position"] == "QB"]
     print(f"\n== QB rushing ({len(qbs)} quarterback-seasons) ==")
     allg = [g for v in qbs for g in v["games"]]

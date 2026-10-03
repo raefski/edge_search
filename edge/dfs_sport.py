@@ -422,6 +422,19 @@ NCAAF_RB_REC_INTERCEPT = 0.195
 NCAAF_RB_REC_PER_RUSH_YD = 0.0145
 NCAAF_RB_REC_YDS_INTERCEPT = 1.526
 NCAAF_RB_REC_YDS_PER_RUSH_YD = 0.1158
+#: RECEPTIONS FROM RECEIVING YARDS, for a player whose receiving-yards ladder
+#: is priced and whose receptions ladder is not. DraftKings posts the two
+#: markets independently and drops one by GAME: on 2026-10-03 not one of seven
+#: ND @ UNC receivers had a receptions ladder and VAND @ UGA had three of six,
+#: so those players lost a point per catch -- Faison 10.2 against Dan's 16.5,
+#: and the whole Notre Dame / Georgia skill group ran 4-6 points under his
+#: sheet. FITTED 2026-10-03, cfbfastR 2024+2025 (scripts/ncaaf_fit.py --what
+#: rbrec): receptions/g on receiving yds/g, 2,729 WR-seasons R2 0.75 and 992
+#: RB-seasons R2 0.74. The tight fit is why this one is safe to impute.
+NCAAF_WR_REC_INTERCEPT = 0.754
+NCAAF_WR_REC_PER_REC_YD = 0.0593
+NCAAF_RB_REC_FROM_YDS_INTERCEPT = 0.251
+NCAAF_RB_REC_FROM_YDS_PER_YD = 0.0921
 #: A quarterback with pass ladders and NO rushing ladder (Stockton, Carr, Sayin
 #: on 2026-10-03) was projected on his arm alone. The first fix used the league
 #: mean for a starter (30.8 yds/g; rushing does not depend on passing volume,
@@ -451,6 +464,14 @@ def _ncaaf_impute(means: dict, position: str | None = None) -> dict:
     is_qb = bool(parts & _QB) or (not parts and means.get("player_pass_yds"))
     if is_qb and not means.get("player_rush_yds") and means.get("player_pass_yds"):
         means["player_rush_yds"] = out["player_rush_yds"] = NCAAF_QB_RUSH_YDS_PRIOR
+    if not is_qb and means.get("player_reception_yds") and not means.get("player_receptions"):
+        y = means["player_reception_yds"]
+        if "RB" in parts:
+            means["player_receptions"] = out["player_receptions"] = (
+                NCAAF_RB_REC_FROM_YDS_INTERCEPT + NCAAF_RB_REC_FROM_YDS_PER_YD * y)
+        else:
+            means["player_receptions"] = out["player_receptions"] = (
+                NCAAF_WR_REC_INTERCEPT + NCAAF_WR_REC_PER_REC_YD * y)
     if "RB" in parts and means.get("player_rush_yds"):
         x = means["player_rush_yds"]
         if not means.get("player_receptions"):
