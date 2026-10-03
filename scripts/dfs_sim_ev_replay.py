@@ -34,7 +34,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from edge import dfs, dfs_opt, dfs_sim  # noqa: E402
-from edge.dfs import norm  # noqa: E402
+from edge.names import norm, rekey_bare  # noqa: E402  (suffix-free, like the contest board)
 from scripts.dfs_calibration import (  # noqa: E402
     parse_contest_file, load_proj_log, infer_date_by_ground_truth, load_contest_meta,
 )
@@ -113,7 +113,7 @@ def main():
         actp = ROOT / f"data/actuals_cache/{date}.json"
         if len(ph) < 2 or len(hh) < 8 or not actp.exists():
             continue
-        act = json.loads(actp.read_text())
+        act = rekey_bare(json.loads(actp.read_text()))
         lb = parse_leaderboard(boards[date])
         entries = len(lb)
         season_rates = {p["name"]: sh.get(norm(p["name"])) for p in pool}

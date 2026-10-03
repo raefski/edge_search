@@ -22,7 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from edge.dfs import norm  # noqa: E402
+from edge.names import norm, rekey_bare  # noqa: E402  (suffix-free, like the contest board)
 from scripts.dfs_calibration import parse_contest_file, load_proj_log, infer_date_by_ground_truth  # noqa: E402
 
 
@@ -151,7 +151,7 @@ def load_proj_log_actuals(date):
             if date_all_final(date):
                 p.parent.mkdir(parents=True, exist_ok=True)
                 p.write_text(json.dumps(raw))
-        _actuals_cache[date] = raw
+        _actuals_cache[date] = rekey_bare(raw)
     return _actuals_cache[date]
 
 

@@ -27,7 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from edge import dfs  # noqa: E402
-from edge.dfs import norm  # noqa: E402
+from edge.names import norm, rekey_bare  # noqa: E402  (suffix-free, like the contest board)
 from edge.dfs_validate import pearson, spearman  # noqa: E402
 
 

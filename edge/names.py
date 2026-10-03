@@ -24,3 +24,29 @@ def norm(name: str) -> str:
     s = _SUFFIX_RE.sub("", (name or "").strip())
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
     return "".join(c for c in s.lower() if c.isalnum())
+
+
+def rekey_bare(d: dict) -> dict:
+    """Re-key a {edge.dfs.norm(name): value} dict onto suffix-free keys.
+
+    edge.dfs.norm KEEPS "Jr."/"II" (MLB has "Luis Garcia" and "Luis Garcia
+    Jr." as different players), while a DK contest export is keyed with
+    `norm` above. Joining the two directly dropped every suffixed MLB hitter
+    from calibration -- Tatis Jr. at 70% owned, Chisholm Jr. at 65% -- in 33
+    of the contests on file. Two source keys that fold to ONE bare key are
+    left out rather than guessed.
+    """
+    out: dict = {}
+    clash: set = set()
+    for k, v in d.items():
+        b = "".join(c for c in k if c.isalnum())
+        for suf in ("jr", "sr", "iii", "ii", "iv"):
+            if b.endswith(suf) and len(b) > len(suf) + 3:
+                b = b[: -len(suf)]
+                break
+        if b in out:
+            clash.add(b)
+        out[b] = v
+    for b in clash:
+        out.pop(b, None)
+    return out

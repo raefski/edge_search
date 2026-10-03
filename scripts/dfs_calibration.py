@@ -31,7 +31,7 @@ from collections import defaultdict
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from edge.dfs import norm  # noqa: E402
+from edge.names import norm, rekey_bare  # noqa: E402  (suffix-free, like the contest board)
 from edge.dfs_contest import parse_contest_file as _parse_contest_file  # noqa: E402
 from scripts.dfs_grade import actuals_for_date  # noqa: E402
 
@@ -116,7 +116,7 @@ def cached_actuals(date):
     ACTUALS_CACHE_DIR.mkdir(parents=True, exist_ok=True)
     p = ACTUALS_CACHE_DIR / f"{date}.json"
     if p.exists():
-        return json.loads(p.read_text())
+        return rekey_bare(json.loads(p.read_text()))
     act, finals = actuals_for_date(date)
     # only persist a COMPLETE slate -- a cache written mid-slate (see the
     # 2026-07-08 stub: 1 final game, 25 players) would silently serve partial
@@ -124,7 +124,7 @@ def cached_actuals(date):
     from scripts.dfs_grade import date_all_final
     if date_all_final(date):
         p.write_text(json.dumps(act))
-    return act
+    return rekey_bare(act)
 
 
 def infer_date_by_ground_truth(contest, candidate_dates, tol=0.3):

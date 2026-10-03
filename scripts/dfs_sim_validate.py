@@ -33,7 +33,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from edge import dfs, dfs_sim  # noqa: E402
-from edge.dfs import norm  # noqa: E402
+from edge.names import norm, rekey_bare  # noqa: E402  (suffix-free, like the contest board)
 from scripts.dfs_component_eval import (  # noqa: E402
     ROWS, skill_eb, k9_blend, era_blend, clamp, pa_for, LG_ERA,
 )

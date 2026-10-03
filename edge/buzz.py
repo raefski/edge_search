@@ -58,7 +58,7 @@ titans commanders
 alabama alaska arkansas california colorado connecticut delaware florida georgia
 hawaii idaho illinois indiana iowa kentucky louisiana maine maryland
 massachusetts michigan mississippi missouri montana nebraska nevada ohio oklahoma
-oregon pennsylvania texas utah vermont virginia wisconsin wyoming
+oregon pennsylvania texas utah vermont virginia wisconsin wyoming dakota
 """.split())
 
 FULL, NICK, LAST, FIRST, DST = "full", "nick", "last", "first", "dst"
