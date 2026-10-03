@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-03T15:00:08+00:00",
+"generated_at": "2026-10-03T15:30:06+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -68,7 +68,7 @@
 },
 "PHI": {
 "goalie": "Joseph Woll",
-"status": null
+"status": "Likely"
 },
 "PIT": {
 "goalie": "Arturs Silovs",
@@ -5748,7 +5748,7 @@
 "toiSeconds": 3
 },
 "line": "F4",
-"pk": "PK2",
+"pk": null,
 "pos": "rw",
 "pp": null
 },
@@ -5816,7 +5816,7 @@
 "toiSeconds": 17
 },
 "line": "D3",
-"pk": null,
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -6020,7 +6020,7 @@
 "toiSeconds": 42
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
 },
@@ -6054,7 +6054,7 @@
 "toiSeconds": 29
 },
 "line": "F3",
-"pk": "PK2",
+"pk": null,
 "pos": "lw",
 "pp": null
 },
@@ -6122,7 +6122,7 @@
 "toiSeconds": 36
 },
 "line": "D3",
-"pk": "PK2",
+"pk": null,
 "pos": "rd",
 "pp": null
 },
@@ -6190,7 +6190,7 @@
 "toiSeconds": 59
 },
 "line": "F1",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
 }
@@ -16214,7 +16214,7 @@
 "toiSeconds": 24
 },
 "line": "F4",
-"pk": "PK1",
+"pk": null,
 "pos": "lw",
 "pp": null
 },
@@ -16350,7 +16350,7 @@
 "toiSeconds": 48
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
 },
@@ -16660,7 +16660,7 @@
 "toiSeconds": 45
 },
 "line": "F2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
 },
@@ -20590,7 +20590,7 @@
 "toiSeconds": 28
 },
 "line": "F1",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
 "pp": "PP1"
 },
@@ -20692,7 +20692,7 @@
 "toiSeconds": 45
 },
 "line": "F3",
-"pk": "PK1",
+"pk": null,
 "pos": "lw",
 "pp": null
 },
@@ -20760,7 +20760,7 @@
 "toiSeconds": 53
 },
 "line": "F4",
-"pk": "PK2",
+"pk": null,
 "pos": "lw",
 "pp": "PP2"
 },
@@ -20840,7 +20840,7 @@
 "last10": {},
 "last5": {},
 "line": "F2",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": "PP2"
 },
