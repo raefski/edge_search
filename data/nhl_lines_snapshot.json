@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-03T22:59:59+00:00",
+"generated_at": "2026-10-03T23:15:14+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -64,7 +64,7 @@
 },
 "OTT": {
 "goalie": "Linus Ullmark",
-"status": "Likely"
+"status": "Confirmed"
 },
 "PHI": {
 "goalie": "Joseph Woll",
@@ -8560,6 +8560,40 @@
 "pos": "rd",
 "pp": "PP2"
 },
+"Erik Gustafsson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 180,
+"toiSeconds": 31
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 93,
+"toiSeconds": 31
+},
+"line": null,
+"pk": null,
+"pos": null,
+"pp": "PP2"
+},
 "Erik Haula": {
 "gtd": false,
 "injury": null,
@@ -8625,8 +8659,8 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "c",
-"pp": "PP2"
+"pos": "lw",
+"pp": null
 },
 "Joel Edmundson": {
 "gtd": false,
@@ -9687,7 +9721,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Cole Caufield": {
@@ -9721,7 +9755,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Ivan Demidov": {
