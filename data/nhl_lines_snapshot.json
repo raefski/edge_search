@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-03T19:30:13+00:00",
+"generated_at": "2026-10-03T20:30:04+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -7566,40 +7566,6 @@
 "pos": "g",
 "pp": null
 },
-"Aleksander Barkov": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 7,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 9,
-"powerplayAssists": 3,
-"powerplayGoals": 0,
-"powerplayPoints": 3,
-"shots": 20,
-"toiMinutes": 204,
-"toiSeconds": 44
-},
-"last5": {
-"assists": 4,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 6,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 10,
-"toiMinutes": 83,
-"toiSeconds": 42
-},
-"line": "F1",
-"pk": "PK1",
-"pos": "c",
-"pp": "PP1"
-},
 "Anton Lundell": {
 "gtd": false,
 "injury": null,
@@ -7937,10 +7903,10 @@
 "toiMinutes": 59,
 "toiSeconds": 6
 },
-"line": "F4",
-"pk": null,
+"line": "F1",
+"pk": "PK1",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Matthew Tkachuk": {
 "gtd": false,
@@ -8076,7 +8042,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Sam Reinhart": {
 "gtd": false,
