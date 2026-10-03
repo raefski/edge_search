@@ -31,11 +31,14 @@ import numpy as np
 CASH_PCT = 25.0
 GPP_PCT = 95.0
 
-#: Ownership: softmax over value (proj per $1K), salary and PP1, per position
-#: group, normalised to the group's share of the nine slots. UNFITTED.
+#: Ownership: softmax over value (proj per $1K), salary, PP1, and buzz, per position
+#: group, normalised to the group's share of the nine slots. VALUE/SALARY/PP1 are UNFITTED,
+#: BUZZ is unfitted and experimental (collected 9/29, fit pending 4-6 contests).
 VALUE_WEIGHT = 0.8
 SALARY_WEIGHT = 0.5
 PP1_BONUS = 0.4
+BUZZ_GAMMA = 0.0
+BUZZ_BETA = 0.0
 Z_CLIP = 2.5
 MAX_OWN = 60.0
 #: Lineups' worth of ownership per position group (UTIL mostly goes to wings
@@ -85,17 +88,26 @@ def _normalise(weights, target, cap):
     return owns
 
 
-def add_ownership(pool: list) -> list:
-    """Annotate `own` (percent) and `leverage` on every row."""
+def add_ownership(pool: list, buzz_gamma: float | None = None, buzz_beta: float | None = None) -> list:
+    """Annotate `own` (percent) and `leverage` on every row.
+
+    buzz_gamma/buzz_beta override BUZZ_GAMMA/BUZZ_BETA if provided (for testing).
+    """
+    bg = buzz_gamma if buzz_gamma is not None else BUZZ_GAMMA
+    bb = buzz_beta if buzz_beta is not None else BUZZ_BETA
     groups: dict = {}
     for p in pool:
         groups.setdefault(p["pos"], []).append(p)
     for pos, players in groups.items():
         values = [p["proj"] / (p["salary"] / 1000.0) if p.get("salary") else 0.0 for p in players]
-        zv, zs = _z(values), _z([float(p["salary"]) for p in players])
-        weights = [math.exp(VALUE_WEIGHT * a + SALARY_WEIGHT * b
-                            + (PP1_BONUS if p.get("pp") == "PP1" else 0.0))
-                   for p, a, b in zip(players, zv, zs)]
+        zv = _z(values)
+        zs = _z([float(p["salary"]) for p in players])
+        buzz_vals = [math.log1p(p.get("buzz", 0)) for p in players]
+        zb = _z(buzz_vals)
+        weights = [math.exp(VALUE_WEIGHT * zv_i + SALARY_WEIGHT * zs_i
+                            + (PP1_BONUS if p.get("pp") == "PP1" else 0.0)
+                            + (bg * zb_i if bg else 0.0))
+                   for p, zv_i, zs_i, zb_i in zip(players, zv, zs, zb)]
         for p, own in zip(players, _normalise(weights, 100.0 * GROUP_SLOTS.get(pos, 1.0), MAX_OWN)):
             p["own"] = round(own, 1)
         n = len(players)

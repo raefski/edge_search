@@ -120,6 +120,25 @@ skater-team fix below). `scripts/nhl_calibration.py --fit-ownership`:
   SKATERS only. The first GPP lineup (EDM + BOS skaters, TOR goalie) was
   rejected by DraftKings; `_valid` counted the goalie's team.
 
+## 6b. Second night 2026-09-29: GPP and cash (main slate re-entry)
+
+Exports `196218438` (GPP, 892 entries) and `196218453` (cash, 209 entries).
+`scripts/nhl_calibration.py --fit-ownership`:
+
+| | contest | n | bias | MAE | rank corr | below floor (25) | above 95th (5) |
+|---|---|---|---|---|---|---|---|
+| skaters | GPP | 16 | +1.34 | 5.73 | −0.226 | 31% | **12%** |
+| skaters | cash | 14 | +0.96 | 5.98 | −0.560 | 29% | **14%** |
+
+**Ownership fits:** only 17–14 logged skaters on the board per contest (small
+sample). Prior MAE 5.57–5.61; best fit:
+- **GPP:** VALUE 0.0 / SALARY 0.7 / PP1 0.8 → MAE 5.30
+- **Cash:** VALUE 0.0 / SALARY 1.0 / PP1 0.0 → MAE 5.26
+
+Current model (VALUE 0.8 / SALARY 0.5 / PP1 0.4) runs middle. Pattern is
+consistent with prior contests: ownership tracks salary + power-play strength.
+Hold current weights until 4–6 contests establish the field's stable shape.
+
 ## 7. Nightly workflow
 
 ```bash
