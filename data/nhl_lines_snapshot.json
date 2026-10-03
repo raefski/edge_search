@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-03T14:29:59+00:00",
+"generated_at": "2026-10-03T15:00:08+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -8,7 +8,7 @@
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
-"status": null
+"status": "Likely"
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
@@ -88,11 +88,11 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": null
+"status": "Likely"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
-"status": null
+"status": "Likely"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -11858,7 +11858,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Ilya Sorokin": {
 "gtd": false,
@@ -12178,7 +12178,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Tony DeAngelo": {
 "gtd": false,
@@ -13507,7 +13507,7 @@
 "toiMinutes": 66,
 "toiSeconds": 42
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -13575,7 +13575,7 @@
 "toiMinutes": 60,
 "toiSeconds": 52
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -13612,7 +13612,7 @@
 "line": "F1",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Dan Vladar": {
 "gtd": false,
@@ -13648,6 +13648,40 @@
 "line": "G2",
 "pk": null,
 "pos": "g",
+"pp": null
+},
+"David Jiricek": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 132,
+"toiSeconds": 14
+},
+"last5": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 84,
+"toiSeconds": 12
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
 "pp": null
 },
 "Jamie Drysdale": {
@@ -13749,7 +13783,7 @@
 "toiMinutes": 75,
 "toiSeconds": 0
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -13820,7 +13854,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Noel Acciari": {
 "gtd": false,
@@ -13919,7 +13953,7 @@
 "toiMinutes": 75,
 "toiSeconds": 46
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -13990,40 +14024,6 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "c",
-"pp": null
-},
-"Simon Benoit": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 13,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 15,
-"toiMinutes": 176,
-"toiSeconds": 44
-},
-"last5": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 86,
-"toiSeconds": 4
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
 "pp": null
 },
 "Travis Konecny": {
@@ -17141,7 +17141,7 @@
 "toiMinutes": 79,
 "toiSeconds": 27
 },
-"line": "F4",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -17175,7 +17175,7 @@
 "toiMinutes": 71,
 "toiSeconds": 57
 },
-"line": "F1",
+"line": "F3",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -17311,7 +17311,7 @@
 "toiMinutes": 60,
 "toiSeconds": 54
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
