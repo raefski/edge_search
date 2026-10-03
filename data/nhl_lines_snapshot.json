@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-03T20:30:04+00:00",
+"generated_at": "2026-10-03T21:00:28+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -12,7 +12,7 @@
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
-"status": null
+"status": "Confirmed"
 },
 "CBJ": {
 "goalie": "Jet Greaves",
@@ -8043,6 +8043,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
+},
+"Sam Lafferty": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 98,
+"toiSeconds": 49
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 61,
+"toiSeconds": 20
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
 },
 "Sam Reinhart": {
 "gtd": false,
