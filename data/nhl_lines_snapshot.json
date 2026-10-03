@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-03T13:00:09+00:00",
+"generated_at": "2026-10-03T14:29:59+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -125,7 +125,7 @@
 "status": null
 },
 "NYR": {
-"goalie": "Dylan Garand",
+"goalie": "Igor Shesterkin",
 "status": null
 },
 "SEA": {
@@ -2193,7 +2193,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Brandon Bussi": {
@@ -2295,7 +2295,7 @@
 "toiMinutes": 55,
 "toiSeconds": 13
 },
-"line": "F1",
+"line": "F4",
 "pk": "PK2",
 "pos": "rw",
 "pp": null
@@ -2533,7 +2533,7 @@
 "toiMinutes": 90,
 "toiSeconds": 39
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -2603,7 +2603,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Nikolaj Ehlers": {
@@ -2635,10 +2635,10 @@
 "toiMinutes": 84,
 "toiSeconds": 54
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Pyotr Kochetkov": {
 "gtd": false,
@@ -2708,7 +2708,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Sebastian Aho": {
 "gtd": false,
@@ -2739,7 +2739,7 @@
 "toiMinutes": 98,
 "toiSeconds": 51
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
@@ -2841,7 +2841,7 @@
 "toiMinutes": 50,
 "toiSeconds": 23
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -6338,7 +6338,7 @@
 "toiSeconds": 22
 },
 "line": "D2",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
 },
@@ -6546,7 +6546,7 @@
 "toiSeconds": 13
 },
 "line": "D3",
-"pk": "PK2",
+"pk": null,
 "pos": "ld",
 "pp": "PP2"
 },
@@ -6579,7 +6579,7 @@
 "toiMinutes": 55,
 "toiSeconds": 38
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -6647,7 +6647,7 @@
 "toiMinutes": 79,
 "toiSeconds": 2
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
@@ -6681,7 +6681,7 @@
 "toiMinutes": 74,
 "toiSeconds": 14
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -6691,7 +6691,7 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -6725,7 +6725,7 @@
 "toiMinutes": 70,
 "toiSeconds": 47
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -6793,7 +6793,7 @@
 "toiMinutes": 71,
 "toiSeconds": 6
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -12256,7 +12256,7 @@
 "toiSeconds": 44
 },
 "line": "D1",
-"pk": null,
+"pk": "PK1",
 "pos": "rd",
 "pp": "PP1"
 },
@@ -12310,7 +12310,7 @@
 "toiSeconds": 7
 },
 "line": "D3",
-"pk": "PK1",
+"pk": null,
 "pos": "rd",
 "pp": null
 },
@@ -12345,7 +12345,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12425,7 +12425,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12528,7 +12528,7 @@
 "toiSeconds": 43
 },
 "line": "F4",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "c",
 "pp": null
 },
@@ -12562,7 +12562,7 @@
 "toiSeconds": 46
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -12596,7 +12596,7 @@
 "toiSeconds": 58
 },
 "line": "F1",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
 },
@@ -12630,7 +12630,7 @@
 "toiSeconds": 9
 },
 "line": "F3",
-"pk": "PK1",
+"pk": null,
 "pos": "c",
 "pp": null
 },
@@ -12766,7 +12766,7 @@
 "toiSeconds": 9
 },
 "line": "F4",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 },
@@ -12800,7 +12800,7 @@
 "toiSeconds": 52
 },
 "line": "D1",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -12834,7 +12834,7 @@
 "toiSeconds": 42
 },
 "line": "F3",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
 }
@@ -20944,7 +20944,7 @@
 "toiSeconds": 17
 },
 "line": "F1",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
 },
@@ -21012,7 +21012,7 @@
 "toiSeconds": 42
 },
 "line": "F4",
-"pk": "PK2",
+"pk": null,
 "pos": "rw",
 "pp": null
 },
@@ -21046,7 +21046,7 @@
 "toiSeconds": 38
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
 "pp": null
 },
@@ -21218,7 +21218,7 @@
 "toiSeconds": 24
 },
 "line": "D1",
-"pk": "PK2",
+"pk": null,
 "pos": "ld",
 "pp": "PP1"
 },
@@ -21356,7 +21356,7 @@
 "toiSeconds": 8
 },
 "line": "D3",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -21390,7 +21390,7 @@
 "toiSeconds": 37
 },
 "line": "D1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 },
@@ -21424,7 +21424,7 @@
 "toiSeconds": 3
 },
 "line": "F1",
-"pk": "PK2",
+"pk": null,
 "pos": "c",
 "pp": "PP1"
 },
@@ -21492,7 +21492,7 @@
 "toiSeconds": 50
 },
 "line": "D3",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
