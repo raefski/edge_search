@@ -1,12 +1,12 @@
 {
- "requested_at": "2026-10-03T11:54:25.035781+00:00",
- "request_id": "20261003T115425035781",
+ "requested_at": "2026-10-03T18:40:50.565205+00:00",
+ "request_id": "20261003T184050565205",
  "sports": [
-  "americanfootball_ncaaf"
+  "baseball_mlb"
  ],
- "note": "requested from the Streamlit app",
+ "note": "parlay builder",
  "date_from": "2026-10-03",
  "date_to": "2026-10-03",
  "skip_live": true,
- "state": "CT"
+ "state": null
 }
