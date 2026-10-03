@@ -268,6 +268,13 @@ def discover_leagues(sport_slug: str, session=None, timeout: float = 30.0) -> di
                               "Accept": "text/html,application/xhtml+xml"},
                      timeout=timeout)
         if r.status_code != 200:
+            # Since ~2026-10-02 /leagues/{slug} answers 301 -> the homepage,
+            # and curl follows it. The homepage carries the same catalog, so
+            # the body still parses; refusing it on the status alone took
+            # DraftKings tennis and golf discovery to zero leagues.
+            out = parse_league_page(r.text or "", group)
+            if out:
+                return out
             log.warning("dk league page %s: HTTP %s", sport_slug, r.status_code)
             return {}
         out = parse_league_page(r.text, group)

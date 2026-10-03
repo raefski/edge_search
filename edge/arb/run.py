@@ -564,6 +564,7 @@ def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict
     `price_boosted_ev` prices the boosted leg alone as +EV off exactly that.
     """
     books = set(cfg.books.bettable)
+    reference = set(cfg.books.reference)
     now = datetime.now(timezone.utc)
     out = []
     for g in board.groups.values():
@@ -585,7 +586,7 @@ def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict
         if s > max_sum:
             continue
         ev = g.event
-        out.append({
+        row = {
             "sport_key": ev.sport_key, "sport_title": ev.sport_title,
             "event_id": ev.event_id, "matchup": ev.matchup,
             "commence_time": ev.commence_time.isoformat(),
@@ -605,7 +606,17 @@ def candidates(board: Board, cfg: ArbConfig, max_sum: float = 1.35) -> list[dict
             "prices": {si: {b: round(q.decimal, 4)
                             for b, q in g.quotes.get(si, {}).items() if b in books}
                        for si in sorted(sides)},
-        })
+        }
+        # The vig-free anchor's read, where it has one. Never a bet leg, so it
+        # stays out of `prices` (which the arb repricer treats as placeable);
+        # the parlay builder weights it into a leg's fair price. Only written
+        # when present -- most groups (alt lines, props) have no anchor.
+        ref = {si: {b: round(q.decimal, 4)
+                    for b, q in g.quotes.get(si, {}).items() if b in reference}
+               for si in sorted(sides)}
+        if any(ref.values()):
+            row["reference"] = ref
+        out.append(row)
     out.sort(key=lambda c: c["arb_sum"])
     return out
 

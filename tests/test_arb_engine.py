@@ -1542,6 +1542,28 @@ def test_tennis_leagues_are_discovered_under_their_own_display_group():
     assert parse_league_page(html, 12) == {71813: "Tour Championship"}
 
 
+def test_a_redirected_league_page_is_still_parsed():
+    """2026-10-03: /leagues/tennis started answering 301 -> the homepage, which
+    carries the same catalog. Refusing it on the status alone discovered zero
+    tennis and golf leagues; an empty redirect body must still yield {}."""
+    from edge.arb import draftkings_league as dl
+
+    class Resp:
+        def __init__(self, status, text):
+            self.status_code, self.text = status, text
+
+    class Sess:
+        def __init__(self, resp):
+            self.resp = resp
+
+        def get(self, *_a, **_k):
+            return self.resp
+
+    html = '{"displayGroupId":6,"eventGroupId":78720,"eventGroupName":"ATP - Beijing"}'
+    assert dl.discover_leagues("tennis", session=Sess(Resp(301, html))) == {78720: "ATP - Beijing"}
+    assert dl.discover_leagues("tennis", session=Sess(Resp(301, "Moved"))) == {}
+
+
 def test_a_moneyline_is_not_routed_into_the_prop_parser():
     """In a sport played by individuals the runners of an ordinary moneyline
     ARE people, and FanDuel flags them isPlayerSelection. Routing on that flag
