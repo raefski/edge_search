@@ -258,6 +258,70 @@ def _ols(xs, ys):
 
 
 # ---------------------------------------------------------------------------
+# rbrec
+# ---------------------------------------------------------------------------
+def fit_rb_rec(ps: dict) -> None:
+    """A back's RECEIVING per game, as a function of his expected RUSHING, and
+    a quarterback's RUSHING as a function of his expected passing.
+
+    DraftKings posts a rushing-yards ladder for nearly every college back and
+    a receptions / receiving-yards ladder for almost none, so the projection
+    carried a back's rushing and nothing else: on the 2026-10-03 main slate
+    the pool ran 2.5 DK points per back under Dan's sheet, and a back with only
+    `yds:16` on the board (Aneyas Williams, 12.2 against Dan's 19.9) was the
+    typical case. The catches are real points -- a PPR sport -- so they are
+    imputed from the one thing a back does have priced.
+
+    The same hole exists at quarterback: Gunner Stockton had pass ladders and
+    NO rushing ladder, and was projected 18.0 against Dan's 24.3.
+
+    Fitted on player-season means, one point per player. A season mean is the
+    expectation a book's line stands in for, and there is no
+    touchdown-inflates-its-own-predictor problem because the predictor and the
+    targets are different stats.
+    """
+    def fit(group, xfield, targets, xlabel):
+        xs = [statistics.fmean(g[xfield] for g in v["games"]) for v in group]
+        for field, label in targets:
+            ys = [statistics.fmean(g[field] for g in v["games"]) for v in group]
+            slope, icpt = _ols(xs, ys)
+            mx, my = statistics.fmean(xs), statistics.fmean(ys)
+            ss_res = sum((y - (icpt + slope * x)) ** 2 for x, y in zip(xs, ys))
+            ss_tot = sum((y - my) ** 2 for y in ys)
+            print(f"  {label:14} per game = {icpt:+.3f} + {slope:.4f} * {xlabel}   "
+                  f"(mean {my:.2f} at {mx:.1f}, R2 {1 - ss_res / ss_tot:.2f})")
+        return xs
+
+    backs = [v for v in ps.values() if v["position"] == "RB"]
+    print(f"\n== RB receiving from rushing ({len(backs)} back-seasons) ==")
+    xs = fit(backs, "rush_yds", (("rec", "receptions"), ("rec_yds", "receiving yds"),
+                                 ("rec_td", "receiving TD")), "rush yds/g")
+    for lo, hi in ((0, 25), (25, 45), (45, 65), (65, 90), (90, 400)):
+        sel = [v for v, x in zip(backs, xs) if lo <= x < hi]
+        if sel:
+            gs = [g for v in sel for g in v["games"]]
+            print(f"    rush {lo:3}-{hi:3}/g  n={len(sel):3}  rec {statistics.fmean(g['rec'] for g in gs):.2f}"
+                  f"  rec yds {statistics.fmean(g['rec_yds'] for g in gs):.1f}"
+                  f"  rec TD {statistics.fmean(g['rec_td'] for g in gs):.3f}")
+
+    qbs = [v for v in ps.values() if v["position"] == "QB"]
+    print(f"\n== QB rushing ({len(qbs)} quarterback-seasons) ==")
+    allg = [g for v in qbs for g in v["games"]]
+    print(f"  league QB mean: {statistics.fmean(g['rush_yds'] for g in allg):.1f} rush yds, "
+          f"{statistics.fmean(g['rush_td'] for g in allg):.3f} rush TD per game")
+    fit(qbs, "pass_yds", (("rush_yds", "rush yds"), ("rush_td", "rush TD")), "pass yds/g")
+    # Books post a quarterback's rushing line only above some volume (lowest on
+    # the 2026-10-03 board: 21.9 yds). The unposted are the tail BELOW it.
+    xs = [statistics.fmean(g["rush_yds"] for g in v["games"]) for v in qbs]
+    for cut in (15, 20, 22, 25):
+        sel = [v for v, x in zip(qbs, xs) if x < cut]
+        gs = [g for v in sel for g in v["games"]]
+        print(f"  QBs under {cut} rush yds/g  n={len(sel):3} of {len(qbs)}  "
+              f"mean {statistics.fmean(statistics.fmean(g['rush_yds'] for g in v['games']) for v in sel):.1f} yds/g, "
+              f"{statistics.fmean(g['rush_td'] for g in gs):.3f} TD/g")
+
+
+# ---------------------------------------------------------------------------
 # corr
 # ---------------------------------------------------------------------------
 def fit_corr(rows: list[dict], ps: dict) -> None:
@@ -331,7 +395,7 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--seasons", type=int, nargs="+", default=[2023, 2024, 2025])
     ap.add_argument("--what", nargs="+", default=["td", "sd", "corr"],
-                    choices=["td", "sd", "corr"])
+                    choices=["td", "sd", "corr", "rbrec"])
     args = ap.parse_args()
 
     print(f"cfbfastR seasons {args.seasons}")
@@ -348,6 +412,8 @@ def main() -> int:
         fit_sd(ps)
     if "corr" in args.what:
         fit_corr(rows, ps)
+    if "rbrec" in args.what:
+        fit_rb_rec(ps)
     return 0
 
 

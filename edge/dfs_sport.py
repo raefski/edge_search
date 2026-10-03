@@ -410,6 +410,31 @@ NCAAF_INT_PER_ATTEMPT = 1 / 48.5
 NCAAF_INT_PER_PASS_YARD = 1 / 358.2
 
 
+#: A back's RECEIVING, from his expected rushing yards per game. FITTED
+#: 2026-10-03 against cfbfastR 2024+2025 (scripts/ncaaf_fit.py --what rbrec),
+#: 992 back-seasons, one point per back. DraftKings posts a rushing ladder for
+#: nearly every college back and a receiving ladder for almost none, so before
+#: this a back was projected on his rushing alone and the pool ran 2.5 DK
+#: points per back under Dan's sheet (R2 is low -- 0.29 and 0.22 -- because
+#: how much a back catches is mostly a role the rushing line does not know;
+#: this is the expectation, not a prediction of the role).
+NCAAF_RB_REC_INTERCEPT = 0.195
+NCAAF_RB_REC_PER_RUSH_YD = 0.0145
+NCAAF_RB_REC_YDS_INTERCEPT = 1.526
+NCAAF_RB_REC_YDS_PER_RUSH_YD = 0.1158
+#: A quarterback with pass ladders and NO rushing ladder (Stockton, Carr, Sayin
+#: on 2026-10-03) was projected on his arm alone. The first fix used the league
+#: mean for a starter (30.8 yds/g; rushing does not depend on passing volume,
+#: R2 0.00 over 659 quarterback-seasons) and overshot Dan's sheet by 1.6 points
+#: per quarterback: SELECTION. Every quarterback the books DID price for rushing
+#: that day averaged 22+ yards (lowest 21.9), so the unposted ones are the
+#: low-rushing tail. The prior is therefore the mean of quarterback-seasons
+#: BELOW that cutoff -- 11.8 yds/g over 287 of 659 (2024+2025; 8.2 below 15,
+#: 13.3 below 25). Its touchdowns follow from the QB rate above. The cutoff is
+#: read off one slate; re-read it from the board when the books change habits.
+NCAAF_QB_RUSH_YDS_PRIOR = 11.8
+
+
 def _ncaaf_impute(means: dict, position: str | None = None) -> dict:
     """Rushing/receiving touchdowns from yardage, and interceptions from volume.
 
@@ -420,9 +445,22 @@ def _ncaaf_impute(means: dict, position: str | None = None) -> dict:
     """
     parts = _pos_parts(position)
     out = {}
+    means = dict(means)
+
+    # Unpriced components first, so the touchdown rules below see them.
+    is_qb = bool(parts & _QB) or (not parts and means.get("player_pass_yds"))
+    if is_qb and not means.get("player_rush_yds") and means.get("player_pass_yds"):
+        means["player_rush_yds"] = out["player_rush_yds"] = NCAAF_QB_RUSH_YDS_PRIOR
+    if "RB" in parts and means.get("player_rush_yds"):
+        x = means["player_rush_yds"]
+        if not means.get("player_receptions"):
+            means["player_receptions"] = out["player_receptions"] = (
+                NCAAF_RB_REC_INTERCEPT + NCAAF_RB_REC_PER_RUSH_YD * x)
+        if not means.get("player_reception_yds"):
+            means["player_reception_yds"] = out["player_reception_yds"] = (
+                NCAAF_RB_REC_YDS_INTERCEPT + NCAAF_RB_REC_YDS_PER_RUSH_YD * x)
 
     if means.get("player_rush_tds") is None and means.get("player_rush_yds"):
-        is_qb = bool(parts & _QB) or (not parts and means.get("player_pass_yds"))
         rate = (NCAAF_RUSH_TD_PER_YARD_QB if is_qb
                 else NCAAF_RUSH_TD_PER_YARD_OTHER)
         out["player_rush_tds"] = means["player_rush_yds"] * rate
