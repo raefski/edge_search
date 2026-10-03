@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-03T15:30:06+00:00",
+"generated_at": "2026-10-03T15:59:58+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -24,7 +24,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": null
+"status": "Likely"
 },
 "COL": {
 "goalie": "Scott Wedgewood",
@@ -51,8 +51,8 @@
 "status": null
 },
 "NJD": {
-"goalie": "Jake Allen",
-"status": null
+"goalie": "Nico Daws",
+"status": "Confirmed"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -68,11 +68,11 @@
 },
 "PHI": {
 "goalie": "Joseph Woll",
-"status": "Likely"
+"status": "Confirmed"
 },
 "PIT": {
 "goalie": "Arturs Silovs",
-"status": null
+"status": "Confirmed"
 },
 "SEA": {
 "goalie": "Joey Daccord",
@@ -4283,7 +4283,7 @@
 "toiMinutes": 97,
 "toiSeconds": 7
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -4455,7 +4455,7 @@
 "toiMinutes": 90,
 "toiSeconds": 49
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
@@ -4659,9 +4659,9 @@
 "toiMinutes": 85,
 "toiSeconds": 14
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Ryan Donato": {
@@ -4865,9 +4865,9 @@
 "toiMinutes": 87,
 "toiSeconds": 12
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Wyatt Kaiser": {
@@ -6650,7 +6650,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Mason Appleton": {
 "gtd": false,
@@ -6694,7 +6694,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Michael Rasmussen": {
 "gtd": false,
@@ -6728,7 +6728,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Moritz Seider": {
 "gtd": false,
@@ -6796,7 +6796,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Viktor Arvidsson": {
 "gtd": false,
@@ -13021,7 +13021,7 @@
 "pp": null
 },
 "Jake Sanderson": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 6,
@@ -14165,7 +14165,7 @@
 },
 "PIT": {
 "Andrei Kuzmenko": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 3,
