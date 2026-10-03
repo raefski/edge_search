@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-03T18:30:06+00:00",
+"generated_at": "2026-10-03T19:00:14+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -20,7 +20,7 @@
 },
 "CGY": {
 "goalie": "Devin Cooley",
-"status": null
+"status": "Confirmed"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -3568,34 +3568,34 @@
 "pos": "rw",
 "pp": null
 },
-"Connor Zary": {
+"Brennan Othmann": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 1,
-"blocks": 1,
+"assists": 3,
+"blocks": 2,
 "gamesPlayed": 10,
 "goals": 1,
-"points": 2,
-"powerplayAssists": 0,
+"points": 4,
+"powerplayAssists": 2,
 "powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 135,
-"toiSeconds": 22
+"powerplayPoints": 2,
+"shots": 9,
+"toiMinutes": 100,
+"toiSeconds": 24
 },
 "last5": {
-"assists": 1,
-"blocks": 0,
+"assists": 3,
+"blocks": 2,
 "gamesPlayed": 5,
 "goals": 1,
-"points": 2,
-"powerplayAssists": 0,
+"points": 4,
+"powerplayAssists": 2,
 "powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 74,
-"toiSeconds": 38
+"powerplayPoints": 2,
+"shots": 5,
+"toiMinutes": 46,
+"toiSeconds": 49
 },
 "line": "F3",
 "pk": null,
@@ -8284,40 +8284,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Andre Lee": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 114,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 62,
-"toiSeconds": 3
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Anton Forsberg": {
 "gtd": false,
 "injury": null,
@@ -8490,6 +8456,40 @@
 "pos": "rd",
 "pp": null
 },
+"Corey Perry": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 102,
+"toiSeconds": 20
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 43,
+"toiSeconds": 58
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Darcy Kuemper": {
 "gtd": false,
 "injury": null,
@@ -8625,7 +8625,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
 },
 "Joel Edmundson": {
@@ -8763,40 +8763,6 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
-},
-"Samuel Helenius": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 82,
-"toiSeconds": 19
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 46,
-"toiSeconds": 25
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
-"pp": null
 },
 "Scott Laughton": {
 "gtd": false,
@@ -18899,9 +18865,9 @@
 "toiMinutes": 68,
 "toiSeconds": 22
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Arshdeep Bains": {
@@ -19205,9 +19171,9 @@
 "toiMinutes": 66,
 "toiSeconds": 21
 },
-"line": "F1",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Kevin Lankinen": {
@@ -19413,9 +19379,9 @@
 "toiMinutes": 78,
 "toiSeconds": 46
 },
-"line": "F4",
+"line": "F1",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP1"
 },
 "Max Sasson": {
@@ -19447,7 +19413,7 @@
 "toiMinutes": 75,
 "toiSeconds": 29
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "c",
 "pp": null
