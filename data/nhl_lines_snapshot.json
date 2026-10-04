@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-04T23:15:24+00:00",
+"generated_at": "2026-10-04T23:29:34+00:00",
 "goalies": {
 "2026-10-04": {
 "ANA": {
@@ -8,7 +8,7 @@
 },
 "CGY": {
 "goalie": "Dustin Wolf",
-"status": null
+"status": "Likely"
 },
 "DET": {
 "goalie": "John Gibson",
@@ -4387,7 +4387,7 @@
 "pp": null
 },
 "Joe Veleno": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 0,
