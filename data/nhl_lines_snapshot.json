@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-04T16:59:37+00:00",
+"generated_at": "2026-10-04T17:29:55+00:00",
 "goalies": {
 "2026-10-04": {
 "ANA": {
@@ -3002,40 +3002,6 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
-},
-"Carter Mazur": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 110,
-"toiSeconds": 52
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 61,
-"toiSeconds": 23
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
 "pp": null
 },
 "Daniil Tarasov": {
@@ -8339,7 +8305,7 @@
 "pp": null
 },
 "Emil Lilleberg": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 0,
