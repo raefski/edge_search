@@ -285,7 +285,8 @@ class ParlayLeg:
 
     @property
     def book_only(self) -> bool:
-        return len(self.sources) == 1
+        # own_hold is set only when the betting book quotes both sides, i.e. when it is a source.
+        return len(self.sources) == 1 and self.own_hold is not None
 
     @property
     def american(self) -> str:

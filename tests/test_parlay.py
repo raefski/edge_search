@@ -169,6 +169,14 @@ def test_a_book_only_market_is_flagged_and_can_be_excluded():
     assert PL.legs_from_candidates([c], promo, now=NOW, allow_book_only=False) == []
 
 
+def test_a_one_sided_leg_priced_off_another_book_is_not_book_only():
+    promo = PL.ParlayPromo(book="fanduel")
+    c = cand("e1", "H", "A", {"home": {"draftkings": 1.91, "fanduel": 2.10},
+                              "away": {"draftkings": 1.91}})
+    legs = PL.legs_from_candidates([c], promo, now=NOW, allow_book_only=False)
+    assert [(l.side, l.sources, l.book_only) for l in legs] == [("home", ("draftkings",), False)]
+
+
 def test_other_sports_and_other_books_are_ignored():
     promo = PL.ParlayPromo(book="fanduel", sports=["baseball_mlb"])
     c = cand("e1", "H", "A", {"home": {"draftkings": 1.91, "fanduel": 1.9},
