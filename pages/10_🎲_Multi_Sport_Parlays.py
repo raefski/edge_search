@@ -163,8 +163,8 @@ def _multi_sport_legs(snapshot: dict, book: str, days: int, max_leg_decimal: flo
     return legs
 
 @st.cache_data(show_spinner=False)
-def _multi_sport_build(legs: tuple, leg_band: float = 0.12, 
-                       max_one_in: int = 1000, bankroll: int = 1000, 
+def _multi_sport_build(legs: tuple, n_legs: int | None = None, leg_band: float = 0.12,
+                       max_one_in: int = 1000, bankroll: int = 1000,
                        per_event: int = 8) -> PL.BuildResult | None:
     if not legs:
         return None
@@ -173,7 +173,7 @@ def _multi_sport_build(legs: tuple, leg_band: float = 0.12,
         min_legs=2, max_legs=15, max_stake=1000.0
     )
     try:
-        return PL.build(list(legs), promo, n_legs=None, stake=None,
+        return PL.build(list(legs), promo, n_legs=n_legs, stake=None,
                        max_one_in=max_one_in, bankroll=bankroll,
                        per_event=per_event, leg_band=leg_band)
     except Exception:
@@ -181,7 +181,7 @@ def _multi_sport_build(legs: tuple, leg_band: float = 0.12,
 
 # --- Page ---
 st.title("🎲 Multi-Sport Parlays")
-st.markdown("**Casino cash-line parlays** — find +EV tickets across all sports with no boost required.", 
+st.markdown("**Casino cash-line parlays** — find +EV tickets across all sports (or same-game) with no boost required.",
             unsafe_allow_html=True)
 
 snapshot_data = _snapshot_json()
@@ -200,13 +200,17 @@ with col2:
                                  options=[1.20, 1.30, 1.40, 1.50, 2.00, 3.00],
                                  value=2.00)
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 with col1:
-    max_one_in = st.number_input("Hit rate cap", 10, 10000, 1000, step=100, 
-                                  help="Skip tickets less likely than this")
+    fix_legs = st.number_input("Legs (leave blank for all)", 2, 15, value=0, step=1,
+                               help="Leave at 0 to search all leg counts")
+    fix_legs = fix_legs if fix_legs > 0 else None
 with col2:
-    bankroll = st.number_input("Bankroll", 100, 10000, 1000, step=100)
+    max_one_in = st.number_input("Hit rate cap", 10, 10000, 1000, step=100,
+                                  help="Skip tickets less likely than this")
 with col3:
+    bankroll = st.number_input("Bankroll", 100, 10000, 1000, step=100)
+with col4:
     stake = st.number_input("Stake per ticket", 1.0, 1000.0, 10.0, step=1.0)
 
 if st.button("🔄 Rescan", key="rescan_multi"):
@@ -231,7 +235,7 @@ if not legs_tuple:
 
 st.markdown(f"**{len(legs_tuple):,} legs** from {len(set(l.event_id for l in legs_tuple))} games")
 
-result = _multi_sport_build(legs_tuple, max_one_in=max_one_in, bankroll=bankroll, per_event=8)
+result = _multi_sport_build(legs_tuple, n_legs=fix_legs, max_one_in=max_one_in, bankroll=bankroll, per_event=8)
 
 if not result or not result.pick:
     st.warning("No +EV parlay found.")
@@ -322,8 +326,8 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# By leg count
-if result.by_legs:
+# By leg count (skip if legs are fixed)
+if not fix_legs and result.by_legs:
     st.markdown("### Best EV at Each Leg Count")
     by_leg_rows = []
     for n in sorted(result.by_legs.keys()):
@@ -355,8 +359,10 @@ if result.by_legs:
 st.markdown("---")
 with st.expander("ℹ️ How this works"):
     st.markdown("""
-    **EV parlays.** One leg per game, straight parlays (no boost), across all sports.
-    
+    **EV parlays.** Straight parlays (no boost), any sport or same-game (SGP).
+
+    - **Multi-sport or SGP:** search across all sports, or stack multiple legs from the same game.
+    - **Fix leg count:** set "Legs" to find the best parlay of exactly that length (e.g., best 5-leg).
     - **Fair price:** best price from any book at the given book's line.
     - **Capped at 1.06:** legs with extreme edges (> 6%) are flagged but capped.
     - **Hit rate:** win chance of the whole ticket (product of all leg probabilities).
