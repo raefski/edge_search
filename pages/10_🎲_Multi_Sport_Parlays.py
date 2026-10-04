@@ -293,7 +293,7 @@ with col2:
 with col3:
     st.markdown(f"""
     <div class="kpi">
-        <div class="v">{signed_pct(pick.growth())}</div>
+        <div class="v">{signed_pct(pick.growth(bankroll))}</div>
         <div class="l">Kelly Growth</div>
     </div>
     """, unsafe_allow_html=True)
