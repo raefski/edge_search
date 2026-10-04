@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-04T01:30:10+00:00",
+"generated_at": "2026-10-04T01:59:58+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -40,7 +40,7 @@
 },
 "LAK": {
 "goalie": "Anton Forsberg",
-"status": "Likely"
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -100,7 +100,7 @@
 },
 "VAN": {
 "goalie": "Leevi Merilainen",
-"status": "Likely"
+"status": "Confirmed"
 },
 "WSH": {
 "goalie": "Charlie Lindgren",
@@ -8657,9 +8657,9 @@
 "toiMinutes": 69,
 "toiSeconds": 47
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Joel Edmundson": {
@@ -8827,9 +8827,9 @@
 "toiMinutes": 81,
 "toiSeconds": 58
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Trevor Moore": {
@@ -9589,7 +9589,7 @@
 "pp": "PP2"
 },
 "Alexandre Carrier": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 5,
@@ -15703,7 +15703,7 @@
 "pp": "PP2"
 },
 "Jacob Trouba": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 0,
