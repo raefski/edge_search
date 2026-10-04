@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-04T01:59:58+00:00",
+"generated_at": "2026-10-04T02:30:12+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -6305,7 +6305,7 @@
 "last5": {},
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Axel Sandin-Pellikka": {
@@ -6407,7 +6407,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Daniil Tarasov": {
@@ -6581,7 +6581,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP2"
 },
 "Keegan Kolesar": {
@@ -6683,7 +6683,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Michael Brandsegg-Nyg\u00e5rd": {
@@ -6694,7 +6694,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Michael Rasmussen": {
 "gtd": false,
@@ -6728,7 +6728,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Moritz Seider": {
 "gtd": false,
