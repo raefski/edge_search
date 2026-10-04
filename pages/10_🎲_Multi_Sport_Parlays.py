@@ -300,12 +300,19 @@ with col3:
 
 # Ticket
 st.markdown("### Legs")
-rows = []
+leg_rows = []
 for i, leg in enumerate(pick.legs, 1):
-    rows.append(f"<tr><td class='n'>{i}</td><td>{esc(leg.label[:50])}</td><td class='n'>{american_or_blank(leg.decimal)}</td><td class='n'>{leg.fair_prob:.1%}</td><td class='n good' style='color:#3fb950'>{leg.edge_pct:+.1%}</td><td class='g'>{kickoff(leg.commence_time)}</td></tr>")
+    leg_rows.append({
+        "#": i,
+        "Leg": leg.label[:50],
+        "Odds": american_or_blank(leg.decimal),
+        "Fair": f"{leg.fair_prob:.1%}",
+        "Edge": f"{leg.edge_pct:+.1%}",
+        "Time": kickoff(leg.commence_time)
+    })
 
-html_table = f"""<div class="tw"><table class="pl"><thead><tr><th>#</th><th>Leg</th><th>Odds</th><th>Fair</th><th>Edge</th><th>Time</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>"""
-st.markdown(html_table, unsafe_allow_html=True)
+import pandas as pd
+st.dataframe(pd.DataFrame(leg_rows), hide_index=True, width="stretch")
 
 # By leg count (skip if legs are fixed)
 if not fix_legs and result.by_legs:
@@ -313,10 +320,16 @@ if not fix_legs and result.by_legs:
     by_leg_rows = []
     for n in sorted(result.by_legs.keys()):
         p = result.by_legs[n]
-        by_leg_rows.append(f"<tr><td class='n'>{n} legs</td><td class='n good'>{signed_pct(p.ev / stake)}</td><td class='n'>{money(p.ev)}</td><td>{one_in(p)}</td><td class='n'>{american_or_blank(p.decimal)}</td><td class='n'>{money(stake * (p.decimal - 1))}</td></tr>")
+            by_leg_rows.append({
+            "Legs": n,
+            "EV %": signed_pct(p.ev / stake),
+            "EV $": money(p.ev),
+            "Hit Rate": one_in(p),
+            "Odds": american_or_blank(p.decimal),
+            "To Win": money(stake * (p.decimal - 1))
+        })
 
-    by_leg_html = f"<div class='tw'><table class='pl'><thead><tr><th>Legs</th><th>EV %</th><th>EV $</th><th>Hit Rate</th><th>Odds</th><th>To Win</th></tr></thead><tbody>{"".join(by_leg_rows)}</tbody></table></div>"
-    st.markdown(by_leg_html, unsafe_allow_html=True)
+    st.dataframe(pd.DataFrame(by_leg_rows), hide_index=True, width="stretch")
 
 st.markdown("---")
 with st.expander("ℹ️ How this works"):
