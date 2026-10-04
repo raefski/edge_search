@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-04T22:44:31+00:00",
+"generated_at": "2026-10-04T23:15:24+00:00",
 "goalies": {
 "2026-10-04": {
 "ANA": {
@@ -215,40 +215,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
-},
-"Frank Vatrano": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 112,
-"toiSeconds": 37
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 64,
-"toiSeconds": 3
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Jackson Lacombe": {
 "gtd": false,
@@ -591,6 +557,40 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
+},
+"Sam Colangelo": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 18,
+"toiMinutes": 113,
+"toiSeconds": 23
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 16,
+"toiMinutes": 60,
+"toiSeconds": 38
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Tim Washe": {
 "gtd": false,
