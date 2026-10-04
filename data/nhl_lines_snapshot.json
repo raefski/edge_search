@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-03T23:45:13+00:00",
+"generated_at": "2026-10-04T00:00:08+00:00",
 "goalies": {
 "2026-10-03": {
 "BOS": {
@@ -84,7 +84,7 @@
 },
 "STL": {
 "goalie": "Jordan Binnington",
-"status": "Likely"
+"status": "Confirmed"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -16124,40 +16124,6 @@
 "pos": "rd",
 "pp": "PP2"
 },
-"Alexey Toropchenko": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 114,
-"toiSeconds": 7
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 56,
-"toiSeconds": 24
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Brandon Carlo": {
 "gtd": false,
 "injury": null,
@@ -16327,6 +16293,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP2"
+},
+"Dillon Dube": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 84,
+"toiSeconds": 20
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 46,
+"toiSeconds": 58
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Dylan Holloway": {
 "gtd": false,
@@ -16706,40 +16706,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Ross Johnston": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 101,
-"toiSeconds": 45
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 50,
-"toiSeconds": 38
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Theo Lindstein": {
 "gtd": false,
 "injury": null,
@@ -16772,6 +16738,16 @@
 "line": "D2",
 "pk": null,
 "pos": "ld",
+"pp": null
+},
+"Zachary Dean": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
+"line": "F4",
+"pk": null,
+"pos": "lw",
 "pp": null
 }
 },
