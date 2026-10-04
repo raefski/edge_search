@@ -202,8 +202,8 @@ with col2:
 
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-    fix_legs = st.number_input("Legs (leave blank for all)", 2, 15, value=0, step=1,
-                               help="Leave at 0 to search all leg counts")
+    fix_legs = st.number_input("Legs (0 = all)", 0, 15, value=0, step=1,
+                               help="0 to search all leg counts, or 2-15 for fixed")
     fix_legs = fix_legs if fix_legs > 0 else None
 with col2:
     max_one_in = st.number_input("Hit rate cap", 10, 10000, 1000, step=100,
