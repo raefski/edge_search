@@ -289,3 +289,18 @@ build's replay: 165.0). One replay, cleared by a point: direction, not proof.
 | ownership, shipped prior on the fixed pool | 5.00 pts/player; with the measured slots + modelled share **4.58** |
 | field ownership on players with no DK ladder | 12% GPP, 8% cash (after the fix; 25% / 36% before it) |
 | cash field sharpness | gamma 3+ with a 90% cap — recorded, not shipped (cash does not read ownership) |
+
+## 9. Second graded slate — 2026-10-03 Main (4 games, draft group 154161)
+
+Both model lineups were entered. **GPP 183.5, 304th of ~1,900.** **Cash 147.5, 103rd of ~200** (cashed ~50%).
+
+`scripts/ncaaf_calibration.py --fit-ownership`:
+
+| | n | bias | MAE | rank corr | below floor (25) | above ceiling (5) |
+|---|---|---|---|---|---|---|
+| skaters | 130 | −1.55 | 8.19 | +0.546 | 26% | 11% |
+| ownership | — | −0.54 | 3.52 | +0.749 | — | — |
+
+Shipped: OWNERSHIP_GAMMA 1.1 → MAE 3.47. **Best fit: gamma 1.50 → MAE 3.29** (−0.18 improvement).
+
+**Buzz test:** Tested on 3-slate aggregate (γ=0.6, β=1.0). Titans DST example: predicted 22% without buzz → 45% with buzz (YouTube mentions). Pattern is real but single outlier—hold collection running, defer integration to 4–6 slates.

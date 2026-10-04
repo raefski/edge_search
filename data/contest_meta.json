@@ -328,5 +328,41 @@
   "prize_pool": null,
   "sport": "NHL",
   "slate": "2026-09-29 Main (gid 153977)"
+ },
+ "196293722": {
+  "type": "gpp",
+  "field": 70,
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "sport": "MLB",
+  "slate": "2026-10-03"
+ },
+ "196293994": {
+  "type": "cash",
+  "field": 63,
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "sport": "MLB",
+  "slate": "2026-10-03"
+ },
+ "196164828": {
+  "type": "gpp",
+  "field": null,
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "sport": "MMA",
+  "slate": "2026-10-03"
+ },
+ "196164208": {
+  "type": "cash",
+  "field": null,
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "sport": "MMA",
+  "slate": "2026-10-03"
  }
 }

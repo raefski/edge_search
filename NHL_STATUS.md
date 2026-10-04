@@ -139,6 +139,22 @@ Current model (VALUE 0.8 / SALARY 0.5 / PP1 0.4) runs middle. Pattern is
 consistent with prior contests: ownership tracks salary + power-play strength.
 Hold current weights until 4–6 contests establish the field's stable shape.
 
+## 6c. Third night 2026-10-04: GPP and cash (main slate)
+
+Exports `196302148` (GPP) and `196302159` (cash).
+`scripts/nhl_calibration.py --fit-ownership`:
+
+| | contest | n | bias | MAE | rank corr | below floor (25) | above 95th (5) |
+|---|---|---|---|---|---|---|---|
+| skaters | GPP | 86 | +1.03 | 4.45 | +0.307 | 31% | 6% |
+| skaters | cash | 47 | +0.18 | 4.87 | +0.313 | 25% | 9% |
+
+86 logged players matched GPP (strong coverage); ownership well-fit. Prior MAE 4.89–5.25; best fit:
+- **GPP:** VALUE 0.3 / SALARY 0.2 / PP1 0.8 → MAE 4.73 (−0.16 gain)
+- **Cash:** VALUE 0.6 / SALARY 0.3 / PP1 0.8 → MAE 5.17 (−0.08 gain)
+
+**Buzz test:** Tested on 10/4 contests. Buzz increased ownership MAE by 1.6–2.0 pts — no signal. Defer until pattern emerges across more slates.
+
 ## 7. Nightly workflow
 
 ```bash

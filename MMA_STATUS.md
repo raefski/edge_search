@@ -299,3 +299,11 @@ projection MAE 38.8 against DK's FPPF at 31.1 (n = 11). One card, three
 upsets; the backtest (3,454 fights) is the evidence, and this is one sample of
 it. The simulated spread was on target: 25% of results fell below the
 simulated 25th percentile, 6% above the 90th.
+
+## 7. Second graded slate — 2026-10-03 (Captain Late)
+
+Two model lineups were entered. **GPP 415.8, 585th of ~1,000.** **Cash 442.7, 56th of ~100** (cashed ~50%).
+
+**Status:** No calibration run yet—the 10/3 date has no projection log. Rerun calibration once 10/3 projection log is generated (`scripts/mma_calibration.py --fit-ownership`). Entries came from phone-built lineups using live snapshot data only.
+
+**Note:** MMA has no late-swap window (lock is first fight's bell). Build timing was final—no opportunity to update after initial lock.

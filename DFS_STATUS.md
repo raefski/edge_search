@@ -385,6 +385,16 @@ out (~3 months) — prioritize accordingly if time-constrained.
 
 ---
 
+## MLB 2026-10-03 postseason slate (4 games)
+
+Two model lineups were entered. **GPP 118.4, 38th of 70** (cashed). **Cash 59.2, 45th of 63** (did not cash).
+
+**Status:** Contests tagged in `data/contest_meta.json` (196293722 / 196293994). Calibration aggregates across dates rather than per-contest. 10/3 subset: 70 GPP + 63 cash joined players from projection log. Full aggregation across 14 dates (2,900 players) runs through dfs_calibration.json; no per-contest --fit-ownership output yet. Recommend: dedicate a sports-specific calibration script for MLB like NCAAF and NHL have.
+
+**Note:** MLB postseason has compressed schedule (4 games vs typical 15 in regular season) — smaller field size and fewer projections. Model is undersampled on staggered slates per §3.4 (`dfs_component_eval.py`).
+
+---
+
 ## Quick facts easy to forget
 
 - Odds API cost = markets × regions per live pull; historical endpoints are 10× that.
