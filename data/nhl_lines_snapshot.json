@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-05T14:29:36+00:00",
+"generated_at": "2026-10-05T14:59:53+00:00",
 "goalies": {
 "2026-10-05": {
 "BOS": {
@@ -244,7 +244,7 @@
 "toiSeconds": 54
 },
 "line": "F1",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": "PP2"
 },
@@ -281,6 +281,40 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
+},
+"Frederic Brunet": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 14,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 138,
+"toiSeconds": 7
+},
+"last5": {
+"assists": 3,
+"blocks": 7,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 88,
+"toiSeconds": 20
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
 },
 "Hampus Lindholm": {
 "gtd": false,
@@ -420,40 +454,6 @@
 "pos": "g",
 "pp": null
 },
-"Jonathan Aspirot": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 14,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 165,
-"toiSeconds": 35
-},
-"last5": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 81,
-"toiSeconds": 10
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
-},
 "Marat Khusnutdinov": {
 "gtd": false,
 "injury": null,
@@ -484,7 +484,7 @@
 "toiSeconds": 13
 },
 "line": "F3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rw",
 "pp": null
 },
@@ -518,7 +518,7 @@
 "toiSeconds": 7
 },
 "line": "F4",
-"pk": "PK1",
+"pk": null,
 "pos": "rw",
 "pp": null
 },
@@ -555,6 +555,40 @@
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
+},
+"Matthew Poitras": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 20,
+"toiMinutes": 144,
+"toiSeconds": 43
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 16,
+"toiMinutes": 68,
+"toiSeconds": 37
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
 },
 "Michael DiPietro": {
 "gtd": false,
@@ -690,43 +724,9 @@
 "toiSeconds": 50
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
-},
-"Sean Kuraly": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 130,
-"toiSeconds": 44
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 68,
-"toiSeconds": 6
-},
-"line": "F4",
-"pk": "PK1",
-"pos": "c",
-"pp": null
 },
 "Tanner Jeannot": {
 "gtd": false,
