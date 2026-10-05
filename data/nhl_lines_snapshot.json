@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-05T16:30:03+00:00",
+"generated_at": "2026-10-05T17:00:01+00:00",
 "goalies": {
 "2026-10-05": {
 "BOS": {
@@ -24,7 +24,7 @@
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
-"status": null
+"status": "Confirmed"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -5609,7 +5609,7 @@
 "pp": null
 },
 "Danila Yurov": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 3,
@@ -7775,6 +7775,42 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
+},
+"Justus Annunen": {
+"gtd": true,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 18,
+"goalieGoalsAgainstAvg": "1.82",
+"goalieLosses": 5,
+"goalieMinutes": 593,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.939",
+"goalieSaves": 275,
+"goalieSeconds": 31,
+"goalieShotsAgainst": 293,
+"goalieShutouts": 1,
+"goalieWins": 5
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 8,
+"goalieGoalsAgainstAvg": "1.6",
+"goalieLosses": 2,
+"goalieMinutes": 299,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.944",
+"goalieSaves": 134,
+"goalieSeconds": 18,
+"goalieShotsAgainst": 142,
+"goalieShutouts": 1,
+"goalieWins": 3
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
 },
 "Juuse Saros": {
 "gtd": false,
