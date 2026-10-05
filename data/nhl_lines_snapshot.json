@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-05T22:44:57+00:00",
+"generated_at": "2026-10-05T23:29:47+00:00",
 "goalies": {
 "2026-10-05": {
 "BOS": {
@@ -557,7 +557,7 @@
 "pp": "PP2"
 },
 "Matthew Poitras": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -9473,7 +9473,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Carter Yakemchuk": {
@@ -9849,7 +9849,7 @@
 },
 "line": "D3",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Samuel Ersson": {
@@ -16258,7 +16258,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Clay Stevenson": {
 "gtd": false,
@@ -16294,6 +16294,40 @@
 "line": "G2",
 "pk": null,
 "pos": "g",
+"pp": null
+},
+"Cole Koepke": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 19,
+"toiMinutes": 130,
+"toiSeconds": 55
+},
+"last5": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 69,
+"toiSeconds": 34
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Cole Perfetti": {
@@ -16465,6 +16499,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
+},
+"Jack St. Ivany": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 4,
+"blocks": 11,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 173,
+"toiSeconds": 34
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 102,
+"toiSeconds": 8
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
 },
 "Josh Morrissey": {
 "gtd": false,
@@ -16670,40 +16738,6 @@
 "pos": "rd",
 "pp": "PP2"
 },
-"Nino Niederreiter": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 0,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 13,
-"toiMinutes": 128,
-"toiSeconds": 15
-},
-"last5": {
-"assists": 2,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 9,
-"toiMinutes": 68,
-"toiSeconds": 48
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Stuart Skinner": {
 "gtd": false,
 "injury": null,
@@ -16738,40 +16772,6 @@
 "line": "G1",
 "pk": null,
 "pos": "g",
-"pp": null
-},
-"Tyrel Bauer": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 73,
-"toiSeconds": 1
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 0,
-"toiMinutes": 58,
-"toiSeconds": 37
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
 "pp": null
 },
 "Viggo Bj\u00f6rck": {
