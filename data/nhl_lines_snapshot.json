@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-10-05T14:59:53+00:00",
+"generated_at": "2026-10-05T15:30:10+00:00",
 "goalies": {
 "2026-10-05": {
 "BOS": {
 "goalie": "Jeremy Swayman",
-"status": null
+"status": "Confirmed"
 },
 "DAL": {
 "goalie": "Jake Oettinger",
@@ -15,12 +15,12 @@
 "status": null
 },
 "PHI": {
-"goalie": "Joseph Woll",
-"status": null
+"goalie": "Dan Vladar",
+"status": "Confirmed"
 },
 "PIT": {
 "goalie": "Sergei Murashov",
-"status": null
+"status": "Likely"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -28,7 +28,7 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": null
+"status": "Likely"
 },
 "WPG": {
 "goalie": "Clay Stevenson",
@@ -10235,7 +10235,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10339,7 +10339,7 @@
 "goalieShutouts": 1,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10888,7 +10888,7 @@
 "toiSeconds": 49
 },
 "line": "F4",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": null
 },
@@ -11062,40 +11062,6 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Filip Hallander": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 5,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 18,
-"toiMinutes": 139,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 66,
-"toiSeconds": 47
-},
-"line": "F4",
-"pk": "PK1",
-"pos": "rw",
-"pp": null
-},
 "Hendrix Lapierre": {
 "gtd": false,
 "injury": null,
@@ -11125,7 +11091,7 @@
 "toiMinutes": 73,
 "toiSeconds": 3
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -11436,6 +11402,40 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "ld",
+"pp": null
+},
+"Ville Koivunen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 134,
+"toiSeconds": 45
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 74,
+"toiSeconds": 47
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
 "pp": null
 }
 },
