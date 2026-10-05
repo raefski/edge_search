@@ -1,10 +1,12 @@
 {
- "requested_at": "2026-10-04T21:54:19.628898+00:00",
- "request_id": "20261004T215419628898",
- "sports": [],
- "note": "best parlay (all sports)",
- "date_from": "2026-10-04",
- "date_to": "2026-10-04",
+ "requested_at": "2026-10-05T23:32:46.494812+00:00",
+ "request_id": "20261005T233246494812",
+ "sports": [
+  "americanfootball_nfl"
+ ],
+ "note": "requested from the Streamlit app",
+ "date_from": "2026-10-05",
+ "date_to": "2026-10-05",
  "skip_live": true,
- "state": null
+ "state": "CT"
 }
