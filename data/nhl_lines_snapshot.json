@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-05T15:59:51+00:00",
+"generated_at": "2026-10-05T16:30:03+00:00",
 "goalies": {
 "2026-10-05": {
 "BOS": {
@@ -12,7 +12,7 @@
 },
 "OTT": {
 "goalie": "Linus Ullmark",
-"status": null
+"status": "Confirmed"
 },
 "PHI": {
 "goalie": "Dan Vladar",
@@ -7945,7 +7945,7 @@
 },
 "line": "D1",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Nils Hoglander": {
@@ -8013,7 +8013,7 @@
 },
 "line": "D1",
 "pk": "PK2",
-"pos": "ld",
+"pos": "rd",
 "pp": "PP1"
 },
 "Ross Colton": {
@@ -9406,6 +9406,40 @@
 }
 },
 "OTT": {
+"Cameron Crotty": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 137,
+"toiSeconds": 50
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 73,
+"toiSeconds": 36
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Carter Yakemchuk": {
 "gtd": false,
 "injury": null,
@@ -9435,7 +9469,7 @@
 "toiMinutes": 95,
 "toiSeconds": 14
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -9610,40 +9644,6 @@
 "pos": "rw",
 "pp": null
 },
-"Jake Sanderson": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 6,
-"blocks": 22,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 9,
-"powerplayAssists": 2,
-"powerplayGoals": 2,
-"powerplayPoints": 4,
-"shots": 21,
-"toiMinutes": 227,
-"toiSeconds": 31
-},
-"last5": {
-"assists": 3,
-"blocks": 10,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 101,
-"toiSeconds": 41
-},
-"line": "D1",
-"pk": "PK1",
-"pos": "ld",
-"pp": "PP1"
-},
 "Jordan Spence": {
 "gtd": false,
 "injury": null,
@@ -9673,10 +9673,10 @@
 "toiMinutes": 119,
 "toiSeconds": 11
 },
-"line": "D2",
-"pk": "PK2",
+"line": "D1",
+"pk": "PK1",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Linus Ullmark": {
 "gtd": false,
@@ -9811,8 +9811,8 @@
 "toiMinutes": 86,
 "toiSeconds": 40
 },
-"line": "D1",
-"pk": "PK1",
+"line": "D3",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -9949,10 +9949,10 @@
 "toiMinutes": 150,
 "toiSeconds": 4
 },
-"line": "D2",
-"pk": null,
+"line": "D1",
+"pk": "PK2",
 "pos": "ld",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Tim St\u00fctzle": {
 "gtd": false,
@@ -9993,8 +9993,8 @@
 "toiMinutes": 100,
 "toiSeconds": 21
 },
-"line": "D3",
-"pk": "PK2",
+"line": "D2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
