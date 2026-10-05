@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-05T15:30:10+00:00",
+"generated_at": "2026-10-05T15:59:51+00:00",
 "goalies": {
 "2026-10-05": {
 "BOS": {
@@ -8,7 +8,7 @@
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": null
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Linus Ullmark",
@@ -20,7 +20,7 @@
 },
 "PIT": {
 "goalie": "Sergei Murashov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -944,7 +944,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Josh Norris": {
 "gtd": false,
@@ -1090,7 +1090,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Olen Zellweger": {
 "gtd": false,
@@ -1467,7 +1467,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Brandon Bussi": {
@@ -1537,7 +1537,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Jaccob Slavin": {
@@ -1673,7 +1673,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Jordan Martinook": {
@@ -2117,7 +2117,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 }
 },
@@ -2854,40 +2854,6 @@
 "pos": "g",
 "pp": null
 },
-"Colin Blackwell": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 115,
-"toiSeconds": 10
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 58,
-"toiSeconds": 3
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Esa Lindell": {
 "gtd": false,
 "injury": null,
@@ -2987,7 +2953,7 @@
 "toiMinutes": 66,
 "toiSeconds": 2
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -3021,10 +2987,44 @@
 "toiMinutes": 101,
 "toiSeconds": 13
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Joel Kiviranta": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 17,
+"toiMinutes": 105,
+"toiSeconds": 40
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 54,
+"toiSeconds": 3
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Justin Hryckowian": {
 "gtd": false,
@@ -3055,7 +3055,7 @@
 "toiMinutes": 82,
 "toiSeconds": 8
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -3123,7 +3123,7 @@
 "toiMinutes": 107,
 "toiSeconds": 59
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -3293,7 +3293,7 @@
 "toiMinutes": 79,
 "toiSeconds": 37
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -3327,7 +3327,7 @@
 "toiMinutes": 72,
 "toiSeconds": 3
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -3429,7 +3429,7 @@
 "toiMinutes": 58,
 "toiSeconds": 32
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -3463,7 +3463,7 @@
 "toiMinutes": 109,
 "toiSeconds": 2
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -7228,6 +7228,40 @@
 "pos": "g",
 "pp": null
 },
+"Jesper Boqvist": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 16,
+"toiMinutes": 150,
+"toiSeconds": 28
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 77,
+"toiSeconds": 3
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Jesper Bratt": {
 "gtd": false,
 "injury": null,
@@ -7433,40 +7467,6 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP1"
-},
-"Stefan Noesen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 16,
-"toiMinutes": 112,
-"toiSeconds": 59
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 54,
-"toiSeconds": 26
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Timo Meier": {
 "gtd": false,
