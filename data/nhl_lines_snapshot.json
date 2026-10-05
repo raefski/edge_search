@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-05T17:00:01+00:00",
+"generated_at": "2026-10-05T17:30:22+00:00",
 "goalies": {
 "2026-10-05": {
 "BOS": {
@@ -2151,7 +2151,7 @@
 "toiMinutes": 105,
 "toiSeconds": 3
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -2219,10 +2219,10 @@
 "toiMinutes": 106,
 "toiSeconds": 21
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK2",
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Arvid Soderblom": {
 "gtd": false,
@@ -2260,6 +2260,40 @@
 "pos": "g",
 "pp": null
 },
+"Bowen Byram": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 17,
+"toiMinutes": 232,
+"toiSeconds": 34
+},
+"last5": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 3,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 128,
+"toiSeconds": 13
+},
+"line": "D1",
+"pk": null,
+"pos": "ld",
+"pp": "PP1"
+},
 "Cole Smith": {
 "gtd": false,
 "injury": null,
@@ -2292,40 +2326,6 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "lw",
-"pp": null
-},
-"Ethan Del Mastro": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 14,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 164,
-"toiSeconds": 30
-},
-"last5": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 85,
-"toiSeconds": 0
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
 "pp": null
 },
 "Frank Nazar": {
@@ -2391,7 +2391,7 @@
 "toiMinutes": 82,
 "toiSeconds": 52
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -2429,40 +2429,6 @@
 "pk": "PK2",
 "pos": "rw",
 "pp": null
-},
-"Kevin Korchinski": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 157,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 81,
-"toiSeconds": 41
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": "PP2"
 },
 "Nick Lardis": {
 "gtd": false,
@@ -2668,6 +2634,40 @@
 "pos": "c",
 "pp": null
 },
+"Sam Rinzel": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 15,
+"toiMinutes": 184,
+"toiSeconds": 30
+},
+"last5": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 90,
+"toiSeconds": 0
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Spencer Knight": {
 "gtd": false,
 "injury": null,
@@ -2777,7 +2777,7 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -9062,7 +9062,7 @@
 "toiSeconds": 42
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
 },
@@ -9097,40 +9097,6 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
-"pp": null
-},
-"Joe Veleno": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 113,
-"toiSeconds": 59
-},
-"last5": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 63,
-"toiSeconds": 28
-},
-"line": "F4",
-"pk": "PK1",
 "pos": "c",
 "pp": null
 },
@@ -9168,6 +9134,40 @@
 "pos": "ld",
 "pp": null
 },
+"Matt Rempe": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 103,
+"toiSeconds": 24
+},
+"last5": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 60,
+"toiSeconds": 13
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Mika Zibanejad": {
 "gtd": false,
 "injury": null,
@@ -9198,7 +9198,7 @@
 "toiSeconds": 14
 },
 "line": "F1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "c",
 "pp": "PP1"
 },
@@ -9368,7 +9368,7 @@
 "toiSeconds": 39
 },
 "line": "F2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "lw",
 "pp": null
 },
@@ -9436,7 +9436,7 @@
 "toiSeconds": 48
 },
 "line": "F3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
 }
@@ -10104,40 +10104,6 @@
 }
 },
 "PHI": {
-"Alex Bump": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 15,
-"toiMinutes": 134,
-"toiSeconds": 9
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 66,
-"toiSeconds": 3
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Cam York": {
 "gtd": false,
 "injury": null,
@@ -10309,6 +10275,40 @@
 "pk": null,
 "pos": "rd",
 "pp": null
+},
+"Denver Barkey": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 130,
+"toiSeconds": 8
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 77,
+"toiSeconds": 39
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": "PP2"
 },
 "Jamie Drysdale": {
 "gtd": false,
