@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-06T17:59:53+00:00",
+"generated_at": "2026-10-06T18:30:00+00:00",
 "goalies": {
 "2026-10-06": {
 "BUF": {
@@ -136,7 +136,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Alex Killorn": {
 "gtd": false,
@@ -169,7 +169,7 @@
 },
 "line": "F2",
 "pk": "PK1",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Beckett Sennecke": {
@@ -203,7 +203,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Cutter Gauthier": {
@@ -446,6 +446,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Nikita Klepov": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 3,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 44,
+"toiSeconds": 33
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 3,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 44,
+"toiSeconds": 33
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
 "Nikita Nesterenko": {
 "gtd": false,
 "injury": null,
@@ -581,40 +615,6 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
-},
-"Sam Colangelo": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 18,
-"toiMinutes": 111,
-"toiSeconds": 36
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 14,
-"toiMinutes": 60,
-"toiSeconds": 20
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Tim Washe": {
 "gtd": false,
@@ -1459,7 +1459,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Brandon Bussi": {
@@ -1529,7 +1529,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Jaccob Slavin": {
@@ -1665,7 +1665,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Jordan Martinook": {
@@ -2109,7 +2109,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 }
 },
@@ -3116,40 +3116,6 @@
 "pos": "ld",
 "pp": null
 },
-"Logan O'Connor": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 119,
-"toiSeconds": 9
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 60,
-"toiSeconds": 34
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Mackenzie Blackwood": {
 "gtd": false,
 "injury": null,
@@ -3435,6 +3401,40 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
+},
+"Zachary L'Heureux": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 18,
+"toiMinutes": 141,
+"toiSeconds": 31
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 8,
+"toiMinutes": 67,
+"toiSeconds": 16
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 }
 },
 "DET": {
@@ -10284,6 +10284,42 @@
 "pos": "rw",
 "pp": null
 },
+"Jonas Johansson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 39,
+"goalieGoalsAgainstAvg": "4.07",
+"goalieLosses": 4,
+"goalieMinutes": 574,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.867",
+"goalieSaves": 254,
+"goalieSeconds": 35,
+"goalieShotsAgainst": 293,
+"goalieShutouts": 0,
+"goalieWins": 4
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 20,
+"goalieGoalsAgainstAvg": "4.35",
+"goalieLosses": 2,
+"goalieMinutes": 275,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.87",
+"goalieSaves": 134,
+"goalieSeconds": 25,
+"goalieShotsAgainst": 154,
+"goalieShutouts": 0,
+"goalieWins": 1
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Jordan Spence": {
 "gtd": false,
 "injury": null,
@@ -10317,42 +10353,6 @@
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP2"
-},
-"Linus Ullmark": {
-"gtd": true,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 18,
-"goalieGoalsAgainstAvg": "1.78",
-"goalieLosses": 5,
-"goalieMinutes": 605,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.931",
-"goalieSaves": 243,
-"goalieSeconds": 4,
-"goalieShotsAgainst": 261,
-"goalieShutouts": 1,
-"goalieWins": 5
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 10,
-"goalieGoalsAgainstAvg": "2.17",
-"goalieLosses": 2,
-"goalieMinutes": 276,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.912",
-"goalieSaves": 103,
-"goalieSeconds": 40,
-"goalieShotsAgainst": 113,
-"goalieShutouts": 0,
-"goalieWins": 3
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
 },
 "Michael Amadio": {
 "gtd": false,
