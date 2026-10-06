@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-06T23:14:42+00:00",
+"generated_at": "2026-10-06T23:44:44+00:00",
 "goalies": {
 "2026-10-06": {
 "BUF": {
@@ -12,7 +12,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": "Likely"
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "John Gibson",
@@ -12037,7 +12037,7 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "D2",
+"line": "D1",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -12105,7 +12105,7 @@
 "toiMinutes": 111,
 "toiSeconds": 12
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP1"
@@ -12139,7 +12139,7 @@
 "toiMinutes": 102,
 "toiSeconds": 19
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -12175,7 +12175,7 @@
 },
 "line": "F2",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Dalibor Dvorsky": {
@@ -12243,7 +12243,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Dylan Holloway": {
@@ -12413,7 +12413,7 @@
 "toiMinutes": 69,
 "toiSeconds": 42
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -12517,9 +12517,9 @@
 "toiMinutes": 82,
 "toiSeconds": 37
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Philip Broberg": {
@@ -12655,7 +12655,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Theo Lindstein": {
@@ -12687,7 +12687,7 @@
 "toiMinutes": 88,
 "toiSeconds": 3
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": null
