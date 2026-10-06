@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-06T18:30:00+00:00",
+"generated_at": "2026-10-06T18:59:56+00:00",
 "goalies": {
 "2026-10-06": {
 "BUF": {
@@ -20,7 +20,7 @@
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
-"status": null
+"status": "Confirmed"
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
@@ -901,7 +901,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Josh Doan": {
@@ -971,6 +971,40 @@
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
+},
+"Justin Danforth": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 136,
+"toiSeconds": 29
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 72,
+"toiSeconds": 28
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Konsta Helenius": {
 "gtd": false,
@@ -1253,40 +1287,6 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
-},
-"Sam Carrick": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 93,
-"toiSeconds": 7
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 45,
-"toiSeconds": 58
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
-"pp": null
 },
 "Tage Thompson": {
 "gtd": false,
