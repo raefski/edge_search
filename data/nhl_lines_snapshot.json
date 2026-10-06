@@ -1,14 +1,14 @@
 {
-"generated_at": "2026-10-06T21:30:54+00:00",
+"generated_at": "2026-10-06T22:44:59+00:00",
 "goalies": {
 "2026-10-06": {
 "BUF": {
 "goalie": "Colten Ellis",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CAR": {
 "goalie": "Brandon Bussi",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -16,7 +16,7 @@
 },
 "DET": {
 "goalie": "John Gibson",
-"status": "Likely"
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
@@ -68,7 +68,7 @@
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
-"status": "Likely"
+"status": "Confirmed"
 },
 "VGK": {
 "goalie": "Adin Hill",
@@ -899,7 +899,7 @@
 "toiMinutes": 64,
 "toiSeconds": 48
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -1283,7 +1283,7 @@
 "toiMinutes": 81,
 "toiSeconds": 7
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
@@ -10361,7 +10361,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Nikolas Matinpalo": {
@@ -10427,7 +10427,7 @@
 "toiMinutes": 101,
 "toiSeconds": 20
 },
-"line": "F4",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -10643,9 +10643,9 @@
 "toiMinutes": 67,
 "toiSeconds": 34
 },
-"line": "F1",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "William Eklund": {
