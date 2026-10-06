@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-06T20:15:01+00:00",
+"generated_at": "2026-10-06T21:30:54+00:00",
 "goalies": {
 "2026-10-06": {
 "BUF": {
@@ -52,7 +52,7 @@
 },
 "OTT": {
 "goalie": "Samuel Ersson",
-"status": null
+"status": "Confirmed"
 },
 "SEA": {
 "goalie": "Joey Daccord",
@@ -9520,6 +9520,16 @@
 "pos": "rd",
 "pp": null
 },
+"Cole Beaudoin": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "Dylan Garand": {
 "gtd": false,
 "injury": null,
@@ -9701,7 +9711,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Marcus Pettersson": {
@@ -9736,40 +9746,6 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
-},
-"Matt Rempe": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 103,
-"toiSeconds": 24
-},
-"last5": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 60,
-"toiSeconds": 13
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
 "pp": null
 },
 "Mika Zibanejad": {
@@ -10250,40 +10226,6 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Hayden Hodgson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 68,
-"toiSeconds": 55
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 37,
-"toiSeconds": 6
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Jonas Johansson": {
 "gtd": false,
 "injury": null,
@@ -10419,7 +10361,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Nikolas Matinpalo": {
@@ -10454,6 +10396,40 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "ld",
+"pp": null
+},
+"Ridly Greig": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 20,
+"toiMinutes": 190,
+"toiSeconds": 16
+},
+"last5": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 101,
+"toiSeconds": 20
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Samuel Ersson": {
