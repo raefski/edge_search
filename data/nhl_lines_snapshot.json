@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-06T14:29:44+00:00",
+"generated_at": "2026-10-06T14:59:55+00:00",
 "goalies": {
 "2026-10-06": {
 "BUF": {
@@ -16,7 +16,7 @@
 },
 "DET": {
 "goalie": "John Gibson",
-"status": null
+"status": "Likely"
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
@@ -43,8 +43,8 @@
 "status": null
 },
 "NYI": {
-"goalie": "Ilya Sorokin",
-"status": null
+"goalie": "Semyon Varlamov",
+"status": "Likely"
 },
 "NYR": {
 "goalie": "Igor Shesterkin",
@@ -3467,7 +3467,7 @@
 "toiMinutes": 99,
 "toiSeconds": 34
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -3501,10 +3501,10 @@
 "toiMinutes": 103,
 "toiSeconds": 18
 },
-"line": "F1",
+"line": "F3",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Anton Johansson": {
 "gtd": false,
@@ -3608,6 +3608,40 @@
 "pos": "ld",
 "pp": null
 },
+"Carter Mazur": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 110,
+"toiSeconds": 52
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 61,
+"toiSeconds": 23
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Daniil Tarasov": {
 "gtd": false,
 "injury": null,
@@ -3644,6 +3678,40 @@
 "pos": "g",
 "pp": null
 },
+"Dylan Larkin": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 6,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 5,
+"points": 11,
+"powerplayAssists": 2,
+"powerplayGoals": 3,
+"powerplayPoints": 5,
+"shots": 32,
+"toiMinutes": 195,
+"toiSeconds": 1
+},
+"last5": {
+"assists": 5,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 4,
+"points": 9,
+"powerplayAssists": 1,
+"powerplayGoals": 2,
+"powerplayPoints": 3,
+"shots": 15,
+"toiMinutes": 98,
+"toiSeconds": 30
+},
+"line": "F1",
+"pk": null,
+"pos": "c",
+"pp": "PP1"
+},
 "Emmitt Finnie": {
 "gtd": false,
 "injury": null,
@@ -3674,43 +3742,9 @@
 "toiSeconds": 19
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP2"
-},
-"J.T. Compher": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 160,
-"toiSeconds": 27
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 78,
-"toiSeconds": 56
-},
-"line": "F3",
-"pk": "PK1",
-"pos": "c",
-"pp": null
 },
 "John Gibson": {
 "gtd": false,
@@ -3812,7 +3846,7 @@
 "toiSeconds": 10
 },
 "line": "F3",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": null
 },
@@ -3847,42 +3881,8 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
-},
-"Mason Appleton": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 126,
-"toiSeconds": 15
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 67,
-"toiSeconds": 4
-},
-"line": "F4",
-"pk": "PK2",
-"pos": "rw",
-"pp": null
 },
 "Michael Brandsegg-Nyg\u00e5rd": {
 "gtd": false,
@@ -3892,7 +3892,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Michael Rasmussen": {
 "gtd": false,
@@ -3924,7 +3924,7 @@
 "toiSeconds": 48
 },
 "line": "F3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
 },
@@ -4025,9 +4025,9 @@
 "toiMinutes": 74,
 "toiSeconds": 50
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 }
 },
@@ -6851,7 +6851,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Arber Xhekaj": {
@@ -6956,39 +6956,39 @@
 "pos": "lw",
 "pp": "PP1"
 },
-"Ivan Demidov": {
+"Florian Xhekaj": {
 "gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
-"blocks": 2,
+"blocks": 8,
 "gamesPlayed": 10,
-"goals": 4,
-"points": 6,
+"goals": 1,
+"points": 3,
 "powerplayAssists": 0,
-"powerplayGoals": 2,
-"powerplayPoints": 2,
-"shots": 18,
-"toiMinutes": 177,
-"toiSeconds": 18
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 112,
+"toiSeconds": 8
 },
 "last5": {
 "assists": 1,
-"blocks": 0,
+"blocks": 3,
 "gamesPlayed": 5,
-"goals": 2,
-"points": 3,
+"goals": 0,
+"points": 1,
 "powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 9,
-"toiMinutes": 87,
-"toiSeconds": 24
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 54,
+"toiSeconds": 39
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "rw",
-"pp": "PP1"
+"pos": "lw",
+"pp": null
 },
 "Jake Evans": {
 "gtd": false,
@@ -7191,10 +7191,10 @@
 "toiMinutes": 71,
 "toiSeconds": 2
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Lane Hutson": {
 "gtd": false,
@@ -7431,10 +7431,10 @@
 "toiMinutes": 71,
 "toiSeconds": 16
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 }
 },
 "NJD": {
@@ -9089,7 +9089,7 @@
 "goalieShutouts": 1,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9339,7 +9339,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
