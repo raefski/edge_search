@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-06T14:59:55+00:00",
+"generated_at": "2026-10-06T15:29:43+00:00",
 "goalies": {
 "2026-10-06": {
 "BUF": {
@@ -12,7 +12,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": null
+"status": "Likely"
 },
 "DET": {
 "goalie": "John Gibson",
@@ -32,19 +32,19 @@
 },
 "MTL": {
 "goalie": "Jakub Dobes",
-"status": null
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Jake Allen",
-"status": null
+"status": "Confirmed"
 },
 "NSH": {
-"goalie": "Justus Annunen",
+"goalie": "Juuse Saros",
 "status": null
 },
 "NYI": {
 "goalie": "Semyon Varlamov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "Igor Shesterkin",
@@ -63,8 +63,8 @@
 "status": null
 },
 "TOR": {
-"goalie": "Sergei Bobrovsky",
-"status": null
+"goalie": "Anthony Stolarz",
+"status": "Confirmed"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -8372,42 +8372,6 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Justus Annunen": {
-"gtd": true,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 18,
-"goalieGoalsAgainstAvg": "1.82",
-"goalieLosses": 5,
-"goalieMinutes": 593,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.939",
-"goalieSaves": 275,
-"goalieSeconds": 31,
-"goalieShotsAgainst": 293,
-"goalieShutouts": 1,
-"goalieWins": 5
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 8,
-"goalieGoalsAgainstAvg": "1.6",
-"goalieLosses": 2,
-"goalieMinutes": 299,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.944",
-"goalieSaves": 134,
-"goalieSeconds": 18,
-"goalieShotsAgainst": 142,
-"goalieShutouts": 1,
-"goalieWins": 3
-},
-"line": "G1",
-"pk": null,
-"pos": "g",
-"pp": null
-},
 "Juuse Saros": {
 "gtd": false,
 "injury": null,
@@ -8439,6 +8403,16 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
+"line": "G1",
+"pk": null,
+"pos": "g",
+"pp": null
+},
+"Matthew Murray": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
 "line": "G2",
 "pk": null,
 "pos": "g",
@@ -12717,7 +12691,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13263,7 +13237,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
