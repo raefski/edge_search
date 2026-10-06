@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-06T16:59:46+00:00",
+"generated_at": "2026-10-06T17:59:53+00:00",
 "goalies": {
 "2026-10-06": {
 "BUF": {
@@ -24,7 +24,7 @@
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
-"status": null
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -71,7 +71,7 @@
 "status": "Likely"
 },
 "VGK": {
-"goalie": "Carter Hart",
+"goalie": "Adin Hill",
 "status": null
 }
 },
@@ -3046,7 +3046,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Jaden Schwartz": {
 "gtd": false,
@@ -3114,6 +3114,40 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "ld",
+"pp": null
+},
+"Logan O'Connor": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 119,
+"toiSeconds": 9
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 60,
+"toiSeconds": 34
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Mackenzie Blackwood": {
@@ -3252,7 +3286,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Nicolas Roy": {
 "gtd": false,
@@ -3285,7 +3319,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Parker Kelly": {
@@ -3319,7 +3353,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Sam Malinski": {
@@ -10674,40 +10708,6 @@
 }
 },
 "PIT": {
-"Andrei Kuzmenko": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 5,
-"powerplayAssists": 0,
-"powerplayGoals": 2,
-"powerplayPoints": 2,
-"shots": 11,
-"toiMinutes": 135,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 3,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 67,
-"toiSeconds": 7
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Arturs Silovs": {
 "gtd": false,
 "injury": null,
@@ -10811,6 +10811,40 @@
 "pk": "PK1",
 "pos": "c",
 "pp": null
+},
+"Bryan Rust": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 4,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 7,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 23,
+"toiMinutes": 185,
+"toiSeconds": 48
+},
+"last5": {
+"assists": 3,
+"blocks": 7,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 13,
+"toiMinutes": 86,
+"toiSeconds": 58
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
 },
 "Connor Dewar": {
 "gtd": false,
@@ -11011,9 +11045,9 @@
 "toiMinutes": 70,
 "toiSeconds": 43
 },
-"line": "F4",
+"line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Kaedan Korczak": {
@@ -11113,9 +11147,9 @@
 "toiMinutes": 77,
 "toiSeconds": 32
 },
-"line": "F1",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Rickard Rakell": {
@@ -11355,7 +11389,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 }
 },
@@ -11392,6 +11426,40 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
+"pp": null
+},
+"Ben Meyers": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 127,
+"toiSeconds": 31
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 68,
+"toiSeconds": 29
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Berkly Catton": {
@@ -11472,6 +11540,40 @@
 "pos": "rd",
 "pp": "PP1"
 },
+"Cale Fleury": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 22,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 8,
+"toiMinutes": 143,
+"toiSeconds": 18
+},
+"last5": {
+"assists": 2,
+"blocks": 13,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 6,
+"toiMinutes": 84,
+"toiSeconds": 31
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Chandler Stephenson": {
 "gtd": false,
 "injury": null,
@@ -11505,40 +11607,6 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
-},
-"Curtis Douglas": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 81,
-"toiSeconds": 19
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 39,
-"toiSeconds": 22
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Frederick Gaudreau": {
 "gtd": false,
@@ -11952,40 +12020,6 @@
 "pos": "rw",
 "pp": "PP1"
 },
-"Ville Ottavainen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 167,
-"toiSeconds": 27
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 79,
-"toiSeconds": 4
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Vince Dunn": {
 "gtd": false,
 "injury": null,
@@ -12027,7 +12061,7 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -12061,7 +12095,7 @@
 "toiMinutes": 79,
 "toiSeconds": 6
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -12095,7 +12129,7 @@
 "toiMinutes": 111,
 "toiSeconds": 12
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP1"
@@ -12614,6 +12648,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Ross Johnston": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 101,
+"toiSeconds": 45
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 50,
+"toiSeconds": 38
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Theo Lindstein": {
 "gtd": false,
 "injury": null,
@@ -12643,19 +12711,9 @@
 "toiMinutes": 88,
 "toiSeconds": 3
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "ld",
-"pp": null
-},
-"Zachary Dean": {
-"gtd": false,
-"injury": null,
-"last10": {},
-"last5": {},
-"line": "F4",
-"pk": null,
-"pos": "lw",
 "pp": null
 }
 },
@@ -14039,7 +14097,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -14177,7 +14235,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
