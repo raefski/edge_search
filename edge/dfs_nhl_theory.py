@@ -102,7 +102,7 @@ def add_ownership(pool: list, buzz_gamma: float | None = None, buzz_beta: float 
         values = [p["proj"] / (p["salary"] / 1000.0) if p.get("salary") else 0.0 for p in players]
         zv = _z(values)
         zs = _z([float(p["salary"]) for p in players])
-        buzz_vals = [math.log1p(p.get("buzz", 0)) for p in players]
+        buzz_vals = [math.log1p(p.get("buzz") or 0) for p in players]
         zb = _z(buzz_vals)
         weights = [math.exp(VALUE_WEIGHT * zv_i + SALARY_WEIGHT * zs_i
                             + (PP1_BONUS if p.get("pp") == "PP1" else 0.0)
