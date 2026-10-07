@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-07T15:59:47+00:00",
+"generated_at": "2026-10-07T16:29:41+00:00",
 "goalies": {
 "2026-10-07": {
 "ANA": {
@@ -3700,6 +3700,40 @@
 "pos": "lw",
 "pp": null
 },
+"Dominic Toninato": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 101,
+"toiSeconds": 56
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 55,
+"toiSeconds": 57
+},
+"line": "F3",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "Frank Nazar": {
 "gtd": false,
 "injury": null,
@@ -3865,9 +3899,9 @@
 "toiMinutes": 62,
 "toiSeconds": 15
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK1",
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Patrick Kane": {
@@ -3933,9 +3967,9 @@
 "toiMinutes": 89,
 "toiSeconds": 14
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Ryan Donato": {
@@ -4074,40 +4108,6 @@
 "line": "G1",
 "pk": null,
 "pos": "g",
-"pp": null
-},
-"Teuvo Teravainen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 9,
-"toiMinutes": 155,
-"toiSeconds": 1
-},
-"last5": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 68,
-"toiSeconds": 42
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
 "pp": null
 },
 "Tyler Bertuzzi": {
@@ -10215,7 +10215,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10727,7 +10727,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12296,7 +12296,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Brayden Point": {
 "gtd": false,
@@ -12361,10 +12361,10 @@
 "toiMinutes": 81,
 "toiSeconds": 43
 },
-"line": null,
+"line": "D3",
 "pk": null,
-"pos": null,
-"pp": "PP2"
+"pos": "ld",
+"pp": "PP1"
 },
 "Conor Geekie": {
 "gtd": false,
@@ -12465,7 +12465,7 @@
 "toiMinutes": 90,
 "toiSeconds": 13
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -12570,7 +12570,7 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Jake Guentzel": {
 "gtd": false,
@@ -12703,7 +12703,7 @@
 "toiMinutes": 89,
 "toiSeconds": 37
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -12774,7 +12774,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Ryan McDonagh": {
 "gtd": false,
@@ -12805,7 +12805,7 @@
 "toiMinutes": 81,
 "toiSeconds": 14
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -12839,9 +12839,9 @@
 "toiMinutes": 86,
 "toiSeconds": 10
 },
-"line": "D2",
+"line": null,
 "pk": "PK2",
-"pos": "ld",
+"pos": null,
 "pp": null
 },
 "Zemgus Girgensons": {
@@ -15811,7 +15811,7 @@
 "toiMinutes": 109,
 "toiSeconds": 11
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -16151,7 +16151,7 @@
 "toiMinutes": 117,
 "toiSeconds": 5
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP2"
