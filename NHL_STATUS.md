@@ -155,6 +155,22 @@ Exports `196302148` (GPP) and `196302159` (cash).
 
 **Buzz test:** Tested on 10/4 contests. Buzz increased ownership MAE by 1.6–2.0 pts — no signal. Defer until pattern emerges across more slates.
 
+## 6d. Fourth night 2026-10-06: GPP and cash (main slate)
+
+Exports `196425557` (GPP) and `196425573` (cash).
+`scripts/nhl_calibration.py --fit-ownership`:
+
+| | contest | n | bias | MAE | rank corr | below floor (25) | above 95th (5) |
+|---|---|---|---|---|---|---|---|
+| skaters | GPP | 74 | −1.60 | 5.77 | +0.327 | 15% | **16%** |
+| skaters | cash | 55 | −2.55 | 6.79 | +0.271 | 15% | **20%** |
+
+79 logged players matched GPP (strong coverage); 58 for cash. Prior MAE 4.63–5.09; best fit:
+- **GPP:** VALUE 0.4 / SALARY 0.2 / PP1 0.6 → MAE 4.50 (−0.13 gain)
+- **Cash:** VALUE 0.8 / SALARY 0.5 / PP1 0.6 → MAE 5.07 (−0.02 gain)
+
+**Bias shift:** GPP now running −1.60 (was +1.03), cash −2.55 (was +0.18). Model has been conservative the last two nights. Upper tail still hot (16% above ceiling vs 5% target). Watch next 2 slates to confirm trend or noise.
+
 ## 7. Nightly workflow
 
 ```bash
