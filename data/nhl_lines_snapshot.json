@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-07T14:29:52+00:00",
+"generated_at": "2026-10-07T14:59:47+00:00",
 "goalies": {
 "2026-10-07": {
 "ANA": {
@@ -24,7 +24,7 @@
 },
 "WSH": {
 "goalie": "Logan Thompson",
-"status": null
+"status": "Confirmed"
 }
 },
 "2026-10-08": {
@@ -1599,7 +1599,7 @@
 "pp": null
 },
 "Josh Doan": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 4,
@@ -15436,7 +15436,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Tomas Hertl": {
 "gtd": false,
@@ -15538,7 +15538,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "William Karlsson": {
 "gtd": false,
@@ -15639,7 +15639,7 @@
 "toiMinutes": 59,
 "toiSeconds": 6
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
 "pos": "rw",
 "pp": "PP2"
@@ -15673,7 +15673,7 @@
 "toiMinutes": 65,
 "toiSeconds": 7
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": null
