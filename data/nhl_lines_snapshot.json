@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-07T14:59:47+00:00",
+"generated_at": "2026-10-07T15:29:49+00:00",
 "goalies": {
 "2026-10-07": {
 "ANA": {
@@ -15,8 +15,8 @@
 "status": "Confirmed"
 },
 "PIT": {
-"goalie": "Sergei Murashov",
-"status": null
+"goalie": "Arturs Silovs",
+"status": "Likely"
 },
 "WPG": {
 "goalie": "Stuart Skinner",
@@ -4783,7 +4783,7 @@
 "pp": "PP1"
 },
 "Zachary L'Heureux": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -14055,7 +14055,7 @@
 "pp": "PP2"
 },
 "Mikhail Sergachev": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 12,
