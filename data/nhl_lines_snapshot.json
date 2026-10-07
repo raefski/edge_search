@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-07T13:59:48+00:00",
+"generated_at": "2026-10-07T14:29:52+00:00",
 "goalies": {
 "2026-10-07": {
 "ANA": {
@@ -1708,7 +1708,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Louis Crevier": {
 "gtd": false,
@@ -1844,7 +1844,7 @@
 "line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Owen Power": {
 "gtd": false,
@@ -3560,7 +3560,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Artyom Levshunov": {
 "gtd": false,
@@ -3732,7 +3732,7 @@
 "line": "F1",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Ian Cole": {
 "gtd": false,
@@ -6305,7 +6305,7 @@
 "pp": null
 },
 "Danila Yurov": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 3,
@@ -11540,7 +11540,7 @@
 "line": "D1",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Brandon Carlo": {
 "gtd": false,
@@ -11608,7 +11608,7 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Colton Parayko": {
 "gtd": false,
