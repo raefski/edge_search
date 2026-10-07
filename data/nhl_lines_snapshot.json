@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-07T15:29:49+00:00",
+"generated_at": "2026-10-07T15:59:47+00:00",
 "goalies": {
 "2026-10-07": {
 "ANA": {
@@ -7,8 +7,8 @@
 "status": null
 },
 "COL": {
-"goalie": "Scott Wedgewood",
-"status": null
+"goalie": "Mackenzie Blackwood",
+"status": "Likely"
 },
 "EDM": {
 "goalie": "Devon Levi",
@@ -16,7 +16,7 @@
 },
 "PIT": {
 "goalie": "Arturs Silovs",
-"status": "Likely"
+"status": "Confirmed"
 },
 "WPG": {
 "goalie": "Stuart Skinner",
@@ -69,8 +69,8 @@
 "status": null
 },
 "NYI": {
-"goalie": "Semyon Varlamov",
-"status": null
+"goalie": "Ilya Sorokin",
+"status": "Likely"
 },
 "OTT": {
 "goalie": "Samuel Ersson",
@@ -8233,7 +8233,7 @@
 "pp": null
 },
 "Alexander Romanov": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 1,
