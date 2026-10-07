@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-07T17:00:37+00:00",
+"generated_at": "2026-10-07T17:59:51+00:00",
 "goalies": {
 "2026-10-07": {
 "ANA": {
@@ -11954,6 +11954,40 @@
 "pos": "g",
 "pp": null
 },
+"Justin Barron": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 17,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 178,
+"toiSeconds": 38
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 92,
+"toiSeconds": 3
+},
+"line": "D2",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Mason McTavish": {
 "gtd": false,
 "injury": null,
@@ -12156,40 +12190,6 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
-},
-"Theo Lindstein": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 171,
-"toiSeconds": 19
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 79,
-"toiSeconds": 20
-},
-"line": "D2",
-"pk": null,
-"pos": "ld",
 "pp": null
 }
 },
