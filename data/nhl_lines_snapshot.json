@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-07T18:29:42+00:00",
+"generated_at": "2026-10-07T21:00:00+00:00",
 "goalies": {
 "2026-10-07": {
 "ANA": {
@@ -5538,40 +5538,6 @@
 "pos": "lw",
 "pp": null
 },
-"Colton Dach": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 111,
-"toiSeconds": 57
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 69,
-"toiSeconds": 44
-},
-"line": "F3",
-"pk": null,
-"pos": "c",
-"pp": "PP2"
-},
 "Connor McDavid": {
 "gtd": false,
 "injury": null,
@@ -5958,6 +5924,40 @@
 "pos": "ld",
 "pp": null
 },
+"Max Jones": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 103,
+"toiSeconds": 30
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 62,
+"toiSeconds": 22
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "Owen Michaels": {
 "gtd": false,
 "injury": null,
@@ -5987,10 +5987,10 @@
 "toiMinutes": 64,
 "toiSeconds": 27
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Ryan Shea": {
 "gtd": false,
