@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-07T02:59:40+00:00",
+"generated_at": "2026-10-07T03:29:53+00:00",
 "goalies": {
 "2026-10-06": {
 "BUF": {
@@ -4095,7 +4095,7 @@
 "toiMinutes": 74,
 "toiSeconds": 57
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -4129,7 +4129,7 @@
 "toiMinutes": 69,
 "toiSeconds": 44
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -4301,9 +4301,9 @@
 "toiMinutes": 61,
 "toiSeconds": 4
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Jake Walman": {
@@ -4340,14 +4340,48 @@
 "pos": "ld",
 "pp": "PP2"
 },
+"Jason Dickinson": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 134,
+"toiSeconds": 18
+},
+"last5": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 61,
+"toiSeconds": 3
+},
+"line": "F2",
+"pk": "PK1",
+"pos": "c",
+"pp": null
+},
 "Josh Samanski": {
 "gtd": false,
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Kasperi Kapanen": {
@@ -4447,8 +4481,8 @@
 "toiMinutes": 73,
 "toiSeconds": 3
 },
-"line": "F3",
-"pk": "PK2",
+"line": "F4",
+"pk": null,
 "pos": "rw",
 "pp": null
 },
@@ -4486,40 +4520,6 @@
 "pos": "ld",
 "pp": null
 },
-"Max Jones": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 103,
-"toiSeconds": 30
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 62,
-"toiSeconds": 22
-},
-"line": "F2",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Owen Michaels": {
 "gtd": false,
 "injury": null,
@@ -4549,8 +4549,8 @@
 "toiMinutes": 64,
 "toiSeconds": 27
 },
-"line": "F3",
-"pk": "PK1",
+"line": "F4",
+"pk": "PK2",
 "pos": "c",
 "pp": null
 },
@@ -4617,9 +4617,9 @@
 "toiMinutes": 55,
 "toiSeconds": 2
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Tristan Jarry": {
@@ -7927,7 +7927,7 @@
 "pp": "PP1"
 },
 "Jonas Siegenthaler": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 5,
