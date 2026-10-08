@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-08T16:00:05+00:00",
+"generated_at": "2026-10-08T16:29:40+00:00",
 "goalies": {
 "2026-10-08": {
 "BOS": {
@@ -28,7 +28,7 @@
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": null
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -52,7 +52,7 @@
 },
 "PHI": {
 "goalie": "Joseph Woll",
-"status": null
+"status": "Confirmed"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -71,8 +71,8 @@
 "status": null
 },
 "UTA": {
-"goalie": "Karel Vejmelka",
-"status": null
+"goalie": "Sebastian Cossa",
+"status": "Likely"
 },
 "VAN": {
 "goalie": "Kevin Lankinen",
@@ -94,7 +94,7 @@
 },
 "DET": {
 "goalie": "John Gibson",
-"status": null
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "Igor Shesterkin",
@@ -7199,9 +7199,9 @@
 "toiMinutes": 60,
 "toiSeconds": 33
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Matt Boldy": {
@@ -7306,38 +7306,38 @@
 "pos": "c",
 "pp": null
 },
-"Nick Foligno": {
+"Nico Sturm": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 0,
-"blocks": 4,
+"assists": 4,
+"blocks": 6,
 "gamesPlayed": 10,
-"goals": 3,
-"points": 3,
+"goals": 2,
+"points": 6,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 113,
-"toiSeconds": 47
+"shots": 12,
+"toiMinutes": 117,
+"toiSeconds": 29
 },
 "last5": {
-"assists": 0,
-"blocks": 2,
+"assists": 2,
+"blocks": 4,
 "gamesPlayed": 5,
-"goals": 1,
-"points": 1,
+"goals": 2,
+"points": 4,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 58,
-"toiSeconds": 27
+"shots": 8,
+"toiMinutes": 64,
+"toiSeconds": 12
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Olli Maatta": {
@@ -7471,7 +7471,7 @@
 "toiMinutes": 71,
 "toiSeconds": 23
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -10780,7 +10780,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Christian Dvorak": {
 "gtd": false,
@@ -10884,7 +10884,7 @@
 "line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Denver Barkey": {
 "gtd": false,
@@ -10952,7 +10952,7 @@
 "line": "D1",
 "pk": null,
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Joseph Woll": {
 "gtd": false,
@@ -11056,7 +11056,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Nick Seeler": {
 "gtd": false,
@@ -13724,7 +13724,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Jimmy Snuggerud": {
 "gtd": false,
@@ -13932,7 +13932,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Pavel Buchnevich": {
 "gtd": false,
