@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-08T14:00:09+00:00",
+"generated_at": "2026-10-08T14:59:50+00:00",
 "goalies": {
 "2026-10-08": {
 "BOS": {
@@ -8,11 +8,11 @@
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
-"status": null
+"status": "Likely"
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
-"status": null
+"status": "Likely"
 },
 "CGY": {
 "goalie": "Devin Cooley",
@@ -35,8 +35,8 @@
 "status": null
 },
 "MTL": {
-"goalie": "Jakub Dobes",
-"status": null
+"goalie": "Jacob Fowler",
+"status": "Likely"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -48,7 +48,7 @@
 },
 "OTT": {
 "goalie": "Linus Ullmark",
-"status": null
+"status": "Likely"
 },
 "PHI": {
 "goalie": "Joseph Woll",
@@ -2231,7 +2231,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Jaccob Slavin": {
@@ -2367,7 +2367,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Jordan Martinook": {
@@ -7750,6 +7750,42 @@
 "pos": "lw",
 "pp": null
 },
+"Jacob Fowler": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 22,
+"goalieGoalsAgainstAvg": "2.57",
+"goalieLosses": 3,
+"goalieMinutes": 512,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.904",
+"goalieSaves": 206,
+"goalieSeconds": 45,
+"goalieShotsAgainst": 228,
+"goalieShutouts": 0,
+"goalieWins": 5
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 8,
+"goalieGoalsAgainstAvg": "2.21",
+"goalieLosses": 1,
+"goalieMinutes": 216,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.915",
+"goalieSaves": 86,
+"goalieSeconds": 28,
+"goalieShotsAgainst": 94,
+"goalieShutouts": 0,
+"goalieWins": 2
+},
+"line": "G1",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Jake Evans": {
 "gtd": false,
 "injury": null,
@@ -7815,7 +7851,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -8124,42 +8160,6 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "c",
-"pp": null
-},
-"Sam Montembeault": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 27,
-"goalieGoalsAgainstAvg": "2.96",
-"goalieLosses": 2,
-"goalieMinutes": 547,
-"goalieOvertimeLosses": 3,
-"goalieSavePercentage": "0.897",
-"goalieSaves": 236,
-"goalieSeconds": 0,
-"goalieShotsAgainst": 263,
-"goalieShutouts": 0,
-"goalieWins": 4
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 10,
-"goalieGoalsAgainstAvg": "2.43",
-"goalieLosses": 0,
-"goalieMinutes": 246,
-"goalieOvertimeLosses": 2,
-"goalieSavePercentage": "0.919",
-"goalieSaves": 113,
-"goalieSeconds": 52,
-"goalieShotsAgainst": 123,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
 "pp": null
 },
 "Zack Bolduc": {
