@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-08T15:31:04+00:00",
+"generated_at": "2026-10-08T16:00:05+00:00",
 "goalies": {
 "2026-10-08": {
 "BOS": {
@@ -32,7 +32,7 @@
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
-"status": null
+"status": "Confirmed"
 },
 "MTL": {
 "goalie": "Jacob Fowler",
@@ -40,11 +40,11 @@
 },
 "NSH": {
 "goalie": "Juuse Saros",
-"status": null
+"status": "Likely"
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": "Likely"
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Linus Ullmark",
@@ -60,7 +60,7 @@
 },
 "STL": {
 "goalie": "Joel Hofer",
-"status": null
+"status": "Likely"
 },
 "TBL": {
 "goalie": "Dennis Hildeby",
@@ -76,7 +76,7 @@
 },
 "VAN": {
 "goalie": "Kevin Lankinen",
-"status": null
+"status": "Likely"
 },
 "VGK": {
 "goalie": "Carter Hart",
@@ -10777,44 +10777,10 @@
 "toiMinutes": 110,
 "toiSeconds": 46
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
-"pos": "rd",
+"pos": "ld",
 "pp": "PP2"
-},
-"Carl Grundstrom": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 122,
-"toiSeconds": 41
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 59,
-"toiSeconds": 44
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Christian Dvorak": {
 "gtd": false,
@@ -10845,7 +10811,7 @@
 "toiMinutes": 77,
 "toiSeconds": 10
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -10915,7 +10881,7 @@
 "toiMinutes": 88,
 "toiSeconds": 35
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -10949,9 +10915,9 @@
 "toiMinutes": 71,
 "toiSeconds": 58
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Jamie Drysdale": {
@@ -10983,7 +10949,7 @@
 "toiMinutes": 103,
 "toiSeconds": 20
 },
-"line": "D2",
+"line": "D1",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -11053,10 +11019,44 @@
 "toiMinutes": 80,
 "toiSeconds": 3
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
+},
+"Michael Bunting": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 117,
+"toiSeconds": 25
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 52,
+"toiSeconds": 16
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Nick Seeler": {
 "gtd": false,
@@ -11121,7 +11121,7 @@
 "toiMinutes": 64,
 "toiSeconds": 41
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
 "pos": "c",
 "pp": null
@@ -11223,7 +11223,7 @@
 "toiMinutes": 67,
 "toiSeconds": 34
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -11257,7 +11257,7 @@
 "toiMinutes": 78,
 "toiSeconds": 56
 },
-"line": "F4",
+"line": "F1",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -11291,9 +11291,9 @@
 "toiMinutes": 79,
 "toiSeconds": 29
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Travis Konecny": {
@@ -11395,7 +11395,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP1"
 },
 "Tyson Foerster": {
