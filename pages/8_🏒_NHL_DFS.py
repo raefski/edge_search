@@ -110,8 +110,7 @@ with st.sidebar:
     gid = None
     if slates:
         labels = [f"{s['label']} · {s['games']} games · {_et(s['start'])}" for s in slates]
-        default = max(range(len(slates)), key=lambda i: (slates[i]["label"] == "Main",
-                                                         slates[i]["games"]))
+        default = R.default_slate(slates)
         choice = st.selectbox("Slate", labels, index=default)
         gid = slates[labels.index(choice)]["gid"]
     sims = st.select_slider("Simulated games", options=[1000, 2000, 4000], value=2000,

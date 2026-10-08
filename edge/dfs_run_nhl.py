@@ -57,6 +57,13 @@ def classic_groups(groups: list[dict] | None = None) -> list[dict]:
     return out
 
 
+def default_slate(rows: list[dict]) -> int:
+    """Index of the NEXT Main slate to lock. DK lists tomorrow's Main next to
+    tonight's, so "the Main with the most games" picked tomorrow's 10-game
+    slate over tonight's 3-game one (2026-10-07). `rows` is start-sorted."""
+    return next((i for i, r in enumerate(rows) if r["label"] == "Main"), 0)
+
+
 def resolve_slate(draft_group=None, groups: list[dict] | None = None):
     """(gid, meta). Defaults to DK's main slate: the Classic group with no
     suffix, as for the NFL (see dfs_run_nfl.resolve_slate)."""
@@ -67,8 +74,7 @@ def resolve_slate(draft_group=None, groups: list[dict] | None = None):
                                             "games": 0})
     if not rows:
         return None, {"error": "DraftKings is listing no NHL Classic slates."}
-    main = [r for r in rows if r["label"] == "Main"]
-    pick = max(main or rows, key=lambda r: (r["games"], r["featured"]))
+    pick = rows[default_slate(rows)]
     return pick["gid"], pick
 
 
@@ -269,8 +275,10 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
 # ---------------------------------------------------------------------------
 # The whole slate
 # ---------------------------------------------------------------------------
+#: source: "live" for a build made before lock, "rebuild" for one reconstructed
+#: afterwards from pinned pre-lock inputs (scripts/nhl_rebuild.py).
 PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp", "dk_pos", "line", "pp", "salary",
-                 "proj", "sd", "floor", "ceil", "own", "imputed")
+                 "proj", "sd", "floor", "ceil", "own", "imputed", "source")
 
 
 def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> dict:
@@ -287,7 +295,8 @@ def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> di
     rows += [{"date": date, "gid": gid, "player": p["name"], "team": p["team"], "opp": p.get("opp"),
               "dk_pos": p.get("dk_pos"), "line": p.get("line") or "", "pp": p.get("pp") or "",
               "salary": p["salary"], "proj": p["proj"], "sd": p["sd"], "floor": p["floor"],
-              "ceil": p["ceil"], "own": p.get("own", ""), "imputed": "|".join(p.get("imputed", []))}
+              "ceil": p["ceil"], "own": p.get("own", ""), "imputed": "|".join(p.get("imputed", [])),
+              "source": "live"}
              for p in pool]
     plog.parent.mkdir(parents=True, exist_ok=True)
     with plog.open("w", newline="") as fh:

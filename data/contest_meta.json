@@ -403,20 +403,110 @@
  },
  "196304871": {
   "type": "gpp",
-  "field": null,
+  "field": 573,
   "entry_fee": null,
   "places_paid": null,
   "prize_pool": null,
   "sport": "NHL",
-  "slate": "2026-10-05 Main"
+  "slate": "2026-10-04 Main (gid 154342)"
  },
  "196371527": {
   "type": "cash",
-  "field": null,
+  "field": 39,
   "entry_fee": null,
   "places_paid": null,
   "prize_pool": null,
   "sport": "NHL",
-  "slate": "2026-10-05 Main"
+  "slate": "2026-10-04 Main (gid 154342)"
+ },
+ "196218438": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "gpp",
+  "field": 891,
+  "sport": "NHL",
+  "slate": "2026-09-30 Main (gid 154305)"
+ },
+ "196218453": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "cash",
+  "field": 208,
+  "sport": "NHL",
+  "slate": "2026-09-30 Main (gid 154305)"
+ },
+ "196254552": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "gpp",
+  "field": 891,
+  "sport": "NHL",
+  "slate": "2026-10-01 Main (gid 154311)"
+ },
+ "196255389": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "cash",
+  "field": 62,
+  "sport": "NHL",
+  "slate": "2026-10-01 Main (gid 154311)"
+ },
+ "196302148": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "gpp",
+  "field": 594,
+  "sport": "NHL",
+  "slate": "2026-10-03 Main (gid 154332)"
+ },
+ "196302159": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "cash",
+  "field": 114,
+  "sport": "NHL",
+  "slate": "2026-10-03 Main (gid 154332)"
+ },
+ "196425557": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "gpp",
+  "field": 891,
+  "sport": "NHL",
+  "slate": "2026-10-06 Main (gid 154356)"
+ },
+ "196425573": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "cash",
+  "field": 229,
+  "sport": "NHL",
+  "slate": "2026-10-06 Main (gid 154356)"
+ },
+ "196456857": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "gpp",
+  "field": 891,
+  "sport": "NHL",
+  "slate": "2026-10-07 Main (gid 154690)"
+ },
+ "196480935": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "cash",
+  "field": 62,
+  "sport": "NHL",
+  "slate": "2026-10-07 Main (gid 154690)"
  }
 }

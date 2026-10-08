@@ -144,3 +144,12 @@ def test_ownership_fills_each_position_group():
     for pos, slots in theory.GROUP_SLOTS.items():
         total = sum(p["own"] for p in pool if p["pos"] == pos)
         assert total == pytest.approx(100 * slots, abs=1.5)
+
+
+def test_default_slate_is_next_main_not_biggest():
+    from edge import dfs_run_nhl as R
+    rows = [{"gid": 154690, "label": "Main", "games": 3, "start": "2026-10-07T23:30:00Z"},
+            {"gid": 154693, "label": "Late", "games": 1, "start": "2026-10-08T02:00:00Z"},
+            {"gid": 154696, "label": "Main", "games": 10, "start": "2026-10-08T23:00:00Z"}]
+    assert rows[R.default_slate(rows)]["gid"] == 154690
+    assert R.default_slate([{"gid": 1, "label": "Late", "games": 2, "start": "x"}]) == 0
