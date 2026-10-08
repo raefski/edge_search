@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-08T18:29:58+00:00",
+"generated_at": "2026-10-08T19:29:54+00:00",
 "goalies": {
 "2026-10-08": {
 "BOS": {
@@ -6329,9 +6329,9 @@
 "toiMinutes": 49,
 "toiSeconds": 53
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Axel Sandin-Pellikka": {
@@ -6363,9 +6363,9 @@
 "toiMinutes": 84,
 "toiSeconds": 25
 },
-"line": "D2",
+"line": null,
 "pk": "PK2",
-"pos": "rd",
+"pos": null,
 "pp": "PP2"
 },
 "Ben Chiarot": {
@@ -6433,7 +6433,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Daniil Tarasov": {
@@ -6675,7 +6675,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Michael Brandsegg-Nyg\u00e5rd": {
@@ -6821,8 +6821,42 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
+},
+"William Wallinder": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 4,
+"blocks": 13,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 4,
+"toiMinutes": 154,
+"toiSeconds": 6
+},
+"last5": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 81,
+"toiSeconds": 46
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
 }
 },
 "MIN": {
@@ -15061,7 +15095,7 @@
 "toiMinutes": 72,
 "toiSeconds": 20
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -15095,7 +15129,7 @@
 "toiMinutes": 75,
 "toiSeconds": 9
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -17008,7 +17042,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Jack Eichel": {
 "gtd": false,
@@ -17282,6 +17316,40 @@
 "pos": "ld",
 "pp": null
 },
+"Raphael Lavoie": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 0,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 107,
+"toiSeconds": 17
+},
+"last5": {
+"assists": 1,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 52,
+"toiSeconds": 20
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Rasmus Andersson": {
 "gtd": false,
 "injury": null,
@@ -17416,40 +17484,6 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
-},
-"Victor Olofsson": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 5,
-"points": 6,
-"powerplayAssists": 0,
-"powerplayGoals": 2,
-"powerplayPoints": 2,
-"shots": 18,
-"toiMinutes": 132,
-"toiSeconds": 57
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 4,
-"points": 5,
-"powerplayAssists": 0,
-"powerplayGoals": 2,
-"powerplayPoints": 2,
-"shots": 10,
-"toiMinutes": 66,
-"toiSeconds": 12
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
 "pp": "PP1"
 },
 "William Karlsson": {
