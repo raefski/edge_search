@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-10-08T14:59:50+00:00",
+"generated_at": "2026-10-08T15:31:04+00:00",
 "goalies": {
 "2026-10-08": {
 "BOS": {
 "goalie": "Jeremy Swayman",
-"status": null
+"status": "Confirmed"
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
@@ -36,7 +36,7 @@
 },
 "MTL": {
 "goalie": "Jacob Fowler",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -48,7 +48,7 @@
 },
 "OTT": {
 "goalie": "Linus Ullmark",
-"status": "Likely"
+"status": "Confirmed"
 },
 "PHI": {
 "goalie": "Joseph Woll",
@@ -63,8 +63,8 @@
 "status": null
 },
 "TBL": {
-"goalie": "Andrei Vasilevskiy",
-"status": null
+"goalie": "Dennis Hildeby",
+"status": "Likely"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
@@ -7512,6 +7512,40 @@
 }
 },
 "MTL": {
+"Adam Engstrom": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 148,
+"toiSeconds": 6
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 85,
+"toiSeconds": 51
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Alex Newhook": {
 "gtd": false,
 "injury": null,
@@ -7854,40 +7888,6 @@
 "line": "G2",
 "pk": null,
 "pos": "g",
-"pp": null
-},
-"Jayden Struble": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 142,
-"toiSeconds": 37
-},
-"last5": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 0,
-"toiMinutes": 77,
-"toiSeconds": 57
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
 "pp": null
 },
 "Josh Anderson": {
@@ -8887,42 +8887,8 @@
 "toiMinutes": 94,
 "toiSeconds": 55
 },
-"line": "D1",
-"pk": "PK1",
-"pos": "ld",
-"pp": null
-},
-"Alexander Romanov": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 25,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 194,
-"toiSeconds": 24
-},
-"last5": {
-"assists": 0,
-"blocks": 16,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 88,
-"toiSeconds": 24
-},
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -9161,7 +9127,7 @@
 "goalieShutouts": 1,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9263,7 +9229,7 @@
 "toiMinutes": 75,
 "toiSeconds": 55
 },
-"line": "D3",
+"line": "D1",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -9380,6 +9346,40 @@
 "pos": "rd",
 "pp": null
 },
+"Scott Mayfield": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 142,
+"toiSeconds": 27
+},
+"last5": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 72,
+"toiSeconds": 28
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "rd",
+"pp": null
+},
 "Semyon Varlamov": {
 "gtd": false,
 "injury": null,
@@ -9411,7 +9411,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9481,7 +9481,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": "PP2"
 },
 "Victor Eklund": {
@@ -10117,7 +10117,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Carter Yakemchuk": {
@@ -10325,7 +10325,7 @@
 "pp": null
 },
 "Linus Ullmark": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
@@ -10425,7 +10425,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Nikolas Matinpalo": {
@@ -10459,7 +10459,7 @@
 },
 "line": "D3",
 "pk": "PK2",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Ridly Greig": {
@@ -10491,7 +10491,7 @@
 "toiMinutes": 87,
 "toiSeconds": 21
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -10709,7 +10709,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "William Eklund": {
@@ -10741,7 +10741,7 @@
 "toiMinutes": 92,
 "toiSeconds": 22
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -14137,7 +14137,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -14343,7 +14343,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
