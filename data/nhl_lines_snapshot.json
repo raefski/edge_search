@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-08T17:29:47+00:00",
+"generated_at": "2026-10-08T18:01:14+00:00",
 "goalies": {
 "2026-10-08": {
 "BOS": {
@@ -5582,6 +5582,40 @@
 "pos": "g",
 "pp": null
 },
+"Colin Blackwell": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 115,
+"toiSeconds": 10
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 58,
+"toiSeconds": 3
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Esa Lindell": {
 "gtd": false,
 "injury": null,
@@ -5681,7 +5715,7 @@
 "toiMinutes": 68,
 "toiSeconds": 36
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -5715,44 +5749,10 @@
 "toiMinutes": 94,
 "toiSeconds": 14
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
-},
-"Joel Kiviranta": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 17,
-"toiMinutes": 106,
-"toiSeconds": 33
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 54,
-"toiSeconds": 58
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Justin Hryckowian": {
 "gtd": false,
@@ -5851,7 +5851,7 @@
 "toiMinutes": 103,
 "toiSeconds": 47
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -6021,7 +6021,7 @@
 "toiMinutes": 83,
 "toiSeconds": 42
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -6055,7 +6055,7 @@
 "toiMinutes": 73,
 "toiSeconds": 12
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -6191,7 +6191,7 @@
 "toiMinutes": 102,
 "toiSeconds": 21
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
