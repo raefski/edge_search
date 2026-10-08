@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-08T12:59:57+00:00",
+"generated_at": "2026-10-08T14:00:09+00:00",
 "goalies": {
 "2026-10-08": {
 "BOS": {
@@ -47,7 +47,7 @@
 "status": "Likely"
 },
 "OTT": {
-"goalie": "Samuel Ersson",
+"goalie": "Linus Ullmark",
 "status": null
 },
 "PHI": {
@@ -10290,42 +10290,6 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Jonas Johansson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 39,
-"goalieGoalsAgainstAvg": "4.07",
-"goalieLosses": 4,
-"goalieMinutes": 574,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.867",
-"goalieSaves": 254,
-"goalieSeconds": 35,
-"goalieShotsAgainst": 293,
-"goalieShutouts": 0,
-"goalieWins": 4
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 20,
-"goalieGoalsAgainstAvg": "4.35",
-"goalieLosses": 2,
-"goalieMinutes": 275,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.87",
-"goalieSaves": 134,
-"goalieSeconds": 25,
-"goalieShotsAgainst": 154,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
-},
 "Jordan Spence": {
 "gtd": false,
 "injury": null,
@@ -10358,6 +10322,42 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
+"pp": null
+},
+"Linus Ullmark": {
+"gtd": true,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 18,
+"goalieGoalsAgainstAvg": "1.78",
+"goalieLosses": 5,
+"goalieMinutes": 605,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.931",
+"goalieSaves": 243,
+"goalieSeconds": 4,
+"goalieShotsAgainst": 261,
+"goalieShutouts": 1,
+"goalieWins": 5
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 10,
+"goalieGoalsAgainstAvg": "2.17",
+"goalieLosses": 2,
+"goalieMinutes": 276,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.912",
+"goalieSaves": 103,
+"goalieSeconds": 40,
+"goalieShotsAgainst": 113,
+"goalieShutouts": 0,
+"goalieWins": 3
+},
+"line": "G1",
+"pk": null,
+"pos": "g",
 "pp": null
 },
 "Michael Amadio": {
@@ -10527,7 +10527,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
