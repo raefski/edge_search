@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-08T17:01:08+00:00",
+"generated_at": "2026-10-08T17:29:47+00:00",
 "goalies": {
 "2026-10-08": {
 "BOS": {
@@ -16,7 +16,7 @@
 },
 "CGY": {
 "goalie": "Devin Cooley",
-"status": null
+"status": "Confirmed"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -24,7 +24,7 @@
 },
 "COL": {
 "goalie": "Scott Wedgewood",
-"status": null
+"status": "Likely"
 },
 "DAL": {
 "goalie": "Jake Oettinger",
@@ -16140,6 +16140,40 @@
 }
 },
 "VAN": {
+"Aatu Raty": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 125,
+"toiSeconds": 37
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 65,
+"toiSeconds": 41
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "Arshdeep Bains": {
 "gtd": false,
 "injury": null,
@@ -16172,40 +16206,6 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": null
-},
-"Brendan Gallagher": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 94,
-"toiSeconds": 18
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 51,
-"toiSeconds": 26
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
 "pp": null
 },
 "Brock Boeser": {
@@ -16273,7 +16273,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Elias Nils Pettersson": {
