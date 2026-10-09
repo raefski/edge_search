@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-09T14:00:49+00:00",
+"generated_at": "2026-10-09T14:29:47+00:00",
 "goalies": {
 "2026-10-09": {
 "ANA": {
@@ -5287,7 +5287,7 @@
 "toiMinutes": 93,
 "toiSeconds": 50
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -5355,7 +5355,7 @@
 "toiMinutes": 87,
 "toiSeconds": 46
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -5394,6 +5394,40 @@
 "pos": "c",
 "pp": null
 },
+"Noah Juulsen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 16,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 126,
+"toiSeconds": 33
+},
+"last5": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 72,
+"toiSeconds": 20
+},
+"line": "D2",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Parker Kelly": {
 "gtd": false,
 "injury": null,
@@ -5426,40 +5460,6 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "lw",
-"pp": null
-},
-"Sam Malinski": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 16,
-"toiMinutes": 179,
-"toiSeconds": 30
-},
-"last5": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 92,
-"toiSeconds": 10
-},
-"line": "D2",
-"pk": null,
-"pos": "rd",
 "pp": null
 },
 "Scott Wedgewood": {
@@ -17869,7 +17869,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Jake McCabe": {
@@ -17969,9 +17969,9 @@
 "toiMinutes": 91,
 "toiSeconds": 40
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Morgan Rielly": {
@@ -18043,7 +18043,7 @@
 "pp": "PP2"
 },
 "Oliver Ekman-Larsson": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -18209,7 +18209,7 @@
 "toiMinutes": 101,
 "toiSeconds": 8
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
