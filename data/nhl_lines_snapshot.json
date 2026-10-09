@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-09T17:59:48+00:00",
+"generated_at": "2026-10-09T18:29:49+00:00",
 "goalies": {
 "2026-10-09": {
 "ANA": {
@@ -7064,6 +7064,40 @@
 "pos": "rd",
 "pp": "PP1"
 },
+"Filip Hallander": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 4,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 18,
+"toiMinutes": 139,
+"toiSeconds": 49
+},
+"last5": {
+"assists": 2,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 66,
+"toiSeconds": 47
+},
+"line": "F2",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Isaac Howard": {
 "gtd": false,
 "injury": null,
@@ -7095,7 +7129,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Jake Walman": {
@@ -7312,40 +7346,6 @@
 "pos": "ld",
 "pp": null
 },
-"Max Jones": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 100,
-"toiSeconds": 38
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 58,
-"toiSeconds": 7
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Owen Michaels": {
 "gtd": false,
 "injury": null,
@@ -7443,7 +7443,7 @@
 "toiMinutes": 50,
 "toiSeconds": 25
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
