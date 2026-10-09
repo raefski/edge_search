@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-09T16:00:11+00:00",
+"generated_at": "2026-10-09T16:30:04+00:00",
 "goalies": {
 "2026-10-09": {
 "ANA": {
@@ -19,8 +19,8 @@
 "status": "Confirmed"
 },
 "PIT": {
-"goalie": "Arturs Silovs",
-"status": null
+"goalie": "Sergei Murashov",
+"status": "Confirmed"
 },
 "SEA": {
 "goalie": "Joey Daccord",
@@ -117,7 +117,7 @@
 "status": null
 },
 "PIT": {
-"goalie": "Arturs Silovs",
+"goalie": "Sergei Murashov",
 "status": null
 },
 "SJS": {
@@ -3055,7 +3055,7 @@
 "pp": "PP2"
 },
 "Damon Severson": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 3,
@@ -14203,7 +14203,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -14305,7 +14305,7 @@
 "toiMinutes": 86,
 "toiSeconds": 48
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -14478,7 +14478,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Hendrix Lapierre": {
 "gtd": false,
@@ -14509,7 +14509,7 @@
 "toiMinutes": 67,
 "toiSeconds": 12
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -14647,7 +14647,7 @@
 },
 "line": "F1",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Samuel Girard": {
@@ -14715,7 +14715,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -14786,7 +14786,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Trevor van Riemsdyk": {
 "gtd": false,
@@ -14853,7 +14853,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 }
 },
