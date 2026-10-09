@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-09T20:00:03+00:00",
+"generated_at": "2026-10-09T20:30:02+00:00",
 "goalies": {
 "2026-10-09": {
 "ANA": {
@@ -14923,7 +14923,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Berkly Catton": {
@@ -14933,7 +14933,7 @@
 "last5": {},
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP1"
 },
 "Bobby McMann": {
@@ -15003,40 +15003,6 @@
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP1"
-},
-"Cale Fleury": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 24,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 4,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 8,
-"toiMinutes": 145,
-"toiSeconds": 2
-},
-"last5": {
-"assists": 3,
-"blocks": 12,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 81,
-"toiSeconds": 42
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
 },
 "Chandler Stephenson": {
 "gtd": false,
@@ -15210,6 +15176,40 @@
 "pos": "rw",
 "pp": "PP2"
 },
+"Joshua Mahura": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 15,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 171,
+"toiSeconds": 2
+},
+"last5": {
+"assists": 0,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 89,
+"toiSeconds": 8
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Kaapo Kakko": {
 "gtd": false,
 "injury": null,
@@ -15348,40 +15348,6 @@
 "pos": "g",
 "pp": null
 },
-"Ryan Lindgren": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 159,
-"toiSeconds": 31
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 68,
-"toiSeconds": 48
-},
-"line": "D3",
-"pk": "PK1",
-"pos": "ld",
-"pp": null
-},
 "Ryan Winterton": {
 "gtd": false,
 "injury": null,
@@ -15413,7 +15379,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Ryker Evans": {
@@ -15446,7 +15412,7 @@
 "toiSeconds": 11
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -15481,8 +15447,42 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP1"
+},
+"Ville Ottavainen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 12,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 167,
+"toiSeconds": 27
+},
+"last5": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 79,
+"toiSeconds": 4
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
 },
 "Vince Dunn": {
 "gtd": false,
@@ -15514,7 +15514,7 @@
 "toiSeconds": 51
 },
 "line": "D1",
-"pk": null,
+"pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
 }
