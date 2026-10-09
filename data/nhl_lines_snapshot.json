@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-09T14:59:46+00:00",
+"generated_at": "2026-10-09T15:30:04+00:00",
 "goalies": {
 "2026-10-09": {
 "ANA": {
@@ -8,7 +8,7 @@
 },
 "CBJ": {
 "goalie": "Cam Talbot",
-"status": "Likely"
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "John Gibson",
@@ -27,8 +27,8 @@
 "status": null
 },
 "WPG": {
-"goalie": "Stuart Skinner",
-"status": null
+"goalie": "Clay Stevenson",
+"status": "Likely"
 },
 "WSH": {
 "goalie": "Logan Thompson",
@@ -11665,7 +11665,7 @@
 "pp": "PP2"
 },
 "Bo Horvat": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 4,
