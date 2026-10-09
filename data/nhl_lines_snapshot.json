@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-09T16:30:04+00:00",
+"generated_at": "2026-10-09T17:59:48+00:00",
 "goalies": {
 "2026-10-09": {
 "ANA": {
@@ -16362,40 +16362,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Dillon Dube": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 103,
-"toiSeconds": 34
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 64,
-"toiSeconds": 53
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Dylan Holloway": {
 "gtd": false,
 "injury": null,
@@ -16837,6 +16803,16 @@
 "toiMinutes": 46,
 "toiSeconds": 19
 },
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
+"Zachary Dean": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
 "line": "F4",
 "pk": null,
 "pos": "rw",
