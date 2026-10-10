@@ -27,6 +27,10 @@ from .cache import Cache
 
 NS = {"itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
       "podcast": "https://podcastindex.org/namespace/1.0"}
+#: The Podcasting 2.0 namespace's original URI, still declared by older feeds.
+#: No Agenda (measured 2026-09-30) uses it, and matched on the new URI alone
+#: its SRT captions looked absent, sending every episode to speech-to-text.
+NS_LEGACY = {"podcast": "https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md"}
 
 #: CPU threads for speech-to-text. The machine this was built on has 20; a
 #: few keeps the fan quiet and the desktop usable while an episode runs.
@@ -83,6 +87,8 @@ class Podcasts:
                 continue
             guid = item.findtext("guid") or enc.get("url")
             tr = item.find("podcast:transcript", NS)
+            if tr is None:
+                tr = item.find("podcast:transcript", NS_LEGACY)
             dur = (item.findtext("itunes:duration", default="", namespaces=NS) or "").strip()
             pub = item.findtext("pubDate")
             out.append({

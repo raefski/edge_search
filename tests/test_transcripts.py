@@ -44,6 +44,18 @@ def test_podcast_caption_files():
     assert parse_caption_file(js) == [[3.2, "Hello"]]
 
 
+def test_feed_transcript_under_either_namespace_uri(tmp_path):
+    from transcripts import Cache, Podcasts
+    item = ('<item><title>Ep</title><guid>g</guid><enclosure url="https://x/a.mp3"/>'
+            '<podcast:transcript url="https://x/a.srt" type="application/srt"/></item>')
+    for uri in ("https://podcastindex.org/namespace/1.0",
+                "https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md"):
+        pods = Podcasts(Cache(tmp_path))
+        feed = f'<rss xmlns:podcast="{uri}"><channel><title>Show</title>{item}</channel></rss>'
+        pods.http.get = lambda url, *a, **k: feed.encode()
+        assert pods.episodes("https://x/feed.xml")[0]["transcript_url"] == "https://x/a.srt"
+
+
 def test_ledger_replaces_a_regraded_result_and_ranks(tmp_path):
     led = Ledger(tmp_path / "ledger.csv")
     led.record("nfl_ats", "UC1", "Good", "g1", "ats_correct", 0)
