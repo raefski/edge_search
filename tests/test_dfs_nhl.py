@@ -153,3 +153,32 @@ def test_default_slate_is_next_main_not_biggest():
             {"gid": 154696, "label": "Main", "games": 10, "start": "2026-10-08T23:00:00Z"}]
     assert rows[R.default_slate(rows)]["gid"] == 154690
     assert R.default_slate([{"gid": 1, "label": "Late", "games": 2, "start": "x"}]) == 0
+
+
+def test_cash_field_is_legal_and_tracks_ownership():
+    from edge import dfs_nhl_field as field
+    pool, sim = _slate()
+    own = field.cash_ownership(pool)
+    lineups = field.sample_field(pool, own, n=200, seed=2)
+    assert lineups.shape == (200, 9)
+    assert all(opt._valid(pool, list(lu)) for lu in lineups)
+    seen = np.bincount(lineups.ravel(), minlength=len(pool)) / len(lineups)
+    assert np.corrcoef(seen, own)[0, 1] > 0.8
+    line = field.cash_line(sim, lineups)
+    totals = sim[:, lineups].sum(axis=2)
+    assert line.shape == (sim.shape[0],)
+    assert (line >= totals.min(axis=1)).all() and (line <= totals.max(axis=1)).all()
+
+
+def test_field_aware_cash_clears_the_line_at_least_as_often_as_the_floor():
+    from edge import dfs_nhl_field as field
+    pool, sim = _slate()
+    own = field.cash_ownership(pool)
+    line = field.cash_line(sim, field.sample_field(pool, own, n=200, seed=2))
+    fa = opt.optimize(pool, sim, mode="cash", iters=15, seed=1, line=line)
+    fl = opt.optimize(pool, sim, mode="cash", iters=15, seed=1)
+
+    def p(res):
+        return (sim[:, [pool.index(r) for r in res["lineup"]]].sum(axis=1) >= line).mean()
+    assert opt._valid(pool, [pool.index(r) for r in fa["lineup"]])
+    assert p(fa) >= p(fl) - 0.01

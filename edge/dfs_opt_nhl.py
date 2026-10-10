@@ -91,12 +91,20 @@ def _fill(rng, pool, order_by_pos, min_stack):
     return None
 
 
-def _hill_climb(pool, sim, idx, cand, mode, own_weight, owns, min_stack):
+def _clears(tot, line):
+    """Smoothed share of simulations in which `tot` clears the field's cash line."""
+    from edge.dfs_nhl_field import SMOOTH
+    return 1.0 / (1.0 + np.exp(-(tot - line) / SMOOTH))
+
+
+def _hill_climb(pool, sim, idx, cand, mode, own_weight, owns, min_stack, line=None):
     q = theory.GPP_PCT if mode == "gpp" else theory.CASH_PCT
     idx = list(idx)
     totals = sim[:, idx].sum(axis=1)
 
     def value(tot, lineup):
+        if line is not None:
+            return float(_clears(tot, line).mean())
         v = float(np.percentile(tot, q))
         if own_weight and mode == "gpp":
             v -= own_weight * float(owns[lineup].sum()) / 100.0
@@ -121,7 +129,10 @@ def _hill_climb(pool, sim, idx, cand, mode, own_weight, owns, min_stack):
                 continue
             arr = np.array(trial_ids)
             base = totals - sim[:, cur]
-            scores = np.percentile(base[:, None] + sim[:, arr], q, axis=0)
+            if line is not None:
+                scores = _clears(base[:, None] + sim[:, arr], line[:, None]).mean(axis=0)
+            else:
+                scores = np.percentile(base[:, None] + sim[:, arr], q, axis=0)
             if own_weight and mode == "gpp":
                 scores = scores - own_weight * (float(owns[idx].sum()) - owns[cur] + owns[arr]) / 100.0
             k = int(np.argmax(scores))
@@ -135,8 +146,10 @@ def _hill_climb(pool, sim, idx, cand, mode, own_weight, owns, min_stack):
 
 def optimize(pool: list, sim: np.ndarray, mode: str = "cash", iters: int = 250, seed: int = 0,
              own_weight: float = 0.0, min_stack: tuple | None = None,
-             exclude: set | None = None) -> dict | None:
-    """Best legal lineup under one theory, or None if none exists."""
+             exclude: set | None = None, line: np.ndarray | None = None) -> dict | None:
+    """Best legal lineup under one theory, or None if none exists. `line`
+    (per-simulation cash line, edge/dfs_nhl_field.py) switches cash from its
+    own 25th percentile to the chance of clearing the field."""
     if min_stack is None:
         min_stack = GPP_STACKS if mode == "gpp" else ()
     rng = random.Random(seed)
@@ -158,7 +171,7 @@ def optimize(pool: list, sim: np.ndarray, mode: str = "cash", iters: int = 250, 
         start = _fill(rng, pool, order, min_stack)
         if start is None:
             continue
-        idx, v = _hill_climb(pool, sim, start, cand, mode, own_weight, owns, min_stack)
+        idx, v = _hill_climb(pool, sim, start, cand, mode, own_weight, owns, min_stack, line)
         if best_v is None or v > best_v:
             best, best_v = idx, v
     if best is None:

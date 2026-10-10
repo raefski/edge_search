@@ -88,13 +88,18 @@ def _normalise(weights, target, cap):
     return owns
 
 
-def add_ownership(pool: list, buzz_gamma: float | None = None, buzz_beta: float | None = None) -> list:
-    """Annotate `own` (percent) and `leverage` on every row.
+def add_ownership(pool: list, buzz_gamma: float | None = None, buzz_beta: float | None = None,
+                  weights: tuple | None = None, max_own: float | None = None,
+                  key: str = "own") -> list:
+    """Annotate `key` (percent, default `own`) and `leverage` on every row.
 
     buzz_gamma/buzz_beta override BUZZ_GAMMA/BUZZ_BETA if provided (for testing).
+    weights=(value, salary, pp1) and max_own override the module constants --
+    the cash field (edge/dfs_nhl_field.py) runs this with its own fit.
     """
     bg = buzz_gamma if buzz_gamma is not None else BUZZ_GAMMA
-    bb = buzz_beta if buzz_beta is not None else BUZZ_BETA
+    vw, sw, pp1 = weights or (VALUE_WEIGHT, SALARY_WEIGHT, PP1_BONUS)
+    cap = MAX_OWN if max_own is None else max_own
     groups: dict = {}
     for p in pool:
         groups.setdefault(p["pos"], []).append(p)
@@ -104,12 +109,13 @@ def add_ownership(pool: list, buzz_gamma: float | None = None, buzz_beta: float 
         zs = _z([float(p["salary"]) for p in players])
         buzz_vals = [math.log1p(p.get("buzz") or 0) for p in players]
         zb = _z(buzz_vals)
-        weights = [math.exp(VALUE_WEIGHT * zv_i + SALARY_WEIGHT * zs_i
-                            + (PP1_BONUS if p.get("pp") == "PP1" else 0.0)
-                            + (bg * zb_i if bg else 0.0))
-                   for p, zv_i, zs_i, zb_i in zip(players, zv, zs, zb)]
-        for p, own in zip(players, _normalise(weights, 100.0 * GROUP_SLOTS.get(pos, 1.0), MAX_OWN)):
-            p["own"] = round(own, 1)
+        w = [math.exp(vw * zv_i + sw * zs_i + (pp1 if p.get("pp") == "PP1" else 0.0)
+                      + (bg * zb_i if bg else 0.0))
+             for p, zv_i, zs_i, zb_i in zip(players, zv, zs, zb)]
+        for p, own in zip(players, _normalise(w, 100.0 * GROUP_SLOTS.get(pos, 1.0), cap)):
+            p[key] = round(own, 1)
+        if key != "own":
+            continue
         n = len(players)
         pr = {id(p): i for i, p in enumerate(sorted(players, key=lambda q: q["proj"]))}
         orr = {id(p): i for i, p in enumerate(sorted(players, key=lambda q: q["own"]))}

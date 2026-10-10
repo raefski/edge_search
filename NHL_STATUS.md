@@ -174,6 +174,34 @@ ownership is ~880% of a 900% roster.
 **Buzz:** the earlier "no signal" runs used the wrong night's board too, so
 they are void as well. Re-run `scripts/buzz_fit_nhl.py` on the rebuilt nights.
 
+## 6c. Field-aware cash objective (built 2026-10-10, NOT the app default yet)
+
+The floor objective maximises a cash lineup's own 25th percentile and ignores
+the field -- the wrong question on a small slate, where 75-88% of a double-up
+rosters the same top player and the cash line is "how the chalk did".
+`edge/dfs_nhl_field.py` samples 300 field lineups from a CASH ownership model,
+takes the score the field needs to cash in each simulation (top 44%), and
+`dfs_opt_nhl.optimize(..., line=...)` maximises the (smoothed) chance of
+clearing it.
+
+Cash ownership, fitted on squared error over the eight graded double-ups:
+VALUE 1.0, SALARY 0.5, PP1 0.8, cap 90 (RMSE 7.23 vs 7.55 for the GPP model).
+
+`scripts/nhl_cash_field.py`, leave one night out, real DK points vs the real
+cash line:
+
+| | cashed | mean finish percentile | mean points |
+|---|---|---|---|
+| floor (shipped) | 3 / 8 | 51% | 105.5 |
+| field-aware | 5 / 8 | 63% | 118.3 |
+
+Field-aware finished higher on 7 of 8 nights (one-sided sign test p = 0.035).
+But the model's OWN estimate of the gain is small -- P(clear) +1 to +5 points
+per night -- so most of the realised +12 points is noise from two different
+lineups on eight nights; read it as "not worse, probably better", not as a
+measured 25-point cash-rate gain. The difference concentrates on small slates
+(on the 10-game 10/10 slate the two lineups shared 7 of 9 players, 75% vs 76%).
+
 ## 7. Nightly workflow
 
 ```bash

@@ -100,7 +100,7 @@ def rebuild(gid: int, at: str | None, n_sims: int, iters: int):
     for mode, res in (("cash", cash), ("gpp", gpp)):
         names = ", ".join(p["name"] for _, p in res.get("slots", []))
         print(f"   {mode:4}: {names}")
-    return pool, info
+    return pool, info, sim
 
 
 def log(pool, gid, date):
@@ -133,7 +133,7 @@ def main():
     ap.add_argument("--no-log", action="store_true")
     args = ap.parse_args()
     for gid in args.gids:
-        pool, info = rebuild(gid, args.at, args.sims, args.iters)
+        pool, info, _ = rebuild(gid, args.at, args.sims, args.iters)
         if not args.no_log:
             log(pool, gid, info["date"])
 
