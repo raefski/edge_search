@@ -199,7 +199,7 @@ def _candidate_index(players):
 def _climb_candidates(index, cur, limit=CLIMB_CANDIDATES):
     """Best `limit` players who could stand in for `cur`, de-duplicated."""
     out, seen = [], set()
-    for slot in cur["pos"]:
+    for slot in sorted(cur["pos"]):   # a set: its order changes per process
         for p in index.get(slot, ())[:limit]:
             if p["name"] not in seen:
                 seen.add(p["name"])

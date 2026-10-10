@@ -40,7 +40,9 @@ def team_maps(date):
         m = {}
         for d in s.get("dates", []):
             for g in d.get("games", []):
-                if g.get("gameType", "R") != "R":
+                # Regular season and postseason (F wild card, D, L, W); not
+                # spring training/exhibition. Postseason slates had no games.
+                if g.get("gameType", "R") not in ("R", "F", "D", "L", "W"):
                     continue
                 h = id2ab.get(str(g["teams"]["home"]["team"]["id"]))
                 a = id2ab.get(str(g["teams"]["away"]["team"]["id"]))

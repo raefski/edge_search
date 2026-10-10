@@ -367,39 +367,39 @@
  },
  "196169741": {
   "type": "gpp",
-  "field": null,
+  "field": 11890,
   "entry_fee": null,
   "places_paid": null,
   "prize_pool": null,
   "sport": "NFL",
-  "slate": "2026-09-27 Main"
+  "slate": "2026-10-04 Main (week 5)"
  },
  "196170291": {
   "type": "cash",
-  "field": null,
+  "field": 124,
   "entry_fee": null,
   "places_paid": null,
   "prize_pool": null,
   "sport": "NFL",
-  "slate": "2026-09-27 Main"
+  "slate": "2026-10-04 Main (week 5)"
  },
  "196227921": {
   "type": "gpp",
-  "field": 36,
+  "field": 1189,
   "entry_fee": null,
   "places_paid": null,
   "prize_pool": null,
   "sport": "NASCAR",
-  "slate": "2026-09-27 Kansas"
+  "slate": "2026-10-04 Cup race"
  },
  "196227893": {
   "type": "cash",
-  "field": 36,
+  "field": 224,
   "entry_fee": null,
   "places_paid": null,
   "prize_pool": null,
   "sport": "NASCAR",
-  "slate": "2026-09-27 Kansas"
+  "slate": "2026-10-04 Cup race"
  },
  "196304871": {
   "type": "gpp",
@@ -526,5 +526,23 @@
   "prize_pool": null,
   "sport": "NHL",
   "slate": "2026-10-09 Main (gid 154704)"
+ },
+ "196178850": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "cash",
+  "sport": "NCAAF",
+  "slate": "2026-10-03 Main (gid 154161)",
+  "field": 124
+ },
+ "196178010": {
+  "entry_fee": null,
+  "places_paid": null,
+  "prize_pool": null,
+  "type": "gpp",
+  "sport": "NCAAF",
+  "slate": "2026-10-03 Main (gid 154161)",
+  "field": 1189
  }
 }

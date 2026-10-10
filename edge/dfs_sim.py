@@ -329,7 +329,7 @@ def _one_field_lineup(pool, rng, pitchers, pw, hitters, hw, teams, tw,
             return None
         if "P" not in p["pos"] and team_ct.get(p["team"], 0) >= max_team:
             return None
-        for s in p["pos"]:
+        for s in sorted(p["pos"]):   # a set: its order changes per process
             if need.get(s, 0) > 0:
                 return s
         return None
@@ -479,3 +479,81 @@ def pick_by_sim_ev(scores, candidates, field_lineups, payouts, field_size):
     best = max(range(len(candidates)),
                key=lambda i: (results[i]["ev"], results[i]["p_top1"]))
     return best, results
+
+
+# ---------------------------------------------------------------------------
+# Field-aware CASH (the NHL result, NHL_STATUS.md 6c, ported): pick the cash
+# lineup most likely to clear a simulated double-up field's cash line instead
+# of the highest projection. Same worlds for our lineup and the field, so a
+# chalk pitcher's bad night lowers the line too.
+# ---------------------------------------------------------------------------
+CASH_PAY_FRAC = 0.44
+#: Cash fields concentrate far harder than GPP (90%+ on top pitchers in small
+#: double-ups -- DFS_STATUS.md), so the logged GPP-model ownership is sharpened
+#: as own**k, renormalised per role. Fitted by scripts/dfs_cash_field_mlb.py.
+CASH_SHARPEN = 2.0
+CASH_SMOOTH = 2.0
+
+
+def cash_ownership(pool, k=None, own_key="own", out_key="own_cash", cap=95.0):
+    """own**k renormalised to the same total per role (pitchers 200%, hitters 800%)."""
+    k = CASH_SHARPEN if k is None else k
+    for role in (True, False):
+        idx = [i for i, p in enumerate(pool) if ("P" in p["pos"]) == role]
+        base = np.array([max(float(pool[i].get(own_key) or 0.0), 0.01) for i in idx])
+        if not len(idx):
+            continue
+        total = base.sum()
+        w = base ** k
+        own = w / w.sum() * total
+        for _ in range(10):                      # cap and redistribute
+            over = own > cap
+            if not over.any():
+                break
+            spare = (own[over] - cap).sum()
+            own[over] = cap
+            free = ~over & (own < cap)
+            own[free] += spare * own[free] / own[free].sum()
+        for i, o in zip(idx, own):
+            pool[i][out_key] = round(float(o), 2)
+    return pool
+
+
+def cash_line(scores, field_lineups, pay_frac=CASH_PAY_FRAC):
+    """Per world, the score a field lineup needs to cash."""
+    field = np.stack([scores[:, lu].sum(1) for lu in field_lineups], 1)
+    return np.quantile(field, 1.0 - pay_frac, axis=1)
+
+
+def optimize_cash_vs_field(pool, scores, line, starts, valid, smooth=CASH_SMOOTH):
+    """Hill-climb from each start (lists of pool indices) on the smoothed
+    chance of clearing `line`; `valid(list_of_pool_rows)` is the optimizer's
+    legality check. Returns (best index list, P(clear) unsmoothed)."""
+    def clears(tot):
+        return 1.0 / (1.0 + np.exp(-(tot - line[:, None]) / smooth))
+
+    best, best_v = None, -1.0
+    n = len(pool)
+    for start in starts:
+        idx = list(start)
+        tot = scores[:, idx].sum(1)
+        cur_v = float(clears(tot[:, None]).mean())
+        improved = True
+        while improved:
+            improved = False
+            for s in range(len(idx)):
+                cands = [j for j in range(n) if j not in idx
+                         and valid([pool[i] for i in idx[:s] + [j] + idx[s + 1:]])]
+                if not cands:
+                    continue
+                base = tot - scores[:, idx[s]]
+                vals = clears(base[:, None] + scores[:, cands]).mean(0)
+                k = int(np.argmax(vals))
+                if vals[k] > cur_v + 1e-9:
+                    idx[s] = cands[k]
+                    tot = base + scores[:, idx[s]]
+                    cur_v = float(vals[k])
+                    improved = True
+        if best is None or cur_v > best_v:
+            best, best_v = idx, cur_v
+    return best, float((scores[:, best].sum(1) >= line).mean())

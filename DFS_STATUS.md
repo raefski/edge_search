@@ -395,6 +395,46 @@ Two model lineups were entered. **GPP 118.4, 38th of 70** (cashed). **Cash 59.2,
 
 ---
 
+## Field-aware cash, tested across sports (2026-10-10)
+
+NHL's cash lineup now maximises the chance of clearing a simulated double-up
+field's cash line (NHL_STATUS.md 6c). The same objective was backtested on
+every other sport with a gradeable cash slate. A slate counts only if the
+export is confirmed as that logged build (MLB: real-score date match; NFL /
+NCAAF: same-week cash/GPP exports with identical points, and 90%+ of the cash
+field's ownership on the logged board). Leave one slate out for the cash
+ownership fit; real DK points against the real cash line.
+
+| sport | cash slates | cashed: current / field-aware | identical lineups | model P(clear) gain |
+|---|---|---|---|---|
+| NHL | 8 | 3 / 5 | 0 / 8 | +1 to +5 pts -> **shipped** |
+| MLB | 9 | 5 / 5 | 6 / 9 | 0 to +2 |
+| NFL | 3 | 2 / 2 | 2 / 3 | 0 to +2 |
+| NCAAF | 1 (9/26 excluded: suffix-bug build lost the 91%-owned QB) | 0 / 0 | 1 / 1 | 0 |
+| NASCAR | 1 (9/27; 10/4 was a phone build) | 0 / 0 | 5 of 6 drivers | 0 |
+| MMA | -- | already field-aware since it was built | | |
+
+**Verdict: no change for MLB, NFL, NCAAF, NASCAR.** Their cash objectives
+(projection-max; mean - 0.75 sd; own 25th percentile) already land at or next
+to the field-optimal lineup by the model's own measure. NHL's gain shows up
+mostly on its small slates; re-test the others when small slates are logged
+(the NFL two-game primetime slate never was). Cash misses in NCAAF (115 vs a
+190.8 line) and NASCAR (224 vs 282) are projection misses, not objective ones.
+
+Tools: `edge/dfs_field.py` (joint outcomes from mean/sd/rho, field sampler,
+cash line), `edge/dfs_sim.py` (MLB cash ownership, cash line,
+`optimize_cash_vs_field`), `scripts/dfs_cash_field_mlb.py`,
+`scripts/dfs_cash_field_football.py --sport nfl|ncaaf [--restarts N]`.
+
+**Bug found on the way: NFL and NCAAF cash lineups were not repeatable.** The
+same pool gave different lineups (3 players apart on 9/27) per Python process,
+because the hill climb walked a player's eligible-slot SET, whose order is
+hash-seeded. Fixed (sorted) in dfs_opt_nfl / dfs_opt_ncaaf, and in the MLB
+field sampler. MLB's optimizer was already deterministic. Also fixed: the
+replay schedule dropped postseason games, so 10/3 MLB had no games.
+
+---
+
 ## Quick facts easy to forget
 
 - Odds API cost = markets × regions per live pull; historical endpoints are 10× that.
