@@ -1,0 +1,10 @@
+[Unit]
+Description=Log every DFS slate shortly before lock (every 5 min, 08:00-23:55)
+
+[Timer]
+OnCalendar=*-*-* 08..23:00/5:00
+AccuracySec=30s
+Persistent=false
+
+[Install]
+WantedBy=timers.target

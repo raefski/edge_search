@@ -395,6 +395,18 @@ Two model lineups were entered. **GPP 118.4, 38th of 70** (cashed). **Cash 59.2,
 
 ---
 
+## Every slate is logged automatically (2026-10-10)
+
+`deploy/dfs-autolog.timer` (every 5 min, 08:00-23:55) runs
+`scripts/dfs_autolog.py`: for NHL, NFL, NCAAF, NASCAR, MMA and MLB it builds
+every Classic slate 10-15 minutes before lock with that sport's own lineup
+script (fresh odds first), so the projection logs hold every night even when
+the lineups were made on the phone. Each build's logs are committed locally;
+the odds-publish timers push them. DK's lobby is listed once an hour per sport
+(DRAFTKINGS_ACCESS.md). Built slates: `data/cache/dfs_autolog.json`.
+`journalctl --user -u dfs-autolog` shows each run. Before this, phone-only
+nights had to be rebuilt after the fact (scripts/nhl_rebuild.py for NHL).
+
 ## Field-aware cash, tested across sports (2026-10-10)
 
 NHL's cash lineup now maximises the chance of clearing a simulated double-up

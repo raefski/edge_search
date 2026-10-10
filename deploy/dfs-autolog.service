@@ -1,0 +1,19 @@
+# Build and LOG every DK DFS slate (NHL, NFL, NCAAF, NASCAR, MMA, MLB) ~10-15
+# minutes before it locks, so a night built only on the phone can still be
+# graded. See scripts/dfs_autolog.py.
+#
+#   cp deploy/dfs-autolog.service deploy/dfs-autolog.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now dfs-autolog.timer
+#   journalctl --user -u dfs-autolog -n 50
+[Unit]
+Description=Build and log every DFS slate shortly before lock
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/dfs_autolog.py
+Restart=no
+Nice=10
+TimeoutStartSec=3000
