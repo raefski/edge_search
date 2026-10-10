@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-10T15:59:52+00:00",
+"generated_at": "2026-10-10T16:30:07+00:00",
 "goalies": {
 "2026-10-10": {
 "ANA": {
@@ -8,7 +8,7 @@
 },
 "BOS": {
 "goalie": "Jeremy Swayman",
-"status": null
+"status": "Confirmed"
 },
 "BUF": {
 "goalie": "Colten Ellis",
@@ -24,7 +24,7 @@
 },
 "CGY": {
 "goalie": "Dustin Wolf",
-"status": null
+"status": "Confirmed"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -36,7 +36,7 @@
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": "Likely"
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "Daniil Tarasov",
@@ -5475,7 +5475,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Scott Wedgewood": {
@@ -5555,7 +5555,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 }
 },
@@ -16477,7 +16477,7 @@
 "goalieShutouts": 1,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -16547,7 +16547,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
