@@ -174,7 +174,10 @@ ownership is ~880% of a 900% roster.
 **Buzz:** the earlier "no signal" runs used the wrong night's board too, so
 they are void as well. Re-run `scripts/buzz_fit_nhl.py` on the rebuilt nights.
 
-## 6c. Field-aware cash objective (built 2026-10-10, NOT the app default yet)
+## 6c. Field-aware cash objective (the app's cash lineup since 2026-10-10)
+
+The floor lineup is still built and logged next to it (`mode=cash_floor` in
+`data/dfs_lineups_nhl_<date>.csv`) so the switch keeps being graded.
 
 The floor objective maximises a cash lineup's own 25th percentile and ignores
 the field -- the wrong question on a small slate, where 75-88% of a double-up

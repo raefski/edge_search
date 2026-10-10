@@ -22,9 +22,9 @@ from edge import dfs_nhl_theory as theory, dfs_opt_nhl, nhl
 
 #: DK double-ups pay 27 of 62, 10 of 23, 17 of 39 (data/contest_meta.json).
 PAY_FRAC = 0.44
-#: Cash-field ownership (value, salary, PP1) and cap. Fitted on the graded NHL
-#: double-ups by scripts/nhl_cash_field.py; see NHL_STATUS.md.
-CASH_WEIGHTS = (1.5, 0.75, 0.8)
+#: Cash-field ownership (value, salary, PP1) and cap. Fitted (squared error) on
+#: the eight graded NHL double-ups by scripts/nhl_cash_field.py; NHL_STATUS.md 6c.
+CASH_WEIGHTS = (1.0, 0.5, 0.8)
 CASH_MAX_OWN = 90.0
 FIELD_SIZE = 300
 #: Logistic width, in DK points, of the "clears the line" indicator.

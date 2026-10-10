@@ -184,8 +184,13 @@ def render(result, mode: str) -> None:
     if not result:
         st.caption("No legal lineup under the cap.")
         return
-    head = (f"floor <b>{result['floor']:.0f}</b>" if mode == "cash"
-            else f"95th pct <b>{result['ceil']:.0f}</b>")
+    if mode == "cash" and result.get("p_cash") is not None:
+        head = (f"clears the field <b>{result['p_cash']:.0%}</b> · line "
+                f"~<b>{result['field_line']:.0f}</b> · floor <b>{result['floor']:.0f}</b>")
+    elif mode == "cash":
+        head = f"floor <b>{result['floor']:.0f}</b>"
+    else:
+        head = f"95th pct <b>{result['ceil']:.0f}</b>"
     stacks = ", ".join(f"{t}×{n}" for t, n in result["stacks"].items() if n >= 2)
     lines = ", ".join(f"{k}×{n}" for k, n in result["line_stacks"].items())
     st.markdown(f"<div class='lu-tot'>{head} · proj <b>{result['proj']}</b> · 1-in-100 "
@@ -200,8 +205,10 @@ def render(result, mode: str) -> None:
 t_cash, t_gpp, t_board = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board"])
 with t_cash:
     render(res.get("cash"), "cash")
-    st.caption("Objective: the 25th percentile of the lineup's own simulated total — "
-               "clear the cash line, don't chase the win. No stacking rule.")
+    st.caption("Objective: the best chance of clearing the cash line of a simulated "
+               "double-up field (300 lineups drawn from cash ownership). On small slates "
+               "the field piles onto the same players, so the line is set by the chalk. "
+               "No stacking rule.")
 with t_gpp:
     lineups = [res.get("gpp")]
     if n_gpp > 1:

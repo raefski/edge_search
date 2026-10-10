@@ -65,6 +65,9 @@ def main() -> int:
     if unconfirmed:
         print("UNCONFIRMED goalies: " + ", ".join(sorted(unconfirmed)))
     show("CASH", res["cash"])
+    if res["cash"].get("p_cash") is not None:
+        print(f"  clears the simulated field's cash line (~{res['cash']['field_line']}) "
+              f"in {res['cash']['p_cash']:.0%} of simulations")
     if args.gpp > 1:
         for k, lu in enumerate(dfs_opt_nhl.portfolio(res["pool"], res["sim"], args.gpp,
                                                       iters=max(40, args.iters // 3)), 1):
