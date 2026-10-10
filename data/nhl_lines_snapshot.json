@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-10T16:30:07+00:00",
+"generated_at": "2026-10-10T16:59:57+00:00",
 "goalies": {
 "2026-10-10": {
 "ANA": {
@@ -13468,40 +13468,6 @@
 }
 },
 "PHI": {
-"Cam York": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 29,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 229,
-"toiSeconds": 59
-},
-"last5": {
-"assists": 0,
-"blocks": 10,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 109,
-"toiSeconds": 7
-},
-"line": "D2",
-"pk": "PK1",
-"pos": "ld",
-"pp": null
-},
 "Christian Dvorak": {
 "gtd": false,
 "injury": null,
@@ -13531,7 +13497,7 @@
 "toiMinutes": 80,
 "toiSeconds": 38
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -13637,8 +13603,76 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
+},
+"Garrett Wilson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 48,
+"toiSeconds": 30
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 48,
+"toiSeconds": 30
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
+"Helge Grans": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 124,
+"toiSeconds": 15
+},
+"last5": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 51,
+"toiSeconds": 55
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "ld",
+"pp": null
 },
 "Jamie Drysdale": {
 "gtd": false,
@@ -13739,7 +13773,7 @@
 "toiMinutes": 77,
 "toiSeconds": 19
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -13776,7 +13810,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Nick Seeler": {
 "gtd": false,
@@ -13807,8 +13841,8 @@
 "toiMinutes": 89,
 "toiSeconds": 13
 },
-"line": "D3",
-"pk": "PK2",
+"line": "D2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -13841,10 +13875,10 @@
 "toiMinutes": 61,
 "toiSeconds": 44
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Noel Acciari": {
 "gtd": false,
@@ -13877,7 +13911,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Owen Tippett": {
@@ -13911,7 +13945,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Porter Martone": {
@@ -13943,7 +13977,7 @@
 "toiMinutes": 64,
 "toiSeconds": 34
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -13977,7 +14011,7 @@
 "toiMinutes": 81,
 "toiSeconds": 50
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -14015,40 +14049,6 @@
 "pk": "PK2",
 "pos": "rd",
 "pp": null
-},
-"Travis Konecny": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 5,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 5,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 14,
-"toiMinutes": 170,
-"toiSeconds": 47
-},
-"last5": {
-"assists": 3,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 8,
-"toiMinutes": 84,
-"toiSeconds": 3
-},
-"line": "F1",
-"pk": null,
-"pos": "lw",
-"pp": "PP1"
 },
 "Travis Sanheim": {
 "gtd": false,
@@ -14113,7 +14113,7 @@
 "toiMinutes": 94,
 "toiSeconds": 14
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -14147,9 +14147,9 @@
 "toiMinutes": 90,
 "toiSeconds": 9
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 }
 },
