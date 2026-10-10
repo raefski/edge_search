@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-10T13:59:44+00:00",
+"generated_at": "2026-10-10T15:00:13+00:00",
 "goalies": {
 "2026-10-10": {
 "ANA": {
@@ -12,7 +12,7 @@
 },
 "BUF": {
 "goalie": "Colten Ellis",
-"status": null
+"status": "Likely"
 },
 "CAR": {
 "goalie": "Brandon Bussi",
@@ -28,7 +28,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": null
+"status": "Likely"
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
@@ -48,7 +48,7 @@
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
-"status": null
+"status": "Confirmed"
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
@@ -72,7 +72,7 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": "Likely"
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Linus Ullmark",
@@ -80,7 +80,7 @@
 },
 "PHI": {
 "goalie": "Dan Vladar",
-"status": null
+"status": "Confirmed"
 },
 "PIT": {
 "goalie": "Arturs Silovs",
@@ -4448,43 +4448,9 @@
 "toiSeconds": 9
 },
 "line": "F3",
-"pk": null,
-"pos": "c",
-"pp": null
-},
-"Frank Nazar": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 11,
-"toiMinutes": 174,
-"toiSeconds": 36
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 9,
-"toiMinutes": 94,
-"toiSeconds": 12
-},
-"line": "F1",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Ian Cole": {
 "gtd": false,
@@ -4583,9 +4549,9 @@
 "toiMinutes": 50,
 "toiSeconds": 43
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Oliver Moore": {
@@ -4617,9 +4583,9 @@
 "toiMinutes": 59,
 "toiSeconds": 8
 },
-"line": "F1",
+"line": "F4",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Patrick Kane": {
@@ -4687,7 +4653,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Ryan Donato": {
@@ -4753,10 +4719,10 @@
 "toiMinutes": 76,
 "toiSeconds": 12
 },
-"line": "F4",
+"line": "F1",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Sam Rinzel": {
 "gtd": false,
@@ -4828,6 +4794,40 @@
 "pos": "g",
 "pp": null
 },
+"Teuvo Teravainen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 9,
+"toiMinutes": 155,
+"toiSeconds": 1
+},
+"last5": {
+"assists": 2,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 68,
+"toiSeconds": 42
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Tyler Bertuzzi": {
 "gtd": false,
 "injury": null,
@@ -4859,7 +4859,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Wyatt Kaiser": {
@@ -9580,40 +9580,6 @@
 }
 },
 "MTL": {
-"Adam Engstrom": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 148,
-"toiSeconds": 43
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 88,
-"toiSeconds": 28
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Alex Newhook": {
 "gtd": false,
 "injury": null,
@@ -9677,8 +9643,8 @@
 "toiMinutes": 90,
 "toiSeconds": 0
 },
-"line": "D2",
-"pk": "PK1",
+"line": "D3",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -10026,6 +9992,40 @@
 "pos": "rw",
 "pp": "PP1"
 },
+"Kaiden Guhle": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 22,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 190,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 2,
+"blocks": 11,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 0,
+"toiMinutes": 94,
+"toiSeconds": 40
+},
+"line": "D2",
+"pk": "PK1",
+"pos": "rd",
+"pp": null
+},
 "Kirby Dach": {
 "gtd": false,
 "injury": null,
@@ -10090,7 +10090,7 @@
 "toiSeconds": 7
 },
 "line": "D1",
-"pk": "PK2",
+"pk": null,
 "pos": "ld",
 "pp": "PP1"
 },
@@ -12848,7 +12848,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Carter Yakemchuk": {
 "gtd": false,
@@ -13258,7 +13258,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Samuel Ersson": {
 "gtd": false,
@@ -13362,7 +13362,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": "PP1"
+"pp": null
 },
 "Thomas Chabot": {
 "gtd": false,
