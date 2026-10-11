@@ -18,12 +18,55 @@ implementation.
 from __future__ import annotations
 
 import csv
+import re
 
 from edge.names import norm
 
 
 #: DraftKings' Captain / Showdown multiplier on the CPT slot's points.
 CPT_MULT = 1.5
+
+
+#: DK lobby code -> this repo's sport name.
+SPORT = {"NHL": "NHL", "NFL": "NFL", "CFB": "NCAAF", "NAS": "NASCAR", "MMA": "MMA", "MLB": "MLB",
+         "NBA": "NBA"}
+
+
+def contest_id(text: str) -> str | None:
+    """A DK contest ID from a pasted link or a bare number."""
+    m = re.findall(r"\d{8,10}", text or "")
+    return m[-1] if m else None
+
+
+def lookup(cid: str) -> dict:
+    """DK's own contest endpoint: type (cash = double-up / 50-50), sport, fee,
+    entries, places paid, payout table and the exact draft group. Works for an
+    upcoming contest as well as a finished one."""
+    from edge import dfs
+    d = dfs._get(f"https://api.draftkings.com/contests/v1/contests/{cid}?format=json")
+    c = d.get("contestDetail", d)
+    attrs = {k.replace(" ", "").lower(): str(v).lower() for k, v in (c.get("attributes") or {}).items()}
+    cash = attrs.get("isdoubleup") == "true" or attrs.get("isfiftyfifty") == "true"
+    payouts = [(t["minPosition"], t["maxPosition"],
+                sum(float(x.get("value") or 0) for x in t.get("payoutDescriptions", [])))
+               for t in c.get("payoutSummary") or []]
+    pool = sum((hi - lo + 1) * amt for lo, hi, amt in payouts)
+    return {"type": "cash" if cash else "gpp", "sport": SPORT.get(c.get("sport"), c.get("sport")),
+            "name": c.get("name"), "field": c.get("entries"), "max_entries": c.get("maximumEntries"),
+            "entry_fee": c.get("entryFee"),
+            "places_paid": max((hi for _, hi, _ in payouts), default=None),
+            "prize_pool": round(pool, 2) or None, "draft_group": c.get("draftGroupId"),
+            "guaranteed": (attrs.get("isguranteed") or attrs.get("isguaranteed")) == "true",
+            "start": c.get("contestStartTime"), "state": c.get("contestState"),
+            "payouts": [p for p in payouts if p[2] > 0]}
+
+
+def expected_field(info: dict) -> int:
+    """The field to plan for: the cap of a capped contest (they fill, and a
+    guaranteed one pays as if it did), else the current count (DK lists an
+    uncapped free contest at 999,999,999)."""
+    cap, now = info.get("max_entries") or 0, info.get("field") or 0
+    return int(cap) if 0 < cap < 10_000_000 else int(now)
 
 
 def parse_contest_file(path) -> dict:

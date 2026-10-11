@@ -28,13 +28,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from edge import dfs  # noqa: E402
+from edge.dfs_contest import lookup  # noqa: E402
 
 DOWNLOADS = Path("/mnt/c/Users/ASR/Downloads")
 META = ROOT / "data" / "contest_meta.json"
 USER = "gorillabiscuit"
-SPORT = {"NHL": "NHL", "NFL": "NFL", "CFB": "NCAAF", "NAS": "NASCAR", "MMA": "MMA", "MLB": "MLB",
-         "NBA": "NBA"}
 #: sport -> (projection log, column holding the draft group or None)
 LOGS = {"NHL": ("data/dfs_proj_log_nhl.csv", "gid"), "NFL": ("data/dfs_proj_log_nfl.csv", "gid"),
         "NCAAF": ("data/dfs_proj_log_ncaaf.csv", "gid"), "NASCAR": ("data/dfs_proj_log_nascar.csv", "gid"),
@@ -64,23 +62,6 @@ def extract(src: Path, dest_dir: Path) -> Path | None:
         return None
     dest.write_bytes(data)
     return dest
-
-
-def lookup(cid: str) -> dict:
-    d = dfs._get(f"https://api.draftkings.com/contests/v1/contests/{cid}?format=json")
-    c = d.get("contestDetail", d)
-    attrs = {k.replace(" ", "").lower(): str(v).lower() for k, v in (c.get("attributes") or {}).items()}
-    cash = attrs.get("isdoubleup") == "true" or attrs.get("isfiftyfifty") == "true"
-    tiers = c.get("payoutSummary") or []
-    pool = sum(sum(float(x.get("value") or 0) for x in t.get("payoutDescriptions", []))
-               * (t["maxPosition"] - t["minPosition"] + 1) for t in tiers)
-    return {"type": "cash" if cash else "gpp", "sport": SPORT.get(c.get("sport"), c.get("sport")),
-            "name": c.get("name"), "field": c.get("entries"), "max_entries": c.get("maximumEntries"),
-            "entry_fee": c.get("entryFee"),
-            "places_paid": max((t["maxPosition"] for t in tiers), default=None),
-            "prize_pool": round(pool, 2) or None, "draft_group": c.get("draftGroupId"),
-            "guaranteed": (attrs.get("isguranteed") or attrs.get("isguaranteed")) == "true",
-            "start": c.get("contestStartTime"), "state": c.get("contestState")}
 
 
 def et_date(iso: str | None) -> str:

@@ -266,6 +266,28 @@ To rebuild a past NFL slate the same way: restore
 `build_slate(ScrapedOddsClient(OddsStore(), 'dfs_nfl', scan_id=<pre-lock scan>),
 draft_group=<gid>, persist=False)`.
 
+### GPP stack ranked for YOUR contest (2026-10-11)
+
+The GPP tab's "🎯 Your contest" box takes a pasted DK contest link/ID (DK's
+contest endpoint supplies the field, fee, real payout table and draft group) or a
+typed field size. The top 8 QBs' best stacks are then ranked by expected payout in
+that contest (`edge/dfs_nfl_contest.py`), and the Stack dropdown starts on the
+winner. Fitted from the three 17,835-entry Main GPP exports (9/13, 9/20, 9/27):
+
+- **Field stacking:** 72/71/72% of real lineups pair the QB with ≥1 own WR/TE,
+  19/18/22% with 2 (cash: 46-52%). Draw rates 0.65/0.15 reproduce that.
+- **Field sharpness:** ownership-only draws match the real field's median
+  projection but its p99 runs 7-8 pts low. 30% of the field is resampled with
+  weight exp(0.4·proj). That brings every quantile from p50 to p99 within ~3 pts.
+- **Noise:** the unsmoothed 150k-entry EV picked a different stack on each seed.
+  Payouts are now averaged over 0.5%-of-field rank buckets, plus an exponential
+  tail over the field's top 20, and the ranking holds across seeds.
+
+The app shows EV only relative to the best stack, because the sim treats our
+projections as truth and every absolute ROI comes out flattering. 10/11 Main: Goff
+(175% own) beat the auto pick Brissett (198%) at 100, 5k and 416k entries, with
+Maye (145%) second at 5k+. **Not yet validated against a finished contest.**
+
 ### Still missing for NFL
 
 - **Ownership without buzz is still a prior.** Three GPP exports now exist
