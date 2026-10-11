@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-10T23:14:58+00:00",
+"generated_at": "2026-10-11T00:31:20+00:00",
 "goalies": {
 "2026-10-10": {
 "ANA": {
@@ -17590,7 +17590,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Brandon Duhaime": {
 "gtd": false,
@@ -17627,7 +17627,7 @@
 "pp": null
 },
 "Chris Tanev": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -17961,9 +17961,9 @@
 "toiMinutes": 63,
 "toiSeconds": 11
 },
-"line": "D3",
+"line": null,
 "pk": "PK2",
-"pos": "ld",
+"pos": null,
 "pp": null
 },
 "Nick Paul": {
@@ -17998,6 +17998,40 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "c",
+"pp": "PP2"
+},
+"Oliver Ekman-Larsson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 6,
+"toiMinutes": 191,
+"toiSeconds": 26
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 83,
+"toiSeconds": 34
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
 "pp": "PP2"
 },
 "Sergei Bobrovsky": {
@@ -18137,40 +18171,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
-},
-"Zack MacEwen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 68,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 36,
-"toiSeconds": 33
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 }
 },
 "UTA": {
