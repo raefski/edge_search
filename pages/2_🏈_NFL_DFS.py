@@ -113,6 +113,14 @@ def _nfl_build(gid, iters: int, _nonce: int):
     return nfl.build_slate(client, draft_group=gid, iters=iters)
 
 
+@st.cache_data(ttl=300, show_spinner=False)
+def _nfl_stack(gid, iters: int, _nonce: int, qb: str):
+    """The best GPP lineup stacked around one chosen quarterback."""
+    from edge import dfs_opt_nfl
+    pool = _nfl_build(gid, iters, _nonce)["pool"]
+    return dfs_opt_nfl.optimize(pool, mode="gpp", stack_qb=qb, iters=iters, seed=0)
+
+
 def _source_badge():
     """Say where the prices actually came from, every time.
 
@@ -343,7 +351,36 @@ t_cash, t_gpp, t_board = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board"])
 with t_cash:
     render(res.get("cash"), "cash")
 with t_gpp:
-    render(res.get("gpp"), "gpp")
+    # The optimiser's best stack is one opinion; when its game is the field's
+    # chalk, a single-entry GPP may want a different one (2026-10-11: the
+    # top stack was the slate's most-owned game from both sides).
+    _qbs = sorted((p for p in res["pool"] if "QB" in p["pos"]), key=lambda p: -(p.get("proj") or 0))
+    _opts = ["Auto (best)"] + [f"{q['name']} ({q['team']}) · {q['proj']} pts · {q.get('own', 0):.0f}% own"
+                               for q in _qbs]
+    _pick = st.selectbox("Stack", _opts, index=0,
+                         help="Build the GPP lineup around a quarterback you choose.")
+    if _pick == "Auto (best)":
+        render(res.get("gpp"), "gpp")
+    else:
+        _qb = _qbs[_opts.index(_pick) - 1]["name"]
+        with st.spinner(f"Building a {_qb} stack…"):
+            render(_nfl_stack(gid, iters, st.session_state.get("nfl_nonce", 0), _qb), "gpp")
+    if st.button("Compare stacks (top 8 QBs)", width="stretch"):
+        _rows = []
+        with st.spinner("Building eight stacks…"):
+            for q in _qbs[:8]:
+                lu = _nfl_stack(gid, iters, st.session_state.get("nfl_nonce", 0), q["name"])
+                if lu:
+                    _rows.append((lu["ceil"], lu["proj"], lu["own"], q["name"], q["team"]))
+        _body = "".join(f"<tr><td class='nm'>{n} ({t})</td><td class='num'>{c:.0f}</td>"
+                        f"<td class='num'>{m}</td><td class='num'>{o:.0f}%</td></tr>"
+                        for c, m, o, n, t in sorted(_rows, reverse=True))
+        st.markdown("<div class='lu-wrap'><table class='lu'><tr><th>Stack</th><th>Ceil</th>"
+                    "<th>Proj</th><th>Own</th></tr>" + _body + "</table></div>",
+                    unsafe_allow_html=True)
+        st.caption("Own = the lineup's summed ownership (our model). Lower means fewer "
+                   "copies of it in the field; in a 10,000+ entry GPP that is worth "
+                   "some ceiling.")
 with t_board:
     pool = sorted(res["pool"], key=lambda p: -(p.get("proj") or 0))
     pos_filter = st.multiselect("Position", ["QB", "RB", "WR", "TE", "DST"],
