@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-11T18:59:17+00:00",
+"generated_at": "2026-10-11T20:44:35+00:00",
 "goalies": {
 "2026-10-11": {
 "CAR": {
@@ -15,8 +15,8 @@
 "status": null
 },
 "SEA": {
-"goalie": "Philipp Grubauer",
-"status": null
+"goalie": "Joey Daccord",
+"status": "Confirmed"
 },
 "VAN": {
 "goalie": "Kevin Lankinen",
@@ -5631,7 +5631,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5837,7 +5837,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7391,7 +7391,7 @@
 "toiMinutes": 73,
 "toiSeconds": 10
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -7425,7 +7425,7 @@
 "toiMinutes": 88,
 "toiSeconds": 25
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
@@ -7459,9 +7459,9 @@
 "toiMinutes": 79,
 "toiSeconds": 53
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Anthony Beauvillier": {
@@ -7493,7 +7493,7 @@
 "toiMinutes": 59,
 "toiSeconds": 33
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -7529,7 +7529,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Charlie Lindgren": {
@@ -7665,10 +7665,44 @@
 "toiMinutes": 76,
 "toiSeconds": 2
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
+},
+"Ethen Frank": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 10,
+"toiMinutes": 101,
+"toiSeconds": 34
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 6,
+"toiMinutes": 49,
+"toiSeconds": 57
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": "PP2"
 },
 "Ilya Protas": {
 "gtd": false,
@@ -7699,7 +7733,7 @@
 "toiMinutes": 59,
 "toiSeconds": 1
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -7801,7 +7835,7 @@
 "toiMinutes": 67,
 "toiSeconds": 40
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -7876,40 +7910,6 @@
 "pos": "ld",
 "pp": null
 },
-"Pierre-Luc Dubois": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 7,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 8,
-"powerplayAssists": 2,
-"powerplayGoals": 0,
-"powerplayPoints": 2,
-"shots": 12,
-"toiMinutes": 157,
-"toiSeconds": 9
-},
-"last5": {
-"assists": 5,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 6,
-"powerplayAssists": 2,
-"powerplayGoals": 0,
-"powerplayPoints": 2,
-"shots": 7,
-"toiMinutes": 84,
-"toiSeconds": 42
-},
-"line": "F1",
-"pk": null,
-"pos": "c",
-"pp": "PP1"
-},
 "Ryan Leonard": {
 "gtd": false,
 "injury": null,
@@ -7939,10 +7939,10 @@
 "toiMinutes": 68,
 "toiSeconds": 24
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "rw",
-"pp": "PP2"
+"pos": "lw",
+"pp": "PP1"
 },
 "Timothy Liljegren": {
 "gtd": false,
@@ -8007,7 +8007,7 @@
 "toiMinutes": 94,
 "toiSeconds": 3
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK1",
 "pos": "rw",
 "pp": "PP1"
