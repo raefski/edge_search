@@ -1,10 +1,13 @@
 [Unit]
-Description=Log every DFS slate shortly before lock (every 5 min, 08:00-23:55)
+Description=Log every DFS slate shortly before lock (5 min after the last run ends)
 
+# Monotonic, not OnCalendar: on this WSL machine calendar timers re-fire
+# 7-8 times, 10 s apart, around each mark (2026-10-11). The script also refuses
+# to run within 4 minutes of its last run, and outside 08:00-23:59 local.
 [Timer]
-OnCalendar=*-*-* 08..23:00/5:00
+OnBootSec=2min
+OnUnitInactiveSec=5min
 AccuracySec=30s
-Persistent=false
 
 [Install]
 WantedBy=timers.target

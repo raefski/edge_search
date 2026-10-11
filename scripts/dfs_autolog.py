@@ -43,6 +43,10 @@ MIN_LEAD, WINDOW = 3, 15
 #: pattern earns a residential block for hours (DRAFTKINGS_ACCESS.md), and
 #: start times do not move, so one listing an hour is plenty.
 LIST_TTL_MIN = 60
+#: A run within this many seconds of the last one exits without touching DK.
+MIN_GAP_S = 240
+#: Local hours (inclusive) the timer may do anything.
+ACTIVE_HOURS = (8, 23)
 #: Collect odds first unless the profile's newest scan is younger than this.
 ODDS_FRESH_MIN = 15
 #: Contest-fill snapshots (scripts/dfs_overlay.py) for a sport whose slate locks
@@ -152,6 +156,19 @@ def main() -> int:
     state = json.loads(STATE.read_text()) if STATE.exists() else {}
     cache = json.loads(SLATES.read_text()) if SLATES.exists() else {}
     now = datetime.now(timezone.utc)
+    # Guard against the timer, not just the schedule: on this WSL machine a
+    # calendar timer fired 7-8 times, 10 s apart, around every 5-minute mark
+    # (2026-10-11) -- ~90 lobby reads an hour, the pattern DK blocks for hours.
+    last = parse_start(state.get("_last_run"))
+    if not args.dry_run and not args.sport:
+        if last and (now - last).total_seconds() < MIN_GAP_S:
+            return 0
+        local_hour = datetime.now().hour
+        if not ACTIVE_HOURS[0] <= local_hour <= ACTIVE_HOURS[1]:
+            return 0
+        state["_last_run"] = now.isoformat()
+        STATE.parent.mkdir(parents=True, exist_ok=True)
+        STATE.write_text(json.dumps(state, indent=1))
     collected = set()
     STATE.parent.mkdir(parents=True, exist_ok=True)
     fill_due = set()
@@ -173,7 +190,7 @@ def main() -> int:
             key = f"{sport}:{gid}"
             if t is not None and 0 < (t - now).total_seconds() / 60 <= FILL_WINDOW:
                 fill_due.add(sport)
-            if t is None or key in state:
+            if t is None or key in state or key.startswith("_"):
                 continue
             lead = (t - now).total_seconds() / 60
             if not (MIN_LEAD < lead <= args.window):
