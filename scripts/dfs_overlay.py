@@ -101,7 +101,9 @@ def price(found: list[dict]) -> None:
         try:
             pt = payout_table(r["id"], cache)
         except Exception:                                   # noqa: BLE001
-            continue
+            # api.draftkings.com refuses datacenter IPs (Streamlit Cloud):
+            # stop at the first refusal; double-ups are priced without it.
+            break
         r["resizable"] = pt["resizable"]
         if pt["tiers"]:
             r["return"] = paid_out(pt["tiers"], r["nt"]) / (r["nt"] * r["fee"])
