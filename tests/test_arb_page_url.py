@@ -130,7 +130,8 @@ def test_an_empty_multiselect_round_trips_as_absent(url_messages):
     at = _app()
     at.run()
 
-    assert "b1_sides" not in at.query_params
+    # Streamlit <=1.62 drops the key; >=1.65 keeps it as "". Both mean empty.
+    assert _qp(at, "b1_sides") in (None, "")
     assert at.multiselect(key="b1_sides").value == []
 
 
@@ -200,7 +201,7 @@ def test_an_unpicked_game_filter_round_trips_as_absent(url_messages):
     at = _app()
     at.run()
 
-    assert "arb_games" not in at.query_params
+    assert _qp(at, "arb_games") in (None, "")  # absent or "", per Streamlit version
     assert at.multiselect(key="arb_games").value == []
 
 
