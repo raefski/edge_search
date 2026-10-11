@@ -183,3 +183,6 @@ Dan_Projections_*.csv
 Dans_Projections_*.csv
 Dans_cfb-projections-*.csv
 data/dfs_calibration.html
+
+# contest fill snapshots (scripts/dfs_overlay.py): local data, grows every lock
+data/contest_fill_log.csv

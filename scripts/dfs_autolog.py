@@ -12,7 +12,10 @@ This runs each sport's own lineup script -- the same builder the app uses --
 for every Classic slate locking within the next WINDOW minutes, once per slate,
 with fresh odds. The scripts log by default (date + draft group keyed).
 
-Run from deploy/dfs-autolog.timer every 5 minutes, 08:00-23:55. State (what was built):
+Run from deploy/dfs-autolog.timer every 5 minutes, 08:00-23:55. Near each
+lock it also snapshots every guaranteed contest's fill into
+data/contest_fill_log.csv (scripts/dfs_overlay.py), the data that will say
+which contests end up short. State (what was built):
 data/cache/dfs_autolog.json. Each build's log files are committed locally
 (never pushed here; the odds-publish timers push them with their next commit).
 """
@@ -42,6 +45,10 @@ MIN_LEAD, WINDOW = 3, 15
 LIST_TTL_MIN = 60
 #: Collect odds first unless the profile's newest scan is younger than this.
 ODDS_FRESH_MIN = 15
+#: Contest-fill snapshots (scripts/dfs_overlay.py) for a sport whose slate locks
+#: within this many minutes: one lobby request per sport per run, only then.
+FILL_WINDOW = 120
+LOBBY_CODE = {"nhl": "NHL", "nfl": "NFL", "ncaaf": "CFB", "nascar": "NAS", "mma": "MMA", "mlb": "MLB"}
 
 
 def _slates_nhl():
@@ -147,6 +154,7 @@ def main() -> int:
     now = datetime.now(timezone.utc)
     collected = set()
     STATE.parent.mkdir(parents=True, exist_ok=True)
+    fill_due = set()
     for sport in args.sport or SPORTS:
         lister, cmd, profile, logs = SPORTS[sport]
         hit = cache.get(sport)
@@ -163,6 +171,8 @@ def main() -> int:
         for gid, start, label in slates:
             t = parse_start(start)
             key = f"{sport}:{gid}"
+            if t is not None and 0 < (t - now).total_seconds() / 60 <= FILL_WINDOW:
+                fill_due.add(sport)
             if t is None or key in state:
                 continue
             lead = (t - now).total_seconds() / 60
@@ -187,6 +197,18 @@ def main() -> int:
                 commit_logs(logs, f"dfs autolog: {sport} {gid} {label} ({t:%Y-%m-%d %H:%M}Z lock)")
             else:
                 print(f"   FAILED (exit {r.returncode}); will retry while the slate is in the window")
+    if fill_due and not args.dry_run:
+        from scripts import dfs_overlay
+        snap = []
+        for sport in sorted(fill_due):
+            try:
+                snap += [r for r in dfs_overlay.rows(LOBBY_CODE[sport], now, float("inf"),
+                                                     FILL_WINDOW / 60, classic_only=True)
+                         if r["fee"] <= 25]
+            except Exception as exc:                        # noqa: BLE001
+                print(f"{sport}: fill snapshot failed ({exc})")
+        dfs_overlay.log(snap, now)
+        print(f"fill snapshot: {len(snap)} guaranteed contests ({', '.join(sorted(fill_due))})")
     return 0
 
 
