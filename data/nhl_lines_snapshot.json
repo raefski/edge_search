@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-12T16:59:51+00:00",
+"generated_at": "2026-10-12T17:29:59+00:00",
 "goalies": {
 "2026-10-12": {
 "BUF": {
@@ -49,7 +49,7 @@
 "status": null
 },
 "CGY": {
-"goalie": "Dustin Wolf",
+"goalie": "Devin Cooley",
 "status": null
 },
 "CHI": {
@@ -3605,7 +3605,7 @@
 "toiMinutes": 74,
 "toiSeconds": 54
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -3641,7 +3641,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -3677,7 +3677,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -3745,7 +3745,7 @@
 "toiMinutes": 86,
 "toiSeconds": 50
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK1",
 "pos": "rw",
 "pp": "PP1"
@@ -3847,7 +3847,7 @@
 "toiMinutes": 64,
 "toiSeconds": 29
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": null
@@ -3881,7 +3881,7 @@
 "toiMinutes": 88,
 "toiSeconds": 35
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -3915,7 +3915,7 @@
 "toiMinutes": 73,
 "toiSeconds": 4
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -3983,7 +3983,7 @@
 "toiMinutes": 88,
 "toiSeconds": 25
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -4017,7 +4017,7 @@
 "toiMinutes": 80,
 "toiSeconds": 49
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -4051,7 +4051,7 @@
 "toiMinutes": 70,
 "toiSeconds": 15
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -4153,7 +4153,7 @@
 "toiMinutes": 86,
 "toiSeconds": 32
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
