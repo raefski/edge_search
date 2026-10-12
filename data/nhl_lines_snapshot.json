@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-12T21:00:04+00:00",
+"generated_at": "2026-10-12T22:30:08+00:00",
 "goalies": {
 "2026-10-12": {
 "BUF": {
@@ -133,7 +133,7 @@
 "status": null
 },
 "TOR": {
-"goalie": "Anthony Stolarz",
+"goalie": "Sergei Bobrovsky",
 "status": null
 },
 "UTA": {
@@ -880,39 +880,39 @@
 "pos": "lw",
 "pp": "PP2"
 },
-"Connor Clifton": {
+"Charlie McAvoy": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 2,
-"blocks": 9,
+"assists": 3,
+"blocks": 22,
 "gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 1,
 "powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 189,
-"toiSeconds": 10
+"powerplayPoints": 1,
+"shots": 19,
+"toiMinutes": 248,
+"toiSeconds": 42
 },
 "last5": {
-"assists": 1,
-"blocks": 4,
+"assists": 0,
+"blocks": 2,
 "gamesPlayed": 5,
-"goals": 0,
+"goals": 1,
 "points": 1,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 100,
-"toiSeconds": 23
+"shots": 13,
+"toiMinutes": 126,
+"toiSeconds": 6
 },
-"line": "D2",
-"pk": "PK2",
+"line": "D1",
+"pk": "PK1",
 "pos": "rd",
-"pp": null
+"pp": "PP1"
 },
 "David Pastrnak": {
 "gtd": false,
@@ -1014,7 +1014,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Frederic Brunet": {
 "gtd": false,
@@ -1048,7 +1048,7 @@
 "line": "D3",
 "pk": null,
 "pos": "ld",
-"pp": "PP1"
+"pp": null
 },
 "Hampus Lindholm": {
 "gtd": false,
@@ -1082,7 +1082,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "JJ Peterka": {
 "gtd": false,
@@ -1525,8 +1525,8 @@
 "toiMinutes": 94,
 "toiSeconds": 18
 },
-"line": "D1",
-"pk": "PK1",
+"line": "D2",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 }
@@ -17535,7 +17535,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -17603,7 +17603,7 @@
 "toiMinutes": 39,
 "toiSeconds": 56
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -17639,41 +17639,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "rw",
-"pp": null
-},
-"Chris Tanev": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 22,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 181,
-"toiSeconds": 1
-},
-"last5": {
-"assists": 1,
-"blocks": 11,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 0,
-"toiMinutes": 82,
-"toiSeconds": 24
-},
-"line": "D2",
-"pk": "PK1",
-"pos": "rd",
+"pos": "lw",
 "pp": null
 },
 "Colton Sissons": {
@@ -17707,7 +17673,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Darren Raddysh": {
@@ -17776,7 +17742,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Gavin McKenna": {
 "gtd": false,
@@ -17880,6 +17846,40 @@
 "pos": "ld",
 "pp": null
 },
+"John Tavares": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 6,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 9,
+"powerplayAssists": 4,
+"powerplayGoals": 1,
+"powerplayPoints": 5,
+"shots": 25,
+"toiMinutes": 178,
+"toiSeconds": 59
+},
+"last5": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 14,
+"toiMinutes": 85,
+"toiSeconds": 49
+},
+"line": "F2",
+"pk": null,
+"pos": "c",
+"pp": "PP1"
+},
 "Kirill Marchenko": {
 "gtd": false,
 "injury": null,
@@ -17977,9 +17977,9 @@
 "toiMinutes": 72,
 "toiSeconds": 14
 },
-"line": null,
+"line": "D3",
 "pk": "PK2",
-"pos": null,
+"pos": "rd",
 "pp": null
 },
 "Nick Paul": {
@@ -18011,7 +18011,7 @@
 "toiMinutes": 80,
 "toiSeconds": 33
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
@@ -18048,7 +18048,7 @@
 "line": "D3",
 "pk": null,
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Sergei Bobrovsky": {
 "gtd": false,
@@ -18081,7 +18081,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -18149,8 +18149,8 @@
 "toiMinutes": 86,
 "toiSeconds": 43
 },
-"line": "D3",
-"pk": null,
+"line": "D2",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 },
