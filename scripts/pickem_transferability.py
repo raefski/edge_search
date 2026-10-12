@@ -51,6 +51,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from edge.pickem_log import LINE_LOG, load  # noqa: E402
+from edge.pickem_deadline import before_deadline, deadlines_from_rows  # noqa: E402
 
 # Dev-era mean |open - close|, from data/pickem_odds_history.csv (2014-2022).
 # This is the denominator: a live gap this big means w = 1, i.e. the whole
@@ -97,30 +98,21 @@ def _f(v):
         return None
 
 
-def _before_kickoff(row: dict) -> bool:
-    """Was this snapshot taken before the game started?
-
-    Missing or unparseable timestamps count as in-time: the guard exists to
-    reject a demonstrably late reading, not to discard rows whose provenance
-    simply cannot be checked.
-    """
-    cap, kick = row.get("captured_at"), row.get("kickoff_utc")
-    if not cap or not kick:
-        return True
-    try:
-        c = datetime.datetime.fromisoformat(cap.replace("Z", "+00:00"))
-        k = datetime.datetime.fromisoformat(kick.replace("Z", "+00:00"))
-    except ValueError:
-        return True
-    return c < k
-
-
 def collect(path=LINE_LOG) -> list[dict]:
-    """One row per game: CBS's frozen line, the market at post, and at the
-    LAST lock snapshot before kickoff."""
+    """One row per game: CBS's frozen line, the market at post, and the LAST
+    reading of any label taken before that game's pick deadline.
+
+    The deadline comes from edge.pickem_deadline, which owns the (unsettled)
+    lock rule. Until 2026-10-11 this took the last `lock*` reading before
+    KICKOFF, which counted readings taken after the pick had locked. Rows are
+    walked in captured_at order, so "last" means latest, not furthest down
+    the file. Non-post, non-lock readings are also kept in `mid` for the time
+    profile of drift.
+    """
     rows = load(path)
+    deadlines = deadlines_from_rows(rows)
     by_game: dict[tuple, dict] = defaultdict(dict)
-    for r in rows:
+    for r in sorted(rows, key=lambda r: r.get("captured_at") or ""):
         key = (r["season"], r["week"], r["home_team"])
         snap = r["snapshot"]
         cbs, mkt = _f(r.get("cbs_line_home")), _f(r.get("market_line_home"))
@@ -132,19 +124,13 @@ def collect(path=LINE_LOG) -> list[dict]:
             continue
         if snap == "post":
             g["post"] = mkt
-        elif snap.startswith("lock"):
-            # The pool's deadline is PER DAY, so a week has up to four of them
-            # and each is captured under its own label (lock-thu, lock-sun...).
-            # append() de-dupes on the label, so one shared "lock" would keep
-            # only the first reading of the week and silently drop the rest.
-            #
-            # Only count a reading taken BEFORE this game kicked off: a Monday
-            # capture still returns Sunday's games, and without this guard it
-            # would overwrite their good Sunday reading with a post-kickoff one.
-            if _before_kickoff(r):
-                g["lock"] = mkt                   # later locks overwrite earlier
-        else:
+        elif not snap.startswith("lock"):
             g.setdefault("mid", {})[r.get("captured_at", "")] = mkt
+        # A Monday capture still returns Sunday's games; only a reading taken
+        # before THIS game locked counts.
+        dl = deadlines.get((int(r["season"]), int(r["week"]), r["home_team"]))
+        if before_deadline(r.get("captured_at"), dl):
+            g["lock"] = mkt                       # later readings overwrite
     out = []
     for (season, week, home), g in by_game.items():
         if "cbs" not in g:

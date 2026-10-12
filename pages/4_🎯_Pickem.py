@@ -45,6 +45,7 @@ from edge.client import CreditFloorError, DryRunBlocked, NoApiKey, OddsAPIClient
 from edge.odds.source import StaleOdds  # noqa: E402
 from edge.pickem import make_pick  # noqa: E402
 from edge.pickem_live import fetch_week  # noqa: E402
+from edge.pickem_deadline import RULE as LOCK_RULE, game_deadlines  # noqa: E402
 from edge.pickem_log import load as load_line_log  # noqa: E402
 # The pool calendar and the CBS/market alias, shared with
 # scripts/pickem_capture.py rather than reimplemented here. Only one
@@ -437,6 +438,23 @@ def day_header(kickoff_utc: str) -> str:
     return kick.astimezone(EASTERN).strftime("%a %b %-d")
 
 
+# When each pick locks, from the one module that owns the (unsettled) rule --
+# see edge/pickem_deadline.py. Shown on every card so a 9:30 London Sunday or a
+# 2-hours-before lock is never a surprise.
+_kicks = {r["home_abbr"]: kick_dt(r.get("kickoff_utc", "")) for r in cbs_rows}
+LOCKS = game_deadlines({h: k for h, k in _kicks.items() if k is not None})
+
+
+def lock_text(home_abbr: str) -> str:
+    d = LOCKS.get(home_abbr)
+    if d is None:
+        return ""
+    if d <= NOW_UTC:
+        return "LOCKED"
+    et = d.astimezone(EASTERN)
+    return "locks " + et.strftime("%a %-I:%M%p").replace("AM", "a").replace("PM", "p")
+
+
 last_day = None
 for r, pk, no_live, live_g, played in rows:
     day_label = day_header(r.get("kickoff_utc", ""))
@@ -495,7 +513,7 @@ for r, pk, no_live, live_g, played in rows:
 <div class="{card_cls}">
   <div class="pk-row1">
     <span class="pk-matchup">{r["away_name"]} <span style="color:#7f8a9c;font-weight:500;">@</span> {r["home_name"]}</span>
-    <span class="pk-tv">{r.get("tv", "")}</span>
+    <span class="pk-tv">{lock_text(r["home_abbr"])} &nbsp; {r.get("tv", "")}</span>
   </div>
   <div class="pk-pickrow">
     {pick_cell}
@@ -506,6 +524,9 @@ for r, pk, no_live, live_g, played in rows:
 </div>
 ''', unsafe_allow_html=True)
 
+st.caption(f"Lock times use the '{LOCK_RULE}' rule (edge/pickem_deadline.py): "
+           "the earlier of 2 hours before kickoff and the day's first kickoff, "
+           "until the pool's real rule is confirmed.")
 st.caption(f"CBS lines from {CURRENT_WEEK_CSV.name}, last committed capture. "
            "Rows tagged `provisional` have NOT been re-verified against the "
            "live pool page — see the banner at the top of this page.")

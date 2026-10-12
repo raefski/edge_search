@@ -46,13 +46,13 @@ moment is **gone forever** — the historical file holds only two snapshots per 
 fill the hole.
 
 ```bash
-cp deploy/pickem-capture@.service deploy/pickem-capture-*.timer ~/.config/systemd/user/
+cp deploy/pickem-capture@.service deploy/pickem-capture-*.timer \
+   deploy/pickem-deadline-tick.* ~/.config/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable --now pickem-capture-post.timer \
-  pickem-capture-lock-wed.timer pickem-capture-lock-thu.timer \
-  pickem-capture-midweek.timer pickem-capture-lock-sun.timer \
-  pickem-capture-lock-mon.timer
-systemctl --user list-timers 'pickem-capture*'
+  pickem-capture-midweek.timer pickem-deadline-tick.timer
+systemctl --user list-timers 'pickem*'
+python3 scripts/pickem_deadline_tick.py --plan     # this week's deadline captures
 ```
 
 Needs `sudo loginctl enable-linger $USER` (same as `arb-agent`), or the timers stop when your
@@ -61,11 +61,14 @@ last shell exits.
 | timer | fires (ET) | label | why then |
 |---|---|---|---|
 | `pickem-capture-post` | Tue 13:15 | `post` | CBS posts by 1pm and freezes |
-| `pickem-capture-lock-wed` | Wed 19:00 | `lock-wed` | before a Wednesday opener |
-| `pickem-capture-lock-thu` | Thu 19:00 | `lock-thu` | before the Thursday nighter |
 | `pickem-capture-midweek` | Fri 12:35 | `midweek` | the time-profile reading |
-| `pickem-capture-lock-sun` | Sun 12:35 | `lock-sun` | before the 1pm slate |
-| `pickem-capture-lock-mon` | Mon 19:00 | `lock-mon` | before Monday night |
+| `pickem-deadline-tick` | every 5 min | `lock-<day><HHMM>` | 25 min before every deadline either lock rule produces, then a pool-picks fetch 3 min after it |
+
+> **2026-10-11: the fixed `lock-wed/thu/sun/mon` timers are retired.** They assumed one 1pm
+> Sunday deadline; 9:30 London Sundays locked three hours before the Sunday capture, and
+> Thanksgiving, Saturdays and Christmas had none. The lock rule itself is unsettled (2 hours
+> before kickoff vs. the day's first kickoff) — see `edge/pickem_deadline.py` and
+> `python3 scripts/pickem_pool_picks.py --report`'s LOCK RULE CHECK.
 
 > **Why the two `12:35`s, changed 2026-09-09.** The board is collected at 12:20 and 23:20
 > only, so a capture at 12:00 fired *twenty minutes before* the day's collection and read the

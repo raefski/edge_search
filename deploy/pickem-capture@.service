@@ -4,10 +4,14 @@
 #      ~/.config/systemd/user/
 #   systemctl --user daemon-reload
 #   systemctl --user enable --now pickem-capture-post.timer \
-#     pickem-capture-lock-wed.timer pickem-capture-lock-thu.timer \
-#     pickem-capture-midweek.timer pickem-capture-lock-sun.timer \
-#     pickem-capture-lock-mon.timer
-#   systemctl --user list-timers 'pickem-capture*'
+#     pickem-capture-midweek.timer pickem-deadline-tick.timer
+#   systemctl --user list-timers 'pickem*'
+#
+# Deadline captures (lock-<day><HHMM>, e.g. lock-sun1100) are started by
+# scripts/pickem_deadline_tick.py, 25 minutes before every deadline either
+# candidate lock rule produces. The fixed lock-{wed,thu,sun,mon} timers were
+# retired 2026-10-11: they read the market after a 9:30 London Sunday had
+# locked, and never ran on Thanksgiving, Saturdays or Christmas.
 #
 # Same linger requirement as arb-agent.service:
 #   sudo loginctl enable-linger $USER

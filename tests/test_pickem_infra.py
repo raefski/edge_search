@@ -388,7 +388,10 @@ def test_transferability_ignores_a_lock_captured_after_kickoff():
                         kickoff_utc="2026-09-13T17:00:00+00:00",   # Sun 1pm ET
                         cbs_line_home=-3.5, market_line_home=market)
 
-    append([snap("lock-sun", -3.0, "2026-09-13T16:00:00Z")], path=log)   # in time
+    # 10:00 ET: before both candidate locks (11:00 under kickoff-2h, 13:00
+    # under first-game-of-the-day). 12:00 was "in time" against kickoff, but
+    # not against a 2-hours-before deadline -- see edge/pickem_deadline.py.
+    append([snap("lock-sun", -3.0, "2026-09-13T14:00:00Z")], path=log)   # in time
     append([snap("lock-mon", -9.9, "2026-09-14T22:00:00Z")], path=log)   # too late
 
     games = collect(log)

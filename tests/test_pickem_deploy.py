@@ -117,8 +117,10 @@ def test_no_capture_is_scheduled_before_the_days_collection():
     assert not bad, f"captures scheduled against a stale board: {bad}"
 
 
-@pytest.mark.parametrize("name", ["pickem-capture-lock-sun.timer",
-                                  "pickem-capture-midweek.timer"])
+# pickem-capture-lock-sun.timer was retired 2026-10-11 for the schedule-driven
+# pickem-deadline-tick (each capture's ExecStartPre collects its own board, so
+# it never reads a stale one); only -midweek is still a fixed noon timer.
+@pytest.mark.parametrize("name", ["pickem-capture-midweek.timer"])
 def test_the_two_noon_timers_moved_behind_the_collection(name):
     """These two fired at 12:00 against a 12:20 collection -- 20 minutes short.
 

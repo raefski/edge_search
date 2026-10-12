@@ -60,7 +60,7 @@ def test_it_grades_with_the_shipped_model_not_a_copy(tmp_path):
     log = _log(tmp_path, [
         _snap("post", "2026-09-08T17:11:20Z", cbs_line_home=-1.5,
               market_line_home=-1.5, market_total=44.5, n_books=3),
-        _snap("lock-sun", "2026-09-13T16:35:00Z", market_line_home=1.375,
+        _snap("lock-sun", "2026-09-13T14:35:00Z", market_line_home=1.375,
               market_total=45.0, n_books=3),
     ])
     graded = pickem_grade.grade(pickem_grade.readings(log), _sched())
@@ -85,7 +85,7 @@ def test_a_lock_taken_after_kickoff_is_never_counted(tmp_path):
     log = _log(tmp_path, [
         _snap("post", "2026-09-08T17:11:20Z", cbs_line_home=-1.5,
               market_line_home=-1.5, n_books=3),
-        _snap("lock-sun", "2026-09-13T16:35:00Z", market_line_home=1.375,
+        _snap("lock-sun", "2026-09-13T14:35:00Z", market_line_home=1.375,
               n_books=3),
         # Monday, hours after this Sunday game finished
         _snap("lock-mon", "2026-09-14T23:00:00Z", market_line_home=-9.5,
@@ -106,7 +106,7 @@ def test_the_latest_lock_before_kickoff_wins_regardless_of_file_order(tmp_path):
     log = _log(tmp_path, [
         _snap("post", "2026-09-08T17:11:20Z", cbs_line_home=-1.5,
               market_line_home=-1.5, n_books=3),
-        _snap("lock-thu", "2026-09-13T16:40:00Z", market_line_home=2.0,
+        _snap("lock-thu", "2026-09-13T14:40:00Z", market_line_home=2.0,
               n_books=3),
         _snap("midweek", "2026-09-11T16:40:00Z", market_line_home=99.0,
               n_books=3),
@@ -148,7 +148,7 @@ def test_a_game_with_no_score_yet_is_skipped_not_crashed(tmp_path):
     log = _log(tmp_path, [
         _snap("post", "2026-09-08T17:11:20Z", cbs_line_home=-1.5,
               market_line_home=-1.5, n_books=3),
-        _snap("lock-sun", "2026-09-13T16:35:00Z", market_line_home=1.375,
+        _snap("lock-sun", "2026-09-13T14:35:00Z", market_line_home=1.375,
               n_books=3),
     ])
     sched = {(2026, 1, "HOU"): {"home_team": "HOU", "away_team": "BUF",
@@ -166,7 +166,7 @@ def test_a_market_only_row_with_no_cbs_line_cannot_be_graded(tmp_path):
     common case, not an edge case.
     """
     log = _log(tmp_path, [
-        _snap("lock-sun", "2026-09-13T16:35:00Z", market_line_home=1.375,
+        _snap("lock-sun", "2026-09-13T14:35:00Z", market_line_home=1.375,
               n_books=3)])
     assert pickem_grade.grade(pickem_grade.readings(log), _sched()) == []
 
@@ -216,7 +216,7 @@ def test_write_tracker_never_overwrites_a_hand_typed_cell(tmp_path):
     pk = make_pick("BUF", "HOU", -1.5, 1.375, None, None)
     graded = [{"season": 2026, "week": 1, "home": "HOU", "away": "BUF",
                "cbs": -1.5, "post": -1.5, "lock": 1.375,
-               "lock_at": "2026-09-13T16:35:00Z", "pick": pk,
+               "lock_at": "2026-09-13T14:35:00Z", "pick": pk,
                "home_score": 17.0, "away_score": 20.0, "result": "W"}]
     assert pickem_grade.write_tracker(graded, path) == 1
 

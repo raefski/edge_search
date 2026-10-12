@@ -243,6 +243,61 @@ measurement, so **they stand until someone clears those cells by hand** — that
 judgement call about your own pool file, not something to automate. Clear them and re-run
 with `--write` to let the computed values in.
 
+## Four-week assessment — 2026-10-11 (weeks 1–4 + week 5's first 10 games)
+
+**No model change made.** `edge/pickem.py` untouched. Readings, for the next look:
+
+- **Live grade (shipped `make_pick`, last pre-kick lock reading): 46-28, 62.2%**, 95% CI
+  [50.8, 72.4]. Signal 26-16, coin flips 20-12 (totals tiebreak 14-6, plain-favourite
+  residual 6-6). Chalk vs CBS lines is **32-42**: 2026 is a dog year, which is most of why
+  the live rate sits above the backtest. Expect regression toward ~53%.
+- **`w` is settled enough to use: 0.24, CI [0.14, 0.33]** (79 games). Live mean |gap| 0.65
+  vs 1.23 in the archive, i.e. ~59% of the backtested margin over chalk transfers. Consequence:
+  **43% of live picks are coin flips** (backtest: 17%).
+- **Drift time profile (n=73): freeze→midweek 0.510, midweek→lock 0.286.** Week 1's 10:1
+  front-loading did not hold; late drift is about half of early drift. 7 of 68 picks changed
+  between Friday and lock (4-3). Reading the line late still matters.
+- **`cbs_offset` mean +0.09, mean |offset| 0.30**: CBS posts at the Tuesday market.
+- **The pool's own picks are readable.** The CBS Standings → Weekly page (same stored session
+  as `pickem_pool_fetch.py`; past weeks via the MUI week dropdown, `?week=` is ignored) shows
+  every entry's pick for every locked game. 19–20 live entries. Through week 5's finals:
+  Adam 47, then 43, 42, 42, 41 (names stay in gitignored data/pickem/). Adam followed the model on
+  67/74 (overrides 4-3, model would have gone 3-4). Rivals agree with Adam's side only 44–59%
+  of the time; field-majority side went 35-42.
+- **Rest-of-season sim vs the real field** (bootstrapping the field's actual pick patterns):
+  P(1st) ≈ 33% at q=0.50, ≈ 48–60% at q≈0.52–0.53, ≈ 64–78% at q≈0.535–0.55. Taking chalk on
+  coin flips (shadowing) moved P(1st) by <1pp from week 6 or week 14: still worth nothing.
+- **Deadline gap found.** Weeks 4 and 5 had 9:30am ET international games, so the Sunday
+  deadline was 9:30, but `lock-sun` runs 12:35 and odds-collect's last run before 9:30 is
+  Saturday 23:20. Remaining 9:30 Sundays: **weeks 6, 7, 9, 10**. Also uncovered: Thanksgiving
+  Thursday (1:00pm deadline vs `lock-thu` 19:00), Black Friday 3pm, week 15 Saturdays, and
+  Christmas Friday. The grader's lock for weeks 4–5 Sunday games is a post-deadline reading
+  (changed 1 pick: NYG@WSH, a win Adam could not have had from the model).
+- **Consensus vs the validated floor.** The backtest's 0.5 floor is a single-book half-point
+  move; live, the edge is the 1.5/1.5/1.0-weighted mean of DK/FD/Fanatics, so even DK *and* FD
+  both moving 0.5 reads 0.375, a coin flip. The median book would mark 48 games as signal
+  instead of 42 (47-27 vs 46-28). Structurally closer to what was validated, but worth
+  only fractions of a win. Not applied.
+
+## Deadline-driven captures + pool picks — built 2026-10-11
+
+- **The lock rule is unsettled.** Adam: "2 hours before kickoff". The pool's Settings
+  page (fetched 2026-10-11): "Before the start of the first game of the day".
+  `edge/pickem_deadline.py` owns it: `RULE = "earliest"` (the earlier of the two) for the
+  grader, transferability and the page's "locks …" label, so no reading Adam could not
+  have used is ever credited. **Set `RULE` by hand once the check below is decisive.**
+- **Captures follow the schedule.** `pickem-deadline-tick.timer` (every 5 min) runs
+  `scripts/pickem_deadline_tick.py`, which starts `pickem-capture@lock-<day><HHMM>` 25 min
+  before every deadline EITHER rule produces. `--plan` prints the week. The fixed
+  `lock-{wed,thu,sun,mon}` timers are retired; `post` and `midweek` stay.
+- **Pool picks.** `scripts/pickem_pool_picks.py` reads every entry's picks off
+  Standings → Weekly (gitignored `data/pickem/pool_picks.csv`, weeks 1–5 backfilled). The
+  tick runs it 3 min after each candidate deadline and records which games' picks became
+  visible (`pool_lock_obs.csv`); `--report` prints standings, rival agreement and the
+  **LOCK RULE CHECK**. Thursday's 6:15pm observation is the first decisive one.
+- **Regraded under `earliest`:** 45-29 (60.8%); `w` = 0.18 [0.10, 0.26]. Weeks 1–5 had no
+  Sunday reading before 11:00, so their Sunday games now grade off Friday's `midweek`.
+
 ## App / deployment
 
 `pages/4_🎯_Pickem.py` — Streamlit multi-page (added to the sidebar automatically

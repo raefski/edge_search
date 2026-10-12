@@ -17,12 +17,10 @@ WHAT IT DOES
 For each (season, week, home_team) in data/pickem_line_log.csv:
 
   * pool_line  = cbs_line_home, the number the pool grades you against
-  * live_line  = the LAST `lock*` reading taken BEFORE that game kicked off
-                 (the pool's deadline is per day, so a week has up to four
-                 lock labels; a Monday capture still returns Sunday's games and
-                 must not be allowed to overwrite their good Sunday reading --
-                 the guard is scripts/pickem_transferability._before_kickoff,
-                 imported rather than re-implemented)
+  * live_line  = the LAST reading taken BEFORE that game's pick deadline,
+                 whatever its label (edge.pickem_deadline owns the rule and
+                 the guard; a Monday capture still returns Sunday's games and
+                 must not be allowed to overwrite their good Sunday reading)
   * the totals tiebreak gets market_total at `post` and at that lock, exactly
     as pages/4_🎯_Pickem.py hands them over
 
@@ -67,10 +65,10 @@ from edge.pickem import ats_result, make_pick  # noqa: E402
 from edge.pickem_cbs import NICK_TO_ABBR  # noqa: E402
 from edge.pickem_log import LINE_LOG, load  # noqa: E402
 from edge.pickem_week import MARKET_TO_CBS_ABBR  # noqa: E402
-# The before-kickoff guard, imported from the one place it lives. A second copy
+# The deadline guard, imported from the one place it lives. A second copy
 # of "was this reading actionable?" is the same class of bug as a second copy
 # of the model.
-from scripts.pickem_transferability import _before_kickoff  # noqa: E402
+from edge.pickem_deadline import before_deadline, deadlines_from_rows  # noqa: E402
 
 SCHEDULE_URL = "https://github.com/nflverse/nfldata/raw/master/data/games.csv"
 TRACKER = ROOT / "data" / "pickem" / "tracker.csv"
@@ -117,22 +115,30 @@ def wilson(wins: int, losses: int, z: float = 1.96) -> tuple[float, float]:
 def readings(path=LINE_LOG) -> list[dict]:
     """One row per game: CBS's frozen line, and the market at post and at lock.
 
-    Deliberately close in shape to scripts/pickem_transferability.collect, but
-    it keeps the extra columns grading needs (kickoff, totals, the lock's own
-    timestamp) rather than only the numbers w is estimated from.
+    `lock` is the LAST market reading of any label taken before that game's
+    pick deadline (edge.pickem_deadline -- the rule is unsettled, see there).
+    Until 2026-10-11 it was the last `lock*` reading before KICKOFF, which
+    credited the model with readings taken after the pick had locked: the
+    12:35 Sunday capture on weeks whose Sunday opened with a 9:30 London game,
+    and, under a 2-hours-before rule, every Sunday. Labels are names, not
+    times, so a Friday `midweek` reading is the honest answer when it is the
+    last one before a deadline.
     """
+    rows = load(path)
+    deadlines = deadlines_from_rows(rows)
     games: dict[tuple, dict] = {}
-    # Sorted by the moment the prices were observed, so "the last lock before
-    # kickoff" means the latest one, not the one furthest down the file. Since
-    # 2026-09-09 captured_at is the board's own finish time, which is what
-    # makes this ordering meaningful at all.
-    for r in sorted(load(path), key=lambda r: r.get("captured_at") or ""):
+    # Sorted by the moment the prices were observed, so "the last reading
+    # before the deadline" means the latest one, not the one furthest down the
+    # file. Since 2026-09-09 captured_at is the board's own finish time, which
+    # is what makes this ordering meaningful at all.
+    for r in sorted(rows, key=lambda r: r.get("captured_at") or ""):
         key = (int(r["season"]), int(r["week"]), r["home_team"])
         g = games.setdefault(key, {
             "season": key[0], "week": key[1], "home": key[2],
             "away": r.get("away_team", ""), "kickoff": "", "cbs": None,
             "post": None, "total_open": None,
             "lock": None, "total_close": None, "lock_at": "", "lock_label": "",
+            "deadline": deadlines.get(key),
         })
         if r.get("kickoff_utc"):
             g["kickoff"] = r["kickoff_utc"]
@@ -141,20 +147,14 @@ def readings(path=LINE_LOG) -> list[dict]:
         mkt = _f(r.get("market_line_home"))
         if mkt is None:
             continue
-        snap = r["snapshot"]
-        if snap == "post":
+        if r["snapshot"] == "post":
             g["post"] = mkt
             g["total_open"] = _f(r.get("market_total"))
-        elif snap.startswith("lock"):
-            # The kickoff on THIS row may be blank (a market-only capture that
-            # found no board), so check against the best kickoff known for the
-            # game rather than against the row alone.
-            if _before_kickoff({"captured_at": r.get("captured_at"),
-                                "kickoff_utc": g["kickoff"]}):
-                g["lock"] = mkt
-                g["total_close"] = _f(r.get("market_total"))
-                g["lock_at"] = r.get("captured_at", "")
-                g["lock_label"] = snap
+        if before_deadline(r.get("captured_at"), g["deadline"]):
+            g["lock"] = mkt
+            g["total_close"] = _f(r.get("market_total"))
+            g["lock_at"] = r.get("captured_at", "")
+            g["lock_label"] = r["snapshot"]
     return list(games.values())
 
 
@@ -222,7 +222,7 @@ def summarise(games: list[dict], graded: list[dict]) -> None:
     have_lock = [g for g in have_cbs if g["lock"] is not None]
     print(f"games in the log:                    {len(games)}")
     print(f"  ...with CBS's frozen line:         {len(have_cbs)}")
-    print(f"  ...and a lock reading before kick: {len(have_lock)}")
+    print(f"  ...and a reading before deadline: {len(have_lock)}")
     print(f"  ...and a final score:              {len(graded)}")
 
     if not graded:

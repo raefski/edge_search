@@ -1308,6 +1308,37 @@ edge (5g's structural argument still applies — capture never changes which sid
 does mean the "our number vs the market's number" comparisons in 5g are always half-point
 offsets rather than sometimes exact matches.
 
+### 5k. Media: YouTube touts, the crowd, DFS buzz, Jeff Mans (Adam's question, 2026-10-11)
+
+`scripts/pickem_media_backtest.py` (`collect`, `evaluate`); data in `data/media_ats_picks.csv`.
+Every spread call ("give me the Bears plus three") in YouTube slate videos aired before the
+game's deadline, read with `scripts/tout_picks.extract_pick` (~95% right on a 20-pick spot
+check). **2025: 2,244 picks, all 272 games, 25 channels** (dev). **2026 wks 1–5: 512 picks,
+74 games, 55 channels** (check). Bar set before looking: beat 50% vs the closing line in BOTH
+seasons, with an interval clearing 50%.
+
+| signal | 2025 (vs close) | 2026 (vs close / CBS) | verdict |
+|---|---|---|---|
+| every tout pick | 1078-1156, **48.3%** | 219-256, 46.1% | touts lose to the line |
+| follow tout consensus (≥3 ch, ≥60%) | 95-110, 46.3% | 21-28, 42.9% | dead |
+| **fade** tout consensus | 110-95, 53.7% [47, 60] | 28-21, 57.1% [43, 70] | same sign twice, neither clears 50% |
+| …fade when touts on the favourite | 55-45, 55.0% | 21-13, 61.8% | ≈ take the dog (dogs 51.7% / 52.9%) |
+| best 5 channels of 2025, in 2026 | — | 31-36, 46.3% | **no tout persists** |
+| fade CBS public majority (2026 only) | n/a | 46-28 vs CBS, 62.2% | one season, a dog year (fade = dog in 58/74) |
+| fade the DFS-buzz team (2026 Sundays) | n/a | 21-25, 45.7% | dead |
+| on model COIN FLIPS: tout consensus / fade public | n/a | 13-20 / 26-12 (n=38) | tiny n |
+
+**Jeff Mans ("One MANS Opinion")**: three 2026 episodes transcribed (~35k words): zero spread
+picks; the only bet is a Thursday-night player prop, and his real picks are behind
+fantasyguru.com. Nothing to backtest.
+
+**Verdict: nothing ships.** Media adds nothing to the pick. The one thing pointing the same
+way twice is *fade the crowd* (touts, and in 2026 the CBS public), worth +4–7pp, but it is
+mostly "take the dog when everyone is on the favourite," fails the pre-set bar, and the
+2014–24 juice proxy for the money (round 7) sign-flipped. Using it on coin flips would also
+pull Adam AWAY from a chalky field while he leads (section 7). Re-run `evaluate` after week 12;
+if fade-consensus on coin flips is still ahead with 2026 n ≥ 100, revisit.
+
 ### 5f. Experiments that couldn't be run at all (data doesn't exist yet)
 
 Not failures — genuinely blocked. Listed so nobody re-plans them without first solving the

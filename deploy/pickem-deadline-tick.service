@@ -1,0 +1,22 @@
+# Fires pick'em captures from the schedule -- see scripts/pickem_deadline_tick.py.
+#
+# Replaces pickem-capture-lock-{wed,thu,sun,mon}.timer (2026-10-11), which fired
+# at fixed clock times and so read the market after the slate had locked on
+# every 9:30am London Sunday, and never on Thanksgiving, Saturdays or Christmas.
+# `post` (Tuesday freeze) and `midweek` (Friday) keep their own timers: they
+# are not deadlines.
+#
+#   cp deploy/pickem-deadline-tick.service deploy/pickem-deadline-tick.timer \
+#      ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now pickem-deadline-tick.timer
+[Unit]
+Description=Pick'em deadline scheduler tick
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/pickem_deadline_tick.py
+Nice=10
+TimeoutStartSec=600
