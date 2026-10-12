@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-10-12T15:59:50+00:00",
+"generated_at": "2026-10-12T16:30:00+00:00",
 "goalies": {
 "2026-10-12": {
 "BUF": {
-"goalie": "Ukko-Pekka Luukkonen",
-"status": null
+"goalie": "Colten Ellis",
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
@@ -12,11 +12,11 @@
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
-"status": null
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Nico Daws",
-"status": "Likely"
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Linus Ullmark",
@@ -81,8 +81,8 @@
 "status": null
 },
 "MIN": {
-"goalie": "Jesper Wallstedt",
-"status": null
+"goalie": "Calvin Pickard",
+"status": "Confirmed"
 },
 "MTL": {
 "goalie": "Jacob Fowler",
@@ -9585,7 +9585,7 @@
 "pp": null
 },
 "Zach Bogosian": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 0,
