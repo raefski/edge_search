@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-12T14:29:47+00:00",
+"generated_at": "2026-10-12T14:59:57+00:00",
 "goalies": {
 "2026-10-12": {
 "BUF": {
@@ -8,7 +8,7 @@
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
-"status": null
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -7729,7 +7729,7 @@
 "toiMinutes": 86,
 "toiSeconds": 58
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -7763,7 +7763,7 @@
 "toiMinutes": 93,
 "toiSeconds": 16
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -7969,7 +7969,7 @@
 "toiMinutes": 69,
 "toiSeconds": 5
 },
-"line": "F2",
+"line": "F4",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
@@ -8139,9 +8139,9 @@
 "toiMinutes": 60,
 "toiSeconds": 57
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Sam Reinhart": {
@@ -8175,7 +8175,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP1"
 },
 "Sandis Vilmanis": {
