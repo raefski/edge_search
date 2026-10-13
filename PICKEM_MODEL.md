@@ -1359,6 +1359,42 @@ home lean sign-flips (round 2, 2.5b). Injuries and officials reach the pick thro
 and the total the model already reads, which is why capture timing (the deadline tick) is the
 lever, not a separate price feature. Script: session scratch, rebuildable from `odds.db`.
 
+### 5m. The "scripted season" -- does the league tilt results toward TV money? (Adam, 2026-10-12)
+
+`scripts/nfl_script_backtest.py`. Economics first: the league's TV money (~$10B/yr) is fixed
+by contracts through 2033 (opt-out after 2029); the networks keep the ad money (SNF ~$1.1B in
+2024, ~$0.9-1M per 30s regular-season spot; Super Bowl ~$7-8M). Viewership follows brand
+teams (the Chiefs had 4 of 2025's top 5 games), stakes, and closeness (blowouts shed viewers).
+A revenue-maximising script would therefore want: H1 brand teams to win, H2 national-window
+games to stay close, H3 December races to stay alive, H4 big markets to win. Each graded as a
+side against the CLOSING spread; train 2010-19 / validate 2020-22 / fresh 2025; 2023-24 unread.
+
+| side taken | 2010-19 | 2020-22 | 2025 |
+|---|---|---|---|
+| H1 brand team (prior-season primetime top 8) | 49.7% | 49.3% | 49.5% |
+| H2 national-window underdog | 48.7% | **58.0%** | **55.9%** |
+| H3 team still in the race vs eliminated (wk 12+) | 49.1% | 51.3% | 48.4% |
+| H4 top-10 market vs small market | 47.9% | 47.6% | 54.6% |
+| SCRIPT (majority vote) | 48.3% | 51.3% | 52.3% |
+
+**No script.** Brand teams beat the market exactly as often as anyone (the line already
+charges for them); big markets, if anything, cover LESS in the long run (public money shades
+their lines). **The one live thread is H2, and it is not a script, it is a regime:** primetime
+underdogs covered < 50% in 12 of 14 seasons 2006-19, then 58.3 / 59.3 / 56.5 / 55.9% in
+2020-22 and 2025, and 12-3 vs CBS's line in 2026 (9 coin flips: dog 7-2, shipped model 4-5).
+Plausible mechanism: post-2018 legal-betting money and same-game parlays loading primetime
+favourites. It FAILS the bar (opposite sign 2010-19), and "the era where it works" is a
+selected window. The honest test is the unspent 2023-24 holdout -- Adam's call, since it
+can be spent once.
+
+**HOLDOUT SPENT ON IT, 2026-10-12 (Adam's call) -- DEAD.** Pre-registered before running:
+pass = national-window underdogs > 50% vs the closing line in 2023-24, AND "take the dog" beats
+the shipped model on primetime coin flips. Result: **54-75, 41.9%** [34, 50] (2023 31-31,
+2024 23-44), and on the 24 primetime coin flips **dog 11-13 vs shipped model 14-10**. The
+2020-22/2025 run was a streak, not a regime; do not revisit. Note for future work: the
+2023-24 holdout has now been looked at a third time (the model twice, this one rule once).
+Its primetime underdog outcomes are no longer unseen.
+
 ### 5f. Experiments that couldn't be run at all (data doesn't exist yet)
 
 Not failures — genuinely blocked. Listed so nobody re-plans them without first solving the
