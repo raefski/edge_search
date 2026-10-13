@@ -45,9 +45,10 @@ TAIL_K = 20
 PAY_BUCKET = 0.005
 
 #: A sharp share of every GPP field is optimised, not drawn from ownership.
-#: Fitted for NFL only (edge/dfs_nfl_contest.py: 30% tilted by exp(0.4*proj)
-#: on three 17,835-entry exports, field proj sd ~10 pts). Carried to the other
-#: sports in sd units as a PRIOR until their exports are fitted.
+#: Fitted for NFL (edge/dfs_nfl_contest.py: 30% tilted by exp(0.4*proj) on
+#: three 17,835-entry exports, field proj sd ~10 pts). GPP_META.md (2026-10-13)
+#: measured 0.25 for NFL (n=3), NHL (n=8) and 0.20 for MLB (n=14); the tilt
+#: strength is carried to the other sports in sd units as a prior.
 SHARP_SHARE = 0.30
 SHARP_BETA_Z = 4.0
 
@@ -103,6 +104,19 @@ def pareto(points: list[dict], y: str = "ceil") -> list[bool]:
         out.append(not any(b is not a and b[y] >= a[y] and b["own"] <= a["own"]
                            and (b[y] > a[y] or b["own"] < a["own"]) for b in points))
     return out
+
+
+def reshare(raw: list, flags, target: float, seed: int = 0) -> list:
+    """`raw` resampled (same size) so that a `target` share of it has
+    `flags` set -- e.g. lineups carrying a 3+ team stack, which ownership
+    draws produce far less often than real fields do."""
+    flags = np.asarray(flags, bool)
+    s0 = float(flags.mean()) if len(flags) else 0.0
+    if not 0.0 < s0 < 1.0:
+        return list(raw)
+    w = np.where(flags, target / s0, (1 - target) / (1 - s0))
+    pick = np.random.default_rng(seed).choice(len(raw), size=len(raw), p=w / w.sum())
+    return [raw[i] for i in pick]
 
 
 def tilt(raw: list, proj: np.ndarray, n: int, seed: int = 0,

@@ -186,3 +186,7 @@ data/dfs_calibration.html
 
 # contest fill snapshots (scripts/dfs_overlay.py): local data, grows every lock
 data/contest_fill_log.csv
+
+# harness runtime state: run ledger + logs, monitor state/alerts, verify stamp,
+# navigator captures, generated STATUS.md (python3 -m harness status --write).
+data/harness/

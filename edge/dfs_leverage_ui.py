@@ -214,7 +214,10 @@ def leverage_view(analysis: dict, key: str) -> dict | None:
                    "the same simulated games and the same simulated field (drawn from projected "
                    "ownership, part of it optimised). EV is relative, 100 = best here; the "
                    "absolute dollars flatter every lineup alike because the sim trusts our "
-                   "projections, so the ORDER is the signal.")
+                   "projections, so the ORDER is the signal. Real results so far (GPP_META.md, "
+                   "108 contests): at equal projection, lower ownership has not raised ROI in "
+                   "MLB or NHL — take a contrarian lineup when it costs little or nothing in "
+                   "points, not on principle.")
     else:
         st.caption("Pick your contest above to rank these by expected payout — small fields "
                    "favour the chalk, big ones pay for being different. Gray dots are a "

@@ -52,16 +52,21 @@ def push_snapshot(path: Path, profile: str, branch: str = "main") -> bool:
         print("  snapshot unchanged -- nothing to push")
         return True
     git("commit", "--quiet", "-m", f"odds: {profile} snapshot", "--", rel)
-    pull = git("-c", "rebase.autoStash=true", "pull", "--rebase", "--quiet",
-               "origin", branch, check=False)
-    if pull.returncode != 0:
-        print(f"  ! rebase failed, not pushing: {pull.stderr.strip()[:200]}")
-        return False
-    push = git("push", "--quiet", "origin", f"HEAD:{branch}", check=False)
-    if push.returncode != 0:
-        print(f"  ! push failed: {push.stderr.strip()[:200]}")
-        return False
-    return True
+    # Several timers fire on the same minute (12:00: draftables, MMA odds, NHL
+    # lines), so a push can lose the race for the remote ref ("cannot lock
+    # ref", or a non-fast-forward) on 2026-10-13. Rebase again and retry.
+    for attempt in range(3):
+        pull = git("-c", "rebase.autoStash=true", "pull", "--rebase", "--quiet",
+                   "origin", branch, check=False)
+        if pull.returncode != 0:
+            print(f"  ! rebase failed, not pushing: {pull.stderr.strip()[:200]}")
+            return False
+        push = git("push", "--quiet", "origin", f"HEAD:{branch}", check=False)
+        if push.returncode == 0:
+            return True
+        print(f"  ! push failed (attempt {attempt + 1}): {push.stderr.strip()[:200]}")
+        time.sleep(5 * (attempt + 1))
+    return False
 
 
 def main() -> int:

@@ -1,0 +1,10 @@
+[Unit]
+Description=Every 10 minutes, 09:00-23:59 local: goalie changes + line moves
+
+[Timer]
+OnCalendar=*-*-* 09..23:00/10:00
+RandomizedDelaySec=30
+Persistent=false
+
+[Install]
+WantedBy=timers.target

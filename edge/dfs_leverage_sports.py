@@ -10,14 +10,17 @@ contest -- expected payout in a field of that size.
 FIELD MODELS. NFL's GPP field is fitted (edge/dfs_nfl_contest.py: real stack
 rates and a sharp share, three 17,835-entry exports). MLB's stack-size mix is
 measured (edge/dfs_sim.STACK_DIST). MMA's field is the lineup softmax fitted on
-one export (edge/dfs_mma_theory.py). NHL, NCAAF and NASCAR fields are drawn
-from projected GPP ownership under the cap, with dfs_leverage's sharp share as
-a prior -- NO stacking in the NHL/NCAAF fields yet, which makes them a little
-thinner at the top than real ones. The ORDER of candidates is the signal.
+one export (edge/dfs_mma_theory.py). NHL's is drawn from projected GPP
+ownership and resampled to the measured stack rate and sharp share
+(NHL_STACK3, NHL_SHARP -- GPP_META.md). NCAAF and NASCAR fields are ownership
+draws under the cap with dfs_leverage's sharp share as a prior; NCAAF's does
+not stack yet, so its top tail is a little thin. The ORDER of candidates is
+the signal, not the dollars.
 """
 from __future__ import annotations
 
 import random
+from collections import Counter
 from statistics import NormalDist
 
 import numpy as np
@@ -38,9 +41,16 @@ def _own(pool: list, key: str = "own") -> np.ndarray:
     return np.array([float(p.get(key) or 0.0) for p in pool])
 
 
-def _tilted(pool: list, raw: list, n: int, seed: int) -> list:
+def _tilted(pool: list, raw: list, n: int, seed: int, share: float = lev.SHARP_SHARE) -> list:
     proj = np.array([sum(float(pool[i].get("proj") or 0.0) for i in lu) for lu in raw])
-    return lev.tilt(raw, proj, n, seed=seed)
+    return lev.tilt(raw, proj, n, seed=seed, share=share)
+
+
+#: Real NHL GPP fields (GPP_META.md, 8 exports, 2026-10-13): 3+ skaters from
+#: one team in 88% [85, 90] of lineups on slates of 4 games or fewer and 73%
+#: [69, 78] on 5+; sharp share 0.25 [0.24, 0.26].
+NHL_STACK3 = (0.88, 0.73)
+NHL_SHARP = 0.25
 
 
 def simple_field(pool: list, size: int, cap: int, n: int, seed: int = 0,
@@ -91,7 +101,11 @@ def nhl(res: dict, contest: dict | None = None, iters: int = 50, seed: int = 0,
     own = _own(pool)
     raw = dfs_nhl_field.sample_field(pool, own / 100.0, n=n_field * RAW_MULT, seed=seed + 7,
                                      rounds=1).tolist()
-    field = _tilted(pool, raw, n_field, seed + 8)
+    games = len({p["game"] for p in pool})
+    stacked = [max(Counter(pool[i]["team"] for i in lu if pool[i]["pos"] != "G").values()) >= 3
+               for lu in raw]
+    raw = lev.reshare(raw, stacked, NHL_STACK3[0] if games <= 4 else NHL_STACK3[1], seed + 9)
+    field = _tilted(pool, raw, n_field, seed + 8, share=NHL_SHARP)
     return lev.analyze(sim, own, cands, field, theory.GPP_PCT, contest)
 
 

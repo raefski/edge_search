@@ -1,0 +1,22 @@
+# Late news before lock: starting-goalie changes (DailyFaceoff, live) and
+# consensus game-line moves (the odds store), pushed to the phone through
+# ntfy. See harness/monitor.py. Each change alerts once; everything is also
+# logged to data/harness/alerts.jsonl, which `python3 -m harness status` shows.
+#
+#   cp deploy/edge-monitor.service deploy/edge-monitor.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now edge-monitor.timer
+#   journalctl --user -u edge-monitor -n 50
+#
+# Stop the pushes (keep logging): drop --push from ExecStart.
+[Unit]
+Description=Watch goalies and game lines before lock; push changes
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 -m harness monitor --push --hours 12
+Restart=no
+Nice=10
+TimeoutStartSec=300
