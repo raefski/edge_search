@@ -1339,6 +1339,26 @@ mostly "take the dog when everyone is on the favourite," fails the pre-set bar, 
 pull Adam AWAY from a chalky field while he leads (section 7). Re-run `evaluate` after week 12;
 if fade-consensus on coin flips is still ahead with 2026 n ≥ 100, revisit.
 
+### 5l. Book prices at CBS's exact number (live 2026, Adam's question 2026-10-12)
+
+The scraped board (`data/odds.db`) holds every book's price on every alternate spread, so for
+each game the market's own no-vig P(home covers CBS's frozen line) can be read straight off
+the book, from the last scan before the deadline. It folds in everything the market knows
+(injuries, officials, weather, money) at exactly the number the pool grades. 78/78 games
+priced (Fanatics 78, DK 77, FanDuel 37), weeks 1–5:
+
+| | all games | coin flips (n=39) |
+|---|---|---|
+| shipped model | 47-31, 60.3% | 22-17, 56.4% |
+| side the prices favour | 45-33, 57.7% | 19-20, 48.7% |
+| where they disagree | prices 7-9, model 9-7 (n=16) | prices 6-9, model 9-6 (n=15) |
+
+No help, and it agrees with the history: closing juice carries no information beyond the line
+(round 7), moneyline drift is redundant with the spread move (5e), and a referee crew's
+home lean sign-flips (round 2, 2.5b). Injuries and officials reach the pick through the line
+and the total the model already reads, which is why capture timing (the deadline tick) is the
+lever, not a separate price feature. Script: session scratch, rebuildable from `odds.db`.
+
 ### 5f. Experiments that couldn't be run at all (data doesn't exist yet)
 
 Not failures — genuinely blocked. Listed so nobody re-plans them without first solving the
