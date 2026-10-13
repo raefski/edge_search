@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T16:29:49+00:00",
+"generated_at": "2026-10-13T16:59:48+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -88,7 +88,7 @@
 },
 "PIT": {
 "goalie": "Sergei Murashov",
-"status": null
+"status": "Likely"
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
@@ -107,8 +107,8 @@
 "status": "Likely"
 },
 "TOR": {
-"goalie": "Sergei Bobrovsky",
-"status": null
+"goalie": "Anthony Stolarz",
+"status": "Likely"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -183,7 +183,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Alex Killorn": {
@@ -215,9 +215,9 @@
 "toiMinutes": 78,
 "toiSeconds": 35
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK1",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Beckett Sennecke": {
@@ -251,7 +251,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Drew Helleson": {
@@ -319,7 +319,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Jackson Lacombe": {
@@ -528,40 +528,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Nikita Klepov": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 4,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 54,
-"toiSeconds": 36
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 4,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 54,
-"toiSeconds": 36
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Nikita Nesterenko": {
 "gtd": false,
 "injury": null,
@@ -664,6 +630,40 @@
 "pos": "ld",
 "pp": "PP2"
 },
+"Roger McQueen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 2,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 34,
+"toiSeconds": 26
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 2,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 34,
+"toiSeconds": 26
+},
+"line": "F3",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "Sam Colangelo": {
 "gtd": false,
 "injury": null,
@@ -693,7 +693,7 @@
 "toiMinutes": 61,
 "toiSeconds": 14
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -17585,7 +17585,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -18131,7 +18131,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
