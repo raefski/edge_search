@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T21:30:55+00:00",
+"generated_at": "2026-10-13T21:45:02+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -10361,7 +10361,7 @@
 "toiMinutes": 67,
 "toiSeconds": 2
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -10371,44 +10371,10 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
-},
-"Brenden Dillon": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 15,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 170,
-"toiSeconds": 52
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 72,
-"toiSeconds": 10
-},
-"line": "D3",
-"pk": "PK1",
-"pos": "ld",
-"pp": null
 },
 "Brett Pesce": {
 "gtd": false,
@@ -10543,7 +10509,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Dougie Hamilton": {
@@ -10679,7 +10645,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10713,7 +10679,7 @@
 "toiMinutes": 63,
 "toiSeconds": 36
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -10752,6 +10718,40 @@
 "pos": "rw",
 "pp": "PP1"
 },
+"Johnathan Kovacevic": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 192,
+"toiSeconds": 20
+},
+"last5": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 94,
+"toiSeconds": 46
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "rd",
+"pp": null
+},
 "Jonas Siegenthaler": {
 "gtd": false,
 "injury": null,
@@ -10782,7 +10782,7 @@
 "toiSeconds": 49
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -10851,7 +10851,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10919,7 +10919,7 @@
 "toiMinutes": 54,
 "toiSeconds": 26
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
