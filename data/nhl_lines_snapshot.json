@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T14:59:57+00:00",
+"generated_at": "2026-10-13T15:29:56+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -84,7 +84,7 @@
 },
 "PHI": {
 "goalie": "Dan Vladar",
-"status": "Likely"
+"status": "Confirmed"
 },
 "PIT": {
 "goalie": "Sergei Murashov",
@@ -104,7 +104,7 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": null
+"status": "Likely"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
@@ -17280,6 +17280,40 @@
 "pos": "rw",
 "pp": "PP1"
 },
+"Jeffrey Viel": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 109,
+"toiSeconds": 37
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 45,
+"toiSeconds": 57
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "John Carlson": {
 "gtd": false,
 "injury": null,
@@ -17448,40 +17482,6 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
-},
-"Scott Sabourin": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 87,
-"toiSeconds": 22
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 42,
-"toiSeconds": 23
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
 "pp": null
 },
 "Victor Hedman": {
