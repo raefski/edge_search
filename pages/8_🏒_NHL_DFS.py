@@ -41,7 +41,7 @@ def _reload_edge(fingerprint: float) -> float:
 
 _reload_edge(source_fingerprint())
 
-from edge import dfs_opt_nhl, dfs_run_nhl as R  # noqa: E402
+from edge import dfs_leverage_ui as LU, dfs_opt_nhl, dfs_run_nhl as R  # noqa: E402
 
 ET = ZoneInfo("America/New_York")
 
@@ -78,6 +78,22 @@ def _slates(_nonce: int):
 @st.cache_data(ttl=300, show_spinner=False)
 def _build(gid, sims: int, iters: int, _nonce: int):
     return R.build_slate(draft_group=gid, n_sims=sims, iters=iters)
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _leverage(gid, sims: int, iters: int, _nonce: int):
+    """GPP lineups from chalk to contrarian plus a simulated field
+    (edge/dfs_leverage.py); built once per slate build."""
+    from edge import dfs_leverage_sports as LS
+    return LS.nhl(_build(gid, sims, iters, _nonce), None, iters=max(25, iters // 3))
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _leverage_for(gid, sims: int, iters: int, _nonce: int, contest: dict):
+    """The same lineups ranked by expected payout in one contest."""
+    from edge import dfs_leverage as lev
+    return lev.with_contest(_leverage(gid, sims, iters, _nonce),
+                            _build(gid, sims, iters, _nonce)["sim"], contest)
 
 
 def _et(iso: str | None) -> str:
@@ -209,15 +225,34 @@ with t_cash:
                "double-up field (300 lineups drawn from cash ownership). On small slates "
                "the field piles onto the same players, so the line is set by the chalk. "
                "No stacking rule.")
+gpp_pick = res.get("gpp")
 with t_gpp:
-    lineups = [res.get("gpp")]
-    if n_gpp > 1:
-        with st.spinner(f"Building {n_gpp} different GPP lineups…"):
-            lineups = dfs_opt_nhl.portfolio(res["pool"], res["sim"], n_gpp, iters=max(40, iters // 3))
-    for k, lu in enumerate(lineups, 1):
+    # Chalk or contrarian is the contest's call (edge/dfs_leverage.py): with
+    # one picked, the lineups from the optimiser's own out to deep contrarian
+    # are ranked by expected payout in a field of its size.
+    contest = LU.contest_picker("NHL", res["gid"], key="nhl")
+    lev_on = contest is not None or st.toggle(
+        "Chalk ↔ contrarian map", key="nhl_lev_on",
+        help="Every GPP lineup from the chalkiest to the most contrarian, on a chart of "
+             "ownership against points, beside a simulated field.")
+    if lev_on:
+        with st.spinner("Building lineups from chalk to contrarian (~30 s the first time)…"):
+            an = (_leverage_for(gid, sims, iters, st.session_state.nhl_nonce, contest) if contest
+                  else _leverage(gid, sims, iters, st.session_state.nhl_nonce))
+        chosen = LU.leverage_view(an, key="nhl")
+        if chosen:
+            gpp_pick = chosen["result"]
+            render(gpp_pick, "gpp")
+    else:
+        lineups = [res.get("gpp")]
         if n_gpp > 1:
-            st.markdown(f"**Lineup {k}**")
-        render(lu, "gpp")
+            with st.spinner(f"Building {n_gpp} different GPP lineups…"):
+                lineups = dfs_opt_nhl.portfolio(res["pool"], res["sim"], n_gpp,
+                                                iters=max(40, iters // 3))
+        for k, lu in enumerate(lineups, 1):
+            if n_gpp > 1:
+                st.markdown(f"**Lineup {k}**")
+            render(lu, "gpp")
     st.caption("Objective: the 95th percentile of the lineup's simulated total, with two "
                "team stacks of 3+ skaters (the 3-3-2 / 4-3-1 builds) and no skater facing "
                "your goalie. Which lines to stack is the simulation's call: a goal pays "
@@ -248,8 +283,8 @@ def _csv() -> bytes:
     buf = io.StringIO()
     w = csv.writer(buf)
     w.writerow(["mode", "slot", "player", "team", "line", "pp", "salary", "proj", "own"])
-    for mode in ("cash", "gpp"):
-        for slot, p in (res.get(mode) or {}).get("slots", []):
+    for mode, lu in (("cash", res.get("cash")), ("gpp", gpp_pick)):
+        for slot, p in (lu or {}).get("slots", []):
             w.writerow([mode, slot, p["name"], p["team"], p.get("line"), p.get("pp"),
                         p["salary"], p["proj"], p.get("own")])
     return buf.getvalue().encode()

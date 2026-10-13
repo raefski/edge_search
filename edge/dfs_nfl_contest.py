@@ -24,7 +24,8 @@ import random
 
 import numpy as np
 
-from edge import dfs_field, dfs_sim
+from edge import dfs_field
+from edge import dfs_leverage as lev
 from edge import dfs_nfl_theory as theory
 from edge import dfs_opt_nfl as opt
 
@@ -112,31 +113,23 @@ def sample_field(pool: list, n: int, seed: int = 0) -> list:
     return [raw[i] for i in pick]
 
 
-#: Field lineups the tail fit uses in each world (see share_above).
-TAIL_K = 20
-
-#: Payouts are averaged over rank buckets this share of the field wide before
-#: the EV is taken. A 150,000-entry contest's first prize is a 1-in-150,000
-#: event that 5,000 simulated worlds never resolve; unsmoothed, the best stack
-#: there changed with the random seed on 2026-10-11 (Maye, Goff, Purdy on
-#: three seeds). Spread over its top 0.5%, the money is estimable.
-PAY_BUCKET = 0.005
+#: The tail fit, payout smoothing and EV now live in edge/dfs_leverage.py,
+#: shared by every sport; these names stay for callers and tests.
+TAIL_K = lev.TAIL_K
+PAY_BUCKET = lev.PAY_BUCKET
 
 
 def share_above(ours: np.ndarray, totals: np.ndarray, k: int = TAIL_K) -> np.ndarray:
-    """Per world, the share of the field scoring above `ours`.
+    """Per world, the share of the field (unsorted `totals`) scoring above
+    `ours` -- see edge/dfs_leverage.share_above."""
+    return lev.share_above(ours, np.sort(totals, axis=1), k)
 
-    Counted directly from the sampled field, except in its top `k`, where an
-    exponential tail fitted to that world's top k takes over. Without it, a
-    lineup that beats all 1,000 sampled lineups is scored as 1st of 150,000.
-    """
-    srt = np.sort(totals, axis=1)
-    m = srt.shape[1]
-    above = (totals > ours[:, None]).sum(1) + 0.5 * (totals == ours[:, None]).sum(1)
-    x_k = srt[:, m - k]
-    excess = np.maximum((srt[:, m - k + 1:] - x_k[:, None]).mean(1), 1e-6)
-    tail = k / m * np.exp(-(ours - x_k) / excess)
-    return np.where(ours > x_k, tail, above / m)
+
+def scores(pool: list, n_sims: int = 5000, seed: int = 1) -> np.ndarray:
+    """Joint simulated DK points for every pool player (n_sims x len(pool)):
+    the model's own mean, sd and measured same-game correlations."""
+    return dfs_field.simulate(pool, opt._sd, theory.rho, n_sims=n_sims, seed=seed,
+                              normal=lambda p: "DST" in p["pos"])
 
 
 def rank(pool: list, candidates: list, field_size: int, payouts=None, entry_fee: float = 1.0,
@@ -145,27 +138,10 @@ def rank(pool: list, candidates: list, field_size: int, payouts=None, entry_fee:
     in a `field_size`-entry contest, every candidate against the same worlds and
     the same field. One dict per candidate, same order: ev ($ per entry),
     p_cash (a paid finish), p_top1 (top 1% of the field), mean_pct."""
-    if not payouts:
-        payouts = dfs_sim.synthetic_gpp_payouts(field_size, entry_fee=entry_fee or 1.0)
-    paid = max(hi for _, hi, _ in payouts)
-    table = np.zeros(field_size + 1)
-    for lo, hi, amt in payouts:
-        table[lo:min(hi, field_size) + 1] = amt
-    width = max(1, int(field_size * PAY_BUCKET))
-    for lo in range(1, field_size + 1, width):
-        table[lo:lo + width] = table[lo:lo + width].mean()
     ix = {(p["name"], p["team"]): i for i, p in enumerate(pool)}
-    scores = dfs_field.simulate(pool, opt._sd, theory.rho, n_sims=n_sims, seed=seed,
-                                normal=lambda p: "DST" in p["pos"])
+    sims = scores(pool, n_sims=n_sims, seed=seed)
     field = sample_field(pool, n_field, seed=seed + 10)
-    totals = np.stack([scores[:, lu].sum(1) for lu in field], 1)
-    out = []
-    for c in candidates:
-        lu = [ix[(p["name"], p["team"])] for p, _ in c["lineup"]]
-        share = share_above(scores[:, lu].sum(1), totals)
-        ranks = np.clip(np.round(share * (field_size - 1)).astype(int) + 1, 1, field_size)
-        out.append({"ev": round(float(table[ranks].mean()), 2),
-                    "p_cash": round(float((ranks <= paid).mean()), 3),
-                    "p_top1": round(float((share <= 0.01).mean()), 4),
-                    "mean_pct": round(float(100 * (1 - share).mean()), 1)})
-    return out
+    cands = [[ix[(p["name"], p["team"])] for p, _ in c["lineup"]] for c in candidates]
+    out = lev.contest_ev(sims, cands, field, field_size, payouts, entry_fee or 1.0)
+    return [{"ev": round(r["ev"], 2), "p_cash": round(r["p_cash"], 3),
+             "p_top1": round(r["p_top1"], 4), "mean_pct": round(r["mean_pct"], 1)} for r in out]

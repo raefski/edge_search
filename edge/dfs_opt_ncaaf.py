@@ -208,11 +208,16 @@ def _climb_candidates(index, cur, limit=CLIMB_CANDIDATES):
 
 
 def _hill_climb(lineup, players, rng, locked=frozenset(), mode="cash",
-                z_cash=theory.Z_CASH, z_gpp=theory.Z_GPP, index=None):
+                z_cash=theory.Z_CASH, z_gpp=theory.Z_GPP, index=None, own_weight=0.0):
     """Improve a legal lineup one swap at a time, on the FULL objective."""
     index = index if index is not None else _candidate_index(players)
+    # GPP leverage (edge/dfs_leverage.py): `own_weight` points per 100% of
+    # summed ownership, inside the climb so the search can walk toward lower-
+    # owned players rather than only choosing between restarts afterwards.
+    fade = own_weight / 100.0 if mode == "gpp" else 0.0
     mean, var = _stats(lineup)
-    best = _objective(mean, var, mode, z_cash, z_gpp)
+    own = sum(p.get("own", 0.0) for p in lineup)
+    best = _objective(mean, var, mode, z_cash, z_gpp) - fade * own
     improved = True
     while improved:
         improved = False
@@ -228,13 +233,14 @@ def _hill_climb(lineup, players, rng, locked=frozenset(), mode="cash",
                 if others + cand["salary"] > CAP:
                     continue
                 m, v = _swap_stats(lineup, i, cand, mean, var)
-                obj = _objective(m, v, mode, z_cash, z_gpp)
+                o = own - cur.get("own", 0.0) + cand.get("own", 0.0)
+                obj = _objective(m, v, mode, z_cash, z_gpp) - fade * o
                 if obj <= best:
                     continue
                 trial = lineup[:]
                 trial[i] = cand
                 if _valid(trial):
-                    lineup, mean, var, best = trial, m, v, obj
+                    lineup, mean, var, own, best = trial, m, v, o, obj
                     improved = True
                     break
     return lineup, best
@@ -314,8 +320,8 @@ def optimize(players, mode="cash", stack_qb=None, stack_n=theory.STACK_N,
     # with the lineup objective or the search spends its time climbing back
     # out of where the fill put it.
     for p in players:
-        p["_pv"] = (p["proj"] + z_gpp * _sd(p)) if mode == "gpp" \
-            else (p["proj"] - z_cash * _sd(p))
+        p["_pv"] = (p["proj"] + z_gpp * _sd(p) - own_weight * p.get("own", 0.0) / 100.0) \
+            if mode == "gpp" else (p["proj"] - z_cash * _sd(p))
 
     index = _candidate_index(players)
 
@@ -326,9 +332,8 @@ def optimize(players, mode="cash", stack_qb=None, stack_n=theory.STACK_N,
             if not lu:
                 continue
             lu, key = _hill_climb(lu, players, rng, locked=locked, mode=mode,
-                                  z_cash=z_cash, z_gpp=z_gpp, index=index)
-            if own_weight and mode == "gpp":
-                key -= own_weight * sum(q.get("own", 0.0) for q in lu) / 100.0
+                                  z_cash=z_cash, z_gpp=z_gpp, index=index,
+                                  own_weight=own_weight)
             if best_key is None or key > best_key:
                 best, best_key = lu, key
         return best, best_key
