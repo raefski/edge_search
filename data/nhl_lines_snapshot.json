@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T17:59:49+00:00",
+"generated_at": "2026-10-13T18:29:50+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -44,7 +44,7 @@
 },
 "EDM": {
 "goalie": "Devon Levi",
-"status": null
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Akira Schmid",
@@ -52,7 +52,7 @@
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
-"status": "Likely"
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Calvin Pickard",
@@ -88,7 +88,7 @@
 },
 "PIT": {
 "goalie": "Sergei Murashov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
@@ -96,7 +96,7 @@
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
-"status": null
+"status": "Confirmed"
 },
 "STL": {
 "goalie": "Joel Hofer",
@@ -4427,7 +4427,7 @@
 "pp": null
 },
 "Connor Bedard": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 8,
@@ -8306,7 +8306,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Andre Lee": {
 "gtd": false,
@@ -8546,7 +8546,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Darcy Kuemper": {
 "gtd": false,
@@ -15614,6 +15614,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Barclay Goodrow": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 124,
+"toiSeconds": 24
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 60,
+"toiSeconds": 0
+},
+"line": "F4",
+"pk": "PK1",
+"pos": "lw",
+"pp": null
+},
 "Collin Graf": {
 "gtd": false,
 "injury": null,
@@ -15644,7 +15678,7 @@
 "toiSeconds": 42
 },
 "line": "F4",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rw",
 "pp": null
 },
@@ -15824,7 +15858,7 @@
 "toiSeconds": 4
 },
 "line": "F2",
-"pk": "PK2",
+"pk": null,
 "pos": "rw",
 "pp": null
 },
@@ -16030,40 +16064,6 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
-},
-"Ty Dellandrea": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 128,
-"toiSeconds": 24
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 78,
-"toiSeconds": 11
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
 "pp": null
 },
 "Tyler Toffoli": {
