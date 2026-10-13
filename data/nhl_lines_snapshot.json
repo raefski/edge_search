@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T18:59:57+00:00",
+"generated_at": "2026-10-13T19:30:00+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -1594,6 +1594,40 @@
 "pos": "g",
 "pp": null
 },
+"Dennis Gilbert": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 15,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 134,
+"toiSeconds": 46
+},
+"last5": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 0,
+"toiMinutes": 71,
+"toiSeconds": 34
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "ld",
+"pp": null
+},
 "Jack Quinn": {
 "gtd": false,
 "injury": null,
@@ -1636,7 +1670,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Josh Doan": {
 "gtd": false,
@@ -1714,7 +1748,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Louis Crevier": {
 "gtd": false,
@@ -1781,7 +1815,7 @@
 },
 "line": "D1",
 "pk": "PK1",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Noah Ostlund": {
@@ -1847,7 +1881,7 @@
 "toiMinutes": 86,
 "toiSeconds": 39
 },
-"line": "D3",
+"line": "D1",
 "pk": null,
 "pos": "ld",
 "pp": "PP2"
@@ -1884,7 +1918,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Peyton Krebs": {
 "gtd": false,
@@ -1920,40 +1954,6 @@
 "pos": "lw",
 "pp": null
 },
-"Rasmus Dahlin": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 6,
-"blocks": 19,
-"gamesPlayed": 10,
-"goals": 4,
-"points": 10,
-"powerplayAssists": 4,
-"powerplayGoals": 1,
-"powerplayPoints": 5,
-"shots": 31,
-"toiMinutes": 244,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 2,
-"blocks": 14,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 1,
-"powerplayGoals": 1,
-"powerplayPoints": 2,
-"shots": 15,
-"toiMinutes": 115,
-"toiSeconds": 50
-},
-"line": "D1",
-"pk": "PK2",
-"pos": "rd",
-"pp": "PP1"
-},
 "Ryan McLeod": {
 "gtd": false,
 "injury": null,
@@ -1986,7 +1986,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Tage Thompson": {
 "gtd": false,
