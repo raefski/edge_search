@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-12T23:44:44+00:00",
+"generated_at": "2026-10-13T00:30:03+00:00",
 "goalies": {
 "2026-10-12": {
 "BUF": {
@@ -37,7 +37,7 @@
 "status": null
 },
 "BUF": {
-"goalie": "Colten Ellis",
+"goalie": "Ukko-Pekka Luukkonen",
 "status": null
 },
 "CAR": {
@@ -73,7 +73,7 @@
 "status": null
 },
 "FLA": {
-"goalie": "Jacob Markstrom",
+"goalie": "Akira Schmid",
 "status": null
 },
 "LAK": {
@@ -89,8 +89,8 @@
 "status": null
 },
 "NJD": {
-"goalie": "Nico Daws",
-"status": null
+"goalie": "Jake Allen",
+"status": "Confirmed"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -145,8 +145,8 @@
 "status": null
 },
 "VGK": {
-"goalie": "Carter Hart",
-"status": null
+"goalie": "Adin Hill",
+"status": "Likely"
 },
 "WPG": {
 "goalie": "Stuart Skinner",
@@ -1597,7 +1597,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2095,7 +2095,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7627,7 +7627,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7935,7 +7935,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
