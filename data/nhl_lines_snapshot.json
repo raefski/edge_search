@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T15:29:56+00:00",
+"generated_at": "2026-10-13T16:00:07+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -28,7 +28,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": null
+"status": "Likely"
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
@@ -36,7 +36,7 @@
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": null
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "John Gibson",
@@ -68,7 +68,7 @@
 },
 "NSH": {
 "goalie": "Juuse Saros",
-"status": null
+"status": "Likely"
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
@@ -100,7 +100,7 @@
 },
 "STL": {
 "goalie": "Joel Hofer",
-"status": null
+"status": "Likely"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -116,7 +116,7 @@
 },
 "VAN": {
 "goalie": "Leevi Merilainen",
-"status": null
+"status": "Likely"
 },
 "VGK": {
 "goalie": "Adin Hill",
@@ -12027,7 +12027,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Matthew Schaefer": {
@@ -12069,7 +12069,7 @@
 "toiMinutes": 62,
 "toiSeconds": 28
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -12207,9 +12207,9 @@
 "toiMinutes": 81,
 "toiSeconds": 8
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Tony DeAngelo": {
@@ -15231,7 +15231,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Kaapo Kakko": {
@@ -15505,7 +15505,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Vince Dunn": {
@@ -18902,38 +18902,38 @@
 }
 },
 "VAN": {
-"Aatu Raty": {
+"Arshdeep Bains": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 1,
-"blocks": 4,
+"assists": 2,
+"blocks": 7,
 "gamesPlayed": 10,
+"goals": 3,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 9,
+"toiMinutes": 127,
+"toiSeconds": 51
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
 "goals": 1,
 "points": 2,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 123,
-"toiSeconds": 0
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 56,
-"toiSeconds": 48
+"shots": 3,
+"toiMinutes": 57,
+"toiSeconds": 15
 },
 "line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Brendan Gallagher": {
@@ -18999,7 +18999,7 @@
 "toiMinutes": 89,
 "toiSeconds": 48
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP1"
@@ -19067,7 +19067,7 @@
 "toiMinutes": 89,
 "toiSeconds": 49
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -19140,40 +19140,6 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Guillaume Brisebois": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 78,
-"toiSeconds": 40
-},
-"last5": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 61,
-"toiSeconds": 44
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
-"pp": null
-},
 "Jake DeBrusk": {
 "gtd": false,
 "injury": null,
@@ -19207,6 +19173,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Jamie Oleksiak": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 14,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 186,
+"toiSeconds": 50
+},
+"last5": {
+"assists": 1,
+"blocks": 9,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 88,
+"toiSeconds": 17
+},
+"line": "D2",
+"pk": "PK2",
+"pos": "ld",
+"pp": null
 },
 "Jonathan Lekkerimaki": {
 "gtd": false,
@@ -19377,7 +19377,7 @@
 "toiMinutes": 74,
 "toiSeconds": 4
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -19481,7 +19481,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Paul Cotter": {
@@ -19557,7 +19557,7 @@
 "toiMinutes": 113,
 "toiSeconds": 19
 },
-"line": "D1",
+"line": "D3",
 "pk": null,
 "pos": "ld",
 "pp": "PP2"
@@ -20385,7 +20385,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Cole Perfetti": {
@@ -20907,7 +20907,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 }
 },
