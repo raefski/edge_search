@@ -45,12 +45,22 @@ def test_paid_places_and_totals():
 
 
 def test_projection_extrapolates_the_last_two_snapshots_and_caps_at_the_field():
-    hist = [(T0, 5), (T0 + timedelta(minutes=10), 10)]
+    hist = [(T0, 5), (T0 + timedelta(minutes=30), 20)]
     p = projected_fill(hist, cap=100, minutes_to_lock=30)
     assert p["rate_per_min"] == pytest.approx(0.5)
-    assert p["at_lock"] == 25
+    assert p["at_lock"] == 35
     assert projected_fill(hist, cap=18, minutes_to_lock=30)["at_lock"] == 18
     assert projected_fill([], cap=18, minutes_to_lock=30)["at_lock"] is None
+
+
+def test_short_baselines_claim_no_rate():
+    """Eight seconds apart projected 90 entries to 103; ten minutes apart, one
+    entry, projected +14 over 137 minutes. Neither is a trend."""
+    seconds = [(T0, 5), (T0 + timedelta(seconds=8), 90)]
+    minutes = [(T0 - timedelta(minutes=10), 89), (T0, 90)]
+    for hist in (seconds, minutes):
+        p = projected_fill(hist, cap=237, minutes_to_lock=137)
+        assert p["rate_per_min"] == 0.0 and p["at_lock"] == hist[-1][1]
 
 
 def test_a_shrinking_field_projects_flat():
@@ -116,10 +126,10 @@ def test_each_contest_pushes_once_then_a_final_call_inside_20_minutes():
 
 
 def test_history_moves_the_at_lock_numbers():
-    hist = {"1": [(T0 - timedelta(minutes=10), 9), (T0, 11)]}
+    hist = {"1": [(T0 - timedelta(minutes=30), 9), (T0, 11)]}
     rows = overlay.assess([_found("1", 11, 23, 1.0, 28)], {"1": DOUBLE}, hist, T0, 2.5, 25,
                           0.10, False)
-    assert rows[0]["projected"]["basis"] == "2 snapshots"
+    assert rows[0]["projected"]["basis"].startswith("2 snapshots")
     assert rows[0]["n_lock"] > 11                                         # filling
     assert rows[0]["at_lock"]["cash"] < rows[0]["now"]["cash"] + 1e-9
 

@@ -170,7 +170,7 @@ def alerts_for(rows: list[dict], state: dict, now: datetime) -> list[dict]:
         rz = {True: "yes", False: "no", None: "not priced"}[r["resizable"]]
         head = ("FINAL CALL — " if final else "") + f"{r['sport']} · {r['name'][:46]}"
         body = (f"{r['minutes']} min to lock, {n_now}/{r['cap']} entered"
-                + (f", projected {r['n_lock']} at lock" if p["basis"] != "no history" else "")
+                + (f", projected {r['n_lock']} at lock" if p["rate_per_min"] > 0 else "")
                 + f". If you enter now: cash {e_now['cash']:.0%}, returns ${e_now['return']:.2f} per $1 "
                 f"({e_now['roi']:+.0%}). At lock: cash {e_lock['cash']:.0%}, returns "
                 f"${e_lock['return']:.2f} per $1 ({e_lock['roi']:+.0%}), {e_lock['places']} paid places. "
