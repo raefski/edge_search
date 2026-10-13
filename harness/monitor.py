@@ -47,6 +47,10 @@ MOVES = {"icehockey_nhl": (0.5, None, 0.06), "americanfootball_nfl": (1.5, 1.5, 
          "americanfootball_ncaaf": (3.0, 3.0, 0.08), "baseball_mlb": (0.5, None, 0.06)}
 PROFILES = {"dfs_nhl": "icehockey_nhl", "dfs_nfl": "americanfootball_nfl",
             "dfs_ncaaf": "americanfootball_ncaaf", "dfs_mlb": "baseball_mlb"}
+#: A line move is pushed only once its game starts inside this many minutes. Moves
+#: further out are still tracked (so the baseline stays current) but not sent: Adam
+#: wants the phone to buzz at lock time, not hours before it (2026-10-13).
+LINE_PUSH_MIN = 15
 
 
 def _now() -> datetime:
@@ -118,8 +122,9 @@ def consensus(rows: list[tuple]) -> dict:
 
 
 def line_moves(db: Path, hours: float, seen: dict) -> list[dict]:
-    """Alerts for consensus moves past MOVES on events starting within `hours`;
-    `seen` ({"event|market": value}) is updated in place."""
+    """Alerts for consensus moves past MOVES on events starting within `hours`
+    and, of those, only the ones starting within LINE_PUSH_MIN minutes; `seen`
+    ({"event|market": value}) is updated in place for every event tracked."""
     out = []
     try:
         con = sqlite3.connect(f"file:{db}?mode=ro", uri=True, timeout=10)
@@ -127,6 +132,7 @@ def line_moves(db: Path, hours: float, seen: dict) -> list[dict]:
         return out
     soon = (_now() + timedelta(hours=hours)).isoformat()
     now = _now().isoformat()
+    push_by = _now() + timedelta(minutes=LINE_PUSH_MIN)
     for prof, sport in PROFILES.items():
         row = con.execute("SELECT MAX(id) FROM scan WHERE profile = ? AND ok = 1", (prof,)).fetchone()
         if not row or row[0] is None:
@@ -152,6 +158,8 @@ def line_moves(db: Path, hours: float, seen: dict) -> list[dict]:
                 continue
             seen[key] = v
             home, away, start = events[ev]
+            if datetime.fromisoformat(start.replace("Z", "+00:00")) > push_by:
+                continue                                    # tracked, not pushed: game is not close yet
             what = {"totals": "total", "spreads": f"{home} spread", "h2h": f"{home} win prob"}[market]
             fmt = (lambda x: f"{100 * x:.0f}%") if market == "h2h" else (lambda x: f"{x:g}")
             out.append({"kind": "line", "priority": "default", "event": ev,

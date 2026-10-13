@@ -110,8 +110,14 @@ def test_line_moves_need_the_sport_threshold(tmp_path, monkeypatch):
     scan(2, 6.25)
     assert monitor.line_moves(db, 12, seen) == []            # under NHL's 0.5
     scan(3, 6.5)
+    assert monitor.line_moves(db, 12, seen) == []            # 3h out: tracked, not pushed
+    assert seen["g|totals"] == 6.5
+    con.execute("UPDATE event SET commence_time = ?",
+                ((datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),))
+    con.commit()
+    scan(4, 7.0)
     moves = monitor.line_moves(db, 12, seen)
-    assert len(moves) == 1 and "6 → 6.5" in moves[0]["title"]
+    assert len(moves) == 1 and "6.5 → 7" in moves[0]["title"]   # inside 15 min: pushed
     assert monitor.line_moves(db, 12, seen) == []            # alerted once
 
 
