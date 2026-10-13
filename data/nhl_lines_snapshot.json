@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T14:00:02+00:00",
+"generated_at": "2026-10-13T14:30:04+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -20,7 +20,7 @@
 },
 "CBJ": {
 "goalie": "Cam Talbot",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CGY": {
 "goalie": "Devin Cooley",
@@ -60,7 +60,7 @@
 },
 "MTL": {
 "goalie": "Jacob Fowler",
-"status": null
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Jake Allen",
@@ -72,7 +72,7 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": null
+"status": "Likely"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -141,8 +141,8 @@
 "status": null
 },
 "MTL": {
-"goalie": "Jacob Fowler",
-"status": null
+"goalie": "Jakub Dobes",
+"status": "Confirmed"
 },
 "WSH": {
 "goalie": "Logan Thompson",
@@ -2947,7 +2947,7 @@
 "toiMinutes": 82,
 "toiSeconds": 7
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -3021,7 +3021,7 @@
 "pp": null
 },
 "Conor Garland": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 0,
@@ -3187,7 +3187,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Erik Gudbranson": {
@@ -3253,7 +3253,7 @@
 "toiMinutes": 65,
 "toiSeconds": 3
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -3427,7 +3427,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Sean Monahan": {
@@ -9612,6 +9612,40 @@
 }
 },
 "MTL": {
+"Adam Engstrom": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 144,
+"toiSeconds": 57
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 78,
+"toiSeconds": 1
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Alex Newhook": {
 "gtd": false,
 "injury": null,
@@ -9675,8 +9709,8 @@
 "toiMinutes": 88,
 "toiSeconds": 57
 },
-"line": "D3",
-"pk": "PK2",
+"line": "D2",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 },
@@ -9745,7 +9779,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Chris Kreider": {
@@ -10021,7 +10055,7 @@
 },
 "line": "D2",
 "pk": "PK1",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Kirby Dach": {
@@ -10088,43 +10122,9 @@
 "toiSeconds": 47
 },
 "line": "D1",
-"pk": null,
+"pk": "PK2",
 "pos": "ld",
 "pp": "PP1"
-},
-"Mike Matheson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 13,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 5,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 19,
-"toiMinutes": 244,
-"toiSeconds": 45
-},
-"last5": {
-"assists": 1,
-"blocks": 10,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 120,
-"toiSeconds": 46
-},
-"line": "D2",
-"pk": "PK1",
-"pos": "ld",
-"pp": null
 },
 "Nick Suzuki": {
 "gtd": false,
@@ -10193,6 +10193,40 @@
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
+},
+"Owen Beck": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 103,
+"toiSeconds": 8
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 0,
+"toiMinutes": 53,
+"toiSeconds": 8
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Phillip Danault": {
 "gtd": false,
@@ -16386,6 +16420,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Dylan Peterson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 37,
+"toiSeconds": 28
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 37,
+"toiSeconds": 28
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Jake Neighbours": {
 "gtd": false,
 "injury": null,
@@ -16796,16 +16864,6 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": null
-},
-"Zachary Dean": {
-"gtd": false,
-"injury": null,
-"last10": {},
-"last5": {},
-"line": "F4",
-"pk": null,
-"pos": "rw",
 "pp": null
 }
 },
