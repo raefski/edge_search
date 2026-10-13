@@ -93,9 +93,22 @@ def contest_picker(sport: str, gid, key: str) -> dict | None:
         if cid:
             info = _lookup(cid)
             hit = next((c for c in _safe_lobby(sport) if str(c.get("id")) == cid), None)
+            if hit and _is_cash(hit):
+                st.warning("That is a double-up / 50-50 — play the 💵 CASH lineup.")
+                return None
+            if hit and str(hit.get("dg")) != str(gid):
+                st.warning(f"That contest is on draft group {hit.get('dg')}, not this slate "
+                           f"({gid}). Pick its slate in the sidebar.")
+                return None
             if hit:
                 return _from_lobby(hit)
             if info:
+                if info.get("sport") and info["sport"] != sport:
+                    st.warning(f"That is a {info['sport']} contest, not {sport}.")
+                    return None
+                if info.get("type") == "cash":
+                    st.warning("That is a double-up / 50-50 — play the 💵 CASH lineup.")
+                    return None
                 if info.get("draft_group") and str(info["draft_group"]) != str(gid):
                     st.warning(f"That contest is on draft group {info['draft_group']}, not this "
                                f"slate ({gid}). Pick its slate in the sidebar.")

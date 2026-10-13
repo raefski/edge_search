@@ -69,6 +69,7 @@ def _reload_edge(fingerprint: float) -> float:
 
 _reload_edge(source_fingerprint())
 
+from edge import dfs_leverage_ui as LU        # noqa: E402
 from edge import dfs_nfl_theory as theory     # noqa: E402
 from edge import dfs_run_nfl as nfl           # noqa: E402
 from edge.odds.cli import scraped_client      # noqa: E402
@@ -122,12 +123,6 @@ def _nfl_stack(gid, iters: int, _nonce: int, qb: str):
 
 
 @st.cache_data(ttl=600, show_spinner=False)
-def _lookup_contest(cid: str):
-    from edge.dfs_contest import lookup
-    return lookup(cid)
-
-
-@st.cache_data(ttl=600, show_spinner=False)
 def _contest_rank(gid, iters: int, _nonce: int, qbs: tuple, field: int, payouts, fee: float):
     """The chosen quarterbacks' best GPP stacks, ranked by expected payout in
     a `field`-entry contest (edge/dfs_nfl_contest.py)."""
@@ -147,45 +142,23 @@ def _contest_rank(gid, iters: int, _nonce: int, qbs: tuple, field: int, payouts,
     return sorted(rows, key=lambda r: -r["ev"])
 
 
-def _contest_inputs(slate_gid):
-    """The contest the GPP lineup is for: a pasted DK link / ID (DK supplies the
-    field, fee and real payout table), or a typed field size. None if neither."""
-    from edge.dfs_contest import contest_id, expected_field
-    with st.expander("🎯 Your contest", expanded=True):
-        text = st.text_input("DK contest link or ID", key="nfl_contest",
-                             placeholder="paste from DK, e.g. 196420173",
-                             help="DK app: open the contest → Share → Copy link.")
-        cid = contest_id(text)
-        if cid:
-            try:
-                info = _lookup_contest(cid)
-            except Exception as exc:                        # noqa: BLE001
-                st.warning(f"DK could not find contest {cid} ({exc}). Type the field size instead.")
-                info = None
-            if info:
-                field = expected_field(info)
-                st.caption(f"**{info['name']}** · {field:,} entries "
-                           f"({info.get('field') or 0:,} in now) · ${info.get('entry_fee') or 0:g} · "
-                           f"{info.get('places_paid') or 0:,} paid")
-                if info.get("sport") != "NFL":
-                    st.warning(f"That is a {info.get('sport')} contest, not NFL.")
-                    return None
-                if info["type"] == "cash":
-                    st.warning("That is a double-up / 50-50 — play the 💵 CASH lineup.")
-                    return None
-                if info.get("draft_group") and str(info["draft_group"]) != str(slate_gid):
-                    st.warning(f"That contest is on draft group {info['draft_group']}, not "
-                               f"this slate ({slate_gid}). Pick its slate in the sidebar.")
-                    return None
-                return {"field": max(field, 2), "fee": float(info.get("entry_fee") or 0),
-                        "payouts": tuple(info["payouts"]) or None}
-        c1, c2 = st.columns(2)
-        field = c1.number_input("…or field size", min_value=0, value=0, step=100,
-                                key="nfl_field", help="Total entries in your contest.")
-        fee = c2.number_input("Entry $", min_value=0.0, value=5.0, step=1.0, key="nfl_fee")
-        if field >= 2:
-            return {"field": int(field), "fee": float(fee), "payouts": None}
-    return None
+@st.cache_data(ttl=600, show_spinner=False)
+def _nfl_leverage(gid, iters: int, _nonce: int, qbs: tuple):
+    """GPP lineups from chalk to contrarian (edge/dfs_leverage.py) plus the
+    named quarterbacks' stacks, with a simulated field."""
+    from edge import dfs_leverage_sports as LS
+    extra = [_nfl_stack(gid, iters, _nonce, qb) for qb in qbs]
+    return LS.nfl(_nfl_build(gid, iters, _nonce), None, iters=max(60, iters // 3), extra=extra)
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _nfl_leverage_for(gid, iters: int, _nonce: int, qbs: tuple, contest: dict):
+    """The same lineups ranked by expected payout in one contest -- the same
+    simulated worlds edge/dfs_leverage_sports.nfl drew (3,000, seed 1)."""
+    from edge import dfs_leverage as lev, dfs_nfl_contest as nc
+    pool = _nfl_build(gid, iters, _nonce)["pool"]
+    return lev.with_contest(_nfl_leverage(gid, iters, _nonce, qbs),
+                            nc.scores(pool, n_sims=3000, seed=1), contest)
 
 
 def _source_badge():
@@ -407,8 +380,8 @@ def _csv() -> bytes:
     w = csv.writer(buf)
     w.writerow(["mode", "slot", "player", "team", "opp", "salary", "proj",
                 "own", "leverage"])
-    for mode in ("cash", "gpp"):
-        for r in nfl.lineup_rows(res.get(mode)):
+    for mode, lu in (("cash", res.get("cash")), ("gpp", gpp_pick)):
+        for r in nfl.lineup_rows(lu):
             w.writerow([mode, r["slot"], r["player"], r["team"], r["opp"],
                         r["salary"], r["proj"], r["own"], r["leverage"]])
     return buf.getvalue().encode()
@@ -417,24 +390,26 @@ def _csv() -> bytes:
 t_cash, t_gpp, t_board = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board"])
 with t_cash:
     render(res.get("cash"), "cash")
+gpp_pick = res.get("gpp")
 with t_gpp:
     # The optimiser's best stack is one opinion; when its game is the field's
     # chalk, a single-entry GPP may want a different one (2026-10-11: the
     # top stack was the slate's most-owned game from both sides). Which one is
     # right depends on the contest, so with one given the stacks are ranked by
-    # expected payout in it (edge/dfs_nfl_contest.py).
+    # expected payout in it (edge/dfs_nfl_contest.py), and the chalk ->
+    # contrarian map (edge/dfs_leverage.py) ranks every candidate the same way.
     _qbs = sorted((p for p in res["pool"] if "QB" in p["pos"]), key=lambda p: -(p.get("proj") or 0))
-    _contest = _contest_inputs(res["gid"])
+    _contest = LU.contest_picker("NFL", res["gid"], key="nfl")
+    _nonce = st.session_state.get("nfl_nonce", 0)
+    _auto_qb = ((res.get("gpp") or {}).get("stack") or {}).get("qb")
+    _cands = [q["name"] for q in _qbs[:8]]
+    if _auto_qb and _auto_qb not in _cands:
+        _cands.append(_auto_qb)
     _best_qb, _ranked = None, None
     if _contest:
-        _auto_qb = ((res.get("gpp") or {}).get("stack") or {}).get("qb")
-        _cands = [q["name"] for q in _qbs[:8]]
-        if _auto_qb and _auto_qb not in _cands:
-            _cands.append(_auto_qb)
         with st.spinner(f"Simulating {len(_cands)} stacks in a {_contest['field']:,}-entry field…"):
-            _ranked = _contest_rank(gid, iters, st.session_state.get("nfl_nonce", 0),
-                                    tuple(_cands), _contest["field"],
-                                    _contest.get("payouts"), _contest["fee"])
+            _ranked = _contest_rank(gid, iters, _nonce, tuple(_cands), _contest["field"],
+                                    _contest.get("payouts"), _contest["fee"] or 1.0)
         if _ranked:
             _best_qb = _ranked[0]["qb"]
             _body = "".join(
@@ -448,38 +423,32 @@ with t_gpp:
             st.caption("Each stack's best lineup against a simulated field of this size, drawn "
                        "from projected ownership and stacked like real NFL GPP fields. EV is "
                        "relative: 100 = the best stack here. Cash / Top 1% are chances of a "
-                       "paid finish / a top-1% finish. Absolute dollars are left out on purpose "
-                       "— the sim takes our projections as truth, so it flatters every lineup "
-                       "equally; the ORDER is the signal.")
-    _opts = ["Auto (best)"] + [f"{q['name']} ({q['team']}) · {q['proj']} pts · {q.get('own', 0):.0f}% own"
-                               for q in _qbs]
-    _names = [q["name"] for q in _qbs]
-    _pick = st.selectbox("Stack", _opts,
-                         index=_names.index(_best_qb) + 1 if _best_qb in _names else 0,
-                         help="Build the GPP lineup around a quarterback you choose. "
-                              "With a contest entered it starts on the ⭐ stack.")
-    if _pick == "Auto (best)":
-        render(res.get("gpp"), "gpp")
+                       "paid finish / a top-1% finish.")
+    _lev_on = _contest is not None or st.toggle(
+        "Chalk ↔ contrarian map", key="nfl_lev_on",
+        help="Every GPP lineup from the chalkiest to the most contrarian (the top 8 QBs' "
+             "stacks included), on a chart of ownership against points, beside a "
+             "simulated field.")
+    if _lev_on:
+        with st.spinner("Building lineups from chalk to contrarian (~1 min the first time)…"):
+            _an = (_nfl_leverage_for(gid, iters, _nonce, tuple(_cands), _contest) if _contest
+                   else _nfl_leverage(gid, iters, _nonce, tuple(_cands)))
+        _chosen = LU.leverage_view(_an, key="nfl")
+        if _chosen:
+            gpp_pick = _chosen["result"]
+            render(gpp_pick, "gpp")
     else:
-        _qb = _qbs[_opts.index(_pick) - 1]["name"]
-        with st.spinner(f"Building a {_qb} stack…"):
-            render(_nfl_stack(gid, iters, st.session_state.get("nfl_nonce", 0), _qb), "gpp")
-    if not _contest and st.button("Compare stacks (top 8 QBs)", width="stretch"):
-        _rows = []
-        with st.spinner("Building eight stacks…"):
-            for q in _qbs[:8]:
-                lu = _nfl_stack(gid, iters, st.session_state.get("nfl_nonce", 0), q["name"])
-                if lu:
-                    _rows.append((lu["ceil"], lu["proj"], lu["own"], q["name"], q["team"]))
-        _body = "".join(f"<tr><td class='nm'>{n} ({t})</td><td class='num'>{c:.0f}</td>"
-                        f"<td class='num'>{m}</td><td class='num'>{o:.0f}%</td></tr>"
-                        for c, m, o, n, t in sorted(_rows, reverse=True))
-        st.markdown("<div class='lu-wrap'><table class='lu'><tr><th>Stack</th><th>Ceil</th>"
-                    "<th>Proj</th><th>Own</th></tr>" + _body + "</table></div>",
-                    unsafe_allow_html=True)
-        st.caption("Own = the lineup's summed ownership (our model). Lower means fewer "
-                   "copies of it in the field; in a 10,000+ entry GPP that is worth "
-                   "some ceiling. Enter your contest above to have them ranked for it.")
+        _opts = ["Auto (best)"] + [f"{q['name']} ({q['team']}) · {q['proj']} pts · "
+                                   f"{q.get('own', 0):.0f}% own" for q in _qbs]
+        _names = [q["name"] for q in _qbs]
+        _pick = st.selectbox("Stack", _opts,
+                             index=_names.index(_best_qb) + 1 if _best_qb in _names else 0,
+                             help="Build the GPP lineup around a quarterback you choose.")
+        if _pick != "Auto (best)":
+            _qb = _qbs[_opts.index(_pick) - 1]["name"]
+            with st.spinner(f"Building a {_qb} stack…"):
+                gpp_pick = _nfl_stack(gid, iters, _nonce, _qb)
+        render(gpp_pick, "gpp")
 with t_board:
     pool = sorted(res["pool"], key=lambda p: -(p.get("proj") or 0))
     pos_filter = st.multiselect("Position", ["QB", "RB", "WR", "TE", "DST"],

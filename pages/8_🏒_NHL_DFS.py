@@ -81,7 +81,7 @@ def _build(gid, sims: int, iters: int, _nonce: int):
 
 
 @st.cache_data(ttl=600, show_spinner=False)
-def _leverage(gid, sims: int, iters: int, _nonce: int):
+def _nhl_leverage(gid, sims: int, iters: int, _nonce: int):
     """GPP lineups from chalk to contrarian plus a simulated field
     (edge/dfs_leverage.py); built once per slate build."""
     from edge import dfs_leverage_sports as LS
@@ -89,10 +89,10 @@ def _leverage(gid, sims: int, iters: int, _nonce: int):
 
 
 @st.cache_data(ttl=600, show_spinner=False)
-def _leverage_for(gid, sims: int, iters: int, _nonce: int, contest: dict):
+def _nhl_leverage_for(gid, sims: int, iters: int, _nonce: int, contest: dict):
     """The same lineups ranked by expected payout in one contest."""
     from edge import dfs_leverage as lev
-    return lev.with_contest(_leverage(gid, sims, iters, _nonce),
+    return lev.with_contest(_nhl_leverage(gid, sims, iters, _nonce),
                             _build(gid, sims, iters, _nonce)["sim"], contest)
 
 
@@ -237,8 +237,8 @@ with t_gpp:
              "ownership against points, beside a simulated field.")
     if lev_on:
         with st.spinner("Building lineups from chalk to contrarian (~30 s the first time)…"):
-            an = (_leverage_for(gid, sims, iters, st.session_state.nhl_nonce, contest) if contest
-                  else _leverage(gid, sims, iters, st.session_state.nhl_nonce))
+            an = (_nhl_leverage_for(gid, sims, iters, st.session_state.nhl_nonce, contest) if contest
+                  else _nhl_leverage(gid, sims, iters, st.session_state.nhl_nonce))
         chosen = LU.leverage_view(an, key="nhl")
         if chosen:
             gpp_pick = chosen["result"]

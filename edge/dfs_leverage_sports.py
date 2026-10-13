@@ -210,7 +210,9 @@ def _add_extra(cands: list, extra, idx_of) -> None:
 
 # ── NCAAF ────────────────────────────────────────────────────────────────────
 def ncaaf(res: dict, contest: dict | None = None, iters: int = 300, seed: int = 0,
-          stack_n: int | None = None, n_sims: int = 3000, n_field: int = N_FIELD) -> dict:
+          stack_n: int | None = None, extra: list | None = None, n_sims: int = 3000,
+          n_field: int = N_FIELD) -> dict:
+    """`extra`: more GPP results to place on the chart (the page's per-QB stacks)."""
     from edge import dfs_field, dfs_ncaaf_theory as theory, dfs_opt_ncaaf as opt
     pool, chalk = res["pool"], res.get("gpp")
     if not chalk:
@@ -225,11 +227,15 @@ def ncaaf(res: dict, contest: dict | None = None, iters: int = 300, seed: int = 
         return opt.optimize(pool, mode="gpp", iters=iters, seed=seed, own_weight=w, **kw)
 
     cands = lev.sweep(build, idx_of, chalk, chalk["ceil"], chalk["own"])
+    _add_extra(cands, extra, idx_of)
     _qb_tags(cands)
     sims = dfs_field.simulate(pool, opt._sd, theory.rho, n_sims=n_sims, seed=seed + 1)
     own = _own(pool)
     raw = dfs_field.sample_field(pool, own, opt.SLOTS, opt._valid, n=n_field * RAW_MULT,
                                  seed=seed + 7, cap=opt.CAP)
+    if len(raw) < n_field:          # a board too cheap to reach the usual min spend
+        raw = dfs_field.sample_field(pool, own, opt.SLOTS, opt._valid, n=n_field * RAW_MULT,
+                                     seed=seed + 7, cap=opt.CAP, min_spend=0)
     field = _tilted(pool, raw, n_field, seed + 8)
     return lev.analyze(sims, own, cands, field, 100 * NormalDist().cdf(theory.Z_GPP), contest)
 
@@ -287,10 +293,17 @@ def mlb(res: dict, contest: dict | None = None, iters: int = 300, seed: int = 0,
                 teams[p["team"]] = teams.get(p["team"], 0) + 1
         tag = "-".join(f"{t}{n}" for t, n in sorted(teams.items(), key=lambda kv: -kv[1]) if n >= 3)
         c["tag"] = (tag + " · app GPP").strip(" ·") if c["app"] else tag
-    sims, _m = dfs_sim.simulate_slate(pool, n_sims=n_sims, seed=seed + 1,
-                                     season_rates=_mlb_season_rates(pool))
+    sims = mlb_scores(pool, n_sims=n_sims, seed=seed + 1)
     field = dfs_sim.generate_field(pool, n_field, rng=np.random.default_rng(seed + 11))
     return lev.analyze(sims, _own(pool), cands, field, 95.0, contest)
+
+
+def mlb_scores(pool: list, n_sims: int = 3000, seed: int = 1) -> np.ndarray:
+    """Joint simulated DK points for the MLB pool (edge/dfs_sim.simulate_slate)."""
+    from edge import dfs_sim
+    sims, _m = dfs_sim.simulate_slate(pool, n_sims=n_sims, seed=seed,
+                                      season_rates=_mlb_season_rates(pool))
+    return sims
 
 
 def _mlb_season_rates(pool: list) -> dict:

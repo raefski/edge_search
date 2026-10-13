@@ -62,6 +62,7 @@ def _reload_edge(fingerprint: float) -> float:
 
 _reload_edge(source_fingerprint())
 
+from edge import dfs_leverage_ui as LU          # noqa: E402
 from edge import dfs_run_nascar as R          # noqa: E402
 
 ET = ZoneInfo("America/New_York")
@@ -127,6 +128,22 @@ def _nascar_slates(_nonce: int):
 @st.cache_data(ttl=300, show_spinner=False)
 def _nascar_build(gid, sims: int, iters: int, _nonce: int):
     return R.build_slate(draft_group=gid, n_sims=sims, iters=iters)
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _nas_leverage(gid, sims: int, iters: int, _nonce: int):
+    """GPP lineups from chalk to contrarian plus a simulated field
+    (edge/dfs_leverage.py); built once per slate build."""
+    from edge import dfs_leverage_sports as LS
+    return LS.nascar(_nascar_build(gid, sims, iters, _nonce), None, iters=max(80, iters // 2))
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _nas_leverage_for(gid, sims: int, iters: int, _nonce: int, contest: dict):
+    """The same lineups ranked by expected payout in one contest."""
+    from edge import dfs_leverage as lev
+    return lev.with_contest(_nas_leverage(gid, sims, iters, _nonce),
+                            _nascar_build(gid, sims, iters, _nonce)["sim"], contest)
 
 
 def _et(iso: str | None) -> str:
@@ -286,8 +303,8 @@ def _csv() -> bytes:
     w = csv.writer(buf)
     w.writerow(["mode", "driver", "start", "salary", "proj", "floor", "ceil",
                 "own", "leverage"])
-    for mode in ("cash", "gpp"):
-        for r in R.lineup_rows(res.get(mode)):
+    for mode, lu in (("cash", res.get("cash")), ("gpp", gpp_pick)):
+        for r in R.lineup_rows(lu):
             w.writerow([mode, r["driver"], r["start"], r["salary"], r["proj"],
                         r["floor"], r["ceil"], r["own"], r["leverage"]])
     return buf.getvalue().encode()
@@ -296,8 +313,21 @@ def _csv() -> bytes:
 t_cash, t_gpp, t_board = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board"])
 with t_cash:
     render(res.get("cash"), "cash")
+gpp_pick = res.get("gpp")
 with t_gpp:
-    render(res.get("gpp"), "gpp")
+    # Chalk or contrarian is the contest's call (edge/dfs_leverage.py).
+    _contest = LU.contest_picker("NASCAR", res["gid"], key="nas")
+    if _contest is not None or st.toggle(
+            "Chalk ↔ contrarian map", key="nas_lev_on",
+            help="Every GPP lineup from the chalkiest to the most contrarian, on a chart of "
+                 "ownership against points, beside a simulated field."):
+        with st.spinner("Building lineups from chalk to contrarian…"):
+            _an = (_nas_leverage_for(gid, sims, iters, st.session_state.nas_nonce, _contest)
+                   if _contest else _nas_leverage(gid, sims, iters, st.session_state.nas_nonce))
+        _chosen = LU.leverage_view(_an, key="nas")
+        if _chosen:
+            gpp_pick = _chosen["result"]
+    render(gpp_pick, "gpp")
 with t_board:
     pool = sorted(res["pool"], key=lambda d: -(d.get("proj") or 0))
     body = "".join(

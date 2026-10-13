@@ -48,6 +48,7 @@ def _reload_edge(fingerprint: float) -> float:
 
 _reload_edge(source_fingerprint())
 
+from edge import dfs_leverage_ui as LU       # noqa: E402
 from edge import dfs_run_mma as R          # noqa: E402
 
 ET = ZoneInfo("America/New_York")
@@ -84,14 +85,38 @@ def _mma_slates(_nonce: int):
     return R.classic_groups(dfs.draft_groups(R.DK_SPORT))
 
 
+@st.cache_resource(ttl=300, max_entries=4, show_spinner=False)
+def _mma_raw(gid, sims: int, nonce: int):
+    """The whole build, simulated cards included, held once in the process
+    (not pickled per rerun) for the chalk <-> contrarian map."""
+    return R.build_slate(draft_group=gid, n_sims=sims)
+
+
 @st.cache_data(ttl=300, show_spinner=False)
 def _mma_build(gid, sims: int, _nonce: int):
-    res = R.build_slate(draft_group=gid, n_sims=sims)
-    # The per-sim matrices are for the CLI's portfolio; the page does not
-    # need them and they are the bulk of what st.cache_data would pickle.
+    res = dict(_mma_raw(gid, sims, _nonce))
+    # The per-sim matrices are for the CLI's portfolio and the leverage map;
+    # the page does not need them and they are the bulk of what
+    # st.cache_data would pickle.
     res.pop("points", None)
     res.pop("_lines", None)
     return res
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _mma_leverage(gid, sims: int, _nonce: int):
+    """GPP lineups from chalk to contrarian over every legal lineup, plus the
+    simulated field (edge/dfs_leverage.py)."""
+    from edge import dfs_leverage_sports as LS
+    return LS.mma(_mma_raw(gid, sims, _nonce), None)
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _mma_leverage_for(gid, sims: int, _nonce: int, contest: dict):
+    """The same lineups ranked by expected payout in one contest."""
+    from edge import dfs_leverage as lev
+    return lev.with_contest(_mma_leverage(gid, sims, _nonce),
+                            _mma_raw(gid, sims, _nonce)["points"], contest)
 
 
 def _et(iso: str | None, fmt: str = "%a %-I:%M %p ET") -> str:
@@ -115,6 +140,7 @@ with st.sidebar:
                       "the desktop has pushed."):
         st.session_state.mma_nonce += 1
         st.cache_data.clear()
+        _mma_raw.clear()
         st.rerun()
     try:
         slates = _mma_slates(st.session_state.mma_nonce)
@@ -246,8 +272,8 @@ def _csv() -> bytes:
     w = csv.writer(buf)
     w.writerow(["mode", "slot", "fighter", "opponent", "salary", "p_win", "p_finish",
                 "proj", "floor", "ceil", "own"])
-    for mode in ("cash", "gpp"):
-        for r in R.lineup_rows(res.get(mode)):
+    for mode, lu in (("cash", res.get("cash")), ("gpp", gpp_pick)):
+        for r in R.lineup_rows(lu):
             w.writerow([mode, "CPT" if r.get("cpt") else "F", r["fighter"],
                         r["opponent"], r["salary"], r["p_win"],
                         r["p_finish"], r["proj"], r["floor"], r["ceil"], r["own"]])
@@ -257,8 +283,22 @@ def _csv() -> bytes:
 t_cash, t_gpp, t_board = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board"])
 with t_cash:
     render(res.get("cash"), "cash")
+gpp_pick = res.get("gpp")
 with t_gpp:
-    render(res.get("gpp"), "gpp")
+    # Chalk or contrarian is the contest's call (edge/dfs_leverage.py): every
+    # legal lineup is enumerated, so the ceiling/ownership frontier is exact.
+    _contest = LU.contest_picker("MMA", res["gid"], key="mma")
+    if _contest is not None or st.toggle(
+            "Chalk ↔ contrarian map", key="mma_lev_on",
+            help="Every GPP lineup from the chalkiest to the most contrarian, on a chart of "
+                 "ownership against points, beside a simulated field."):
+        with st.spinner("Building lineups from chalk to contrarian…"):
+            _an = (_mma_leverage_for(gid, sims, st.session_state.mma_nonce, _contest) if _contest
+                   else _mma_leverage(gid, sims, st.session_state.mma_nonce))
+        _chosen = LU.leverage_view(_an, key="mma")
+        if _chosen:
+            gpp_pick = _chosen["result"]
+    render(gpp_pick, "gpp")
 with t_board:
     pool = sorted(res["pool"], key=lambda d: -d["proj"])
     body = "".join(

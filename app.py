@@ -206,6 +206,27 @@ def cached_build(date: str, draft_group, iters: int, live: bool, key_fingerprint
                                exclude_teams=set(exclude_teams))
 
 
+@st.cache_data(ttl=600, show_spinner=False)
+def cached_leverage(date: str, draft_group, iters: int, live: bool, key_fingerprint: str,
+                    exclude_teams: tuple = ()) -> dict:
+    """GPP lineups from no ownership fade (pure ceiling) to deep contrarian,
+    the app's own GPP among them, plus a simulated field (edge/dfs_leverage.py)."""
+    from edge import dfs_leverage_sports as LS
+    res = cached_build(date, draft_group, iters, live, key_fingerprint, exclude_teams)
+    return LS.mlb(res, None, iters=max(150, iters // 3))
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def cached_leverage_for(date: str, draft_group, iters: int, live: bool, key_fingerprint: str,
+                        exclude_teams: tuple, contest: dict) -> dict:
+    """The same lineups ranked by expected payout in one contest -- the same
+    simulated worlds edge/dfs_leverage_sports.mlb drew (3,000, seed 1)."""
+    from edge import dfs_leverage as lev, dfs_leverage_sports as LS
+    res = cached_build(date, draft_group, iters, live, key_fingerprint, exclude_teams)
+    base = cached_leverage(date, draft_group, iters, live, key_fingerprint, exclude_teams)
+    return lev.with_contest(base, LS.mlb_scores(res["pool"]), contest)
+
+
 def _lineup_rows(res: dict, mode: str) -> list[dict]:
     r = res.get(mode)
     if not r:
@@ -690,6 +711,35 @@ def render_app() -> None:
             st.caption("5-man stack + 3-man secondary stack (sample)")
             render_compact(PLACEHOLDER_GPP, placeholder=True)
         elif _rows_for("gpp"):
+            # Chalk or contrarian is the contest's call (edge/dfs_leverage.py):
+            # with a contest picked, the 5-3 construction from no ownership
+            # fade to deep contrarian is ranked by expected payout in it.
+            from edge import dfs_leverage_ui as LU
+            _build_key = (slate_date, draft_group, iters, live,
+                          os.environ.get("ODDS_API_KEY", "")[-6:], tuple(sorted(exclude_teams)))
+            _contest = LU.contest_picker("MLB", res.get("gid"), key="mlb")
+            if _contest is not None or st.toggle(
+                    "Chalk ↔ contrarian map", key="mlb_lev_on",
+                    help="Every GPP lineup from no ownership fade to deep contrarian (the app's own "
+                         "GPP lineup among them), on a chart of ownership against points, beside a "
+                         "simulated field."):
+                with st.spinner("Building lineups from chalk to contrarian…"):
+                    _an = (cached_leverage_for(*_build_key, _contest) if _contest
+                           else cached_leverage(*_build_key))
+                _chosen = LU.leverage_view(_an, key="mlb")
+                if _chosen and not _chosen.get("app"):
+                    _alt_rows = [{"slot": slot, "player": p["name"], "team": p["team"],
+                                  "salary": p["salary"], "proj": p["proj"], "ceil": p["ceiling"],
+                                  "own": p.get("own", 0), "pos": "/".join(sorted(p["pos"])),
+                                  "game": p.get("game", ""), "conf": p.get("conf", ""),
+                                  "projected": not p.get("confirmed", True)}
+                                 for p, slot in sorted(_chosen["result"]["lineup"],
+                                                       key=lambda x: dfs_opt.SLOTS.index(x[1]))]
+                    st.caption("Map pick (not the app's default GPP lineup):")
+                    render_compact(_alt_rows)
+                    save_entry_button("gpp", _alt_rows, key_suffix="gpp_map")
+                    st.divider()
+                    st.caption("The app's default GPP lineup:")
             # Report the lineup's ACTUAL team composition, not the construction
             # target -- found live 2026-07-11 that the secondary stack can fall
             # short of its target n (position conflicts with the primary stack),
