@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T22:44:44+00:00",
+"generated_at": "2026-10-13T23:00:04+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -104,7 +104,7 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": "Likely"
+"status": "Confirmed"
 },
 "TOR": {
 "goalie": "Anthony Stolarz",
@@ -6412,22 +6412,22 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 191,
-"toiSeconds": 55
+"shots": 11,
+"toiMinutes": 168,
+"toiSeconds": 27
 },
 "last5": {
 "assists": 0,
-"blocks": 6,
+"blocks": 4,
 "gamesPlayed": 5,
 "goals": 0,
 "points": 0,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 92,
-"toiSeconds": 7
+"shots": 4,
+"toiMinutes": 74,
+"toiSeconds": 8
 },
 "line": "D1",
 "pk": "PK2",
@@ -6516,22 +6516,22 @@
 "powerplayAssists": 2,
 "powerplayGoals": 2,
 "powerplayPoints": 4,
-"shots": 35,
-"toiMinutes": 200,
-"toiSeconds": 35
+"shots": 31,
+"toiMinutes": 181,
+"toiSeconds": 27
 },
 "last5": {
-"assists": 3,
+"assists": 1,
 "blocks": 3,
 "gamesPlayed": 5,
 "goals": 1,
-"points": 4,
+"points": 2,
 "powerplayAssists": 1,
 "powerplayGoals": 0,
 "powerplayPoints": 1,
-"shots": 14,
-"toiMinutes": 99,
-"toiSeconds": 21
+"shots": 10,
+"toiMinutes": 79,
+"toiSeconds": 45
 },
 "line": "F1",
 "pk": null,
@@ -6577,29 +6577,29 @@
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
-"goalieGoalsAgainst": 30,
-"goalieGoalsAgainstAvg": "3.64",
+"goalieGoalsAgainst": 27,
+"goalieGoalsAgainstAvg": "3.76",
 "goalieLosses": 6,
-"goalieMinutes": 494,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.869",
-"goalieSaves": 199,
-"goalieSeconds": 42,
-"goalieShotsAgainst": 229,
+"goalieMinutes": 430,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.862",
+"goalieSaves": 169,
+"goalieSeconds": 14,
+"goalieShotsAgainst": 196,
 "goalieShutouts": 0,
 "goalieWins": 2
 },
 "last5": {
 "gamesPlayed": 5,
-"goalieGoalsAgainst": 15,
-"goalieGoalsAgainstAvg": "3.35",
-"goalieLosses": 4,
-"goalieMinutes": 268,
+"goalieGoalsAgainst": 12,
+"goalieGoalsAgainstAvg": "3.41",
+"goalieLosses": 3,
+"goalieMinutes": 210,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.861",
-"goalieSaves": 93,
-"goalieSeconds": 23,
-"goalieShotsAgainst": 108,
+"goalieSavePercentage": "0.865",
+"goalieSaves": 77,
+"goalieSeconds": 44,
+"goalieShotsAgainst": 89,
 "goalieShutouts": 0,
 "goalieWins": 1
 },
@@ -6680,17 +6680,17 @@
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 6,
+"assists": 5,
 "blocks": 2,
 "gamesPlayed": 10,
 "goals": 0,
-"points": 6,
+"points": 5,
 "powerplayAssists": 3,
 "powerplayGoals": 0,
 "powerplayPoints": 3,
 "shots": 24,
-"toiMinutes": 196,
-"toiSeconds": 12
+"toiMinutes": 176,
+"toiSeconds": 50
 },
 "last5": {
 "assists": 4,
@@ -6701,9 +6701,9 @@
 "powerplayAssists": 2,
 "powerplayGoals": 0,
 "powerplayPoints": 2,
-"shots": 17,
-"toiMinutes": 102,
-"toiSeconds": 20
+"shots": 15,
+"toiMinutes": 82,
+"toiSeconds": 51
 },
 "line": "F1",
 "pk": null,
@@ -6759,7 +6759,7 @@
 "injury": null,
 "last10": {
 "assists": 3,
-"blocks": 22,
+"blocks": 19,
 "gamesPlayed": 10,
 "goals": 0,
 "points": 3,
@@ -6767,21 +6767,21 @@
 "powerplayGoals": 0,
 "powerplayPoints": 3,
 "shots": 24,
-"toiMinutes": 246,
-"toiSeconds": 16
+"toiMinutes": 220,
+"toiSeconds": 1
 },
 "last5": {
 "assists": 2,
-"blocks": 14,
+"blocks": 11,
 "gamesPlayed": 5,
 "goals": 0,
 "points": 2,
 "powerplayAssists": 2,
 "powerplayGoals": 0,
 "powerplayPoints": 2,
-"shots": 9,
-"toiMinutes": 126,
-"toiSeconds": 54
+"shots": 7,
+"toiMinutes": 102,
+"toiSeconds": 10
 },
 "line": "D1",
 "pk": "PK1",
@@ -6829,27 +6829,27 @@
 "assists": 2,
 "blocks": 7,
 "gamesPlayed": 10,
-"goals": 5,
-"points": 7,
+"goals": 3,
+"points": 5,
 "powerplayAssists": 0,
 "powerplayGoals": 3,
 "powerplayPoints": 3,
-"shots": 29,
-"toiMinutes": 158,
-"toiSeconds": 37
+"shots": 24,
+"toiMinutes": 145,
+"toiSeconds": 17
 },
 "last5": {
 "assists": 1,
-"blocks": 4,
+"blocks": 2,
 "gamesPlayed": 5,
 "goals": 3,
 "points": 4,
 "powerplayAssists": 0,
 "powerplayGoals": 3,
 "powerplayPoints": 3,
-"shots": 14,
-"toiMinutes": 92,
-"toiSeconds": 3
+"shots": 13,
+"toiMinutes": 76,
+"toiSeconds": 18
 },
 "line": "F1",
 "pk": null,
@@ -17016,42 +17016,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Dennis Hildeby": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 23,
-"goalieGoalsAgainstAvg": "2.52",
-"goalieLosses": 2,
-"goalieMinutes": 546,
-"goalieOvertimeLosses": 2,
-"goalieSavePercentage": "0.918",
-"goalieSaves": 258,
-"goalieSeconds": 33,
-"goalieShotsAgainst": 281,
-"goalieShutouts": 0,
-"goalieWins": 5
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 9,
-"goalieGoalsAgainstAvg": "2.04",
-"goalieLosses": 1,
-"goalieMinutes": 264,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.93",
-"goalieSaves": 120,
-"goalieSeconds": 22,
-"goalieShotsAgainst": 129,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
-},
 "Erik Cernak": {
 "gtd": false,
 "injury": null,
@@ -17289,6 +17253,42 @@
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
+},
+"Mads Sogaard": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 20,
+"goalieGoalsAgainstAvg": "4.71",
+"goalieLosses": 1,
+"goalieMinutes": 254,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.833",
+"goalieSaves": 100,
+"goalieSeconds": 36,
+"goalieShotsAgainst": 120,
+"goalieShutouts": 0,
+"goalieWins": 2
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 11,
+"goalieGoalsAgainstAvg": "4.18",
+"goalieLosses": 1,
+"goalieMinutes": 157,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.833",
+"goalieSaves": 55,
+"goalieSeconds": 30,
+"goalieShotsAgainst": 66,
+"goalieShutouts": 0,
+"goalieWins": 1
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
 },
 "Maxwell Crozier": {
 "gtd": false,
