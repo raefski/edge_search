@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T21:59:54+00:00",
+"generated_at": "2026-10-13T22:15:02+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -12,7 +12,7 @@
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
-"status": null
+"status": "Confirmed"
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
@@ -1740,6 +1740,40 @@
 "pos": "c",
 "pp": "PP2"
 },
+"Justin Danforth": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 124,
+"toiSeconds": 22
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 65,
+"toiSeconds": 28
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Konsta Helenius": {
 "gtd": false,
 "injury": null,
@@ -1815,7 +1849,7 @@
 },
 "line": "D1",
 "pk": "PK1",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Noah Ostlund": {
@@ -1883,7 +1917,7 @@
 },
 "line": "D1",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP2"
 },
 "Owen Power": {
@@ -2021,40 +2055,6 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
-},
-"Tyson Kozak": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 122,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 62,
-"toiSeconds": 56
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Ukko-Pekka Luukkonen": {
 "gtd": false,
@@ -9609,7 +9609,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Alex Newhook": {
@@ -9745,7 +9745,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Chris Kreider": {
@@ -10055,7 +10055,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Lane Hutson": {
@@ -10191,7 +10191,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Phillip Danault": {
