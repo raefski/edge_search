@@ -52,7 +52,8 @@ ODDS_FRESH_MIN = 15
 #: Contest-fill snapshots (scripts/dfs_overlay.py) for a sport whose slate locks
 #: within this many minutes: one lobby request per sport per run, only then.
 FILL_WINDOW = 120
-LOBBY_CODE = {"nhl": "NHL", "nfl": "NFL", "ncaaf": "CFB", "nascar": "NAS", "mma": "MMA", "mlb": "MLB"}
+LOBBY_CODE = {"nhl": "NHL", "nfl": "NFL", "ncaaf": "CFB", "nascar": "NAS", "mma": "MMA", "mlb": "MLB",
+              "nba": "NBA", "ncaab": "CBB"}
 
 
 def _slates_nhl():
@@ -80,6 +81,16 @@ def _slates_mma():
     return [(r["gid"], r["start"], r.get("label", "")) for r in R.classic_groups()]
 
 
+def _slates_nba():
+    from edge import dfs_run_nba as R
+    return [(r["gid"], r["start"], f"{r['label']} {r['games']}g") for r in R.classic_groups()]
+
+
+def _slates_ncaab():
+    from edge import dfs_run_ncaab as R
+    return [(r["gid"], r["start"], f"{r['label']} {r['games']}g") for r in R.classic_groups()]
+
+
 def _slates_mlb():
     from edge import dfs
     # Classic only (GameTypeId 2). The lobby also lists single-game showdowns
@@ -101,6 +112,10 @@ SPORTS = {
                ["data/dfs_proj_log_nascar.csv", "data/dfs_lineups_nascar_*.csv"]),
     "mma": (_slates_mma, ["scripts/dfs_lineups_mma.py", "--capture", "--draft-group"], None,
             ["data/dfs_proj_log_mma.csv", "data/dfs_lineups_mma_*.csv"]),
+    "nba": (_slates_nba, ["scripts/dfs_lineups_nba.py", "--draft-group"], "dfs_nba",
+            ["data/dfs_proj_log_nba.csv", "data/dfs_lineups_nba_*.csv"]),
+    "ncaab": (_slates_ncaab, ["scripts/dfs_lineups_ncaab.py", "--draft-group"], "dfs_ncaab",
+              ["data/dfs_proj_log_ncaab.csv", "data/dfs_lineups_ncaab_*.csv"]),
     "mlb": (_slates_mlb, ["scripts/dfs_lineups.py", "--draft-group"], "dfs_mlb",
             ["data/dfs_proj_log.csv", "data/dfs_proj_log_*_g*.csv", "data/dfs_lineups_2*.csv"]),
 }

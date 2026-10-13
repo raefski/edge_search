@@ -70,6 +70,19 @@ PROP_CATEGORIES = {
     # Saves O/U 16550) plus a one-sided milestone ladder.
     1189: "Shots on Goal", 1675: "Points", 1676: "Assists", 1064: "Goalie Props",
 }
+# BASKETBALL IS ALSO SELECTED BY NAME, because its ids above are the unverified
+# kind (2026-10-13: NBA opening night ~10/20, college ~11/3) and a wrong id
+# filters to nothing silently. The league payload names every category, so a
+# basketball league also takes any category whose NAME is a player-stat tab --
+# "Player Points", "Player Threes", "Player Combos", "Player Defense". Scoped
+# to basketball leagues (prop_subcategories' sport_key) so no other sport's
+# scan changes; `scripts/dk_categories.py --sport basketball_nba` shows which
+# ids the names resolved to, so they can be pinned above.
+PROP_CATEGORY_NAME = {
+    "basketball": re.compile(
+        r"^player (points|rebounds|assists|threes|combos|defense|blocks|steals|"
+        r"turnovers|props)\b", re.I),
+}
 # DELIBERATELY EXCLUDED, with reasons:
 #   1003 "TD Scorers"  -- Anytime TD is a FIELD (a list of players, no opposing
 #       side), not a two-sided market. Fanatics' equivalent is already dropped
@@ -344,8 +357,8 @@ class DraftKingsLeague:
         r.raise_for_status()
         return r.json() or {}
 
-    def prop_subcategories(self, payload: dict,
-                           categories: set[int] | None = None) -> list[tuple[int, int, str]]:
+    def prop_subcategories(self, payload: dict, categories: set[int] | None = None,
+                           sport_key: str | None = None) -> list[tuple[int, int, str]]:
         """(categoryId, subcategoryId, name) for every prop tab in the league.
 
         Discovered from the league payload, which already carries `categories`
@@ -361,7 +374,11 @@ class DraftKingsLeague:
         Hits / Total Bases / RBIs O/U tabs that supply the `under` side no
         other free book posts.
         """
-        wanted = categories if categories is not None else set(PROP_CATEGORIES)
+        wanted = set(categories if categories is not None else PROP_CATEGORIES)
+        by_name = PROP_CATEGORY_NAME.get((sport_key or "").split("_")[0])
+        if by_name is not None and categories is None:
+            wanted |= {int(c["id"]) for c in payload.get("categories") or []
+                       if c.get("id") and by_name.search((c.get("name") or "").strip())}
         out = []
         for sc in payload.get("subcategories") or []:
             cid = sc.get("categoryId")

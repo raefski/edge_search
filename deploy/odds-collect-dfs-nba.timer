@@ -1,0 +1,15 @@
+# Collect NBA props into the local store. Hourly all day, every 15 minutes
+# 5-10 PM local, which covers the 7:00-10:30 PM ET tips -- the injury report
+# lands ~30 minutes before each tip and the books re-post teammates' props
+# within minutes of a scratch, so the run-up is where the store earns its keep.
+# Verify any edit with `systemd-analyze calendar '<expr>'`.
+[Unit]
+Description=Collect NBA props
+[Timer]
+Unit=odds-collect@dfs_nba.service
+OnCalendar=*-*-* 00/1:35:00
+OnCalendar=*-*-* 17..22:00/15:00
+RandomizedDelaySec=120
+Persistent=true
+[Install]
+WantedBy=timers.target

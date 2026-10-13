@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PY = "python3"
 
 ROLES = ("ingest", "model", "optimize", "evaluate", "publish", "monitor", "app", "research")
-SPORTS = ("mlb", "nfl", "ncaaf", "nhl", "nba", "nascar", "mma", "pickem", "arb", "parlay")
+SPORTS = ("mlb", "nfl", "ncaaf", "nhl", "nba", "ncaab", "nascar", "mma", "pickem", "arb", "parlay")
 
 
 @dataclass(frozen=True)
@@ -55,7 +55,7 @@ JOBS: dict[str, Job] = {j.name: j for j in [
          timer=(f"odds-collect-{p.replace('_', '-')}.timer"
                 if (ROOT / "deploy" / f"odds-collect-{p.replace('_', '-')}.timer").exists() else None),
          doc=f"scrape the {p} profile into data/odds.db (no push)")
-      for p in ("dfs_mlb", "dfs_nfl", "dfs_nhl", "dfs_ncaaf", "pickem_nfl")],
+      for p in ("dfs_mlb", "dfs_nfl", "dfs_nhl", "dfs_ncaaf", "dfs_nba", "dfs_ncaab", "pickem_nfl")],
     _j("odds-status", "ingest", "scripts/odds_collect.py", "--status", timeout=120,
        doc="what the odds store holds, per profile"),
     _j("import-contests", "ingest", "scripts/dfs_import_contests.py",
@@ -76,6 +76,10 @@ JOBS: dict[str, Job] = {j.name: j for j in [
     _j("autolog-plan", "optimize", "scripts/dfs_autolog.py", "--dry-run", timeout=300,
        doc="which slates the autolog would build now"),
     _j("lineups-nhl", "optimize", "scripts/dfs_lineups_nhl.py", sport="nhl"),
+    _j("lineups-nba", "optimize", "scripts/dfs_lineups_nba.py", sport="nba",
+       tests=("tests/test_dfs_nba.py",)),
+    _j("lineups-ncaab", "optimize", "scripts/dfs_lineups_ncaab.py", sport="ncaab",
+       tests=("tests/test_dfs_nba.py",)),
     _j("lineups-nfl", "optimize", "scripts/dfs_lineups_nfl.py", sport="nfl"),
     _j("lineups-ncaaf", "optimize", "scripts/dfs_lineups_ncaaf.py", sport="ncaaf"),
     _j("lineups-nascar", "optimize", "scripts/dfs_lineups_nascar.py", sport="nascar"),
@@ -92,6 +96,13 @@ JOBS: dict[str, Job] = {j.name: j for j in [
     _j("calibrate-nhl", "evaluate", "scripts/nhl_calibration.py", sport="nhl",
        doc="needs a contest export path: harness run calibrate-nhl -- data/contest-standings-N.csv"),
     _j("calibrate-ncaaf", "evaluate", "scripts/ncaaf_calibration.py", sport="ncaaf"),
+    _j("calibrate-nba", "evaluate", "scripts/nba_calibration.py", sport="nba",
+       doc="NBA/college build vs a contest export, by draft group: "
+           "harness run calibrate-nba -- data/contest-standings-N.csv [--fit-ownership]"),
+    _j("nba-fit", "evaluate", "scripts/nba_fit.py", sport="nba",
+       doc="check edge/nba_sim.py's priors against data/nba_ground_truth/ box scores"),
+    _j("hoops-verify", "ingest", "scripts/hoops_dk_discover.py", timeout=300,
+       doc="read off DK what the NBA/CBB build assumed (Classic id, roster, FPPG id, prop tabs)"),
     _j("calibrate-nascar", "evaluate", "scripts/nascar_calibration.py", sport="nascar"),
     _j("calibrate-mma", "evaluate", "scripts/mma_calibration.py", "--grade", sport="mma"),
     _j("contest-db", "evaluate", "scripts/contest_db.py",
@@ -140,11 +151,12 @@ RULES: list[tuple[str, str]] = [
 EDGE_RULES: list[tuple[str, str]] = [
     (r"^git_lock$", "publish"),
     (r"^dfs_entry_edge$", "model"),
+    (r"^dfs_hoops_ui$", "app"),
     (r"^(dfs_opt|dfs_leverage|dfs_swap|dfs_roster|dfs_lineup|sgp|parlay)", "optimize"),
     (r"(_sim$|_theory$|_field$|dfs_project|dfs_ladder|pickem_strategy|pickem_features|"
      r"pickem$|fairodds|oddsmath|dfs_contest|dfs_nfl_contest|dfs_validate|clv)", "model"),
     (r"^(dfs_run|dfs_sport|dfs_pagereload|repo_files|names|scanner)", "optimize"),
-    (r"^(client|dfs$|nfl$|nba$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
+    (r"^(client|dfs$|nfl$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
      r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week)", "ingest"),
 ]
 

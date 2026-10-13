@@ -1,0 +1,16 @@
+# Push a fresh NBA props snapshot for the cloud app (DraftKings 403s cloud IPs,
+# so the phone reads this committed snapshot, and scraped_client refuses one
+# over 6 hours old). Every 2 hours all day, every 30 minutes 4-10 PM local for
+# the 7:00-10:30 PM ET tips, and 12-3 PM on weekends for the matinees.
+# Comments stay ABOVE directives (systemd has no trailing comments).
+[Unit]
+Description=Publish NBA DFS props snapshot for the cloud app
+[Timer]
+Unit=odds-publish@dfs_nba.service
+OnCalendar=*-*-* 08..23/2:10:00
+OnCalendar=*-*-* 16..22:05/30:00
+OnCalendar=Sat,Sun *-*-* 12..15:05/30:00
+RandomizedDelaySec=60
+Persistent=true
+[Install]
+WantedBy=timers.target

@@ -140,8 +140,9 @@ projected hitters.
 
 **NFL status (2026-09-12): SHIPPED and usable for a real slate.** DK draftables,
 optimizer, two game theories, a Streamlit page and a lineup-level backtest all exist.
-**NBA remains pipeline-only** — no app, no optimizer, nothing checked against a live
-payload. Do not imply NBA is usable; it isn't.
+**NBA and college basketball: BUILT 2026-10-13, NOT YET CHECKED LIVE** — pages 12/13,
+optimizer, simulator, CLI, timers. Built where DraftKings was unreachable, so every
+contest fact is assumed until `harness run hoops-verify` passes: see NBA_STATUS.md.
 
 ### NFL shipped 2026-09-12 — what to know in 60 seconds
 

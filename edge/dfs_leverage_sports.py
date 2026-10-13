@@ -12,7 +12,8 @@ rates and a sharp share, three 17,835-entry exports). MLB's stack-size mix is
 measured (edge/dfs_sim.STACK_DIST). MMA's field is the lineup softmax fitted on
 one export (edge/dfs_mma_theory.py). NHL's is drawn from projected GPP
 ownership with team stacks built in at the measured rate, plus the sharp share
-(nhl_gpp_field: NHL_STACK3, NHL_SHARP -- GPP_META.md). NCAAF and NASCAR fields are ownership
+(nhl_gpp_field: NHL_STACK3, NHL_SHARP -- GPP_META.md). NBA and college
+basketball (hoops) are ownership draws filtered to slot-legal lineups, a prior. NCAAF and NASCAR fields are ownership
 draws under the cap with dfs_leverage's sharp share as a prior; NCAAF's does
 not stack yet, so its top tail is a little thin. The ORDER of candidates is
 the signal, not the dollars.
@@ -170,6 +171,33 @@ def nhl(res: dict, contest: dict | None = None, iters: int = 50, seed: int = 0,
                         seed=seed + 7)
     field = _tilted(pool, raw, n_field, seed + 8, share=NHL_SHARP)
     return lev.analyze(sim, own, cands, field, theory.GPP_PCT, contest)
+
+
+# ── NBA / college basketball ─────────────────────────────────────────────────
+def hoops(res: dict, contest: dict | None = None, iters: int = 40, seed: int = 0,
+          n_field: int = N_FIELD) -> dict:
+    """NBA and college share one adapter (edge/dfs_run_nba.py's Spec decides the
+    roster). The field is ownership draws under the cap, kept only if they can
+    fill the roster's slots, with the default sharp share -- a PRIOR: no
+    basketball GPP export exists yet to measure stack rates the way the NHL's
+    were (GPP_META.md)."""
+    from edge import dfs_nba_theory as theory, dfs_opt_nba as opt
+    roster = opt.NCAAB if res.get("spec") == "ncaab" else opt.NBA
+    pool, sim, chalk = res["pool"], res["sim"], res.get("gpp")
+    if not chalk:
+        return {"cands": [], "field": [], "best": None, "contest": contest}
+    opt.prepare(pool, roster)
+
+    def build(w):
+        return opt.optimize(pool, sim, roster, mode="gpp", iters=iters, seed=seed, own_weight=w)
+
+    cands = lev.sweep(build, lambda r: r["idx"], chalk, chalk["ceil"], chalk["own"])
+    for c in cands:
+        c["tag"] = " ".join(f"{g}×{n}" for g, n in c["result"]["game_stacks"].items() if n >= 3)
+    raw = simple_field(pool, len(roster.slots), roster.cap, n_field * RAW_MULT, seed=seed + 7,
+                       valid=lambda lu: opt.valid(pool, lu, roster), min_spend=47_000)
+    field = _tilted(pool, raw, n_field, seed + 8)
+    return lev.analyze(sim, _own(pool), cands, field, theory.GPP_PCT, contest)
 
 
 # ── NASCAR ───────────────────────────────────────────────────────────────────

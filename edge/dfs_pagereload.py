@@ -54,14 +54,16 @@ ROOT = Path(__file__).resolve().parents[1]
 #: adds a profile there and touches nothing else in it.
 DFS_PACKAGES: tuple[str, ...] = ("edge.dfs", "edge.odds", "edge.ncaaf",
                                  "edge.nascar", "edge.nfl", "edge.nba",
-                                 "edge.mma", "edge.names")
+                                 "edge.ncaab", "edge.mma", "edge.names")
 
 #: Source globs the fingerprint watches. Must cover the same ground as
 #: DFS_PACKAGES -- see the module docstring on why a narrower fingerprint
 #: silently disables the reload it gates.
+#: edge/nba*.py, not edge/nba.py: edge.nba matches edge.nba_sim through the
+#: "_" rule, so the fingerprint must watch nba_sim.py too (2026-10-13).
 DFS_GLOBS: tuple[str, ...] = ("edge/dfs*.py", "edge/odds/*.py", "edge/ncaaf.py",
-                              "edge/nascar*.py", "edge/nfl.py", "edge/nba.py",
-                              "edge/mma*.py", "edge/names.py")
+                              "edge/nascar*.py", "edge/nfl.py", "edge/nba*.py",
+                              "edge/ncaab.py", "edge/mma*.py", "edge/names.py")
 
 
 def matches(name: str, prefixes: tuple[str, ...] = DFS_PACKAGES) -> bool:

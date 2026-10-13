@@ -78,7 +78,28 @@ def draft_groups(sport: str) -> list[dict]:
     query parameter, so this needed generalising rather than duplicating --
     see edge/dfs_sport.py for why the sport-specific parts are a table now.
     """
-    return _get(f"https://www.draftkings.com/lobby/getcontests?sport={sport}").get("DraftGroups", [])
+    payload = _get(f"https://www.draftkings.com/lobby/getcontests?sport={sport}")
+    # The same response names every game type ({GameTypeId, Name, DraftType}),
+    # which is how a sport whose Classic id has never been read live (college
+    # basketball) resolves Classic by NAME. Kept from this call rather than
+    # re-fetched: one lobby listing per sport per hour (DRAFTKINGS_ACCESS.md).
+    LOBBY_GAME_TYPES[sport] = payload.get("GameTypes") or []
+    return payload.get("DraftGroups", [])
+
+
+#: {lobby code: the lobby's GameTypes list} from the last draft_groups call.
+LOBBY_GAME_TYPES: dict = {}
+
+
+def classic_game_types(sport: str, default=None) -> set:
+    """GameTypeIds the lobby itself names "Classic" (salary cap), from the last
+    draft_groups(sport) call; {default} when the lobby named none (or was not
+    read in this process)."""
+    ids = {g.get("GameTypeId") for g in LOBBY_GAME_TYPES.get(sport) or []
+           if (g.get("Name") or "").strip().lower() == "classic"
+           and (g.get("DraftType") or "SalaryCap").lower().startswith("salary")}
+    ids.discard(None)
+    return ids or ({default} if default is not None else set())
 
 
 def mlb_draft_groups() -> list[dict]:
@@ -98,6 +119,62 @@ def mlb_draft_groups() -> list[dict]:
 #: three, so college and NASCAR snapshots reached Streamlit Cloud with the FPPG
 #: column already thrown away.
 FPPG_STAT_IDS = (408, 174, 653, 635, 341)  # 635: MMA's "per fight"; 341: NHL (2026-09-28)
+
+#: The id detect_fppg_id() settled on for the last draftables read that
+#: carried none of FPPG_STAT_IDS (NBA and college basketball, 2026-10-13:
+#: neither id has been read live yet). None when a known id was present.
+#: Printed by `harness run hoops-verify` so the id can be pinned above.
+LAST_DETECTED_FPPG_ID = None
+
+
+def detect_fppg_id(rows: list[dict], min_n: int = 20, min_corr: float = 0.5):
+    """The draftStatAttributes id that behaves like FPPG, for a payload that
+    carries none of FPPG_STAT_IDS.
+
+    Asking for the wrong id returns None for everyone (see above), and the
+    NBA and college ids were not readable before their seasons opened. So
+    rather than guess one, pick it off the payload: FPPG is the numeric
+    attribute, on a fantasy-points scale (0-150), that tracks SALARY -- DK
+    prices off it. An opponent rank (1-30) or a percentage does not clear a
+    0.5 correlation with salary; FPPG clears it by a mile (MLB/NFL/NHL all
+    sit above 0.8). Returns None if nothing qualifies, which reads exactly
+    like "no history", the failure the caller already handles."""
+    cols: dict = {}
+    for p in rows:
+        sal = p.get("salary")
+        if not sal:
+            continue
+        for a in p.get("draftStatAttributes") or []:
+            try:
+                v = float(a.get("value"))
+            except (TypeError, ValueError):
+                continue
+            cols.setdefault(a.get("id"), []).append((v, float(sal)))
+    best, best_r = None, min_corr
+    for aid, pairs in cols.items():
+        if aid is None or len(pairs) < min_n or max(v for v, _ in pairs) > 150 \
+                or min(v for v, _ in pairs) < 0:
+            continue
+        xs, ys = [v for v, _ in pairs], [s for _, s in pairs]
+        mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
+        sxy = sum((x - mx) * (y - my) for x, y in pairs)
+        sxx = sum((x - mx) ** 2 for x in xs) ** 0.5
+        syy = sum((y - my) ** 2 for y in ys) ** 0.5
+        r = sxy / (sxx * syy) if sxx and syy else 0.0
+        if r > best_r:
+            best, best_r = aid, r
+    return best
+
+
+def _fppg_ids(rows: list[dict]) -> tuple:
+    """FPPG_STAT_IDS, plus a detected id when the payload carries none of them."""
+    global LAST_DETECTED_FPPG_ID
+    known = set(FPPG_STAT_IDS)
+    if any(a.get("id") in known for p in rows for a in (p.get("draftStatAttributes") or [])):
+        LAST_DETECTED_FPPG_ID = None
+        return FPPG_STAT_IDS
+    LAST_DETECTED_FPPG_ID = detect_fppg_id(rows)
+    return FPPG_STAT_IDS + ((LAST_DETECTED_FPPG_ID,) if LAST_DETECTED_FPPG_ID is not None else ())
 
 
 def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
@@ -120,7 +197,9 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
     populated, every erroneous cross-contaminated one had none -- a safe,
     exact discriminator, not a heuristic."""
     out = {}
-    for p in _draftables_raw(draft_group_id):
+    raw = _draftables_raw(draft_group_id)
+    fppg_ids = _fppg_ids(raw)
+    for p in raw:
         k = norm(p["displayName"])
         if k not in out:  # dedupe multi-slot rows
             comp = p.get("competition") or {}
@@ -128,7 +207,7 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
                 continue
             stats = {a.get("id"): a.get("value")
                      for a in (p.get("draftStatAttributes") or [])}
-            fppg = next((stats[i] for i in FPPG_STAT_IDS if i in stats), None)
+            fppg = next((stats[i] for i in fppg_ids if i in stats), None)
             try:
                 dk_fppg = float(fppg)
             except (TypeError, ValueError):
@@ -262,21 +341,31 @@ def save_draftables_snapshot(draft_group_id: int) -> int:
     # so the board came back empty there and full everywhere else. The trimming
     # here exists to keep a committed file small; an integer per row does not
     # threaten that.
+    # `status` is DK's own injury designation (O / Q / GTD / OUT). Basketball
+    # added it 2026-10-13: an NBA slate turns on who is ruled out, and Cloud
+    # only ever sees the snapshot, so without it the phone would play a
+    # player the desktop knows is out.
     keep = ("displayName", "salary", "position", "teamAbbreviation",
-            "competition", "draftStatAttributes", "playerId")
+            "competition", "draftStatAttributes", "playerId", "status")
     # MMA reads fight order and weigh-in weight (playerGameAttributes 115 and
     # 150) and a scratch flag; without them Cloud's MMA board was built from
     # less than the desktop's. Kept only when present, so no other sport's
     # snapshot changes.
     rows, seen = [], set()
-    for p in _get(url).get("draftables", []):
+    live = _get(url).get("draftables", [])
+    fppg_ids = set(_fppg_ids(live))
+    for p in live:
         r = {k: p.get(k) for k in keep}
+        # DK writes "None" for a healthy player. Dropped, so a sport whose
+        # players are all healthy keeps a byte-identical snapshot.
+        if str(r.get("status") or "None").strip().lower() == "none":
+            r.pop("status", None)
         # FPPG_STAT_IDS, not a bare 408: that is MLB and NFL's id, and keeping
         # only it silently dropped the FPPG column for college football (174)
         # and NASCAR (653) from every snapshot. Shared with fetch_draftables so
         # the writer and the reader cannot disagree about which ids matter.
         r["draftStatAttributes"] = [a for a in (r["draftStatAttributes"] or [])
-                                    if a.get("id") in FPPG_STAT_IDS]
+                                    if a.get("id") in fppg_ids]
         extra = [a for a in (p.get("playerGameAttributes") or [])
                  if a.get("id") in SNAPSHOT_GAME_ATTR_IDS]
         if extra:

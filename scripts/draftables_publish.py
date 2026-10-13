@@ -45,7 +45,11 @@ from odds_collect import push_snapshot  # noqa: E402
 #: had counted the groups.
 #: MMA added 2026-09-26: its lobby is ~3 draft groups, one card a week.
 #: NHL added 2026-09-28, the eve of opening night: ~9 groups on a 5-game night.
-SPORTS = ("MLB", "NFL", "CFB", "NAS", "MMA", "NHL")
+#: NBA and CBB added 2026-10-13 (seasons open ~10/20 and ~11/3). Both lobbies
+#: are big on a full night -- an NBA Tuesday lists ~10 groups, a college
+#: Saturday more -- but priced groups drop to the 6-hour heartbeat, so the
+#: steady cost is the new groups per day, not the lobby size.
+SPORTS = ("MLB", "NFL", "CFB", "NAS", "MMA", "NHL", "NBA", "CBB")
 
 
 # Last attempt per draft group, for groups DK has not priced yet (those write
