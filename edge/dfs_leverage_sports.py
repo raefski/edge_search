@@ -11,8 +11,8 @@ FIELD MODELS. NFL's GPP field is fitted (edge/dfs_nfl_contest.py: real stack
 rates and a sharp share, three 17,835-entry exports). MLB's stack-size mix is
 measured (edge/dfs_sim.STACK_DIST). MMA's field is the lineup softmax fitted on
 one export (edge/dfs_mma_theory.py). NHL's is drawn from projected GPP
-ownership and resampled to the measured stack rate and sharp share
-(NHL_STACK3, NHL_SHARP -- GPP_META.md). NCAAF and NASCAR fields are ownership
+ownership with team stacks built in at the measured rate, plus the sharp share
+(nhl_gpp_field: NHL_STACK3, NHL_SHARP -- GPP_META.md). NCAAF and NASCAR fields are ownership
 draws under the cap with dfs_leverage's sharp share as a prior; NCAAF's does
 not stack yet, so its top tail is a little thin. The ORDER of candidates is
 the signal, not the dollars.
@@ -20,7 +20,6 @@ the signal, not the dollars.
 from __future__ import annotations
 
 import random
-from collections import Counter
 from statistics import NormalDist
 
 import numpy as np
@@ -48,9 +47,76 @@ def _tilted(pool: list, raw: list, n: int, seed: int, share: float = lev.SHARP_S
 
 #: Real NHL GPP fields (GPP_META.md, 8 exports, 2026-10-13): 3+ skaters from
 #: one team in 88% [85, 90] of lineups on slates of 4 games or fewer and 73%
-#: [69, 78] on 5+; sharp share 0.25 [0.24, 0.26].
+#: [69, 78] on 5+; 2+ from the same forward line in 80% [76, 84]; sharp
+#: share 0.25 [0.24, 0.26].
 NHL_STACK3 = (0.88, 0.73)
 NHL_SHARP = 0.25
+#: Weight on a stack-mate who shares the first pick's forward line. Swept on
+#: 10/13's Main: 4 -> 58% of field lineups with 2+ linemates, 10 -> 68%,
+#: 25 -> 71% (measured 80% [76, 84]); the quarter of the field without a team
+#: stack rarely pairs linemates by chance, which is the rest of the gap.
+NHL_LINE_BIAS = 25.0
+
+
+def nhl_gpp_field(pool: list, n: int, stack_rate: float, seed: int = 0,
+                  line_bias: float = NHL_LINE_BIAS) -> list:
+    """`n` legal NHL GPP lineups (pool indices). A `stack_rate` share starts
+    from a team stack -- a team drawn by its summed ownership, then three of
+    its skaters by ownership, linemates of the first favoured -- and every
+    remaining slot is drawn by ownership within the cap. Stacking is built in
+    rather than resampled from rare chance stacks, which duplicated them."""
+    from collections import defaultdict
+    from edge import dfs_opt_nhl, nhl
+    rng = random.Random(seed)
+    own = [max(float(p.get("own") or 0.0), 0.0) for p in pool]
+    goalies = [i for i, p in enumerate(pool) if p["pos"] == "G" and own[i] > 0]
+    team_sk = defaultdict(list)
+    for i, p in enumerate(pool):
+        if p["pos"] != "G" and own[i] > 0 and p.get("salary"):
+            team_sk[p["team"]].append(i)
+    need0 = {"C": 2, "W": 3, "D": 2}
+    out, tries = [], 0
+    while len(out) < n and tries < n * 40 and goalies:
+        tries += 1
+        g = rng.choices(goalies, weights=[own[i] for i in goalies])[0]
+        picked = [g]
+        if rng.random() < stack_rate:
+            teams = [t for t, v in team_sk.items() if len(v) >= 3 and t != pool[g].get("opp")]
+            t = rng.choices(teams, weights=[sum(own[i] for i in team_sk[t]) for t in teams])[0]
+            fwd = [i for i in team_sk[t] if pool[i]["pos"] in ("C", "W")] or team_sk[t]
+            first = rng.choices(fwd, weights=[own[i] for i in fwd])[0]   # stacks start from a line
+            picked.append(first)
+            for _ in range(2):
+                mates = [i for i in team_sk[t] if i not in picked]
+                w = [own[i] * (line_bias if pool[i].get("line") and
+                               pool[i].get("line") == pool[first].get("line") else 1.0)
+                     for i in mates]
+                picked.append(rng.choices(mates, weights=w)[0])
+        skaters = [pool[i] for i in picked[1:]]
+        need = {k: max(0, v - sum(1 for x in skaters if x["pos"] == k)) for k, v in need0.items()}
+        slots = [k for k, v in need.items() for _ in range(v)]
+        slots += ["U"] * (8 - len(skaters) - len(slots))
+        if len(slots) + len(skaters) != 8:
+            continue
+        rng.shuffle(slots)
+        spent = sum(pool[i]["salary"] for i in picked)
+        ok = True
+        for k, slot in enumerate(slots):
+            left = len(slots) - k - 1
+            budget = nhl.SALARY_CAP - spent - left * 2500
+            floor = 48_000 - spent if left == 0 else 0
+            cands = [i for v in team_sk.values() for i in v
+                     if i not in picked and (slot == "U" or pool[i]["pos"] == slot)
+                     and floor <= pool[i]["salary"] <= budget and pool[i]["team"] != pool[g].get("opp")]
+            if not cands:
+                ok = False
+                break
+            j = rng.choices(cands, weights=[own[i] for i in cands])[0]
+            picked.append(j)
+            spent += pool[j]["salary"]
+        if ok and dfs_opt_nhl._valid(pool, picked):
+            out.append(picked)
+    return out
 
 
 def simple_field(pool: list, size: int, cap: int, n: int, seed: int = 0,
@@ -83,7 +149,7 @@ def simple_field(pool: list, size: int, cap: int, n: int, seed: int = 0,
 # ── NHL ──────────────────────────────────────────────────────────────────────
 def nhl(res: dict, contest: dict | None = None, iters: int = 50, seed: int = 0,
         n_field: int = N_FIELD) -> dict:
-    from edge import dfs_nhl_field, dfs_opt_nhl, dfs_nhl_theory as theory
+    from edge import dfs_opt_nhl, dfs_nhl_theory as theory
     pool, sim, chalk = res["pool"], res["sim"], res.get("gpp")
     if not chalk:
         return {"cands": [], "field": [], "best": None, "contest": contest}
@@ -99,12 +165,9 @@ def nhl(res: dict, contest: dict | None = None, iters: int = 50, seed: int = 0,
     for c in cands:
         c["tag"] = " ".join(f"{t}×{n}" for t, n in c["result"]["stacks"].items() if n >= 3)
     own = _own(pool)
-    raw = dfs_nhl_field.sample_field(pool, own / 100.0, n=n_field * RAW_MULT, seed=seed + 7,
-                                     rounds=1).tolist()
     games = len({p["game"] for p in pool})
-    stacked = [max(Counter(pool[i]["team"] for i in lu if pool[i]["pos"] != "G").values()) >= 3
-               for lu in raw]
-    raw = lev.reshare(raw, stacked, NHL_STACK3[0] if games <= 4 else NHL_STACK3[1], seed + 9)
+    raw = nhl_gpp_field(pool, n_field * RAW_MULT, NHL_STACK3[0] if games <= 4 else NHL_STACK3[1],
+                        seed=seed + 7)
     field = _tilted(pool, raw, n_field, seed + 8, share=NHL_SHARP)
     return lev.analyze(sim, own, cands, field, theory.GPP_PCT, contest)
 

@@ -106,31 +106,27 @@ def pareto(points: list[dict], y: str = "ceil") -> list[bool]:
     return out
 
 
-def reshare(raw: list, flags, target: float, seed: int = 0) -> list:
-    """`raw` resampled (same size) so that a `target` share of it has
-    `flags` set -- e.g. lineups carrying a 3+ team stack, which ownership
-    draws produce far less often than real fields do."""
-    flags = np.asarray(flags, bool)
-    s0 = float(flags.mean()) if len(flags) else 0.0
-    if not 0.0 < s0 < 1.0:
-        return list(raw)
-    w = np.where(flags, target / s0, (1 - target) / (1 - s0))
-    pick = np.random.default_rng(seed).choice(len(raw), size=len(raw), p=w / w.sum())
-    return [raw[i] for i in pick]
-
-
 def tilt(raw: list, proj: np.ndarray, n: int, seed: int = 0,
          share: float = SHARP_SHARE, beta_z: float = SHARP_BETA_Z) -> list:
-    """`n` field lineups resampled from `raw` ownership draws, a sharp `share`
-    of them weighted exp(beta_z * z(proj)) toward the projected top."""
+    """`n` field lineups chosen from `raw` ownership draws, a sharp `share` of
+    the weight on exp(beta_z * z(proj)) toward the projected top.
+
+    Chosen WITHOUT replacement (Gumbel top-k): resampling with replacement
+    put 145 and 101 copies of the two best-projected draws into a 1,000-lineup
+    NHL field on 2026-10-13 -- a quarter of the field on two lineups, where
+    real NHL fields duplicate ~8% (GPP_META.md). Duplicates now come only
+    from ownership draws that coincide, which is how real ones arise. Needs
+    len(raw) > n; with fewer it returns every draw."""
     if not raw:
         return []
+    if len(raw) <= n:
+        return list(raw)
     proj = np.asarray(proj, float)
     sd = float(proj.std()) or 1.0
     t = np.exp(beta_z * (proj - proj.max()) / sd)
     w = (1 - share) / len(raw) + share * t / t.sum()
-    pick = np.random.default_rng(seed).choice(len(raw), size=n, p=w / w.sum())
-    return [raw[i] for i in pick]
+    keys = np.log(w) + np.random.default_rng(seed).gumbel(size=len(raw))
+    return [raw[i] for i in np.argsort(-keys)[:n]]
 
 
 def payout_tiers(field_size: int, payouts=None, entry_fee: float = 1.0,

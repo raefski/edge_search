@@ -3,6 +3,8 @@ board: candidates are legal lineups of that sport, the sweep reaches lower
 ownership than the chalk lineup, and a contest re-ranks without a rebuild."""
 from __future__ import annotations
 
+import numpy as np
+
 from edge import dfs_leverage as lev
 from edge import dfs_leverage_sports as LS
 
@@ -112,3 +114,20 @@ def test_mlb_sweeps_from_pure_ceiling_and_keeps_the_app_lineup():
     assert all(dfs_opt._valid([pool[i] for i in c["idx"]]) for c in a["cands"])
     # the sweep restores the production fade it borrowed
     assert all(p["lev"] == round(p["ceiling"] - 0.3 * p["own"], 1) for p in pool)
+
+
+def test_nhl_field_builds_its_stacks_in():
+    from collections import Counter
+    from edge import dfs_opt_nhl as opt
+    from tests.test_dfs_nhl import _slate
+    pool, _sim = _slate()
+
+    def rate(field):
+        return np.mean([max(Counter(pool[i]["team"] for i in lu if pool[i]["pos"] != "G").values()) >= 3
+                        for lu in field])
+
+    stacked = LS.nhl_gpp_field(pool, 300, 0.73, seed=2)
+    loose = LS.nhl_gpp_field(pool, 300, 0.0, seed=2)
+    assert len(stacked) == 300 and all(opt._valid(pool, lu) for lu in stacked)
+    # six teams make chance stacks common on this board; deliberate ones add more
+    assert rate(stacked) > rate(loose) + 0.05

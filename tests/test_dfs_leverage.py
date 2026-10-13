@@ -81,3 +81,14 @@ def test_analyze_then_with_contest_reuses_candidates():
     assert a["contest"] is None and len(a["field"]) == 250 and len(a["field_idx"]) == 250
     b = lev.with_contest(a, scores, {"field": 50_000, "fee": 1.0})
     assert b["best"] == 1 and "ev" in b["cands"][0] and "ev" not in a["cands"][0]
+
+
+def test_tilt_never_duplicates_a_lineup():
+    """With replacement, a 1,000-lineup NHL field held 145 + 101 copies of
+    its two best-projected draws (2026-10-13)."""
+    raw = [[i, i + 1] for i in range(3000)]
+    proj = np.linspace(0, 100, 3000)
+    field = lev.tilt(raw, proj, 1000, seed=1)
+    assert len(field) == 1000 and len({tuple(x) for x in field}) == 1000
+    top = sum(1 for x in field if x[0] >= 2700)          # the best-projected tenth
+    assert top > 150             # still tilted: uniform picking would take ~100 of these 300
