@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T19:30:00+00:00",
+"generated_at": "2026-10-13T19:59:59+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -28,7 +28,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": "Likely"
+"status": "Confirmed"
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
@@ -48,7 +48,7 @@
 },
 "FLA": {
 "goalie": "Akira Schmid",
-"status": "Likely"
+"status": "Confirmed"
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
@@ -7760,6 +7760,42 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Cooper Black": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 2,
+"goalieGoalsAgainst": 5,
+"goalieGoalsAgainstAvg": "4.23",
+"goalieLosses": 0,
+"goalieMinutes": 70,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.792",
+"goalieSaves": 19,
+"goalieSeconds": 25,
+"goalieShotsAgainst": 24,
+"goalieShutouts": 0,
+"goalieWins": 1
+},
+"last5": {
+"gamesPlayed": 2,
+"goalieGoalsAgainst": 5,
+"goalieGoalsAgainstAvg": "4.23",
+"goalieLosses": 0,
+"goalieMinutes": 70,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.792",
+"goalieSaves": 19,
+"goalieSeconds": 25,
+"goalieShotsAgainst": 24,
+"goalieShutouts": 0,
+"goalieWins": 1
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Dmitry Kulikov": {
 "gtd": false,
 "injury": null,
@@ -7896,42 +7932,6 @@
 "pos": "ld",
 "pp": null
 },
-"Jacob Markstrom": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 21,
-"goalieGoalsAgainstAvg": "2.36",
-"goalieLosses": 3,
-"goalieMinutes": 534,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.889",
-"goalieSaves": 169,
-"goalieSeconds": 21,
-"goalieShotsAgainst": 190,
-"goalieShutouts": 2,
-"goalieWins": 4
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 9,
-"goalieGoalsAgainstAvg": "2.02",
-"goalieLosses": 1,
-"goalieMinutes": 266,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.905",
-"goalieSaves": 86,
-"goalieSeconds": 24,
-"goalieShotsAgainst": 95,
-"goalieShutouts": 1,
-"goalieWins": 2
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
-},
 "Lars Eller": {
 "gtd": false,
 "injury": null,
@@ -8031,40 +8031,6 @@
 },
 "line": "D2",
 "pk": "PK2",
-"pos": "ld",
-"pp": null
-},
-"Radko Gudas": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 19,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 130,
-"toiSeconds": 40
-},
-"last5": {
-"assists": 0,
-"blocks": 11,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 68,
-"toiSeconds": 2
-},
-"line": "D3",
-"pk": null,
 "pos": "ld",
 "pp": null
 },
@@ -8237,6 +8203,40 @@
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP1"
+},
+"Uvis Balinskis": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 12,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 164,
+"toiSeconds": 51
+},
+"last5": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 89,
+"toiSeconds": 3
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
 }
 },
 "LAK": {
