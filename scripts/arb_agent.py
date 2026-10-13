@@ -177,6 +177,13 @@ def refresh_odds(profiles: list[str]) -> list[str]:
 
 
 def publish(message: str, extra_paths: list[str] | None = None) -> bool:
+    """Under the repo's git lock (edge/git_lock.py): timers run git on the same minute."""
+    from edge.git_lock import git_lock
+    with git_lock():
+        return _publish_unlocked(message, extra_paths)
+
+
+def _publish_unlocked(message: str, extra_paths: list[str] | None = None) -> bool:
     """Commit the snapshot(s) alone and push, rebasing on whatever landed first."""
     paths = [str(SNAPSHOT.relative_to(ROOT))] + list(extra_paths or [])
     # -f because data/*.json is gitignored by default; both the arb snapshot

@@ -32,6 +32,13 @@ def git(*args, check: bool = True):
 
 
 def push_snapshot(path: Path, profile: str, branch: str = "main") -> bool:
+    """Under the repo's git lock (edge/git_lock.py): timers run git on the same minute."""
+    from edge.git_lock import git_lock
+    with git_lock():
+        return _push_snapshot_unlocked(path=path, profile=profile, branch=branch)
+
+
+def _push_snapshot_unlocked(path: Path, profile: str, branch: str = "main") -> bool:
     """Commit ONE snapshot by explicit path and push it.
 
     Deliberately the same shape as scripts/arb_agent.py::publish, which has

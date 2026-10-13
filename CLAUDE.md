@@ -77,9 +77,13 @@ between ad-hoc lookups.
 
 ## Working in this repo
 
-- The timers commit and push to `main` all day. Commit only your own paths
-  (`git add <paths>`; never `git add -A`), then
-  `git pull --rebase --autostash && git push`. The working tree always holds
+- The timers commit and push to `main` all day, serialised by a lock
+  (`edge/git_lock.py`). Commit only your own paths (`git add <paths>`; never
+  `git add -A`), then push under the same lock:
+  `flock .git/edge_git.lock -c 'git pull -q --rebase --autostash && git push -q'`.
+  If git ever says a rebase is in progress, do not abort or reset: run
+  `git rebase --quit` (it saves the autostash to the stash list), then
+  `git stash apply` and check the tree — that stash holds uncommitted work. The working tree always holds
   timer-written data — don't discard it (`.claude/hooks/guard_bash.py` blocks
   `reset --hard`, `clean -f`, `checkout .`, force push, deleting `data/*.db`).
 - Streamlit Cloud redeploys from `main` but unreliably picks up code: tell

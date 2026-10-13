@@ -134,6 +134,13 @@ def scan_age_min(profile: str) -> float | None:
 
 
 def commit_logs(patterns: list[str], msg: str) -> None:
+    """Under the repo's git lock (edge/git_lock.py): timers run git on the same minute."""
+    from edge.git_lock import git_lock
+    with git_lock():
+        return _commit_logs_unlocked(patterns=patterns, msg=msg)
+
+
+def _commit_logs_unlocked(patterns: list[str], msg: str) -> None:
     files = sorted({str(p.relative_to(ROOT)) for pat in patterns for p in ROOT.glob(pat)})
     if not files:
         return
