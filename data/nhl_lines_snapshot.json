@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T21:45:02+00:00",
+"generated_at": "2026-10-13T21:59:54+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -3021,7 +3021,7 @@
 "pp": null
 },
 "Conor Garland": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 0,
@@ -6298,6 +6298,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Andreas Englund": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 122,
+"toiSeconds": 8
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 57,
+"toiSeconds": 52
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Andrew Copp": {
 "gtd": false,
 "injury": null,
@@ -6361,7 +6395,7 @@
 "toiMinutes": 80,
 "toiSeconds": 19
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -6603,7 +6637,7 @@
 "toiMinutes": 96,
 "toiSeconds": 26
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
@@ -6754,40 +6788,6 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Nate Danielson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 119,
-"toiSeconds": 2
-},
-"last5": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 45,
-"toiSeconds": 45
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
-"pp": null
-},
 "Sheldon Dries": {
 "gtd": false,
 "injury": null,
@@ -6855,40 +6855,6 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
-},
-"William Wallinder": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 15,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 4,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 152,
-"toiSeconds": 48
-},
-"last5": {
-"assists": 1,
-"blocks": 9,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 79,
-"toiSeconds": 59
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
 }
 },
 "EDM": {
@@ -7827,7 +7793,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Eetu Luostarinen": {
@@ -7961,9 +7927,9 @@
 "toiMinutes": 70,
 "toiSeconds": 7
 },
-"line": "F4",
+"line": "F2",
 "pk": "PK1",
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Matthew Tkachuk": {
@@ -8097,9 +8063,9 @@
 "toiMinutes": 66,
 "toiSeconds": 18
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Sam Reinhart": {
@@ -8235,7 +8201,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 }
 },
