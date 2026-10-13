@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T22:29:55+00:00",
+"generated_at": "2026-10-13T22:44:44+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -92,7 +92,7 @@
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
-"status": null
+"status": "Confirmed"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -10347,7 +10347,7 @@
 "injury": null,
 "last10": {
 "assists": 2,
-"blocks": 14,
+"blocks": 13,
 "gamesPlayed": 10,
 "goals": 0,
 "points": 2,
@@ -10355,8 +10355,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 8,
-"toiMinutes": 202,
-"toiSeconds": 35
+"toiMinutes": 183,
+"toiSeconds": 14
 },
 "last5": {
 "assists": 0,
@@ -10368,7 +10368,7 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 5,
-"toiMinutes": 102,
+"toiMinutes": 83,
 "toiSeconds": 59
 },
 "line": "D1",
@@ -10550,30 +10550,30 @@
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 8,
+"assists": 7,
 "blocks": 4,
 "gamesPlayed": 10,
-"goals": 3,
-"points": 11,
+"goals": 2,
+"points": 9,
 "powerplayAssists": 5,
 "powerplayGoals": 0,
 "powerplayPoints": 5,
-"shots": 31,
-"toiMinutes": 207,
-"toiSeconds": 50
+"shots": 28,
+"toiMinutes": 188,
+"toiSeconds": 35
 },
 "last5": {
 "assists": 4,
 "blocks": 4,
 "gamesPlayed": 5,
-"goals": 1,
-"points": 5,
+"goals": 0,
+"points": 4,
 "powerplayAssists": 3,
 "powerplayGoals": 0,
 "powerplayPoints": 3,
-"shots": 17,
-"toiMinutes": 105,
-"toiSeconds": 30
+"shots": 12,
+"toiMinutes": 80,
+"toiSeconds": 14
 },
 "line": "F1",
 "pk": null,
@@ -10585,29 +10585,29 @@
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
-"goalieGoalsAgainst": 25,
-"goalieGoalsAgainstAvg": "2.65",
+"goalieGoalsAgainst": 22,
+"goalieGoalsAgainstAvg": "2.61",
 "goalieLosses": 2,
-"goalieMinutes": 564,
+"goalieMinutes": 505,
 "goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.898",
-"goalieSaves": 219,
-"goalieSeconds": 51,
-"goalieShotsAgainst": 244,
+"goalieSavePercentage": "0.897",
+"goalieSaves": 191,
+"goalieSeconds": 23,
+"goalieShotsAgainst": 213,
 "goalieShutouts": 0,
-"goalieWins": 6
+"goalieWins": 5
 },
 "last5": {
 "gamesPlayed": 5,
 "goalieGoalsAgainst": 9,
-"goalieGoalsAgainstAvg": "2.07",
+"goalieGoalsAgainstAvg": "2.23",
 "goalieLosses": 1,
-"goalieMinutes": 260,
+"goalieMinutes": 241,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.905",
-"goalieSaves": 86,
-"goalieSeconds": 43,
-"goalieShotsAgainst": 95,
+"goalieSavePercentage": "0.902",
+"goalieSaves": 83,
+"goalieSeconds": 24,
+"goalieShotsAgainst": 92,
 "goalieShutouts": 0,
 "goalieWins": 3
 },
@@ -10654,30 +10654,30 @@
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 5,
+"assists": 4,
 "blocks": 1,
 "gamesPlayed": 10,
-"goals": 3,
-"points": 8,
+"goals": 1,
+"points": 5,
 "powerplayAssists": 2,
 "powerplayGoals": 1,
 "powerplayPoints": 3,
-"shots": 30,
-"toiMinutes": 178,
-"toiSeconds": 24
+"shots": 27,
+"toiMinutes": 161,
+"toiSeconds": 55
 },
 "last5": {
-"assists": 3,
+"assists": 2,
 "blocks": 1,
 "gamesPlayed": 5,
 "goals": 1,
-"points": 4,
+"points": 3,
 "powerplayAssists": 2,
 "powerplayGoals": 1,
 "powerplayPoints": 3,
-"shots": 17,
-"toiMinutes": 89,
-"toiSeconds": 36
+"shots": 11,
+"toiMinutes": 68,
+"toiSeconds": 52
 },
 "line": "F1",
 "pk": "PK2",
@@ -10764,22 +10764,22 @@
 "powerplayAssists": 2,
 "powerplayGoals": 0,
 "powerplayPoints": 2,
-"shots": 25,
-"toiMinutes": 239,
-"toiSeconds": 10
+"shots": 22,
+"toiMinutes": 211,
+"toiSeconds": 59
 },
 "last5": {
 "assists": 1,
 "blocks": 1,
 "gamesPlayed": 5,
-"goals": 1,
-"points": 2,
+"goals": 0,
+"points": 1,
 "powerplayAssists": 1,
 "powerplayGoals": 0,
 "powerplayPoints": 1,
-"shots": 16,
-"toiMinutes": 118,
-"toiSeconds": 17
+"shots": 11,
+"toiMinutes": 94,
+"toiSeconds": 32
 },
 "line": "D1",
 "pk": null,
@@ -13481,7 +13481,7 @@
 "toiMinutes": 79,
 "toiSeconds": 43
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP1"
@@ -13585,7 +13585,7 @@
 "toiMinutes": 67,
 "toiSeconds": 57
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -13723,7 +13723,7 @@
 "toiMinutes": 76,
 "toiSeconds": 37
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -13825,7 +13825,7 @@
 "toiMinutes": 56,
 "toiSeconds": 39
 },
-"line": "F1",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": null
@@ -13961,7 +13961,7 @@
 "toiMinutes": 68,
 "toiSeconds": 32
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -14131,7 +14131,7 @@
 "toiMinutes": 88,
 "toiSeconds": 2
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
