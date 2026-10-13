@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T20:30:01+00:00",
+"generated_at": "2026-10-13T21:29:53+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -13082,7 +13082,7 @@
 "toiSeconds": 6
 },
 "line": "D3",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -13118,6 +13118,16 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
+"pp": null
+},
+"Jorian Donovan": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
+"line": "D3",
+"pk": null,
+"pos": "ld",
 "pp": null
 },
 "Linus Ullmark": {
@@ -13222,40 +13232,6 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
-},
-"Nikolas Matinpalo": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 14,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 158,
-"toiSeconds": 56
-},
-"last5": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 72,
-"toiSeconds": 16
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
 "pp": null
 },
 "Ridly Greig": {
