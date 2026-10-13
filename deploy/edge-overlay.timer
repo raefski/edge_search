@@ -1,0 +1,10 @@
+[Unit]
+Description=Overlay alerts every 15 minutes, 10:00-23:45 local
+
+[Timer]
+OnCalendar=*-*-* 10..23:00/15:00
+RandomizedDelaySec=30
+Persistent=false
+
+[Install]
+WantedBy=timers.target

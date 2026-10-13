@@ -112,7 +112,10 @@ JOBS: dict[str, Job] = {j.name: j for j in [
     # ── monitor ───────────────────────────────────────────────────────────
     Job("monitor", "monitor", (PY, "-m", "harness", "monitor"), timeout=600, timer="edge-monitor.timer",
         doc="goalie changes + line moves near lock; --push sends ntfy alerts"),
-    _j("overlay", "monitor", "scripts/dfs_overlay.py", doc="guaranteed contests that are not filling"),
+    _j("overlay", "monitor", "scripts/dfs_overlay.py", doc="guaranteed contests that are not filling (table)"),
+    Job("overlay-alert", "monitor", (PY, "-m", "harness", "overlay"), timeout=900,
+        timer="edge-overlay.timer",
+        doc="push guaranteed contests whose next entry is worth it at lock (ntfy)"),
     Job("status", "monitor", (PY, "-m", "harness", "status"), timeout=300,
         doc="slates, timers, data freshness, failures"),
 ]}
@@ -135,6 +138,8 @@ RULES: list[tuple[str, str]] = [
 ]
 
 EDGE_RULES: list[tuple[str, str]] = [
+    (r"^git_lock$", "publish"),
+    (r"^dfs_entry_edge$", "model"),
     (r"^(dfs_opt|dfs_leverage|dfs_swap|dfs_roster|dfs_lineup|sgp|parlay)", "optimize"),
     (r"(_sim$|_theory$|_field$|dfs_project|dfs_ladder|pickem_strategy|pickem_features|"
      r"pickem$|fairodds|oddsmath|dfs_contest|dfs_nfl_contest|dfs_validate|clv)", "model"),

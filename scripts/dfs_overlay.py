@@ -52,8 +52,14 @@ def contests(sport: str) -> list[dict]:
 
 
 def rows(sport: str, now: datetime, max_fee: float, hours: float, classic_only: bool) -> list[dict]:
+    return rows_from(contests(sport), sport, now, max_fee, hours, classic_only)
+
+
+def rows_from(cs: list[dict], sport: str, now: datetime, max_fee: float, hours: float,
+              classic_only: bool) -> list[dict]:
+    """The guaranteed contests locking within `hours`, from one lobby listing."""
     out = []
-    for c in contests(sport):
+    for c in cs:
         attr = c.get("attr") or {}
         if attr.get("IsGuaranteed") != "true" or not c.get("a") or not c.get("nt"):
             continue

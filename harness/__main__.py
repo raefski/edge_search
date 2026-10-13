@@ -6,6 +6,7 @@
     python3 -m harness verify [paths...] [--all]   compile + the tests covering what changed
     python3 -m harness monitor [--push] [--hours H]   goalie changes + line moves
     python3 -m harness late-swap nhl [--gid G] [--players "a, b"] [--entry CSV] [--mode gpp|cash]
+    python3 -m harness overlay [--push] [--min-roi 0.10] [--hours 2.5]   guaranteed contests not filling
     python3 -m harness navigate <url> [--match S] [--click TEXT] [--wait S] [--profile DIR]
 """
 from __future__ import annotations
@@ -54,6 +55,15 @@ def main(argv=None) -> int:
     s.add_argument("--sims", type=int, default=2000)
     s.add_argument("--improve", action="store_true",
                    help="also re-optimise healthy unlocked slots (default: only replace who is out)")
+    s = sub.add_parser("overlay")
+    s.add_argument("--push", action="store_true", help="send the alerts to the phone")
+    s.add_argument("--hours", type=float, default=2.5, help="look this far ahead of lock")
+    s.add_argument("--min-roi", type=float, default=0.10,
+                   help="alert when one more entry at lock returns this much above its cost")
+    s.add_argument("--max-fee", type=float, default=25.0)
+    s.add_argument("--include-resizable", action="store_true")
+    s.add_argument("--all-types", action="store_true",
+                   help="include Showdown, Captain and Madden contests (default: Classic only)")
     s = sub.add_parser("navigate")
     s.add_argument("url")
     s.add_argument("--match")
@@ -99,6 +109,11 @@ def main(argv=None) -> int:
         from harness import late_swap
         a.rest = extra
         return late_swap.main(a)
+    if a.cmd == "overlay":
+        from harness import overlay
+        overlay.run(do_push=a.push, hours=a.hours, min_roi=a.min_roi, max_fee=a.max_fee,
+                    include_resizable=a.include_resizable, all_types=a.all_types)
+        return 0
     if a.cmd == "navigate":
         from harness import navigator
         navigator.run(a.url, match=a.match, clicks=a.click, wait=a.wait, profile=a.profile,

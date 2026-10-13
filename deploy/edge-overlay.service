@@ -1,0 +1,23 @@
+# Overlay alerts: guaranteed contests whose next entry is worth it at lock,
+# pushed to the phone through ntfy. See harness/overlay.py and
+# edge/dfs_entry_edge.py. Each contest pushes once, then a final call inside
+# 20 minutes of lock. Desktop only: payout tables come from api.draftkings.com.
+#
+#   cp deploy/edge-overlay.service deploy/edge-overlay.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now edge-overlay.timer
+#   journalctl --user -u edge-overlay -n 50
+#
+# Classic contests only by default. Add --all-types to include Showdown,
+# Captain and Madden contests.
+[Unit]
+Description=Push guaranteed contests that are not filling, before lock
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 -m harness overlay --push --hours 2.5 --min-roi 0.10
+Restart=no
+Nice=10
+TimeoutStartSec=600
