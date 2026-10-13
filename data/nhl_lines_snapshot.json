@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-13T19:59:59+00:00",
+"generated_at": "2026-10-13T20:30:01+00:00",
 "goalies": {
 "2026-10-13": {
 "ANA": {
@@ -10507,7 +10507,7 @@
 "toiMinutes": 70,
 "toiSeconds": 10
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "rw",
 "pp": null
@@ -10713,7 +10713,7 @@
 "toiMinutes": 63,
 "toiSeconds": 36
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -10785,40 +10785,6 @@
 "pk": "PK2",
 "pos": "ld",
 "pp": null
-},
-"Luke Evangelista": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 5,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 6,
-"points": 11,
-"powerplayAssists": 1,
-"powerplayGoals": 2,
-"powerplayPoints": 3,
-"shots": 23,
-"toiMinutes": 170,
-"toiSeconds": 11
-},
-"last5": {
-"assists": 1,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 12,
-"toiMinutes": 86,
-"toiSeconds": 3
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": "PP1"
 },
 "Luke Hughes": {
 "gtd": false,
@@ -10924,6 +10890,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Stefan Noesen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 16,
+"toiMinutes": 112,
+"toiSeconds": 59
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 7,
+"toiMinutes": 54,
+"toiSeconds": 26
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
 "Timo Meier": {
 "gtd": false,
 "injury": null,
@@ -10956,7 +10956,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 }
 },
 "NSH": {
