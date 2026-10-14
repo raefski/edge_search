@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-14T14:29:34+00:00",
+"generated_at": "2026-10-14T15:01:15+00:00",
 "goalies": {
 "2026-10-14": {
 "COL": {
@@ -782,7 +782,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Aydar Suniev": {
 "gtd": false,
@@ -1160,7 +1160,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Mikael Backlund": {
 "gtd": false,
@@ -2723,40 +2723,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
-},
-"Zachary L'Heureux": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 17,
-"toiMinutes": 122,
-"toiSeconds": 4
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 56,
-"toiSeconds": 1
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 }
 },
 "DAL": {
@@ -3031,9 +2997,9 @@
 "toiMinutes": 70,
 "toiSeconds": 41
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Lian Bichsel": {
@@ -3405,9 +3371,9 @@
 "toiMinutes": 75,
 "toiSeconds": 13
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 }
 },
@@ -4278,7 +4244,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Isaac Howard": {
 "gtd": false,
@@ -4356,7 +4322,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Kasperi Kapanen": {
 "gtd": false,
@@ -7495,9 +7461,9 @@
 "toiMinutes": 89,
 "toiSeconds": 52
 },
-"line": "D3",
+"line": "D1",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Alex Kerfoot": {
@@ -7702,7 +7668,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Juuse Saros": {
 "gtd": false,
@@ -7782,7 +7748,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Nick Perbix": {
 "gtd": false,
@@ -7847,9 +7813,9 @@
 "toiMinutes": 92,
 "toiSeconds": 52
 },
-"line": "D1",
+"line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Nils Hoglander": {
@@ -7884,7 +7850,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Roman Josi": {
 "gtd": false,
@@ -7952,7 +7918,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Ryan O'Reilly": {
 "gtd": false,
@@ -11466,7 +11432,7 @@
 "line": "D3",
 "pk": null,
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Igor Chernyshov": {
 "gtd": false,
@@ -11544,7 +11510,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Kiefer Sherwood": {
 "gtd": false,
@@ -13342,40 +13308,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Bo Groulx": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 113,
-"toiSeconds": 37
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 39,
-"toiSeconds": 56
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Brandon Duhaime": {
 "gtd": false,
 "injury": null,
@@ -14058,7 +13990,7 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Clayton Keller": {
 "gtd": false,
@@ -14126,7 +14058,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Dmitri Simashev": {
 "gtd": false,
@@ -15485,7 +15417,7 @@
 "toiMinutes": 67,
 "toiSeconds": 37
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -15825,7 +15757,7 @@
 "toiMinutes": 91,
 "toiSeconds": 51
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -16169,7 +16101,7 @@
 "toiMinutes": 108,
 "toiSeconds": 14
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -16475,7 +16407,7 @@
 "toiMinutes": 115,
 "toiSeconds": 59
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP1"
