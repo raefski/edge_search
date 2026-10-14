@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-14T13:59:58+00:00",
+"generated_at": "2026-10-14T14:29:34+00:00",
 "goalies": {
 "2026-10-14": {
 "COL": {
@@ -8784,16 +8784,6 @@
 "pos": "rd",
 "pp": null
 },
-"Cole Beaudoin": {
-"gtd": false,
-"injury": null,
-"last10": {},
-"last5": {},
-"line": "F4",
-"pk": null,
-"pos": "c",
-"pp": null
-},
 "Dylan Garand": {
 "gtd": false,
 "injury": null,
@@ -9318,7 +9308,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Carter Yakemchuk": {
 "gtd": false,
@@ -9352,7 +9342,7 @@
 "line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Claude Giroux": {
 "gtd": false,
@@ -9808,7 +9798,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Thomas Chabot": {
 "gtd": false,
@@ -9842,7 +9832,7 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Tim St\u00fctzle": {
 "gtd": false,
@@ -11028,7 +11018,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP1"
 },
 "Matty Beniers": {
 "gtd": false,
@@ -11200,7 +11190,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": null
 },
 "Ville Ottavainen": {
 "gtd": false,
@@ -12763,9 +12753,9 @@
 "toiMinutes": 68,
 "toiSeconds": 18
 },
-"line": null,
+"line": "D3",
 "pk": null,
-"pos": null,
+"pos": "ld",
 "pp": "PP2"
 },
 "Conor Geekie": {
@@ -13241,9 +13231,9 @@
 "toiMinutes": 65,
 "toiSeconds": 29
 },
-"line": "D3",
+"line": null,
 "pk": "PK2",
-"pos": "ld",
+"pos": null,
 "pp": null
 },
 "Zemgus Girgensons": {
@@ -16675,7 +16665,7 @@
 "pp": "PP1"
 },
 "Alex Tuch": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 0,
@@ -16875,9 +16865,9 @@
 "toiMinutes": 95,
 "toiSeconds": 4
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP2"
 },
 "Dylan Strome": {
@@ -17319,9 +17309,9 @@
 "toiMinutes": 96,
 "toiSeconds": 35
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 }
 }
