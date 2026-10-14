@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-14T21:29:44+00:00",
+"generated_at": "2026-10-14T23:29:49+00:00",
 "goalies": {
 "2026-10-14": {
 "COL": {
@@ -16695,7 +16695,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Alex Tuch": {
@@ -16761,7 +16761,7 @@
 "toiMinutes": 77,
 "toiSeconds": 46
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -16797,7 +16797,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Boone Jenner": {
@@ -16829,7 +16829,7 @@
 "toiMinutes": 77,
 "toiSeconds": 58
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
 "pos": "c",
 "pp": null
@@ -16899,9 +16899,9 @@
 "toiMinutes": 95,
 "toiSeconds": 4
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": "PP2"
 },
 "Dylan Strome": {
@@ -16938,40 +16938,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Ethen Frank": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 11,
-"toiMinutes": 101,
-"toiSeconds": 44
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 58,
-"toiSeconds": 27
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Ilya Protas": {
 "gtd": false,
 "injury": null,
@@ -17004,6 +16970,40 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
+"pp": "PP2"
+},
+"Ivan Miroshnichenko": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 15,
+"toiMinutes": 103,
+"toiSeconds": 28
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 59,
+"toiSeconds": 24
+},
+"line": "F2",
+"pk": null,
+"pos": "rw",
 "pp": "PP2"
 },
 "Jakob Chychrun": {
@@ -17069,7 +17069,7 @@
 "toiMinutes": 65,
 "toiSeconds": 24
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -17137,7 +17137,7 @@
 "toiMinutes": 64,
 "toiSeconds": 44
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -17241,9 +17241,9 @@
 "toiMinutes": 69,
 "toiSeconds": 59
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Timothy Liljegren": {
@@ -17309,7 +17309,7 @@
 "toiMinutes": 99,
 "toiSeconds": 20
 },
-"line": "F1",
+"line": "F3",
 "pk": "PK1",
 "pos": "rw",
 "pp": "PP1"
@@ -17343,9 +17343,9 @@
 "toiMinutes": 96,
 "toiSeconds": 35
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK1",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 }
 }
