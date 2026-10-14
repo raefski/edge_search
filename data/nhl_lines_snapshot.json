@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-14T17:59:42+00:00",
+"generated_at": "2026-10-14T18:29:49+00:00",
 "goalies": {
 "2026-10-14": {
 "COL": {
@@ -2967,6 +2967,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Joel Kiviranta": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 17,
+"toiMinutes": 106,
+"toiSeconds": 33
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 54,
+"toiSeconds": 58
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Justin Hryckowian": {
 "gtd": false,
