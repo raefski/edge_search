@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-14T12:59:44+00:00",
+"generated_at": "2026-10-14T13:59:58+00:00",
 "goalies": {
 "2026-10-14": {
 "COL": {
@@ -3441,9 +3441,9 @@
 "toiMinutes": 80,
 "toiSeconds": 20
 },
-"line": "D2",
+"line": null,
 "pk": "PK1",
-"pos": "ld",
+"pos": null,
 "pp": null
 },
 "Alex DeBrincat": {
@@ -3580,6 +3580,40 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
+"pp": null
+},
+"Axel Sandin-Pellikka": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 12,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 11,
+"toiMinutes": 161,
+"toiSeconds": 40
+},
+"last5": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 66,
+"toiSeconds": 39
+},
+"line": "D2",
+"pk": null,
+"pos": "ld",
 "pp": null
 },
 "Ben Chiarot": {
@@ -6914,7 +6948,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Declan Chisholm": {
 "gtd": false,
@@ -7016,7 +7050,7 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Jack Hughes": {
 "gtd": false,
@@ -7360,7 +7394,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Timo Meier": {
 "gtd": false,
@@ -7394,7 +7428,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 }
 },
 "NSH": {
