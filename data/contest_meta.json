@@ -1294,5 +1294,53 @@
   "name": "NBA $150 Quarter Jukebox [Just $0.25!]",
   "guaranteed": true,
   "slate": "2025-12-28 (gid 139490)"
+ },
+ "196669948": {
+  "type": "cash",
+  "sport": "NHL",
+  "field": 229,
+  "entry_fee": 1,
+  "places_paid": 100,
+  "prize_pool": 200.0,
+  "draft_group": 154733,
+  "name": "NHL Single Entry $1 Double Up",
+  "guaranteed": true,
+  "slate": "2026-10-13 (gid 154733)"
+ },
+ "196420207": {
+  "type": "gpp",
+  "sport": "NFL",
+  "field": 11890,
+  "entry_fee": 1,
+  "places_paid": 3080,
+  "prize_pool": 10000.0,
+  "draft_group": 154468,
+  "name": "NFL $10K Daily Dollar [Single Entry]",
+  "guaranteed": true,
+  "slate": "2026-10-11 (gid 154468)"
+ },
+ "196601669": {
+  "type": "cash",
+  "sport": "NFL",
+  "field": 23,
+  "entry_fee": 1,
+  "places_paid": 10,
+  "prize_pool": 20.0,
+  "draft_group": 154468,
+  "name": "NFL $1 Double Up",
+  "guaranteed": true,
+  "slate": "2026-10-11 (gid 154468)"
+ },
+ "196669807": {
+  "type": "gpp",
+  "sport": "NHL",
+  "field": 891,
+  "entry_fee": 1,
+  "places_paid": 204,
+  "prize_pool": 750.0,
+  "draft_group": 154733,
+  "name": "NHL $750 Daily Dollar [Single Entry] ",
+  "guaranteed": true,
+  "slate": "2026-10-13 (gid 154733)"
  }
 }
