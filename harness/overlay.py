@@ -48,8 +48,10 @@ AUTOLOG_TO_LOBBY = {"nhl": "NHL", "nfl": "NFL", "ncaaf": "CFB", "nascar": "NAS",
                     "mlb": "MLB"}
 #: Prizes that are a seat in another contest, not cash: their face value overstates the return.
 TICKET = re.compile(r"satellite|qualifier|ticket", re.I)
-#: Final call inside this many minutes of lock.
-FINAL_MIN = 20
+#: Pushes go out only inside this many minutes of lock. Earlier "first look" pushes
+#: arrived ~1 hour out and were noise (Adam, 2026-10-14), so a contest that qualifies
+#: earlier is left for the run that finds it inside this window.
+PUSH_MIN = 15
 #: At most this many pushes per run, biggest edge first.
 MAX_PUSH = 6
 
@@ -157,14 +159,13 @@ def _save_state(state: dict) -> None:
 
 
 def alerts_for(rows: list[dict], state: dict, now: datetime) -> list[dict]:
-    """Pushes not yet sent: a contest's first qualifying look, then its final call."""
+    """Pushes not yet sent: each qualifying contest once, inside PUSH_MIN of lock."""
     out = []
     for r in sorted((r for r in rows if r["alert"]), key=lambda r: -r["at_lock"]["roi"]):
         cid = r["id"]
-        prev = state.get(cid)
-        final = r["minutes"] <= FINAL_MIN
-        if prev and (prev.get("final") or not final):
+        if state.get(cid) or r["minutes"] > PUSH_MIN:
             continue
+        final = True
         n_now, e_now = r["entries"], r["now"]
         e_lock, p = r["at_lock"], r["projected"]
         rz = {True: "yes", False: "no", None: "not priced"}[r["resizable"]]

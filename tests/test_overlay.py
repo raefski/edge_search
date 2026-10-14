@@ -78,13 +78,13 @@ DOUBLE = {"tiers": [[1, 10, 2.0]], "resizable": False}
 
 
 def test_a_qualifying_contest_alerts_with_both_numbers():
-    rows = overlay.assess([_found("1", 11, 23, 1.0, 28)], {"1": DOUBLE}, {}, T0, 2.5, 25,
+    rows = overlay.assess([_found("1", 11, 23, 1.0, 12)], {"1": DOUBLE}, {}, T0, 2.5, 25,
                           0.10, False)
     assert rows[0]["alert"] and rows[0]["now"]["cash"] == pytest.approx(10 / 12)
     out = overlay.alerts_for(rows, {}, T0)
     assert len(out) == 1 and "11/23" in out[0]["body"] and "contest/1" in out[0]["body"]
     assert out[0]["priority"] == "high"        # +67% at lock: an edge this size is worth a loud push
-    assert out[0]["final"] is False
+    assert out[0]["final"] is True
 
 
 def test_a_full_contest_resizable_or_ticket_never_alerts():
@@ -110,13 +110,11 @@ def test_outside_the_window_or_below_threshold_is_quiet():
     assert not later and not weak[0]["alert"]
 
 
-def test_each_contest_pushes_once_then_a_final_call_inside_20_minutes():
-    first = overlay.assess([_found("1", 11, 23, 1.0, 40)], {"1": DOUBLE}, {}, T0, 2.5, 25,
+def test_nothing_pushes_before_15_minutes_and_each_contest_pushes_once():
+    early = overlay.assess([_found("1", 11, 23, 1.0, 40)], {"1": DOUBLE}, {}, T0, 2.5, 25,
                            0.10, False)
     state = {}
-    assert len(overlay.alerts_for(first, state, T0)) == 1
-    state["1"] = {"final": False}
-    assert overlay.alerts_for(first, state, T0) == []                     # not final yet
+    assert overlay.alerts_for(early, state, T0) == []                     # 40 min out: quiet
     late = overlay.assess([_found("1", 11, 23, 1.0, 15)], {"1": DOUBLE}, {}, T0, 2.5, 25,
                           0.10, False)
     out = overlay.alerts_for(late, state, T0)
