@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-14T23:29:49+00:00",
+"generated_at": "2026-10-14T23:44:44+00:00",
 "goalies": {
 "2026-10-14": {
 "COL": {
@@ -2161,8 +2161,8 @@
 "toiMinutes": 86,
 "toiSeconds": 22
 },
-"line": "D2",
-"pk": "PK1",
+"line": "D3",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -2195,7 +2195,7 @@
 "toiMinutes": 89,
 "toiSeconds": 6
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -2234,6 +2234,40 @@
 "pos": "c",
 "pp": "PP2"
 },
+"Cale Makar": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 4,
+"blocks": 15,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 8,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 26,
+"toiMinutes": 236,
+"toiSeconds": 15
+},
+"last5": {
+"assists": 4,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 3,
+"points": 7,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 13,
+"toiMinutes": 107,
+"toiSeconds": 28
+},
+"line": "D1",
+"pk": "PK1",
+"pos": "rd",
+"pp": "PP1"
+},
 "Devon Toews": {
 "gtd": false,
 "injury": null,
@@ -2266,7 +2300,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Fedor Svechkov": {
 "gtd": false,
@@ -2336,6 +2370,16 @@
 "pos": "lw",
 "pp": "PP2"
 },
+"Gavin Brindley": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Jaden Schwartz": {
 "gtd": false,
 "injury": null,
@@ -2399,7 +2443,7 @@
 "toiMinutes": 88,
 "toiSeconds": 55
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -2576,40 +2620,6 @@
 "pos": "c",
 "pp": null
 },
-"Noah Juulsen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 16,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 131,
-"toiSeconds": 48
-},
-"last5": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 66,
-"toiSeconds": 46
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "rd",
-"pp": null
-},
 "Parker Kelly": {
 "gtd": false,
 "injury": null,
@@ -2673,10 +2683,10 @@
 "toiMinutes": 86,
 "toiSeconds": 12
 },
-"line": "D1",
+"line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Scott Wedgewood": {
 "gtd": false,
