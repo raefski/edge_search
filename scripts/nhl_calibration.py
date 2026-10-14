@@ -47,11 +47,32 @@ def spearman(a, b) -> float:
     return num / den if den else float("nan")
 
 
-def best_slate(contest: dict) -> tuple[tuple, list[dict]]:
+def best_slate(contest: dict, path: str | None = None) -> tuple[tuple, list[dict]]:
+    """The logged slate an export belongs to. A contest DK has tagged
+    (data/contest_meta.json) grades on exactly its own draft group or not at
+    all -- name overlap put two NFL exports on NHL nights on 2026-10-14. Only
+    an untagged export falls back to the best name overlap, and says so."""
     by = defaultdict(list)
     with LOG.open(newline="") as fh:
         for r in csv.DictReader(fh):
             by[(r["date"], r["gid"])].append(r)
+    tag = {}
+    if path:
+        import json
+        meta = json.loads((Path(__file__).resolve().parents[1] / "data/contest_meta.json").read_text())
+        tag = meta.get(Path(path).stem.replace("contest-standings-", "")) or {}
+        tag = tag if isinstance(tag, dict) else {}
+    if tag.get("sport") and tag["sport"] != "NHL":
+        raise SystemExit(f"{Path(path).name} is a {tag['sport']} contest ({tag.get('name')}), "
+                         "not NHL -- grade it with that sport's calibration script")
+    if tag.get("draft_group"):
+        hits = [k for k in by if k[1] == str(tag["draft_group"])]
+        if not hits:
+            raise SystemExit(f"{Path(path).name}: draft group {tag['draft_group']} has no pre-lock "
+                             "NHL log -- nothing to grade it against")
+        return hits[0], by[hits[0]]
+    print(f"{Path(path).name if path else 'export'}: UNTAGGED -- matching by name overlap; "
+          "run `python3 -m harness run import-contests` to tag it")
     key = max(by, key=lambda k: sum(norm(r["player"]) in contest for r in by[k]))
     return key, by[key]
 
@@ -62,7 +83,7 @@ def main() -> int:
     ap.add_argument("--fit-ownership", action="store_true")
     args = ap.parse_args()
     contest = parse_contest_file(args.file)
-    (date, gid), logged = best_slate(contest)
+    (date, gid), logged = best_slate(contest, args.file)
     rows = []
     for r in logged:
         real = contest.get(norm(r["player"]))

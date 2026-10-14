@@ -36,13 +36,18 @@ from scripts.dfs_calibration import (  # noqa: E402
 )
 
 
-def load_proj_log_nfl() -> dict:
-    """-> {date: {norm_name: row_dict}} from data/dfs_proj_log_nfl.csv."""
-    by_date = defaultdict(dict)
+def load_proj_log_nfl() -> tuple[dict, dict]:
+    """-> ({date: {norm_name: row}}, {gid: {norm_name: row}}) from
+    data/dfs_proj_log_nfl.csv. Several slates share a date (10/11 logged Main,
+    Early, Turbo, Afternoon and Sun-Mon), so the by-date view mixes them; it is
+    only the fallback for an export DK has not tagged with its draft group."""
+    by_date, by_gid = defaultdict(dict), defaultdict(dict)
     with open(ROOT / "data/dfs_proj_log_nfl.csv", newline="") as fh:
         for row in csv.DictReader(fh):
             by_date[row["date"]][norm(row["player"])] = row
-    return by_date
+            if row.get("gid"):
+                by_gid[str(row["gid"])][norm(row["player"])] = row
+    return by_date, by_gid
 
 
 def infer_date_by_overlap(contest: dict, candidate_dates: list, by_date: dict):
@@ -61,8 +66,11 @@ def infer_date_by_overlap(contest: dict, candidate_dates: list, by_date: dict):
 
 
 def main():
-    by_date = load_proj_log_nfl()
+    by_date, by_gid = load_proj_log_nfl()
     candidate_dates = sorted(by_date.keys())
+    meta = json.loads((ROOT / "data/contest_meta.json").read_text())
+    meta = {k: v for k, v in meta.items() if isinstance(v, dict)}
+    date_of_gid = {g: next(iter(rows.values()))["date"] for g, rows in by_gid.items()}
     files = sorted(glob.glob(str(ROOT / "data/contest-standings-*.csv")))
     print(f"{len(files)} contest files in data/, candidate NFL dates: {candidate_dates}")
 
@@ -71,7 +79,24 @@ def main():
         contest = parse_contest_file(f)
         if not contest:
             continue
-        date, match_frac = infer_date_by_overlap(contest, candidate_dates, by_date)
+        tag = meta.get(Path(f).stem.replace("contest-standings-", "")) or {}
+        if tag.get("sport") and tag["sport"] != "NFL":
+            continue
+        gid = str(tag.get("draft_group") or "")
+        if gid:
+            # Tagged by DK: grade against exactly that slate's log, or not at
+            # all. Name overlap put 9/27 Primetime and 10/4 exports on 10/11.
+            if gid not in by_gid:
+                print(f"  {Path(f).name}: draft group {gid} has no pre-lock log, skipping")
+                continue
+            pool = by_gid[gid]
+            date = date_of_gid[gid]
+            match_frac = sum(1 for k in contest if k in pool) / len(contest)
+            print(f"  {Path(f).name}: matched by draft group {gid}")
+        else:
+            date, match_frac = infer_date_by_overlap(contest, candidate_dates, by_date)
+            print(f"  {Path(f).name}: UNTAGGED -- matched by name overlap; "
+                  "run `python3 -m harness run import-contests` to tag it")
         # 0.3 not 0.85: a big-field GPP board lists every player anyone
         # rostered, including deep bench/inactive names our built pool never
         # carried (304 board names vs 184 in the pool for 2026-09-13, 61%
@@ -81,7 +106,8 @@ def main():
         if match_frac < 0.3:
             print(f"  {Path(f).name}: no confident date match (best={date} @ {match_frac:.0%}), skipping")
             continue
-        pool = by_date[date]
+        if not gid:
+            pool = by_date[date]
         games = games_for_date(list(pool.values()))
         contest_type = load_contest_type(f)
         n = 0
