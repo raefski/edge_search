@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-14T16:59:38+00:00",
+"generated_at": "2026-10-14T17:59:42+00:00",
 "goalies": {
 "2026-10-14": {
 "COL": {
@@ -3616,40 +3616,6 @@
 "pos": "ld",
 "pp": null
 },
-"Carter Mazur": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 112,
-"toiSeconds": 34
-},
-"last5": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 46,
-"toiSeconds": 33
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Daniil Tarasov": {
 "gtd": false,
 "injury": null,
@@ -3823,6 +3789,40 @@
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
+},
+"Keegan Kolesar": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 119,
+"toiSeconds": 49
+},
+"last5": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 64,
+"toiSeconds": 11
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Lucas Raymond": {
 "gtd": false,
@@ -7461,9 +7461,9 @@
 "toiMinutes": 89,
 "toiSeconds": 52
 },
-"line": "D1",
+"line": "D3",
 "pk": "PK2",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Alex Kerfoot": {
@@ -7813,9 +7813,9 @@
 "toiMinutes": 92,
 "toiSeconds": 52
 },
-"line": "D3",
+"line": "D1",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Nils Hoglander": {
@@ -7850,6 +7850,40 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
+"pp": null
+},
+"Reid Schaefer": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 107,
+"toiSeconds": 31
+},
+"last5": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 66,
+"toiSeconds": 17
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Roman Josi": {
@@ -8863,6 +8897,40 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
+},
+"Justin Dowling": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 119,
+"toiSeconds": 15
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 58,
+"toiSeconds": 45
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
 },
 "Marcus Pettersson": {
 "gtd": false,
