@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-15T14:59:40+00:00",
+"generated_at": "2026-10-15T15:29:45+00:00",
 "goalies": {
 "2026-10-15": {
 "BUF": {
@@ -12,7 +12,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": null
+"status": "Likely"
 },
 "DET": {
 "goalie": "Daniil Tarasov",
@@ -9441,9 +9441,9 @@
 "toiMinutes": 64,
 "toiSeconds": 58
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Carter Yakemchuk": {
@@ -9475,7 +9475,7 @@
 "toiMinutes": 96,
 "toiSeconds": 34
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -9645,9 +9645,9 @@
 "toiMinutes": 110,
 "toiSeconds": 3
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Linus Ullmark": {
@@ -9965,7 +9965,7 @@
 "toiMinutes": 101,
 "toiSeconds": 42
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
