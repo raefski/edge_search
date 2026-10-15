@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily NBA player history refresh: 06:00 (after last night's games) and 14:00
+
+[Timer]
+OnCalendar=*-*-* 06,14:00:00
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -31,6 +31,9 @@ REGULAR_MIN = 10.0
 TEAM_MIN = 240.0
 #: Active players needed before the team is rescaled to TEAM_MIN.
 FULL_ROSTER = 8
+#: A player with fewer than this many games this season gets a longer role window
+#: (SEASON_START_WINDOW): last season's final 10 games are rest days and tanking.
+SEASON_START_WINDOW = 25
 #: Fitted by scripts/nba_minutes_backtest.py on 2024-25 (2,470 team-games, grid over
 #: role power 0-2, position weight 0-2, promotion weight 0-3, lift 0-1.25), scored on
 #: 2025-26 (2,466 team-games), 2026-10-15. Mean |error| in minutes, held out:
@@ -45,6 +48,12 @@ ROLE_POW = 0.5
 POS_W = 0.5
 PROMO_W = 1.0
 PROMO_LIFT = 1.0
+#: When the roles add to more than 240, the 240 is shared by role^EXCESS_POW.
+#: All player-games, mean |error| (2024-25 fit / 2025-26 held out): plain
+#: proportional 5.703 / 5.659, 1.15 -> 5.621 / 5.601, 1.3 -> 5.669 / 5.662. Teams over
+#: 260 alone wanted ~1.5 (5.70 -> 5.20) but a power that grew with the overflow
+#: hurt overall (5.79 at its best), so it is one constant.
+EXCESS_POW = 1.15
 #: Typical minutes of a starter (refined per team from history when available).
 STARTER_MIN = 31.0
 
@@ -54,10 +63,10 @@ def groups(position: str | None) -> set:
     return set((position or "").replace("-", " ").split())
 
 
-def role(history: list) -> dict:
+def role(history: list, window: int | None = None) -> dict:
     """{"base", "start_rate", "games"} from [(minutes, started), ...] newest last,
     restricted to games the player was active for."""
-    recent = history[-WINDOW:]
+    recent = history[-(window or WINDOW):]
     if not recent:
         return {"base": 0.0, "start_rate": 0.0, "games": 0}
     return {"base": sum(m for m, _ in recent) / len(recent),
@@ -69,8 +78,8 @@ def project(team: list, params: dict | None = None) -> dict:
     "starter": bool | None (None = not announced), "history": [(min, started), ...]}].
     Returns {id: {"minutes", "base", "promoted", "share"}} for active players."""
     p = {"ROLE_POW": ROLE_POW, "POS_W": POS_W, "PROMO_W": PROMO_W, "PROMO_LIFT": PROMO_LIFT,
-         "STARTER_MIN": STARTER_MIN, **(params or {})}
-    roles = {pl["id"]: role(pl["history"]) for pl in team}
+         "STARTER_MIN": STARTER_MIN, "EXCESS_POW": EXCESS_POW, **(params or {})}
+    roles = {pl["id"]: role(pl["history"], pl.get("window")) for pl in team}
     out_pl = [pl for pl in team if pl["inactive"] and roles[pl["id"]]["base"] >= REGULAR_MIN]
     missing = sum(roles[pl["id"]]["base"] for pl in out_pl)
     lost_groups: dict = {}
@@ -102,8 +111,15 @@ def project(team: list, params: dict | None = None) -> dict:
     # Only a full roster can be held to 240: preseason files (and a team whose bench is
     # not listed yet) carry the starting five alone, which would each be pushed to 48.
     if s > 0 and len(active) >= FULL_ROSTER:
-        k = TEAM_MIN / s
-        mins = {i: min(48.0, m * k) for i, m in mins.items()}
+        if s > TEAM_MIN and p["EXCESS_POW"] != 1.0:
+            # More roles than minutes: share the 240 by role^EXCESS_POW, so a star
+            # keeps more of his and the 11th-13th men give theirs back.
+            w = {i: m ** p["EXCESS_POW"] for i, m in mins.items()}
+            ws = sum(w.values())
+            mins = {i: min(48.0, TEAM_MIN * w[i] / ws) for i in mins}
+        else:
+            k = TEAM_MIN / s
+            mins = {i: min(48.0, m * k) for i, m in mins.items()}
     return {pl["id"]: {"minutes": round(mins[pl["id"]], 1), "base": round(roles[pl["id"]]["base"], 1),
                        "promoted": promoted[pl["id"]],
                        "share": round(weights[pl["id"]] / total_w, 3)} for pl in active}

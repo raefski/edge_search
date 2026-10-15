@@ -12,6 +12,9 @@ lists BOTH full rosters, each player marked:
                  "Confirmed"  -> submitted (teams must, 30 min before tip, since 2023);
   * rosterStatus "Inactive"   -> will not play (the inactive list, ~30 min before tip).
 
+The per-player "timestamp" is NBA.com's regeneration time in Eastern time, bumped
+every 5 minutes whether or not anything changed -- not when a lineup was posted.
+
 Checked 2026-10-15 on 2026-04-10: 15 games, 150 starters (10 per game), 251 active
 bench, 133 inactive, every row timestamped. That is the official source of
 "replacement starter" news -- the X accounts (beat reporters, Underdog NBA) relay the
@@ -102,3 +105,55 @@ def backfill(dates, pace: float = 1.0) -> int:
         n += 1
         time.sleep(pace)
     return n
+
+
+# ── the cloud copy ─────────────────────────────────────────────────────────────
+# Streamlit Cloud may be refused by stats.nba.com (it refuses many datacenter IPs),
+# so the desktop's scratch timer (harness/nba_scratch.py) publishes tonight's raw
+# file whenever it changes, and the app falls back to it -- saying so, because a
+# snapshot shown as live is how a day-long outage once went unnoticed.
+SNAPSHOT = ROOT / "data" / "nba_lineups_snapshot.json"
+#: "live", "snapshot <time>", or "none" -- what tonight() last served.
+LAST_SOURCE = "none"
+
+
+def _signature(games: list) -> list:
+    """What a lineup change is: who starts, who is confirmed, who is inactive. NOT the
+    per-player timestamps, which NBA.com bumps every 5 minutes on each regeneration
+    (15:36:32 -> 15:41:32 with nothing else different, 2026-10-15) and which made the
+    snapshot commit three times in six minutes."""
+    return sorted((p["game_id"], p["team"], str(p["id"]), p["starter"], p["position"],
+                   p["confirmed"], p["inactive"])
+                  for g in parse({"games": games}) for p in [{**q, "game_id": g["game_id"]}
+                                                               for q in g["players"]])
+
+
+def write_snapshot(d, raw: dict, at: str) -> bool:
+    """Write tonight's file for the cloud; True when a lineup actually changed."""
+    body = {"date": _day(d), "fetched_at": at, "games": raw.get("games", [])}
+    old = json.loads(SNAPSHOT.read_text()) if SNAPSHOT.exists() else {}
+    if old.get("date") == body["date"] and _signature(old.get("games", [])) == _signature(body["games"]):
+        return False
+    SNAPSHOT.write_text(json.dumps(body, separators=(",", ":")))
+    return True
+
+
+def tonight(d) -> dict:
+    """Tonight's raw lineups: live from NBA.com, else the published snapshot for
+    the same date. Sets LAST_SOURCE."""
+    global LAST_SOURCE
+    try:
+        raw = fetch(d, use_cache=False)
+        LAST_SOURCE = "live"
+        return raw
+    except Exception:                                       # noqa: BLE001
+        pass
+    from edge import repo_files
+    found = repo_files.read(SNAPSHOT)
+    if found is not None:
+        snap = found.json()
+        if snap.get("date") == _day(d):
+            LAST_SOURCE = f"snapshot {snap.get('fetched_at', '?')}"
+            return {"games": snap.get("games", [])}
+    LAST_SOURCE = "none"
+    return {"games": []}

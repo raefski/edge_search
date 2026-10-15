@@ -131,6 +131,10 @@ data/nflverse_games.csv
 # DailyFaceoff NHL lines + starting goalies for the cloud app
 # (scripts/nhl_lines_publish.py; edge/nhl.py falls back to it).
 !data/nhl_lines_snapshot.json
+# NBA app inputs for the cloud, published by the desktop: players' recent games
+# (scripts/nba_history_publish.py) and tonight's NBA.com lineups (harness/nba_scratch.py).
+!data/nba_player_history.json
+!data/nba_lineups_snapshot.json
 
 # Arbitrage snapshot: the Streamlit page reads this
 !data/arb_snapshot.json

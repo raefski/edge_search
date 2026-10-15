@@ -73,6 +73,8 @@ URGENT_VALUE = 6.0
 DK_TEAM = {"PHO": "PHX", "NO": "NOP", "NY": "NYK", "SA": "SAS", "GS": "GSW", "UTAH": "UTA",
            "WSH": "WAS", "BRK": "BKN", "CHO": "CHA"}
 CLASSIC = 70
+#: The phone app's NBA page, opened on tap with the "Promoted / changed only" filter on.
+APP_URL = "https://edgesearch-h2dkcwvywzteys8e7tjk6v.streamlit.app/NBA_DFS?promoted=1"
 #: Preseason (NBA game ids 001...) has no inactive list and no DK contests: pushes are
 #: labelled tests, low priority, a few per run.
 PRESEASON_MAX_PUSH = 3
@@ -132,7 +134,7 @@ def dk_players(state: dict, now: datetime, day: date) -> dict:
 
 
 def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
-           prime: bool = False) -> tuple[list, dict]:
+           prime: bool = False, windows: dict | None = None) -> tuple[list, dict]:
     """(alerts, new `seen`) for tonight's games. `seen` = {player_id: {"out", "starter"}}
     from the previous run; an event fires on a change into OUT or into the starting five.
     `prime` = the day's first look: who is already out is old news (priced into DK's
@@ -148,7 +150,8 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
                 pid = str(p["id"])
                 d = dk.get((norm(p["name"]), team), {})
                 h = hist.get(pid, [])
-                r = NM.role([(m, s) for m, s, _ in h])
+                win = (windows or {}).get(pid)
+                r = NM.role([(m, s) for m, s, _ in h], win)
                 out = p["inactive"] or d.get("status") == "OUT"
                 now_seen[pid] = {"out": out, "starter": p["starter"]}
                 before = {"out": out, "starter": False} if prime else seen.get(pid, {})
@@ -157,7 +160,7 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
                 if (p["starter"] and not before.get("starter") and not out
                         and r["games"] >= 5 and r["start_rate"] < 0.5):
                     events.append(("promoted", p, d, r))
-                rows.append({"id": pid, "position": pos.get(pid), "inactive": out,
+                rows.append({"id": pid, "position": pos.get(pid), "inactive": out, "window": win,
                              "starter": p["starter"] if any(q["starter"] for q in ps) else None,
                              "history": [(m, s) for m, s, _ in h], "name": p["name"],
                              "dk": d, "ppm": NM.points_per_minute(h), "base": r["base"]})
@@ -222,7 +225,8 @@ def _alert(game: dict, team: str, events: list, gains: list) -> dict:
     return {"kind": "nba_scratch", "priority": "low" if preseason else ("urgent" if urgent else "high"),
             "title": title, "body": "\n".join(lines) or "No teammate gains enough to name.",
             "key": key, "tags": tags, "game": game["game_id"], "team": team,
-            "players": [str(p["id"]) for _, p, _, _ in events], "preseason": preseason}
+            "players": [str(p["id"]) for _, p, _, _ in events], "preseason": preseason,
+            "click": APP_URL}
 
 
 def _log_changes(games: list[dict], dk: dict, prev: dict, now: datetime) -> dict:
@@ -252,7 +256,13 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
     now = _now()
     replay = day is not None
     d = date.fromisoformat(day) if replay else now.astimezone(ET).date()
-    games = parse(fetch(d))
+    raw = fetch(d, use_cache=not (do_push and not replay))
+    if do_push and not replay:
+        from edge.nba_lineups import SNAPSHOT, write_snapshot
+        if write_snapshot(d, raw, now.isoformat()):
+            from scripts.odds_collect import push_snapshot
+            push_snapshot(SNAPSHOT, "nba lineups")        # the cloud app reads it
+    games = parse(raw)
     if not games:
         print(f"{d}: no NBA games")
         return []
@@ -264,8 +274,19 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
     state = {} if replay else _load_state()
     if state.get("day") != d.isoformat():
         state = {"day": d.isoformat(), "seen": {}, "sent": [], "log": {}}
-    hist = NM.load_history(before=d.isoformat())
-    pos = json.loads(POSITIONS.read_text()) if POSITIONS.exists() else {}
+    if replay:
+        hist = NM.load_history(before=d.isoformat())
+        pos = json.loads(POSITIONS.read_text()) if POSITIONS.exists() else {}
+        windows: dict = {}
+    else:
+        # The same history the app projects from (data/nba_player_history.json), so
+        # an alert and the page it opens cannot disagree about a player's role.
+        from edge.dfs_run_nba import load_history as app_history
+        snap = app_history()
+        hist = {pid: [tuple(x) for x in p["hist"]] for pid, p in snap["players"].items()}
+        pos = {pid: p.get("pos") for pid, p in snap["players"].items()}
+        windows = {pid: NM.SEASON_START_WINDOW for pid, p in snap["players"].items()
+                   if p.get("season_games", 0) < 5}
     dk = {}
     if not replay:
         try:
@@ -275,7 +296,7 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
         if do_push:                                         # the timer's runs are the record
             state["log"] = _log_changes(games, dk, state.get("log", {}), now)
     alerts, seen = assess(games, hist, pos, dk, state.get("seen", {}),
-                          prime=not replay and not state.get("seen"))
+                          prime=not replay and not state.get("seen"), windows=windows)
     new = [a for a in alerts if a["key"] not in state["sent"]]
     if any(a["preseason"] for a in new):
         new = sorted(new, key=lambda a: a["preseason"])[:PRESEASON_MAX_PUSH]

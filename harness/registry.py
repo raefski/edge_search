@@ -141,7 +141,7 @@ RULES: list[tuple[str, str]] = [
 EDGE_RULES: list[tuple[str, str]] = [
     (r"^git_lock$", "publish"),
     (r"^dfs_entry_edge$", "model"),
-    (r"^nba_minutes$", "model"),
+    (r"^(nba_minutes|nba_project)$", "model"),
     (r"^(dfs_opt|dfs_leverage|dfs_swap|dfs_roster|dfs_lineup|sgp|parlay)", "optimize"),
     (r"(_sim$|_theory$|_field$|dfs_project|dfs_ladder|pickem_strategy|pickem_features|"
      r"pickem$|fairodds|oddsmath|dfs_contest|dfs_nfl_contest|dfs_validate|clv)", "model"),

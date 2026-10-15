@@ -1,9 +1,13 @@
 [Unit]
-Description=Every 2 minutes, 11:00-23:59 local: NBA scratches + promoted starters
+Description=Every 2 minutes: NBA scratches + promoted starters (the job polls only 4 h before first tip to last tip)
 
 [Timer]
-OnCalendar=*-*-* 11..23:00/2:00
-RandomizedDelaySec=15
+# An interval, not a calendar: OnCalendar=*-*-* 11..23:00/2:00 with RandomizedDelaySec
+# re-fired every ~10 s under WSL's user manager on 2026-10-15 (13 starts in 3 min,
+# TriggeredBy the timer). The job gates itself on tonight's tip times.
+OnBootSec=2min
+OnUnitInactiveSec=2min
+AccuracySec=10s
 Persistent=false
 
 [Install]

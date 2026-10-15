@@ -1,0 +1,18 @@
+# Refresh NBA box scores (stats.nba.com) and lineups, and publish every player's
+# recent games for the NBA app (data/nba_player_history.json -> GitHub -> cloud).
+# See scripts/nba_history_publish.py.
+#
+#   cp deploy/nba-history-publish.service deploy/nba-history-publish.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now nba-history-publish.timer
+[Unit]
+Description=Refresh and publish NBA player history for the NBA app
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/nba_history_publish.py --push
+Restart=no
+Nice=10
+TimeoutStartSec=900

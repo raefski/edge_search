@@ -1,0 +1,12 @@
+[Unit]
+Description=Publish NBA game lines + props snapshot for the cloud app
+
+[Timer]
+Unit=odds-publish@dfs_nba.service
+OnCalendar=*-*-* 07..23/2:30:00
+OnCalendar=*-*-* 17..22:15/30:00
+RandomizedDelaySec=60
+Persistent=true
+
+[Install]
+WantedBy=timers.target
