@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-10-14T23:44:44+00:00",
+"generated_at": "2026-10-15T00:29:57+00:00",
 "goalies": {
 "2026-10-14": {
 "COL": {
 "goalie": "Scott Wedgewood",
-"status": "Likely"
+"status": "Confirmed"
 },
 "DAL": {
 "goalie": "Casey DeSmith",
@@ -2128,7 +2128,7 @@
 "toiSeconds": 13
 },
 "line": "F1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
 },
@@ -2410,7 +2410,7 @@
 "toiSeconds": 3
 },
 "line": "F3",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
 },
@@ -2586,40 +2586,6 @@
 "pos": "rw",
 "pp": "PP1"
 },
-"Nicolas Roy": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 16,
-"toiMinutes": 131,
-"toiSeconds": 8
-},
-"last5": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 57,
-"toiSeconds": 55
-},
-"line": "F4",
-"pk": "PK1",
-"pos": "c",
-"pp": null
-},
 "Parker Kelly": {
 "gtd": false,
 "injury": null,
@@ -2651,7 +2617,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Sam Malinski": {
@@ -2939,7 +2905,7 @@
 "toiMinutes": 64,
 "toiSeconds": 33
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -2973,7 +2939,7 @@
 "toiMinutes": 95,
 "toiSeconds": 44
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -3043,7 +3009,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Lian Bichsel": {
@@ -3109,7 +3075,7 @@
 "toiMinutes": 101,
 "toiSeconds": 42
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -3213,7 +3179,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Radek Faksa": {
@@ -3415,7 +3381,7 @@
 "toiMinutes": 75,
 "toiSeconds": 13
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
