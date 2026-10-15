@@ -11,6 +11,9 @@ best expected payout for the contest when one is given.
 """
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import streamlit as st
 
 from edge import dfs_contest
@@ -48,20 +51,72 @@ def _is_cash(c: dict) -> bool:
             or "double up" in name or "50/50" in name)
 
 
+@st.cache_resource(show_spinner=False)
+def _seen() -> dict:
+    """{draft group: {contest id: lobby row}} for every GPP this app process has
+    seen. DK drops a contest from the lobby the moment it fills, and the small
+    single-entry ones (NHL $500 Daily Dollar, 594 seats) fill an hour or more
+    before lock -- exactly when Adam opens the page. Missing on 2026-10-15."""
+    return {}
+
+
 def slate_gpps(sport: str, gid) -> list[dict]:
-    """The GPPs on this draft group, biggest first."""
+    """The GPPs on this draft group, biggest first: the ones open in DK's lobby
+    now plus any seen earlier in this process that have since filled (marked
+    `_full`)."""
     try:
         rows = _lobby(LOBBY.get(sport, sport))
     except Exception:                                       # noqa: BLE001
-        return []
-    out = [c for c in rows if str(c.get("dg")) == str(gid) and not _is_cash(c)]
+        rows = []
+    live = {str(c.get("id")): c for c in rows
+            if str(c.get("dg")) == str(gid) and not _is_cash(c)}
+    seen = _seen().setdefault(str(gid), {})
+    seen.update(live)
+    out = list(live.values()) + [dict(c, _full=True) for k, c in seen.items() if k not in live]
     return sorted(out, key=lambda c: -int(c.get("m") or c.get("nt") or 0))
+
+
+_META = Path(__file__).resolve().parent.parent / "data" / "contest_meta.json"
+
+
+def _norm_name(name: str) -> str:
+    """DK reuses contest names nightly, give or take trailing spaces."""
+    return " ".join((name or "").lower().split())
+
+
+def past_gpps(sport: str, exclude: set[str] = frozenset()) -> list[dict]:
+    """The latest instance of each GPP Adam has entered in this sport
+    (data/contest_meta.json, filled from his contest exports), as lobby-shaped
+    rows marked `_past`. The fallback for a contest that filled and left the
+    lobby before this process ever saw it: same series, last time's field,
+    fee and pool. `exclude` = names already listed from the live lobby."""
+    try:
+        meta = json.loads(_META.read_text())
+    except Exception:                                       # noqa: BLE001
+        return []
+    best: dict[str, tuple] = {}
+    for cid, m in meta.items():
+        if (m.get("sport") != sport or m.get("type") != "gpp" or not m.get("name")
+                or not m.get("field")):
+            continue
+        # One row per exact name, so "$500" and "$750" Daily Dollar each keep
+        # their own field size and Adam picks the one he is in.
+        key = _norm_name(m["name"])
+        if key in exclude:
+            continue
+        date = (m.get("slate") or "")[:10]
+        if key not in best or date > best[key][0]:
+            best[key] = (date, cid, m)
+    out = [{"id": cid, "n": m["name"].strip(), "a": m.get("entry_fee") or 0,
+            "m": m["field"], "nt": m["field"], "po": m.get("prize_pool") or 0,
+            "_past": date} for date, cid, m in best.values()]
+    return sorted(out, key=lambda c: -int(c["m"]))
 
 
 def _from_lobby(c: dict) -> dict:
     cap, now = int(c.get("m") or 0), int(c.get("nt") or 0)
     field = cap if 0 < cap < 10_000_000 else now
-    info = _lookup(str(c["id"]))
+    info = None if c.get("_past") else _lookup(str(c["id"]))
     return {"id": str(c["id"]), "name": c.get("n"), "field": max(field, 2),
             "fee": float(c.get("a") or 0), "prize_pool": float(c.get("po") or 0) or None,
             "payouts": tuple(tuple(p) for p in info["payouts"]) if info and info.get("payouts")
@@ -73,17 +128,29 @@ def contest_picker(sport: str, gid, key: str) -> dict | None:
     a pasted link / ID, or a typed field size. None if none is given."""
     with st.expander("🎯 Your contest", expanded=True):
         gpps = slate_gpps(sport, gid)
-        labels = ["— pick the contest you entered —"] + [
-            f"{c.get('n')} · ${float(c.get('a') or 0):g} · "
-            f"{int(c.get('nt') or 0):,}/{int(c.get('m') or 0):,}" for c in gpps]
+        gpps += past_gpps(sport, {_norm_name(c.get("n")) for c in gpps})
+
+        def _lab(c: dict) -> str:
+            head = f"{(c.get('n') or '').strip()} · ${float(c.get('a') or 0):g} · "
+            if c.get("_past"):
+                return head + f"{int(c['m']):,} · earlier slate {c['_past']}"
+            return (head + f"{int(c.get('nt') or 0):,}/{int(c.get('m') or 0):,}"
+                    + (" · full" if c.get("_full") else ""))
+        labels = ["— pick the contest you entered —"] + [_lab(c) for c in gpps]
         choice = st.selectbox("Contest on this slate", labels, key=f"{key}_lev_contest",
-                              help="DK's lobby for this draft group, biggest first. The field "
-                                   "size and prize pool decide how much ownership is worth.")
+                              help="DK's lobby for this draft group, biggest first. DK drops a "
+                                   "contest once it fills, so filled ones you entered are listed "
+                                   "after it, from the last time you played that contest (\"earlier "
+                                   "slate\"). The field size and prize pool decide how much "
+                                   "ownership is worth.")
         if choice != labels[0]:
-            out = _from_lobby(gpps[labels.index(choice) - 1])
+            c = gpps[labels.index(choice) - 1]
+            out = _from_lobby(c)
             st.caption(f"{out['field']:,} entries planned for · ${out['fee']:g} · "
                        + ("DK payout table" if out["payouts"] else
-                          f"payout curve fitted to the ${out['prize_pool'] or 0:,.0f} pool"))
+                          f"payout curve fitted to the ${out['prize_pool'] or 0:,.0f} pool")
+                       + (f" · field/fee/pool from the {c['_past']} edition (filled, "
+                          "no longer in DK's lobby)" if c.get("_past") else ""))
             return out
         c1, c2 = st.columns([3, 2])
         text = c1.text_input("…or paste a DK contest link / ID", key=f"{key}_lev_link")
