@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-15T16:29:41+00:00",
+"generated_at": "2026-10-15T16:59:28+00:00",
 "goalies": {
 "2026-10-15": {
 "BUF": {
@@ -12,7 +12,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": "Likely"
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "Daniil Tarasov",
@@ -20,7 +20,7 @@
 },
 "EDM": {
 "goalie": "Devon Levi",
-"status": null
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Akira Schmid",
@@ -48,7 +48,7 @@
 },
 "OTT": {
 "goalie": "Linus Ullmark",
-"status": "Likely"
+"status": "Confirmed"
 },
 "PHI": {
 "goalie": "Joseph Woll",
@@ -60,7 +60,7 @@
 },
 "SJS": {
 "goalie": "Alex Nedeljkovic",
-"status": null
+"status": "Confirmed"
 },
 "STL": {
 "goalie": "Joel Hofer",
@@ -2946,40 +2946,6 @@
 "pos": "g",
 "pp": null
 },
-"Bowen Byram": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 5,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 13,
-"toiMinutes": 246,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 5,
-"toiMinutes": 123,
-"toiSeconds": 3
-},
-"line": "D1",
-"pk": null,
-"pos": "ld",
-"pp": "PP1"
-},
 "Cole Smith": {
 "gtd": false,
 "injury": null,
@@ -3047,6 +3013,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
+},
+"Ethan Del Mastro": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 14,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 164,
+"toiSeconds": 30
+},
+"last5": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 85,
+"toiSeconds": 0
+},
+"line": "D1",
+"pk": null,
+"pos": "ld",
+"pp": null
 },
 "Frank Nazar": {
 "gtd": false,
@@ -3422,7 +3422,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP1"
 },
 "Tyler Bertuzzi": {
 "gtd": false,
