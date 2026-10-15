@@ -21,7 +21,10 @@ st.caption("Guaranteed contests pay their prize table even if they don't fill �
 
 c1, c2, c3 = st.columns(3)
 sports = c1.multiselect("Sports", O.SPORTS, default=["NHL", "NFL", "CFB", "NAS", "MMA", "MLB"])
-max_fee = c2.select_slider("Max fee", options=[0.25, 1, 2, 3, 5, 10, 25], value=5)
+# A range, not just a ceiling: the lobby is mostly 10c-$1 contests, so a
+# floor is what makes the list short enough to scroll on a phone.
+min_fee, max_fee = c2.select_slider("Entry fee ($)", options=[0.1, 0.25, 1, 2, 3, 5, 10, 15, 25, 50],
+                                    value=(0.1, 5))
 hours = c3.select_slider("Locks within (h)", options=[0.5, 1, 2, 3, 6, 12, 24], value=3)
 only_dbl = st.toggle("Double-ups only", value=False)
 min_ret = st.select_slider("Min $ back per $1", options=[0.0, 1.0, 1.2, 1.5, 2.0], value=1.0)
@@ -46,10 +49,10 @@ with st.spinner("Reading the DraftKings lobby…"):
     now, found, errs = _scan(tuple(sports), float(max_fee), float(hours))
 for e in errs:
     st.warning(e)
-rows = [r for r in found if r["fee_ok"] and r["return"] is not None and r["return"] >= min_ret
+rows = [r for r in found if r["fee_ok"] and r["fee"] >= min_fee and r["return"] is not None and r["return"] >= min_ret
         and (r["dbl"] or not only_dbl)]
 rows.sort(key=lambda r: -r["return"])
-unpriced = sum(1 for r in found if r["fee_ok"] and r["return"] is None)
+unpriced = sum(1 for r in found if r["fee_ok"] and r["fee"] >= min_fee and r["return"] is None)
 et = ZoneInfo("America/New_York")
 st.markdown(f"**{len(rows)}** contests · lobby read {now.astimezone(et):%-I:%M %p} ET")
 if unpriced:
