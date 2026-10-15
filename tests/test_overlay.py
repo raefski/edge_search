@@ -238,26 +238,36 @@ def test_the_model_never_projects_below_the_contests_own_straight_line():
     assert row["n_lock"] == row["n_floor"] > 11
 
 
-def test_finals_are_looked_up_once_after_lock_for_unfilled_contests(tmp_path, monkeypatch):
+def test_finals_are_looked_up_for_every_unfilled_contest_overlay_candidates_first(tmp_path,
+                                                                                  monkeypatch):
+    """Adam, 10/15: track the overlay whether or not he entered."""
     monkeypatch.setattr(overlay, "FINALS", tmp_path / "contest_finals.csv")
     monkeypatch.setattr(overlay, "FINALS_PACE_S", 0)
     now = T0
-    def c(lock_ago_min, last_entries, cap=78):
+    def c(lock_ago_min, last_entries, cap=78, fee=15.0, pool=1000.0):
         return {"cap": cap, "points": {3.0: last_entries}, "lock": now - timedelta(minutes=lock_ago_min),
-                "sport": "CFB", "name": "x"}
-    logged = {"thin": c(30, 30), "full": c(30, 70), "early": c(5, 10), "old": c(60 * 7, 10),
-              "known": c(30, 10)}
+                "sport": "CFB", "name": "x", "fee": fee, "prize_pool": pool}
+    logged = {"rake": c(30, 70),                 # 70 x $15 = $1,050 in: no overlay pending
+              "overlay": c(40, 30),              # $450 in for a $1,000 pool
+              "full": c(30, 78), "early": c(5, 10), "old": c(60 * 13, 10), "known": c(30, 10)}
     asked = []
     def fake(cid):
         asked.append(cid)
         return {"field": 52}
     rows = overlay.collect_finals(logged, {"known": 40}, now, lookup=fake)
-    assert asked == ["thin"] and rows[0]["final"] == 52
-    assert overlay.load_finals() == {"thin": 52}
+    assert asked == ["overlay", "rake"]                   # candidates first, full/early/old/known never
+    got = {r["contest_id"]: r for r in rows}
+    assert got["overlay"]["overlay"] == pytest.approx(1000 - 52 * 15)    # $220, the CFB contest
+    assert got["overlay"]["weekday"] == "Tue"
+    assert overlay.load_finals() == {"overlay": 52, "rake": 52}
     # DK refusing is not fatal: nothing is written and the next run tries again
     def refuse(cid):
         raise RuntimeError("403")
     assert overlay.collect_finals({"thin2": c(30, 20)}, {}, now, lookup=refuse) == []
+    # the report counts every locked contest, entered or not
+    lines = overlay.report(logged, now)
+    cfb = next(l for l in lines if l.startswith("CFB"))
+    assert cfb.split()[2:6] == ["6", "1", "2", "2"]       # locked, full, final known, overlay
 
 
 def test_the_log_loader_keeps_minutes_to_lock_and_the_cap(tmp_path, monkeypatch):
@@ -324,3 +334,30 @@ def test_sport_and_weekday_get_their_own_fill_when_they_have_the_contests(monkey
     assert fill_basis(m, 10, 100, "MMA", "Sat") == "all sports"
     assert likely_at_lock(m, 10, 100, 21.5, "NHL", "Tue") > likely_at_lock(m, 10, 100, 21.5,
                                                                              "NFL", "Sun")
+
+
+def test_a_contest_that_leaves_the_lobby_nearly_full_counts_as_filled(tmp_path, monkeypatch):
+    """DK stops listing a full contest. One last seen 30 min out at 95% while its
+    siblings were seen 3 min out filled; one last seen at 20% is unknown, not full."""
+    lock = T0
+    def c(points, cap=100):
+        return {"cap": cap, "points": dict(points), "lock": lock, "sport": "NHL", "name": "x",
+                "fee": 1.0, "prize_pool": 100.0}
+    cs = {"sib": c({30.0: 40, 3.0: 60}), "full": c({60.0: 70, 30.0: 95}),
+          "thin": c({60.0: 10, 30.0: 20})}
+    overlay.mark_vanished(cs)
+    assert cs["full"]["filled"] and cs["full"]["points"][0.0] == 100
+    assert cs["thin"]["vanished"] and not cs["thin"].get("filled") and 0.0 not in cs["thin"]["points"]
+    assert not cs["sib"]["vanished"]
+    # the inferred-full one is only spot-checked; the thin one is looked up
+    monkeypatch.setattr(overlay, "FINALS", tmp_path / "f.csv")
+    monkeypatch.setattr(overlay, "FINALS_PACE_S", 0)
+    asked = []
+    overlay.collect_finals(cs, {}, lock + timedelta(minutes=30),
+                           lookup=lambda cid: asked.append(cid) or {"field": 100})
+    assert set(asked) == {"sib", "thin", "full"} and asked[-1] == "full"
+    monkeypatch.setattr(overlay, "VANISH_SPOT_CHECKS", 0)
+    asked.clear()
+    overlay.collect_finals(cs, {}, lock + timedelta(minutes=30),
+                           lookup=lambda cid: asked.append(cid) or {"field": 100})
+    assert "full" not in asked

@@ -63,18 +63,30 @@ TICKET = re.compile(r"satellite|qualifier|ticket", re.I)
 FINAL_MIN = 20
 #: At most this many pushes per run, biggest edge first.
 MAX_PUSH = 6
-#: Entries at lock, for fitting the minutes after the fill log's last snapshot.
+#: Every guaranteed contest that was not full at its last snapshot gets its entries
+#: at lock looked up once, whether or not Adam entered (10/15: "track contest
+#: overlay even if I don't enter"). That gives the realised overlay -- prize pool
+#: minus what the field paid in -- and fits the last minutes of the late fill.
 FINALS = ROOT / "data" / "contest_finals.csv"
-FINALS_COLS = ("contest_id", "sport", "name", "cap", "lock", "last_seen_min", "last_seen_entries",
-               "final", "checked_at")
+FINALS_COLS = ("contest_id", "sport", "weekday", "name", "fee", "prize_pool", "cap", "lock",
+               "last_seen_min", "last_seen_entries", "inferred_full", "final", "overlay",
+               "checked_at")
 #: DK lookups per run for finals, and the gap between them (DRAFTKINGS_ACCESS.md:
 #: >= 1 s between ad-hoc lookups; the alert job already prices up to 40 per run).
-FINALS_PER_RUN = 8
+#: Overlay candidates go first; the rest catch up on quiet runs.
+FINALS_PER_RUN = 12
 FINALS_PACE_S = 1.5
-#: Only contests this empty at their last snapshot carry information about the
-#: late fill an overlay depends on, and only ones that locked inside this window.
-FINALS_MAX_FILL = 0.5
-FINALS_WINDOW = (timedelta(minutes=10), timedelta(hours=6))
+#: Contests that locked inside this window are looked up (12 h covers a night the
+#: machine slept through the timer).
+FINALS_WINDOW = (timedelta(minutes=10), timedelta(hours=12))
+#: DK's lobby stops listing a contest once it is full. Measured 10/11-10/15: 18%
+#: (NASCAR) to 69% (CFB) of logged contests disappeared > 10 min before the other
+#: contests locking with them, last seen at a median 91-96% full. Such a contest is
+#: taken as FILLED at lock (no lookup), so the late-fill fit stops seeing only the
+#: contests that never filled. A few per run are still looked up to keep it honest.
+VANISH_GAP_MIN = 10.0
+VANISH_MIN_FILL = 0.8
+VANISH_SPOT_CHECKS = 2
 
 
 def _now() -> datetime:
@@ -137,9 +149,38 @@ def load_log() -> tuple[dict, dict]:
             except (KeyError, ValueError, TypeError):
                 continue
             c = contests.setdefault(cid, {"cap": cap, "points": {}, "lock": lock,
-                                          "sport": r.get("sport"), "name": r.get("name")})
+                                          "sport": r.get("sport"), "name": r.get("name"),
+                                          "fee": _num(r.get("fee")),
+                                          "prize_pool": _num(r.get("prize_pool"))})
             c["points"][mins] = e
+    mark_vanished(contests)
     return {cid: sorted(pts.items()) for cid, pts in hist.items()}, contests
+
+
+def mark_vanished(contests: dict) -> None:
+    """Flag contests that left the lobby well before the others locking with them
+    while nearly full, and give them a point AT LOCK at the cap ("filled")."""
+    last_by_lock: dict = {}
+    for c in contests.values():
+        if c["points"]:
+            k = (c["sport"], c["lock"])
+            last_by_lock[k] = min(last_by_lock.get(k, 1e9), min(c["points"]))
+    for c in contests.values():
+        if not c["points"]:
+            continue
+        m_last = min(c["points"])
+        gone = m_last - last_by_lock[(c["sport"], c["lock"])] > VANISH_GAP_MIN
+        c["vanished"] = gone
+        if gone and c["points"][m_last] >= VANISH_MIN_FILL * c["cap"]:
+            c["filled"] = True
+            c["points"][0.0] = c["cap"]
+
+
+def _num(x) -> float | None:
+    try:
+        return float(x)
+    except (TypeError, ValueError):
+        return None
 
 
 def load_history() -> dict:
@@ -161,23 +202,38 @@ def load_finals() -> dict:
     return out
 
 
+def _overlay(c: dict, entries: int) -> float | None:
+    """Prize pool minus what `entries` paid in (negative = the house's take)."""
+    if c.get("prize_pool") is None or c.get("fee") is None:
+        return None
+    return round(c["prize_pool"] - c["fee"] * entries, 2)
+
+
 def collect_finals(contests: dict, finals: dict, now: datetime, lookup=None) -> list[dict]:
-    """Look up entries at lock for recently locked contests that were still under
-    FINALS_MAX_FILL full at their last snapshot; append them to FINALS."""
+    """Look up entries at lock for recently locked guaranteed contests that were
+    not full at their last snapshot, overlay candidates first; append to FINALS."""
     if lookup is None:
         from edge.dfs_contest import lookup
-    due_now = []
+    due_now, checks = [], []
     for cid, c in contests.items():
         if cid in finals or not c["points"] or c["cap"] < 10:
             continue
         if not (FINALS_WINDOW[0] <= now - c["lock"] <= FINALS_WINDOW[1]):
             continue
-        m_last = min(c["points"])
-        if c["points"][m_last] / c["cap"] >= FINALS_MAX_FILL:
+        seen = {m: e for m, e in c["points"].items() if m > 0 or not c.get("filled")}
+        m_last = min(seen)
+        if seen[m_last] >= c["cap"]:
+            continue                                        # full: no overlay, nothing to learn
+        if c.get("filled"):
+            checks.append((c["lock"], cid, c, m_last))      # inferred full: spot-check a few
             continue
-        due_now.append((c["lock"], cid, c, m_last))
+        ov = _overlay(c, seen[m_last])
+        due_now.append(((ov or 0) > 0, ov or 0, c["lock"], cid, c, m_last))
+    picked = [t[3:] for t in sorted(due_now, key=lambda t: t[:3], reverse=True)]
+    picked = picked[:FINALS_PER_RUN] + [t[1:] for t in sorted(checks, reverse=True)
+                                        [:VANISH_SPOT_CHECKS]]
     rows = []
-    for i, (_, cid, c, m_last) in enumerate(sorted(due_now, reverse=True)[:FINALS_PER_RUN]):
+    for i, (cid, c, m_last) in enumerate(picked):
         if i:
             time.sleep(FINALS_PACE_S)
         try:
@@ -186,10 +242,13 @@ def collect_finals(contests: dict, finals: dict, now: datetime, lookup=None) -> 
             break                                           # DK refused: try next run
         if info.get("field") is None:
             continue
-        rows.append({"contest_id": cid, "sport": c["sport"], "name": c["name"], "cap": c["cap"],
-                     "lock": c["lock"].isoformat(), "last_seen_min": round(m_last, 1),
-                     "last_seen_entries": c["points"][m_last], "final": int(info["field"]),
-                     "checked_at": now.isoformat()})
+        final = int(info["field"])
+        rows.append({"contest_id": cid, "sport": c["sport"], "weekday": weekday(c["lock"]),
+                     "name": c["name"], "fee": c.get("fee"), "prize_pool": c.get("prize_pool"),
+                     "cap": c["cap"], "lock": c["lock"].isoformat(),
+                     "last_seen_min": round(m_last, 1), "last_seen_entries": c["points"][m_last],
+                     "inferred_full": bool(c.get("filled")),
+                     "final": final, "overlay": _overlay(c, final), "checked_at": now.isoformat()})
     if rows:
         new = not FINALS.exists()
         FINALS.parent.mkdir(parents=True, exist_ok=True)
@@ -199,6 +258,58 @@ def collect_finals(contests: dict, finals: dict, now: datetime, lookup=None) -> 
                 w.writeheader()
             w.writerows(rows)
     return rows
+
+
+def report(contests: dict | None = None, now: datetime | None = None) -> list[str]:
+    """How often guaranteed contests actually lock with an overlay, by sport and weekday:
+    every contest the fill log saw lock, entered or not."""
+    now = now or _now()
+    if contests is None:
+        contests = load_log()[1]
+    finals = {}
+    if FINALS.exists():
+        with FINALS.open(newline="") as fh:
+            finals = {r["contest_id"]: r for r in csv.DictReader(fh)}
+    groups: dict = {}
+    for cid, c in contests.items():
+        if not c["points"] or c["lock"] > now or c["cap"] < 10:
+            continue
+        key = (c["sport"], weekday(c["lock"]))
+        g = groups.setdefault(key, {"seen": 0, "full": 0, "final": 0, "over": 0, "dollars": 0.0,
+                                    "pct": [], "checked": 0, "check_ok": 0})
+        g["seen"] += 1
+        m_last = min(c["points"])
+        if c["points"][m_last] >= c["cap"]:
+            g["full"] += 1
+            if not c.get("filled"):
+                continue
+        f = finals.get(cid)
+        if c.get("filled"):
+            if f:                                           # a spot check of the inference
+                g["checked"] += 1
+                g["check_ok"] += int(f["final"]) >= c["cap"]
+            continue
+        if not f:
+            continue
+        g["final"] += 1
+        ov = _num(f.get("overlay"))
+        if ov is not None and ov > 0:
+            g["over"] += 1
+            g["dollars"] += ov
+            if _num(f.get("prize_pool")):
+                g["pct"].append(ov / float(f["prize_pool"]))
+    lines = [f"{'sport':5} {'day':3} {'locked':>6} {'filled':>6} {'final known':>11} "
+             f"{'overlay':>7} {'overlay $':>9} {'median % of pool':>16} {'fill check':>10}"]
+    for (sport, day), g in sorted(groups.items()):
+        med = f"{sorted(g['pct'])[len(g['pct']) // 2]:.0%}" if g["pct"] else "-"
+        chk = f"{g['check_ok']}/{g['checked']}" if g["checked"] else "-"
+        lines.append(f"{sport or '?':5} {day or '?':3} {g['seen']:>6} {g['full']:>6} "
+                     f"{g['final']:>11} {g['over']:>7} {g['dollars']:>9.0f} {med:>16} {chk:>10}")
+    lines.append("filled = left the lobby nearly full (DK drops full contests) or seen at the cap. "
+                 "final known = unfilled contests looked up after lock. overlay = those whose final "
+                 "entries left the prize pool unpaid for. fill check = spot-checked 'filled' ones "
+                 "that really were full.")
+    return lines
 
 
 def price(found: list[dict]) -> dict:
