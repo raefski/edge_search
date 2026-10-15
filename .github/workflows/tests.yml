@@ -11,6 +11,13 @@ name: tests
 on:
   push:
     branches: [main]
+    # The timers push data snapshots ~150 times a day (231 pushes in 36 h on
+    # 2026-10-13/14, ~220 of them data-only). Re-testing unchanged code on each
+    # was 90+ runs a day, and while a test was broken, 90+ failure emails a day.
+    # A push that touches any code still runs everything.
+    paths-ignore:
+      - "data/**"
+      - "**/*.md"
   pull_request:
   workflow_dispatch:
 

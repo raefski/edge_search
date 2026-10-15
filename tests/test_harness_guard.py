@@ -20,7 +20,9 @@ spec.loader.exec_module(guard)
 @pytest.mark.parametrize("cmd", [
     "rm -rf data",
     "rm -rf ./edge",
-    "cd /tmp && rm -rf /home/asr/edge_search",
+    # The checkout's own absolute path, not this machine's: CI clones it elsewhere
+    # (/home/runner/work/...), and a hard-coded path failed every push from 10/13.
+    f"cd /tmp && rm -rf {ROOT}",
     "rm -fr ~",
     "rm -rf /",
     "rm data/odds.db",

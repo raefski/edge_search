@@ -133,7 +133,8 @@ RULES: list[tuple[str, str]] = [
     (r"(lineups|_build$|^dfs_build|swap|portfolio|^parlay|^dfs_board|^arb_|rebuild)", "optimize"),
     (r"(overlay|agent|blocked|live|alert|monitor|watchlist|scan)", "monitor"),
     (r"(lab|idea|discovery|endorsement|scout|correlation|pilot|rounds|season_sim|"
-     r"situational|threes|variance|sigma|td_|skill|nfl_matchup|dupe|slate_size|stack_shape)",
+     r"situational|threes|variance|sigma|td_|skill|nfl_matchup|dupe|slate_size|stack_shape|"
+     r"^mans_)",
      "research"),
 ]
 
