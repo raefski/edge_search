@@ -1342,5 +1342,17 @@
   "name": "NHL $750 Daily Dollar [Single Entry] ",
   "guaranteed": true,
   "slate": "2026-10-13 (gid 154733)"
+ },
+ "196751376": {
+  "type": "gpp",
+  "sport": "NCAAF",
+  "field": 52,
+  "entry_fee": 15,
+  "places_paid": 18,
+  "prize_pool": 1000.0,
+  "draft_group": 155105,
+  "name": "CFB $1K Wednesday Night Kickoff",
+  "guaranteed": true,
+  "slate": "2026-10-14 (gid 155105)"
  }
 }
