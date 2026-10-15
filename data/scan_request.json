@@ -1,10 +1,16 @@
 {
- "requested_at": "2026-10-13T22:30:50.136676+00:00",
- "request_id": "20261013T223050136676",
- "sports": [],
- "note": "best parlay (all sports)",
- "date_from": "2026-10-13",
- "date_to": "2026-10-13",
+ "requested_at": "2026-10-15T22:19:54.740736+00:00",
+ "request_id": "20261015T221954740736",
+ "sports": [
+  "baseball_mlb",
+  "basketball_nba_preseason",
+  "americanfootball_ncaaf",
+  "americanfootball_nfl",
+  "icehockey_nhl"
+ ],
+ "note": "requested from the Streamlit app",
+ "date_from": "2026-10-15",
+ "date_to": "2026-10-15",
  "skip_live": true,
- "state": null
+ "state": "CT"
 }
