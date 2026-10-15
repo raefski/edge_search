@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-15T14:29:39+00:00",
+"generated_at": "2026-10-15T14:59:40+00:00",
 "goalies": {
 "2026-10-15": {
 "BUF": {
@@ -24,15 +24,15 @@
 },
 "FLA": {
 "goalie": "Akira Schmid",
-"status": null
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
 "status": null
 },
 "NJD": {
-"goalie": "Jake Allen",
-"status": null
+"goalie": "Nico Daws",
+"status": "Likely"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -48,7 +48,7 @@
 },
 "OTT": {
 "goalie": "Linus Ullmark",
-"status": null
+"status": "Likely"
 },
 "PHI": {
 "goalie": "Joseph Woll",
@@ -68,11 +68,11 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": null
+"status": "Likely"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
-"status": null
+"status": "Likely"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -4687,7 +4687,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Sheldon Dries": {
@@ -4755,7 +4755,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 }
 },
@@ -7117,7 +7117,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7323,7 +7323,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9379,7 +9379,7 @@
 "pp": "PP2"
 },
 "Artem Zub": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 3,
@@ -9407,8 +9407,42 @@
 "toiMinutes": 103,
 "toiSeconds": 42
 },
-"line": "D3",
+"line": "D1",
 "pk": "PK1",
+"pos": "rd",
+"pp": null
+},
+"Cameron Crotty": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 140,
+"toiSeconds": 52
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 64,
+"toiSeconds": 58
+},
+"line": "D2",
+"pk": null,
 "pos": "rd",
 "pp": null
 },
@@ -9441,7 +9475,7 @@
 "toiMinutes": 96,
 "toiSeconds": 34
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -9475,7 +9509,7 @@
 "toiMinutes": 89,
 "toiSeconds": 38
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "rw",
 "pp": "PP2"
@@ -9611,9 +9645,9 @@
 "toiMinutes": 110,
 "toiSeconds": 3
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Linus Ullmark": {
@@ -9683,7 +9717,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Nick Cousins": {
@@ -9715,43 +9749,9 @@
 "toiMinutes": 46,
 "toiSeconds": 39
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
-},
-"Nikolas Matinpalo": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 14,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 158,
-"toiSeconds": 56
-},
-"last5": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 72,
-"toiSeconds": 16
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
 "pp": null
 },
 "Ridly Greig": {
@@ -9783,9 +9783,9 @@
 "toiMinutes": 82,
 "toiSeconds": 43
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Samuel Ersson": {
@@ -9887,9 +9887,9 @@
 "toiMinutes": 53,
 "toiSeconds": 15
 },
-"line": "F4",
+"line": "F1",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP1"
 },
 "Thomas Chabot": {
@@ -9965,7 +9965,7 @@
 "toiMinutes": 101,
 "toiSeconds": 42
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -9999,7 +9999,7 @@
 "toiMinutes": 53,
 "toiSeconds": 22
 },
-"line": "F1",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -13429,7 +13429,7 @@
 "toiMinutes": 87,
 "toiSeconds": 12
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
@@ -13463,7 +13463,7 @@
 "toiMinutes": 107,
 "toiSeconds": 42
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP1"
@@ -13497,44 +13497,10 @@
 "toiMinutes": 95,
 "toiSeconds": 24
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
-},
-"Charle-Edouard D'Astous": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 17,
-"toiMinutes": 161,
-"toiSeconds": 28
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 68,
-"toiSeconds": 18
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": "PP2"
 },
 "Conor Geekie": {
 "gtd": false,
@@ -13564,6 +13530,76 @@
 "shots": 8,
 "toiMinutes": 56,
 "toiSeconds": 11
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": "PP2"
+},
+"Dennis Hildeby": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 23,
+"goalieGoalsAgainstAvg": "2.52",
+"goalieLosses": 2,
+"goalieMinutes": 546,
+"goalieOvertimeLosses": 2,
+"goalieSavePercentage": "0.918",
+"goalieSaves": 258,
+"goalieSeconds": 33,
+"goalieShotsAgainst": 281,
+"goalieShutouts": 0,
+"goalieWins": 5
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 9,
+"goalieGoalsAgainstAvg": "2.04",
+"goalieLosses": 1,
+"goalieMinutes": 264,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.93",
+"goalieSaves": 120,
+"goalieSeconds": 22,
+"goalieShotsAgainst": 129,
+"goalieShutouts": 0,
+"goalieWins": 2
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
+},
+"Dominic James": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 20,
+"toiMinutes": 125,
+"toiSeconds": 45
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 11,
+"toiMinutes": 64,
+"toiSeconds": 2
 },
 "line": "F4",
 "pk": null,
@@ -13603,40 +13639,6 @@
 "pk": "PK1",
 "pos": "rd",
 "pp": null
-},
-"Gage Goncalves": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 2,
-"powerplayGoals": 0,
-"powerplayPoints": 2,
-"shots": 12,
-"toiMinutes": 162,
-"toiSeconds": 11
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 82,
-"toiSeconds": 44
-},
-"line": "F1",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
 },
 "Ilya Mikheyev": {
 "gtd": false,
@@ -13704,7 +13706,7 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Jake Guentzel": {
 "gtd": false,
@@ -13737,7 +13739,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Jeffrey Viel": {
@@ -13771,7 +13773,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "John Carlson": {
@@ -13807,42 +13809,6 @@
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
-},
-"Mads Sogaard": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 20,
-"goalieGoalsAgainstAvg": "4.71",
-"goalieLosses": 1,
-"goalieMinutes": 254,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.833",
-"goalieSaves": 100,
-"goalieSeconds": 36,
-"goalieShotsAgainst": 120,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 11,
-"goalieGoalsAgainstAvg": "4.18",
-"goalieLosses": 1,
-"goalieMinutes": 157,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.833",
-"goalieSaves": 55,
-"goalieSeconds": 30,
-"goalieShotsAgainst": 66,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
 },
 "Maxwell Crozier": {
 "gtd": false,
@@ -14009,9 +13975,9 @@
 "toiMinutes": 65,
 "toiSeconds": 29
 },
-"line": null,
+"line": "D3",
 "pk": "PK2",
-"pos": null,
+"pos": "ld",
 "pp": null
 },
 "Zemgus Girgensons": {
