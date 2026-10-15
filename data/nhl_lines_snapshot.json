@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-10-15T21:44:37+00:00",
+"generated_at": "2026-10-15T22:44:30+00:00",
 "goalies": {
 "2026-10-15": {
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CGY": {
 "goalie": "Dustin Wolf",
@@ -32,7 +32,7 @@
 },
 "NJD": {
 "goalie": "Nico Daws",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -68,11 +68,11 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": "Likely"
+"status": "Confirmed"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
-"status": "Likely"
+"status": "Confirmed"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -1598,40 +1598,6 @@
 "pos": "rw",
 "pp": "PP1"
 },
-"Jiri Kulich": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 132,
-"toiSeconds": 28
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 69,
-"toiSeconds": 52
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Josh Doan": {
 "gtd": false,
 "injury": null,
@@ -1695,9 +1661,9 @@
 "toiMinutes": 70,
 "toiSeconds": 51
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Justin Danforth": {
@@ -1731,7 +1697,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Konsta Helenius": {
@@ -1809,7 +1775,7 @@
 },
 "line": "D1",
 "pk": "PK1",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Noah Ostlund": {
@@ -1877,7 +1843,7 @@
 },
 "line": "D1",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP2"
 },
 "Owen Power": {
@@ -1980,6 +1946,40 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "c",
+"pp": "PP2"
+},
+"Sam Carrick": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 89,
+"toiSeconds": 30
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 48,
+"toiSeconds": 24
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Tage Thompson": {
@@ -8932,6 +8932,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Jaroslav Chmelar": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 98,
+"toiSeconds": 32
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 42,
+"toiSeconds": 50
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Justin Dowling": {
 "gtd": false,
 "injury": null,
@@ -8998,40 +9032,6 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
-},
-"Matt Rempe": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 97,
-"toiSeconds": 24
-},
-"last5": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 56,
-"toiSeconds": 48
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
 "pp": null
 },
 "Mika Zibanejad": {
@@ -13509,7 +13509,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Dennis Hildeby": {
@@ -13549,7 +13549,7 @@
 "pp": null
 },
 "Dominic James": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -13749,7 +13749,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "John Carlson": {
@@ -14263,7 +14263,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Jake McCabe": {
@@ -14331,7 +14331,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP1"
 },
 "Kirill Marchenko": {
@@ -14467,7 +14467,7 @@
 },
 "line": "F2",
 "pk": "PK2",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Oliver Ekman-Larsson": {
@@ -14639,8 +14639,42 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
+},
+"Zack MacEwen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 68,
+"toiSeconds": 49
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 36,
+"toiSeconds": 33
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 }
 },
 "UTA": {
