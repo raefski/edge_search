@@ -153,3 +153,174 @@ def test_timestamps_from_dk_and_from_python_parse():
     assert overlay._iso("2026-10-13T23:00:00.0000000Z") == datetime(2026, 10, 13, 23, tzinfo=timezone.utc)
     assert overlay._iso("2026-10-13T23:00:00+00:00") == datetime(2026, 10, 13, 23, tzinfo=timezone.utc)
     assert overlay._iso(None) is None and overlay._iso("nonsense") is None
+
+
+# ── the late fill (2026-10-15) ─────────────────────────────────────────────
+from edge.dfs_entry_edge import (TAIL_DEFAULT, fit_late_fill, late_fill_share,  # noqa: E402
+                                 likely_at_lock)
+
+#: "CFB $1K Wednesday Night Kickoff", 10/14: DK's real table, $15, 78 cap.
+CFB_TIERS = [[1, 1, 175.0], [2, 2, 125.0], [3, 3, 100.0], [4, 4, 75.0], [5, 5, 60.0],
+             [6, 7, 45.0], [8, 10, 40.0], [11, 13, 35.0], [14, 18, 30.0]]
+#: A model shaped like the 10/11-10/15 fit: emptier contests fill more of their room.
+MODEL = {"curves": {(None, None, 0): [(6.0, 0.42), (15.0, 0.45), (30.0, 0.47), (62.5, 0.6),
+                                      (97.5, 0.75)],
+                    (None, None, 1): [(6.0, 0.2), (15.0, 0.23), (30.0, 0.31), (62.5, 0.48),
+                                      (97.5, 0.54)],
+                    (None, None, 2): [(6.0, 0.2), (15.0, 0.25), (30.0, 0.38), (62.5, 0.5),
+                                      (97.5, 0.6)]},
+         "tail": TAIL_DEFAULT, "tails": {}, "tail_n": 0, "n": 900}
+
+
+def _contest(cap, pts):
+    return {"cap": cap, "points": pts}
+
+
+def test_the_fit_reads_the_share_of_empty_room_and_never_shrinks_with_more_time():
+    # 20 contests, each 10/100 at 20 min, 40/100 at 10 min, 70/100 at 3 min.
+    cs = {str(i): _contest(100, {20.0: 10, 10.0: 40, 3.0: 70}) for i in range(20)}
+    m = fit_late_fill(cs)
+    assert m["n"] == 20 and m["tail"] == TAIL_DEFAULT and m["tail_n"] == 0
+    low = dict(m["curves"][(None, None, 0)])          # 10% full -> band 0
+    assert low[21.5] == pytest.approx(60 / 90)                    # (70-10)/(100-10)
+    shares = [s for _, s in m["curves"][(None, None, 0)]]
+    assert shares == sorted(shares)                               # monotone in minutes
+
+
+def test_a_contest_not_seen_near_lock_says_nothing_about_how_it_finished():
+    cs = {str(i): _contest(100, {30.0: 10, 15.0: 20}) for i in range(20)}  # last seen 15 min out
+    assert fit_late_fill(cs)["n"] == 0
+
+
+def test_the_last_minutes_share_comes_from_finals_once_there_are_five():
+    cs = {str(i): _contest(100, {3.0: 50}) for i in range(6)}
+    finals = {str(i): 75 for i in range(4)}
+    assert fit_late_fill(cs, finals)["tail"] == TAIL_DEFAULT                # 4: not enough
+    finals = {str(i): 75 for i in range(6)}
+    m = fit_late_fill(cs, finals)
+    assert m["tail_n"] == 6 and m["tail"] == pytest.approx(0.5)             # 25 of 50 empty
+
+
+def test_the_cfb_contest_is_no_longer_sold_as_plus_495():
+    """6/78 at 16 min, flat. The straight line said 6 at lock (+495%); it locked at 52."""
+    n = likely_at_lock(MODEL, 6, 78, 16)
+    assert 40 <= n <= 65
+    # inside the last snapshot's minutes only part of the tail is left
+    assert likely_at_lock(MODEL, 30, 78, 2.8) == pytest.approx(30 + 0.46 * 48 * 2.8 / 3, abs=1)
+    found = [{"id": "196751376", "sport": "CFB", "name": "CFB $1K Wednesday Night Kickoff",
+              "fee": 15.0, "fee_ok": True, "nt": 6, "m": 78, "lock": T0 + timedelta(minutes=16),
+              "bound": 1.0}]
+    hist = {"196751376": [(T0 - timedelta(minutes=30), 6), (T0, 6)]}
+    tables = {"196751376": {"tiers": CFB_TIERS, "resizable": False}}
+    old = overlay.assess(found, tables, hist, T0, 2.5, 25, 0.10, False)[0]
+    new = overlay.assess(found, tables, hist, T0, 2.5, 25, 0.10, False, MODEL)[0]
+    assert old["n_lock"] == 6 and old["at_lock"]["roi"] > 4.0               # the old +495%
+    assert new["n_lock"] == n and 0.0 < new["at_lock"]["roi"] < 0.5           # real lock: +28%
+    body = overlay.alerts_for([new], {}, T0)[0]["body"]
+    assert f"Expect ~{n}/78" in body and "Best case, if no one else enters" in body
+    assert "how all sports contests" in body                 # MODEL has only the broad level
+
+
+def test_an_edge_that_only_exists_if_nobody_else_enters_does_not_alert():
+    """11 of 23 in a $1 double-up 40 min out: +67% if it stayed there, but a field
+    that fills like the usual one leaves nothing."""
+    rows = overlay.assess([_found("1", 11, 23, 1.0, 40)], {"1": DOUBLE}, {}, T0, 2.5, 25,
+                          0.10, False, MODEL)
+    assert rows[0]["now"]["roi"] > 0.5 and rows[0]["n_lock"] > 15 and not rows[0]["alert"]
+
+
+def test_the_model_never_projects_below_the_contests_own_straight_line():
+    hist = {"1": [(T0 - timedelta(minutes=30), 2), (T0, 11)]}               # fast: 0.3/min
+    flat = {"curves": {(None, None, b): [(6.0, 0.0), (240.0, 0.0)] for b in range(3)},
+            "tail": 0.0}
+    row = overlay.assess([_found("1", 11, 40, 1.0, 28)], {"1": DOUBLE}, hist, T0, 2.5, 25,
+                         0.10, False, flat)[0]
+    assert row["n_lock"] == row["n_floor"] > 11
+
+
+def test_finals_are_looked_up_once_after_lock_for_unfilled_contests(tmp_path, monkeypatch):
+    monkeypatch.setattr(overlay, "FINALS", tmp_path / "contest_finals.csv")
+    monkeypatch.setattr(overlay, "FINALS_PACE_S", 0)
+    now = T0
+    def c(lock_ago_min, last_entries, cap=78):
+        return {"cap": cap, "points": {3.0: last_entries}, "lock": now - timedelta(minutes=lock_ago_min),
+                "sport": "CFB", "name": "x"}
+    logged = {"thin": c(30, 30), "full": c(30, 70), "early": c(5, 10), "old": c(60 * 7, 10),
+              "known": c(30, 10)}
+    asked = []
+    def fake(cid):
+        asked.append(cid)
+        return {"field": 52}
+    rows = overlay.collect_finals(logged, {"known": 40}, now, lookup=fake)
+    assert asked == ["thin"] and rows[0]["final"] == 52
+    assert overlay.load_finals() == {"thin": 52}
+    # DK refusing is not fatal: nothing is written and the next run tries again
+    def refuse(cid):
+        raise RuntimeError("403")
+    assert overlay.collect_finals({"thin2": c(30, 20)}, {}, now, lookup=refuse) == []
+
+
+def test_the_log_loader_keeps_minutes_to_lock_and_the_cap(tmp_path, monkeypatch):
+    log = tmp_path / "fill.csv"
+    cols = ("seen_at", "sport", "contest_id", "template", "draft_group", "name", "fee",
+            "max_entries", "entries", "prize_pool", "lock", "double_up", "game_type")
+    lines = [",".join(cols),
+             "2026-10-14T23:14:38+00:00,CFB,1,t,d,x,15.0,78,7,1000.0,2026-10-14T23:30:00+00:00,0,Classic",
+             "2026-10-14T23:27:14+00:00,CFB,1,t,d,x,15.0,78,30,1000.0,2026-10-14T23:30:00+00:00,0,Classic"]
+    log.write_text("\n".join(lines) + "\n")
+    monkeypatch.setattr(overlay.O, "FILL_LOG", log)
+    hist, logged = overlay.load_log()
+    assert [e for _, e in hist["1"]] == [7, 30]
+    assert logged["1"]["cap"] == 78
+    assert sorted(round(m, 1) for m in logged["1"]["points"]) == [2.8, 15.4]
+
+
+def test_forecasts_use_the_pooled_curve_until_stratification_is_switched_on():
+    tue = datetime(2026, 10, 13, 23, 0, tzinfo=timezone.utc)
+    cs = {f"t{i}": {"cap": 100, "points": {20.0: 10, 3.0: 82}, "sport": "NHL", "lock": tue}
+          for i in range(40)}
+    cs.update({f"n{i}": {"cap": 100, "points": {20.0: 10, 3.0: 28}, "sport": "NFL",
+                         "lock": tue - timedelta(days=2)} for i in range(40)})
+    m = fit_late_fill(cs)
+    from edge.dfs_entry_edge import fill_basis
+    assert late_fill_share(m, 0.1, 21.5, "NHL", "Tue") == late_fill_share(m, 0.1, 21.5)
+    assert fill_basis(m, 10, 100, "NHL", "Tue") == "all sports"
+
+
+def test_sport_and_weekday_get_their_own_fill_when_they_have_the_contests(monkeypatch):
+    from edge import dfs_entry_edge
+    monkeypatch.setattr(dfs_entry_edge, "STRATIFY", True)
+    """Adam, 10/15: NFL on a Sunday is not NHL on a Tuesday. A (sport, day) cell with
+    enough contests is used; a thin one falls back to the sport, then to everyone."""
+    tue = datetime(2026, 10, 13, 23, 0, tzinfo=timezone.utc)            # 7 pm ET Tuesday
+    wed = tue + timedelta(days=1)
+    cs = {}
+    for i in range(12):                                                  # NHL Tue: fills a lot
+        cs[f"t{i}"] = {"cap": 100, "points": {20.0: 10, 3.0: 82}, "sport": "NHL", "lock": tue}
+    for i in range(3):                                                   # NHL Wed: too few
+        cs[f"w{i}"] = {"cap": 100, "points": {20.0: 10, 3.0: 19}, "sport": "NHL", "lock": wed}
+    for i in range(12):                                                  # NFL Sun: fills little
+        cs[f"n{i}"] = {"cap": 100, "points": {20.0: 10, 3.0: 28}, "sport": "NFL",
+                       "lock": tue - timedelta(days=2)}
+    m = fit_late_fill(cs)
+    tue_share = late_fill_share(m, 0.1, 21.5, "NHL", "Tue")
+    nfl_share = late_fill_share(m, 0.1, 21.5, "NFL", "Sun")
+    everyone = late_fill_share(m, 0.1, 21.5)
+    # 12 contests each: pulled toward everyone's share (SHRINK_K), but on their own side
+    assert nfl_share <= everyone < tue_share
+    assert 0.2 <= nfl_share and tue_share < 0.8
+    # 600 NFL Sundays mostly speak for themselves
+    for i in range(600):
+        cs[f"N{i}"] = {"cap": 100, "points": {20.0: 10, 3.0: 28}, "sport": "NFL",
+                       "lock": tue - timedelta(days=2)}
+    big = fit_late_fill(cs)
+    assert late_fill_share(big, 0.1, 21.5, "NFL", "Sun") == pytest.approx(0.2, abs=0.02)
+    # Wednesday has 3 contests of its own: it borrows NHL's (pooled Tue + Wed) median
+    assert ("NHL", "Wed", 0) in m["curves"]
+    from edge.dfs_entry_edge import fill_basis
+    assert fill_basis(m, 10, 100, "NHL", "Tue") == "NHL Tue"
+    assert late_fill_share(m, 0.1, 21.5, "NHL", "Wed") == pytest.approx(
+        late_fill_share(m, 0.1, 21.5, "NHL", None))
+    assert fill_basis(m, 10, 100, "MMA", "Sat") == "all sports"
+    assert likely_at_lock(m, 10, 100, 21.5, "NHL", "Tue") > likely_at_lock(m, 10, 100, 21.5,
+                                                                             "NFL", "Sun")
