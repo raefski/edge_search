@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-15T23:14:38+00:00",
+"generated_at": "2026-10-15T23:29:54+00:00",
 "goalies": {
 "2026-10-15": {
 "BUF": {
@@ -4127,9 +4127,9 @@
 "toiMinutes": 80,
 "toiSeconds": 20
 },
-"line": null,
+"line": "D3",
 "pk": "PK1",
-"pos": null,
+"pos": "ld",
 "pp": null
 },
 "Alex DeBrincat": {
@@ -4165,40 +4165,6 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
-},
-"Andreas Englund": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 122,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 60,
-"toiSeconds": 30
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
 },
 "Andrew Copp": {
 "gtd": false,
@@ -4266,40 +4232,6 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": null
-},
-"Axel Sandin-Pellikka": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 11,
-"toiMinutes": 161,
-"toiSeconds": 40
-},
-"last5": {
-"assists": 1,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 66,
-"toiSeconds": 39
-},
-"line": "D2",
-"pk": null,
-"pos": "ld",
 "pp": null
 },
 "Ben Chiarot": {
@@ -4721,7 +4653,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Viktor Arvidsson": {
@@ -4757,6 +4689,40 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
+},
+"William Wallinder": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 15,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 7,
+"toiMinutes": 152,
+"toiSeconds": 48
+},
+"last5": {
+"assists": 1,
+"blocks": 9,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 79,
+"toiSeconds": 59
+},
+"line": "D2",
+"pk": null,
+"pos": "ld",
+"pp": null
 }
 },
 "EDM": {
