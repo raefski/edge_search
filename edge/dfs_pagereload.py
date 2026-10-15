@@ -60,7 +60,7 @@ DFS_PACKAGES: tuple[str, ...] = ("edge.dfs", "edge.odds", "edge.ncaaf",
 #: DFS_PACKAGES -- see the module docstring on why a narrower fingerprint
 #: silently disables the reload it gates.
 DFS_GLOBS: tuple[str, ...] = ("edge/dfs*.py", "edge/odds/*.py", "edge/ncaaf.py",
-                              "edge/nascar*.py", "edge/nfl.py", "edge/nba.py",
+                              "edge/nascar*.py", "edge/nfl.py", "edge/nba*.py",
                               "edge/mma*.py", "edge/names.py")
 
 
