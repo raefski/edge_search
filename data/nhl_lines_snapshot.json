@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-15T17:59:44+00:00",
+"generated_at": "2026-10-15T18:29:45+00:00",
 "goalies": {
 "2026-10-15": {
 "BUF": {
@@ -141,9 +141,9 @@
 "toiMinutes": 61,
 "toiSeconds": 11
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Alex Killorn": {
@@ -209,9 +209,43 @@
 "toiMinutes": 107,
 "toiSeconds": 14
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
+"pp": "PP1"
+},
+"Cutter Gauthier": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 9,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 11,
+"powerplayAssists": 5,
+"powerplayGoals": 2,
+"powerplayPoints": 7,
+"shots": 32,
+"toiMinutes": 166,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 2,
+"powerplayPoints": 3,
+"shots": 17,
+"toiMinutes": 83,
+"toiSeconds": 29
+},
+"line": "F2",
+"pk": null,
+"pos": "c",
 "pp": "PP1"
 },
 "Drew Helleson": {
@@ -243,7 +277,7 @@
 "toiMinutes": 57,
 "toiSeconds": 14
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -347,7 +381,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Judd Caulfield": {
@@ -379,7 +413,7 @@
 "toiMinutes": 60,
 "toiSeconds": 21
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -414,7 +448,7 @@
 "toiSeconds": 3
 },
 "line": "F1",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
 },
@@ -454,39 +488,39 @@
 "pos": "g",
 "pp": null
 },
-"Mikael Granlund": {
+"Nikita Klepov": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 7,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 10,
-"powerplayAssists": 3,
-"powerplayGoals": 2,
-"powerplayPoints": 5,
-"shots": 16,
-"toiMinutes": 198,
-"toiSeconds": 51
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 4,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 54,
+"toiSeconds": 36
 },
 "last5": {
-"assists": 5,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 7,
-"powerplayAssists": 3,
-"powerplayGoals": 1,
-"powerplayPoints": 4,
-"shots": 12,
-"toiMinutes": 100,
-"toiSeconds": 50
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 4,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 54,
+"toiSeconds": 36
 },
-"line": "F2",
-"pk": "PK2",
-"pos": "c",
-"pp": "PP1"
+"line": "F1",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
 },
 "Nikita Nesterenko": {
 "gtd": false,
@@ -624,40 +658,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Sam Colangelo": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 21,
-"toiMinutes": 117,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 61,
-"toiSeconds": 2
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
-},
 "Tim Washe": {
 "gtd": false,
 "injury": null,
@@ -721,7 +721,7 @@
 "toiMinutes": 104,
 "toiSeconds": 21
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -16035,7 +16035,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Brayden McNabb": {
@@ -16309,7 +16309,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Mark Stone": {
