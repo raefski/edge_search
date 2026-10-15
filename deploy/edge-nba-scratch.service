@@ -1,0 +1,23 @@
+# NBA late scratches and promoted starters, pushed to the phone before lock.
+# See harness/nba_scratch.py. Polls NBA.com's daily lineups every run and DK's
+# player statuses at most every 6 minutes, from 4 h before the first tip until
+# just after the last; outside that window a run is one small request and exits.
+# Each change pushes once; every lineup change is logged to data/nba_lineup_log.csv.
+#
+#   cp deploy/edge-nba-scratch.service deploy/edge-nba-scratch.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now edge-nba-scratch.timer
+#   journalctl --user -u edge-nba-scratch -n 50
+#
+# Stop the pushes (keep logging): drop --push from ExecStart.
+[Unit]
+Description=Watch NBA late scratches and promoted starters; push changes
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 -m harness nba-scratch --push
+Restart=no
+Nice=10
+TimeoutStartSec=120

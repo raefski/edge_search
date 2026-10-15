@@ -179,11 +179,17 @@ def push(alert: dict) -> bool:
     t = topic()
     if not t:
         return False
-    pr = {"high": "high", "low": "low"}.get(alert.get("priority"), "default")
+    # ntfy has no text colour; an alert can carry its own emoji tags (shown before the
+    # title: "red_circle" = out, "green_circle" = promoted), "urgent" (its own sound
+    # and a persistent notification on the phone) and a link opened on tap.
+    pr = {"urgent": "urgent", "high": "high", "low": "low"}.get(alert.get("priority"), "default")
+    tags = alert.get("tags") or ("hockey" if alert["kind"].startswith("goalie")
+                                 else "chart_with_upwards_trend")
+    headers = {"Title": ("edge: " + alert["title"]).encode("utf-8"), "Priority": pr, "Tags": tags}
+    if alert.get("click"):
+        headers["Click"] = alert["click"]
     req = urllib.request.Request(f"https://ntfy.sh/{t}", data=alert["body"].encode(),
-                                 headers={"Title": ("edge: " + alert["title"]).encode("utf-8"),
-                                          "Priority": pr, "Tags": "hockey" if alert["kind"].startswith(
-                                              "goalie") else "chart_with_upwards_trend"})
+                                 headers=headers)
     try:
         urllib.request.urlopen(req, timeout=20).read()
         return True

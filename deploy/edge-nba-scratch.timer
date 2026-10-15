@@ -1,0 +1,10 @@
+[Unit]
+Description=Every 2 minutes, 11:00-23:59 local: NBA scratches + promoted starters
+
+[Timer]
+OnCalendar=*-*-* 11..23:00/2:00
+RandomizedDelaySec=15
+Persistent=false
+
+[Install]
+WantedBy=timers.target

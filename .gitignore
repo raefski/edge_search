@@ -31,6 +31,8 @@ data/nba_historical_events_*.json
 # size (59MB+15MB raw), same call as MLB's own data/model_lab_rows.json.
 data/nfl_ground_truth/
 data/nba_ground_truth/
+data/nba_lineups/
+data/nba_lineup_log.csv
 data/nfl_model_rows_*.json
 data/nba_model_rows_*.json
 
