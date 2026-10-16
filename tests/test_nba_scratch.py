@@ -71,7 +71,7 @@ def test_a_star_ruled_out_after_the_first_look_fires_and_names_the_cheap_benefic
     alerts, _ = S.assess(_night(out_star=True), HIST, {}, DK, seen)
     a = alerts[0]
     assert "🔴 Brunson OUT (inactive list)" in a["title"] and a["team"] == "NYK"
-    assert "McBride $3,900" in a["body"] and a["priority"] in ("high", "urgent")
+    assert "McBride [NYK] $3,900" in a["body"] and a["priority"] in ("high", "urgent")
     assert "red_circle" in a["tags"] and a["players"] == ["1"]
 
 

@@ -160,7 +160,7 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
                 if (p["starter"] and not before.get("starter") and not out
                         and r["games"] >= 5 and r["start_rate"] < 0.5):
                     events.append(("promoted", p, d, r))
-                rows.append({"id": pid, "position": pos.get(pid), "inactive": out, "window": win,
+                rows.append({"id": pid, "team": team, "position": pos.get(pid), "inactive": out, "window": win,
                              "starter": p["starter"] if any(q["starter"] for q in ps) else None,
                              "history": [(m, s) for m, s, _ in h], "name": p["name"],
                              "dk": d, "ppm": NM.points_per_minute(h), "base": r["base"]})
@@ -176,7 +176,7 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
                 if tonight - usual < MIN_GAIN_PTS and not pj["promoted"]:
                     continue
                 sal = row["dk"].get("salary")
-                gains.append({"name": row["name"], "salary": sal, "min0": row["base"],
+                gains.append({"name": row["name"], "team": row["team"], "salary": sal, "min0": row["base"],
                               "min1": pj["minutes"], "pts0": usual, "pts1": tonight,
                               "value": tonight / sal * 1000 if sal else None,
                               "promoted": pj["promoted"]})
@@ -209,7 +209,7 @@ def _alert(game: dict, team: str, events: list, gains: list) -> dict:
         sal = f"${x['salary']:,}" if x["salary"] else "no DK salary"
         val = f" · {x['value']:.1f}x" if x["value"] else ""
         mark = "🟢 " if x["promoted"] or (x["value"] or 0) >= URGENT_VALUE else "   "
-        lines.append(f"{mark}{x['name']} {sal} · {x['min0']:.0f}→{x['min1']:.0f} min · "
+        lines.append(f"{mark}{x['name']} [{x['team']}] {sal} · {x['min0']:.0f}→{x['min1']:.0f} min · "
                      f"{x['pts0']:.0f}→{x['pts1']:.0f} pts{val}")
     urgent = any(x["salary"] and x["salary"] <= URGENT_MAX_SALARY and (x["value"] or 0) >= URGENT_VALUE
                  for x in gains)
