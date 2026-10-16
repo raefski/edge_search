@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-16T16:29:37+00:00",
+"generated_at": "2026-10-16T16:59:50+00:00",
 "goalies": {
 "2026-10-16": {
 "ANA": {
@@ -3753,7 +3753,7 @@
 "toiMinutes": 84,
 "toiSeconds": 23
 },
-"line": "D1",
+"line": "D3",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -4173,7 +4173,7 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "D3",
+"line": "D1",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -4518,7 +4518,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Josh Manson": {
 "gtd": false,
@@ -4622,7 +4622,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Nathan MacKinnon": {
 "gtd": false,
@@ -8931,7 +8931,7 @@
 "pp": null
 },
 "Cody Glass": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 0,
