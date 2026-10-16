@@ -84,7 +84,7 @@ def test_a_qualifying_contest_alerts_with_both_numbers():
     out = overlay.alerts_for(rows, {}, T0)
     assert len(out) == 1 and "11/23" in out[0]["body"] and "contest/1" in out[0]["body"]
     assert out[0]["priority"] == "high"        # +67% at lock: an edge this size is worth a loud push
-    assert out[0]["final"] is True
+    assert out[0]["final"] is False and out[0]["title"].startswith("15 MIN WARNING")
 
 
 def test_a_full_contest_resizable_or_ticket_never_alerts():
@@ -110,17 +110,30 @@ def test_outside_the_window_or_below_threshold_is_quiet():
     assert not later and not weak[0]["alert"]
 
 
-def test_nothing_pushes_before_15_minutes_and_each_contest_pushes_once():
+def test_a_15_minute_warning_then_a_final_call_and_nothing_else():
     early = overlay.assess([_found("1", 11, 23, 1.0, 40)], {"1": DOUBLE}, {}, T0, 2.5, 25,
                            0.10, False)
     state = {}
     assert overlay.alerts_for(early, state, T0) == []                     # 40 min out: quiet
-    late = overlay.assess([_found("1", 11, 23, 1.0, 15)], {"1": DOUBLE}, {}, T0, 2.5, 25,
+    warn = overlay.assess([_found("1", 11, 23, 1.0, 14)], {"1": DOUBLE}, {}, T0, 2.5, 25,
+                          0.10, False)
+    out = overlay.alerts_for(warn, state, T0)
+    assert len(out) == 1 and out[0]["final"] is False and out[0]["title"].startswith("15 MIN")
+    state["1"] = {"final": False, "at": T0.isoformat()}
+    assert overlay.alerts_for(warn, state, T0) == []                      # warned once
+    late = overlay.assess([_found("1", 11, 23, 1.0, 4)], {"1": DOUBLE}, {}, T0, 2.5, 25,
                           0.10, False)
     out = overlay.alerts_for(late, state, T0)
-    assert len(out) == 1 and out[0]["final"] and out[0]["priority"] == "high"
-    state["1"] = {"final": True}
-    assert overlay.alerts_for(late, state, T0) == []
+    assert len(out) == 1 and out[0]["final"] and out[0]["title"].startswith("FINAL CALL")
+    state["1"] = {"final": True, "at": T0.isoformat()}
+    assert overlay.alerts_for(late, state, T0) == []                      # final once
+
+
+def test_a_contest_first_seen_inside_5_minutes_gets_only_the_final_call():
+    late = overlay.assess([_found("1", 11, 23, 1.0, 4)], {"1": DOUBLE}, {}, T0, 2.5, 25,
+                          0.10, False)
+    out = overlay.alerts_for(late, {}, T0)
+    assert len(out) == 1 and out[0]["final"]
 
 
 def test_history_moves_the_at_lock_numbers():
