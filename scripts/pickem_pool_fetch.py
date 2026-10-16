@@ -110,8 +110,8 @@ def main() -> None:
     pool_import.run(text, week, no_enrich=args.no_enrich, write=args.write)
 
     if args.push and args.write:
-        from scripts.odds_collect import push_snapshot
-        push_snapshot(pool_import.OUT, f"pickem_nfl: week {week} CBS lines")
+        from edge.data_branch import publish_one
+        publish_one(pool_import.OUT, f"pickem_nfl: week {week} CBS lines")
 
 
 if __name__ == "__main__":

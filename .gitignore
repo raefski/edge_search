@@ -70,7 +70,7 @@ data/*.db-shm
 # above: a snapshot is ephemeral and re-derivable, the accumulated history is
 # not. Same mechanism as data/arb_snapshot.json, which has shipped this way
 # for months. See edge/odds/publish.py.
-!data/odds_snapshot_*.json
+# (data/odds_snapshot_*.json -- now published to the data branch; see the end of this file)
 
 data/bullpen_cache/
 data/actuals_cache/
@@ -130,14 +130,14 @@ data/nflverse_games.csv
 
 # DailyFaceoff NHL lines + starting goalies for the cloud app
 # (scripts/nhl_lines_publish.py; edge/nhl.py falls back to it).
-!data/nhl_lines_snapshot.json
+# (data/nhl_lines_snapshot.json -- now published to the data branch; see the end of this file)
 # NBA app inputs for the cloud, published by the desktop: players' recent games
 # (scripts/nba_history_publish.py) and tonight's NBA.com lineups (harness/nba_scratch.py).
-!data/nba_player_history.json
-!data/nba_lineups_snapshot.json
+# (data/nba_player_history.json -- now published to the data branch; see the end of this file)
+# (data/nba_lineups_snapshot.json -- now published to the data branch; see the end of this file)
 
 # Arbitrage snapshot: the Streamlit page reads this
-!data/arb_snapshot.json
+# (data/arb_snapshot.json -- now published to the data branch; see the end of this file)
 
 # Fanatics' Oddschecker league ids. Committed because rebuilding it means
 # ~30,000 probes of a third party's API (edge/arb/oddschecker_discover.py) and
@@ -151,7 +151,7 @@ data/nflverse_games.csv
 # origin/main. Both need an exception to the blanket data/*.json rule above --
 # the API ignores .gitignore, so without this the file would exist on GitHub
 # and be invisible locally, which is a confusing way to debug.
-!data/scan_request.json
+# (data/scan_request.json -- now published to the data branch; see the end of this file)
 
 # Local bookkeeping for scripts/arb_agent.py (which request it last handled).
 # Per-machine, and committing it would make two desktops fight over state.
@@ -198,3 +198,21 @@ data/contest_finals.csv
 # harness runtime state: run ledger + logs, monitor state/alerts, verify stamp,
 # navigator captures, generated STATUS.md (python3 -m harness status --write).
 data/harness/
+
+# Timer feeds live on the `data` branch, not main (edge/data_branch.FEEDS,
+# 2026-10-16). The desktop keeps them on disk; Streamlit Cloud reads them off
+# GitHub (edge/repo_files.py); a fresh clone gets them with
+# `python3 -m harness data-pull`. LAST in this file so no earlier "!" line
+# re-includes one.
+data/odds_snapshot_*.json
+data/draftables_snapshot/
+data/arb_snapshot.json
+data/scan_request.json
+data/nhl_lines_snapshot.json
+data/nba_lineups_snapshot.json
+data/nba_player_history.json
+data/buzz_*.csv
+data/pickem_current_week.csv
+data/pickem_line_log.csv
+data/dfs_proj_log*.csv
+data/dfs_lineups_*.csv

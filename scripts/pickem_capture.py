@@ -619,12 +619,12 @@ def main() -> None:
               "which nothing downstream can detect (see edge/pickem_log.py, "
               "CBS_FILLABLE).")
     if args.push:
-        # Reuses odds_collect's helper rather than a second implementation:
-        # it stages one path by name, rebases with autostash, and no-ops on an
-        # unchanged file -- all three of which a timer needs.
-        from scripts.odds_collect import push_snapshot
-        if not push_snapshot(LINE_LOG, f"pickem_nfl wk{args.week} {args.snapshot}"):
-            # push_snapshot already printed the reason (rebase or push
+        # The one publish path (edge/data_branch.py), not a second implementation:
+        # it commits this one path to the data branch without touching the
+        # checkout, and no-ops on an unchanged file.
+        from edge.data_branch import publish_one
+        if not publish_one(LINE_LOG, f"pickem_nfl wk{args.week} {args.snapshot}"):
+            # publish_one already printed the reason (build or push
             # failure). Found 2026-09-16: this return value went unchecked
             # for a week, so three real deadline captures wrote good local
             # data that never reached origin/main -- the deployed Streamlit

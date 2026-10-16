@@ -1,0 +1,10 @@
+[Unit]
+Description=Every 10 minutes: fast-forward edge_search to origin/main
+
+[Timer]
+OnCalendar=*-*-* *:03/10:00
+RandomizedDelaySec=20
+Persistent=false
+
+[Install]
+WantedBy=timers.target

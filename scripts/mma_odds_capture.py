@@ -108,7 +108,6 @@ def main() -> int:
                     help="keep cards starting within this many days")
     ap.add_argument("--push", action="store_true",
                     help="commit and push the snapshot for the cloud app")
-    ap.add_argument("--branch", default="main")
     args = ap.parse_args()
 
     bundle = capture(args.days)
@@ -127,8 +126,8 @@ def main() -> int:
         # a tab DraftKings RENAMED looks identical from here.
         print(f"  ! tabs not offered: {', '.join(bundle['missing'])}")
     if args.push:
-        from odds_collect import push_snapshot
-        return 0 if push_snapshot(SNAPSHOT, "dfs_mma", args.branch) else 1
+        from edge.data_branch import publish_one
+        return 0 if publish_one(SNAPSHOT, "odds dfs_mma") else 1
     return 0
 
 

@@ -152,8 +152,8 @@ def main() -> int:
     print(f"{OUT.relative_to(ROOT)}: {len(snap['players'])} players, {len(text) // 1024} KB, "
           f"{sum(p['preseason'] for p in snap['players'].values())} on preseason games")
     if a.push:
-        from scripts.odds_collect import push_snapshot
-        return 0 if push_snapshot(OUT, "nba player history") else 1
+        from edge.data_branch import publish_one
+        return 0 if publish_one(OUT, "nba player history") else 1
     return 0
 
 

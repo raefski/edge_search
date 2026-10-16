@@ -29,7 +29,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from edge import dfs  # noqa: E402
-from odds_collect import push_snapshot  # noqa: E402
+from edge.data_branch import publish_one  # noqa: E402
 
 #: DK lobby codes to publish salaries for. NOT the odds-feed sport keys --
 #: college football is "CFB" here and NASCAR is "NAS"; passing "NCAAF" returns
@@ -54,7 +54,7 @@ SPORTS = ("MLB", "NFL", "CFB", "NAS", "MMA", "NHL", "NBA", "CBB")
 
 # Last attempt per draft group, for groups DK has not priced yet (those write
 # no snapshot file, so there is nothing else to date them by). Outside
-# _SNAP_DIR on purpose: push_snapshot force-adds that whole directory.
+# _SNAP_DIR on purpose: publish_one publishes that whole directory as it is on disk.
 _ATTEMPTS = ROOT / "data" / ".draftables_attempts.json"
 
 
@@ -131,7 +131,6 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--push", action="store_true", help="commit and push the snapshot dir")
-    ap.add_argument("--branch", default="main")
     ap.add_argument("--refresh-hours", type=float, default=6.0,
                     help="re-fetch an already-priced group at most this often "
                          "(salaries are frozen per group; 0 = every tick)")
@@ -192,7 +191,7 @@ def main() -> int:
                 print(f"  pruned {f.name}")
 
     if args.push and dfs._SNAP_DIR.exists():
-        return 0 if push_snapshot(dfs._SNAP_DIR, "draftables", args.branch) else 1
+        return 0 if publish_one(dfs._SNAP_DIR, "draftables") else 1
     return 0
 
 

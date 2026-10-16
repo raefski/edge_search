@@ -1,0 +1,19 @@
+# Fast-forward the desktop checkout to origin/main when it can do so safely
+# (no local commits; git refuses if an incoming file is edited locally).
+# Replaces the code deploys timers used to do as a side effect of rebasing
+# main before every snapshot push -- see harness/code_sync.py.
+#
+#   cp deploy/edge-code-sync.service deploy/edge-code-sync.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now edge-code-sync.timer
+[Unit]
+Description=Fast-forward the edge_search checkout to origin/main (code only)
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 -m harness.code_sync
+Restart=no
+Nice=10
+TimeoutStartSec=120

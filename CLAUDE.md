@@ -77,18 +77,23 @@ between ad-hoc lookups.
 
 ## Working in this repo
 
-- The timers commit and push to `main` all day, serialised by a lock
-  (`edge/git_lock.py`). Commit only your own paths (`git add <paths>`; never
-  `git add -A`), then push under the same lock:
-  `flock .git/edge_git.lock -c 'git pull -q --rebase --autostash && git push -q'`.
-  If git ever says a rebase is in progress, do not abort or reset: run
-  `git rebase --quit` (it saves the autostash to the stash list), then
-  `git stash apply` and check the tree — that stash holds uncommitted work. The working tree always holds
-  timer-written data — don't discard it (`.claude/hooks/guard_bash.py` blocks
-  `reset --hard`, `clean -f`, `checkout .`, force push, deleting `data/*.db`).
+- **Code on `main`, timer data on `data`.** Timers publish their feeds
+  (odds/draftables/lines snapshots, buzz, pick'em lines, arb snapshot, scan
+  requests, autolog projection logs -- `edge/data_branch.FEEDS`) to the `data`
+  branch with git plumbing: they never check out, rebase or commit on `main`.
+  `main` holds code, docs and human-run job outputs (contest exports,
+  `contest_meta.json`, model caches). A fresh clone or web session gets the
+  feeds with `python3 -m harness data-pull`. The desktop picks up code pushed
+  from elsewhere through `edge-code-sync.timer` (fast-forward only, never with
+  local commits); `harness status` shows how far behind it is.
+- Commit only your own paths (`git add <paths>`; never `git add -A`), then push
+  under the repo lock: `flock .git/edge_git.lock -c 'git pull -q --rebase && git push -q'`.
+  The working tree holds timer-written data — don't discard it
+  (`.claude/hooks/guard_bash.py` blocks `reset --hard`, `clean -f`, `checkout .`,
+  force push, deleting `data/*.db`).
 - Streamlit Cloud redeploys from `main` but unreliably picks up code: tell
-  Adam to **Reboot** the app after a code push. Data is read from GitHub
-  (`edge/repo_files.py`), so data-only pushes need no reboot. After changing
+  Adam to **Reboot** the app after a code push. Data is read from GitHub's
+  `data` branch (`edge/repo_files.py`), so data publishes need no reboot. After changing
   NHL/NCAAF/NASCAR/MMA code, regenerate the mirrors:
   `python3 -m harness run mirror-<sport>`.
 - `data/odds.db` (scrape history) and `data/contests.db` cannot be rebuilt

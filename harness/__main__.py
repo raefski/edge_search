@@ -70,6 +70,9 @@ def main(argv=None) -> int:
     s = sub.add_parser("nba-scratch")
     s.add_argument("--push", action="store_true", help="send new changes to the phone")
     s.add_argument("--date", help="replay a past night (YYYY-MM-DD): no DK, no push, no state")
+    s = sub.add_parser("data-pull", help="copy the data branch's files into this checkout")
+    s.add_argument("--overwrite", action="store_true",
+                   help="replace files that already exist (default: leave them)")
     s = sub.add_parser("navigate")
     s.add_argument("url")
     s.add_argument("--match")
@@ -126,6 +129,11 @@ def main(argv=None) -> int:
     if a.cmd == "nba-scratch":
         from harness import nba_scratch
         nba_scratch.run(do_push=a.push, day=a.date)
+        return 0
+    if a.cmd == "data-pull":
+        from edge import data_branch
+        wrote = data_branch.checkout_files(overwrite=a.overwrite)
+        print(f"{len(wrote)} file(s) written from origin/{data_branch.DATA_BRANCH}")
         return 0
     if a.cmd == "navigate":
         from harness import navigator

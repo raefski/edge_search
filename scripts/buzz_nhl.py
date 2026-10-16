@@ -152,9 +152,9 @@ def main() -> int:
     for r in sorted(rows, key=lambda r: -r["mentions"])[:15]:
         print(f"  {r['player']:24} {r['team']:3} {r['mentions']:4} mentions in {r['videos']} videos")
     if args.push:
-        from scripts.odds_collect import push_snapshot
+        from edge.data_branch import publish_one
         for path in (OUT, OUT_VIDEOS):
-            if not push_snapshot(path, "buzz_nhl"):
+            if not publish_one(path, "buzz_nhl"):
                 return 1
     return 0
 

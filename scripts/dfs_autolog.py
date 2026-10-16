@@ -149,24 +149,16 @@ def scan_age_min(profile: str) -> float | None:
 
 
 def commit_logs(patterns: list[str], msg: str) -> None:
-    """Under the repo's git lock (edge/git_lock.py): timers run git on the same minute."""
-    from edge.git_lock import git_lock
-    with git_lock():
-        return _commit_logs_unlocked(patterns=patterns, msg=msg)
-
-
-def _commit_logs_unlocked(patterns: list[str], msg: str) -> None:
+    """Publish the logs to the data branch (edge/data_branch.py) -- they are the
+    forward-test record contest exports are graded against. Before 2026-10-16
+    this committed to main WITHOUT pushing and relied on the next snapshot
+    push to carry it, which also pushed whatever else sat on main."""
+    from edge import data_branch
     files = sorted({str(p.relative_to(ROOT)) for pat in patterns for p in ROOT.glob(pat)})
     if not files:
         return
-    git = ["git", "-C", str(ROOT)]
-    if subprocess.run([*git, "add", "--", *files], capture_output=True).returncode:
-        print("   (git busy; logs left uncommitted)")
-        return
-    if subprocess.run([*git, "diff", "--cached", "--quiet"]).returncode == 0:
-        return
-    r = subprocess.run([*git, "commit", "-q", "-m", msg, "--", *files], capture_output=True, text=True)
-    print("   committed logs" if r.returncode == 0 else f"   (commit skipped: {r.stderr.strip()[:120]})")
+    ok = data_branch.publish(files, msg)
+    print("   published logs" if ok else "   (logs not published; left on disk)")
 
 
 def main() -> int:

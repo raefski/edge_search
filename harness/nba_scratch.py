@@ -257,8 +257,8 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
     if do_push and not replay:
         from edge.nba_lineups import SNAPSHOT, write_snapshot
         if write_snapshot(d, raw, now.isoformat()):
-            from scripts.odds_collect import push_snapshot
-            push_snapshot(SNAPSHOT, "nba lineups")        # the cloud app reads it
+            from edge.data_branch import publish_one
+            publish_one(SNAPSHOT, "nba lineups")        # the cloud app reads it
     games = parse(raw)
     if not games:
         print(f"{d}: no NBA games")

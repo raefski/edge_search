@@ -22,58 +22,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from edge.odds import PROFILES, OddsStore, collect, get_profile  # noqa: E402
+from edge.data_branch import publish_one  # noqa: E402
 from edge.odds.store import DEFAULT_PATH  # noqa: E402
-
-
-def git(*args, check: bool = True):
-    import subprocess
-    return subprocess.run(["git", "-C", str(ROOT), *args], check=check,
-                          capture_output=True, text=True)
-
-
-def push_snapshot(path: Path, profile: str, branch: str = "main") -> bool:
-    """Under the repo's git lock (edge/git_lock.py): timers run git on the same minute."""
-    from edge.git_lock import git_lock
-    with git_lock():
-        return _push_snapshot_unlocked(path=path, profile=profile, branch=branch)
-
-
-def _push_snapshot_unlocked(path: Path, profile: str, branch: str = "main") -> bool:
-    """Commit ONE snapshot by explicit path and push it.
-
-    Deliberately the same shape as scripts/arb_agent.py::publish, which has
-    shipped data/arb_snapshot.json this way for months:
-
-      * only the named file is staged, so a scheduled collection never sweeps
-        up whatever you happened to be editing;
-      * `-f`, because data/*.json is gitignored by default and the snapshots
-        live behind an explicit exception;
-      * rebase with autostash before pushing, so a collection cannot clobber
-        work pushed from elsewhere and a dirty tree does not block it;
-      * an unchanged snapshot is a no-op rather than an empty commit -- these
-        run on a timer, and a commit per tick would bury the real history.
-    """
-    rel = str(path.relative_to(ROOT))
-    git("add", "-f", "--", rel)
-    if git("diff", "--cached", "--quiet", "--", rel, check=False).returncode == 0:
-        print("  snapshot unchanged -- nothing to push")
-        return True
-    git("commit", "--quiet", "-m", f"odds: {profile} snapshot", "--", rel)
-    # Several timers fire on the same minute (12:00: draftables, MMA odds, NHL
-    # lines), so a push can lose the race for the remote ref ("cannot lock
-    # ref", or a non-fast-forward) on 2026-10-13. Rebase again and retry.
-    for attempt in range(3):
-        pull = git("-c", "rebase.autoStash=true", "pull", "--rebase", "--quiet",
-                   "origin", branch, check=False)
-        if pull.returncode != 0:
-            print(f"  ! rebase failed, not pushing: {pull.stderr.strip()[:200]}")
-            return False
-        push = git("push", "--quiet", "origin", f"HEAD:{branch}", check=False)
-        if push.returncode == 0:
-            return True
-        print(f"  ! push failed (attempt {attempt + 1}): {push.stderr.strip()[:200]}")
-        time.sleep(5 * (attempt + 1))
-    return False
 
 
 def main() -> int:
@@ -92,10 +42,8 @@ def main() -> int:
                     help="also write data/odds_snapshot_<profile>.json, which is "
                          "what Streamlit Cloud reads (it cannot see data/odds.db)")
     ap.add_argument("--push", action="store_true",
-                    help="commit and push that snapshot so the cloud app "
-                         "redeploys with it. Implies --publish.")
-    ap.add_argument("--branch", default="main",
-                    help="branch to push the snapshot to (default: %(default)s)")
+                    help="publish that snapshot to the data branch (edge/data_branch.py), "
+                         "where the cloud app reads it. Implies --publish.")
     ap.add_argument("--prune-days", type=int,
                     help="drop scans older than this many days, then exit")
     ap.add_argument("-v", "--verbose", action="store_true")
@@ -177,7 +125,7 @@ def main() -> int:
             print(f"  published {info['events']} events -> {info['path']} "
                   f"({info['bytes'] / 1024:.0f} KB)")
             if args.push:
-                ok = push_snapshot(Path(info["path"]), prof.name, args.branch)
+                ok = publish_one(Path(info["path"]), f"odds {prof.name}")
                 if not ok:
                     # The scan itself succeeded and is safely in the store, so
                     # this is a publish failure, not a collection failure --

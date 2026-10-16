@@ -110,7 +110,7 @@ APPS = {
         "page": "pages/7_🥊_MMA_DFS.py",
         "profile": "dfs_mma",
         "docs": ["MMA_STATUS.md", "DRAFTKINGS_ACCESS.md"],
-        # odds_collect.py for push_snapshot, which mma_odds_capture.py reuses.
+        # odds_collect.py: the MMA odds collector shares its collection code.
         "scripts": ["dfs_lineups_mma.py", "mma_fit.py", "mma_calibration.py",
                     "mma_odds_capture.py", "odds_collect.py",
                     "draftables_publish.py", "mirror_app.py"],

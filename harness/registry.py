@@ -127,6 +127,11 @@ JOBS: dict[str, Job] = {j.name: j for j in [
     Job("overlay-alert", "monitor", (PY, "-m", "harness", "overlay"), timeout=900,
         timer="edge-overlay.timer",
         doc="push guaranteed contests whose next entry is worth it at lock (ntfy)"),
+    Job("code-sync", "publish", (PY, "-m", "harness.code_sync"), timeout=120,
+        timer="edge-code-sync.timer",
+        doc="fast-forward this checkout to origin/main when it has no local commits"),
+    Job("data-pull", "ingest", (PY, "-m", "harness", "data-pull"), timeout=300,
+        doc="copy the data branch's published files into a fresh clone (never overwrites)"),
     Job("status", "monitor", (PY, "-m", "harness", "status"), timeout=300,
         doc="slates, timers, data freshness, failures"),
 ]}
@@ -150,7 +155,7 @@ RULES: list[tuple[str, str]] = [
 ]
 
 EDGE_RULES: list[tuple[str, str]] = [
-    (r"^git_lock$", "publish"),
+    (r"^(git_lock|data_branch)$", "publish"),
     (r"^dfs_entry_edge$", "model"),
     (r"^(nba_minutes|nba_project)$", "model"),
     (r"^(dfs_opt|dfs_leverage|dfs_swap|dfs_roster|dfs_lineup|sgp|parlay)", "optimize"),

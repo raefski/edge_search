@@ -25,6 +25,7 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 
 from edge import repo_files
+from edge.data_branch import DATA_BRANCH
 
 from . import http
 
@@ -308,7 +309,7 @@ def _headers(token: str) -> dict:
             "X-GitHub-Api-Version": "2022-11-28"}
 
 
-def get_file_sha(repo: str, path: str, token: str, branch: str = "main",
+def get_file_sha(repo: str, path: str, token: str, branch: str = DATA_BRANCH,
                  session=None) -> str | None:
     """Blob sha of `path`, or None if it does not exist yet.
 
@@ -358,7 +359,7 @@ def _explain(status: int, phase: str, repo: str) -> str:
     return f"HTTP {status} from GitHub while trying to {phase} the request file."
 
 
-def put_request(repo: str, token: str, req: ScanRequest, branch: str = "main",
+def put_request(repo: str, token: str, req: ScanRequest, branch: str = DATA_BRANCH,
                 path: str = REQUEST_PATH, session=None) -> dict:
     """Commit the request file. Needs a token with `contents: write`."""
     s = session or http
@@ -382,7 +383,7 @@ def put_request(repo: str, token: str, req: ScanRequest, branch: str = "main",
     return r.json() or {}
 
 
-def latest_snapshot_commit(repo: str, token: str, branch: str = "main",
+def latest_snapshot_commit(repo: str, token: str, branch: str = DATA_BRANCH,
                            path: str = SNAPSHOT_PATH, session=None) -> str | None:
     """Sha of the newest commit on `branch` that touched `path` -- GitHub.
 

@@ -58,8 +58,8 @@ def main() -> int:
     print(f"wrote {path.relative_to(ROOT)}: {len(data['lines'])} teams, goalies for "
           f"{', '.join(f'{d} ({len(v)})' for d, v in data['goalies'].items())}")
     if args.push:
-        from scripts.odds_collect import push_snapshot
-        return 0 if push_snapshot(path, "nhl lines") else 1
+        from edge.data_branch import publish_one
+        return 0 if publish_one(path, "nhl lines") else 1
     return 0
 
 

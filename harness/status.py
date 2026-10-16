@@ -215,16 +215,35 @@ def proj_logs() -> list[tuple[str, str]]:
     return out
 
 
-def _git() -> str:
+def _git() -> list[str]:
+    """Code vs origin/main (as of the last fetch -- edge-code-sync fetches every
+    10 min) and the data branch's last publish (edge/data_branch.py)."""
+    def run(*args):
+        return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True,
+                              timeout=20).stdout
     try:
-        st = subprocess.run(["git", "status", "-sb", "--porcelain"], cwd=ROOT, capture_output=True,
-                            text=True, timeout=20).stdout.splitlines()
+        st = run("status", "-sb", "--porcelain").splitlines()
+        counts = run("rev-list", "--left-right", "--count", "HEAD...origin/main").split()
+        data = run("log", "-1", "--format=%cI|%s", "refs/remotes/origin/data").strip() or \
+            run("log", "-1", "--format=%cI|%s", "refs/heads/data").strip()
     except (OSError, subprocess.TimeoutExpired):
-        return "git: unavailable"
+        return ["git: unavailable"]
     head = st[0] if st else ""
     dirty = [l for l in st[1:] if l.strip()]
     code = [l for l in dirty if l[3:].endswith((".py", ".md", ".json")) and not l[3:].startswith("data/")]
-    return f"{head.lstrip('# ')} · {len(dirty)} changed paths ({len(code)} code/docs outside data/)"
+    out = [f"{head.lstrip('# ')} · {len(dirty)} changed paths ({len(code)} code/docs outside data/)"]
+    if len(counts) == 2:
+        ahead, behind = int(counts[0]), int(counts[1])
+        note = ("up to date" if not (ahead or behind) else
+                f"{behind} behind" + (f", {ahead} LOCAL commit(s) -- code-sync waits until "
+                                      "they are pushed" if ahead else " -- code-sync fast-forwards"))
+        out.append(f"code vs origin/main: {note}")
+    if data:
+        when, _, subject = data.partition("|")
+        out.append(f"data branch: last publish {_age(_parse(when))} ago ({subject[:60]})")
+    else:
+        out.append("data branch: none yet (edge/data_branch.py)")
+    return out
 
 
 def _alerts(hours: float = 24) -> list[dict]:
@@ -271,7 +290,7 @@ def report(live: bool = False) -> str:
     L += ["", f"## Monitor alerts, last 24h: {len(al)}"]
     for a in al[-10:]:
         L.append(f"  {_parse(a['at']).astimezone(ET):%-I:%M %p} {a.get('title')}: {a.get('body', '')[:110]}")
-    L += ["", "## Repo", "  " + _git()]
+    L += ["", "## Repo"] + ["  " + line for line in _git()]
     return "\n".join(L)
 
 

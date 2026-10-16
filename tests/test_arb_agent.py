@@ -465,7 +465,7 @@ def test_latest_snapshot_commit_asks_for_one_commit_touching_the_snapshot():
 
     assert latest_snapshot_commit("a/b", "github_pat_x", session=FakeSession()) == "c0ffee"
     assert seen["url"] == "https://api.github.com/repos/a/b/commits"
-    assert seen["params"] == {"path": "data/arb_snapshot.json", "sha": "main",
+    assert seen["params"] == {"path": "data/arb_snapshot.json", "sha": "data",
                               "per_page": 1}
 
 

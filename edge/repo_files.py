@@ -1,4 +1,4 @@
-"""Read a committed data file as it is on GitHub's main, not as it was deployed.
+"""Read a published data file as it is on GitHub now, not as it was deployed.
 
 Streamlit Cloud serves every page off the commit it last deployed, and its
 redeploy-on-push has twice stranded the app on days-old data while the
@@ -8,8 +8,13 @@ snapshot straight off GitHub on 9/26; this is the same fix for everything else
 the desktop pushes -- the odds snapshots every DFS and pick'em page prices
 from, the DraftKings player pools, and pick'em's CBS lines and line log.
 
+WHICH BRANCH
+Timers publish to the `data` branch (edge/data_branch.py, since 2026-10-16), so
+that is asked first; a file never published there falls back to main (the
+human-run job outputs, and anything published before the move).
+
 WHICH COPY WINS
-GitHub's, when main's newest commit touching the file is newer than the disk
+GitHub's, when the newest commit touching the file is newer than the disk
 copy's mtime less MTIME_MARGIN_SECONDS. On Cloud the disk copy is a checkout,
 so its mtime is when it was deployed and any later push wins. On a machine
 that WRITES these files (the desktop), a file is written before it is
@@ -81,6 +86,8 @@ def latest_commit(repo: str, token: str, path: str, branch: str = "main",
     r = s.get(f"{API}/repos/{repo}/commits",
               params={"path": path, "sha": branch, "per_page": 1},
               headers=_headers(token), timeout=10)
+    if r.status_code in (404, 409, 422) and branch != "main":
+        return None              # no such branch on this repo (a mirror): not here
     r.raise_for_status()
     rows = r.json() or []
     if not rows:
@@ -165,6 +172,10 @@ def _disk(path: Path) -> Found | None:
         return None
 
 
+#: Branches asked for a file, in order (edge/data_branch.DATA_BRANCH first).
+BRANCHES = ("data", "main")
+
+
 def _commit(repo: str, token: str, rel: str, session) -> tuple[tuple | None, str]:
     now = time.monotonic()
     with _lock:
@@ -173,10 +184,15 @@ def _commit(repo: str, token: str, rel: str, session) -> tuple[tuple | None, str
         return hit[1], hit[2]
     # A failure is remembered for CHECK_SECONDS like a success is -- otherwise
     # every rerun during a GitHub outage would sit out the request timeout.
-    try:
-        commit, why = latest_commit(repo, token, rel, session=session), ""
-    except Exception as exc:                                # noqa: BLE001
-        commit, why = None, f"{type(exc).__name__}: {exc}"
+    commit, why = None, ""
+    for branch in BRANCHES:
+        try:
+            commit, why = latest_commit(repo, token, rel, branch=branch, session=session), ""
+        except Exception as exc:                            # noqa: BLE001
+            commit, why = None, f"{type(exc).__name__}: {exc}"
+            break
+        if commit is not None:
+            break
     with _lock:
         _checks[rel] = (now, commit, why)
     return commit, why

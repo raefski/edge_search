@@ -232,3 +232,46 @@ def test_a_slate_priced_after_the_deploy_still_gets_its_player_pool(repo, monkey
 
     assert dfs._draftables_raw(424242) == pool
     assert dfs.LAST_DRAFTABLES_SOURCE.startswith("snapshot ")
+
+
+class BranchedGitHub(FakeGitHub):
+    """Per-branch commits: {branch: (sha, body)}; a missing branch is a 404
+    (data-less mirrors), a branch with no commit for the file is []."""
+
+    def __init__(self, branches: dict, has_data_branch: bool = True):
+        super().__init__()
+        self.branches, self.has_data_branch = branches, has_data_branch
+        self.bodies = {sha: body for sha, body in branches.values()}
+
+    def get(self, url, params=None, headers=None, timeout=None):
+        self.asked.append(url)
+        if "/commits" in url:
+            branch = (params or {}).get("sha")
+            if branch == "data" and not self.has_data_branch:
+                return _Resp(404, {"message": "No commit found for SHA: data"})
+            if branch not in self.branches:
+                return _Resp(200, [])
+            when = self.committed_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+            return _Resp(200, [{"sha": self.branches[branch][0],
+                                "commit": {"committer": {"date": when}}}])
+        for s, body in self.bodies.items():
+            if f"/{s}/" in url:
+                return _Resp(200, text=body)
+        return _Resp(404, text="")
+
+
+def test_the_data_branch_is_read_before_main(repo):
+    gh = BranchedGitHub({"data": ("d1", "from data"), "main": ("m1", "from main")})
+    found = repo_files.read(repo / "data" / "f.json", session=gh)
+    assert found.data == "from data" and found.source == "github"
+
+
+def test_a_file_never_published_to_data_falls_back_to_main(repo):
+    gh = BranchedGitHub({"main": ("m1", "from main")})
+    assert repo_files.read(repo / "data" / "f.json", session=gh).data == "from main"
+
+
+def test_a_repo_without_a_data_branch_reads_main(repo):
+    gh = BranchedGitHub({"main": ("m1", "from main")}, has_data_branch=False)
+    found = repo_files.read(repo / "data" / "f.json", session=gh)
+    assert found.data == "from main" and not found.problem

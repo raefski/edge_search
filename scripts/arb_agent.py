@@ -96,8 +96,9 @@ def head() -> str:
 def restart_if_code_changed(started_at: str) -> None:
     """Re-exec when the checkout has moved under us.
 
-    The agent pulls before pushing, so a deploy lands in its working tree --
-    but the running process keeps the modules it imported at startup, and goes
+    harness/code_sync.py (edge-code-sync.timer) fast-forwards the checkout when
+    code lands on main -- but the running process keeps the modules it imported
+    at startup, and goes
     on writing snapshots with the old code. That is invisible: the scan
     succeeds, the file is committed, and it is simply missing whatever the new
     code would have added. Caught after several phone-triggered scans wrote
@@ -127,14 +128,10 @@ def write_state(**kw) -> None:
 
 
 def pending_request() -> ScanRequest | None:
-    """The request as it exists on the REMOTE, not the working tree.
-
-    Read from origin/main rather than disk: the phone's commit lands on GitHub,
-    and a working tree that has not been pulled would otherwise never see it.
-    """
-    git("fetch", "--quiet", "origin", "main", check=False)
-    r = git("show", f"origin/main:{REQUEST_PATH}", check=False)
-    return ScanRequest.parse(r.stdout if r.returncode == 0 else None)
+    """The request as it exists on the REMOTE data branch, not the working tree:
+    the phone commits it there through GitHub's contents API."""
+    from edge import data_branch
+    return ScanRequest.parse(data_branch.show(REQUEST_PATH))
 
 
 def run_scan(cfg: ArbConfig) -> dict:
@@ -177,36 +174,12 @@ def refresh_odds(profiles: list[str]) -> list[str]:
 
 
 def publish(message: str, extra_paths: list[str] | None = None) -> bool:
-    """Under the repo's git lock (edge/git_lock.py): timers run git on the same minute."""
-    from edge.git_lock import git_lock
-    with git_lock():
-        return _publish_unlocked(message, extra_paths)
-
-
-def _publish_unlocked(message: str, extra_paths: list[str] | None = None) -> bool:
-    """Commit the snapshot(s) alone and push, rebasing on whatever landed first."""
-    paths = [str(SNAPSHOT.relative_to(ROOT))] + list(extra_paths or [])
-    # -f because data/*.json is gitignored by default; both the arb snapshot
-    # and the odds ones live behind explicit exceptions in .gitignore.
-    git("add", "-f", "--", *paths)
-    staged = git("diff", "--cached", "--quiet", "--", *paths, check=False)
-    if staged.returncode == 0:
-        log("  snapshot unchanged — nothing to push")
-        return True
-    git("commit", "--quiet", "-m", message, "--", *paths)
-    # autostash so an unrelated dirty tree does not block the rebase, and is
-    # put back exactly as it was afterwards
-    pull = git("-c", "rebase.autoStash=true", "pull", "--rebase", "--quiet",
-               "origin", "main", check=False)
-    if pull.returncode != 0:
-        log(f"  ! rebase failed, not pushing: {pull.stderr.strip()[:200]}")
-        return False
-    push = git("push", "--quiet", "origin", "main", check=False)
-    if push.returncode != 0:
-        log(f"  ! push failed: {push.stderr.strip()[:200]}")
-        return False
-    log("  pushed")
-    return True
+    """The arb snapshot (plus any odds snapshots refreshed with it) to the data
+    branch, in one commit -- edge/data_branch.py."""
+    from edge import data_branch
+    ok = data_branch.publish([str(SNAPSHOT.relative_to(ROOT))] + list(extra_paths or []), message)
+    log("  published" if ok else "  ! publish failed (see above)")
+    return ok
 
 
 def tick(cfg: ArbConfig, max_age: float, also_every: float,

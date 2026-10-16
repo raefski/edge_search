@@ -419,10 +419,10 @@ def main():
               f"{r['channels']:5} {own:>8}")
     print(f"\n-> {OUT.relative_to(ROOT)}, {OUT_VIDEOS.relative_to(ROOT)}")
     if args.push:
-        from scripts.odds_collect import push_snapshot
+        from edge.data_branch import publish_one
         for path, name in ((OUT, "buzz_nfl"), (OUT_VIDEOS, "buzz_nfl videos"),
                            (CHANNELS, "buzz_nfl channels")):
-            if path.exists() and not push_snapshot(path, name):
+            if path.exists() and not publish_one(path, name):
                 raise SystemExit(1)
 
 
