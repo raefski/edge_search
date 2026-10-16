@@ -124,7 +124,7 @@ with st.sidebar:
         gid = slates[labels.index(choice)]["gid"]
     sims = st.select_slider("Simulations", options=[1000, 3000, 6000], value=3000,
                             help="Every floor and ceiling on this page is a percentile of these.")
-    iters = st.select_slider("Search effort", options=[30, 80, 160], value=80)
+    iters = st.select_slider("Search effort", options=[80, 200, 400], value=200)
     own_weight = st.select_slider("GPP ownership fade", options=[0.0, 2.0, 5.0, 10.0], value=0.0,
                                   help="Points of ceiling given up per 100% of total ownership. "
                                        "The NBA ownership model is a prior until it is fitted.")

@@ -102,15 +102,18 @@ def _normalise(weights, target, cap):
     return owns
 
 
-def add_ownership(pool: list) -> list:
-    """Annotate `own` (percent) and `leverage` on every row, per primary position."""
+def add_ownership(pool: list, weights: tuple | None = None) -> list:
+    """Annotate `own` (percent) and `leverage` on every row, per primary position.
+    `weights` = (value, salary) overrides the prior -- scripts/nba_calibration.py's
+    --fit-ownership grid passes it; the build never does."""
+    vw, sw = weights or (VALUE_WEIGHT, SALARY_WEIGHT)
     groups: dict = {}
     for p in pool:
         groups.setdefault(p["pos"], []).append(p)
     for pos, players in groups.items():
         zv = _z([p["proj"] / (p["salary"] / 1000.0) if p.get("salary") else 0.0 for p in players])
         zs = _z([float(p["salary"]) for p in players])
-        w = [math.exp(VALUE_WEIGHT * a + SALARY_WEIGHT * b + (PROMOTED_BONUS if p.get("promoted") else 0))
+        w = [math.exp(vw * a + sw * b + (PROMOTED_BONUS if p.get("promoted") else 0))
              for p, a, b in zip(players, zv, zs)]
         for p, own in zip(players, _normalise(w, 100.0 * GROUP_SLOTS.get(pos, 1.6), MAX_OWN)):
             p["own"] = round(own, 1)

@@ -15,7 +15,7 @@ python3 -m harness verify          # compile + the tests that cover what you cha
 
 Durable lessons live in Claude's auto-memory (MEMORY.md index, loaded each
 session) and the write-ups: DFS_STATUS.md, NHL_STATUS.md, NCAAF_STATUS.md,
-NASCAR_STATUS.md, MMA_STATUS.md, DFS_METHODOLOGY.md, GPP_META.md (what wins
+NASCAR_STATUS.md, MMA_STATUS.md, NBA_STATUS.md (NBA + college), DFS_METHODOLOGY.md, GPP_META.md (what wins
 GPPs + model accuracy), PICKEM_STATUS.md, ODDS_LAYER.md, DRAFTKINGS_ACCESS.md.
 Read the sport's STATUS file before changing its model. Live state (locks,
 failures) is never written by hand: `harness status` reads it.
@@ -24,17 +24,17 @@ failures) is never written by hand: `harness status` reads it.
 
 | role | where |
 |---|---|
-| apps | `app.py` (MLB), `pages/2_NFL 3_NCAAF 4_Pickem 5_Arbitrage 6_NASCAR 7_MMA 8_NHL 9_Parlay_Builder 10_Multi_Sport_Parlays 11_Overlay` |
+| apps | `app.py` (MLB), `pages/2_NFL 3_NCAAF 4_Pickem 5_Arbitrage 6_NASCAR 7_MMA 8_NHL 9_Parlay_Builder 10_Multi_Sport_Parlays 11_Overlay 12_NBA 13_NCAAB` |
 | ingest | `edge/odds/` (scraped prices → `data/odds.db`), `edge/arb/` (book scrapers, DK HTTP/2 shim), `edge/dfs.py` (DK draftables/lobby), `edge/nhl.py` (NHL API + DailyFaceoff), `edge/buzz.py` + `packages/transcripts` (YouTube/podcasts) |
 | model | per sport: `edge/dfs_<sport>_theory.py` (objectives, ownership), `edge/<sport>_sim.py` / `edge/dfs_sim.py` (simulators), `edge/dfs_run_<sport>.py` (`build_slate`, the one pipeline app+CLI share) |
-| optimize | `edge/dfs_opt*.py`, `edge/dfs_leverage*.py` (chalk↔contrarian frontier + contest EV, every sport), `edge/dfs_nfl_contest.py`, `harness/late_swap.py`, `edge/dfs_swap.py` (MLB) |
+| optimize | `edge/dfs_opt*.py` (`dfs_opt_climb.py` = the shared percentile search NBA/NCAAB run on), `edge/dfs_leverage*.py` (chalk↔contrarian frontier + contest EV, every sport), `edge/dfs_nfl_contest.py`, `harness/late_swap.py`, `edge/dfs_swap.py` (MLB) |
 | evaluate | `scripts/*_calibration.py`, `scripts/contest_db.py` → `data/contests.db`, `scripts/gpp_meta.py`, `scripts/model_accuracy.py`, `scripts/buzz_trust.py`, backtests |
 | publish | `scripts/odds_collect.py --push`, `draftables_publish.py`, `nhl_lines_publish.py`, `mirror_app.py` (generated standalone repos — never edit a mirror) |
 | monitor | `harness/monitor.py` (goalie changes, line moves → ntfy), `scripts/dfs_overlay.py`, `harness/status.py` |
 | harness | `harness/` (catalog, runner + `data/harness/runs.jsonl`, verify, status, monitor, late swap, navigator), `.claude/hooks/` |
 
 Sports are separate models with separate calibration loops (MLB, NFL, NCAAF,
-NHL, NASCAR, MMA; NBA starts ~10/14). Learnings carry over; parameters do not.
+NHL, NASCAR, MMA, NBA, NCAAB — college basketball unverified live until ~11/3: NBA_STATUS.md). Learnings carry over; parameters do not.
 
 ## Standards
 

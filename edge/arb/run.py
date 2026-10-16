@@ -219,7 +219,8 @@ def _draftkings_pass(board: Board, cfg: ArbConfig, stats: dict) -> int:
                                 is_main_line="alt" not in name.lower())["quotes"]
 
         if cfg.draftkings_props and sport_key in catalog.props_sports():
-            subs = dk.prop_subcategories(payload)[: cfg.draftkings_max_prop_subcategories]
+            subs = dk.prop_subcategories(payload, sport_key=sport_key)[
+                : cfg.draftkings_max_prop_subcategories]
             for cid, sid, _n in subs:
                 time.sleep(cfg.request_gap_seconds)
                 try:

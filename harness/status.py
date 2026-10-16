@@ -106,7 +106,7 @@ def _live_listing() -> dict:
     from edge import dfs
     out = {}
     for sport, code in (("nhl", "NHL"), ("nfl", "NFL"), ("ncaaf", "CFB"), ("nascar", "NAS"),
-                        ("mma", "MMA"), ("mlb", "MLB")):
+                        ("mma", "MMA"), ("mlb", "MLB"), ("nba", "NBA"), ("ncaab", "CBB")):
         try:
             gs = dfs.draft_groups(code)
         except Exception:                                   # noqa: BLE001
@@ -114,7 +114,8 @@ def _live_listing() -> dict:
         out[sport] = [[g.get("DraftGroupId"), g.get("StartDate"),
                        f"{g.get('ContestStartTimeSuffix') or ''} {g.get('GameCount')}g".strip()]
                       for g in gs if g.get("GameTypeId") in (1, 2, 4, 6, 7, 70, 94, 96, 114, 145, 158,
-                                                             168, 173)]
+                                                             168, 173)
+                      or g.get("GameTypeId") in dfs.classic_game_types(code)]
     return out
 
 

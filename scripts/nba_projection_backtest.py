@@ -60,12 +60,12 @@ def build(season: str) -> list[dict]:
                 for p in ps:
                     pid = str(p["id"])
                     r = box.get((pid, g["game_id"]))
-                    rows.append({"id": pid, "position": pos.get(pid), "inactive": p["inactive"],
+                    rows.append({"id": pid, "name": p["name"], "position": pos.get(pid), "inactive": p["inactive"],
                                  "starter": p["starter"], "history": list(hist[pid]),
                                  "min": float(r["MIN"] or 0) if r else 0.0,
                                  "pts": actual_points(r) if r else 0.0})
                 tonight.append({"team": team, "opp": opp, "opp_pm": opp_pm, "league_pm": league_pm,
-                                "rows": rows, "game": g["game_id"]})
+                                "rows": rows, "game": g["game_id"], "date": d})
         out += tonight
         for t in tonight:
             got = [(r["pts"], r["min"]) for r in t["rows"] if not r["inactive"]]

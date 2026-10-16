@@ -182,11 +182,43 @@ PROFILES: dict[str, Profile] = {
         sports=("basketball_nba",),
         required_markets=("player_points", "player_rebounds", "player_assists"),
         props=True, prop_events=SLATE_EVENTS, alt_lines=False,
+        # Basketball's late news is the injury report: a star ruled out at
+        # 6:30 for a 7:00 tip moves every teammate's props, and the books
+        # pull and re-post within minutes. 15 minutes, tighter than hockey.
         max_age_seconds=900,
         est_seconds=40,
+        publish_markets=(
+            "player_points", "player_rebounds", "player_assists", "player_threes",
+            "player_steals", "player_blocks", "player_turnovers",
+            "player_points_rebounds_assists", "player_points_rebounds",
+            "player_points_assists", "player_rebounds_assists",
+            "player_blocks_steals", "spreads", "totals", "h2h"),
         notes="NBA is two books (DK + FanDuel) until Oddschecker lists it in "
-              "season -- see COVERAGE.md. Two-book consensus is thinner; the "
-              "parity harness should be re-run once Fanatics resolves.",
+              "season -- see COVERAGE.md. DraftKings' NBA prop categories are "
+              "selected by NAME as well as id (edge/arb/draftkings_league."
+              "PROP_CATEGORY_NAME) because the ids were unverified when this "
+              "shipped. Consumer: edge/dfs_run_nba.py.",
+    ),
+    "dfs_ncaab": Profile(
+        name="dfs_ncaab",
+        sports=("basketball_ncaab",),
+        # Not REQUIRED: college props cover the top few players of the
+        # televised games and nobody else, so a slate is mostly projected
+        # from DK's own FPPG (edge/dfs_run_ncaab.py). An empty prop board is
+        # a thin board, not a broken one.
+        required_markets=(),
+        props=True, prop_events=SLATE_EVENTS, alt_lines=False,
+        max_age_seconds=1800,
+        est_seconds=40,
+        publish_markets=(
+            "player_points", "player_rebounds", "player_assists", "player_threes",
+            "player_points_rebounds_assists", "player_points_rebounds",
+            "player_points_assists", "player_rebounds_assists",
+            "spreads", "totals", "h2h"),
+        notes="Game lines matter more than props here: they are the only "
+              "per-game input most college players get (implied team points "
+              "scale the FPPG fallback). DraftKings serves college at league "
+              "level, like NCAAF.",
     ),
 
     "dfs_nhl": Profile(

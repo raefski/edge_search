@@ -358,9 +358,31 @@ PLAYER_STATS: list[tuple[str, str]] = [
     (r"anytime touchdown|anytime td|to score a touchdown", "player_anytime_td"),
 
     # basketball
-    (rf"points{_SEP}rebounds{_SEP}assists|pts{_SEP}reb{_SEP}ast",
+    #
+    # The two-stat combos come BEFORE the bare words for the reason every
+    # combo above does. Before 2026-10-13 only the three-way PRA had a key, so
+    # DraftKings' "Pts + Reb O/U" (~31.5 for a star) would have matched
+    # `\bpoints\b` and been filed as his POINTS line -- a 24.5 points prop and
+    # a 31.5 "points" prop on one subject, the second silently winning
+    # dfs.player_markets' last-outcome-wins `point`. Nothing consumed NBA
+    # props then; edge/dfs_run_nba.py does now. PRA stays first: its text
+    # contains every pair.
+    (rf"points{_SEP}rebounds{_SEP}assists|pts{_SEP}reb{_SEP}ast|\bpra\b",
      "player_points_rebounds_assists"),
-    (r"three pointers?|3 ?pointers?|threes made", "player_threes"),
+    (rf"points{_SEP}rebounds|pts{_SEP}reb(ounds)?\b", "player_points_rebounds"),
+    (rf"points{_SEP}assists|pts{_SEP}ast\b", "player_points_assists"),
+    (rf"rebounds{_SEP}assists|reb{_SEP}ast\b", "player_rebounds_assists"),
+    (rf"steals{_SEP}blocks|blocks{_SEP}steals|stl{_SEP}blk|blk{_SEP}stl",
+     "player_blocks_steals"),
+    # One-sided Yes markets with no line; keyed so they cannot fall through
+    # to `\bpoints\b` via a name like "Double Double (Points/Rebounds)".
+    (r"double[- ]double", "player_double_double"),
+    (r"triple[- ]double", "player_triple_double"),
+    # "Threes O/U" is DraftKings' spelling; the old pattern wanted "threes
+    # made" and missed it.
+    (r"three pointers?|3[- ]?pointers?|threes made|\bthrees\b|3pt made",
+     "player_threes"),
+    (r"\bturnovers?\b", "player_turnovers"),
     (r"\bpoints\b", "player_points"),
     (r"\brebounds?\b", "player_rebounds"),
     (r"\bassists?\b", "player_assists"),

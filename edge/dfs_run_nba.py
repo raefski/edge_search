@@ -32,6 +32,7 @@ from zoneinfo import ZoneInfo
 from edge import dfs, dfs_nba_theory as theory, dfs_opt_nba, nba_lineups, nba_minutes as NM
 from edge import nba_project as NP
 from edge.dfs_run_nfl import _parse_time, slate_games
+from edge import nba
 from edge.nba import TEAM_NAME_TO_ABBR
 from edge.names import norm
 
@@ -41,9 +42,6 @@ SPORT = "basketball_nba"
 DK_SPORT = "NBA"
 CLASSIC = 70
 HISTORY = ROOT / "data" / "nba_player_history.json"
-#: DK -> NBA.com team codes where they differ.
-DK_TEAM = {"PHO": "PHX", "NO": "NOP", "NY": "NYK", "SA": "SAS", "GS": "GSW", "UTAH": "UTA",
-           "WSH": "WAS", "BRK": "BKN", "CHO": "CHA"}
 #: DK points per $1,000 for a player with no history at all (rookie, no preseason).
 IMPUTED_PER_K = 4.5
 #: Players a team dresses on a game night (13 active; 2025-26 NBA.com lineups median).
@@ -54,8 +52,8 @@ ET = ZoneInfo("America/New_York")
 REGULAR_SEASON_START = "2026-10-20"
 
 
-def team(code: str | None) -> str | None:
-    return DK_TEAM.get(code, code)
+#: DK -> NBA.com team codes (GS -> GSW, PHO -> PHX, ...): one table, edge/nba.DK_ALIAS.
+team = nba.team
 
 
 def classic_groups(groups: list[dict] | None = None) -> list[dict]:
@@ -270,7 +268,7 @@ def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> di
     return {"logged": True, "date": date, "n": len(pool)}
 
 
-def build_slate(draft_group=None, client=None, n_sims: int = 3000, iters: int = 80, seed: int = 0,
+def build_slate(draft_group=None, client=None, n_sims: int = 3000, iters: int = 200, seed: int = 0,
                 own_weight: float = 0.0, groups: list[dict] | None = None,
                 persist: bool = True) -> dict:
     """Board + a CASH lineup + a GPP lineup for one DK NBA Classic slate."""

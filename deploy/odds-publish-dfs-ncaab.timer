@@ -1,0 +1,12 @@
+# Push a college basketball snapshot for the cloud app. Every 2 hours 8 AM-10
+# PM local, and hourly 11 AM-7 PM when the day's college slates lock.
+[Unit]
+Description=Publish college basketball DFS snapshot for the cloud app
+[Timer]
+Unit=odds-publish@dfs_ncaab.service
+OnCalendar=*-*-* 08..22/2:40:00
+OnCalendar=*-*-* 11..19:25:00
+RandomizedDelaySec=60
+Persistent=true
+[Install]
+WantedBy=timers.target

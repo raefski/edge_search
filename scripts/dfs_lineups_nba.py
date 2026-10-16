@@ -35,7 +35,7 @@ def main() -> int:
     ap.add_argument("--draft-group", type=int, default=None)
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--sims", type=int, default=3000)
-    ap.add_argument("--iters", type=int, default=80)
+    ap.add_argument("--iters", type=int, default=200)
     ap.add_argument("--board", type=int, default=0, help="print the top N of the board")
     ap.add_argument("--no-log", action="store_true")
     args = ap.parse_args()

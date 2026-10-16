@@ -46,7 +46,7 @@ from harness.registry import ROOT
 from harness.runner import STATE
 
 sys.path.insert(0, str(ROOT))
-from edge import nba_minutes as NM          # noqa: E402
+from edge import nba, nba_minutes as NM     # noqa: E402
 from edge.nba_lineups import fetch, parse   # noqa: E402
 from edge.names import norm                 # noqa: E402
 
@@ -69,9 +69,6 @@ MAX_LISTED = 3
 #: Urgent: a player this cheap reaching this many DK points per $1,000.
 URGENT_MAX_SALARY = 5000
 URGENT_VALUE = 6.0
-#: DK -> NBA.com team codes where they differ.
-DK_TEAM = {"PHO": "PHX", "NO": "NOP", "NY": "NYK", "SA": "SAS", "GS": "GSW", "UTAH": "UTA",
-           "WSH": "WAS", "BRK": "BKN", "CHO": "CHA"}
 CLASSIC = 70
 #: The phone app's NBA page, opened on tap with the "Promoted / changed only" filter on.
 APP_URL = "https://edgesearch-h2dkcwvywzteys8e7tjk6v.streamlit.app/NBA_DFS?promoted=1"
@@ -126,7 +123,7 @@ def dk_players(state: dict, now: datetime, day: date) -> dict:
     players: dict = {}
     for gid in dk.get("groups", []):
         for info in dfs.fetch_draftables(gid).values():
-            key = f"{norm(info['name'])}|{DK_TEAM.get(info['team'], info['team'])}"
+            key = f"{norm(info['name'])}|{nba.team(info['team'])}"
             players.setdefault(key, {"salary": info["salary"], "status": info.get("dk_status")})
         break                     # the biggest slate covers its games; statuses are shared
     dk["players"], dk["fetched"] = players, now.isoformat()

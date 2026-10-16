@@ -1,0 +1,14 @@
+# Collect college basketball lines + the few props books post. College tips
+# run noon to 10 PM, so: hourly all day, every 30 minutes 11 AM-9 PM local.
+# Lines matter more than props here -- they are the only per-game input an
+# FPPG-projected college player gets (edge/dfs_run_ncaab.py).
+[Unit]
+Description=Collect college basketball lines and props
+[Timer]
+Unit=odds-collect@dfs_ncaab.service
+OnCalendar=*-*-* 00/1:50:00
+OnCalendar=*-*-* 11..21:20/30:00
+RandomizedDelaySec=120
+Persistent=true
+[Install]
+WantedBy=timers.target

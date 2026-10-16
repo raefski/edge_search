@@ -19,7 +19,8 @@ import streamlit as st
 from edge import dfs_contest
 
 #: DK lobby code per sport name used by the pages.
-LOBBY = {"NHL": "NHL", "NFL": "NFL", "NCAAF": "CFB", "NASCAR": "NAS", "MMA": "MMA", "MLB": "MLB"}
+LOBBY = {"NHL": "NHL", "NFL": "NFL", "NCAAF": "CFB", "NASCAR": "NAS", "MMA": "MMA", "MLB": "MLB",
+         "NBA": "NBA", "NCAAB": "CBB"}
 
 #: Chart colours -- reference palette, dark steps (the app's theme is dark):
 #: field = recessive neutral, ours = categorical slot 1, best = slot 2.
