@@ -101,6 +101,11 @@ JOBS: dict[str, Job] = {j.name: j for j in [
            "harness run calibrate-nba -- data/contest-standings-N.csv [--fit-ownership]"),
     _j("nba-fit", "evaluate", "scripts/nba_fit.py", sport="nba",
        doc="check edge/nba_sim.py's priors against data/nba_ground_truth/ box scores"),
+    _j("nba-onoff-backtest", "evaluate", "scripts/nba_onoff_backtest.py", sport="nba",
+       doc="held-out test of the teammate-out adjustment; fits nba_onoff.SHRINK_GAMES"),
+    _j("nba-onoff-publish", "publish", "scripts/nba_onoff_publish.py", "--push", sport="nba",
+       timer="nba-onoff-publish.timer",
+       doc="NBA box scores -> data/nba_onoff.json (with/without-teammate splits) for the board"),
     _j("hoops-verify", "ingest", "scripts/hoops_dk_discover.py", timeout=300,
        doc="read off DK what the NBA/CBB build assumed (Classic id, roster, FPPG id, prop tabs)"),
     _j("calibrate-nascar", "evaluate", "scripts/nascar_calibration.py", sport="nascar"),
@@ -153,7 +158,7 @@ EDGE_RULES: list[tuple[str, str]] = [
     (r"^dfs_entry_edge$", "model"),
     (r"^dfs_hoops_ui$", "app"),
     (r"^(dfs_opt|dfs_leverage|dfs_swap|dfs_roster|dfs_lineup|sgp|parlay)", "optimize"),
-    (r"(_sim$|_theory$|_field$|dfs_project|dfs_ladder|pickem_strategy|pickem_features|"
+    (r"(_sim$|_theory$|_field$|_onoff$|dfs_project|dfs_ladder|pickem_strategy|pickem_features|"
      r"pickem$|fairodds|oddsmath|dfs_contest|dfs_nfl_contest|dfs_validate|clv)", "model"),
     (r"^(dfs_run|dfs_sport|dfs_pagereload|repo_files|names|scanner)", "optimize"),
     (r"^(client|dfs$|nfl$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"

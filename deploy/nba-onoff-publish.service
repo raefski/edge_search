@@ -1,0 +1,17 @@
+# Build data/nba_onoff.json from NBA box scores and push it for the cloud app,
+# only when it changed (scripts/nba_onoff_publish.py).
+#
+#   cp deploy/nba-onoff-publish.service deploy/nba-onoff-publish.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now nba-onoff-publish.timer
+[Unit]
+Description=Publish NBA with/without-teammate splits for the cloud app
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/nba_onoff_publish.py --push
+Restart=no
+Nice=10
+TimeoutStartSec=600

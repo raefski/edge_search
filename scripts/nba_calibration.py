@@ -124,6 +124,11 @@ def main() -> int:
         grp = [r for r in scored if r.get("proj_source") == src]
         if len(grp) >= 5:
             print(line(src, grp))
+    # The teammate-out adjustment (edge/nba_onoff.py) graded on its own rows.
+    adj = [r for r in scored if "onoff" in (r.get("imputed") or "").split("|")]
+    if adj:
+        print(line("onoff adj", adj) if len(adj) >= 5 else
+              f"  onoff adj  n={len(adj)} -- too few to read")
     if not args.fit_ownership:
         return 0
 

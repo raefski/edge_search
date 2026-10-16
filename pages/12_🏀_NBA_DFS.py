@@ -68,5 +68,8 @@ UI.run(sport="NBA", key="nba", title="NBA DFS", icon="🏀", slates_fn=_nba_slat
        board_note="Source marks: none = props (every book that posted a line, "
                   "averaged); ·f = DK's FPPG, scaled to tonight's implied team points "
                   "(it does NOT move when a teammate is ruled out); ⚠️ = DK lists him "
-                  "questionable. A priced player with no prop and no FPPG is left off "
+                  "questionable; ↑ / ↓ = scaled for a teammate who is OUT (factor in the "
+                  "summary), from "
+                  "games he missed (edge/nba_onoff.py). A priced player with no prop and "
+                  "no FPPG is left off "
                   "the board as a probable DNP.")

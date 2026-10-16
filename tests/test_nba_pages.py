@@ -51,6 +51,15 @@ def fake_world(monkeypatch):
     # the forward-test log must not be written by a test
     from edge import dfs_run_nba
     monkeypatch.setattr(dfs_run_nba, "log_forward_test", lambda *a, **k: {"logged": False})
+    # a with/without table: BOS's Player3 is OUT in the fixture
+    from edge import nba_onoff
+    split = {"n_with": 30, "n_wo": 30, "fp_with": 20.0, "fp_wo": 30.0,
+             "min_with": 24.0, "min_wo": 31.0, "name": "Nba BOS Player7"}
+    table = {"BOS": {dfs.norm("Nba BOS Player3"): {
+        "name": "Nba BOS Player3", "games": 40, "out": 30,
+        "mates": {dfs.norm("Nba BOS Player7"): split}}}}
+    monkeypatch.setattr(nba_onoff, "load", lambda path=None: table)
+    monkeypatch.setattr(nba_onoff, "LAST_SOURCE", "built 2026-10-16T13:20")
     return clients
 
 
@@ -65,6 +74,7 @@ def test_page_renders_both_lineups(fake_world, which):
     assert html.count("<table class='lu'>") >= 3          # cash, gpp, board
     if which == "nba":
         assert "Out (dropped)" in html and "Questionable" in html
+        assert "Teammate out</b>" in html and "Player7 ×1." in html and "↑" in html
         for slot in ("PG", "SG", "SF", "PF", "C", "G", "F"):
             assert f"<td class='pos'>{slot}</td>" in html
     else:

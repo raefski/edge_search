@@ -1,0 +1,14 @@
+# Rebuild the NBA with/without-teammate table from last night's box scores
+# and push it (scripts/nba_onoff_publish.py; two stats.nba.com calls). Once
+# mid-morning after stats.nba.com has posted the night's games, and once at
+# 3 PM in case the morning run hit a stats.nba.com outage.
+# Verify any edit with `systemd-analyze calendar '<expr>'`.
+[Unit]
+Description=Publish NBA with/without-teammate splits
+[Timer]
+OnCalendar=*-*-* 09:20:00
+OnCalendar=*-*-* 15:20:00
+RandomizedDelaySec=120
+Persistent=true
+[Install]
+WantedBy=timers.target

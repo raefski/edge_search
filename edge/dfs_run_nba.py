@@ -48,7 +48,7 @@ from statistics import NormalDist
 from typing import Callable
 from zoneinfo import ZoneInfo
 
-from edge import dfs, dfs_nba_theory as theory, dfs_opt_nba, nba, nba_sim
+from edge import dfs, dfs_nba_theory as theory, dfs_opt_nba, nba, nba_onoff, nba_sim
 from edge.dfs_run_nfl import _parse_time, slate_games
 from edge.names import norm
 
@@ -112,6 +112,8 @@ class Spec:
     salary_value: float | None = None
     #: the salary fallback only for players priced above min salary x this
     salary_floor_mult: float = 1.15
+    #: adjust for OUT teammates from edge/nba_onoff.py's with/without table
+    onoff: bool = False
     extra: dict = field(default_factory=dict)
 
 
@@ -122,7 +124,7 @@ def _nba_spec() -> Spec:
                 profiles=NBA_PROFILES, positions=lambda s: _ordered(s, nba.positions),
                 slots_for=nba.slots_for, team=nba.team, team_from_name=nba.team_from_name,
                 # 13.5: NBA margin vs the closing spread (nba_sim's eff_sd prior).
-                margin_sd=13.5, min_fppg=8.0, salary_value=None)
+                margin_sd=13.5, min_fppg=8.0, salary_value=None, onoff=True)
 
 
 def _ordered(dk_position: str, fn) -> list:
@@ -396,7 +398,20 @@ def build_board(spec: Spec, gid: int, meta: dict, client, n_sims: int = 2000, se
                  "missing_lines": sorted(g["matchup"] for k, g in games.items() if k not in lines),
                  "date": date, "books": books, "out": [], "doubtful": [],
                  "dropped_no_projection": [], "sources": {"props": 0, "fppg": 0, "salary": 0},
-                 "imputed": 0})
+                 "imputed": 0, "onoff": {}})
+    # Teammates ruled OUT, per team, and which teams' props are STALE: the
+    # books pull an OUT player's own lines when they re-price his team, so a
+    # scratched player who still has a points line means the re-post has not
+    # happened yet (edge/nba_onoff.py, "what it corrects").
+    out_by_team: dict = {}
+    for sal in salaries.values():
+        if (sal.get("dk_status") or "").upper() in OUT_STATUS and sal.get("salary"):
+            out_by_team.setdefault(spec.team(sal.get("team")), []).append(sal["name"])
+    stale = {t for t, names in out_by_team.items()
+             if any((props.get(norm(n)) or {}).get("pts") for n in names)}
+    table = nba_onoff.load() if spec.onoff and out_by_team else {}
+    info["onoff_source"] = nba_onoff.LAST_SOURCE if spec.onoff and out_by_team else None
+    info["stale_props_teams"] = sorted(stale)
     opp_of = {}
     for g in games.values():
         opp_of[spec.team(g["home"])] = spec.team(g["away"])
@@ -434,6 +449,14 @@ def build_board(spec: Spec, gid: int, meta: dict, client, n_sims: int = 2000, se
                 # half-way toward tonight's environment (a PRIOR exponent).
                 fp *= (implied[t] / spec.league.team_points) ** 0.5
             means = means_from_total(fp, profile)
+        onoff = None
+        if table and out_by_team.get(t) and (source != "props" or t in stale):
+            r, used = nba_onoff.ratio(table, t, sal["name"], out_by_team[t])
+            if used and abs(r - 1.0) > 1e-3:
+                means = {k: round(v * r, 3) for k, v in means.items()}
+                onoff = {"ratio": round(r, 3), "used": used}
+                imputed = list(imputed) + ["onoff"]
+                info["onoff"][sal["name"]] = onoff
         info["sources"][source] += 1
         if imputed:
             info["imputed"] += 1
@@ -444,7 +467,8 @@ def build_board(spec: Spec, gid: int, meta: dict, client, n_sims: int = 2000, se
                      "start": sal.get("start"), "salary": sal["salary"],
                      "dk_pos": sal.get("position"), "group": group, "slots": slots,
                      "means": means, "imputed": imputed, "source": source,
-                     "status": status or None, "dk_fppg": sal.get("dk_fppg")})
+                     "status": status or None, "dk_fppg": sal.get("dk_fppg"),
+                     "onoff": onoff})
 
     sim_games = {}
     for k, g in games.items():

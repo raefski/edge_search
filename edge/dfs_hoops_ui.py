@@ -33,13 +33,14 @@ h1 {font-size: 1.55rem !important; margin-bottom: .1rem;}
 .lu-tot {font-size:13px; color:#c7d0dd; margin:2px 0 6px;}
 .lu-note {font-size:12px; color:#9aa4b2; margin:0 0 6px;}
 .lu-wrap {overflow-x:auto;}
-table.lu {width:100%; border-collapse:collapse; font-size:14px;}
+table.lu {width:100%; border-collapse:collapse; font-size:13px;}
 table.lu th {text-align:left; color:#7f8a9c; font-weight:600; font-size:11px;
-             text-transform:uppercase; padding:2px 4px;
+             text-transform:uppercase; padding:2px 3px;
              border-bottom:1px solid rgba(255,255,255,.16);}
-table.lu td {padding:5px 4px; border-bottom:1px solid rgba(255,255,255,.07);}
+table.lu td {padding:5px 3px; border-bottom:1px solid rgba(255,255,255,.07);}
 table.lu td.pos {color:#3fb079; font-weight:700; width:44px;}
-table.lu td.nm {white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:118px;}
+table.lu td.nm div {white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+                    max-width:92px;}
 table.lu td.tip {white-space:nowrap; color:#9aa4b2;}
 table.lu td.num {text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
 .warn {background:#4a1f00; border:1px solid #a04a00; color:#ffc08a; border-radius:6px;
@@ -76,12 +77,16 @@ def _tip(iso) -> str:
 
 def _name(p) -> str:
     flag = " ⚠️" if p.get("status") else ""
-    return f"{p['name']}{SOURCE_MARK.get(p.get('source'), '')}{flag}"
+    # The teammate-out arrow goes FIRST: a long name is truncated from the
+    # right at 390px, and the arrow is the part that must survive (the exact
+    # factor is in the summary above the tabs).
+    oo = ("↑ " if p["onoff"]["ratio"] >= 1 else "↓ ") if p.get("onoff") else ""
+    return f"{oo}{p['name']}{SOURCE_MARK.get(p.get('source'), '')}{flag}"
 
 
 def table(result) -> str:
     body = "".join(
-        f"<tr><td class='pos'>{slot}</td><td class='nm'>{_name(p)}</td>"
+        f"<tr><td class='pos'>{slot}</td><td class='nm'><div>{_name(p)}</div></td>"
         f"<td>{p['team']}</td><td class='tip'>{_tip(p.get('start'))}</td>"
         f"<td class='num'>{p['salary']:,}</td><td class='num'>{p['proj']:.1f}</td>"
         f"<td class='num'>{p['floor']:.0f}</td><td class='num'>{p['ceil']:.0f}</td>"
@@ -137,6 +142,33 @@ def summary(res: dict, sport_label: str) -> None:
     else:
         st.markdown("<div class='ok'>✅ DraftKings lists nobody on this slate as out or "
                     "questionable.</div>", unsafe_allow_html=True)
+    if info.get("onoff_source") is not None:
+        adj = info.get("onoff") or {}
+        stale = info.get("stale_props_teams") or []
+        if info["onoff_source"] in ("missing", "unreadable"):
+            st.markdown("<div class='warn'>Teammate-out adjustment OFF: the with/without table "
+                        f"is {info['onoff_source']} (scripts/nba_onoff_publish.py). FPPG "
+                        "projections ignore tonight's scratches.</div>", unsafe_allow_html=True)
+        elif adj:
+            # Grouped by who is out: one line per scratch, its teammates' factors
+            # beside it -- listing "(w/o X)" on every name was a wall at 390px.
+            groups: dict = {}
+            for name, v in adj.items():
+                who = " + ".join(u["without"] for u in v["used"])
+                groups.setdefault(who, []).append((name, v["ratio"]))
+            lines = []
+            for who, mates in sorted(groups.items(), key=lambda kv: -len(kv[1])):
+                mates.sort(key=lambda m: -abs(m[1] - 1))
+                lines.append(f"w/o <b>{who}</b>: " + ", ".join(
+                    f"{n.split()[-1]} ×{r:.2f}" for n, r in mates[:5])
+                    + (f" +{len(mates) - 5}" if len(mates) > 5 else ""))
+            st.markdown(
+                "<div class='summary'><b>Teammate out</b> (scaled from games he "
+                "missed):<br>" + "<br>".join(lines)
+                + (f"<br>Props not yet re-posted for {', '.join(stale)} — those props "
+                   "adjusted too." if stale else "")
+                + f"<br><span style='font-size:11px'>with/without table {info['onoff_source']}"
+                "</span></div>", unsafe_allow_html=True)
     if info.get("missing_lines"):
         st.markdown("<div class='warn'>No betting line matched for: "
                     + ", ".join(info["missing_lines"]) + " — simulated at the league "
@@ -147,7 +179,7 @@ def summary(res: dict, sport_label: str) -> None:
 def board(res: dict, note: str) -> None:
     pool = sorted(res["pool"], key=lambda d: -(d.get("proj") or 0))
     body = "".join(
-        f"<tr><td class='pos'>{d['dk_pos']}</td><td class='nm'>{_name(d)}</td>"
+        f"<tr><td class='pos'>{d['dk_pos']}</td><td class='nm'><div>{_name(d)}</div></td>"
         f"<td>{d['team']}</td><td class='num'>{d['salary']:,}</td>"
         f"<td class='num'>{d['proj']:.1f}</td><td class='num'>{d['floor']:.0f}</td>"
         f"<td class='num'>{d['ceil']:.0f}</td>"

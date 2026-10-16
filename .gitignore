@@ -88,6 +88,8 @@ data/actuals_cache/
 # dfs_ownership_gamma_sweep.py. Would silently reset to "unknown" on a fresh
 # clone/deploy without this, breaking the cash-exclusion logic it feeds.
 !data/contest_meta.json
+# NBA with/without-teammate splits (scripts/nba_onoff_publish.py), read by the cloud board.
+!data/nba_onoff.json
 
 # Your DK entry history is your real financial/contest activity, not a public
 # leaderboard like contest-standings-*.csv (those are DK's own public per-

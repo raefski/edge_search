@@ -85,6 +85,30 @@ to 2024-25 box scores on the desktop (data/nba_ground_truth/, gitignored).
   position, normalised to slot shares. **UNFITTED PRIOR.** Fit cash and GPP
   separately on exports: `harness run calibrate-nba -- <export> --fit-ownership`.
 
+## 5a. Teammate out: our own with/without splits (edge/nba_onoff.py, 2026-10-16)
+
+Built instead of paying for RotoGrinders' CourtIQ ($74.99/mo NBA tier, no export).
+Splits are **game-level**: what a player scores in games a key teammate (20+ min,
+8+ games) *missed*, against games he played. That is the DFS case, unlike CourtIQ's
+on-court splits, whose "off" minutes are mostly bench-vs-bench. Source: the
+`leaguegamelog` box scores `scripts/nba_ground_truth_collect.py` already pulls (one
+call a season); last season merged in at half weight.
+
+**Applied only where the market has not already done it:** to FPPG-projected players
+on a team with a DK-OUT player; and to props players while the props are **stale**
+(the OUT player still has a points line, so the books have not re-posted). Each
+split is shrunk by n_wo / (n_wo + K); the combined factor is bounded to [0.75, 1.6]
+and relative to the player's all-games level, so a long-injured star (already in
+FPPG) moves nothing. The board marks adjusted players ↑1.12 / ↓0.93 and says when
+the table is missing.
+
+| | status |
+|---|---|
+| K = `SHRINK_GAMES` = 10 | **PRIOR.** `harness run nba-onoff-backtest` fits it held out (first half of dates fit, second reported, date = unit, bootstrap CI by date) |
+| backtest on real data | **not run** — 2024-25 box scores are on the desktop only. On a synthetic league (24k player-games, one planted +6 effect): MAE 4.84 vs 4.93, CI [−0.06, +0.03], not significant, so the shrinkage must be fitted, not assumed |
+| vs the books' re-posted lines | not possible yet: no NBA scans in data/odds.db. Once a few weeks exist, the books' teammate re-pricing after a scratch is the second, cleaner test |
+| publish | `harness run nba-onoff-publish` (`--push`), timer `nba-onoff-publish` 09:20 / 15:20 |
+
 ## 6. What is NOT validated
 
 | thing | status |
@@ -109,5 +133,8 @@ to 2024-25 box scores on the desktop (data/nba_ground_truth/, gitignored).
    board: books > 0, few `fppg` rows among starters, no implausible values.
 3. Install timers: `odds-collect-dfs-nba`, `odds-publish-dfs-nba` (and the
    ncaab pair in November); draftables-publish already covers NBA/CBB.
-4. After the first contest: `harness run import-contests`, then
+4. `python3 -m harness run nba-onoff-publish` (then enable its timer), and
+   `python3 -m harness run nba-onoff-backtest` on 2024-25: set `SHRINK_GAMES`
+   from it only if the held-out CI says it helps.
+5. After the first contest: `harness run import-contests`, then
    `harness run calibrate-nba -- data/contest-standings-N.csv`.
