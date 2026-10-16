@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-16T14:29:55+00:00",
+"generated_at": "2026-10-16T14:59:57+00:00",
 "goalies": {
 "2026-10-16": {
 "ANA": {
@@ -14805,7 +14805,7 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "D1",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -14907,7 +14907,7 @@
 "toiMinutes": 112,
 "toiSeconds": 11
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -15184,7 +15184,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Jordan Binnington": {
 "gtd": false,
@@ -15322,7 +15322,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Pius Suter": {
 "gtd": false,
