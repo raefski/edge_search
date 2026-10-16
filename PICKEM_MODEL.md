@@ -1395,6 +1395,66 @@ the shipped model on primetime coin flips. Result: **54-75, 41.9%** [34, 50] (20
 2023-24 holdout has now been looked at a third time (the model twice, this one rule once).
 Its primetime underdog outcomes are no longer unseen.
 
+### 5n. Travel, rest, scheme "buzz saws" and coordinators (Adam, 2026-10-12)
+
+`scripts/nfl_matchup_backtest.py`, coordinators in `data/nfl_coordinators.csv` (Wikipedia
+team-season infoboxes + staff sections, 2012-25, ~92% filled). All vs the closing spread;
+train 2010-19 / validate 2020-22 / fresh 2025; 2023-24 unread. Rules written before running.
+
+| rule (side taken) | 2010-19 | 2020-22 | 2025 |
+|---|---|---|---|
+| T1 West team at <=1pm ET in the East -> home | 45.5% | 42.9% | 47.4% |
+| T2 West team at night vs East/Central -> West team | **59.7%** | **53.8%** | **84.6%** (11-2) |
+| T3 road team crossing >= 2 zones -> home | 48.3% | 44.8% | 51.4% |
+| T4 >= 3 more days of rest -> rested team | 50.1% | 51.9% | 48.3% |
+| S1 style matchup (pass-heavy O vs pass-strong D) | 50.5% | 48.8% | 49.8% |
+| C1 same DC vs same OC: fade/back last meeting's +-7 | 51.9% | 45.2% | 49.0% |
+
+- **T2 passes vs the close** and replicates the published circadian finding, but it adds nothing
+  to pick'em: against the frozen line, where it disagrees with the shipped model it went 20-19
+  (2014-22); in 2026 1-1. The model's line-following already absorbs it. ~10 games a season.
+- **T1 runs the WRONG way in all three periods** -- the market over-penalises West teams travelling
+  East early. Reversed, it is 27-22 vs the model on disagreements (2014-22) and 2-3 in 2026. Post
+  hoc direction; not shipped.
+- **No buzz saw.** 1,847 repeat DC-vs-OC meetings: corr(offence vs implied total, meeting k ->
+  k+1) = **-0.012** [-0.058, +0.033]. Head coaches were already dead (5b).
+
+### 5o. Invented statistics -- "reverse-engineer covers" (Adam, 2026-10-12)
+
+`scripts/nfl_discovery.py`: 24 new team stats from raw pbp, season-to-date and leak-free --
+points vs EPA luck (both sides), fumble-recovery luck, kicker luck (FG make curve fitted on
+discovery seasons only), 3rd-down luck, red-zone luck, one-score and Pythagorean luck,
+record-vs-play gap, garbage-time padding, explosive-play dependence, penalty-first-down
+reliance, 4th-quarter leverage EPA, volatility, 4th-and-short go rate, neutral pass rate over
+expected, sack differential, pace, ATS momentum, last game's cover, and net EPA as control.
+Target: home cover margin vs the close. Discover 2013-19 (n=1,327), confirm 2020-22 (655),
+fresh 2025 (224); survivor = BH q < .10 in discovery AND same sign in both later periods.
+
+- **Zero survivors**; a within-season shuffle of the outcomes produces 0.03 on average.
+- **Combined ridge** (all 24, fit 2013-19 only): 52.7% in 2020-22, 51.1% in 2025, and its most
+  confident third collapses (60.2% in-sample -> 50.7% -> 42.7%): overfit.
+- **Nearest miss:** explosive-play dependence, negative in all three periods (r = -.064, -.037,
+  -.044) -- teams living on 20+ yard plays cover slightly less. Among 24 stats, several keep a
+  sign by chance; a lead to re-check with 2026's full season, not an edge.
+
+### 5p. Most-endorsed quarterbacks (Adam, 2026-10-12)
+
+`scripts/nfl_endorsement_qb.py`. Each season's top tier of QB off-field earners (Forbes
+2014-16 and 2021, Sportico 2024-25; the years between carried over -- an approximation), in
+games they actually STARTED against a non-endorsed QB. 2013-22 + 2025; 2023-24 unread.
+
+| | 2013-19 (n=529) | 2020-22 (217) | 2025 (66) |
+|---|---|---|---|
+| wins above the no-vig moneyline | +17.0 | +6.7 | +1.3 |
+| ATS, all games | **55.0%** | 48.8% | 50.0% |
+| ATS as an underdog | 54.0% (140) | 57.7% (26) | 62.5% (16) |
+
+- Straight up they beat the market's expectation slightly (~+3pp, ~1.8 SD over 812 games).
+- ATS the edge belonged to the Brady/Manning/Brees era and is gone since 2020.
+- As underdogs they covered in all three periods, but it is a post-hoc slice of four, 42 games
+  after 2019, and against CBS's frozen line it adds nothing: where "back the endorsed QB getting
+  points" disagrees with the shipped model it went 29-25 (2014-19), 6-7 (2020-22), 2-2 (2026).
+
 ### 5f. Experiments that couldn't be run at all (data doesn't exist yet)
 
 Not failures — genuinely blocked. Listed so nobody re-plans them without first solving the

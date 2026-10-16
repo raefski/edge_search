@@ -31,6 +31,8 @@ data/nba_historical_events_*.json
 # size (59MB+15MB raw), same call as MLB's own data/model_lab_rows.json.
 data/nfl_ground_truth/
 data/nba_ground_truth/
+data/nba_lineups/
+data/nba_lineup_log.csv
 data/nfl_model_rows_*.json
 data/nba_model_rows_*.json
 
@@ -129,6 +131,10 @@ data/nflverse_games.csv
 # DailyFaceoff NHL lines + starting goalies for the cloud app
 # (scripts/nhl_lines_publish.py; edge/nhl.py falls back to it).
 !data/nhl_lines_snapshot.json
+# NBA app inputs for the cloud, published by the desktop: players' recent games
+# (scripts/nba_history_publish.py) and tonight's NBA.com lineups (harness/nba_scratch.py).
+!data/nba_player_history.json
+!data/nba_lineups_snapshot.json
 
 # Arbitrage snapshot: the Streamlit page reads this
 !data/arb_snapshot.json
@@ -186,6 +192,8 @@ data/dfs_calibration.html
 
 # contest fill snapshots (scripts/dfs_overlay.py): local data, grows every lock
 data/contest_fill_log.csv
+# entries at lock for unfilled contests (harness/overlay.py): fits the last-minutes fill
+data/contest_finals.csv
 
 # harness runtime state: run ledger + logs, monitor state/alerts, verify stamp,
 # navigator captures, generated STATUS.md (python3 -m harness status --write).

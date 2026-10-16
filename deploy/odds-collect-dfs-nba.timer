@@ -1,0 +1,12 @@
+[Unit]
+Description=Collect NBA game lines + props (the NBA app's implied totals)
+
+[Timer]
+Unit=odds-collect@dfs_nba.service
+OnCalendar=*-*-* 00/1:20:00
+OnCalendar=*-*-* 17..22:05/15:00
+RandomizedDelaySec=120
+Persistent=true
+
+[Install]
+WantedBy=timers.target

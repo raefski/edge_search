@@ -7,6 +7,7 @@
     python3 -m harness monitor [--push] [--hours H]   goalie changes + line moves
     python3 -m harness late-swap nhl [--gid G] [--players "a, b"] [--entry CSV] [--mode gpp|cash]
     python3 -m harness overlay [--push] [--min-roi 0.10] [--hours 2.5]   guaranteed contests not filling
+    python3 -m harness nba-scratch [--push] [--date YYYY-MM-DD]          NBA late scratches / promoted starters
     python3 -m harness navigate <url> [--match S] [--click TEXT] [--wait S] [--profile DIR]
 """
 from __future__ import annotations
@@ -64,6 +65,11 @@ def main(argv=None) -> int:
     s.add_argument("--include-resizable", action="store_true")
     s.add_argument("--all-types", action="store_true",
                    help="include Showdown, Captain and Madden contests (default: Classic only)")
+    s.add_argument("--report", action="store_true",
+                   help="how often locked contests (entered or not) ended with an overlay")
+    s = sub.add_parser("nba-scratch")
+    s.add_argument("--push", action="store_true", help="send new changes to the phone")
+    s.add_argument("--date", help="replay a past night (YYYY-MM-DD): no DK, no push, no state")
     s = sub.add_parser("navigate")
     s.add_argument("url")
     s.add_argument("--match")
@@ -111,8 +117,15 @@ def main(argv=None) -> int:
         return late_swap.main(a)
     if a.cmd == "overlay":
         from harness import overlay
+        if a.report:
+            print("\n".join(overlay.report()))
+            return 0
         overlay.run(do_push=a.push, hours=a.hours, min_roi=a.min_roi, max_fee=a.max_fee,
                     include_resizable=a.include_resizable, all_types=a.all_types)
+        return 0
+    if a.cmd == "nba-scratch":
+        from harness import nba_scratch
+        nba_scratch.run(do_push=a.push, day=a.date)
         return 0
     if a.cmd == "navigate":
         from harness import navigator

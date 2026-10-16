@@ -52,11 +52,17 @@ ODDS_FRESH_MIN = 15
 #: Contest-fill snapshots (scripts/dfs_overlay.py) for a sport whose slate locks
 #: within this many minutes: one lobby request per sport per run, only then.
 FILL_WINDOW = 120
-LOBBY_CODE = {"nhl": "NHL", "nfl": "NFL", "ncaaf": "CFB", "nascar": "NAS", "mma": "MMA", "mlb": "MLB"}
+LOBBY_CODE = {"nhl": "NHL", "nfl": "NFL", "ncaaf": "CFB", "nascar": "NAS", "mma": "MMA", "mlb": "MLB",
+              "nba": "NBA"}
 
 
 def _slates_nhl():
     from edge import dfs_run_nhl as R
+    return [(r["gid"], r["start"], f"{r['label']} {r['games']}g") for r in R.classic_groups()]
+
+
+def _slates_nba():
+    from edge import dfs_run_nba as R
     return [(r["gid"], r["start"], f"{r['label']} {r['games']}g") for r in R.classic_groups()]
 
 
@@ -93,6 +99,8 @@ def _slates_mlb():
 SPORTS = {
     "nhl": (_slates_nhl, ["scripts/dfs_lineups_nhl.py", "--draft-group"], "dfs_nhl",
             ["data/dfs_proj_log_nhl.csv", "data/dfs_lineups_nhl_*.csv"]),
+    "nba": (_slates_nba, ["scripts/dfs_lineups_nba.py", "--draft-group"], "dfs_nba",
+            ["data/dfs_proj_log_nba.csv", "data/dfs_lineups_nba_*.csv"]),
     "nfl": (_slates_nfl, ["scripts/dfs_lineups_nfl.py", "--draft-group"], "dfs_nfl",
             ["data/dfs_proj_log_nfl.csv", "data/dfs_lineups_nfl_*.csv"]),
     "ncaaf": (_slates_ncaaf, ["scripts/dfs_lineups_ncaaf.py", "--draft-group"], "dfs_ncaaf",
