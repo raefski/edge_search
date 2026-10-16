@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-16T16:59:50+00:00",
+"generated_at": "2026-10-16T17:29:37+00:00",
 "goalies": {
 "2026-10-16": {
 "ANA": {
@@ -125,11 +125,11 @@
 "status": null
 },
 "WPG": {
-"goalie": "Stuart Skinner",
-"status": null
+"goalie": "Clay Stevenson",
+"status": "Likely"
 },
 "WSH": {
-"goalie": "Charlie Lindgren",
+"goalie": "Logan Thompson",
 "status": null
 }
 }
@@ -167,7 +167,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Alex Killorn": {
@@ -405,7 +405,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Judd Caulfield": {
@@ -19659,7 +19659,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -19967,7 +19967,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
