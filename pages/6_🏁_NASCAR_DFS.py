@@ -40,27 +40,9 @@ st.set_page_config(page_title="DK NASCAR DFS Lineups", page_icon="🏁",
                    layout="wide", initial_sidebar_state="auto")
 
 
-# Streamlit Community Cloud pulls new commits and RERUNS this script without
-# restarting the Python process, so sys.modules keeps whatever module objects
-# an earlier run imported. A deploy that changes an existing function's BODY --
-# the ordinary bugfix -- then goes on running the pre-fix code with no error at
-# all. The mechanism, the package list and the fingerprint all live in
-# edge/dfs_pagereload.py; this is only the st.cache_resource gate, which cannot
-# live in edge/ because nothing in edge/ imports streamlit.
-#
-# THIS USED TO BE THREE DIVERGENT COPIES AND THE DIVERGENCE WAS AN OUTAGE: none
-# of them reloaded edge.odds, so the deployed NCAAF page died on
-# "unknown profile 'dfs_ncaaf'" while serving the very commit that added it.
-from edge.dfs_pagereload import reload_packages, source_fingerprint  # noqa: E402
+from edge.pagereload import fresh  # noqa: E402
 
-
-@st.cache_resource(show_spinner=False)
-def _reload_edge(fingerprint: float) -> float:
-    reload_packages()
-    return fingerprint
-
-
-_reload_edge(source_fingerprint())
+fresh()   # a Cloud deploy reloads every repo module (edge/pagereload.py)
 
 from edge import dfs_leverage_ui as LU          # noqa: E402
 from edge import dfs_run_nascar as R          # noqa: E402

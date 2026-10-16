@@ -70,7 +70,7 @@ between ad-hoc lookups.
 | changed | run |
 |---|---|
 | anything | `python3 -m harness verify` (compiles + covering tests) |
-| a DFS page / app.py | also drive it: `streamlit.testing.v1.AppTest.from_file(<abs path>)`; for layout, Playwright at 390px width (iPhone); pages run as `__main__`, so every cached function name must be unique across pages |
+| a DFS page / app.py | also drive it: `streamlit.testing.v1.AppTest.from_file(<abs path>)`; for layout, Playwright at 390px width (iPhone); pages run as `__main__`, so every cached function name must be unique across pages; every page starts with `from edge.pagereload import fresh; fresh()` (tested) |
 | an optimizer / model | its sport's tests + a build on a live or logged slate; compare against the previous output before claiming better |
 | DFS suite | `python3 -m pytest -q tests/test_dfs*.py tests/test_page_cache_isolation.py tests/test_streamlit_api.py` (~2 min) |
 | everything | `python3 -m pytest -q` |

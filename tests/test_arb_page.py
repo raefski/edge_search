@@ -511,7 +511,7 @@ def test_casino_mode_filters_to_dk_fd_and_ranks_by_smallest_risk(tmp_path):
         "real arb first regardless of size, then gaps by ascending risk"
 
 
-def test_a_stale_cached_engine_module_is_reloaded_before_use(tmp_path):
+def test_a_stale_cached_engine_module_is_reloaded_before_use(tmp_path, monkeypatch):
     """Streamlit Community Cloud reruns this script WITHOUT restarting the
     Python process, so `sys.modules` keeps whatever module object an earlier
     run imported. That is not hypothetical: it is exactly what undid the
@@ -530,6 +530,15 @@ def test_a_stale_cached_engine_module_is_reloaded_before_use(tmp_path):
         return []                 # the pre-fix shape: always empty
 
     sys.modules["edge.arb.engine"].top_rows_per_sport = stale
+    # ...and a deploy since: the sources on disk are newer than what this
+    # process loaded, which is what edge/pagereload.fresh() checks
+    # (only edge.arb is reloaded here: reloading every module in the test
+    # process would rebind classes other tests' pytest.raises hold)
+    from edge import pagereload
+    monkeypatch.setattr(pagereload, "_loaded", 0.0)
+    real_reload = pagereload.reload_packages
+    monkeypatch.setattr(pagereload, "reload_packages",
+                        lambda *a, **k: real_reload(("edge.arb",)))
     try:
         st = run_page(_snapshot(), tmp_path=tmp_path, answers={
             "Boost 1 %": 50,

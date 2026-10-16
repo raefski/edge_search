@@ -35,18 +35,9 @@ sys.path.insert(0, str(ROOT))
 st.set_page_config(page_title="DK MMA DFS Lineups", page_icon="🥊",
                    layout="wide", initial_sidebar_state="auto")
 
-# See pages/6_🏁_NASCAR_DFS.py and edge/dfs_pagereload.py: Streamlit Cloud
-# reruns without restarting, so a deploy only takes effect through this gate.
-from edge.dfs_pagereload import reload_packages, source_fingerprint  # noqa: E402
+from edge.pagereload import fresh  # noqa: E402
 
-
-@st.cache_resource(show_spinner=False)
-def _reload_edge(fingerprint: float) -> float:
-    reload_packages()
-    return fingerprint
-
-
-_reload_edge(source_fingerprint())
+fresh()   # a Cloud deploy reloads every repo module (edge/pagereload.py)
 
 from edge import dfs_leverage_ui as LU       # noqa: E402
 from edge import dfs_run_mma as R          # noqa: E402

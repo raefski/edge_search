@@ -16,9 +16,9 @@ import pytest
 from edge import dfs, repo_files
 
 ROOT = Path(__file__).resolve().parents[1]
-#: The reload gate is identical on purpose: one reload per process serves
-#: every page, so sharing its cache is the intended behaviour.
-SHARED_OK = {"_reload_edge"}
+#: Names pages may share. None since 2026-10-16: the reload gate lives in
+#: edge/pagereload.py, not in the pages.
+SHARED_OK: set = set()
 
 
 def _cached_functions(path: Path) -> list[str]:

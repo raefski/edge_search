@@ -40,54 +40,9 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-# Streamlit Community Cloud pulls new commits and RERUNS this script WITHOUT
-# restarting the Python process, so `sys.modules` keeps whatever module
-# objects an earlier run imported. `from edge.arb.x import name` only notices
-# a change when `name` is new -- the far more common case is an EXISTING
-# name's BODY changing (an ordinary bugfix), and that goes on running the
-# pre-fix code with no error at all, silently. That is what undid the boost
-# cap-0 fix here: the page's own code updated on the next deploy (Streamlit
-# always re-execs the entrypoint script), but `top_rows_per_sport` kept its
-# pre-fix body -- returning zero rows for every sport -- because nothing
-# forced `edge.arb.engine` back in sync with disk. `_from_scan_request` below
-# only reloads on a MISSING name, which never catches this.
-#
-# Reload every edge.arb module already resident, before anything below binds
-# a name off one. Three passes because reload order here is not
-# dependency-sorted: a module reloaded before something it does
-# `from .x import y` on picks up that something's PRE-reload value the first
-# time round, and only catches up once that something is reloaded too.
-#
-# Gated on a fingerprint of the source files' mtimes, via st.cache_resource --
-# a PROCESS-wide cache, the same scope as sys.modules itself, so it is shared
-# across every session and every rerun. Doing this unconditionally on every
-# rerun (the original shape) reran 20 modules' top-level code 3x per single
-# widget click with nothing to show for it locally, where the file on disk
-# never changes between clicks. st.session_state would be the wrong tool
-# here: it is per-BROWSER-SESSION, and a Streamlit Cloud redeploy that keeps
-# the process (and an already-open tab's session_state) alive across the
-# deploy is exactly the case this reload exists to catch -- a session-scoped
-# gate would skip the reload for precisely the session that needs it.
-def _arb_source_fingerprint() -> float:
-    try:
-        return max(p.stat().st_mtime for p in (ROOT / "edge" / "arb").glob("*.py"))
-    except ValueError:
-        return 0.0
+from edge.pagereload import fresh  # noqa: E402
 
-
-@st.cache_resource(show_spinner=False)
-def _reload_edge_arb(fingerprint: float) -> float:
-    for _pass in range(3):
-        for _name in sorted(k for k in sys.modules
-                            if k == "edge.arb" or k.startswith("edge.arb.")):
-            try:
-                importlib.reload(sys.modules[_name])
-            except Exception:                               # noqa: BLE001
-                pass
-    return fingerprint
-
-
-_reload_edge_arb(_arb_source_fingerprint())
+fresh()   # a Cloud deploy reloads every repo module (edge/pagereload.py)
 
 from edge.arb import ArbConfig                      # noqa: E402
 

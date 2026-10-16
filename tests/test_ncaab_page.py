@@ -2,7 +2,7 @@
 runner) on the synthetic slate from tests/test_dfs_ncaab.py -- the lobby, DK
 draftables and the odds client are all faked, so no network is touched.
 
-The page calls edge.dfs_pagereload.reload_packages() on first render, which
+The page calls edge.pagereload.fresh() on first render, which
 re-executes every edge.dfs* module and would wipe the fakes; it is stubbed out
 for the test (the reload itself has its own tests).
 """
@@ -26,10 +26,10 @@ PAGE = ROOT / "pages" / "13_🏀_NCAAB_DFS.py"
 
 @pytest.fixture
 def fake_world(monkeypatch):
-    from edge import dfs, dfs_pagereload, dfs_run_ncaab
+    from edge import dfs, dfs_run_ncaab, pagereload
     from edge.odds import cli
     sal = T._salaries(T.CBB_GAMES, T.CBB_POS, "Cbb")
-    monkeypatch.setattr(dfs_pagereload, "reload_packages", lambda *a, **k: 0)
+    monkeypatch.setattr(pagereload, "reload_packages", lambda *a, **k: 0)
     monkeypatch.setattr(dfs, "draft_groups", lambda sport: T._groups(5) if sport == "CBB" else [])
     monkeypatch.setattr(dfs, "LOBBY_GAME_TYPES",
                         {"CBB": [{"GameTypeId": 5, "Name": "Classic", "DraftType": "SalaryCap"}]})

@@ -32,19 +32,9 @@ sys.path.insert(0, str(ROOT))
 st.set_page_config(page_title="Parlay Builder", page_icon="🎰", layout="wide",
                    initial_sidebar_state="collapsed")
 
-from edge.dfs_pagereload import reload_packages, source_fingerprint  # noqa: E402
+from edge.pagereload import fresh  # noqa: E402
 
-_PKGS = ("edge.arb", "edge.repo_files")
-_GLOBS = ("edge/arb/*.py", "edge/repo_files.py")
-
-
-@st.cache_resource(show_spinner=False)
-def _reload_edge(fingerprint: float) -> float:
-    reload_packages(_PKGS)
-    return fingerprint
-
-
-_reload_edge(source_fingerprint(_GLOBS))
+fresh()   # a Cloud deploy reloads every repo module (edge/pagereload.py)
 
 from edge import repo_files  # noqa: E402
 from edge.arb import ArbConfig, oddsmath as om, parlay as PL  # noqa: E402

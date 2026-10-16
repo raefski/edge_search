@@ -10,6 +10,10 @@ import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+
+from edge.pagereload import fresh  # noqa: E402
+
+fresh()   # a Cloud deploy reloads every repo module (edge/pagereload.py)
 from scripts import dfs_overlay as O  # noqa: E402
 
 st.set_page_config(page_title="Overlay finder", page_icon="💸", layout="centered")

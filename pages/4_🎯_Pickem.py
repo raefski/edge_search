@@ -40,6 +40,10 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from edge.pagereload import fresh  # noqa: E402
+
+fresh()   # a Cloud deploy reloads every repo module (edge/pagereload.py)
+
 from edge import repo_files  # noqa: E402
 from edge.client import CreditFloorError, DryRunBlocked, NoApiKey, OddsAPIClient  # noqa: E402
 from edge.odds.source import StaleOdds  # noqa: E402

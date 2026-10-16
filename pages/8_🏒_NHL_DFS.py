@@ -30,16 +30,9 @@ sys.path.insert(0, str(ROOT))
 st.set_page_config(page_title="DK NHL DFS Lineups", page_icon="🏒",
                    layout="wide", initial_sidebar_state="auto")
 
-from edge.dfs_pagereload import reload_packages, source_fingerprint  # noqa: E402
+from edge.pagereload import fresh  # noqa: E402
 
-
-@st.cache_resource(show_spinner=False)
-def _reload_edge(fingerprint: float) -> float:
-    reload_packages()
-    return fingerprint
-
-
-_reload_edge(source_fingerprint())
+fresh()   # a Cloud deploy reloads every repo module (edge/pagereload.py)
 
 from edge import dfs_leverage_ui as LU, dfs_opt_nhl, dfs_run_nhl as R  # noqa: E402
 

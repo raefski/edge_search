@@ -38,6 +38,10 @@ _PROJ_STAR = ' <span style="color:#ffd97a">*</span>'
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
+from edge.pagereload import fresh  # noqa: E402
+
+fresh()   # a Cloud deploy reloads every repo module (edge/pagereload.py)
+
 from edge.client import OddsAPIClient  # noqa: E402
 from edge.odds.cli import scraped_client as odds_client_for  # noqa: E402
 from edge import dfs, dfs_opt, dfs_run, dfs_swap  # noqa: E402

@@ -161,7 +161,8 @@ EDGE_RULES: list[tuple[str, str]] = [
     (r"^(dfs_opt|dfs_leverage|dfs_swap|dfs_roster|dfs_lineup|sgp|parlay)", "optimize"),
     (r"(_sim$|_theory$|_field$|_onoff$|dfs_project|dfs_ladder|pickem_strategy|pickem_features|"
      r"pickem$|fairodds|oddsmath|dfs_contest|dfs_nfl_contest|dfs_validate|clv)", "model"),
-    (r"^(dfs_run|dfs_sport|dfs_pagereload|repo_files|names|scanner)", "optimize"),
+    (r"^pagereload$", "app"),
+    (r"^(dfs_run|dfs_sport|repo_files|names|scanner)", "optimize"),
     (r"^(client|dfs$|nfl$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
      r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups)", "ingest"),
 ]
