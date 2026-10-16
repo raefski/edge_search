@@ -59,10 +59,12 @@ AUTOLOG_TO_LOBBY = {"nhl": "NHL", "nfl": "NFL", "ncaaf": "CFB", "nascar": "NAS",
                     "mlb": "MLB"}
 #: Prizes that are a seat in another contest, not cash: their face value overstates the return.
 TICKET = re.compile(r"satellite|qualifier|ticket", re.I)
-#: Pushes go out only inside this many minutes of lock. Earlier "first look" pushes
-#: arrived ~1 hour out and were noise (Adam, 2026-10-14), so a contest that qualifies
-#: earlier is left for the run that finds it inside this window.
-PUSH_MIN = 15
+#: Two pushes per qualifying contest, none earlier than WARN_MIN minutes to lock (an
+#: earlier "first look" pushed ~1 hour out was noise, Adam 2026-10-14): a warning when
+#: it first qualifies inside WARN_MIN, then a final call inside FINAL_MIN. The overlay
+#: timer polls every 5 min inside NEAR_LOCK_MIN, so both land on fresh fill counts.
+WARN_MIN = 15
+FINAL_MIN = 5
 #: At most this many pushes per run, biggest edge first.
 MAX_PUSH = 6
 #: Every guaranteed contest that was not full at its last snapshot gets its entries
@@ -399,17 +401,22 @@ def _save_state(state: dict) -> None:
 
 
 def alerts_for(rows: list[dict], state: dict, now: datetime) -> list[dict]:
-    """Pushes not yet sent: each qualifying contest once, inside PUSH_MIN of lock."""
+    """Pushes not yet sent: a 15-minute warning for a qualifying contest, then its final
+    call once it is inside FINAL_MIN. A contest that first qualifies already inside
+    FINAL_MIN gets only the final call."""
     out = []
     for r in sorted((r for r in rows if r["alert"]), key=lambda r: -r["at_lock"]["roi"]):
         cid = r["id"]
-        if state.get(cid) or r["minutes"] > PUSH_MIN:
+        prev = state.get(cid)
+        if r["minutes"] > WARN_MIN:
             continue
-        final = True
+        final = r["minutes"] <= FINAL_MIN
+        if prev and (prev.get("final") or not final):
+            continue
         n_now, e_now = r["entries"], r["now"]
         e_lock, p = r["at_lock"], r["projected"]
         rz = {True: "yes", False: "no", None: "not priced"}[r["resizable"]]
-        head = ("FINAL CALL — " if final else "") + f"{r['sport']} · {r['name'][:46]}"
+        head = ("FINAL CALL — " if final else "15 MIN WARNING — ") + f"{r['sport']} · {r['name'][:46]}"
         if r.get("modelled"):
             expect = (f"Expect ~{r['n_lock']}/{r['cap']} at lock (how {r['fill_basis']} contests "
                       f"this empty fill late): cash {e_lock['cash']:.0%}, returns ${e_lock['return']:.2f} per $1 "
