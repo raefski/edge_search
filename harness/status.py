@@ -200,6 +200,36 @@ def freshness() -> list[tuple[str, datetime | None, float, str]]:
     return out
 
 
+def odds_storage() -> list[str]:
+    """The hot store vs the F: archive (edge/odds/archive.py)."""
+    from edge.odds import archive
+    out = []
+    db = DATA / "odds.db"
+    try:
+        con = sqlite3.connect(f"file:{db}?mode=ro", uri=True, timeout=5)
+        has = con.execute("SELECT 1 FROM sqlite_master WHERE name='archived'").fetchone()
+        oldest = con.execute("SELECT MIN(started_at) FROM scan WHERE ok=1" + (
+            " AND id NOT IN (SELECT scan_id FROM archived)" if has else "")).fetchone()[0]
+        n_arch = con.execute("SELECT COUNT(*) FROM archived").fetchone()[0] if has else 0
+        con.close()
+    except sqlite3.Error as exc:
+        return [f"odds store unreadable: {exc}"]
+    size = db.stat().st_size / 1e9 if db.exists() else 0
+    age = (_now() - _parse(oldest)).days if oldest else 0
+    late = age > archive.HOT_DAYS + 8
+    out.append(f"{'✗' if late else '✓'} hot data/odds.db {size:.1f} GB, oldest unarchived scan "
+               f"{age} days (archive keeps the hot store to {archive.HOT_DAYS})"
+               + (" -- ARCHIVE OVERDUE: harness run odds-archive" if late else ""))
+    if archive.available():
+        files = sorted(archive.ARCHIVE_DIR.glob("odds_*.db"))
+        gb = sum(f.stat().st_size for f in files) / 1e9
+        out.append(f"✓ archive {archive.ARCHIVE_DIR}: {len(files)} month file(s), {gb:.1f} GB, "
+                   f"{n_arch} scans")
+    else:
+        out.append(f"✗ archive {archive.ARCHIVE_DIR} NOT MOUNTED -- old scans stay hot until it is")
+    return out
+
+
 def proj_logs() -> list[tuple[str, str]]:
     """Last slate date logged per sport's forward projection log."""
     out = []
@@ -282,6 +312,7 @@ def report(live: bool = False) -> str:
     L.append("  projection logs (last slate date): "
              + ", ".join(f"{s} {d}" for s, d in proj_logs()))
     bad = [r for r in runs(since_hours=24) if r.get("rc")]
+    L += ["", "## Odds store"] + ["  " + line for line in odds_storage()]
     L += ["", f"## harness runs, last 24h: {len(runs(since_hours=24))} ({len(bad)} failed)"]
     for r in bad[-8:]:
         L.append(f"  ✗ {r['job']} rc={r['rc']} at {_parse(r['start']).astimezone(ET):%-I:%M %p} — "

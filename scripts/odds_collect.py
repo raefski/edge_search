@@ -44,8 +44,9 @@ def main() -> int:
     ap.add_argument("--push", action="store_true",
                     help="publish that snapshot to the data branch (edge/data_branch.py), "
                          "where the cloud app reads it. Implies --publish.")
-    ap.add_argument("--prune-days", type=int,
-                    help="drop scans older than this many days, then exit")
+    ap.add_argument("--archive", action="store_true",
+                    help="move scans older than edge/odds/archive.HOT_DAYS to the F: "
+                         "archive (verified, then removed from the hot store), then exit")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
 
@@ -64,12 +65,12 @@ def main() -> int:
                 print(f"{r['profile']:<14} {r['n']:>6} {r['quotes'] or 0:>10}  {r['last']}")
             return 0
 
-        if args.prune_days is not None:
-            print(f"pruned {store.prune(args.prune_days)} scan(s)")
+        if args.archive:
+            print(json.dumps(store.archive_old(), indent=2))
             return 0
 
         if not args.profile:
-            ap.error("--profile is required unless --status or --prune-days")
+            ap.error("--profile is required unless --status or --archive")
 
         prof = get_profile(args.profile)
         print(f"profile {prof.name}: {list(prof.sports) or 'all catalogued leagues'} "

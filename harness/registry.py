@@ -58,6 +58,9 @@ JOBS: dict[str, Job] = {j.name: j for j in [
       for p in ("dfs_mlb", "dfs_nfl", "dfs_nhl", "dfs_ncaaf", "dfs_nba", "dfs_ncaab", "pickem_nfl")],
     _j("odds-status", "ingest", "scripts/odds_collect.py", "--status", timeout=120,
        doc="what the odds store holds, per profile"),
+    _j("odds-archive", "ingest", "scripts/odds_collect.py", "--archive", timeout=6 * 3600,
+       timer="odds-archive.timer",
+       doc="move scans older than 14 days to the F: archive (verified first; edge/odds/archive.py)"),
     _j("import-contests", "ingest", "scripts/dfs_import_contests.py",
        doc="file DK contest exports from Windows Downloads, tag them from DK, grade"),
     _j("entry-history", "evaluate", "scripts/dfs_entry_history.py",
@@ -162,7 +165,8 @@ EDGE_RULES: list[tuple[str, str]] = [
     (r"(_sim$|_theory$|_field$|_onoff$|dfs_project|dfs_ladder|pickem_strategy|pickem_features|"
      r"pickem$|fairodds|oddsmath|dfs_contest|dfs_nfl_contest|dfs_validate|clv)", "model"),
     (r"^pagereload$", "app"),
-    (r"^(dfs_run|dfs_sport|repo_files|names|scanner)", "optimize"),
+    (r"^dfs_forward_log$", "evaluate"),
+    (r"^(dfs_run|dfs_slate|dfs_sport|repo_files|names|scanner)", "optimize"),
     (r"^(client|dfs$|nfl$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
      r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups)", "ingest"),
 ]

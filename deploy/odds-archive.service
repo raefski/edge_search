@@ -1,0 +1,19 @@
+# Move odds scans older than 14 days from data/odds.db to the F: archive
+# (edge/odds/archive.py): runs of unchanged prices, one file per month,
+# verified scan by scan before the hot rows are deleted. Skips (and says so in
+# `harness status`) when F: is not mounted.
+#
+#   cp deploy/odds-archive.service deploy/odds-archive.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now odds-archive.timer
+[Unit]
+Description=Archive old odds scans to the F: drive (lossless, verified)
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/odds_collect.py --archive
+Restart=no
+Nice=15
+TimeoutStartSec=21600

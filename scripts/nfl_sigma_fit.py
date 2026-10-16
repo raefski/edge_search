@@ -44,7 +44,6 @@ from __future__ import annotations
 import argparse
 import collections
 import json
-import sqlite3
 import statistics
 import sys
 from pathlib import Path
@@ -95,13 +94,14 @@ def opponent_strength(rows, stat):
 
 def measure_z(db_path: Path):
     """|z| across the real two-sided NFL prop quotes already in the store."""
-    con = sqlite3.connect(db_path)
-    rows = con.execute(
-        """SELECT scan_id, group_key, market, book, side, decimal FROM quote
-           WHERE sport_key='americanfootball_nfl'
-             AND market IN ('player_pass_yds','player_rush_yds',
-                            'player_reception_yds','player_receptions')""").fetchall()
-    con.close()
+    # Through the store, so scans moved to the F: archive count too
+    # (edge/odds/archive.py) -- one row per (scan, group, side, book), as before.
+    from edge.odds.store import OddsStore
+    with OddsStore(db_path) as store:
+        rows = [(r["scan_id"], r["group_key"], r["market"], r["book"], r["side"], r["decimal"])
+                for r in store.iter_quotes("americanfootball_nfl", (
+                    "player_pass_yds", "player_rush_yds", "player_reception_yds",
+                    "player_receptions"))]
     groups = collections.defaultdict(dict)
     for scan, gk, market, book, side, dec in rows:
         groups[(scan, gk, book, market)][side] = dec

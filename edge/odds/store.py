@@ -160,8 +160,8 @@ class OddsStore:
 
         The counterpart to latest_scan, for a reader that wants a SPECIFIC
         moment rather than the newest one: a capture missed at its deadline is
-        still recoverable from the scan that ran then, because prune() keeps
-        400 days. Returns the raw row so `finished_at` is available to stamp
+        still recoverable from the scan that ran then: scan rows are kept
+        forever, and an old scan's quotes are read from the F: archive. Returns the raw row so `finished_at` is available to stamp
         the backfilled record with the time it was really taken.
         """
         return self.conn.execute("SELECT * FROM scan WHERE id=?",
@@ -187,9 +187,39 @@ class OddsStore:
         age = (utcnow() - datetime.fromisoformat(row["finished_at"])).total_seconds()
         return row if age <= max_age_seconds else None
 
+    def archive_files(self) -> list[Path]:
+        """Every archive file this store's old scans live in."""
+        return [Path(r["file"]) for r in self.conn.execute(
+            "SELECT DISTINCT file FROM archived ORDER BY file")]
+
+    def iter_quotes(self, sport_key: str, markets: Sequence[str] | None = None):
+        """Every quote of one sport, hot and archived, one row per (scan, group,
+        side, book) -- for whole-history fits (scripts/nfl_sigma_fit.py)."""
+        sql = "SELECT * FROM quote WHERE sport_key=?"
+        args: list = [sport_key]
+        if markets:
+            sql += f" AND market IN ({','.join('?' * len(markets))})"
+            args.extend(markets)
+        yield from self.conn.execute(sql, args)
+        files = self.archive_files()
+        if files:
+            from edge.odds import archive
+            yield from archive.iter_quotes(sport_key, markets, files)
+
+    def archived_file(self, scan_id: int) -> Path | None:
+        """Where an archived scan's quotes live (edge/odds/archive.py), or None."""
+        row = self.conn.execute("SELECT file FROM archived WHERE scan_id=?", (scan_id,)).fetchone()
+        return Path(row["file"]) if row else None
+
     def quotes(self, scan_id: int, sport_key: str | None = None,
                markets: Sequence[str] | None = None,
                event_ids: Sequence[str] | None = None) -> list[sqlite3.Row]:
+        """A scan's quotes -- from the archive on F: when the scan is older than
+        archive.HOT_DAYS (same columns, dict rows)."""
+        arch = self.archived_file(scan_id)
+        if arch is not None:
+            from edge.odds import archive
+            return archive.quotes(arch, scan_id, sport_key, markets, event_ids)
         sql = "SELECT * FROM quote WHERE scan_id=?"
         args: list = [scan_id]
         if sport_key:
@@ -205,6 +235,10 @@ class OddsStore:
 
     def events(self, scan_id: int, sport_key: str | None = None) -> list[sqlite3.Row]:
         """Events that actually carry a quote in this scan, joined to their meta."""
+        arch = self.archived_file(scan_id)
+        if arch is not None:
+            from edge.odds import archive
+            return archive.events(arch, scan_id, sport_key)
         sql = ("SELECT e.* FROM event e JOIN (SELECT DISTINCT event_id FROM quote"
                " WHERE scan_id=?")
         args: list = [scan_id]
@@ -233,8 +267,15 @@ class OddsStore:
         if since:
             sql += " AND captured_at>=?"
             args.append(_iso(since))
-        sql += " ORDER BY captured_at"
-        return self.conn.execute(sql, args).fetchall()
+        rows = list(self.conn.execute(sql, args).fetchall())
+        files = self.archive_files()
+        if files:
+            from edge.odds import archive
+            old = archive.history(group_key, side, book, files)
+            if since:
+                old = [r for r in old if r["captured_at"] >= _iso(since)]
+            rows = old + rows
+        return sorted(rows, key=lambda r: r["captured_at"])
 
     def opening_and_latest(self, group_key: str, side: str, book: str | None = None
                            ) -> tuple[sqlite3.Row | None, sqlite3.Row | None]:
@@ -245,20 +286,68 @@ class OddsStore:
 
     # --- maintenance ---------------------------------------------------------
 
-    def prune(self, keep_days: int = 400) -> int:
-        """Drop scans older than `keep_days`.
+    def archive_old(self, hot_days: int | None = None, root: Path | None = None,
+                    verify_sample: int = 300, log=print) -> dict:
+        """Move every scan older than `hot_days` to the F: archive, month by
+        month (edge/odds/archive.py). For each month: write the runs, check that
+        EVERY archived scan rebuilds to its quote count and that a sample
+        rebuilds row for row, and only then delete the hot rows. Nothing is
+        deleted without a verified copy; a failed check stops the move."""
+        from edge.odds import archive
+        hot_days = archive.HOT_DAYS if hot_days is None else hot_days
+        root = root or archive.ARCHIVE_DIR
+        if not archive.available(root):
+            return {"skipped": f"archive dir {root} not mounted"}
+        cutoff = _iso(utcnow() - timedelta(days=hot_days))
+        todo = self.conn.execute(
+            "SELECT id, started_at FROM scan WHERE ok=1 AND started_at < ? AND id NOT IN"
+            " (SELECT scan_id FROM archived) ORDER BY id", (cutoff,)).fetchall()
+        by_month: dict = {}
+        for r in todo:
+            by_month.setdefault(r["started_at"][:7], []).append(r["id"])
+        done = {"scans": 0, "quotes": 0, "spans": 0, "months": []}
+        import shutil
+        import tempfile
+        for month, ids in sorted(by_month.items()):
+            path = archive.month_file(month, root)
+            # Built on the Linux disk and copied over whole: SQLite's page writes
+            # to the 9p mount run at ~1 MB/s, a sequential copy at ~45 MB/s.
+            with tempfile.TemporaryDirectory(dir=self.path.parent) as tmp:
+                local = Path(tmp) / path.name
+                if path.exists():
+                    shutil.copyfile(path, local)          # appending to this month
+                got = archive.archive_scans(self.conn, ids, local)
+                counts_bad = archive.verify_counts(self.conn, ids, local)
+                rows_bad = archive.verify(self.conn, ids, local, sample=verify_sample)
+                if counts_bad or rows_bad:
+                    raise RuntimeError(f"archive {path.name}: {len(counts_bad)} scans with the "
+                                       f"wrong count, {len(rows_bad)} that rebuild differently "
+                                       "-- hot rows kept")
+                part = path.with_name(path.name + ".part")
+                shutil.copyfile(local, part)
+                part.replace(path)
+            # and once more against the copy that will be read from now on
+            if archive.verify(self.conn, ids, path, sample=min(verify_sample, 25) or 25, seed=1):
+                raise RuntimeError(f"archive {path}: the copy on the archive drive does not "
+                                   "rebuild -- hot rows kept")
+            now = _iso(utcnow())
+            for sid in ids:
+                self.conn.execute("BEGIN")
+                self.conn.execute("INSERT INTO archived VALUES (?, ?, ?)", (sid, str(path), now))
+                self.conn.execute("DELETE FROM quote WHERE scan_id=?", (sid,))
+                self.conn.execute("COMMIT")
+            log(f"  {month}: {got['scans']} scans, {got['quotes']:,} quotes -> "
+                f"{got['spans']:,} runs in {path}")
+            for k in ("scans", "quotes", "spans"):
+                done[k] += got[k]
+            done["months"].append(month)
+        return done
 
-        The default is deliberately more than a year: the whole point of this
-        table is to accumulate the history the Odds API used to sell, and a
-        season boundary is the shortest useful window. Quotes cascade.
-        """
-        cutoff = _iso(utcnow() - timedelta(days=keep_days))
-        cur = self.conn.execute("SELECT id FROM scan WHERE started_at < ?", (cutoff,))
-        ids = [r["id"] for r in cur.fetchall()]
-        for sid in ids:
-            self.conn.execute("DELETE FROM quote WHERE scan_id=?", (sid,))
-            self.conn.execute("DELETE FROM scan WHERE id=?", (sid,))
-        return len(ids)
+    def prune(self, keep_days: int = 400) -> int:
+        """Retired 2026-10-16: old scans are ARCHIVED (archive_old), never
+        deleted -- the history cannot be re-scraped."""
+        raise RuntimeError("OddsStore.prune is retired: use archive_old() "
+                           "(python3 -m harness run odds-archive)")
 
     def summary(self) -> dict:
         row = self.conn.execute(

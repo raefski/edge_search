@@ -191,6 +191,17 @@ SQLite, WAL, at `data/odds.db`. One writer (the desktop agent), several readers
 (app, CLI, backtests) — the shape SQLite is best at. Postgres would buy
 concurrent writers, which nothing here has.
 
+**Hot and archive (2026-10-16).** `data/odds.db` keeps the last 14 days of scans
+at full fidelity; `odds-archive.timer` moves older scans to
+`F:\edge_search\odds\archive\odds_YYYY-MM.db` as runs of unchanged prices
+(`edge/odds/archive.py`: ~90% of a scan repeats the scan before it). The `scan`
+and `event` tables stay complete in the hot store, and a table `archived`
+(scan_id → file) tells `OddsStore.quotes/events/history/iter_quotes` where an
+old scan's rows are, so readers see one store. An exact copy of the store as
+it stood before the first archive is at `F:\edge_search\odds\raw\`. The
+archive cannot hold the WAL store itself: SQLite's WAL needs shared memory a
+9p mount (F: under WSL) does not provide.
+
 ```
 scan     id, profile, started_at, finished_at, quote_count, event_count,
          conflicts, ok, stats_json

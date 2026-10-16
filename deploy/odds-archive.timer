@@ -1,0 +1,9 @@
+[Unit]
+Description=Weekly, Tuesday 04:10 local: archive odds scans older than 14 days
+
+[Timer]
+OnCalendar=Tue *-*-* 04:10:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

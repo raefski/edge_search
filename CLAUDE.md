@@ -25,11 +25,11 @@ failures) is never written by hand: `harness status` reads it.
 | role | where |
 |---|---|
 | apps | `app.py` (MLB), `pages/2_NFL 3_NCAAF 4_Pickem 5_Arbitrage 6_NASCAR 7_MMA 8_NHL 9_Parlay_Builder 10_Multi_Sport_Parlays 11_Overlay 12_NBA 13_NCAAB` |
-| ingest | `edge/odds/` (scraped prices → `data/odds.db`), `edge/arb/` (book scrapers, DK HTTP/2 shim), `edge/dfs.py` (DK draftables/lobby), `edge/nhl.py` (NHL API + DailyFaceoff), `edge/buzz.py` + `packages/transcripts` (YouTube/podcasts) |
-| model | per sport: `edge/dfs_<sport>_theory.py` (objectives, ownership), `edge/<sport>_sim.py` / `edge/dfs_sim.py` (simulators), `edge/dfs_run_<sport>.py` (`build_slate`, the one pipeline app+CLI share) |
+| ingest | `edge/odds/` (scraped prices → `data/odds.db`, older scans → F: archive via `edge/odds/archive.py`), `edge/arb/` (book scrapers, DK HTTP/2 shim), `edge/dfs.py` (DK draftables/lobby), `edge/nhl.py` (NHL API + DailyFaceoff), `edge/buzz.py` + `packages/transcripts` (YouTube/podcasts) |
+| model | per sport: `edge/dfs_<sport>_theory.py` (objectives, ownership), `edge/<sport>_sim.py` / `edge/dfs_sim.py` (simulators), `edge/dfs_run_<sport>.py` (`build_slate`, the one pipeline app+CLI share), shared by all of them: `edge/dfs_slate.py` (DK lobby rows, tip times, games) and `edge/dfs_forward_log.py` (the forward-test log every sport writes; MLB keeps its own) |
 | optimize | `edge/dfs_opt*.py` (`dfs_opt_climb.py` = the shared percentile search NBA/NCAAB run on), `edge/dfs_leverage*.py` (chalk↔contrarian frontier + contest EV, every sport), `edge/dfs_nfl_contest.py`, `harness/late_swap.py`, `edge/dfs_swap.py` (MLB) |
 | evaluate | `scripts/*_calibration.py`, `scripts/contest_db.py` → `data/contests.db`, `scripts/gpp_meta.py`, `scripts/model_accuracy.py`, `scripts/buzz_trust.py`, backtests |
-| publish | `scripts/odds_collect.py --push`, `draftables_publish.py`, `nhl_lines_publish.py`, `mirror_app.py` (generated standalone repos — never edit a mirror) |
+| publish | `edge/data_branch.py` (every timer feed → the `data` branch), `scripts/odds_collect.py --push`, `draftables_publish.py`, `nhl_lines_publish.py`, `mirror_app.py` (generated standalone repos — never edit a mirror) |
 | monitor | `harness/monitor.py` (goalie changes, line moves → ntfy), `scripts/dfs_overlay.py`, `harness/status.py` |
 | harness | `harness/` (catalog, runner + `data/harness/runs.jsonl`, verify, status, monitor, late swap, navigator), `.claude/hooks/` |
 
@@ -97,7 +97,13 @@ between ad-hoc lookups.
   NHL/NCAAF/NASCAR/MMA code, regenerate the mirrors:
   `python3 -m harness run mirror-<sport>`.
 - `data/odds.db` (scrape history) and `data/contests.db` cannot be rebuilt
-  from scratch for past dates — never delete or rewrite them.
+  from scratch for past dates — never delete or rewrite them by hand.
+  `odds.db` is the HOT store (last 14 days, where collectors write); older scans
+  move weekly to `F:\edge_search\odds\archive` (`odds-archive.timer`,
+  `edge/odds/archive.py`: runs of unchanged prices, verified before any hot row
+  goes), and `F:\edge_search\odds\raw` holds an exact copy from 2026-10-16.
+  Read history through `OddsStore` (`quotes`, `history`, `iter_quotes`), never
+  raw SQL on `quote`, so archived scans are included.
 - Contest exports: Adam downloads them to Windows Downloads;
   `python3 -m harness run import-contests` files and tags them, then
   `python3 -m harness run contest-db` and the sport's calibration.

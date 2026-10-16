@@ -72,3 +72,12 @@ CREATE INDEX IF NOT EXISTS idx_quote_subject    ON quote(sport_key, subject, mar
 CREATE INDEX IF NOT EXISTS idx_quote_group      ON quote(group_key, captured_at);
 CREATE INDEX IF NOT EXISTS idx_event_sport_time ON event(sport_key, commence_time);
 CREATE INDEX IF NOT EXISTS idx_scan_profile     ON scan(profile, ok, id DESC);
+
+-- Scans whose quotes moved to the F: archive (edge/odds/archive.py). The scan
+-- row itself stays here, so every "which scan ran before lock" query works;
+-- quotes()/events()/history() read the archived rows from `file`.
+CREATE TABLE IF NOT EXISTS archived (
+    scan_id     INTEGER PRIMARY KEY REFERENCES scan(id),
+    file        TEXT    NOT NULL,
+    archived_at TEXT    NOT NULL
+);
