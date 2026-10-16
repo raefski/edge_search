@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-16T12:59:52+00:00",
+"generated_at": "2026-10-16T14:29:55+00:00",
 "goalies": {
 "2026-10-16": {
 "ANA": {
@@ -65,7 +65,7 @@
 "status": null
 },
 "NJD": {
-"goalie": "Nico Daws",
+"goalie": "Jake Allen",
 "status": null
 },
 "NSH": {
@@ -1687,7 +1687,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Justin Danforth": {
@@ -1933,7 +1933,7 @@
 "toiMinutes": 73,
 "toiSeconds": 47
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -1967,9 +1967,9 @@
 "toiMinutes": 81,
 "toiSeconds": 28
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK1",
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Sam Carrick": {
@@ -9189,7 +9189,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9395,7 +9395,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12136,7 +12136,7 @@
 "line": "F1",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP1"
+"pp": null
 },
 "Dan Vladar": {
 "gtd": false,
@@ -12206,7 +12206,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Denver Barkey": {
 "gtd": false,
@@ -12308,7 +12308,7 @@
 "line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Joseph Woll": {
 "gtd": false,
@@ -12378,7 +12378,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Michael Bunting": {
 "gtd": false,
@@ -12548,7 +12548,7 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Owen Tippett": {
 "gtd": false,
@@ -12582,7 +12582,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Porter Martone": {
 "gtd": false,
@@ -12616,7 +12616,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Sean Couturier": {
 "gtd": false,
@@ -12752,7 +12752,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Tyson Foerster": {
 "gtd": false,
@@ -12786,7 +12786,7 @@
 "line": "F1",
 "pk": "PK2",
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 }
 },
 "PIT": {
@@ -18028,7 +18028,7 @@
 "line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Victor Mancini": {
 "gtd": false,
@@ -18096,7 +18096,7 @@
 "line": "D3",
 "pk": null,
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 }
 },
 "VGK": {
@@ -19055,7 +19055,7 @@
 "toiMinutes": 116,
 "toiSeconds": 39
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -19259,7 +19259,7 @@
 "toiMinutes": 103,
 "toiSeconds": 11
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
