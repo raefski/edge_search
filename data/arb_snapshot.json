@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-16T23:19:30.836236+00:00",
+ "generated_at": "2026-10-16T23:22:33.897385+00:00",
  "stats": {
   "fanduel_prop_events": 1,
   "fanduel_alt_events": 0,
@@ -48,16 +48,16 @@
      "book": "draftkings",
      "side": "over",
      "label": "Over",
-     "decimal": 3.06,
-     "american": "+206",
+     "decimal": 3.04,
+     "american": "+204",
      "point": 8.5,
-     "stake": 252.0,
-     "payout": 771.12,
+     "stake": 253.0,
+     "payout": 769.12,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
-     "raw_decimal": 3.06,
+     "raw_decimal": 3.04,
      "off_main_line": false,
      "main_line": null,
      "stale_confirmed": false
@@ -72,7 +72,7 @@
      "stake": 500.0,
      "payout": 770.25,
      "link": null,
-     "age_seconds": 0.2,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.5405,
@@ -81,9 +81,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 2.427,
-   "stake_total": 752.0,
-   "profit_abs": 18.25,
+   "profit_pct": 2.141,
+   "stake_total": 753.0,
+   "profit_abs": 16.12,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -95,21 +95,21 @@
     7.5,
     8.5
    ],
-   "fair_prob": 0.0686,
-   "expected_pct": -4.597,
+   "fair_prob": 0.0672,
+   "expected_pct": -4.72,
    "floor_pct": -100.0,
-   "ceiling_pct": 2.427,
-   "risk_pct": 6.858,
+   "ceiling_pct": 2.141,
+   "risk_pct": 6.717,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 20.9,
+   "max_age_seconds": 21.2,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 8"
    ],
-   "found_at": "2026-10-16T23:19:30.788507+00:00",
+   "found_at": "2026-10-16T23:22:33.850354+00:00",
    "stale_alt_line": false
   },
   {
@@ -134,7 +134,7 @@
      "stake": 500.0,
      "payout": 675.45,
      "link": null,
-     "age_seconds": 0.2,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.3509,
@@ -152,7 +152,7 @@
      "stake": 147.0,
      "payout": 676.2,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 4.6,
@@ -185,11 +185,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 4"
    ],
-   "found_at": "2026-10-16T23:19:30.784132+00:00",
+   "found_at": "2026-10-16T23:22:33.846358+00:00",
    "stale_alt_line": false
   },
   {
@@ -214,7 +214,7 @@
      "stake": 500.0,
      "payout": 651.5,
      "link": null,
-     "age_seconds": 0.2,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.303,
@@ -232,7 +232,7 @@
      "stake": 130.0,
      "payout": 650.0,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 5.0,
@@ -265,11 +265,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on -3"
    ],
-   "found_at": "2026-10-16T23:19:30.766117+00:00",
+   "found_at": "2026-10-16T23:22:33.827722+00:00",
    "stale_alt_line": false
   },
   {
@@ -294,7 +294,7 @@
      "stake": 547.0,
      "payout": 1058.23,
      "link": null,
-     "age_seconds": 22.6,
+     "age_seconds": 22.7,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.9346,
@@ -312,7 +312,7 @@
      "stake": 453.0,
      "payout": 1060.02,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 2.34,
@@ -345,11 +345,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 6"
    ],
-   "found_at": "2026-10-16T23:19:30.779753+00:00",
+   "found_at": "2026-10-16T23:22:33.841794+00:00",
    "stale_alt_line": false
   },
   {
@@ -368,16 +368,16 @@
      "book": "draftkings",
      "side": "over",
      "label": "Over",
-     "decimal": 4.13,
-     "american": "+313",
+     "decimal": 4.14,
+     "american": "+314",
      "point": 9.5,
-     "stake": 169.0,
-     "payout": 697.97,
+     "stake": 168.0,
+     "payout": 695.52,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
-     "raw_decimal": 4.13,
+     "raw_decimal": 4.14,
      "off_main_line": false,
      "main_line": null,
      "stale_confirmed": false
@@ -392,7 +392,7 @@
      "stake": 500.0,
      "payout": 696.1,
      "link": null,
-     "age_seconds": 0.2,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.3922,
@@ -401,9 +401,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 4.051,
-   "stake_total": 669.0,
-   "profit_abs": 27.1,
+   "profit_pct": 4.12,
+   "stake_total": 668.0,
+   "profit_abs": 27.52,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -415,21 +415,21 @@
     8.5,
     9.5
    ],
-   "fair_prob": 0.0825,
-   "expected_pct": -4.529,
+   "fair_prob": 0.0843,
+   "expected_pct": -4.657,
    "floor_pct": -100.0,
-   "ceiling_pct": 4.051,
-   "risk_pct": 8.245,
+   "ceiling_pct": 4.12,
+   "risk_pct": 8.429,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 20.9,
+   "max_age_seconds": 21.2,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 9"
    ],
-   "found_at": "2026-10-16T23:19:30.790359+00:00",
+   "found_at": "2026-10-16T23:22:33.852251+00:00",
    "stale_alt_line": false
   },
   {
@@ -454,7 +454,7 @@
      "stake": 700.0,
      "payout": 1062.67,
      "link": null,
-     "age_seconds": 22.6,
+     "age_seconds": 22.7,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.5181,
@@ -472,7 +472,7 @@
      "stake": 300.0,
      "payout": 1065.0,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 3.55,
@@ -505,16 +505,16 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on -2"
    ],
-   "found_at": "2026-10-16T23:19:30.762073+00:00",
+   "found_at": "2026-10-16T23:22:33.823565+00:00",
    "stale_alt_line": false
   },
   {
    "kind": "gap",
-   "fingerprint": "ca420b7670e13fb7",
+   "fingerprint": "01d20546881020f0",
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
    "event_id": "fd:36196493",
@@ -525,7 +525,7 @@
    "description": "totals gap 6.5-7.5 (loses both on 7)",
    "legs": [
     {
-     "book": "draftkings",
+     "book": "fanatics",
      "side": "over",
      "label": "Over",
      "decimal": 2.5,
@@ -534,7 +534,7 @@
      "stake": 439.0,
      "payout": 1097.5,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 2.5,
@@ -552,7 +552,7 @@
      "stake": 561.0,
      "payout": 1095.3,
      "link": null,
-     "age_seconds": 24.3,
+     "age_seconds": 24.8,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.9524,
@@ -585,11 +585,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 24.3,
+   "max_age_seconds": 24.8,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 7"
    ],
-   "found_at": "2026-10-16T23:19:30.785927+00:00",
+   "found_at": "2026-10-16T23:22:33.848296+00:00",
    "stale_alt_line": false
   },
   {
@@ -614,7 +614,7 @@
      "stake": 134.0,
      "payout": 695.46,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 5.19,
@@ -632,7 +632,7 @@
      "stake": 500.0,
      "payout": 696.1,
      "link": null,
-     "age_seconds": 0.2,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.3922,
@@ -656,21 +656,21 @@
     8.5,
     10.5
    ],
-   "fair_prob": 0.1292,
-   "expected_pct": -4.474,
+   "fair_prob": 0.1306,
+   "expected_pct": -4.629,
    "floor_pct": -100.0,
    "ceiling_pct": 9.694,
-   "risk_pct": 12.916,
+   "risk_pct": 13.057,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 20.9,
+   "max_age_seconds": 21.2,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 9/10"
    ],
-   "found_at": "2026-10-16T23:19:30.792027+00:00",
+   "found_at": "2026-10-16T23:22:33.853832+00:00",
    "stale_alt_line": false
   },
   {
@@ -695,7 +695,7 @@
      "stake": 500.0,
      "payout": 833.35,
      "link": null,
-     "age_seconds": 0.2,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.6667,
@@ -713,7 +713,7 @@
      "stake": 238.0,
      "payout": 833.0,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 3.5,
@@ -746,11 +746,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 5"
    ],
-   "found_at": "2026-10-16T23:19:30.785243+00:00",
+   "found_at": "2026-10-16T23:22:33.847540+00:00",
    "stale_alt_line": false
   },
   {
@@ -769,16 +769,16 @@
      "book": "draftkings",
      "side": "over",
      "label": "Over",
-     "decimal": 4.13,
-     "american": "+313",
+     "decimal": 4.14,
+     "american": "+314",
      "point": 9.5,
-     "stake": 187.0,
-     "payout": 772.31,
+     "stake": 186.0,
+     "payout": 770.04,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
-     "raw_decimal": 4.13,
+     "raw_decimal": 4.14,
      "off_main_line": false,
      "main_line": null,
      "stale_confirmed": false
@@ -793,7 +793,7 @@
      "stake": 500.0,
      "payout": 770.25,
      "link": null,
-     "age_seconds": 0.2,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.5405,
@@ -802,9 +802,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 12.118,
-   "stake_total": 687.0,
-   "profit_abs": 83.25,
+   "profit_pct": 12.251,
+   "stake_total": 686.0,
+   "profit_abs": 84.04,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -817,21 +817,21 @@
     7.5,
     9.5
    ],
-   "fair_prob": 0.151,
-   "expected_pct": -4.816,
+   "fair_prob": 0.1515,
+   "expected_pct": -4.751,
    "floor_pct": -100.0,
-   "ceiling_pct": 12.118,
-   "risk_pct": 15.103,
+   "ceiling_pct": 12.251,
+   "risk_pct": 15.146,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 20.9,
+   "max_age_seconds": 21.2,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 8/9"
    ],
-   "found_at": "2026-10-16T23:19:30.790208+00:00",
+   "found_at": "2026-10-16T23:22:33.852092+00:00",
    "stale_alt_line": false
   },
   {
@@ -856,7 +856,7 @@
      "stake": 767.0,
      "payout": 1164.38,
      "link": null,
-     "age_seconds": 22.6,
+     "age_seconds": 22.7,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.5181,
@@ -874,7 +874,7 @@
      "stake": 233.0,
      "payout": 1165.0,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 5.0,
@@ -908,11 +908,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on -3/-2"
    ],
-   "found_at": "2026-10-16T23:19:30.762239+00:00",
+   "found_at": "2026-10-16T23:22:33.823739+00:00",
    "stale_alt_line": false
   },
   {
@@ -931,16 +931,16 @@
      "book": "draftkings",
      "side": "over",
      "label": "Over",
-     "decimal": 3.06,
-     "american": "+206",
+     "decimal": 3.04,
+     "american": "+204",
      "point": 8.5,
-     "stake": 390.0,
-     "payout": 1193.4,
+     "stake": 391.0,
+     "payout": 1188.64,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
-     "raw_decimal": 3.06,
+     "raw_decimal": 3.04,
      "off_main_line": false,
      "main_line": null,
      "stale_confirmed": false
@@ -952,10 +952,10 @@
      "decimal": 1.9524,
      "american": "-105",
      "point": 6.5,
-     "stake": 610.0,
-     "payout": 1190.96,
+     "stake": 609.0,
+     "payout": 1189.01,
      "link": null,
-     "age_seconds": 24.3,
+     "age_seconds": 24.8,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.9524,
@@ -964,9 +964,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 19.096,
+   "profit_pct": 18.864,
    "stake_total": 1000.0,
-   "profit_abs": 190.96,
+   "profit_abs": 188.64,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -979,21 +979,21 @@
     6.5,
     8.5
    ],
-   "fair_prob": 0.1896,
-   "expected_pct": -3.484,
+   "fair_prob": 0.1882,
+   "expected_pct": -3.505,
    "floor_pct": -100.0,
-   "ceiling_pct": 19.096,
-   "risk_pct": 18.96,
+   "ceiling_pct": 18.864,
+   "risk_pct": 18.819,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 24.3,
+   "max_age_seconds": 24.8,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 7/8"
    ],
-   "found_at": "2026-10-16T23:19:30.787782+00:00",
+   "found_at": "2026-10-16T23:22:33.849619+00:00",
    "stale_alt_line": false
   },
   {
@@ -1018,7 +1018,7 @@
      "stake": 148.0,
      "payout": 768.12,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 5.19,
@@ -1036,7 +1036,7 @@
      "stake": 500.0,
      "payout": 770.25,
      "link": null,
-     "age_seconds": 0.2,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.5405,
@@ -1071,16 +1071,16 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 20.9,
+   "max_age_seconds": 21.2,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 8/9/10"
    ],
-   "found_at": "2026-10-16T23:19:30.791872+00:00",
+   "found_at": "2026-10-16T23:22:33.853677+00:00",
    "stale_alt_line": false
   },
   {
    "kind": "gap",
-   "fingerprint": "1dec674e46bcda8c",
+   "fingerprint": "00e666895e13cd79",
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
    "event_id": "fd:36196493",
@@ -1091,7 +1091,7 @@
    "description": "totals gap 5.5-7.5 (loses both on 6/7)",
    "legs": [
     {
-     "book": "draftkings",
+     "book": "fanatics",
      "side": "over",
      "label": "Over",
      "decimal": 2.5,
@@ -1100,7 +1100,7 @@
      "stake": 483.0,
      "payout": 1207.5,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 2.5,
@@ -1118,7 +1118,7 @@
      "stake": 517.0,
      "payout": 1209.78,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 2.34,
@@ -1152,11 +1152,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 6/7"
    ],
-   "found_at": "2026-10-16T23:19:30.786484+00:00",
+   "found_at": "2026-10-16T23:22:33.848840+00:00",
    "stale_alt_line": false
   },
   {
@@ -1181,7 +1181,7 @@
      "stake": 500.0,
      "payout": 833.35,
      "link": null,
-     "age_seconds": 0.2,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.6667,
@@ -1199,7 +1199,7 @@
      "stake": 181.0,
      "payout": 832.6,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 4.6,
@@ -1233,11 +1233,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 4/5"
    ],
-   "found_at": "2026-10-16T23:19:30.785085+00:00",
+   "found_at": "2026-10-16T23:22:33.847375+00:00",
    "stale_alt_line": false
   },
   {
@@ -1262,7 +1262,7 @@
      "stake": 644.0,
      "payout": 1245.88,
      "link": null,
-     "age_seconds": 22.6,
+     "age_seconds": 22.7,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.9346,
@@ -1280,7 +1280,7 @@
      "stake": 356.0,
      "payout": 1246.0,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 3.5,
@@ -1314,11 +1314,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 5/6"
    ],
-   "found_at": "2026-10-16T23:19:30.779594+00:00",
+   "found_at": "2026-10-16T23:22:33.841634+00:00",
    "stale_alt_line": false
   },
   {
@@ -1337,16 +1337,16 @@
      "book": "draftkings",
      "side": "over",
      "label": "Over",
-     "decimal": 3.06,
-     "american": "+206",
+     "decimal": 3.04,
+     "american": "+204",
      "point": 8.5,
-     "stake": 433.0,
-     "payout": 1324.98,
+     "stake": 435.0,
+     "payout": 1322.4,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
-     "raw_decimal": 3.06,
+     "raw_decimal": 3.04,
      "off_main_line": false,
      "main_line": null,
      "stale_confirmed": false
@@ -1358,10 +1358,10 @@
      "decimal": 2.34,
      "american": "+134",
      "point": 5.5,
-     "stake": 567.0,
-     "payout": 1326.78,
+     "stake": 565.0,
+     "payout": 1322.1,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 2.34,
@@ -1370,9 +1370,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 32.498,
+   "profit_pct": 32.21,
    "stake_total": 1000.0,
-   "profit_abs": 324.98,
+   "profit_abs": 322.1,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -1386,21 +1386,21 @@
     5.5,
     8.5
    ],
-   "fair_prob": 0.2713,
-   "expected_pct": -3.453,
+   "fair_prob": 0.2699,
+   "expected_pct": -3.477,
    "floor_pct": -100.0,
-   "ceiling_pct": 32.498,
-   "risk_pct": 27.133,
+   "ceiling_pct": 32.21,
+   "risk_pct": 26.992,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 6/7/8"
    ],
-   "found_at": "2026-10-16T23:19:30.788324+00:00",
+   "found_at": "2026-10-16T23:22:33.850199+00:00",
    "stale_alt_line": false
   },
   {
@@ -1419,16 +1419,16 @@
      "book": "draftkings",
      "side": "over",
      "label": "Over",
-     "decimal": 4.13,
-     "american": "+313",
+     "decimal": 4.14,
+     "american": "+314",
      "point": 9.5,
-     "stake": 321.0,
-     "payout": 1325.73,
+     "stake": 320.0,
+     "payout": 1324.8,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
-     "raw_decimal": 4.13,
+     "raw_decimal": 4.14,
      "off_main_line": false,
      "main_line": null,
      "stale_confirmed": false
@@ -1440,10 +1440,10 @@
      "decimal": 1.9524,
      "american": "-105",
      "point": 6.5,
-     "stake": 679.0,
-     "payout": 1325.68,
+     "stake": 680.0,
+     "payout": 1327.63,
      "link": null,
-     "age_seconds": 24.3,
+     "age_seconds": 24.8,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.9524,
@@ -1452,9 +1452,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 32.568,
+   "profit_pct": 32.48,
    "stake_total": 1000.0,
-   "profit_abs": 325.68,
+   "profit_abs": 324.8,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -1468,21 +1468,21 @@
     6.5,
     9.5
    ],
-   "fair_prob": 0.2721,
-   "expected_pct": -3.497,
+   "fair_prob": 0.2725,
+   "expected_pct": -3.618,
    "floor_pct": -100.0,
-   "ceiling_pct": 32.568,
-   "risk_pct": 27.205,
+   "ceiling_pct": 32.48,
+   "risk_pct": 27.248,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 24.3,
+   "max_age_seconds": 24.8,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 7/8/9"
    ],
-   "found_at": "2026-10-16T23:19:30.789517+00:00",
+   "found_at": "2026-10-16T23:22:33.851335+00:00",
    "stale_alt_line": false
   },
   {
@@ -1507,7 +1507,7 @@
      "stake": 704.0,
      "payout": 1361.96,
      "link": null,
-     "age_seconds": 22.6,
+     "age_seconds": 22.7,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.9346,
@@ -1525,7 +1525,7 @@
      "stake": 296.0,
      "payout": 1361.6,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 4.6,
@@ -1560,11 +1560,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 4/5/6"
    ],
-   "found_at": "2026-10-16T23:19:30.779394+00:00",
+   "found_at": "2026-10-16T23:22:33.841423+00:00",
    "stale_alt_line": false
   },
   {
@@ -1589,7 +1589,7 @@
      "stake": 273.0,
      "payout": 1416.87,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 5.19,
@@ -1607,7 +1607,7 @@
      "stake": 727.0,
      "payout": 1419.39,
      "link": null,
-     "age_seconds": 24.3,
+     "age_seconds": 24.8,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 1.9524,
@@ -1643,16 +1643,16 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 24.3,
+   "max_age_seconds": 24.8,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 7/8/9/10"
    ],
-   "found_at": "2026-10-16T23:19:30.791266+00:00",
+   "found_at": "2026-10-16T23:22:33.853098+00:00",
    "stale_alt_line": false
   },
   {
    "kind": "gap",
-   "fingerprint": "0467c8122b1af11f",
+   "fingerprint": "24a306c6348ede3d",
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
    "event_id": "fd:36196493",
@@ -1663,16 +1663,16 @@
    "description": "totals gap 4.5-7.5 (loses both on 5/6/7)",
    "legs": [
     {
-     "book": "draftkings",
+     "book": "fanatics",
      "side": "over",
      "label": "Over",
      "decimal": 2.5,
      "american": "+150",
      "point": 7.5,
-     "stake": 583.0,
-     "payout": 1457.5,
+     "stake": 500.0,
+     "payout": 1250.0,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 2.5,
@@ -1687,10 +1687,10 @@
      "decimal": 3.5,
      "american": "+250",
      "point": 4.5,
-     "stake": 417.0,
-     "payout": 1459.5,
+     "stake": 357.0,
+     "payout": 1249.5,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 3.5,
@@ -1699,9 +1699,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 45.75,
-   "stake_total": 1000.0,
-   "profit_abs": 457.5,
+   "profit_pct": 45.799,
+   "stake_total": 857.0,
+   "profit_abs": 392.5,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -1716,20 +1716,20 @@
     7.5
    ],
    "fair_prob": 0.3402,
-   "expected_pct": -3.841,
+   "expected_pct": -3.809,
    "floor_pct": -100.0,
-   "ceiling_pct": 45.75,
+   "ceiling_pct": 45.799,
    "risk_pct": 34.025,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 5/6/7"
    ],
-   "found_at": "2026-10-16T23:19:30.786310+00:00",
+   "found_at": "2026-10-16T23:22:33.848685+00:00",
    "stale_alt_line": false
   },
   {
@@ -1748,16 +1748,16 @@
      "book": "draftkings",
      "side": "over",
      "label": "Over",
-     "decimal": 4.13,
-     "american": "+313",
+     "decimal": 4.14,
+     "american": "+314",
      "point": 9.5,
-     "stake": 362.0,
-     "payout": 1495.06,
+     "stake": 361.0,
+     "payout": 1494.54,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
-     "raw_decimal": 4.13,
+     "raw_decimal": 4.14,
      "off_main_line": false,
      "main_line": null,
      "stale_confirmed": false
@@ -1769,10 +1769,10 @@
      "decimal": 2.34,
      "american": "+134",
      "point": 5.5,
-     "stake": 638.0,
-     "payout": 1492.92,
+     "stake": 639.0,
+     "payout": 1495.26,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 2.34,
@@ -1781,9 +1781,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 49.292,
+   "profit_pct": 49.454,
    "stake_total": 1000.0,
-   "profit_abs": 492.92,
+   "profit_abs": 494.54,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -1798,21 +1798,21 @@
     5.5,
     9.5
    ],
-   "fair_prob": 0.3538,
-   "expected_pct": -3.526,
+   "fair_prob": 0.3542,
+   "expected_pct": -3.485,
    "floor_pct": -100.0,
-   "ceiling_pct": 49.292,
-   "risk_pct": 35.379,
+   "ceiling_pct": 49.454,
+   "risk_pct": 35.422,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 6/7/8/9"
    ],
-   "found_at": "2026-10-16T23:19:30.790055+00:00",
+   "found_at": "2026-10-16T23:22:33.851895+00:00",
    "stale_alt_line": false
   },
   {
@@ -1837,7 +1837,7 @@
      "stake": 311.0,
      "payout": 1614.09,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 5.19,
@@ -1855,7 +1855,7 @@
      "stake": 689.0,
      "payout": 1612.26,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 2.34,
@@ -1892,11 +1892,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 6-10"
    ],
-   "found_at": "2026-10-16T23:19:30.791717+00:00",
+   "found_at": "2026-10-16T23:22:33.853522+00:00",
    "stale_alt_line": false
   },
   {
@@ -1915,16 +1915,16 @@
      "book": "draftkings",
      "side": "over",
      "label": "Over",
-     "decimal": 3.06,
-     "american": "+206",
+     "decimal": 3.04,
+     "american": "+204",
      "point": 8.5,
-     "stake": 534.0,
-     "payout": 1634.04,
+     "stake": 535.0,
+     "payout": 1626.4,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
-     "raw_decimal": 3.06,
+     "raw_decimal": 3.04,
      "off_main_line": false,
      "main_line": null,
      "stale_confirmed": false
@@ -1936,10 +1936,10 @@
      "decimal": 3.5,
      "american": "+250",
      "point": 4.5,
-     "stake": 466.0,
-     "payout": 1631.0,
+     "stake": 465.0,
+     "payout": 1627.5,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 3.5,
@@ -1948,9 +1948,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 63.1,
+   "profit_pct": 62.64,
    "stake_total": 1000.0,
-   "profit_abs": 631.0,
+   "profit_abs": 626.4,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -1965,26 +1965,26 @@
     4.5,
     8.5
    ],
-   "fair_prob": 0.4088,
-   "expected_pct": -3.58,
+   "fair_prob": 0.4074,
+   "expected_pct": -3.622,
    "floor_pct": -100.0,
-   "ceiling_pct": 63.1,
-   "risk_pct": 40.883,
+   "ceiling_pct": 62.64,
+   "risk_pct": 40.742,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 5/6/7/8"
    ],
-   "found_at": "2026-10-16T23:19:30.788170+00:00",
+   "found_at": "2026-10-16T23:22:33.850001+00:00",
    "stale_alt_line": false
   },
   {
    "kind": "gap",
-   "fingerprint": "39e9548ae6c47f7b",
+   "fingerprint": "88444697621180f2",
    "sport_key": "baseball_mlb",
    "sport_title": "baseball_mlb",
    "event_id": "fd:36196493",
@@ -1995,16 +1995,16 @@
    "description": "totals gap 3.5-7.5 (loses both on 4/5/6/7)",
    "legs": [
     {
-     "book": "draftkings",
+     "book": "fanatics",
      "side": "over",
      "label": "Over",
      "decimal": 2.5,
      "american": "+150",
      "point": 7.5,
-     "stake": 648.0,
-     "payout": 1620.0,
+     "stake": 500.0,
+     "payout": 1250.0,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 2.5,
@@ -2019,10 +2019,10 @@
      "decimal": 4.6,
      "american": "+360",
      "point": 3.5,
-     "stake": 352.0,
-     "payout": 1619.2,
+     "stake": 272.0,
+     "payout": 1251.2,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 4.6,
@@ -2031,9 +2031,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 61.92,
-   "stake_total": 1000.0,
-   "profit_abs": 619.2,
+   "profit_pct": 61.917,
+   "stake_total": 772.0,
+   "profit_abs": 478.0,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -2049,20 +2049,20 @@
     7.5
    ],
    "fair_prob": 0.4104,
-   "expected_pct": -4.531,
+   "expected_pct": -4.533,
    "floor_pct": -100.0,
-   "ceiling_pct": 61.92,
+   "ceiling_pct": 61.917,
    "risk_pct": 41.04,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 4/5/6/7"
    ],
-   "found_at": "2026-10-16T23:19:30.786155+00:00",
+   "found_at": "2026-10-16T23:22:33.848529+00:00",
    "stale_alt_line": false
   },
   {
@@ -2087,7 +2087,7 @@
      "stake": 366.0,
      "payout": 1647.0,
      "link": null,
-     "age_seconds": 0.2,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 4.5,
@@ -2105,7 +2105,7 @@
      "stake": 634.0,
      "payout": 1648.4,
      "link": null,
-     "age_seconds": 24.3,
+     "age_seconds": 24.8,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 2.6,
@@ -2141,11 +2141,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 24.3,
+   "max_age_seconds": 24.8,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on -1/0/1/2"
    ],
-   "found_at": "2026-10-16T23:19:30.763965+00:00",
+   "found_at": "2026-10-16T23:22:33.825436+00:00",
    "stale_alt_line": false
   },
   {
@@ -2164,16 +2164,16 @@
      "book": "draftkings",
      "side": "over",
      "label": "Over",
-     "decimal": 3.06,
-     "american": "+206",
+     "decimal": 3.04,
+     "american": "+204",
      "point": 8.5,
-     "stake": 601.0,
-     "payout": 1839.06,
+     "stake": 602.0,
+     "payout": 1830.08,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
-     "raw_decimal": 3.06,
+     "raw_decimal": 3.04,
      "off_main_line": false,
      "main_line": null,
      "stale_confirmed": false
@@ -2185,10 +2185,10 @@
      "decimal": 4.6,
      "american": "+360",
      "point": 3.5,
-     "stake": 399.0,
-     "payout": 1835.4,
+     "stake": 398.0,
+     "payout": 1830.8,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 4.6,
@@ -2197,9 +2197,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 83.54,
+   "profit_pct": 83.008,
    "stake_total": 1000.0,
-   "profit_abs": 835.4,
+   "profit_abs": 830.08,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -2215,21 +2215,21 @@
     3.5,
     8.5
    ],
-   "fair_prob": 0.479,
-   "expected_pct": -4.371,
+   "fair_prob": 0.4776,
+   "expected_pct": -4.39,
    "floor_pct": -100.0,
-   "ceiling_pct": 83.54,
-   "risk_pct": 47.897,
+   "ceiling_pct": 83.008,
+   "risk_pct": 47.756,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 4-8"
    ],
-   "found_at": "2026-10-16T23:19:30.788014+00:00",
+   "found_at": "2026-10-16T23:22:33.849847+00:00",
    "stale_alt_line": false
   },
   {
@@ -2248,16 +2248,16 @@
      "book": "draftkings",
      "side": "over",
      "label": "Over",
-     "decimal": 4.13,
-     "american": "+313",
+     "decimal": 4.14,
+     "american": "+314",
      "point": 9.5,
-     "stake": 459.0,
-     "payout": 1895.67,
+     "stake": 458.0,
+     "payout": 1896.12,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
-     "raw_decimal": 4.13,
+     "raw_decimal": 4.14,
      "off_main_line": false,
      "main_line": null,
      "stale_confirmed": false
@@ -2269,10 +2269,10 @@
      "decimal": 3.5,
      "american": "+250",
      "point": 4.5,
-     "stake": 541.0,
-     "payout": 1893.5,
+     "stake": 542.0,
+     "payout": 1897.0,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 3.5,
@@ -2281,9 +2281,9 @@
      "stale_confirmed": false
     }
    ],
-   "profit_pct": 89.35,
+   "profit_pct": 89.612,
    "stake_total": 1000.0,
-   "profit_abs": 893.5,
+   "profit_abs": 896.12,
    "max_loss_pct": 100.0,
    "breakeven_hit_pct": 0.0,
    "hit_values": [
@@ -2299,21 +2299,21 @@
     4.5,
     9.5
    ],
-   "fair_prob": 0.4913,
-   "expected_pct": -3.674,
+   "fair_prob": 0.4917,
+   "expected_pct": -3.622,
    "floor_pct": -100.0,
-   "ceiling_pct": 89.35,
-   "risk_pct": 49.128,
+   "ceiling_pct": 89.612,
+   "risk_pct": 49.171,
    "free_middle": false,
    "free_middle_floor_pct": null,
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 5-9"
    ],
-   "found_at": "2026-10-16T23:19:30.789902+00:00",
+   "found_at": "2026-10-16T23:22:33.851743+00:00",
    "stale_alt_line": false
   },
   {
@@ -2338,7 +2338,7 @@
      "stake": 441.0,
      "payout": 1984.5,
      "link": null,
-     "age_seconds": 0.2,
+     "age_seconds": 0.3,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 4.5,
@@ -2356,7 +2356,7 @@
      "stake": 559.0,
      "payout": 1984.45,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 3.55,
@@ -2393,11 +2393,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on -2-2"
    ],
-   "found_at": "2026-10-16T23:19:30.764296+00:00",
+   "found_at": "2026-10-16T23:22:33.825896+00:00",
    "stale_alt_line": false
   },
   {
@@ -2422,7 +2422,7 @@
      "stake": 403.0,
      "payout": 2091.57,
      "link": null,
-     "age_seconds": 20.9,
+     "age_seconds": 21.2,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 5.19,
@@ -2440,7 +2440,7 @@
      "stake": 597.0,
      "payout": 2089.5,
      "link": null,
-     "age_seconds": 25.5,
+     "age_seconds": 26.0,
      "limit": null,
      "boost_pct": 0.0,
      "raw_decimal": 3.5,
@@ -2478,11 +2478,11 @@
    "kelly_stake": null,
    "anchor_book": null,
    "boost": null,
-   "max_age_seconds": 25.5,
+   "max_age_seconds": 26.0,
    "warnings": [
     "NOT a guaranteed position \u2014 both legs lose if the result lands on 5-10"
    ],
-   "found_at": "2026-10-16T23:19:30.791560+00:00",
+   "found_at": "2026-10-16T23:22:33.853368+00:00",
    "stale_alt_line": false
   }
  ],
@@ -2710,61 +2710,13 @@
    "prices": {
     "over": {
      "fanduel": 1.2941,
-     "draftkings": 1.3247,
+     "draftkings": 1.3185,
      "fanatics": 1.3509
     },
     "under": {
      "fanduel": 3.5,
-     "draftkings": 3.24,
+     "draftkings": 3.27,
      "fanatics": 3.2
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "h2h",
-   "subject": null,
-   "point": null,
-   "arb_sum": 1.0263,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 1.9091,
-     "label": "Tampa Bay Rays",
-     "point": null
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.9901,
-     "label": "Cleveland Guardians",
-     "point": null
-    }
-   ],
-   "prices": {
-    "away": {
-     "fanduel": 1.9091,
-     "draftkings": 1.9091,
-     "fanatics": 1.8696
-    },
-    "home": {
-     "fanduel": 1.9804,
-     "draftkings": 1.9901,
-     "fanatics": 1.9524
-    }
-   },
-   "reference": {
-    "away": {
-     "fanatics_markets": 1.9417
-    },
-    "home": {
-     "fanatics_markets": 2.0202
     }
    }
   },
@@ -2851,35 +2803,45 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
+   "market": "h2h",
    "subject": null,
-   "point": 2.5,
-   "arb_sum": 1.02857,
-   "single_book": false,
+   "point": null,
+   "arb_sum": 1.02876,
+   "single_book": true,
    "legs": [
     {
-     "side": "over",
-     "book": "fanatics",
-     "decimal": 1.0769,
-     "label": "Over",
-     "point": 2.5
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.9091,
+     "label": "Tampa Bay Rays",
+     "point": null
     },
     {
-     "side": "under",
+     "side": "home",
      "book": "fanduel",
-     "decimal": 10.0,
-     "label": "Under",
-     "point": 2.5
+     "decimal": 1.9804,
+     "label": "Cleveland Guardians",
+     "point": null
     }
    ],
    "prices": {
-    "over": {
-     "fanduel": 1.04,
-     "fanatics": 1.0769
+    "away": {
+     "fanduel": 1.9091,
+     "draftkings": 1.8772,
+     "fanatics": 1.8696
     },
-    "under": {
-     "fanduel": 10.0,
-     "fanatics": 8.5
+    "home": {
+     "fanduel": 1.9804,
+     "draftkings": 1.9524,
+     "fanatics": 1.9524
+    }
+   },
+   "reference": {
+    "away": {
+     "fanatics_markets": 1.9417
+    },
+    "home": {
+     "fanatics_markets": 2.0202
     }
    }
   },
@@ -3082,35 +3044,35 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "batter_doubles",
-   "subject": "Jo Adell",
-   "point": 0.5,
-   "arb_sum": 1.03853,
+   "market": "totals",
+   "subject": null,
+   "point": 2.5,
+   "arb_sum": 1.0375,
    "single_book": false,
    "legs": [
     {
      "side": "over",
      "book": "fanatics",
-     "decimal": 5.3,
+     "decimal": 1.0667,
      "label": "Over",
-     "point": 0.5
+     "point": 2.5
     },
     {
      "side": "under",
-     "book": "draftkings",
-     "decimal": 1.1767,
+     "book": "fanduel",
+     "decimal": 10.0,
      "label": "Under",
-     "point": 0.5
+     "point": 2.5
     }
    ],
    "prices": {
     "over": {
-     "fanduel": 5.0,
-     "draftkings": 4.67,
-     "fanatics": 5.3
+     "fanduel": 1.04,
+     "fanatics": 1.0667
     },
     "under": {
-     "draftkings": 1.1767
+     "fanduel": 10.0,
+     "fanatics": 9.0
     }
    }
   },
@@ -3222,7 +3184,7 @@
     "over": {
      "fanduel": 4.9,
      "draftkings": 4.35,
-     "fanatics": 4.5
+     "fanatics": 4.4
     },
     "under": {
      "draftkings": 1.1961
@@ -3462,45 +3424,6 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "batter_hits",
-   "subject": "Yandy Diaz",
-   "point": 0.5,
-   "arb_sum": 1.04211,
-   "single_book": false,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanatics",
-     "decimal": 1.4545,
-     "label": "Over",
-     "point": 0.5
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.82,
-     "label": "Under",
-     "point": 0.5
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 1.4348,
-     "draftkings": 1.4049,
-     "fanatics": 1.4545
-    },
-    "under": {
-     "draftkings": 2.82,
-     "fanatics": 2.65
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "batter_hits_runs_rbis",
    "subject": "Jonny DeLuca",
    "point": 1.5,
@@ -3608,6 +3531,85 @@
     "under": {
      "draftkings": 1.5917,
      "fanatics": 1.6452
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 4.5,
+   "arb_sum": 1.04286,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 7.0,
+     "label": "Tampa Bay Rays",
+     "point": -4.5
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.1111,
+     "label": "Cleveland Guardians",
+     "point": 4.5
+    }
+   ],
+   "prices": {
+    "away": {
+     "fanduel": 7.0,
+     "draftkings": 6.64,
+     "fanatics": 6.5
+    },
+    "home": {
+     "fanduel": 1.0909,
+     "draftkings": 1.0943,
+     "fanatics": 1.1111
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "batter_hits",
+   "subject": "Junior Caminero",
+   "point": 0.5,
+   "arb_sum": 1.04286,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.5556,
+     "label": "Over",
+     "point": 0.5
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 2.5,
+     "label": "Under",
+     "point": 0.5
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 1.5556,
+     "draftkings": 1.5,
+     "fanatics": 1.5
+    },
+    "under": {
+     "draftkings": 2.47,
+     "fanatics": 2.5
     }
    }
   },
@@ -3757,12 +3759,12 @@
    "prices": {
     "over": {
      "fanduel": 1.1887,
-     "draftkings": 1.2004,
+     "draftkings": 1.1961,
      "fanatics": 1.2105
     },
     "under": {
      "fanduel": 4.6,
-     "draftkings": 4.33,
+     "draftkings": 4.39,
      "fanatics": 4.4
     }
    }
@@ -3810,84 +3812,6 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 7.0,
-   "arb_sum": 1.04433,
-   "single_book": false,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.21,
-     "label": "Over",
-     "point": 7.0
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.6897,
-     "label": "Under",
-     "point": 7.0
-    }
-   ],
-   "prices": {
-    "over": {
-     "draftkings": 2.21,
-     "fanatics": 2.2
-    },
-    "under": {
-     "draftkings": 1.6329,
-     "fanatics": 1.6897
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 8.5,
-   "arb_sum": 1.04511,
-   "single_book": false,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 3.06,
-     "label": "Over",
-     "point": 8.5
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.3922,
-     "label": "Under",
-     "point": 8.5
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 3.0,
-     "draftkings": 3.06,
-     "fanatics": 3.0
-    },
-    "under": {
-     "fanduel": 1.3774,
-     "draftkings": 1.3571,
-     "fanatics": 1.3922
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "batter_stolen_bases",
    "subject": "Chase DeLauter",
    "point": 0.5,
@@ -3925,6 +3849,44 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "batter_doubles",
+   "subject": "Jo Adell",
+   "point": 0.5,
+   "arb_sum": 1.04593,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanatics",
+     "decimal": 5.1,
+     "label": "Over",
+     "point": 0.5
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.1767,
+     "label": "Under",
+     "point": 0.5
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 5.0,
+     "draftkings": 4.67,
+     "fanatics": 5.1
+    },
+    "under": {
+     "draftkings": 1.1767
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "spreads",
    "subject": null,
    "point": 3.5,
@@ -3949,12 +3911,88 @@
    "prices": {
     "away": {
      "fanduel": 5.0,
-     "draftkings": 4.77,
+     "draftkings": 4.78,
      "fanatics": 4.8
     },
     "home": {
      "fanduel": 1.1613,
-     "draftkings": 1.1706,
+     "draftkings": 1.1701,
+     "fanatics": 1.1818
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 7.0,
+   "arb_sum": 1.04638,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 2.2,
+     "label": "Over",
+     "point": 7.0
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 1.6897,
+     "label": "Under",
+     "point": 7.0
+    }
+   ],
+   "prices": {
+    "over": {
+     "draftkings": 2.2,
+     "fanatics": 2.2
+    },
+    "under": {
+     "draftkings": 1.6369,
+     "fanatics": 1.6897
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 10.0,
+   "arb_sum": 1.04696,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 4.98,
+     "label": "Over",
+     "point": 10.0
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 1.1818,
+     "label": "Under",
+     "point": 10.0
+    }
+   ],
+   "prices": {
+    "over": {
+     "draftkings": 4.98,
+     "fanatics": 4.8
+    },
+    "under": {
+     "draftkings": 1.1587,
      "fanatics": 1.1818
     }
    }
@@ -3989,13 +4027,53 @@
    "prices": {
     "away": {
      "fanduel": 1.3448,
-     "draftkings": 1.3546,
+     "draftkings": 1.3534,
      "fanatics": 1.3704
     },
     "home": {
      "fanduel": 3.15,
      "draftkings": 3.07,
      "fanatics": 3.1
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "point": 8.5,
+   "arb_sum": 1.04726,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 3.04,
+     "label": "Over",
+     "point": 8.5
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 1.3922,
+     "label": "Under",
+     "point": 8.5
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 3.0,
+     "draftkings": 3.04,
+     "fanatics": 3.0
+    },
+    "under": {
+     "fanduel": 1.3774,
+     "draftkings": 1.3584,
+     "fanatics": 1.3922
     }
    }
   },
@@ -4044,125 +4122,6 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 5.5,
-   "arb_sum": 1.04739,
-   "single_book": false,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 9.1,
-     "label": "Tampa Bay Rays",
-     "point": -5.5
-    },
-    {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 1.0667,
-     "label": "Cleveland Guardians",
-     "point": 5.5
-    }
-   ],
-   "prices": {
-    "away": {
-     "fanduel": 9.0,
-     "draftkings": 9.1,
-     "fanatics": 9.0
-    },
-    "home": {
-     "fanduel": 1.0556,
-     "draftkings": 1.0476,
-     "fanatics": 1.0667
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 4.5,
-   "arb_sum": 1.04762,
-   "single_book": false,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 7.0,
-     "label": "Tampa Bay Rays",
-     "point": -4.5
-    },
-    {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 1.1053,
-     "label": "Cleveland Guardians",
-     "point": 4.5
-    }
-   ],
-   "prices": {
-    "away": {
-     "fanduel": 7.0,
-     "draftkings": 6.54,
-     "fanatics": 6.75
-    },
-    "home": {
-     "fanduel": 1.0909,
-     "draftkings": 1.0962,
-     "fanatics": 1.1053
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "batter_hits",
-   "subject": "Junior Caminero",
-   "point": 0.5,
-   "arb_sum": 1.04772,
-   "single_book": false,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.5556,
-     "label": "Over",
-     "point": 0.5
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.47,
-     "label": "Under",
-     "point": 0.5
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 1.5556,
-     "draftkings": 1.5,
-     "fanatics": 1.5263
-    },
-    "under": {
-     "draftkings": 2.47,
-     "fanatics": 2.45
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "totals",
    "subject": null,
    "point": 3.0,
@@ -4190,6 +4149,44 @@
     },
     "under": {
      "fanatics": 8.0
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 5.5,
+   "arb_sum": 1.04861,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 9.0,
+     "label": "Tampa Bay Rays",
+     "point": -5.5
+    },
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.0667,
+     "label": "Cleveland Guardians",
+     "point": 5.5
+    }
+   ],
+   "prices": {
+    "away": {
+     "fanduel": 9.0,
+     "fanatics": 9.0
+    },
+    "home": {
+     "fanduel": 1.0556,
+     "fanatics": 1.0667
     }
    }
   },
@@ -4279,11 +4276,11 @@
    "subject": null,
    "point": 7.5,
    "arb_sum": 1.04912,
-   "single_book": false,
+   "single_book": true,
    "legs": [
     {
      "side": "over",
-     "book": "draftkings",
+     "book": "fanatics",
      "decimal": 2.5,
      "label": "Over",
      "point": 7.5
@@ -4299,12 +4296,12 @@
    "prices": {
     "over": {
      "fanduel": 2.44,
-     "draftkings": 2.5,
+     "draftkings": 2.49,
      "fanatics": 2.5
     },
     "under": {
      "fanduel": 1.5376,
-     "draftkings": 1.5025,
+     "draftkings": 1.5076,
      "fanatics": 1.5405
     }
    }
@@ -4339,12 +4336,12 @@
    "prices": {
     "away": {
      "fanduel": 3.55,
-     "draftkings": 3.45,
+     "draftkings": 3.46,
      "fanatics": 3.5
     },
     "home": {
      "fanduel": 1.2857,
-     "draftkings": 1.2915,
+     "draftkings": 1.2899,
      "fanatics": 1.303
     }
    }
@@ -4495,125 +4492,8 @@
      "fanatics": 3.8
     },
     "under": {
-     "draftkings": 1.2457,
+     "draftkings": 1.2451,
      "fanatics": 1.2667
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -3.5,
-   "arb_sum": 1.05099,
-   "single_book": false,
-   "legs": [
-    {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 1.1176,
-     "label": "Tampa Bay Rays",
-     "point": 3.5
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 6.4,
-     "label": "Cleveland Guardians",
-     "point": -3.5
-    }
-   ],
-   "prices": {
-    "away": {
-     "fanduel": 1.1111,
-     "draftkings": 1.101,
-     "fanatics": 1.1176
-    },
-    "home": {
-     "fanduel": 6.2,
-     "draftkings": 6.4,
-     "fanatics": 6.25
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "batter_hits_runs_rbis",
-   "subject": "Steven Kwan",
-   "point": 1.5,
-   "arb_sum": 1.05112,
-   "single_book": false,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanatics",
-     "decimal": 2.05,
-     "label": "Over",
-     "point": 1.5
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 1.7752,
-     "label": "Under",
-     "point": 1.5
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 1.9091,
-     "draftkings": 2.0,
-     "fanatics": 2.05
-    },
-    "under": {
-     "draftkings": 1.7752,
-     "fanatics": 1.6667
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "point": 8.0,
-   "arb_sum": 1.05114,
-   "single_book": false,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.86,
-     "label": "Over",
-     "point": 8.0
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.4255,
-     "label": "Under",
-     "point": 8.0
-    }
-   ],
-   "prices": {
-    "over": {
-     "draftkings": 2.86,
-     "fanatics": 2.85
-    },
-    "under": {
-     "draftkings": 1.4,
-     "fanatics": 1.4255
     }
    }
   },
@@ -4626,13 +4506,13 @@
    "market": "totals",
    "subject": null,
    "point": 9.5,
-   "arb_sum": 1.05165,
+   "arb_sum": 1.05107,
    "single_book": false,
    "legs": [
     {
      "side": "over",
      "book": "draftkings",
-     "decimal": 4.13,
+     "decimal": 4.14,
      "label": "Over",
      "point": 9.5
     },
@@ -4647,13 +4527,52 @@
    "prices": {
     "over": {
      "fanduel": 4.0,
-     "draftkings": 4.13,
+     "draftkings": 4.14,
      "fanatics": 4.1
     },
     "under": {
      "fanduel": 1.2326,
-     "draftkings": 1.2165,
+     "draftkings": 1.2155,
      "fanatics": 1.2353
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "batter_hits",
+   "subject": "Yandy Diaz",
+   "point": 0.5,
+   "arb_sum": 1.05158,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanatics",
+     "decimal": 1.4348,
+     "label": "Over",
+     "point": 0.5
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 2.82,
+     "label": "Under",
+     "point": 0.5
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 1.4348,
+     "draftkings": 1.4049,
+     "fanatics": 1.4348
+    },
+    "under": {
+     "draftkings": 2.82,
+     "fanatics": 2.7
     }
    }
   },
@@ -4819,7 +4738,7 @@
    "subject": null,
    "point": 5.0,
    "arb_sum": 1.05237,
-   "single_book": true,
+   "single_book": false,
    "legs": [
     {
      "side": "over",
@@ -4830,7 +4749,7 @@
     },
     {
      "side": "under",
-     "book": "fanatics",
+     "book": "draftkings",
      "decimal": 2.85,
      "label": "Under",
      "point": 5.0
@@ -4838,11 +4757,11 @@
    ],
    "prices": {
     "over": {
-     "draftkings": 1.4049,
+     "draftkings": 1.4016,
      "fanatics": 1.4255
     },
     "under": {
-     "draftkings": 2.83,
+     "draftkings": 2.85,
      "fanatics": 2.85
     }
    }
@@ -4855,33 +4774,33 @@
    "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "totals",
    "subject": null,
-   "point": 10.0,
-   "arb_sum": 1.05266,
-   "single_book": false,
+   "point": 8.0,
+   "arb_sum": 1.05237,
+   "single_book": true,
    "legs": [
     {
      "side": "over",
-     "book": "draftkings",
-     "decimal": 4.98,
+     "book": "fanatics",
+     "decimal": 2.85,
      "label": "Over",
-     "point": 10.0
+     "point": 8.0
     },
     {
      "side": "under",
      "book": "fanatics",
-     "decimal": 1.1739,
+     "decimal": 1.4255,
      "label": "Under",
-     "point": 10.0
+     "point": 8.0
     }
    ],
    "prices": {
     "over": {
-     "draftkings": 4.98,
-     "fanatics": 4.9
+     "draftkings": 2.84,
+     "fanatics": 2.85
     },
     "under": {
-     "draftkings": 1.1587,
-     "fanatics": 1.1739
+     "draftkings": 1.4032,
+     "fanatics": 1.4255
     }
    }
   },
@@ -4991,11 +4910,11 @@
    ],
    "prices": {
     "over": {
-     "draftkings": 1.2247,
+     "draftkings": 1.2198,
      "fanatics": 1.2353
     },
     "under": {
-     "draftkings": 4.04,
+     "draftkings": 4.09,
      "fanatics": 4.1
     }
    }
@@ -5031,11 +4950,11 @@
     "over": {
      "fanduel": 1.6061,
      "draftkings": 1.565,
-     "fanatics": 1.6061
+     "fanatics": 1.5882
     },
     "under": {
      "draftkings": 2.32,
-     "fanatics": 2.25
+     "fanatics": 2.3
     }
    }
   },
@@ -5045,35 +4964,37 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "batter_hits",
-   "subject": "Chandler Simpson",
-   "point": 0.5,
-   "arb_sum": 1.05376,
+   "market": "spreads",
+   "subject": null,
+   "point": -3.5,
+   "arb_sum": 1.05385,
    "single_book": false,
    "legs": [
     {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 1.3676,
-     "label": "Over",
-     "point": 0.5
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.1111,
+     "label": "Tampa Bay Rays",
+     "point": 3.5
     },
     {
-     "side": "under",
+     "side": "home",
      "book": "fanatics",
-     "decimal": 3.1,
-     "label": "Under",
-     "point": 0.5
+     "decimal": 6.5,
+     "label": "Cleveland Guardians",
+     "point": -3.5
     }
    ],
    "prices": {
-    "over": {
-     "fanduel": 1.3448,
-     "draftkings": 1.3676,
-     "fanatics": 1.3509
+    "away": {
+     "fanduel": 1.1111,
+     "draftkings": 1.1031,
+     "fanatics": 1.1111
     },
-    "under": {
-     "fanatics": 3.1
+    "home": {
+     "fanduel": 6.2,
+     "draftkings": 6.36,
+     "fanatics": 6.5
     }
    }
   },
@@ -5258,13 +5179,52 @@
    "prices": {
     "away": {
      "fanduel": 1.2,
-     "draftkings": 1.1934,
+     "draftkings": 1.1927,
      "fanatics": 1.2
     },
     "home": {
      "fanduel": 4.4,
-     "draftkings": 4.42,
+     "draftkings": 4.43,
      "fanatics": 4.5
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "batter_hits",
+   "subject": "Petey Halpin",
+   "point": 0.5,
+   "arb_sum": 1.05556,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanduel",
+     "decimal": 1.8,
+     "label": "Over",
+     "point": 0.5
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 2.0,
+     "label": "Under",
+     "point": 0.5
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 1.8,
+     "draftkings": 1.7937,
+     "fanatics": 1.7692
+    },
+    "under": {
+     "draftkings": 1.9434,
+     "fanatics": 2.0
     }
    }
   },
@@ -5567,7 +5527,7 @@
     "over": {
      "fanduel": 5.2,
      "draftkings": 5.08,
-     "fanatics": 4.4
+     "fanatics": 4.5
     },
     "under": {
      "draftkings": 1.1562
@@ -5758,10 +5718,51 @@
    ],
    "prices": {
     "away": {
-     "fanduel": 1.0556
+     "fanduel": 1.0556,
+     "draftkings": 1.0476
     },
     "home": {
-     "fanduel": 9.0
+     "fanduel": 9.0,
+     "draftkings": 9.0
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "batter_hits_runs_rbis",
+   "subject": "Steven Kwan",
+   "point": 1.5,
+   "arb_sum": 1.05862,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanatics",
+     "decimal": 2.05,
+     "label": "Over",
+     "point": 1.5
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.7519,
+     "label": "Under",
+     "point": 1.5
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 1.9091,
+     "draftkings": 2.0,
+     "fanatics": 2.05
+    },
+    "under": {
+     "draftkings": 1.7519,
+     "fanatics": 1.6667
     }
    }
   },
@@ -5945,7 +5946,7 @@
     "over": {
      "fanduel": 5.0,
      "draftkings": 5.72,
-     "fanatics": 5.1
+     "fanatics": 5.3
     },
     "under": {
      "draftkings": 1.1299
@@ -6413,6 +6414,78 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -4.0,
+   "arb_sum": 1.06364,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.0526,
+     "label": "Tampa Bay Rays",
+     "point": 4.0
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 8.8,
+     "label": "Cleveland Guardians",
+     "point": -4.0
+    }
+   ],
+   "prices": {
+    "away": {
+     "draftkings": 1.0526
+    },
+    "home": {
+     "draftkings": 8.8
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 2.0,
+   "arb_sum": 1.06373,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 3.13,
+     "label": "Tampa Bay Rays",
+     "point": -2.0
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.3436,
+     "label": "Cleveland Guardians",
+     "point": 2.0
+    }
+   ],
+   "prices": {
+    "away": {
+     "draftkings": 3.13
+    },
+    "home": {
+     "draftkings": 1.3436
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "batter_rbis",
    "subject": "Travis Bazzana",
    "point": 0.5,
@@ -6489,139 +6562,31 @@
    "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "spreads",
    "subject": null,
-   "point": 4.0,
-   "arb_sum": 1.06385,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 6.25,
-     "label": "Tampa Bay Rays",
-     "point": -4.0
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.1064,
-     "label": "Cleveland Guardians",
-     "point": 4.0
-    }
-   ],
-   "prices": {
-    "away": {
-     "draftkings": 6.25
-    },
-    "home": {
-     "draftkings": 1.1064
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 2.0,
-   "arb_sum": 1.0641,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 3.12,
-     "label": "Tampa Bay Rays",
-     "point": -2.0
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.3448,
-     "label": "Cleveland Guardians",
-     "point": 2.0
-    }
-   ],
-   "prices": {
-    "away": {
-     "draftkings": 3.12
-    },
-    "home": {
-     "draftkings": 1.3448
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": 5.0,
-   "arb_sum": 1.06413,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 8.8,
-     "label": "Tampa Bay Rays",
-     "point": -5.0
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.0521,
-     "label": "Cleveland Guardians",
-     "point": 5.0
-    }
-   ],
-   "prices": {
-    "away": {
-     "draftkings": 8.8
-    },
-    "home": {
-     "draftkings": 1.0521
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
    "point": 3.0,
-   "arb_sum": 1.06419,
+   "arb_sum": 1.06396,
    "single_book": true,
    "legs": [
     {
      "side": "away",
      "book": "draftkings",
-     "decimal": 4.44,
+     "decimal": 4.46,
      "label": "Tampa Bay Rays",
      "point": -3.0
     },
     {
      "side": "home",
      "book": "draftkings",
-     "decimal": 1.1919,
+     "decimal": 1.1908,
      "label": "Cleveland Guardians",
      "point": 3.0
     }
    ],
    "prices": {
     "away": {
-     "draftkings": 4.44
+     "draftkings": 4.46
     },
     "home": {
-     "draftkings": 1.1919
+     "draftkings": 1.1908
     }
    }
   },
@@ -6634,13 +6599,13 @@
    "market": "totals",
    "subject": null,
    "point": 11.0,
-   "arb_sum": 1.06423,
+   "arb_sum": 1.06402,
    "single_book": true,
    "legs": [
     {
      "side": "over",
      "book": "draftkings",
-     "decimal": 6.84,
+     "decimal": 6.85,
      "label": "Over",
      "point": 11.0
     },
@@ -6654,10 +6619,46 @@
    ],
    "prices": {
     "over": {
-     "draftkings": 6.84
+     "draftkings": 6.85
     },
     "under": {
      "draftkings": 1.0893
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -2.0,
+   "arb_sum": 1.0641,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.2237,
+     "label": "Tampa Bay Rays",
+     "point": 2.0
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 4.05,
+     "label": "Cleveland Guardians",
+     "point": -2.0
+    }
+   ],
+   "prices": {
+    "away": {
+     "draftkings": 1.2237
+    },
+    "home": {
+     "draftkings": 4.05
     }
    }
   },
@@ -6706,31 +6707,67 @@
    "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "spreads",
    "subject": null,
-   "point": -3.0,
-   "arb_sum": 1.06428,
+   "point": 4.0,
+   "arb_sum": 1.06427,
    "single_book": true,
    "legs": [
     {
      "side": "away",
      "book": "draftkings",
-     "decimal": 1.1124,
+     "decimal": 6.34,
+     "label": "Tampa Bay Rays",
+     "point": -4.0
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.1031,
+     "label": "Cleveland Guardians",
+     "point": 4.0
+    }
+   ],
+   "prices": {
+    "away": {
+     "draftkings": 6.34
+    },
+    "home": {
+     "draftkings": 1.1031
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": -3.0,
+   "arb_sum": 1.06435,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.1136,
      "label": "Tampa Bay Rays",
      "point": 3.0
     },
     {
      "side": "home",
      "book": "draftkings",
-     "decimal": 6.05,
+     "decimal": 6.01,
      "label": "Cleveland Guardians",
      "point": -3.0
     }
    ],
    "prices": {
     "away": {
-     "draftkings": 1.1124
+     "draftkings": 1.1136
     },
     "home": {
-     "draftkings": 6.05
+     "draftkings": 6.01
     }
    }
   },
@@ -6740,69 +6777,35 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -4.0,
-   "arb_sum": 1.06428,
-   "single_book": true,
+   "market": "batter_hits",
+   "subject": "Chandler Simpson",
+   "point": 0.5,
+   "arb_sum": 1.06452,
+   "single_book": false,
    "legs": [
     {
-     "side": "away",
+     "side": "over",
      "book": "draftkings",
-     "decimal": 1.0505,
-     "label": "Tampa Bay Rays",
-     "point": 4.0
+     "decimal": 1.3676,
+     "label": "Over",
+     "point": 0.5
     },
     {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 8.9,
-     "label": "Cleveland Guardians",
-     "point": -4.0
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 3.0,
+     "label": "Under",
+     "point": 0.5
     }
    ],
    "prices": {
-    "away": {
-     "draftkings": 1.0505
+    "over": {
+     "fanduel": 1.3448,
+     "draftkings": 1.3676,
+     "fanatics": 1.3636
     },
-    "home": {
-     "draftkings": 8.9
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "point": -2.0,
-   "arb_sum": 1.06437,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 1.2242,
-     "label": "Tampa Bay Rays",
-     "point": 2.0
-    },
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 4.04,
-     "label": "Cleveland Guardians",
-     "point": -2.0
-    }
-   ],
-   "prices": {
-    "away": {
-     "draftkings": 1.2242
-    },
-    "home": {
-     "draftkings": 4.04
+    "under": {
+     "fanatics": 3.0
     }
    }
   },
@@ -6839,6 +6842,42 @@
     },
     "home": {
      "draftkings": 2.52
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "point": 5.0,
+   "arb_sum": 1.06474,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 8.9,
+     "label": "Tampa Bay Rays",
+     "point": -5.0
+    },
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.05,
+     "label": "Cleveland Guardians",
+     "point": 5.0
+    }
+   ],
+   "prices": {
+    "away": {
+     "draftkings": 8.9
+    },
+    "home": {
+     "draftkings": 1.05
     }
    }
   },
@@ -7526,45 +7565,6 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "batter_hits",
-   "subject": "Petey Halpin",
-   "point": 0.5,
-   "arb_sum": 1.06775,
-   "single_book": false,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanduel",
-     "decimal": 1.8,
-     "label": "Over",
-     "point": 0.5
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.9524,
-     "label": "Under",
-     "point": 0.5
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 1.8,
-     "draftkings": 1.7937,
-     "fanatics": 1.8
-    },
-    "under": {
-     "draftkings": 1.9434,
-     "fanatics": 1.9524
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "batter_rbis",
    "subject": "Liam Hicks",
    "point": 0.5,
@@ -7679,45 +7679,6 @@
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "batter_hits_runs_rbis",
-   "subject": "Nathaniel Lowe",
-   "point": 0.5,
-   "arb_sum": 1.06858,
-   "single_book": true,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 1.5464,
-     "label": "Over",
-     "point": 0.5
-    },
-    {
-     "side": "under",
-     "book": "draftkings",
-     "decimal": 2.37,
-     "label": "Under",
-     "point": 0.5
-    }
-   ],
-   "prices": {
-    "over": {
-     "fanduel": 1.4545,
-     "draftkings": 1.5464,
-     "fanatics": 1.5405
-    },
-    "under": {
-     "draftkings": 2.37,
-     "fanatics": 2.3
-    }
-   }
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "batter_hits_runs_rbis",
    "subject": "Brayan Rocchio",
    "point": 0.5,
    "arb_sum": 1.06867,
@@ -7786,6 +7747,43 @@
     "under": {
      "draftkings": 1.7092,
      "fanatics": 1.7143
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "batter_hits_runs_rbis",
+   "subject": "Nathaniel Lowe",
+   "point": 1.5,
+   "arb_sum": 1.06912,
+   "single_book": true,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 2.36,
+     "label": "Over",
+     "point": 1.5
+    },
+    {
+     "side": "under",
+     "book": "draftkings",
+     "decimal": 1.5495,
+     "label": "Under",
+     "point": 1.5
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 2.25,
+     "draftkings": 2.36
+    },
+    "under": {
+     "draftkings": 1.5495
     }
    }
   },
@@ -9613,6 +9611,44 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "batter_hits_runs_rbis",
+   "subject": "Nathaniel Lowe",
+   "point": 0.5,
+   "arb_sum": 1.08143,
+   "single_book": false,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 1.5464,
+     "label": "Over",
+     "point": 0.5
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 2.3,
+     "label": "Under",
+     "point": 0.5
+    }
+   ],
+   "prices": {
+    "over": {
+     "fanduel": 1.4545,
+     "draftkings": 1.5464,
+     "fanatics": 1.5405
+    },
+    "under": {
+     "fanatics": 2.3
+    }
+   }
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "batter_walks",
    "subject": "Junior Caminero",
    "point": 0.5,
@@ -9693,12 +9729,12 @@
     9.5,
     10.5
    ],
-   "cost_pct": 9.14,
+   "cost_pct": 9.0,
    "legs": [
     {
      "side": "over",
      "book": "draftkings",
-     "decimal": 4.13,
+     "decimal": 4.14,
      "label": "Over",
      "point": 9.5,
      "line": 9.5
@@ -9725,12 +9761,12 @@
     -4.5,
     -3.5
    ],
-   "cost_pct": 9.5,
+   "cost_pct": 9.11111,
    "legs": [
     {
      "side": "home",
      "book": "fanatics",
-     "decimal": 1.1053,
+     "decimal": 1.1111,
      "label": "Cleveland Guardians",
      "point": 4.5,
      "line": -4.5
@@ -9850,38 +9886,6 @@
    "market": "totals",
    "subject": null,
    "window": [
-    7.5,
-    8.5
-   ],
-   "cost_pct": 10.62353,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.5,
-     "label": "Over",
-     "point": 7.5,
-     "line": 7.5
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.3922,
-     "label": "Under",
-     "point": 8.5,
-     "line": 8.5
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
     9.0,
     10.5
    ],
@@ -9902,6 +9906,38 @@
      "label": "Under",
      "point": 10.5,
      "line": 10.5
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "window": [
+    2.5,
+    3.5
+   ],
+   "cost_pct": 10.9,
+   "legs": [
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 4.5,
+     "label": "Cleveland Guardians",
+     "point": -2.5,
+     "line": 2.5
+    },
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.1111,
+     "label": "Tampa Bay Rays",
+     "point": 3.5,
+     "line": 3.5
     }
    ]
   },
@@ -9946,6 +9982,38 @@
    "market": "spreads",
    "subject": null,
    "window": [
+    -4.5,
+    -3.0
+   ],
+   "cost_pct": 11.246,
+   "legs": [
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.1111,
+     "label": "Cleveland Guardians",
+     "point": 4.5,
+     "line": -4.5
+    },
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 4.46,
+     "label": "Tampa Bay Rays",
+     "point": -3.0,
+     "line": -3.0
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "window": [
     -3.5,
     -2.5
    ],
@@ -9966,70 +10034,6 @@
      "label": "Tampa Bay Rays",
      "point": -2.5,
      "line": -2.5
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "window": [
-    -4.5,
-    -3.0
-   ],
-   "cost_pct": 11.644,
-   "legs": [
-    {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 1.1053,
-     "label": "Cleveland Guardians",
-     "point": 4.5,
-     "line": -4.5
-    },
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 4.44,
-     "label": "Tampa Bay Rays",
-     "point": -3.0,
-     "line": -3.0
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
-    8.5,
-    9.5
-   ],
-   "cost_pct": 12.04706,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 3.06,
-     "label": "Over",
-     "point": 8.5,
-     "line": 8.5
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.2353,
-     "label": "Under",
-     "point": 9.5,
-     "line": 9.5
     }
    ]
   },
@@ -10071,29 +10075,29 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
+   "market": "totals",
    "subject": null,
    "window": [
-    2.0,
-    3.5
+    8.5,
+    9.5
    ],
-   "cost_pct": 12.48824,
+   "cost_pct": 12.17059,
    "legs": [
     {
-     "side": "home",
+     "side": "over",
      "book": "draftkings",
-     "decimal": 4.04,
-     "label": "Cleveland Guardians",
-     "point": -2.0,
-     "line": 2.0
+     "decimal": 3.04,
+     "label": "Over",
+     "point": 8.5,
+     "line": 8.5
     },
     {
-     "side": "away",
+     "side": "under",
      "book": "fanatics",
-     "decimal": 1.1176,
-     "label": "Tampa Bay Rays",
-     "point": 3.5,
-     "line": 3.5
+     "decimal": 1.2353,
+     "label": "Under",
+     "point": 9.5,
+     "line": 9.5
     }
    ]
   },
@@ -10103,27 +10107,27 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
+   "market": "spreads",
    "subject": null,
    "window": [
-    2.5,
+    2.0,
     3.5
    ],
-   "cost_pct": 12.76923,
+   "cost_pct": 12.925,
    "legs": [
     {
-     "side": "over",
-     "book": "fanatics",
-     "decimal": 1.0769,
-     "label": "Over",
-     "point": 2.5,
-     "line": 2.5
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 4.05,
+     "label": "Cleveland Guardians",
+     "point": -2.0,
+     "line": 2.0
     },
     {
-     "side": "under",
+     "side": "away",
      "book": "fanduel",
-     "decimal": 4.6,
-     "label": "Under",
+     "decimal": 1.1111,
+     "label": "Tampa Bay Rays",
      "point": 3.5,
      "line": 3.5
     }
@@ -10170,38 +10174,6 @@
    "market": "spreads",
    "subject": null,
    "window": [
-    -5.0,
-    -3.5
-   ],
-   "cost_pct": 13.09792,
-   "legs": [
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.0521,
-     "label": "Cleveland Guardians",
-     "point": 5.0,
-     "line": -5.0
-    },
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 5.0,
-     "label": "Tampa Bay Rays",
-     "point": -3.5,
-     "line": -3.5
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "window": [
     -2.5,
     -1.5
    ],
@@ -10222,6 +10194,70 @@
      "label": "Tampa Bay Rays",
      "point": -1.5,
      "line": -1.5
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "window": [
+    -5.0,
+    -3.5
+   ],
+   "cost_pct": 13.27,
+   "legs": [
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 1.05,
+     "label": "Cleveland Guardians",
+     "point": 5.0,
+     "line": -5.0
+    },
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 5.0,
+     "label": "Tampa Bay Rays",
+     "point": -3.5,
+     "line": -3.5
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "window": [
+    2.5,
+    3.5
+   ],
+   "cost_pct": 13.52,
+   "legs": [
+    {
+     "side": "over",
+     "book": "fanatics",
+     "decimal": 1.0667,
+     "label": "Over",
+     "point": 2.5,
+     "line": 2.5
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 4.6,
+     "label": "Under",
+     "point": 3.5,
+     "line": 3.5
     }
    ]
   },
@@ -10263,45 +10299,13 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
-    8.0,
-    9.5
-   ],
-   "cost_pct": 13.77647,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.86,
-     "label": "Over",
-     "point": 8.0,
-     "line": 8.0
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.2353,
-     "label": "Under",
-     "point": 9.5,
-     "line": 9.5
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "spreads",
    "subject": null,
    "window": [
     -5.5,
     -3.0
    ],
-   "cost_pct": 14.02667,
+   "cost_pct": 13.922,
    "legs": [
     {
      "side": "home",
@@ -10314,7 +10318,7 @@
     {
      "side": "away",
      "book": "draftkings",
-     "decimal": 4.44,
+     "decimal": 4.46,
      "label": "Tampa Bay Rays",
      "point": -3.0,
      "line": -3.0
@@ -10327,29 +10331,29 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
+   "market": "spreads",
    "subject": null,
    "window": [
-    9.5,
-    11.5
+    -3.5,
+    -2.0
    ],
-   "cost_pct": 14.2,
+   "cost_pct": 14.238,
    "legs": [
     {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 4.13,
-     "label": "Over",
-     "point": 9.5,
-     "line": 9.5
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.1818,
+     "label": "Cleveland Guardians",
+     "point": 3.5,
+     "line": -3.5
     },
     {
-     "side": "under",
-     "book": "fanduel",
-     "decimal": 1.0833,
-     "label": "Under",
-     "point": 11.5,
-     "line": 11.5
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 3.13,
+     "label": "Tampa Bay Rays",
+     "point": -2.0,
+     "line": -2.0
     }
    ]
   },
@@ -10423,29 +10427,29 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
+   "market": "totals",
    "subject": null,
    "window": [
-    -3.5,
-    -2.0
+    9.5,
+    11.5
    ],
-   "cost_pct": 14.31818,
+   "cost_pct": 14.302,
    "legs": [
     {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 1.1818,
-     "label": "Cleveland Guardians",
-     "point": 3.5,
-     "line": -3.5
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 4.14,
+     "label": "Over",
+     "point": 9.5,
+     "line": 9.5
     },
     {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 3.12,
-     "label": "Tampa Bay Rays",
-     "point": -2.0,
-     "line": -2.0
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 1.0833,
+     "label": "Under",
+     "point": 11.5,
+     "line": 11.5
     }
    ]
   },
@@ -10551,18 +10555,50 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "window": [
+    2.5,
+    4.0
+   ],
+   "cost_pct": 14.73684,
+   "legs": [
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 4.5,
+     "label": "Cleveland Guardians",
+     "point": -2.5,
+     "line": 2.5
+    },
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 1.0526,
+     "label": "Tampa Bay Rays",
+     "point": 4.0,
+     "line": 4.0
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "totals",
    "subject": null,
    "window": [
     7.0,
     8.5
    ],
-   "cost_pct": 14.694,
+   "cost_pct": 14.8,
    "legs": [
     {
      "side": "over",
      "book": "draftkings",
-     "decimal": 2.21,
+     "decimal": 2.2,
      "label": "Over",
      "point": 7.0,
      "line": 7.0
@@ -10583,29 +10619,29 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
+   "market": "totals",
    "subject": null,
    "window": [
-    2.5,
-    4.0
+    8.5,
+    10.0
    ],
-   "cost_pct": 14.95,
+   "cost_pct": 14.90909,
    "legs": [
     {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 4.5,
-     "label": "Cleveland Guardians",
-     "point": -2.5,
-     "line": 2.5
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 3.04,
+     "label": "Over",
+     "point": 8.5,
+     "line": 8.5
     },
     {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 1.0505,
-     "label": "Tampa Bay Rays",
-     "point": 4.0,
-     "line": 4.0
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 1.1818,
+     "label": "Under",
+     "point": 10.0,
+     "line": 10.0
     }
    ]
   },
@@ -10650,26 +10686,26 @@
    "market": "totals",
    "subject": null,
    "window": [
-    8.5,
-    10.0
+    3.5,
+    5.0
    ],
-   "cost_pct": 15.238,
+   "cost_pct": 15.07,
    "legs": [
     {
      "side": "over",
-     "book": "draftkings",
-     "decimal": 3.06,
+     "book": "fanatics",
+     "decimal": 1.2105,
      "label": "Over",
-     "point": 8.5,
-     "line": 8.5
+     "point": 3.5,
+     "line": 3.5
     },
     {
      "side": "under",
-     "book": "fanatics",
-     "decimal": 1.1739,
+     "book": "draftkings",
+     "decimal": 2.85,
      "label": "Under",
-     "point": 10.0,
-     "line": 10.0
+     "point": 5.0,
+     "line": 5.0
     }
    ]
   },
@@ -10711,29 +10747,29 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
+   "market": "spreads",
    "subject": null,
    "window": [
-    8.5,
-    10.5
+    -4.5,
+    -2.5
    ],
-   "cost_pct": 15.544,
+   "cost_pct": 15.51,
    "legs": [
     {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 3.06,
-     "label": "Over",
-     "point": 8.5,
-     "line": 8.5
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.1111,
+     "label": "Cleveland Guardians",
+     "point": 4.5,
+     "line": -4.5
     },
     {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.1667,
-     "label": "Under",
-     "point": 10.5,
-     "line": 10.5
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 3.55,
+     "label": "Tampa Bay Rays",
+     "point": -2.5,
+     "line": -2.5
     }
    ]
   },
@@ -10775,38 +10811,6 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "window": [
-    -4.0,
-    -2.5
-   ],
-   "cost_pct": 15.69362,
-   "legs": [
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 1.1064,
-     "label": "Cleveland Guardians",
-     "point": 4.0,
-     "line": -4.0
-    },
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 3.55,
-     "label": "Tampa Bay Rays",
-     "point": -2.5,
-     "line": -2.5
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "totals",
    "subject": null,
    "window": [
@@ -10839,21 +10843,53 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "window": [
+    8.5,
+    10.5
+   ],
+   "cost_pct": 15.792,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 3.04,
+     "label": "Over",
+     "point": 8.5,
+     "line": 8.5
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 1.1667,
+     "label": "Under",
+     "point": 10.5,
+     "line": 10.5
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "spreads",
    "subject": null,
    "window": [
-    -4.5,
+    -4.0,
     -2.5
    ],
    "cost_pct": 15.865,
    "legs": [
     {
      "side": "home",
-     "book": "fanatics",
-     "decimal": 1.1053,
+     "book": "draftkings",
+     "decimal": 1.1031,
      "label": "Cleveland Guardians",
-     "point": 4.5,
-     "line": -4.5
+     "point": 4.0,
+     "line": -4.0
     },
     {
      "side": "away",
@@ -10871,45 +10907,13 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
-    7.5,
-    9.0
-   ],
-   "cost_pct": 16.0,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.5,
-     "label": "Over",
-     "point": 7.5,
-     "line": 7.5
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.2667,
-     "label": "Under",
-     "point": 9.0,
-     "line": 9.0
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "spreads",
    "subject": null,
    "window": [
     -6.5,
     -3.0
    ],
-   "cost_pct": 16.084,
+   "cost_pct": 16.152,
    "legs": [
     {
      "side": "home",
@@ -10922,7 +10926,7 @@
     {
      "side": "away",
      "book": "draftkings",
-     "decimal": 4.44,
+     "decimal": 4.46,
      "label": "Tampa Bay Rays",
      "point": -3.0,
      "line": -3.0
@@ -10941,12 +10945,12 @@
     2.0,
     4.5
    ],
-   "cost_pct": 16.372,
+   "cost_pct": 16.29444,
    "legs": [
     {
      "side": "home",
      "book": "draftkings",
-     "decimal": 4.04,
+     "decimal": 4.05,
      "label": "Cleveland Guardians",
      "point": -2.0,
      "line": 2.0
@@ -11005,12 +11009,12 @@
     9.5,
     12.5
    ],
-   "cost_pct": 16.574,
+   "cost_pct": 16.57273,
    "legs": [
     {
      "side": "over",
      "book": "draftkings",
-     "decimal": 4.13,
+     "decimal": 4.14,
      "label": "Over",
      "point": 9.5,
      "line": 9.5
@@ -11022,102 +11026,6 @@
      "label": "Under",
      "point": 12.5,
      "line": 12.5
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
-    8.0,
-    10.0
-   ],
-   "cost_pct": 16.774,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.86,
-     "label": "Over",
-     "point": 8.0,
-     "line": 8.0
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.1739,
-     "label": "Under",
-     "point": 10.0,
-     "line": 10.0
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
-    8.0,
-    10.5
-   ],
-   "cost_pct": 17.16667,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.86,
-     "label": "Over",
-     "point": 8.0,
-     "line": 8.0
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.1667,
-     "label": "Under",
-     "point": 10.5,
-     "line": 10.5
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
-    7.5,
-    9.5
-   ],
-   "cost_pct": 17.35882,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.5,
-     "label": "Over",
-     "point": 7.5,
-     "line": 7.5
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.2353,
-     "label": "Under",
-     "point": 9.5,
-     "line": 9.5
     }
    ]
   },
@@ -11159,38 +11067,6 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "window": [
-    1.5,
-    3.5
-   ],
-   "cost_pct": 17.51765,
-   "legs": [
-    {
-     "side": "home",
-     "book": "fanduel",
-     "decimal": 3.15,
-     "label": "Cleveland Guardians",
-     "point": -1.5,
-     "line": 1.5
-    },
-    {
-     "side": "away",
-     "book": "fanatics",
-     "decimal": 1.1176,
-     "label": "Tampa Bay Rays",
-     "point": 3.5,
-     "line": 3.5
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "totals",
    "subject": null,
    "window": [
@@ -11223,45 +11099,13 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
-    2.5,
-    4.5
-   ],
-   "cost_pct": 17.75,
-   "legs": [
-    {
-     "side": "over",
-     "book": "fanatics",
-     "decimal": 1.0769,
-     "label": "Over",
-     "point": 2.5,
-     "line": 2.5
-    },
-    {
-     "side": "under",
-     "book": "fanduel",
-     "decimal": 3.5,
-     "label": "Under",
-     "point": 4.5,
-     "line": 4.5
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "spreads",
    "subject": null,
    "window": [
     1.5,
     3.0
    ],
-   "cost_pct": 17.79663,
+   "cost_pct": 17.785,
    "legs": [
     {
      "side": "home",
@@ -11274,7 +11118,7 @@
     {
      "side": "away",
      "book": "draftkings",
-     "decimal": 1.1124,
+     "decimal": 1.1136,
      "label": "Tampa Bay Rays",
      "point": 3.0,
      "line": 3.0
@@ -11351,6 +11195,70 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "window": [
+    -4.5,
+    -2.0
+   ],
+   "cost_pct": 18.0,
+   "legs": [
+    {
+     "side": "home",
+     "book": "fanatics",
+     "decimal": 1.1111,
+     "label": "Cleveland Guardians",
+     "point": 4.5,
+     "line": -4.5
+    },
+    {
+     "side": "away",
+     "book": "draftkings",
+     "decimal": 3.13,
+     "label": "Tampa Bay Rays",
+     "point": -2.0,
+     "line": -2.0
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "window": [
+    9.5,
+    13.5
+   ],
+   "cost_pct": 18.028,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 4.14,
+     "label": "Over",
+     "point": 9.5,
+     "line": 9.5
+    },
+    {
+     "side": "under",
+     "book": "fanduel",
+     "decimal": 1.0222,
+     "label": "Under",
+     "point": 13.5,
+     "line": 13.5
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "totals",
    "subject": null,
    "window": [
@@ -11383,29 +11291,61 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "spreads",
+   "subject": null,
+   "window": [
+    2.0,
+    5.5
+   ],
+   "cost_pct": 18.205,
+   "legs": [
+    {
+     "side": "home",
+     "book": "draftkings",
+     "decimal": 4.05,
+     "label": "Cleveland Guardians",
+     "point": -2.0,
+     "line": 2.0
+    },
+    {
+     "side": "away",
+     "book": "fanduel",
+     "decimal": 1.025,
+     "label": "Tampa Bay Rays",
+     "point": 5.5,
+     "line": 5.5
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "totals",
    "subject": null,
    "window": [
-    9.5,
-    13.5
+    2.5,
+    4.5
    ],
-   "cost_pct": 18.226,
+   "cost_pct": 18.29333,
    "legs": [
     {
      "side": "over",
-     "book": "draftkings",
-     "decimal": 4.13,
+     "book": "fanatics",
+     "decimal": 1.0667,
      "label": "Over",
-     "point": 9.5,
-     "line": 9.5
+     "point": 2.5,
+     "line": 2.5
     },
     {
      "side": "under",
      "book": "fanduel",
-     "decimal": 1.0222,
+     "decimal": 3.5,
      "label": "Under",
-     "point": 13.5,
-     "line": 13.5
+     "point": 4.5,
+     "line": 4.5
     }
    ]
   },
@@ -11426,7 +11366,7 @@
     {
      "side": "home",
      "book": "draftkings",
-     "decimal": 1.1919,
+     "decimal": 1.1908,
      "label": "Cleveland Guardians",
      "point": 3.0,
      "line": -3.0
@@ -11438,38 +11378,6 @@
      "label": "Tampa Bay Rays",
      "point": -1.5,
      "line": -1.5
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "window": [
-    2.0,
-    5.5
-   ],
-   "cost_pct": 18.392,
-   "legs": [
-    {
-     "side": "home",
-     "book": "draftkings",
-     "decimal": 4.04,
-     "label": "Cleveland Guardians",
-     "point": -2.0,
-     "line": 2.0
-    },
-    {
-     "side": "away",
-     "book": "fanduel",
-     "decimal": 1.025,
-     "label": "Tampa Bay Rays",
-     "point": 5.5,
-     "line": 5.5
     }
    ]
   },
@@ -11511,50 +11419,18 @@
    "event_id": "fd:36196493",
    "matchup": "Tampa Bay Rays @ Cleveland Guardians",
    "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "spreads",
-   "subject": null,
-   "window": [
-    -4.5,
-    -2.0
-   ],
-   "cost_pct": 18.43158,
-   "legs": [
-    {
-     "side": "home",
-     "book": "fanatics",
-     "decimal": 1.1053,
-     "label": "Cleveland Guardians",
-     "point": 4.5,
-     "line": -4.5
-    },
-    {
-     "side": "away",
-     "book": "draftkings",
-     "decimal": 3.12,
-     "label": "Tampa Bay Rays",
-     "point": -2.0,
-     "line": -2.0
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
    "market": "totals",
    "subject": null,
    "window": [
     9.5,
     14.5
    ],
-   "cost_pct": 18.46333,
+   "cost_pct": 18.442,
    "legs": [
     {
      "side": "over",
      "book": "draftkings",
-     "decimal": 4.13,
+     "decimal": 4.14,
      "label": "Over",
      "point": 9.5,
      "line": 9.5
@@ -11709,12 +11585,12 @@
     -5.0,
     -2.5
    ],
-   "cost_pct": 18.88437,
+   "cost_pct": 19.06,
    "legs": [
     {
      "side": "home",
      "book": "draftkings",
-     "decimal": 1.0521,
+     "decimal": 1.05,
      "label": "Cleveland Guardians",
      "point": 5.0,
      "line": -5.0
@@ -11834,38 +11710,6 @@
    "market": "totals",
    "subject": null,
    "window": [
-    7.0,
-    9.0
-   ],
-   "cost_pct": 19.556,
-   "legs": [
-    {
-     "side": "over",
-     "book": "draftkings",
-     "decimal": 2.21,
-     "label": "Over",
-     "point": 7.0,
-     "line": 7.0
-    },
-    {
-     "side": "under",
-     "book": "fanatics",
-     "decimal": 1.2667,
-     "label": "Under",
-     "point": 9.0,
-     "line": 9.0
-    }
-   ]
-  },
-  {
-   "sport_key": "baseball_mlb",
-   "sport_title": "baseball_mlb",
-   "event_id": "fd:36196493",
-   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
-   "commence_time": "2026-10-17T00:00:00+00:00",
-   "market": "totals",
-   "subject": null,
-   "window": [
     9.0,
     14.5
    ],
@@ -11886,6 +11730,38 @@
      "label": "Under",
      "point": 14.5,
      "line": 14.5
+    }
+   ]
+  },
+  {
+   "sport_key": "baseball_mlb",
+   "sport_title": "baseball_mlb",
+   "event_id": "fd:36196493",
+   "matchup": "Tampa Bay Rays @ Cleveland Guardians",
+   "commence_time": "2026-10-17T00:00:00+00:00",
+   "market": "totals",
+   "subject": null,
+   "window": [
+    7.0,
+    9.0
+   ],
+   "cost_pct": 19.7,
+   "legs": [
+    {
+     "side": "over",
+     "book": "draftkings",
+     "decimal": 2.2,
+     "label": "Over",
+     "point": 7.0,
+     "line": 7.0
+    },
+    {
+     "side": "under",
+     "book": "fanatics",
+     "decimal": 1.2667,
+     "label": "Under",
+     "point": 9.0,
+     "line": 9.0
     }
    ]
   },
