@@ -133,18 +133,27 @@ def test_history_moves_the_at_lock_numbers():
 
 
 # ── polling schedule ───────────────────────────────────────────────────────
-def test_a_sport_is_polled_each_run_only_near_its_locks():
+def test_a_sport_is_polled_every_5_minutes_only_near_its_locks():
     now = T0
-    assert overlay.due({}, now, 2.5)                                       # never polled
-    recent_far = {"polled": (now - timedelta(minutes=15)).isoformat(),
-                  "next_lock": (now + timedelta(hours=8)).isoformat()}
-    assert not overlay.due(recent_far, now, 2.5)
-    near = {"polled": (now - timedelta(minutes=15)).isoformat(),
-            "next_lock": (now + timedelta(hours=1)).isoformat()}
-    assert overlay.due(near, now, 2.5)
+    assert overlay.due({}, now)                                            # never polled
+    far = {"polled": (now - timedelta(minutes=15)).isoformat(),
+           "next_lock": (now + timedelta(hours=8)).isoformat()}
+    assert not overlay.due(far, now)                                       # hours out: hourly only
+    near = {"polled": (now - timedelta(minutes=5)).isoformat(),
+            "next_lock": (now + timedelta(minutes=10)).isoformat()}
+    assert overlay.due(near, now)                                          # near a lock: every 5 min
+    too_soon = {"polled": (now - timedelta(minutes=2)).isoformat(),
+                "next_lock": (now + timedelta(minutes=10)).isoformat()}
+    assert not overlay.due(too_soon, now)
     stale = {"polled": (now - timedelta(minutes=61)).isoformat(),
              "next_lock": (now + timedelta(hours=8)).isoformat()}
-    assert overlay.due(stale, now, 2.5)
+    assert overlay.due(stale, now)
+
+
+def test_finals_are_looked_up_at_most_every_15_minutes():
+    assert overlay.finals_due({}, T0)
+    assert not overlay.finals_due({"finals_at": (T0 - timedelta(minutes=5)).isoformat()}, T0)
+    assert overlay.finals_due({"finals_at": (T0 - timedelta(minutes=15)).isoformat()}, T0)
 
 
 def test_timestamps_from_dk_and_from_python_parse():
@@ -214,7 +223,8 @@ def test_the_cfb_contest_is_no_longer_sold_as_plus_495():
     new = overlay.assess(found, tables, hist, T0, 2.5, 25, 0.10, False, MODEL)[0]
     assert old["n_lock"] == 6 and old["at_lock"]["roi"] > 4.0               # the old +495%
     assert new["n_lock"] == n and 0.0 < new["at_lock"]["roi"] < 0.5           # real lock: +28%
-    body = overlay.alerts_for([new], {}, T0)[0]["body"]
+    assert overlay.alerts_for([new], {}, T0) == []                         # 16 min out: not pushed yet
+    body = overlay.alerts_for([{**new, "minutes": 15}], {}, T0)[0]["body"]  # same contest, in the window
     assert f"Expect ~{n}/78" in body and "Best case, if no one else enters" in body
     assert "how all sports contests" in body                 # MODEL has only the broad level
 

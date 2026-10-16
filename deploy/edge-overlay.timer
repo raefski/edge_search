@@ -1,8 +1,8 @@
 [Unit]
-Description=Overlay alerts every 15 minutes, 10:00-23:45 local
+Description=Overlay alerts every 5 minutes, 10:00-23:55 local (DK polled per sport only near locks)
 
 [Timer]
-OnCalendar=*-*-* 10..23:00/15:00
+OnCalendar=*-*-* 10..23:00/5:00
 RandomizedDelaySec=30
 Persistent=false
 

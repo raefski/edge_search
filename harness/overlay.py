@@ -112,15 +112,34 @@ def _iso(ts) -> datetime | None:
         return None
 
 
-def due(st: dict, now: datetime, hours: float) -> bool:
-    """Poll a sport now? Every run while one of its contests locks inside the
-    window (plus 30 min of slack); otherwise at most once an hour. DK's lobby
-    is public, but a 15-minute poll of every sport all day is needless traffic."""
+#: Near a lock (a sport's next contest starts within NEAR_LOCK_MIN, the window the
+#: final call fires in) a sport's lobby is polled every NEAR_POLL_MIN; otherwise at
+#: most once an hour. The timer fires every 5 minutes; the 1 minute of slack below
+#: keeps a timer that fires a few seconds late from skipping a poll.
+NEAR_LOCK_MIN = 15
+NEAR_POLL_MIN = 5
+#: Post-lock finals are looked up at most this often, whatever the timer does: each
+#: run can make up to FINALS_PER_RUN DK requests, which a 5-minute timer would multiply.
+FINALS_EVERY_MIN = 15
+
+
+def due(st: dict, now: datetime) -> bool:
+    """Poll a sport's lobby now? Every NEAR_POLL_MIN while one of its contests is
+    about to lock; otherwise at most once an hour. DK's lobby is public, but polling
+    every sport every few minutes all day is needless traffic."""
     polled = _iso(st.get("polled"))
-    if polled is None or now - polled >= timedelta(minutes=60):
+    if polled is None:
         return True
     nl = _iso(st.get("next_lock"))
-    return nl is not None and now - timedelta(minutes=5) <= nl <= now + timedelta(hours=hours, minutes=30)
+    near = nl is not None and now - timedelta(minutes=5) <= nl <= now + timedelta(minutes=NEAR_LOCK_MIN)
+    gap = timedelta(minutes=NEAR_POLL_MIN - 1) if near else timedelta(minutes=60)
+    return now - polled >= gap
+
+
+def finals_due(state: dict, now: datetime) -> bool:
+    """Look up post-lock finals now? At most once per FINALS_EVERY_MIN (less 1 minute of slack)."""
+    last = _iso(state.get("finals_at"))
+    return last is None or now - last >= timedelta(minutes=FINALS_EVERY_MIN - 1)
 
 
 def load_log() -> tuple[dict, dict]:
@@ -418,7 +437,7 @@ def run(do_push: bool = False, hours: float = 2.5, min_roi: float = 0.10, max_fe
     sports_state = state.setdefault("sports", {})
     found, polled = [], []
     for code in O.SPORTS:
-        if not due(sports_state.get(code, {}), now, hours):
+        if not due(sports_state.get(code, {}), now):
             continue
         try:
             cs = O.contests(code)
@@ -434,11 +453,13 @@ def run(do_push: bool = False, hours: float = 2.5, min_roi: float = 0.10, max_fe
     tables = price(found)
     history, logged = load_log()
     finals = load_finals()
-    try:
-        got = collect_finals(logged, finals, now)
-    except Exception as exc:                                # noqa: BLE001
-        got = []
-        print(f"finals: lookup unavailable ({exc})")
+    got = []
+    if finals_due(state, now):
+        state["finals_at"] = now.isoformat()                # set even on failure: no retry storm
+        try:
+            got = collect_finals(logged, finals, now)
+        except Exception as exc:                            # noqa: BLE001
+            print(f"finals: lookup unavailable ({exc})")
     finals.update({g["contest_id"]: g["final"] for g in got})
     model = fit_late_fill(logged, finals) if logged else None
     if model:
@@ -472,6 +493,6 @@ def run(do_push: bool = False, hours: float = 2.5, min_roi: float = 0.10, max_fe
     for a in sent_now:
         state[a["contest"]] = {"final": a["final"], "at": a["at"]}
     cutoff = (now - timedelta(days=2)).isoformat()
-    state = {k: v for k, v in state.items() if k == "sports" or v.get("at", "") >= cutoff}
+    state = {k: v for k, v in state.items() if k in ("sports", "finals_at") or v.get("at", "") >= cutoff}
     _save_state(state)
     return new
