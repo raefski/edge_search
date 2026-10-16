@@ -50,8 +50,10 @@ from pathlib import Path
 from statistics import NormalDist
 from zoneinfo import ZoneInfo
 
+from edge import dfs_slate
+from edge import dfs_forward_log
 from edge import dfs, dfs_ncaab_theory as theory, dfs_opt_ncaab, ncaab, ncaab_sim
-from edge.dfs_run_nfl import _parse_time, slate_games
+from edge.dfs_slate import parse_time as _parse_time, slate_games
 from edge.names import norm
 
 log = logging.getLogger(__name__)
@@ -117,13 +119,6 @@ def positions(dk_position: str) -> list:
 # ---------------------------------------------------------------------------
 # The slate, as DraftKings describes it
 # ---------------------------------------------------------------------------
-def _group_row(g: dict, **extra) -> dict:
-    suffix = (g.get("ContestStartTimeSuffix") or "").strip()
-    return {"gid": g.get("DraftGroupId"), "games": g.get("GameCount") or 0,
-            "label": suffix.strip("()") or "Main", "start": g.get("StartDate"),
-            "featured": g.get("DraftGroupTag") == "Featured", **extra}
-
-
 def classic_groups(groups: list[dict] | None = None) -> list[dict]:
     """College Classic slates. CBB's Classic GameTypeId has never been read
     live, so there is no default: Classic is whatever the lobby's own
@@ -134,27 +129,22 @@ def classic_groups(groups: list[dict] | None = None) -> list[dict]:
     groups = groups if groups is not None else dfs.draft_groups(DK_SPORT)
     ids = dfs.classic_game_types(DK_SPORT)
     if ids:
-        out = [_group_row(g) for g in groups if g.get("GameTypeId") in ids]
+        out = [dfs_slate.group_row(g) for g in groups if g.get("GameTypeId") in ids]
     else:
-        out = [_group_row(g, unverified_type=True) for g in groups if (g.get("GameCount") or 0) >= 2]
+        out = [dfs_slate.group_row(g, unverified_type=True) for g in groups if (g.get("GameCount") or 0) >= 2]
     out.sort(key=lambda r: (r["start"] or "", -r["games"]))
     return out
 
 
-def default_slate(rows: list[dict]) -> int:
-    """Index of the NEXT Main slate to lock -- not the biggest. DK lists
-    tomorrow's Main beside tonight's (the NHL's 2026-10-07 lesson), and the
-    biggest group can be a multi-day tournament. `rows` is start-sorted."""
-    return next((i for i, r in enumerate(rows) if r["label"] == "Main"), 0)
+#: Index of the NEXT Main slate to lock -- not the biggest (edge/dfs_slate.py).
+default_slate = dfs_slate.next_main
 
 
 def resolve_slate(draft_group=None, groups: list[dict] | None = None):
     """(gid, meta): the explicit group, else the next Main slate to lock."""
     rows = classic_groups(groups)
     if draft_group:
-        match = next((r for r in rows if r["gid"] == int(draft_group)), None)
-        return int(draft_group), (match or {"gid": int(draft_group), "label": "(explicit)",
-                                            "games": 0})
+        return dfs_slate.explicit(rows, draft_group)
     if not rows:
         return None, {"error": "DraftKings is listing no college basketball Classic slates."}
     pick = rows[default_slate(rows)]
@@ -437,35 +427,21 @@ PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp", "dk_pos", "salary", "pr
 
 def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> dict:
     """Persist a build so a contest export has something to be joined to --
-    by DRAFT GROUP (CLAUDE.md: never "the nearest slate"). A past date never
-    overwrites the log, the same contract as every other sport."""
-    root = root or ROOT
+    edge/dfs_forward_log.py's rules (past dates never, this draft group only)."""
     date = info.get("date")
-    today = datetime.now(ET).date().isoformat()
-    if not date or date < today:
-        return {"logged": False, "date": date}
-    plog = root / "data" / "dfs_proj_log_ncaab.csv"
-    prior = list(csv.DictReader(plog.open())) if plog.exists() else []
-    rows = [r for r in prior if not (r.get("date") == date and str(r.get("gid")) == str(gid))]
-    rows += [{"date": date, "gid": gid, "player": p["name"], "team": p["team"],
-              "opp": p.get("opp"), "dk_pos": p.get("dk_pos"), "salary": p["salary"],
-              "proj": p["proj"], "sd": p["sd"], "floor": p["floor"], "ceil": p["ceil"],
-              "own": p.get("own", ""), "proj_source": p.get("source"),
-              "imputed": "|".join(p.get("imputed", [])), "status": p.get("status") or "",
-              "source": "live"} for p in pool]
-    plog.parent.mkdir(parents=True, exist_ok=True)
-    with plog.open("w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=PROJ_LOG_COLS)
-        w.writeheader()
-        w.writerows(rows)
-    lpath = root / "data" / f"dfs_lineups_ncaab_{date}_g{gid}.csv"
-    with lpath.open("w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(["mode", "slot", "player", "team", "salary", "proj", "own"])
-        for mode, res in (("cash", cash), ("gpp", gpp)):
-            for slot, p in (res or {}).get("slots") or []:
-                w.writerow([mode, slot, p["name"], p["team"], p["salary"], p["proj"], p.get("own")])
-    return {"logged": True, "date": date, "n": len(pool)}
+    rows = [{"date": date, "gid": gid, "player": p["name"], "team": p["team"],
+             "opp": p.get("opp"), "dk_pos": p.get("dk_pos"), "salary": p["salary"],
+             "proj": p["proj"], "sd": p["sd"], "floor": p["floor"], "ceil": p["ceil"],
+             "own": p.get("own", ""), "proj_source": p.get("source"),
+             "imputed": "|".join(p.get("imputed", [])), "status": p.get("status") or "",
+             "source": "live"} for p in pool]
+    lineups = [{"mode": mode, "slot": slot, "player": p["name"], "team": p["team"],
+                "salary": p["salary"], "proj": p["proj"], "own": p.get("own")}
+               for mode, res in (("cash", cash), ("gpp", gpp))
+               for slot, p in (res or {}).get("slots") or []]
+    return dfs_forward_log.write("ncaab", date, gid, PROJ_LOG_COLS, rows,
+                                 ("mode", "slot", "player", "team", "salary", "proj", "own"),
+                                 lineups, root=root)
 
 
 # ---------------------------------------------------------------------------

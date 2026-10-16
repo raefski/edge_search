@@ -24,8 +24,21 @@ THE OBJECTIVE IS A PERCENTILE OF THE LINEUP'S SIMULATED TOTAL
 which and why), minus `own_weight` x the lineup's summed ownership / 100 in a
 GPP. `sim` is (n_sims, len(pool)), one column per pool row.
 
-`extra_valid(rows) -> bool` is a sport's own rule on top of the roster (NHL's
-stack shape, say); None for the basketball rosters, which have no stack rule.
+`extra_valid(rows) -> bool` is a sport's own rule on top of the roster; None
+for the basketball rosters, which have no stack rule.
+
+WHO IS NOT ON IT, AND WHY (2026-10-16)
+  NHL      tried and measured, not shipped. The NHL search (edge/dfs_opt_nhl.py)
+           fills goalie-first, never pairs a goalie with skaters facing him,
+           and draws candidates per position. On four real slates (10/16-17,
+           scored on a fresh simulation) this engine with hockey's rules
+           matched it on 7 of 12 lineups and lost on the rest (GPP -1.1 and
+           -3.8, floor -1.6), even with deeper candidate lists.
+  MLB, NFL, NCAAF   a different objective -- mean +/- z x sd from a correlation
+           matrix, with batting-order / QB stack rules (each module argues it).
+  NASCAR   the same percentile climb over six position-less slots, plus an
+           exhaustive mode; not moved without the real-slate check NHL got.
+  MMA      exhaustive: it scores every legal lineup, there is no climb.
 """
 from __future__ import annotations
 

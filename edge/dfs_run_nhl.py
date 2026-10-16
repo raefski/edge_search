@@ -29,8 +29,10 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from edge import dfs_slate
+from edge import dfs_forward_log
 from edge import dfs, dfs_nhl_field, dfs_nhl_theory as theory, dfs_opt_nhl, nhl, nhl_sim
-from edge.dfs_run_nfl import _parse_time, slate_games
+from edge.dfs_slate import parse_time as _parse_time, slate_games
 from edge.names import norm
 
 log = logging.getLogger(__name__)
@@ -44,24 +46,15 @@ DEFAULT_BLOCKS = {"D": 1.25, "C": 0.45, "W": 0.4}
 
 
 def classic_groups(groups: list[dict] | None = None) -> list[dict]:
+    """The lobby's Classic slates, earliest first (edge/dfs_slate.py)."""
     groups = groups if groups is not None else dfs.draft_groups(nhl.DK_SPORT)
-    out = []
-    for g in groups:
-        if g.get("GameTypeId") != nhl.CLASSIC_GAME_TYPE:
-            continue
-        suffix = (g.get("ContestStartTimeSuffix") or "").strip()
-        out.append({"gid": g.get("DraftGroupId"), "games": g.get("GameCount") or 0,
-                    "label": suffix.strip("()") or "Main", "start": g.get("StartDate"),
-                    "featured": g.get("DraftGroupTag") == "Featured"})
-    out.sort(key=lambda r: (r["start"] or "", -r["games"]))
-    return out
+    return dfs_slate.classic_rows(groups, nhl.CLASSIC_GAME_TYPE)
 
 
-def default_slate(rows: list[dict]) -> int:
-    """Index of the NEXT Main slate to lock. DK lists tomorrow's Main next to
-    tonight's, so "the Main with the most games" picked tomorrow's 10-game
-    slate over tonight's 3-game one (2026-10-07). `rows` is start-sorted."""
-    return next((i for i, r in enumerate(rows) if r["label"] == "Main"), 0)
+#: Index of the NEXT Main slate to lock. DK lists tomorrow's Main next to
+#: tonight's, so "the Main with the most games" picked tomorrow's 10-game
+#: slate over tonight's 3-game one (2026-10-07).
+default_slate = dfs_slate.next_main
 
 
 def resolve_slate(draft_group=None, groups: list[dict] | None = None):
@@ -69,9 +62,7 @@ def resolve_slate(draft_group=None, groups: list[dict] | None = None):
     suffix, as for the NFL (see dfs_run_nfl.resolve_slate)."""
     rows = classic_groups(groups)
     if draft_group:
-        match = next((r for r in rows if r["gid"] == int(draft_group)), None)
-        return int(draft_group), (match or {"gid": int(draft_group), "label": "(explicit)",
-                                            "games": 0})
+        return dfs_slate.explicit(rows, draft_group)
     if not rows:
         return None, {"error": "DraftKings is listing no NHL Classic slates."}
     pick = rows[default_slate(rows)]
@@ -283,36 +274,21 @@ PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp", "dk_pos", "line", "pp",
 
 def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None,
                      cash_floor: dict | None = None) -> dict:
-    """Persist a build so a contest export has something to be joined to.
-    Same contract as the other sports: a past date never overwrites the log."""
-    root = root or ROOT
-    date = info.get("date")
-    today = datetime.now(ZoneInfo("America/New_York")).date().isoformat()
-    if not date or date < today:
-        return {"logged": False, "date": date}
-    plog = root / "data" / "dfs_proj_log_nhl.csv"
-    prior = list(csv.DictReader(plog.open())) if plog.exists() else []
-    rows = [r for r in prior if not (r.get("date") == date and str(r.get("gid")) == str(gid))]
-    rows += [{"date": date, "gid": gid, "player": p["name"], "team": p["team"], "opp": p.get("opp"),
-              "dk_pos": p.get("dk_pos"), "line": p.get("line") or "", "pp": p.get("pp") or "",
-              "salary": p["salary"], "proj": p["proj"], "sd": p["sd"], "floor": p["floor"],
-              "ceil": p["ceil"], "own": p.get("own", ""), "imputed": "|".join(p.get("imputed", [])),
-              "source": "live"}
-             for p in pool]
-    plog.parent.mkdir(parents=True, exist_ok=True)
-    with plog.open("w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=PROJ_LOG_COLS)
-        w.writeheader()
-        w.writerows(rows)
-    lpath = root / "data" / f"dfs_lineups_nhl_{date}.csv"
-    with lpath.open("w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(["mode", "slot", "player", "team", "line", "pp", "salary", "proj", "own"])
-        for mode, res in (("cash", cash), ("gpp", gpp), ("cash_floor", cash_floor)):
-            for slot, p in (res or {}).get("slots", []):
-                w.writerow([mode, slot, p["name"], p["team"], p.get("line"), p.get("pp"),
-                            p["salary"], p["proj"], p.get("own")])
-    return {"logged": True, "date": date, "n": len(pool)}
+    """Persist a build so a contest export has something to be joined to --
+    edge/dfs_forward_log.py's rules (past dates never, this draft group only)."""
+    rows = [{"date": info.get("date"), "gid": gid, "player": p["name"], "team": p["team"],
+             "opp": p.get("opp"), "dk_pos": p.get("dk_pos"), "line": p.get("line") or "",
+             "pp": p.get("pp") or "", "salary": p["salary"], "proj": p["proj"], "sd": p["sd"],
+             "floor": p["floor"], "ceil": p["ceil"], "own": p.get("own", ""),
+             "imputed": "|".join(p.get("imputed", [])), "source": "live"} for p in pool]
+    lineups = [{"mode": mode, "slot": slot, "player": p["name"], "team": p["team"],
+                "line": p.get("line"), "pp": p.get("pp"), "salary": p["salary"],
+                "proj": p["proj"], "own": p.get("own")}
+               for mode, res in (("cash", cash), ("gpp", gpp), ("cash_floor", cash_floor))
+               for slot, p in (res or {}).get("slots", [])]
+    return dfs_forward_log.write("nhl", info.get("date"), gid, PROJ_LOG_COLS, rows,
+                                 ("mode", "slot", "player", "team", "line", "pp", "salary",
+                                  "proj", "own"), lineups, root=root)
 
 
 def build_slate(draft_group=None, client=None, n_sims: int = 2000, iters: int = 250,

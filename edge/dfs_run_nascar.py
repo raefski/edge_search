@@ -43,6 +43,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from edge.dfs_slate import parse_time as _parse_time
+from edge import dfs_forward_log
 from edge import dfs, dfs_nascar_theory as theory, dfs_opt_nascar, nascar, nascar_sim
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,20 +63,6 @@ MIN_FORM_RACES = 4
 #: Seasons pulled to build form. Two is enough to give every full-time driver a
 #: full window even in the first weeks of a season, and each is cached on disk.
 FORM_SEASONS = 2
-
-
-def _parse_time(value) -> datetime | None:
-    if not value:
-        return None
-    s = str(value).strip()
-    if s.endswith("Z"):
-        s = s[:-1] + "+00:00"
-    s = re.sub(r"(\.\d{6})\d+", r"\1", s)
-    try:
-        dt = datetime.fromisoformat(s)
-    except ValueError:
-        return None
-    return dt.replace(tzinfo=timezone.utc) if dt.tzinfo is None else dt
 
 
 # ---------------------------------------------------------------------------
@@ -395,69 +383,25 @@ def _slate_date(meta: dict) -> str | None:
 def log_forward_test(pool, cash, gpp, gid, meta, info,
                      root: Path | None = None) -> dict:
     """Persist a build, so a real contest result has something to be joined to.
-
-    The same clock the other three sports start, and the one this build needs
-    most: NOTHING in edge/dfs_nascar_theory.py's field model has ever been
-    fitted, and a single NASCAR contest export is unusually informative because
-    the whole field picks six drivers from about thirty-seven.
-
-    A build for a PAST date never overwrites the log -- the same guard the MLB
-    and NFL versions carry after a review rebuild clobbered real forward-test
-    data once already.
-    """
-    root = root or ROOT
-    result = {"logged": False, "n": 0, "date": None}
+    NOTHING in edge/dfs_nascar_theory.py's field model has been fitted, and one
+    NASCAR export is unusually informative (every driver is in every contest),
+    so every build is logged -- edge/dfs_forward_log.py's rules."""
     date = _slate_date(meta)
-    if date is None:
-        return result
-    result["date"] = date
-    try:
-        today = datetime.now(ZoneInfo("America/New_York")).date().isoformat()
-    except Exception:                                       # noqa: BLE001
-        today = datetime.now().date().isoformat()
-    if date < today:
-        result["skipped_past_date"] = True
-        return result
-
-    (root / "data").mkdir(parents=True, exist_ok=True)
-    plog = root / "data/dfs_proj_log_nascar.csv"
-    prior = list(csv.DictReader(open(plog))) if plog.exists() else []
-
-    def _rows():
-        for d in pool:
-            yield {"date": date, "gid": gid, "race": info.get("race", ""),
-                   "track_type": info.get("track_type", ""),
-                   "driver": d["name"], "driver_id": d.get("driver_id", ""),
-                   "start": d.get("start", ""),
-                   "start_estimated": int(bool(d.get("start_estimated"))),
-                   "salary": d.get("salary", ""), "proj": d.get("proj", ""),
-                   "sd": d.get("sd", ""), "floor": d.get("floor", ""),
-                   "ceil": d.get("ceil", ""), "own": d.get("own", ""),
-                   "leverage": d.get("leverage", "")}
-
-    with plog.open("w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(list(PROJ_LOG_COLS))
-        # Replace only THIS slate's rows. Dropping the whole date wiped the
-        # day's other slates -- NCAAF 2026-09-26 lost slate 153831's 106 rows
-        # when 153951 was built that evening.
-        for r in [r for r in prior
-                  if not (r.get("date") == date and str(r.get("gid")) == str(gid))
-                  ] + list(_rows()):
-            w.writerow([r.get(c, "") for c in PROJ_LOG_COLS])
-    result["logged"], result["n"] = True, len(pool)
-
+    rows = [{"date": date, "gid": gid, "race": info.get("race", ""),
+             "track_type": info.get("track_type", ""), "driver": d["name"],
+             "driver_id": d.get("driver_id", ""), "start": d.get("start", ""),
+             "start_estimated": int(bool(d.get("start_estimated"))),
+             "salary": d.get("salary", ""), "proj": d.get("proj", ""), "sd": d.get("sd", ""),
+             "floor": d.get("floor", ""), "ceil": d.get("ceil", ""), "own": d.get("own", ""),
+             "leverage": d.get("leverage", "")} for d in pool]
+    lineups = None
     if cash or gpp:
-        lpath = root / f"data/dfs_lineups_nascar_{date}.csv"
-        with lpath.open("w", newline="") as fh:
-            w = csv.writer(fh)
-            w.writerow(["mode", "driver", "start", "salary", "proj", "own"])
-            for mode, res in (("cash", cash), ("gpp", gpp)):
-                for d in (res or {}).get("lineup", []):
-                    w.writerow([mode, d["name"], d.get("start"), d.get("salary"),
-                                d.get("proj"), d.get("own")])
-        result["lineup_file"] = str(lpath.relative_to(root))
-    return result
+        lineups = [{"mode": mode, "driver": d["name"], "start": d.get("start"),
+                    "salary": d.get("salary"), "proj": d.get("proj"), "own": d.get("own")}
+                   for mode, res in (("cash", cash), ("gpp", gpp)) for d in (res or {}).get("lineup", [])]
+    return dfs_forward_log.write("nascar", date, gid, PROJ_LOG_COLS, rows,
+                                 ("mode", "driver", "start", "salary", "proj", "own"),
+                                 lineups, root=root)
 
 
 def build_slate(draft_group=None, n_sims: int = 2000, iters: int = 400,

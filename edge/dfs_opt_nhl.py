@@ -20,6 +20,12 @@ NHL DFS guide calls the bread and butter) and no more than 5 from one team.
 Left alone on the 2026-09-29 board the search put SIX Oilers in one lineup:
 defensible on a 4.06-goal implied total, but one team's night is then the whole
 tournament. Cash has no shape rule at all.
+
+NOT ON THE SHARED ENGINE (edge/dfs_opt_climb.py), ON EVIDENCE: moved onto it on
+2026-10-16 and compared on four real slates (154755/60/63/67, fresh 4,000-draw
+simulation): equal on 7 of 12 lineups, worse on the rest (GPP -1.1 and -3.8,
+floor -1.6). The goalie-first fill and per-position candidate lists below are
+why; they stay.
 """
 from __future__ import annotations
 

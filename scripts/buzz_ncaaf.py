@@ -41,7 +41,7 @@ from edge import dfs, dfs_run_ncaaf  # noqa: E402
 from edge.buzz import (  # noqa: E402
     _name_parts, aggregate, build_aliases, count_mentions, learn_variants, tokenize,
 )
-from edge.dfs_run_ncaaf import _parse_time  # noqa: E402
+from edge.dfs_slate import parse_time as _parse_time  # noqa: E402
 from transcripts import Blocked, Cache, YouTube  # noqa: E402
 
 CACHE = ROOT / "data" / "cache" / "buzz"

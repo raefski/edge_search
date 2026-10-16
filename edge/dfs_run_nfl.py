@@ -64,6 +64,9 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from edge.dfs_slate import parse_time as _parse_time, slate_games
+from edge import dfs_slate
+from edge import dfs_forward_log
 from edge import dfs, dfs_opt_nfl, dfs_project, dfs_sport
 from edge.nfl import TEAM_NAME_TO_ABBR
 
@@ -93,26 +96,6 @@ MATCH_TOLERANCE = timedelta(hours=6)
 DK_ALIAS = {"LA": "LAR"}
 
 
-def _parse_time(value) -> datetime | None:
-    """DK's '...0000000Z' and a book's '+00:00' into one comparable instant.
-
-    DraftKings serialises SEVEN fractional digits; fromisoformat accepts at
-    most six, so the tail is trimmed rather than the whole parse abandoned. A
-    naive timestamp is read as UTC, which is what both sources actually emit.
-    """
-    if not value:
-        return None
-    s = str(value).strip()
-    if s.endswith("Z"):
-        s = s[:-1] + "+00:00"
-    s = re.sub(r"(\.\d{6})\d+", r"\1", s)
-    try:
-        dt = datetime.fromisoformat(s)
-    except ValueError:
-        return None
-    return dt.replace(tzinfo=timezone.utc) if dt.tzinfo is None else dt
-
-
 def abbr(name: str) -> str | None:
     """Full team name -> the code DraftKings uses on the slate."""
     if not name:
@@ -131,28 +114,9 @@ def abbr(name: str) -> str | None:
 # The slate, as DraftKings describes it
 # ---------------------------------------------------------------------------
 def classic_groups(groups: list[dict] | None = None) -> list[dict]:
-    """Every Classic draft group DK is currently listing, soonest first.
-
-    Returned as display rows rather than raw DK dicts so a picker (CLI or app)
-    does not have to know DK's field names. `label` is what a human recognises
-    the slate by: "Main", "Sun-Mon", "Early Only".
-    """
+    """The lobby's Classic slates, earliest first (edge/dfs_slate.py)."""
     groups = groups if groups is not None else dfs.draft_groups("NFL")
-    out = []
-    for g in groups:
-        if g.get("GameTypeId") != CLASSIC_GAME_TYPE:
-            continue
-        suffix = (g.get("ContestStartTimeSuffix") or "").strip()
-        out.append({
-            "gid": g.get("DraftGroupId"),
-            "games": g.get("GameCount") or 0,
-            "label": suffix.strip("()") or "Main",
-            "start": g.get("StartDate"),
-            "start_est": g.get("StartDateEst"),
-            "featured": g.get("DraftGroupTag") == "Featured",
-        })
-    out.sort(key=lambda r: (r["start"] or "", -r["games"]))
-    return out
+    return dfs_slate.classic_rows(groups, CLASSIC_GAME_TYPE)
 
 
 def resolve_slate(draft_group=None, groups: list[dict] | None = None):
@@ -174,35 +138,10 @@ def resolve_slate(draft_group=None, groups: list[dict] | None = None):
     if not rows:
         return None, {"error": "DraftKings is listing no NFL Classic slates."}
     if draft_group:
-        match = next((r for r in rows if r["gid"] == int(draft_group)), None)
-        return int(draft_group), (match or {"gid": int(draft_group),
-                                            "label": "(explicit)", "games": 0})
+        return dfs_slate.explicit(rows, draft_group)
     main = [r for r in rows if r["label"] == "Main"]
     pick = max(main or rows, key=lambda r: (r["games"], r["featured"]))
     return pick["gid"], pick
-
-
-def slate_games(salaries: dict) -> dict:
-    """{game_id: {"home", "away", "start", "matchup"}} from the draftables.
-
-    DK writes `matchup` as "AWAY @ HOME" and gives every player the
-    competitionId of the game he is in, so the slate's games and each team's
-    opponent are both read straight off the salaries rather than inferred.
-    """
-    games: dict = {}
-    for info in salaries.values():
-        gid, matchup = info.get("game"), info.get("matchup")
-        if not gid or not matchup or "@" in str(gid):
-            continue
-        if gid in games:
-            continue
-        parts = [p.strip().upper() for p in str(matchup).split("@")]
-        if len(parts) != 2:
-            continue
-        away, home = parts
-        games[gid] = {"home": home, "away": away, "matchup": matchup,
-                      "start": _parse_time(info.get("start"))}
-    return games
 
 
 def team_opponents(games: dict) -> dict:
@@ -371,87 +310,28 @@ def _slate_date(meta: dict) -> str | None:
 
 def log_forward_test(pool: list, cash: dict | None, gpp: dict | None,
                      gid, meta: dict, root: Path | None = None) -> dict:
-    """Persist a build to disk, so a real contest result has something to be
-    JOINED against later -- the exact gap that made an NFL ownership fit
-    impossible before this existed. See edge/dfs_run.py::log_forward_test,
-    which this mirrors: MLB's OWNERSHIP_GAMMA was tuned against real DK
-    contest exports (data/contest-standings-*.csv) joined against a logged
-    history of that day's predicted pool (data/dfs_proj_log.csv). NFL's
-    edge/dfs_nfl_theory.py ownership model has never had that -- it is a
-    prior with a plausible shape and zero validation, stated as such in its
-    own docstring -- because nothing was ever logged for it to be checked
-    against. This starts that clock; it does nothing for a week already gone.
-
-    data/dfs_proj_log_nfl.csv: every player in the pool, one row per player,
-    for the slate's date. Re-running for the same date overwrites that date's
-    rows in place (the freshest pre-lock build is what a real decision was
-    actually made from), other dates untouched -- same rule as MLB.
-
-    data/dfs_lineups_nfl_<date>.csv: the built CASH/GPP lineups, if any --
-    separate from the pool log because it answers a different question (what
-    did the app actually recommend) from the one the pool log answers (what
-    was every player's predicted own/proj, for joining against a contest's
-    real ownership board regardless of who was rostered).
-
-    A build for a PAST date never overwrites the log -- the identical failure
-    mode MLB's own version guards against (a --date review rebuild clobbering
-    real forward-test data, restored from git once already). Returns
-    {"logged": bool, "n": int, "date": str|None}.
-    """
-    root = root or ROOT
-    result = {"logged": False, "n": 0, "date": None}
+    """Persist a build so a real contest result has something to be JOINED to
+    later -- every player in the pool, one row each, for this draft group, and
+    the CASH/GPP lineups the app recommended. edge/dfs_forward_log.py holds the
+    rules (a past date is never logged; only this draft group's rows are
+    replaced); the columns are this sport's."""
     date = _slate_date(meta)
-    if date is None:
-        return result
-    result["date"] = date
-
-    try:
-        today_et = datetime.now(ZoneInfo("America/New_York")).date().isoformat()
-    except Exception:                                       # noqa: BLE001
-        today_et = datetime.now().date().isoformat()
-    if date < today_et:
-        result["skipped_past_date"] = True
-        return result
-
-    (root / "data").mkdir(parents=True, exist_ok=True)
     games = meta.get("games")
-
-    def _rows():
-        for p in pool:
-            yield {"date": date, "gid": gid, "player": p["name"], "team": p.get("team", ""),
-                  "opp_team": p.get("opp_team", ""), "dk_pos": p.get("dk_pos", ""),
-                  "salary": p.get("salary", ""), "proj": p.get("proj", ""),
-                  "sd": p.get("_sd", ""), "own": p.get("own", ""),
-                  "leverage": p.get("leverage", ""), "game": p.get("game", ""),
-                  "games": games if games is not None else ""}
-
-    plog = root / "data/dfs_proj_log_nfl.csv"
-    prior = list(csv.DictReader(open(plog))) if plog.exists() else []
-    with plog.open("w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(list(PROJ_LOG_COLS))
-        # Replace only THIS slate's rows. Dropping the whole date wiped the
-        # day's other slates -- NCAAF 2026-09-26 lost slate 153831's 106 rows
-        # when 153951 was built that evening.
-        for r in [r for r in prior
-                  if not (r.get("date") == date and str(r.get("gid")) == str(gid))
-                  ] + list(_rows()):
-            w.writerow([r.get(c, "") for c in PROJ_LOG_COLS])
-    result["logged"] = True
-    result["n"] = len(pool)
-
+    rows = [{"date": date, "gid": gid, "player": p["name"], "team": p.get("team", ""),
+             "opp_team": p.get("opp_team", ""), "dk_pos": p.get("dk_pos", ""),
+             "salary": p.get("salary", ""), "proj": p.get("proj", ""), "sd": p.get("_sd", ""),
+             "own": p.get("own", ""), "leverage": p.get("leverage", ""),
+             "game": p.get("game", ""), "games": games if games is not None else ""}
+            for p in pool]
+    lineups = None
     if cash or gpp:
-        lpath = root / f"data/dfs_lineups_nfl_{date}.csv"
-        with lpath.open("w", newline="") as fh:
-            w = csv.writer(fh)
-            w.writerow(["mode", "slot", "player", "team", "opp_team", "salary",
-                       "proj", "own"])
-            for mode, r in (("cash", cash), ("gpp", gpp)):
-                for row in (lineup_rows(r) if r else []):
-                    w.writerow([mode, row["slot"], row["player"], row["team"],
-                               row["opp"], row["salary"], row["proj"], row["own"]])
-        result["lineup_file"] = str(lpath.relative_to(root))
-    return result
+        lineups = [{"mode": mode, "slot": row["slot"], "player": row["player"], "team": row["team"],
+                    "opp_team": row["opp"], "salary": row["salary"], "proj": row["proj"],
+                    "own": row["own"]}
+                   for mode, r in (("cash", cash), ("gpp", gpp)) for row in (lineup_rows(r) if r else [])]
+    return dfs_forward_log.write("nfl", date, gid, PROJ_LOG_COLS, rows,
+                                 ("mode", "slot", "player", "team", "opp_team", "salary", "proj",
+                                  "own"), lineups, root=root)
 
 
 BUZZ_FILE = Path(__file__).resolve().parents[1] / "data" / "buzz_nfl.csv"

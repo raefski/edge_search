@@ -371,7 +371,7 @@ def test_the_lineup_file_is_written_when_a_lineup_exists(tmp_path):
                                 root=tmp_path)
     assert res["lineup_file"] == "data/dfs_lineups_nfl_2099-01-04.csv"
     lines = (tmp_path / res["lineup_file"]).read_text().splitlines()
-    assert lines[0].startswith("mode,slot,player")
+    assert lines[0].startswith("gid,mode,slot,player")      # keyed by draft group (dfs_forward_log)
     assert any("QB1" in line for line in lines[1:])
 
 

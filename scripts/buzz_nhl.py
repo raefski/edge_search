@@ -31,7 +31,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "packages" / "transcripts"))
 from edge import dfs, nhl  # noqa: E402
 from edge.buzz import _name_parts, aggregate, build_aliases, count_mentions, learn_variants, tokenize  # noqa: E402
-from edge.dfs_run_nfl import _parse_time  # noqa: E402
+from edge.dfs_slate import parse_time as _parse_time  # noqa: E402
 from transcripts import Cache, YouTube  # noqa: E402
 
 CACHE = ROOT / "data" / "cache" / "buzz"

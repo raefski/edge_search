@@ -326,4 +326,4 @@ def test_forward_log_is_keyed_by_draft_group(cbb_slate, tmp_path):
     assert out["logged"]
     text = (tmp_path / "data" / "dfs_proj_log_ncaab.csv").read_text().splitlines()
     assert text[0].startswith("date,gid,player") and ",555," in text[1]
-    assert (tmp_path / "data" / f"dfs_lineups_ncaab_{out['date']}_g555.csv").exists()
+    assert (tmp_path / "data" / f"dfs_lineups_ncaab_{out['date']}.csv").read_text().startswith("gid,")

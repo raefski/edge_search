@@ -42,6 +42,8 @@ from zoneinfo import ZoneInfo
 
 import numpy as np
 
+from edge.dfs_slate import parse_time as _parse_time
+from edge import dfs_forward_log
 from edge import dfs, dfs_mma_theory as theory, dfs_opt_mma, mma
 from edge import mma_market as mk, mma_sim as msim
 
@@ -68,18 +70,6 @@ BOUT_MATCH = 0.72
 #: fight lines move, but a six-hour-old price is still the best free number,
 #: and the page says how old it is.
 STALE_HOURS = 6.0
-
-
-def _parse_time(value) -> datetime | None:
-    if not value:
-        return None
-    s = str(value).strip().replace("Z", "+00:00")
-    s = re.sub(r"(\.\d{6})\d+", r"\1", s)
-    try:
-        dt = datetime.fromisoformat(s)
-    except ValueError:
-        return None
-    return dt.replace(tzinfo=timezone.utc) if dt.tzinfo is None else dt
 
 
 # ---------------------------------------------------------------------------
@@ -481,65 +471,26 @@ def _slate_date(meta: dict, pool: list) -> str | None:
 
 def log_forward_test(pool, cash, gpp, gid, meta, info,
                      root: Path | None = None) -> dict:
-    """Persist a build, so a real contest result has something to join to.
-
-    The rule every sport here learned the hard way (MLB 2026-09-17, the lost
-    7/24-7/31 slates): an unlogged slate is unrecoverable. And a build for a
-    PAST date never overwrites the log -- a review rebuild clobbered real
-    forward-test data once already.
-    """
-    root = root or ROOT
-    result = {"logged": False, "n": 0, "date": None}
+    """Persist a build, so a real contest result has something to join to --
+    edge/dfs_forward_log.py's rules, plus MMA's own: AFTER LOCK, AN EXISTING LOG
+    IS NEVER OVERWRITTEN. Once the first bout starts the sportsbook drops its
+    market, so a rebuild prices that bout from salaries and would quietly
+    replace a clean pre-bell forward test with a contaminated one (found on the
+    first card, 2026-09-26, twenty minutes in)."""
     day = _slate_date(meta, pool)
-    if day is None:
-        return result
-    result["date"] = day
-    if day < datetime.now(ET).date().isoformat():
-        result["skipped_past_date"] = True
-        return result
-    plog = root / "data" / "dfs_proj_log_mma.csv"
-    plog.parent.mkdir(parents=True, exist_ok=True)
-    prior = list(csv.DictReader(open(plog))) if plog.exists() else []
-    mine = [r for r in prior if r.get("date") == day and str(r.get("gid")) == str(gid)]
-    # AFTER LOCK, AN EXISTING LOG IS NEVER OVERWRITTEN. Once the first bout
-    # starts, the sportsbook drops its market, so a rebuild prices that bout
-    # from salaries and quietly replaces a clean pre-bell forward test with a
-    # contaminated one -- found on the first card, 2026-09-26, twenty minutes
-    # in. The date guard above cannot see it: it is still the same day.
     starts = [t for t in (_parse_time(d.get("start")) for d in pool) if t]
-    if mine and starts and datetime.now(timezone.utc) >= min(starts):
-        result["skipped_after_lock"] = True
-        return result
-    keep = [r for r in prior if not (r.get("date") == day and str(r.get("gid")) == str(gid))]
-    with plog.open("w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(PROJ_LOG_COLS)
-        for r in keep:
-            w.writerow([r.get(c, "") for c in PROJ_LOG_COLS])
-        for d in pool:
-            w.writerow([day, gid, d["bout"], d["name"], d.get("key") or "",
-                        d["salary"], d["sched"], d["source"], d["p_win"],
-                        d["p_finish"], d["p_r1"], d["proj"], d["sd"], d["floor"],
-                        d["median"], d["ceil"], d["own"], d.get("own_cash", ""),
-                        d.get("dk_fppf") or "", d["off"], d["def_opp"]])
-    result.update({"logged": True, "n": len(pool)})
-    lpath = root / "data" / f"dfs_lineups_mma_{day}.csv"
-    # One file per DAY holds every slate that day (the main card AND the late
-    # Captain slate), so another group's rows are kept, not overwritten.
-    others = ([r for r in csv.DictReader(lpath.open()) if str(r.get("gid")) != str(gid)]
-              if lpath.exists() else [])
-    with lpath.open("w", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow(["gid", "mode", "fighter", "salary", "proj", "p_win", "own", "cpt"])
-        for r in others:
-            w.writerow([r.get(c, "") for c in ("gid", "mode", "fighter", "salary",
-                                               "proj", "p_win", "own", "cpt")])
-        for mode, res in (("cash", cash), ("gpp", gpp)):
-            for d in (res or {}).get("lineup", []):
-                w.writerow([gid, mode, d["name"], d["salary"], d["proj"],
-                            d["p_win"], d["own"], int(bool(d.get("cpt")))])
-    result["lineup_file"] = str(lpath.relative_to(root))
-    return result
+    locked = bool(starts) and datetime.now(timezone.utc) >= min(starts)
+    rows = [dict(zip(PROJ_LOG_COLS, (
+        day, gid, d["bout"], d["name"], d.get("key") or "", d["salary"], d["sched"],
+        d["source"], d["p_win"], d["p_finish"], d["p_r1"], d["proj"], d["sd"], d["floor"],
+        d["median"], d["ceil"], d["own"], d.get("own_cash", ""), d.get("dk_fppf") or "",
+        d["off"], d["def_opp"]))) for d in pool]
+    lineups = [{"mode": mode, "fighter": d["name"], "salary": d["salary"], "proj": d["proj"],
+                "p_win": d["p_win"], "own": d["own"], "cpt": int(bool(d.get("cpt")))}
+               for mode, res in (("cash", cash), ("gpp", gpp)) for d in (res or {}).get("lineup", [])]
+    return dfs_forward_log.write("mma", day, gid, PROJ_LOG_COLS, rows,
+                                 ("mode", "fighter", "salary", "proj", "p_win", "own", "cpt"),
+                                 lineups, root=root, frozen=locked)
 
 
 def lineup_rows(result: dict) -> list[dict]:
