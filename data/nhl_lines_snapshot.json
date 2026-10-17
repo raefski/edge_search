@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-17T22:15:50+00:00",
+"generated_at": "2026-10-17T22:44:31+00:00",
 "goalies": {
 "2026-10-17": {
 "BOS": {
@@ -8,7 +8,7 @@
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
@@ -16,7 +16,7 @@
 },
 "CBJ": {
 "goalie": "Jet Greaves",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -56,7 +56,7 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -2216,40 +2216,6 @@
 "pos": "g",
 "pp": null
 },
-"Carson Soucy": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 154,
-"toiSeconds": 29
-},
-"last5": {
-"assists": 1,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 78,
-"toiSeconds": 55
-},
-"line": "D3",
-"pk": "PK1",
-"pos": "ld",
-"pp": null
-},
 "Charlie Coyle": {
 "gtd": false,
 "injury": null,
@@ -2283,6 +2249,40 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP1"
+},
+"Cole Sillinger": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 7,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 18,
+"toiMinutes": 155,
+"toiSeconds": 11
+},
+"last5": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 3,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 77,
+"toiSeconds": 28
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": "PP2"
 },
 "Conor Garland": {
 "gtd": false,
@@ -2420,39 +2420,39 @@
 "pos": "rd",
 "pp": "PP2"
 },
-"Dmitri Voronkov": {
+"Emil Andrae": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 4,
-"blocks": 5,
+"assists": 2,
+"blocks": 10,
 "gamesPlayed": 10,
 "goals": 0,
-"points": 4,
-"powerplayAssists": 1,
+"points": 2,
+"powerplayAssists": 0,
 "powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 10,
-"toiMinutes": 116,
-"toiSeconds": 23
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 139,
+"toiSeconds": 58
 },
 "last5": {
 "assists": 1,
-"blocks": 2,
+"blocks": 6,
 "gamesPlayed": 5,
 "goals": 0,
 "points": 1,
-"powerplayAssists": 1,
+"powerplayAssists": 0,
 "powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 6,
-"toiMinutes": 60,
-"toiSeconds": 22
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 74,
+"toiSeconds": 21
 },
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
+"line": "D3",
+"pk": "PK1",
+"pos": "ld",
+"pp": null
 },
 "Erik Gudbranson": {
 "gtd": false,
