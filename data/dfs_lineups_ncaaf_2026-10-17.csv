@@ -1,17 +1,17 @@
-mode,slot,player,team,opp_team,salary,proj,own
-cash,QB,Arch Manning,TEX,UF,6900,20.8,55.0
-cash,RB,Jamal Roberts,MIZZ,MISS,8500,23.6,55.0
-cash,RB,Hollywood Smothers,TEX,UF,6100,13.3,55.0
-cash,WR,Nick Marsh,IU,OSU,7200,16.8,38.3
-cash,WR,Cayden Lee,MIZZ,MISS,7400,20.4,55.0
-cash,WR,Nate Roberts,OSU,IU,3500,4.9,3.3
-cash,FLEX,Emmett Mosley V,TEX,UF,4800,10.4,24.7
-cash,S-FLEX,Austin Simmons,MIZZ,MISS,5600,17.0,55.0
-gpp,QB,Arch Manning,TEX,UF,6900,20.8,55.0
-gpp,RB,Jamal Roberts,MIZZ,MISS,8500,23.6,55.0
-gpp,RB,Hollywood Smothers,TEX,UF,6100,13.3,55.0
-gpp,WR,Cam Coleman,TEX,UF,6700,13.4,15.9
-gpp,WR,Ryan Wingo,TEX,UF,5900,12.8,24.9
-gpp,WR,Emmett Mosley V,TEX,UF,4800,10.4,24.7
-gpp,FLEX,Horatio Fields,MISS,MIZZ,4600,8.7,12.0
-gpp,S-FLEX,Aaron Philo,UF,TEX,6300,13.4,5.0
+gid,mode,slot,player,team,opp_team,salary,proj,own
+155010,cash,QB,Arch Manning,TEX,UF,6900,23.1,25.5
+155010,cash,RB,J'Koby Williams,TTU,ASU,6700,21.6,32.8
+155010,cash,RB,Jeffrey Overton Jr.,VT,GT,6500,19.7,36.2
+155010,cash,WR,Jordan Shipp,UNC,DUKE,5100,17.7,21.2
+155010,cash,WR,Jeremiah Smith,OSU,IU,9700,27.9,37.2
+155010,cash,WR,Nik McMillan,KU,KSU,5300,14.5,16.0
+155010,cash,FLEX,Yannick Smith,SMU,UVA,4000,11.5,30.1
+155010,cash,S-FLEX,Austin Simmons,MIZZ,MISS,5600,18.2,28.7
+155010,gpp,QB,Ethan Grunkemeyer,VT,GT,7000,20.7,11.6
+155010,gpp,RB,Jamal Roberts,MIZZ,MISS,8500,24.5,25.6
+155010,gpp,RB,J'Koby Williams,TTU,ASU,6700,21.6,32.8
+155010,gpp,WR,Luke Reynolds,VT,GT,6100,15.2,10.8
+155010,gpp,WR,Que'Sean Brown,VT,GT,5900,15.1,11.3
+155010,gpp,WR,Ayden Greene,VT,GT,4200,8.8,2.9
+155010,gpp,FLEX,Jordan Shipp,UNC,DUKE,5100,17.7,21.2
+155010,gpp,S-FLEX,Alberto Mendoza,GT,VT,5300,15.5,7.4
