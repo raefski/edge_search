@@ -75,7 +75,9 @@ class OddsStore:
     def __init__(self, path: str | Path = DEFAULT_PATH):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.conn = sqlite3.connect(str(self.path), timeout=30.0,
+        # 600 s, not SQLite's usual 30: a collector is a batch job, and waiting a
+        # few minutes for the weekly archive's VACUUM beats losing its scan.
+        self.conn = sqlite3.connect(str(self.path), timeout=600.0,
                                     detect_types=0, isolation_level=None)
         self.conn.row_factory = sqlite3.Row
         # WAL so the Streamlit app can read while the agent writes. Without it
@@ -341,6 +343,14 @@ class OddsStore:
             for k in ("scans", "quotes", "spans"):
                 done[k] += got[k]
             done["months"].append(month)
+        # Deleted rows leave free pages; give the space back once they are most
+        # of the file. Collectors wait for it (the 600 s timeout above).
+        free, pages = (self.conn.execute(f"PRAGMA {p}").fetchone()[0]
+                       for p in ("freelist_count", "page_count"))
+        if done["scans"] and pages and free / pages > 0.4:
+            log(f"  VACUUM: {free / pages:.0%} of {self.path.name} is free pages")
+            self.conn.execute("VACUUM")
+            done["vacuumed"] = True
         return done
 
     def prune(self, keep_days: int = 400) -> int:
