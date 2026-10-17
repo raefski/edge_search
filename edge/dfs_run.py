@@ -340,6 +340,7 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
         pitcher_fetch_error = f"{type(e).__name__}: {e}"
     event_errors = 0
     last_event_error = None
+    priced: list = []
     for ev in events:
         try:
             pp = client.get_event_odds(SPORT, ev["id"], dfs.P_MARKETS, "us")
@@ -356,12 +357,27 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
             last_event_error = f"{type(e).__name__}: {e}"
             continue
         dkp = next((b for b in pp.get("bookmakers", []) if b["key"] == "draftkings"), None)
-        if not dkp:
-            continue
+        if dkp:
+            priced.append((ev, dkp))
+
+    # Each pitcher's lines only from the event that is HIS game on this slate
+    # (edge/dfs_slate.event_games). A scan holds tomorrow's games and the other
+    # slates' too; joined by name alone, a namesake's line -- or this pitcher's
+    # NEXT start -- became tonight's projection. Found in NCAAF 2026-10-16, where
+    # a namesake cost the cash game; the same name-only join lived here.
+    from edge import dfs_slate
+    lookup = dfs.SalaryLookup(salaries)
+    owner, wrong_game = dfs_slate.subject_events(
+        {ev["id"]: {o["description"] for m in dkp["markets"] for o in m["outcomes"] if o.get("description")}
+         for ev, dkp in priced},
+        lookup.get, {ev["id"]: ev.get("commence_time") for ev, _ in priced},
+        dfs_slate.slate_games(salaries))
+    for ev, dkp in priced:
         # sorted() so pool order is reproducible across machines/processes (a bare
         # set iterates in hash-randomized order, which can shift optimizer tie-breaks).
-        lookup = dfs.SalaryLookup(salaries)
         for nm in sorted({o["description"] for m in dkp["markets"] for o in m["outcomes"] if o.get("description")}):
+            if owner.get(nm) != ev["id"]:
+                continue
             info = lookup.get(nm)
             if not info or not info.get("salary") or "P" not in dfs.parse_pos(info["position"]):
                 continue
@@ -404,6 +420,10 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
     for (team_id, nm), lu in lineups.items():
         team_abbr = abbr.get(str(team_id), str(team_id))
         info = salaries.get(nm)
+        if info and info.get("team") != team_abbr:
+            # edge/dfs.fetch_draftables keeps a same-named second player under
+            # name|team (2026-10-17); this team's one is that entry if any.
+            info = salaries.get(f"{nm}|{team_abbr}") or info
         if not info or not info.get("salary"):
             continue
         # Name collision guard: two different active players can share a
@@ -530,7 +550,7 @@ def build_slate(client, date, draft_group=None, iters=800, exclude_teams=None):
             "stack2_team": stack2_team,
             "cash": cash, "gpp": gpp, "all_teams": all_teams, "team_status": team_status,
             "excluded_teams": sorted(exclude_teams), "slate_mismatch": slate_mismatch,
-            "pitcher_fetch_error": pitcher_fetch_error,
+            "pitcher_fetch_error": pitcher_fetch_error, "wrong_game": wrong_game,
             "spent": client.spent_this_session, "remaining": client.remaining_credits()}
 
 

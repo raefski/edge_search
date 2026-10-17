@@ -541,3 +541,26 @@ replay schedule dropped postseason games, so 10/3 MLB had no games.
   be committed — the repo is public.
 - The local Playwright driver (`.claude/skills/run-dfs-app/`) is how app.py bugs get
   reproduced — don't guess at a live-app bug without driving it first.
+
+## Name joins: every prop goes through its own game (2026-10-17)
+
+A sportsbook prop names a player and nothing else, and a scan holds every
+event a book has posted. On 10/16 the NCAAF build put Missouri QB Austin
+Simmons' ladder on a $3,000 Washington namesake; both model lineups played
+him (0 points) and the cash entry missed the line (replay: 125.5 -> 139.2 vs
+a 137.76 line). Every sport had the same name-only join, and NFL, NHL, NCAAB
+and MLB pitchers also merged a player's lines across events with `.update()`,
+so a back-to-back could carry tomorrow's line into tonight.
+
+**Rule, shared by every builder:** `edge/dfs_slate.subject_events` maps an
+odds event to the DK game most (>= half) of its subjects resolve to, and only
+when the start times agree within 3h; a player's lines come from that event
+only. Refused names are returned as `wrong_game` in each build's stats/info.
+Also: `edge.dfs.fetch_draftables` keeps a second same-named DK player under
+`name|team` instead of dropping him (two Sebastian Ahos), MLB hitters find
+him there, and NBA history resolves a shared name only by team.
+
+Checked on stored boards: NCAAF six graded slates + 10/17 remove exactly the
+three bad joins; NFL 154941/154943 and NHL 154763/154767 pools identical with
+the guard on and off. **If a name-join bug turns up in one sport, fix it in
+all of them** (`tests/test_dfs_slate_guard.py`).

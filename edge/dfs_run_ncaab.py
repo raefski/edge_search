@@ -159,22 +159,44 @@ def _subject(name: str) -> str:
     return name.split(" (")[0].strip() if name.endswith(")") else name
 
 
-def player_props(client, lookup: dfs.SalaryLookup) -> tuple[dict, dict, dict]:
+def player_props(client, lookup: dfs.SalaryLookup, games: dict | None = None,
+                 refused: list | None = None) -> tuple[dict, dict, dict]:
     """({salary_key: {stat: [mean per book]}}, {event_id: {salary_keys}},
-    {book: players priced}) for every book that posted a line."""
-    out: dict = {}
-    event_players: dict = {}
-    books: dict = {}
+    {book: players priced}) for every book that posted a line.
+
+    A subject's lines are taken only from the event that is HIS game on this
+    slate (edge/dfs_slate.event_games): college basketball has hundreds of
+    off-slate games a night, and a name-only join averaged any namesake's
+    line into a slate player's mean -- the NCAAF build lost a cash game to
+    exactly that on 2026-10-16. Names refused are appended to `refused`."""
+    payloads: dict = {}
+    kickoffs: dict = {}
+    subjects: dict = {}
     for ev in client.get_events(SPORT):
+        kickoffs[ev["id"]] = ev.get("commence_time")
         try:
             payload = client.get_event_odds(SPORT, ev["id"], MARKETS, "us")
         except Exception as exc:                            # noqa: BLE001
             log.warning("ncaab: no props for event %s (%s)", ev.get("id"), exc)
             continue
+        payloads[ev["id"]] = payload
+        subjects[ev["id"]] = {_subject(o["description"]) for bk in payload.get("bookmakers", [])
+                              for m in bk.get("markets", []) for o in m.get("outcomes", [])
+                              if o.get("description")}
+    owner, wrong = dfs_slate.subject_events(subjects, lookup.get, kickoffs, games)
+    if refused is not None:
+        refused.extend(wrong)
+
+    out: dict = {}
+    event_players: dict = {}
+    books: dict = {}
+    for ev_id, payload in payloads.items():
         for bk in payload.get("bookmakers", []):
             names = {o["description"] for m in bk.get("markets", [])
                      for o in m.get("outcomes", []) if o.get("description")}
             for name in names:
+                if owner.get(_subject(name)) != ev_id:
+                    continue
                 info = lookup.get(_subject(name))
                 if info is None:
                     continue
@@ -189,7 +211,7 @@ def player_props(client, lookup: dfs.SalaryLookup) -> tuple[dict, dict, dict]:
                         row.setdefault(stat, []).append(mu)
                         hit = True
                 if hit:
-                    event_players.setdefault(ev["id"], set()).add(key)
+                    event_players.setdefault(ev_id, set()).add(key)
                     books[bk.get("key")] = books.get(bk.get("key"), 0) + 1
     return out, event_players, books
 
@@ -342,8 +364,9 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
             "fppg_id": dfs.LAST_DETECTED_FPPG_ID}
     games = slate_games(salaries)
     lookup = dfs.SalaryLookup(salaries)
+    wrong_game: list = []
     try:
-        props, event_players, books = player_props(client, lookup)
+        props, event_players, books = player_props(client, lookup, games, wrong_game)
     except Exception as exc:                                # noqa: BLE001
         log.warning("ncaab: props unavailable (%s)", exc)
         props, event_players, books = {}, {}, {}
@@ -357,7 +380,7 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
                  "missing_lines": sorted(g["matchup"] for k, g in games.items() if k not in lines),
                  "date": date, "books": books, "out": [], "doubtful": [],
                  "dropped_no_projection": [], "sources": {"props": 0, "fppg": 0, "salary": 0},
-                 "imputed": 0})
+                 "imputed": 0, "wrong_game": wrong_game})
     opp_of = {}
     for g in games.values():
         opp_of[team(g["home"])] = team(g["away"])

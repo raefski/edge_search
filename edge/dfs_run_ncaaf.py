@@ -174,11 +174,33 @@ def collect_ladders(client, markets=LADDER_MARKETS,
     player appears in exactly one game. No mapping table, nothing to maintain
     as conferences realign, and it cannot half-work.
     """
+    by_event, _ = collect_ladders_by_event(client, markets, book)
     out: dict = {}
     teams: dict = {}
+    for ev, players in by_event.items():
+        for key, ladders in players.items():
+            out.setdefault(key, {}).update(ladders)
+        if players:
+            teams[ev] = set(players)
+    return out, teams
+
+
+def collect_ladders_by_event(client, markets=LADDER_MARKETS,
+                             book: str = "draftkings") -> tuple[dict, dict]:
+    """({event id: {player key: {market: rungs}}}, {event id: commence time}).
+
+    Kept PER EVENT so a ladder can be joined to a draftable only through the
+    event that is that player's own game (edge/dfs_slate.subject_events): a
+    name alone joined Missouri's QB to Washington's $3,000 namesake on 10/16.
+    A subject the book names with no usable rungs still counts as one of the
+    event's subjects -- it is evidence of whose game the event is.
+    """
+    by_event: dict = {}
+    kickoffs: dict = {}
     for ev in client.get_events(SPORT):
+        kickoffs[ev["id"]] = ev.get("commence_time")
         payload = client.get_event_odds(SPORT, ev["id"], list(markets), "us")
-        seen: set = set()
+        players: dict = {}
         for bk in payload.get("bookmakers", []):
             if bk.get("key") != book:
                 continue
@@ -193,13 +215,13 @@ def collect_ladders(client, markets=LADDER_MARKETS,
                         continue
                     by_player.setdefault(subject, []).append(o)
                 for subject, outcomes in by_player.items():
-                    seen.add(subject_key(subject))
+                    slot = players.setdefault(subject_key(subject), {})
                     rungs = dfs_ladder.rungs_from_outcomes(outcomes, subject)
                     if rungs:
-                        out.setdefault(subject_key(subject), {})[key] = rungs
-        if seen:
-            teams[ev["id"]] = seen
-    return out, teams
+                        slot[key] = rungs
+        if players:
+            by_event[ev["id"]] = players
+    return by_event, kickoffs
 
 
 def project_player(ladders: dict, sport, position: str | None = None) -> dict:
@@ -323,48 +345,17 @@ def game_lines(client, games: dict, event_players: dict,
     return lines, report
 
 
-def on_slate_keys(event_players: dict, by_key: dict) -> tuple[set, list]:
+def on_slate_keys(event_players: dict, by_key: dict, kickoffs: dict | None = None,
+                  games: dict | None = None) -> tuple[set, list]:
     """(prop-subject keys whose ladder belongs to their DK player's own game,
-    names rejected because it does not).
-
-    A ladder is joined to a draftable by NAME, and a name is not unique across
-    college football. Off-slate games are in every scan, so "Fredrick Moore
-    (MSU)" -- a Michigan State receiver -- joined Alabama's $4,000 RB Fredrick
-    Moore on 10/3 and 10/17, and on 10/16 Missouri's starting QB "Austin
-    Simmons (MIZZ)" became a $3,000 Washington WR projected 16.3. Both model
-    lineups played him; he scored 0.
-
-    An event belongs to the slate game most of its own subjects resolve to,
-    and only when at least HALF of its subjects do: a real slate game's priced
-    players are nearly all on the board, an off-slate game matches only by
-    coincidence (1 of ~10). A key that also appears in another event is
-    dropped, because collect_ladders cannot tell whose rungs it kept.
-    """
-    events_of: dict = {}
-    for ev, keys in event_players.items():
-        for k in keys:
-            events_of.setdefault(k, set()).add(ev)
-    game_of: dict = {}
-    for ev, keys in event_players.items():
-        votes: dict = {}
-        for k in keys:
-            info = by_key.get(k)
-            if info and info.get("game"):
-                votes[info["game"]] = votes.get(info["game"], 0) + 1
-        if votes:
-            gid, n = max(votes.items(), key=lambda kv: kv[1])
-            if n >= 0.5 * len(keys):
-                game_of[ev] = gid
-    ok, rejected = set(), []
-    for k, evs in events_of.items():
-        info = by_key.get(k)
-        if not info:
-            continue
-        if len(evs) == 1 and game_of.get(next(iter(evs))) == info.get("game"):
-            ok.add(k)
-        else:
-            rejected.append(info.get("name") or k)
-    return ok, sorted(rejected)
+    names refused) -- edge/dfs_slate.subject_events, which every sport's prop
+    join now goes through. Found here first: "Fredrick Moore (MSU)" joined
+    Alabama's $4,000 RB on 10/3 and 10/17, and on 10/16 Missouri QB "Austin
+    Simmons (MIZZ)" became a $3,000 Washington WR projected 16.3 that both
+    model lineups played (0 points)."""
+    owner, refused = dfs_slate.subject_events(event_players, by_key.get, kickoffs,
+                                              games, MATCH_TOLERANCE)
+    return set(owner), refused
 
 
 def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, dict]:
@@ -372,9 +363,23 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
     sport = dfs_sport.get(SPORT)
     games = slate_games(salaries)
     opponents = team_opponents(games)
-    ladders, event_players = collect_ladders(client, book=book)
+    by_event, kickoffs = collect_ladders_by_event(client, book=book)
+    event_players = {ev: set(players) for ev, players in by_event.items()}
     by_key, ambiguous = salary_index(salaries)
-    own_game, wrong_game = on_slate_keys(event_players, by_key)
+    owner, wrong_game = dfs_slate.subject_events(event_players, by_key.get, kickoffs,
+                                                 games, MATCH_TOLERANCE)
+    # Each player's rungs from his own game's event only; everyone else as
+    # before (counted not_on_slate below).
+    ladders: dict = {}
+    for ev, players in by_event.items():
+        for key, by_market in players.items():
+            if not by_market:
+                continue
+            if key in owner:
+                if owner[key] == ev:
+                    ladders[key] = by_market
+            else:
+                ladders.setdefault(key, by_market)
 
     pool: list[dict] = []
     stats = {"projected": 0, "no_proj": 0, "no_salary": 0, "not_on_slate": 0,
@@ -384,7 +389,7 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
 
     for key, by_market in ladders.items():
         info = by_key.get(key)
-        if not info or key not in own_game:
+        if not info or key not in owner:
             stats["not_on_slate"] += 1
             continue
         if not info.get("salary"):

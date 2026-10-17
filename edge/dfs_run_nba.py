@@ -141,6 +141,22 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
                  "imputed": [], "out": [], "history_date": hist.get("generated_at")})
 
     # Everyone DK priced, matched to his NBA history and tonight's NBA.com status.
+    # History is several seasons of NBA.com ids, so a name can belong to more
+    # than one player (Maxwell Lewis: LAL, and a London preseason opponent):
+    # `names` kept whichever came last. A shared name now resolves only to the
+    # one on this DK team, and to nobody when neither is -- never a guess.
+    # The NCAAF build lost a cash game to a name-only join on 2026-10-16.
+    by_name: dict = {}
+    for hp_id, hp in hist["players"].items():
+        by_name.setdefault(norm(hp.get("name") or ""), []).append((hp_id, hp.get("team")))
+
+    def history_id(key, t):
+        cands = by_name.get(key, [])
+        if len(cands) == 1:
+            return cands[0][0]
+        mine = [i for i, tm in cands if tm == t]
+        return mine[0] if len(mine) == 1 else None
+
     rows = []
     for sal in salaries.values():
         if not sal.get("salary"):
@@ -148,7 +164,7 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         t = team(sal.get("team"))
         key = norm(sal["name"])
         st = status.get((key, t), {})
-        pid = st.get("id") or hist["names"].get(key)
+        pid = st.get("id") or history_id(key, t)
         h = hist["players"].get(pid, {}) if pid else {}
         opp = next((team(g["away"]) if team(g["home"]) == t else team(g["home"])
                     for g in games.values() if t in (team(g["home"]), team(g["away"]))), None)

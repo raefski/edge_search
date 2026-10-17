@@ -201,7 +201,16 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
     fppg_ids = _fppg_ids(raw)
     for p in raw:
         k = norm(p["displayName"])
-        if k not in out:  # dedupe multi-slot rows
+        if k in out and out[k].get("player_id") != p.get("playerId"):
+            # A DIFFERENT player with the same name on one board (NHL has two
+            # Sebastian Ahos and two Elias Petterssons; MLB two Max Muncys).
+            # Keyed by name alone the second one silently vanished. He is kept
+            # under name|team -- every caller that walks salaries.values()
+            # sees him, and a name-only lookup cannot pick him by mistake:
+            # edge/dfs_slate.subject_events refuses a prop whose event is not
+            # the resolved player's game rather than attach it to the wrong one.
+            k = f"{k}|{p.get('teamAbbreviation')}"
+        if k not in out:  # dedupe multi-slot rows (same player, same id)
             comp = p.get("competition") or {}
             if not comp.get("name"):
                 continue

@@ -104,24 +104,28 @@ def game_lines(client, games: dict) -> dict:
     return out
 
 
-def player_props(client, markets: list[str], book: str = "draftkings") -> dict:
-    """{player: {market: {Over, Under, point}}} for one book. The same walk as
-    scripts/dfs_board.collect_player_markets, kept here so the NHL app (and its
-    standalone mirror, which carries no scripts/dfs_board.py) needs nothing
-    outside edge/."""
-    out: dict = {}
-    for ev in client.get_events(SPORT):
-        payload = client.get_event_odds(SPORT, ev["id"], markets, "us")
-        for bk in payload.get("bookmakers", []):
-            if bk.get("key") != book:
-                continue
-            names = {o["description"] for m in bk.get("markets", [])
-                     for o in m.get("outcomes", []) if o.get("description")}
-            for name in names:
-                pm = dfs.player_markets(bk, name)
+def player_props(client, markets: list[str], book: str = "draftkings",
+                 salaries: dict | None = None, games: dict | None = None) -> tuple[dict, list]:
+    """({player: {market: {Over, Under, point}}}, [names refused]) for one book.
+
+    Each player's lines come only from the event that is HIS game on this
+    slate (edge/dfs_slate.event_games). The flat walk this replaces merged a
+    player's lines across every event with .update(), and NHL scans hold two
+    nights at once -- a team on a back-to-back could carry tomorrow's shots
+    line into tonight's projection, and any namesake's line joined by name.
+    Without `salaries` there is no slate to check against, so nothing is
+    refused (the shape a caller with no board still gets)."""
+    by_event, kickoffs = dfs_slate.player_markets_by_event(client, SPORT, markets, book)
+    if salaries is None:
+        out: dict = {}
+        for players in by_event.values():
+            for name, pm in players.items():
                 if pm:
                     out.setdefault(name, {}).update(pm)
-    return out
+        return out, []
+    lookup = dfs.SalaryLookup(salaries)
+    return dfs_slate.own_game_markets(by_event, kickoffs, lookup.get,
+                                      games if games is not None else slate_games(salaries))
 
 
 def _season_rates() -> dict:
@@ -169,8 +173,9 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
     games = slate_games(salaries)
     teams = {nhl.team(g[s]) for g in games.values() for s in ("home", "away")}
     implied = game_lines(client, games)
-    props = player_props(client, ["player_shots_on_goal", "player_points",
-                                  "player_assists", "player_total_saves"])
+    props, wrong_game = player_props(client, ["player_shots_on_goal", "player_points",
+                                              "player_assists", "player_total_saves"],
+                                     salaries=salaries, games=games)
     props = {norm(k): v for k, v in props.items()}
     start = _parse_time(meta.get("start") or next(iter(games.values()), {}).get("start"))
     date = (start.astimezone(ZoneInfo("America/New_York")).date().isoformat()
@@ -191,7 +196,8 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
 
     info = {"games": len(games), "priced": len(salaries), "implied": implied,
             "missing_lines": sorted(teams - set(implied)), "date": date,
-            "starters": starters, "no_lineup": [], "imputed": 0}
+            "starters": starters, "no_lineup": [], "imputed": 0,
+            "wrong_game": wrong_game}
     pool = []
     for sal in salaries.values():
         if not sal.get("salary"):

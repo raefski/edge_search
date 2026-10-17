@@ -232,20 +232,22 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
     come from the game line (dfs_project.project_dst). A player carries his
     opponent because the optimizer's DST rule is only enforceable if he does.
     """
-    from scripts.dfs_board import collect_player_markets
-
     sport = dfs_sport.get(SPORT)
     games = slate_games(salaries)
     opponents = team_opponents(games)
     lines, line_report = game_lines(client, games)
 
-    props = collect_player_markets(client, SPORT, sport.market_keys()).get(book, {})
+    lookup = dfs.SalaryLookup(salaries)
+    # Per event, and each player's lines only from HIS game's event: a flat
+    # walk joins any namesake and lets next week's posted line overwrite
+    # this week's (edge/dfs_slate.event_games).
+    by_event, kickoffs = dfs_slate.player_markets_by_event(client, SPORT, sport.market_keys(), book)
+    props, wrong_game = dfs_slate.own_game_markets(by_event, kickoffs, lookup.get, games)
 
     pool: list[dict] = []
     stats = {"offense": 0, "dst": 0, "no_proj": 0, "no_salary": 0,
-             "not_on_slate": 0, **line_report}
+             "not_on_slate": 0, "wrong_game": wrong_game, **line_report}
 
-    lookup = dfs.SalaryLookup(salaries)
     for name, markets in props.items():
         info = lookup.get(name)
         if not info:
