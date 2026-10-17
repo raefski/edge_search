@@ -1354,5 +1354,41 @@
   "name": "CFB $1K Wednesday Night Kickoff",
   "guaranteed": true,
   "slate": "2026-10-14 (gid 155105)"
+ },
+ "196727097": {
+  "type": "gpp",
+  "sport": "NCAAF",
+  "field": 71,
+  "entry_fee": 0,
+  "places_paid": 1,
+  "prize_pool": null,
+  "draft_group": 155109,
+  "name": "CFB FREE 200-Player",
+  "guaranteed": true,
+  "slate": "2026-10-15 (gid 155109)"
+ },
+ "196727503": {
+  "type": "gpp",
+  "sport": "NHL",
+  "field": 594,
+  "entry_fee": 1,
+  "places_paid": 136,
+  "prize_pool": 500.0,
+  "draft_group": 154747,
+  "name": "NHL $500 Daily Dollar [Single Entry]",
+  "guaranteed": true,
+  "slate": "2026-10-15 (gid 154747)"
+ },
+ "196727515": {
+  "type": "cash",
+  "sport": "NHL",
+  "field": 114,
+  "entry_fee": 1,
+  "places_paid": 50,
+  "prize_pool": 100.0,
+  "draft_group": 154747,
+  "name": "NHL Single Entry $1 Double Up",
+  "guaranteed": true,
+  "slate": "2026-10-15 (gid 154747)"
  }
 }
