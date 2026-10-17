@@ -323,6 +323,50 @@ def game_lines(client, games: dict, event_players: dict,
     return lines, report
 
 
+def on_slate_keys(event_players: dict, by_key: dict) -> tuple[set, list]:
+    """(prop-subject keys whose ladder belongs to their DK player's own game,
+    names rejected because it does not).
+
+    A ladder is joined to a draftable by NAME, and a name is not unique across
+    college football. Off-slate games are in every scan, so "Fredrick Moore
+    (MSU)" -- a Michigan State receiver -- joined Alabama's $4,000 RB Fredrick
+    Moore on 10/3 and 10/17, and on 10/16 Missouri's starting QB "Austin
+    Simmons (MIZZ)" became a $3,000 Washington WR projected 16.3. Both model
+    lineups played him; he scored 0.
+
+    An event belongs to the slate game most of its own subjects resolve to,
+    and only when at least HALF of its subjects do: a real slate game's priced
+    players are nearly all on the board, an off-slate game matches only by
+    coincidence (1 of ~10). A key that also appears in another event is
+    dropped, because collect_ladders cannot tell whose rungs it kept.
+    """
+    events_of: dict = {}
+    for ev, keys in event_players.items():
+        for k in keys:
+            events_of.setdefault(k, set()).add(ev)
+    game_of: dict = {}
+    for ev, keys in event_players.items():
+        votes: dict = {}
+        for k in keys:
+            info = by_key.get(k)
+            if info and info.get("game"):
+                votes[info["game"]] = votes.get(info["game"], 0) + 1
+        if votes:
+            gid, n = max(votes.items(), key=lambda kv: kv[1])
+            if n >= 0.5 * len(keys):
+                game_of[ev] = gid
+    ok, rejected = set(), []
+    for k, evs in events_of.items():
+        info = by_key.get(k)
+        if not info:
+            continue
+        if len(evs) == 1 and game_of.get(next(iter(evs))) == info.get("game"):
+            ok.add(k)
+        else:
+            rejected.append(info.get("name") or k)
+    return ok, sorted(rejected)
+
+
 def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, dict]:
     """The projected player pool for one slate."""
     sport = dfs_sport.get(SPORT)
@@ -330,15 +374,17 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
     opponents = team_opponents(games)
     ladders, event_players = collect_ladders(client, book=book)
     by_key, ambiguous = salary_index(salaries)
+    own_game, wrong_game = on_slate_keys(event_players, by_key)
 
     pool: list[dict] = []
     stats = {"projected": 0, "no_proj": 0, "no_salary": 0, "not_on_slate": 0,
              "one_rung": 0, "priced_players": len(ladders),
-             "slate_players": len(salaries), "ambiguous_names": ambiguous}
+             "slate_players": len(salaries), "ambiguous_names": ambiguous,
+             "wrong_game": wrong_game}
 
     for key, by_market in ladders.items():
         info = by_key.get(key)
-        if not info:
+        if not info or key not in own_game:
             stats["not_on_slate"] += 1
             continue
         if not info.get("salary"):

@@ -375,6 +375,17 @@ Tried and **rejected** on held-out slates:
    open per event across the WSL mount). Copy `odds_2026-MM.db` to local disk
    and point `OddsStore.archived_file` at the copy for a replay.
 
+**A third join bug, found grading 10/16.** A ladder joins its draftable by
+NAME, and every scan carries off-slate games. "Austin Simmons (MIZZ)",
+Missouri's QB, whose game was not on the 10/16 slate, became a $3,000
+Washington WR projected 16.3. **Both model lineups played him; he scored 0.**
+The cash replay reproduces the 125.5 Adam entered; with the fix it scores
+139.2 against a 137.76 line (GPP 119.6 → 143.6). Same bug on 10/3 and 10/17
+("Fredrick Moore (MSU)" → Alabama's $4,000 RB). `on_slate_keys` now keeps a
+ladder only when its event belongs to the player's own game, i.e. at least half
+of the event's subjects resolve to that game. Across the six replayed slates it
+removes exactly those three joins and nothing else (`stats["wrong_game"]`).
+
 **Where the remaining error is:** ladder coverage (DK priced no ladder for
 Kamario Taylor, a $9,100 QB at 35 FPPG, 22% owned on 9/26), and late news on
 cheap receivers. FanDuel posts two-sided college props DK sometimes lacks, but

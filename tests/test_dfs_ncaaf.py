@@ -333,3 +333,27 @@ def test_the_forward_log_keeps_dks_fppg():
     """DK serves no past draftables, so FPPG is unrecoverable unless logged."""
     from edge.dfs_run_ncaaf import PROJ_LOG_COLS
     assert "dk_fppg" in PROJ_LOG_COLS
+
+
+def test_a_namesake_in_another_game_does_not_take_his_ladder():
+    """10/16: Missouri QB "Austin Simmons (MIZZ)", whose game was not on the
+    slate, joined a $3,000 Washington WR of the same name, projected 16.3 --
+    both model lineups played him and he scored 0. An off-slate event matches
+    the board only by coincidence, so it must not claim the player."""
+    from edge.dfs_run_ncaaf import on_slate_keys
+    by_key = {"austinsimmons": {"name": "Austin Simmons", "game": "uw-pur"},
+              "uwqb": {"name": "UW QB", "game": "uw-pur"},
+              "uwwr": {"name": "UW WR", "game": "uw-pur"},
+              "purrb": {"name": "PUR RB", "game": "uw-pur"}}
+    event_players = {
+        "uw-pur-event": {"uwqb", "uwwr", "purrb", "walkon"},
+        "mizz-event": {"austinsimmons", "mizzwr1", "mizzwr2", "mizzrb", "missqb"},
+    }
+    ok, rejected = on_slate_keys(event_players, by_key)
+    assert ok == {"uwqb", "uwwr", "purrb"}
+    assert rejected == ["Austin Simmons"]
+    # The same player IS kept when his own game carries his ladder.
+    event_players["uw-pur-event"].add("austinsimmons")
+    event_players["mizz-event"].discard("austinsimmons")
+    ok, rejected = on_slate_keys(event_players, by_key)
+    assert "austinsimmons" in ok and rejected == []
