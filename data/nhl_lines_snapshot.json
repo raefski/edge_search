@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-17T22:44:31+00:00",
+"generated_at": "2026-10-17T22:59:44+00:00",
 "goalies": {
 "2026-10-17": {
 "BOS": {
@@ -965,9 +965,9 @@
 "toiMinutes": 69,
 "toiSeconds": 52
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Josh Doan": {
@@ -1005,7 +1005,7 @@
 "pp": "PP2"
 },
 "Josh Norris": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -1037,6 +1037,40 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
+},
+"Justin Danforth": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 118,
+"toiSeconds": 50
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 46,
+"toiSeconds": 22
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Konsta Helenius": {
 "gtd": false,
@@ -1247,9 +1281,9 @@
 "toiMinutes": 73,
 "toiSeconds": 47
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Ryan McLeod": {
@@ -1285,40 +1319,6 @@
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
-},
-"Sam Carrick": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 84,
-"toiSeconds": 50
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 42,
-"toiSeconds": 39
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Tage Thompson": {
 "gtd": false,
@@ -12261,10 +12261,44 @@
 "toiMinutes": 72,
 "toiSeconds": 0
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Garrett Wilson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 60,
+"toiSeconds": 16
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 48,
+"toiSeconds": 25
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Jack Studnicka": {
 "gtd": false,
@@ -12433,9 +12467,9 @@
 "toiMinutes": 54,
 "toiSeconds": 10
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Nick Seeler": {
@@ -12501,10 +12535,10 @@
 "toiMinutes": 64,
 "toiSeconds": 9
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Noel Acciari": {
 "gtd": false,
@@ -12574,40 +12608,6 @@
 "pos": "rd",
 "pp": "PP2"
 },
-"Owen Tippett": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 23,
-"toiMinutes": 165,
-"toiSeconds": 10
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 85,
-"toiSeconds": 57
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
-},
 "Porter Martone": {
 "gtd": false,
 "injury": null,
@@ -12671,7 +12671,7 @@
 "toiMinutes": 87,
 "toiSeconds": 47
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -12773,7 +12773,7 @@
 "toiMinutes": 91,
 "toiSeconds": 5
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -14300,6 +14300,40 @@
 "pos": "rw",
 "pp": null
 },
+"Darnell Nurse": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 24,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 18,
+"toiMinutes": 213,
+"toiSeconds": 6
+},
+"last5": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 106,
+"toiSeconds": 20
+},
+"line": "D1",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Dmitry Orlov": {
 "gtd": false,
 "injury": null,
@@ -14329,10 +14363,10 @@
 "toiMinutes": 94,
 "toiSeconds": 7
 },
-"line": "D1",
+"line": "D3",
 "pk": null,
-"pos": "ld",
-"pp": "PP2"
+"pos": "rd",
+"pp": "PP1"
 },
 "Igor Chernyshov": {
 "gtd": false,
@@ -14445,40 +14479,6 @@
 "pk": null,
 "pos": "rw",
 "pp": null
-},
-"Luca Cagnoni": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 13,
-"toiMinutes": 190,
-"toiSeconds": 29
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 87,
-"toiSeconds": 44
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": "PP1"
 },
 "Macklin Celebrini": {
 "gtd": false,
@@ -14682,7 +14682,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Tyler Toffoli": {
 "gtd": false,
