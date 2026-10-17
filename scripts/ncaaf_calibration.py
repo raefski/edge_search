@@ -168,8 +168,11 @@ def fit_ownership(board: dict, contest: dict, ctype: str) -> None:
     """
     import copy
     rows = list(board.values())
+    # dk_fppg is logged from 2026-10-17; an older log has none, every FPPG z
+    # is then 0 and the sweep grades the value-only model it was built with.
     pool = [{"name": r["player"], "dk_pos": r.get("dk_pos"),
-             "proj": _f(r.get("proj"), 0.0), "salary": _f(r.get("salary"), 0.0)}
+             "proj": _f(r.get("proj"), 0.0), "salary": _f(r.get("salary"), 0.0),
+             "dk_fppg": _f(r.get("dk_fppg"))}
             for r in rows]
     actual = [contest.get(norm(p["name"]), {}).get("pct_drafted", 0.0) for p in pool]
     field_total = sum(v["pct_drafted"] for v in contest.values())

@@ -212,7 +212,7 @@ Full correlation matrix with sample sizes: `edge/dfs_ncaaf_theory.py`.
 
 | thing | status |
 |---|---|
-| **Ownership** | fitted on **one** slate (2026-09-26 Night, a 594-entry GPP); see §8. Sharpness 1.1 confirmed; the S-FLEX split is now **measured** (QB 1.9 / RB 2.3 / WR 3.8 — a QB in the S-FLEX ~90% of the time, not the guessed 60%), and 12% of the field's slots go to players with no DK ladder (`MODELED_SHARE` 0.88). Fitted to GPP only: the cash field is far sharper and cash lineups do not read ownership. |
+| **Ownership** | value softmax **plus DK's own FPPG** (§10), fitted on **5** GPP slates held out one at a time; pool MAE 3.36→2.69 and 3.39→2.74 on the two big October slates, 9/26 flat. Still misplaces ~half of the field's ownership. S-FLEX split measured (QB 1.9 / RB 2.3 / WR 3.8); 4–12% of GPP ownership goes to players with no DK ladder (`MODELED_SHARE` 0.88) and nothing tried predicts *which* (§10). GPP only: cash lineups do not read ownership. |
 | **Ladder overrounds** | fitted against **FanDuel's** two-sided lines — a cross-book anchor, an assumption about a second book, not ground truth. n is 22–81 per market. The first graded slate (§8) had projections **3.9 points LOW** on 63 players (RB −5.5, QB −3.4, WR −3.3) — the direction too-high overrounds would produce, and the check this row was waiting for. Seven games that move together is not enough to refit on. |
 | **`SD_FIT` spreads** | regressed against a leave-one-out **season mean**, not a real projection, because no projection log existed. A season mean knows nothing about the opponent, so these are if anything biased **high**. |
 | **Lineup head-to-head** | the NFL build has `scripts/nfl_lineup_backtest.py` testing cash-vs-GPP objectives against real outcomes. **College has no equivalent yet** — the objectives are argued from measured correlations and spreads, not from a backtested edge. |
@@ -304,3 +304,80 @@ Both model lineups were entered. **GPP 183.5, 304th of ~1,900.** **Cash 147.5, 1
 Shipped: OWNERSHIP_GAMMA 1.1 → MAE 3.47. **Best fit: gamma 1.50 → MAE 3.29** (−0.18 improvement).
 
 **Buzz test:** Tested on 3-slate aggregate (γ=0.6, β=1.0). Titans DST example: predicted 22% without buzz → 45% with buzz (YouTube mentions). Pattern is real but single outlier—hold collection running, defer integration to 4–6 slates.
+
+## 10. Five-slate replay: what helps MAE and what does not (2026-10-17)
+
+Every graded slate was **replayed through the current pipeline** from the last
+odds scan before lock (`ScrapedOddsClient(scan_id=...)`), which also recovered
+10/10 Main (draft group 154582, never logged). The replay reproduces the logged
+pools (75 on 9/26, 135 vs 136 logged on 10/3). Truth is the DK export for
+drafted players and cfbfastR for everyone else. Everything fitted was fitted
+**leave-one-slate-out**. Slates: 9/26 Night, 10/3 Main, 10/10 Main (fields
+594 / 1,189 / 356), 10/14 and 10/15 (52 and 71: reported, not trusted).
+
+**Points: the ladder already prices volume, and nothing we added beats it.**
+
+| laddered players (n=377, 5 slates) | MAE | |
+|---|---|---|
+| ladder (shipped) | **7.38** | |
+| cfbfastR usage, season per team game | 8.16 | market beats box scores |
+| usage, last 3 games | 8.19 | |
+| ladder + usage, LOSO linear | 7.31 | −0.07: noise, not shipped |
+
+Pace, neutral-script pass rate, target share, red-zone share, spread-driven
+game script and weather are all inputs a book already prices into a player's
+ladder, so a box-score model of them can only re-estimate the ladder, worse.
+They would matter for players with **no** ladder, but there they are noise:
+on non-laddered players the field drafted (n=217), predicting zero scores MAE
+4.21, raw usage 4.84, and usage + salary fitted LOSO 4.07. Ladder bias
+(actual − proj) is +1.3 QB / +0.7 RB / +1.2 WR and flips sign slate to slate:
+not enough to refit overrounds.
+
+**Ownership: the field reads DraftKings' FPPG column.** Shipped
+`OWNERSHIP_FPPG_WEIGHT = 0.4`: DK's displayed season FPPG per $1,000,
+z-scored within position, beside the market value term (gamma stays 1.1).
+"Misplaced" is Σ|pred − actual| over the whole board / Σ actual, i.e. the
+share of the field's ownership put on the wrong players:
+
+| held out | pool MAE before → after | misplaced before → after |
+|---|---|---|
+| 9/26 Night | 3.81 → 3.85 | 0.479 → 0.483 |
+| 10/3 Main | 3.36 → **2.67** | 0.615 → **0.497** |
+| 10/10 Main | 3.39 → **2.76** | 0.611 → **0.512** |
+| 10/14 (52) | 19.59 → 19.41 | 0.503 → 0.499 |
+| 10/15 (71) | 14.04 → 13.76 | 0.658 → 0.647 |
+
+Fold weights 0.42–0.45 / gamma 1.07–1.17. FPPG was **reconstructed** from
+cfbfastR (DK serves no past draftables) as DK points per game played; on the
+10/17 board that reconstruction tracks DK's real column at r 0.972, MAE 0.85
+(n=252, $4k+). `dk_fppg` is now in `dfs_proj_log_ncaaf.csv`, so the next
+refit uses the number the field actually saw.
+
+Tried and **rejected** on held-out slates:
+
+* refitting gamma alone (share fixed): better on 2 slates, worse on 3;
+* gamma 1.4 + `MODELED_SHARE` 0.70: lower MAE, but only because shrinking every
+  prediction lowers absolute error. The field put 88 / 96 / 92% on laddered
+  players, and the leverage/contest-EV tools need ownership that sums to a roster;
+* salary, implied team total, projection level as extra terms: no consistent gain;
+* projecting ownership for the **whole board** (non-laddered players from
+  usage): misplaced 0.57 → 0.67–0.77, worse on every big slate. The field's
+  non-laddered ownership sits on a few names usage cannot find. Caleb Smith,
+  a $3,100 WR5, was 21% on 10/10 and scored 0: that is news, not box scores.
+
+**Two traps, both of which produced believable numbers:**
+
+1. **cfbfastR's `week` is not the calendar week you think.** 9/26 is week 4,
+   10/3 week 5, 10/10 week 6, verified against DK export fpts (MAE ~0.5 on the
+   right week, 7–9 on any other). Off by one, "season to date" included the
+   slate itself, and box-score usage "beat" the market 6.55 to 7.41.
+2. **Replaying an archived scan over `/mnt/f` is ~100× slower** (one SQLite
+   open per event across the WSL mount). Copy `odds_2026-MM.db` to local disk
+   and point `OddsStore.archived_file` at the copy for a replay.
+
+**Where the remaining error is:** ladder coverage (DK priced no ladder for
+Kamario Taylor, a $9,100 QB at 35 FPPG, 22% owned on 9/26), and late news on
+cheap receivers. FanDuel posts two-sided college props DK sometimes lacks, but
+only 24–48 h out and it is never stored (`scripts/ncaaf_overround_fit.py`
+fetches it ad hoc). Adding it as a second projection source for unladdered
+players is the next coverage lever and is not measured yet.

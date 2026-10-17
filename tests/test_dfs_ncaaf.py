@@ -298,3 +298,38 @@ def test_two_players_one_key_are_left_out_not_guessed():
     by_key, ambiguous = salary_index({
         "a": {"name": "John Smith"}, "b": {"name": "John Smith Jr."}})
     assert "johnsmith" not in by_key and ambiguous == ["johnsmith"]
+
+
+# ---------------------------------------------------------------------------
+# ownership: market value + DK's own FPPG
+# ---------------------------------------------------------------------------
+def _wr_pool(fppg):
+    """Receivers at one salary and one projection: only FPPG differs. Twelve
+    of them, so 3.3 lineups' worth of WR ownership stays under MAX_OWN."""
+    fppg = list(fppg) + [fppg[-1]] * (12 - len(fppg))
+    return [{"name": f"WR{i}", "dk_pos": "WR", "salary": 5000, "proj": 12.0,
+             "dk_fppg": f} for i, f in enumerate(fppg)]
+
+
+def test_the_field_follows_dks_fppg_column_when_the_market_is_silent():
+    """Equal market value, so any spread in ownership is the FPPG term -- and
+    the receiver DK's screen shows at 20 a game is owned above the one at 5."""
+    pool = theory.add_ownership(_wr_pool([20.0, 12.0, 8.0, 5.0]))
+    owns = [p["own"] for p in pool]
+    assert owns[:4] == sorted(owns[:4], reverse=True) and owns[0] > 1.5 * owns[3]
+    total = 100.0 * theory.SLOTS_BY_POSITION["WR"] * theory.MODELED_SHARE
+    assert sum(owns) == pytest.approx(total, abs=0.5)
+
+
+def test_no_fppg_on_the_board_is_the_value_only_model():
+    """An old forward log (dk_fppg logged from 2026-10-17) or a snapshot with
+    no stat attributes must grade exactly what was shipped before the term."""
+    a = theory.add_ownership(_wr_pool([None] * 4))
+    b = theory.add_ownership(_wr_pool([7.0] * 4), fppg_weight=0.0)
+    assert [p["own"] for p in a] == [p["own"] for p in b]
+
+
+def test_the_forward_log_keeps_dks_fppg():
+    """DK serves no past draftables, so FPPG is unrecoverable unless logged."""
+    from edge.dfs_run_ncaaf import PROJ_LOG_COLS
+    assert "dk_fppg" in PROJ_LOG_COLS

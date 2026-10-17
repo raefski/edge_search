@@ -274,6 +274,31 @@ OWNERSHIP_GAMMA = 1.1
 OWNERSHIP_Z_CLIP = 2.0
 MAX_OWN = 55.0
 
+#: Weight on DraftKings' OWN value -- the season FPPG its draft screen shows
+#: next to every name (`dk_fppg`, draftStatAttributes 174), per $1,000 and
+#: z-scored within position exactly like the market value. The field drafts
+#: from that screen, and our ladder means are not what it sees: a player the
+#: market and the FPPG column disagree on is owned somewhere in between.
+#:
+#: Fitted 2026-10-17 on 5 GPP slates (9/26 Night, 10/3 Main, 10/10 Main, 10/14,
+#: 10/15; fields 594 / 1,189 / 356 / 52 / 71), pools REPLAYED from the pre-lock
+#: odds scan, FPPG reconstructed from cfbfastR as DK points per game played
+#: (DK serves no past draftables). Leave-one-slate-out, gamma refit alongside:
+#: pool MAE 3.36 -> 2.69 (10/3) and 3.39 -> 2.74 (10/10), 9/26 flat
+#: (3.81 -> 3.85, week 4 = three games of FPPG), both small fields slightly
+#: better; misplaced ownership on the three big slates 0.568 -> 0.498. Fold
+#: weights 0.42-0.45 with gamma 1.07-1.17, so gamma stays 1.1. A board with no
+#: FPPG gives every z 0 and reduces exactly to the value-only model.
+OWNERSHIP_FPPG_WEIGHT = 0.4
+
+
+def _clipped_z(values):
+    mean_v = sum(values) / len(values) if values else 0.0
+    spread = (sum((v - mean_v) ** 2 for v in values) / len(values)) ** 0.5 if values else 0.0
+    spread = spread or 1.0
+    return [max(-OWNERSHIP_Z_CLIP, min(OWNERSHIP_Z_CLIP, (v - mean_v) / spread))
+            for v in values]
+
 
 def _normalise(weights, target, cap):
     """Scale `weights` to sum to `target`, then cap and redistribute.
@@ -302,12 +327,15 @@ def _normalise(weights, target, cap):
 
 
 def add_ownership(pool: list, gamma: float = OWNERSHIP_GAMMA,
-                  cap: float = MAX_OWN) -> list:
+                  cap: float = MAX_OWN,
+                  fppg_weight: float = OWNERSHIP_FPPG_WEIGHT) -> list:
     """Annotate every player with `own` (percent) and `leverage`.
 
-    Ownership is a power-softmax over VALUE (projected points per $1,000),
-    normalised within a position so the position's total equals the number of
-    lineup slots it fills, then capped. UNVALIDATED for college football.
+    Ownership is a power-softmax over VALUE (projected points per $1,000) plus
+    DraftKings' displayed FPPG per $1,000 (OWNERSHIP_FPPG_WEIGHT), normalised
+    within a position so the position's total equals the number of lineup
+    slots it fills, then capped. A player with no `dk_fppg` (a freshman, "-"
+    on DK's screen) counts as 0 there, which is what the field sees.
 
     `leverage` is the projection percentile minus the ownership percentile
     within position. Positive means the field is underweighting him relative to
@@ -320,16 +348,13 @@ def add_ownership(pool: list, gamma: float = OWNERSHIP_GAMMA,
 
     for pos, players in by_pos.items():
         target = 100.0 * SLOTS_BY_POSITION.get(pos, 1.0) * MODELED_SHARE
-        values = []
+        values, fppg_values = [], []
         for p in players:
             salary = float(p.get("salary") or 0) / 1000.0
             values.append((float(p.get("proj") or 0.0) / salary) if salary else 0.0)
-        mean_v = sum(values) / len(values) if values else 0.0
-        spread = (sum((v - mean_v) ** 2 for v in values) / len(values)) ** 0.5 or 1.0
-        weights = []
-        for v in values:
-            z = max(-OWNERSHIP_Z_CLIP, min(OWNERSHIP_Z_CLIP, (v - mean_v) / spread))
-            weights.append(math.exp(gamma * z))
+            fppg_values.append((float(p.get("dk_fppg") or 0.0) / salary) if salary else 0.0)
+        weights = [math.exp(gamma * z + fppg_weight * fz)
+                   for z, fz in zip(_clipped_z(values), _clipped_z(fppg_values))]
         for p, own in zip(players, _normalise(weights, target, cap)):
             p["own"] = round(own, 1)
 

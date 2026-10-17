@@ -379,8 +379,12 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
 # ---------------------------------------------------------------------------
 # The whole slate, in one call
 # ---------------------------------------------------------------------------
+#: `dk_fppg` is logged because ownership reads it (dfs_ncaaf_theory.
+#: OWNERSHIP_FPPG_WEIGHT) and DK serves no past draftables: it was fitted on a
+#: cfbfastR reconstruction, and a refit should use the number the field saw.
 PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp_team", "dk_pos", "salary",
-                 "proj", "sd", "own", "leverage", "band_points", "game", "games")
+                 "proj", "sd", "own", "leverage", "band_points", "game", "games",
+                 "dk_fppg")
 
 
 def _slate_date(meta: dict) -> str | None:
@@ -407,7 +411,8 @@ def log_forward_test(pool: list, cash: dict | None, gpp: dict | None,
              "salary": p.get("salary", ""), "proj": p.get("proj", ""), "sd": p.get("_sd", ""),
              "own": p.get("own", ""), "leverage": p.get("leverage", ""),
              "band_points": p.get("band_points", ""),
-             "game": p.get("game", ""), "games": games if games is not None else ""}
+             "game": p.get("game", ""), "games": games if games is not None else "",
+             "dk_fppg": "" if p.get("dk_fppg") is None else p["dk_fppg"]}
             for p in pool]
     lineups = None
     if cash or gpp:
