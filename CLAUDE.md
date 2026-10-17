@@ -87,7 +87,7 @@ between ad-hoc lookups.
   from elsewhere through `edge-code-sync.timer` (fast-forward only, never with
   local commits); `harness status` shows how far behind it is.
 - Commit only your own paths (`git add <paths>`; never `git add -A`), then push
-  under the repo lock: `flock .git/edge_git.lock -c 'git pull -q --rebase && git push -q'`.
+  under the repo lock: `flock .git/edge_git.lock -c 'git pull -q --rebase --autostash && git push -q'`.
   The working tree holds timer-written data — don't discard it
   (`.claude/hooks/guard_bash.py` blocks `reset --hard`, `clean -f`, `checkout .`,
   force push, deleting `data/*.db`).
