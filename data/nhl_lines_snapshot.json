@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-17T02:00:48+00:00",
+"generated_at": "2026-10-17T02:29:53+00:00",
 "goalies": {
 "2026-10-16": {
 "ANA": {
@@ -57,7 +57,7 @@
 "status": null
 },
 "LAK": {
-"goalie": "Darcy Kuemper",
+"goalie": "Anton Forsberg",
 "status": null
 },
 "MTL": {
@@ -89,7 +89,7 @@
 "status": null
 },
 "PIT": {
-"goalie": "Arturs Silovs",
+"goalie": "Sergei Murashov",
 "status": null
 },
 "SEA": {
@@ -101,7 +101,7 @@
 "status": null
 },
 "STL": {
-"goalie": "Joel Hofer",
+"goalie": "Jordan Binnington",
 "status": null
 },
 "TBL": {
@@ -121,7 +121,7 @@
 "status": null
 },
 "VGK": {
-"goalie": "Carter Hart",
+"goalie": "Adin Hill",
 "status": null
 },
 "WPG": {
@@ -4912,16 +4912,6 @@
 "pos": "rw",
 "pp": null
 },
-"David Perron": {
-"gtd": false,
-"injury": null,
-"last10": {},
-"last5": {},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Esa Lindell": {
 "gtd": false,
 "injury": null,
@@ -5089,9 +5079,9 @@
 "toiMinutes": 58,
 "toiSeconds": 19
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Justin Hryckowian": {
@@ -7603,7 +7593,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7775,7 +7765,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12855,7 +12845,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13333,7 +13323,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13377,7 +13367,7 @@
 "injury": null,
 "last10": {
 "assists": 1,
-"blocks": 10,
+"blocks": 9,
 "gamesPlayed": 10,
 "goals": 0,
 "points": 1,
@@ -13385,12 +13375,12 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 4,
-"toiMinutes": 165,
-"toiSeconds": 37
+"toiMinutes": 149,
+"toiSeconds": 9
 },
 "last5": {
 "assists": 1,
-"blocks": 8,
+"blocks": 4,
 "gamesPlayed": 5,
 "goals": 0,
 "points": 1,
@@ -13398,8 +13388,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 3,
-"toiMinutes": 85,
-"toiSeconds": 43
+"toiMinutes": 72,
+"toiSeconds": 26
 },
 "line": "D3",
 "pk": "PK2",
@@ -14308,7 +14298,7 @@
 "line": "D1",
 "pk": null,
 "pos": "ld",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Igor Chernyshov": {
 "gtd": false,
@@ -14454,7 +14444,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Macklin Celebrini": {
 "gtd": false,
@@ -15147,7 +15137,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15217,7 +15207,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -18165,7 +18155,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -18303,7 +18293,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
