@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-17T01:59:53+00:00",
+"generated_at": "2026-10-17T02:00:48+00:00",
 "goalies": {
 "2026-10-16": {
 "ANA": {
@@ -6132,6 +6132,40 @@
 "pos": "lw",
 "pp": null
 },
+"Colton Dach": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 111,
+"toiSeconds": 57
+},
+"last5": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 69,
+"toiSeconds": 44
+},
+"line": "F2",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "Connor McDavid": {
 "gtd": false,
 "injury": null,
@@ -6299,7 +6333,7 @@
 "toiMinutes": 55,
 "toiSeconds": 48
 },
-"line": "F2",
+"line": "F4",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
@@ -6338,14 +6372,38 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Josh Samanski": {
-"gtd": false,
+"Jake Walman": {
+"gtd": true,
 "injury": null,
-"last10": {},
-"last5": {},
-"line": "F4",
+"last10": {
+"assists": 1,
+"blocks": 15,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 171,
+"toiSeconds": 46
+},
+"last5": {
+"assists": 0,
+"blocks": 10,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 78,
+"toiSeconds": 57
+},
+"line": "D3",
 "pk": null,
-"pos": "c",
+"pos": "ld",
 "pp": null
 },
 "Kasperi Kapanen": {
@@ -6380,7 +6438,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Leon Draisaitl": {
 "gtd": false,
@@ -6484,40 +6542,6 @@
 "pos": "ld",
 "pp": "PP2"
 },
-"Max Jones": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 100,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 52,
-"toiSeconds": 18
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Owen Michaels": {
 "gtd": false,
 "injury": null,
@@ -6586,40 +6610,6 @@
 "pos": "ld",
 "pp": "PP2"
 },
-"Shakir Mukhamadullin": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 14,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 156,
-"toiSeconds": 42
-},
-"last5": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 59,
-"toiSeconds": 19
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
-},
 "Trent Frederic": {
 "gtd": false,
 "injury": null,
@@ -6649,10 +6639,10 @@
 "toiMinutes": 50,
 "toiSeconds": 51
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Tristan Jarry": {
 "gtd": false,
@@ -6754,6 +6744,40 @@
 "toiSeconds": 0
 },
 "line": "F1",
+"pk": null,
+"pos": "lw",
+"pp": "PP1"
+},
+"Zach Hyman": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 5,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 22,
+"toiMinutes": 185,
+"toiSeconds": 59
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 11,
+"toiMinutes": 93,
+"toiSeconds": 53
+},
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
