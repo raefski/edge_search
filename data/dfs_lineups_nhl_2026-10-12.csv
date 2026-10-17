@@ -1,0 +1,28 @@
+mode,slot,player,team,line,pp,salary,proj,own
+cash,C,Joel Eriksson Ek,MIN,F1,PP1,5500,10.42,23.4
+cash,C,Ryan Hartman,MIN,F2,PP2,4200,8.82,23.6
+cash,W,Kirill Kaprizov,MIN,F1,PP1,8100,15.27,44.7
+cash,W,Matt Boldy,MIN,F1,PP1,7900,13.51,29.1
+cash,W,Bobby Brink,MIN,F3,PP2,2700,6.95,27.5
+cash,D,Thomas Chabot,OTT,D1,PP1,5600,11.18,27.2
+cash,D,Rasmus Andersson,VGK,D2,PP2,4300,10.4,26.8
+cash,G,Linus Ullmark,OTT,G1,,7400,11.79,24.9
+cash,UTIL,Shane Pinto,OTT,F3,PP2,4100,8.79,27.0
+gpp,C,Joel Eriksson Ek,MIN,F1,PP1,5500,10.42,23.4
+gpp,C,Dylan Cozens,OTT,F2,PP1,4600,9.36,30.8
+gpp,W,Kirill Kaprizov,MIN,F1,PP1,8100,15.27,44.7
+gpp,W,Matt Boldy,MIN,F1,PP1,7900,13.51,29.1
+gpp,W,Andre Burakovsky,OTT,F2,PP1,3000,7.0,26.8
+gpp,D,Quinn Hughes,MIN,D1,PP1,6600,11.36,19.2
+gpp,D,Rasmus Andersson,VGK,D2,PP2,4300,10.4,26.8
+gpp,G,Linus Ullmark,OTT,G1,,7400,11.79,24.9
+gpp,UTIL,Ridly Greig,OTT,F2,,2600,6.46,22.1
+cash_floor,C,Joel Eriksson Ek,MIN,F1,PP1,5500,10.42,23.4
+cash_floor,C,Shane Pinto,OTT,F3,PP2,4100,8.79,27.0
+cash_floor,W,Kirill Kaprizov,MIN,F1,PP1,8100,15.27,44.7
+cash_floor,W,Matt Boldy,MIN,F1,PP1,7900,13.51,29.1
+cash_floor,W,Trevor Connelly,VGK,F3,PP1,4000,7.91,16.8
+cash_floor,D,Thomas Chabot,OTT,D1,PP1,5600,11.18,27.2
+cash_floor,D,Rasmus Andersson,VGK,D2,PP2,4300,10.4,26.8
+cash_floor,G,Linus Ullmark,OTT,G1,,7400,11.79,24.9
+cash_floor,UTIL,Noah Hanifin,VGK,D3,,3000,7.76,22.1

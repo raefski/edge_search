@@ -1,0 +1,21 @@
+mode,slot,player,team,salary,proj,ceiling,own,pos,game,conf
+cash,P,Paul Skenes,PIT,9500,21.9,21.9,29.9,P,6158658,P-prop
+cash,P,Gavin Williams,CLE,10200,24.6,24.6,41.0,P,6157997,P-prop
+cash,C,Gabriel Moreno,ARI,4100,7.6,8.7,5.4,C,824142,H-slot3
+cash,1B,Mickey Gasper,BOS,3700,7.5,9.5,5.8,1B,824794,H-slot2
+cash,2B,Ketel Marte,ARI,4700,8.5,10.3,4.8,2B,824142,H-slot2
+cash,3B,Blaze Alexander,BAL,2700,7.2,7.8,10.4,2B/3B,824794,H-slot2*PROJ
+cash,SS,Geraldo Perdomo,ARI,3800,8.2,8.9,8.0,SS,824142,H-slot1
+cash,OF,Jonah Cox,SF,3600,8.9,11.0,8.2,OF,823578,H-slot1*PROJ
+cash,OF,Steven Kwan,CLE,3900,7.4,7.6,6.1,OF,824385,H-slot1
+cash,OF,Griffin Conine,MIA,3700,8.0,10.5,5.5,1B/OF,823822,H-slot3*PROJ
+gpp,P,Spencer Arrighetti,TOR,5800,11.2,11.2,5.0,P,6158485,P-prop
+gpp,P,Jackson Jobe,DET,5500,11.1,11.1,6.9,P,6157997,P-prop
+gpp,C,Drake Baldwin,ATL,5200,9.0,10.9,6.6,C,823417,H-slot1
+gpp,1B,Matt Olson,ATL,5300,8.8,11.4,4.2,1B,823417,H-slot3
+gpp,2B,Pedro Ramírez,CHC,3700,6.9,7.7,3.1,2B,823822,H-slot7*PROJ
+gpp,3B,Austin Riley,ATL,3800,6.3,7.4,4.4,3B,823417,H-slot8
+gpp,SS,Nico Hoerner,CHC,4200,6.6,7.1,3.1,SS,823822,H-slot6*PROJ
+gpp,OF,Mike Yastrzemski,ATL,2700,6.1,7.0,5.7,OF,823417,H-slot9
+gpp,OF,Ronald Acuña Jr.,ATL,6100,9.3,11.0,4.8,OF,823417,H-slot2
+gpp,OF,Pete Crow-Armstrong,CHC,6700,9.8,12.6,4.7,OF,823822,H-slot1*PROJ

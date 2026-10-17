@@ -1,0 +1,21 @@
+mode,slot,player,team,salary,proj,ceiling,own,pos,game,conf
+cash,P,Blake Snell,LAD,10700,24.3,24.3,31.0,P,6157787,P-prop
+cash,P,Dustin May,MIL,7200,17.7,17.7,31.5,P,6158881,P-prop
+cash,C,Will Smith,LAD,4100,8.5,9.8,4.0,C,823817,H-slot2*PROJ
+cash,1B,Joc Pederson,TEX,3100,9.0,11.8,12.7,1B,825036,H-slot1*PROJ
+cash,2B,Ketel Marte,ARI,4400,8.5,10.3,3.9,2B,825036,H-slot2
+cash,3B,José Ramírez,CLE,5400,9.9,10.9,6.5,3B,823659,H-slot3
+cash,SS,Corey Seager,TEX,4200,9.3,11.1,6.6,SS,825036,H-slot2*PROJ
+cash,OF,Dylan Beavers,BAL,3100,8.4,9.3,13.0,OF,822767,H-slot1
+cash,OF,Chase DeLauter,CLE,4000,8.8,10.0,5.9,OF,823659,H-slot2
+cash,OF,Brandon Nimmo,TEX,3700,8.5,9.5,5.5,OF,825036,H-slot4*PROJ
+gpp,P,George Kirby,SEA,8200,15.5,15.5,5.0,P,6157101,P-prop
+gpp,P,Ryan Gusto,MIA,5700,10.0,10.0,3.0,P,6157787,P-prop
+gpp,C,Luis Campusano,SD,3300,6.9,8.2,4.6,C,823173,H-slot6*PROJ
+gpp,1B,Ty France,SD,4500,7.5,9.5,2.9,1B,823173,H-slot4*PROJ
+gpp,2B,Ozzie Albies,ATL,4100,6.5,7.8,1.8,2B,824873,H-slot6
+gpp,3B,Manny Machado,SD,5300,8.7,10.6,5.9,3B,823173,H-slot3*PROJ
+gpp,SS,Xander Bogaerts,SD,4100,7.9,8.8,5.3,SS,823173,H-slot2*PROJ
+gpp,OF,Jackson Merrill,SD,4800,8.5,10.1,3.3,OF,823173,H-slot5*PROJ
+gpp,OF,Ronald Acuña Jr.,ATL,5600,8.8,10.4,3.3,OF,824873,H-slot2
+gpp,OF,Michael Harris II,ATL,4300,7.7,9.5,3.3,OF,824873,H-slot4

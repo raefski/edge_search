@@ -1,0 +1,21 @@
+mode,slot,player,team,salary,proj,ceiling,own,pos,game,conf
+cash,P,Gavin Williams,CLE,9000,18.1,18.1,47.8,P,6157922,P-prop
+cash,P,Drew Rasmussen,TB,9500,19.7,19.7,59.2,P,6157671,P-prop
+cash,C,Drake Baldwin,ATL,4600,8.5,10.7,8.0,C,823359,H-slot4*PROJ
+cash,1B,Rhys Hoskins,CLE,3200,8.1,9.5,13.4,1B,823683,H-slot4*PROJ
+cash,2B,Anthony Seigler,BOS,3000,7.1,7.8,22.0,2B,824577,H-slot1*PROJ
+cash,3B,Jorge Polanco,NYM,3500,7.2,7.8,12.1,2B/3B,823606,H-slot6*PROJ
+cash,SS,Francisco Lindor,NYM,4300,9.2,10.3,12.1,SS,823606,H-slot4*PROJ
+cash,OF,Juan Soto,NYM,6000,10.9,13.8,8.4,OF,823606,H-slot2*PROJ
+cash,OF,David Fry,CLE,3000,8.7,10.6,24.1,OF,823683,H-slot1*PROJ
+cash,OF,A.J. Ewing,NYM,3900,9.5,10.9,14.3,OF,823606,H-slot1*PROJ
+gpp,P,Gavin Williams,CLE,9000,18.1,18.1,47.8,P,6157922,P-prop
+gpp,P,Drew Rasmussen,TB,9500,19.7,19.7,59.2,P,6157671,P-prop
+gpp,C,Francisco Alvarez,NYM,3200,6.6,8.2,8.4,C,823606,H-slot9*PROJ
+gpp,1B,Matt Olson,ATL,5000,8.6,11.3,5.9,1B,823359,H-slot3*PROJ
+gpp,2B,Brett Baty,NYM,2400,6.4,6.8,14.4,2B,823606,H-slot8*PROJ
+gpp,3B,Gabriel Arias,CLE,2400,7.0,9.0,16.4,3B,823683,H-slot6*PROJ
+gpp,SS,Colson Montgomery,CWS,4900,8.5,11.3,6.8,3B/SS,824577,H-slot3*PROJ
+gpp,OF,A.J. Ewing,NYM,3900,9.5,10.9,14.3,OF,823606,H-slot1*PROJ
+gpp,OF,Juan Soto,NYM,6000,10.9,13.8,8.4,OF,823606,H-slot2*PROJ
+gpp,OF,Randal Grichuk,CWS,3400,8.1,11.2,15.1,OF,824577,H-slot2*PROJ
