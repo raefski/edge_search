@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-17T13:29:41+00:00",
+"generated_at": "2026-10-17T14:29:40+00:00",
 "goalies": {
 "2026-10-17": {
 "BOS": {
@@ -16,7 +16,7 @@
 },
 "CBJ": {
 "goalie": "Jet Greaves",
-"status": null
+"status": "Likely"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -35,8 +35,8 @@
 "status": "Confirmed"
 },
 "FLA": {
-"goalie": "Akira Schmid",
-"status": null
+"goalie": "Jacob Markstrom",
+"status": "Confirmed"
 },
 "LAK": {
 "goalie": "Anton Forsberg",
@@ -87,7 +87,7 @@
 "status": null
 },
 "TBL": {
-"goalie": "Andrei Vasilevskiy",
+"goalie": "Dennis Hildeby",
 "status": null
 },
 "TOR": {
@@ -6211,7 +6211,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6489,7 +6489,7 @@
 "pp": null
 },
 "Jacob Markstrom": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
@@ -6519,7 +6519,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15493,7 +15493,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15665,7 +15665,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
