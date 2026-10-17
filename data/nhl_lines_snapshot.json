@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-17T14:29:40+00:00",
+"generated_at": "2026-10-17T15:01:19+00:00",
 "goalies": {
 "2026-10-17": {
 "BOS": {
@@ -20,15 +20,15 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": null
+"status": "Confirmed"
 },
 "DAL": {
 "goalie": "Jake Oettinger",
 "status": null
 },
 "DET": {
-"goalie": "Daniil Tarasov",
-"status": null
+"goalie": "John Gibson",
+"status": "Likely"
 },
 "EDM": {
 "goalie": "Tristan Jarry",
@@ -44,11 +44,11 @@
 },
 "MTL": {
 "goalie": "Jacob Fowler",
-"status": null
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Jake Allen",
-"status": null
+"status": "Confirmed"
 },
 "NSH": {
 "goalie": "Justus Annunen",
@@ -68,7 +68,7 @@
 },
 "PHI": {
 "goalie": "Dan Vladar",
-"status": null
+"status": "Likely"
 },
 "PIT": {
 "goalie": "Sergei Murashov",
@@ -91,8 +91,8 @@
 "status": null
 },
 "TOR": {
-"goalie": "Anthony Stolarz",
-"status": null
+"goalie": "Sergei Bobrovsky",
+"status": "Confirmed"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -112,7 +112,7 @@
 },
 "WSH": {
 "goalie": "Logan Thompson",
-"status": null
+"status": "Confirmed"
 }
 },
 "2026-10-18": {
@@ -5239,7 +5239,7 @@
 "toiMinutes": 99,
 "toiSeconds": 39
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -5351,9 +5351,9 @@
 "toiMinutes": 49,
 "toiSeconds": 58
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Sheldon Dries": {
@@ -5421,7 +5421,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "William Wallinder": {
@@ -12402,7 +12402,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Michael Bunting": {
 "gtd": false,
@@ -12640,7 +12640,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Sean Couturier": {
 "gtd": false,
@@ -16218,6 +16218,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Bo Groulx": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 113,
+"toiSeconds": 37
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 39,
+"toiSeconds": 56
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
 "Brandon Duhaime": {
 "gtd": false,
 "injury": null,
@@ -16349,9 +16383,9 @@
 "toiMinutes": 79,
 "toiSeconds": 42
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Gavin McKenna": {
@@ -16386,7 +16420,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Jack Roslovic": {
 "gtd": false,
@@ -16455,40 +16489,6 @@
 "pk": "PK1",
 "pos": "ld",
 "pp": null
-},
-"John Tavares": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 8,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 11,
-"powerplayAssists": 5,
-"powerplayGoals": 1,
-"powerplayPoints": 6,
-"shots": 24,
-"toiMinutes": 171,
-"toiSeconds": 45
-},
-"last5": {
-"assists": 4,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 6,
-"powerplayAssists": 3,
-"powerplayGoals": 1,
-"powerplayPoints": 4,
-"shots": 12,
-"toiMinutes": 82,
-"toiSeconds": 5
-},
-"line": "F2",
-"pk": null,
-"pos": "lw",
-"pp": "PP1"
 },
 "Kirill Marchenko": {
 "gtd": false,
