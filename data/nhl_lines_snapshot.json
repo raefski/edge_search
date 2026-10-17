@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-17T00:30:41+00:00",
+"generated_at": "2026-10-17T00:59:32+00:00",
 "goalies": {
 "2026-10-16": {
 "ANA": {
@@ -69,11 +69,11 @@
 "status": null
 },
 "NSH": {
-"goalie": "Juuse Saros",
+"goalie": "Justus Annunen",
 "status": null
 },
 "NYI": {
-"goalie": "Semyon Varlamov",
+"goalie": "Ilya Sorokin",
 "status": null
 },
 "NYR": {
@@ -85,7 +85,7 @@
 "status": null
 },
 "PHI": {
-"goalie": "Joseph Woll",
+"goalie": "Dan Vladar",
 "status": null
 },
 "PIT": {
@@ -93,7 +93,7 @@
 "status": null
 },
 "SEA": {
-"goalie": "Philipp Grubauer",
+"goalie": "Joey Daccord",
 "status": null
 },
 "SJS": {
@@ -109,7 +109,7 @@
 "status": null
 },
 "TOR": {
-"goalie": "Sergei Bobrovsky",
+"goalie": "Anthony Stolarz",
 "status": null
 },
 "UTA": {
@@ -4619,7 +4619,7 @@
 "toiMinutes": 107,
 "toiSeconds": 46
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -4687,7 +4687,7 @@
 "toiMinutes": 103,
 "toiSeconds": 13
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -6966,42 +6966,6 @@
 "pos": "lw",
 "pp": "PP1"
 },
-"Cooper Black": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 2,
-"goalieGoalsAgainst": 5,
-"goalieGoalsAgainstAvg": "4.23",
-"goalieLosses": 0,
-"goalieMinutes": 70,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.792",
-"goalieSaves": 19,
-"goalieSeconds": 25,
-"goalieShotsAgainst": 24,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"last5": {
-"gamesPlayed": 2,
-"goalieGoalsAgainst": 5,
-"goalieGoalsAgainstAvg": "4.23",
-"goalieLosses": 0,
-"goalieMinutes": 70,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.792",
-"goalieSaves": 19,
-"goalieSeconds": 25,
-"goalieShotsAgainst": 24,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
-},
 "Dmitry Kulikov": {
 "gtd": false,
 "injury": null,
@@ -7136,6 +7100,42 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
+"pp": null
+},
+"Jacob Markstrom": {
+"gtd": true,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 21,
+"goalieGoalsAgainstAvg": "2.36",
+"goalieLosses": 3,
+"goalieMinutes": 534,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.889",
+"goalieSaves": 169,
+"goalieSeconds": 21,
+"goalieShotsAgainst": 190,
+"goalieShutouts": 2,
+"goalieWins": 4
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 9,
+"goalieGoalsAgainstAvg": "2.02",
+"goalieLosses": 1,
+"goalieMinutes": 266,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.905",
+"goalieSaves": 86,
+"goalieSeconds": 24,
+"goalieShotsAgainst": 95,
+"goalieShutouts": 1,
+"goalieWins": 2
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
 "pp": null
 },
 "Lars Eller": {
@@ -13006,40 +13006,6 @@
 "pos": "ld",
 "pp": null
 },
-"Egor Chinakhov": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 22,
-"toiMinutes": 160,
-"toiSeconds": 33
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 76,
-"toiSeconds": 19
-},
-"line": "F2",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Elmer Soderblom": {
 "gtd": false,
 "injury": null,
@@ -13448,6 +13414,40 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
+"pp": "PP2"
+},
+"Ville Koivunen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 144,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 65,
+"toiSeconds": 55
+},
+"line": "F2",
+"pk": null,
+"pos": "lw",
 "pp": "PP2"
 }
 },
