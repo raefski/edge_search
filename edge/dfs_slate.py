@@ -13,9 +13,9 @@ from it is how the NFL builder once gave 21 of 28 teams the wrong opponent
 (DFS_STATUS.md). slate_games() reads the games off DK's own draftables.
 
 WHAT STAYS IN EACH SPORT: which slate is the default. That is a real
-difference, not drift -- NFL's week is its biggest Main slate; the NHL's and
-the NBA's is the next Main to lock, because DK lists tomorrow's Main beside
-tonight's (NHL, 2026-10-07); NASCAR's is the Cup race.
+difference, not drift -- NFL, NHL and NBA take the next Main to lock, because
+DK lists tomorrow's (or next week's) Main beside tonight's (NHL, 2026-10-07;
+NFL, 2026-10-16), NFL skipping a 0-game Main; NASCAR's is the Cup race.
 """
 from __future__ import annotations
 

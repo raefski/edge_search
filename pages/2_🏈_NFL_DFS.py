@@ -77,6 +77,9 @@ table.lu td.nm {white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max
 table.lu td.num {text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
 .stk {background:#0e2c1e; border:1px solid #1f7a4d; color:#8fe0b4; border-radius:6px;
       padding:5px 9px; font-size:12.5px; margin:2px 0 8px;}
+.tag {font-size:10px; font-weight:700; border-radius:3px; padding:0 3px; margin-left:4px;
+       background:#5a2a00; color:#ffb070; vertical-align:1px;}
+.mu-pos {color:#3fb079;} .mu-neg {color:#e07070;}
 .warn {background:#4a3a00; border:1px solid #8a6a00; color:#ffd97a; border-radius:6px;
        padding:6px 10px; font-size:13px; margin:2px 0 8px;}
 </style>
@@ -212,13 +215,9 @@ with st.sidebar:
     gid = None
     if slates:
         labels = [f"{s['label']} · {s['games']}g · {_et(s['start'])}" for s in slates]
-        # A slate with games first: once the Main slate locks, DK's "Main" is
-        # next week's, listed with 0 games and no salaries (2026-09-26 NCAAF
-        # opened on it with tonight's Late Night slate still to play).
-        default = max(range(len(slates)),
-                      key=lambda i: (slates[i]["games"] > 0,
-                                     slates[i]["label"] == "Main",
-                                     slates[i]["games"]))
+        # The next Main to lock, not the biggest: DK lists future weeks'
+        # Mains early (dfs_run_nfl.default_slate).
+        default = nfl.default_slate(slates)
         choice = st.selectbox("Slate", labels, index=default,
                               help="DK Classic slates only. 'Main' is the one "
                                    "the big tournaments and the deepest cash "
@@ -317,6 +316,26 @@ if stats.get("conflicts"):
                 + ", ".join(stats["conflicts"]) + "</div>", unsafe_allow_html=True)
 
 
+# Injury tag next to a name: Q / D (ESPN's live report, edge/nfl_intel.py).
+# Ruled-out players never reach the board -- build_slate removes them.
+_TAG = {"questionable": "Q", "doubtful": "D", "day-to-day": "DTD"}
+
+
+def _tag(status: str | None) -> str:
+    t = _TAG.get((status or "").strip().lower())
+    return f"<span class='tag'>{t}</span>" if t else ""
+
+
+_intel = stats.get("intel") or {}
+if stats.get("ruled_out"):
+    st.markdown("<div class='warn'>Ruled out on the injury report, removed from the "
+                "pool: " + ", ".join(stats["ruled_out"]) + "</div>", unsafe_allow_html=True)
+if not _intel.get("ok") or _intel.get("injury_source") in ("unavailable", "none"):
+    st.markdown("<div class='warn'>Injury report unavailable — ruled-out players are "
+                "NOT being removed and ownership runs without matchup / last-game "
+                f"terms. {_intel.get('reason', '')}</div>", unsafe_allow_html=True)
+
+
 def render(result, mode: str) -> None:
     if not result:
         st.caption("No legal lineup under the cap for this slate.")
@@ -343,7 +362,7 @@ def render(result, mode: str) -> None:
 
     body = "".join(
         f"<tr><td class='pos'>{r['slot']}</td>"
-        f"<td class='nm'>{r['player']}</td>"
+        f"<td class='nm'>{r['player']}{_tag(r.get('inj'))}</td>"
         f"<td class='team'>{r['team']} v {r['opp']}</td>"
         f"<td class='num'>{r['salary']:,}</td>"
         f"<td class='num'>{r['proj']}</td>"
@@ -353,8 +372,9 @@ def render(result, mode: str) -> None:
                 "<th>Pts</th><th>Own</th></tr>"
                 f"{body}</table></div>", unsafe_allow_html=True)
     st.caption(f"Objective: mean {'−' if mode == 'cash' else '+'} {left}×sd, "
-               f"through the measured correlation matrix. Ownership is a PRIOR "
-               f"(no NFL contest exports) — read it as a tilt, not a number.")
+               f"through the measured correlation matrix. Ownership is fitted on "
+               f"five 2026 main-slate GPPs (~2.2 pts/player held out) — a tilt, "
+               f"not gospel.")
 
 
 def _csv() -> bytes:
@@ -369,7 +389,7 @@ def _csv() -> bytes:
     return buf.getvalue().encode()
 
 
-t_cash, t_gpp, t_board = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board"])
+t_cash, t_gpp, t_board, t_mu = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board", "🎯 Matchups"])
 with t_cash:
     render(res.get("cash"), "cash")
 gpp_pick = res.get("gpp")
@@ -439,7 +459,7 @@ with t_board:
              if not pos_filter or theory.base_position(p) in pos_filter][:60]
     body = "".join(
         f"<tr><td class='pos'>{theory.base_position(p)}</td>"
-        f"<td class='nm'>{p['name']}</td>"
+        f"<td class='nm'>{p['name']}{_tag(p.get('inj_status'))}</td>"
         f"<td class='team'>{p['team']} v {p.get('opp_team') or '?'}</td>"
         f"<td class='num'>{p['salary']:,}</td>"
         f"<td class='num'>{p['proj']}</td>"
@@ -452,6 +472,53 @@ with t_board:
     st.caption("Top 60 by projection. 'Lev' is projection percentile minus "
                "ownership percentile within position — positive means the "
                "field is underweighting him. GPP signal only.")
+
+with t_mu:
+    # Our SMASH matchups (edge/nfl_intel.matchup_table): DK points the
+    # opponent's defence allows each position per game ABOVE what the same
+    # offences score against everyone else. They move OWNERSHIP (the field
+    # chases them), not the projection -- props already price them
+    # (scripts/nfl_intel_backtest.py).
+    _imp: dict = {}
+    for p in res["pool"]:
+        if p.get("implied") is not None:
+            _imp.setdefault(p["team"], p["implied"])
+        elif p.get("implied_opp_points") is not None and p.get("opp_team"):
+            _imp.setdefault(p["opp_team"], p["implied_opp_points"])   # a DST's opponent
+    _mu = {t: dict(r, imp=_imp.get(t)) for t, r in (_intel.get("matchups") or {}).items()}
+    if not _mu:
+        st.caption("No matchup data for this slate (nflverse unavailable?).")
+    else:
+        def _cell(v):
+            if v is None:
+                return "<td class='num'>·</td>"
+            cls = "mu-pos" if v >= 1.5 else "mu-neg" if v <= -1.5 else ""
+            return f"<td class='num {cls}'>{v:+.1f}</td>"
+        order = sorted(_mu.items(), key=lambda kv: -(kv[1].get("imp") or 0))
+        body = "".join(
+            f"<tr><td class='pos'>{t}</td><td class='team'>v {r['opp'] or '?'}</td>"
+            f"<td class='num'>{(r.get('imp') or 0):.1f}</td>"
+            + "".join(_cell(r.get(pos)) for pos in ("QB", "RB", "WR", "TE")) + "</tr>"
+            for t, r in order)
+        st.markdown("<div class='lu-wrap'><table class='lu'>"
+                    "<tr><th>Off</th><th>Opp</th><th>Imp</th><th>QB</th><th>RB</th>"
+                    "<th>WR</th><th>TE</th></tr>" f"{body}</table></div>",
+                    unsafe_allow_html=True)
+        st.caption("DK pts/game the opponent allows each position above what those "
+                   "offences score elsewhere (this season, recent weeks weighted; "
+                   "green = soft). Imp = Vegas implied team total. The field chases "
+                   "both — they feed ownership, not projections (books price them).")
+    _vac = (_intel.get("vacated") or {})
+    _slate_teams = set(res.get("teams") or [])
+    _vac_rows = [(t, v) for t, v in sorted(_vac.items()) if t in _slate_teams]
+    if _vac_rows:
+        st.markdown("**Out this week — volume to absorb**")
+        st.markdown("".join(
+            f"<div class='lu-note'><b>{t}</b>: {', '.join(v['who'])} — "
+            f"{100 * v['pass']:.0f}% of targets, {100 * v['rush']:.0f}% of carries</div>"
+            for t, v in _vac_rows), unsafe_allow_html=True)
+    if _intel.get("ok"):
+        st.caption(f"Injuries: {_intel.get('injury_source')} · NFL week {_intel.get('week')}")
 
 st.download_button("⬇️ Download both lineups (CSV)", data=_csv(),
                    file_name=f"nfl_lineups_{res['gid']}.csv", mime="text/csv")

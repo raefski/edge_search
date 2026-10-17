@@ -180,6 +180,20 @@ def test_the_default_slate_is_main_not_the_biggest():
     assert meta["label"] == "Main" and meta["games"] == 12
 
 
+def test_the_default_main_is_this_weeks_not_a_bigger_future_one():
+    """2026-10-16: the lobby listed this Sunday's 10-game Main beside Nov 1's
+    unpriced 11-game Main; 'most games' opened the page on Nov 1."""
+    rows = [{"gid": 7, "label": "Main", "games": 10, "featured": True,
+             "start": "2026-10-18T17:00:00Z"},
+            {"gid": 8, "label": "Sun-Mon", "games": 12, "featured": False,
+             "start": "2026-10-18T17:00:00Z"},
+            {"gid": 9, "label": "Main", "games": 11, "featured": False,
+             "start": "2026-11-01T18:00:00Z"}]
+    assert rows[nfl.default_slate(rows)]["gid"] == 7
+    rows[0]["games"] = 0              # DK relabels a locked Main with 0 games
+    assert rows[nfl.default_slate(rows)]["gid"] == 9
+
+
 def test_an_explicit_draft_group_is_honoured():
     gid, _ = nfl.resolve_slate(1, groups())
     assert gid == 1
@@ -396,6 +410,7 @@ def test_build_slate_persists_by_default_and_can_be_told_not_to(monkeypatch, tmp
                                           "matchup": "ARI @ LAC",
                                           "start": TODAY_START, "name": "P"}})
     monkeypatch.setattr(nfl, "build_pool", lambda *a, **kw: ([_pool_row()], {}))
+    monkeypatch.setattr(nfl, "attach_intel", lambda pool, meta, stats: pool)
     monkeypatch.setattr(nfl.dfs_opt_nfl, "optimize", lambda *a, **kw: None)
 
     res = nfl.build_slate(client=None, draft_group=1)

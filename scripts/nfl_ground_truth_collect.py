@@ -45,7 +45,7 @@ def main():
 
     # per-player weekly box scores (passing/rushing/receiving/fumbles/etc)
     try:
-        rows = fetch_csv(f"{BASE}/player_stats/stats_player_week_{yr}.csv")
+        rows = fetch_csv(f"{BASE}/stats_player/stats_player_week_{yr}.csv")
         (OUT_DIR / f"player_week_{yr}.json").write_text(json.dumps(rows))
         print(f"  player_week_{yr}: {len(rows)} rows", flush=True)
     except Exception as e:
@@ -54,7 +54,7 @@ def main():
 
     # per-team weekly box scores (sacks, INTs, fumble recoveries, def TDs -- DST inputs)
     try:
-        rows = fetch_csv(f"{BASE}/player_stats/stats_team_week_{yr}.csv")
+        rows = fetch_csv(f"{BASE}/stats_team/stats_team_week_{yr}.csv")
         (OUT_DIR / f"team_week_{yr}.json").write_text(json.dumps(rows))
         print(f"  team_week_{yr}: {len(rows)} rows", flush=True)
     except Exception as e:

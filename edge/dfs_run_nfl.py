@@ -139,9 +139,24 @@ def resolve_slate(draft_group=None, groups: list[dict] | None = None):
         return None, {"error": "DraftKings is listing no NFL Classic slates."}
     if draft_group:
         return dfs_slate.explicit(rows, draft_group)
-    main = [r for r in rows if r["label"] == "Main"]
-    pick = max(main or rows, key=lambda r: (r["games"], r["featured"]))
+    pick = rows[default_slate(rows)]
     return pick["gid"], pick
+
+
+def default_slate(rows: list[dict]) -> int:
+    """Index of the NEXT Main slate to lock in start-sorted `rows`.
+
+    Not the biggest Main: DK lists future weeks' Mains early, and on
+    2026-10-16 the lobby held this Sunday's 10-game Main (154941) beside the
+    unpriced 11-game Main for Nov 1 (153728). "Most games" picked Nov 1, so
+    the page opened on "not priced yet" two days before a real slate. A Main
+    with no games (DK relabels after lock) is skipped; with no Main at all,
+    the biggest slate.
+    """
+    mains = [i for i, r in enumerate(rows) if r["label"] == "Main" and r["games"] > 0]
+    if mains:
+        return mains[0]
+    return max(range(len(rows)), key=lambda i: (rows[i]["games"], rows[i]["featured"]))
 
 
 def team_opponents(games: dict) -> dict:
@@ -245,12 +260,20 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
         if res["proj"] is None:
             stats["no_proj"] += 1
             continue
+        line = lines.get(gid)
+        implied = None
+        if line:
+            # The team's Vegas implied total: the field stacks the big ones
+            # (an ownership term, dfs_nfl_theory.INTEL_*), not a projection input.
+            spread = line["spread_home"] if line["home"] == team else -line["spread_home"]
+            implied = round(dfs_project.implied_team_points(line["total"], spread), 1)
         pool.append({
             "name": info["name"], "pos": dfs_opt_nfl.eligible_slots(info.get("position")),
             "salary": info["salary"], "proj": res["proj"], "team": team,
             "opp_team": opp, "game": gid, "dk_pos": info.get("position") or "",
             "components": res.get("components", {}), "means": res.get("means", {}),
             "imputed": res.get("imputed", []), "dk_fppg": info.get("dk_fppg"),
+            "implied": implied,
         })
         stats["offense"] += 1
 
@@ -362,6 +385,34 @@ def attach_buzz(pool: list, date: str | None, path: Path = BUZZ_FILE) -> int:
     return len(rows)
 
 
+def attach_intel(pool: list, meta: dict, stats: dict) -> list:
+    """Injuries, matchup rating, last game and snap share (edge/nfl_intel.py)
+    onto every player, for the ownership model; and players the injury report
+    rules OUT taken off the board.
+
+    Removing them is the inactive check this page never had: until now the
+    only signal was a book pulling the player's props, so a stale snapshot
+    could hand the optimizer a man who was not going to play. Only definitive
+    statuses (Out, IR, suspension, PUP) remove; Doubtful and Questionable
+    stay and are shown, and a name must match on TEAM as well. Never fatal --
+    the intel feeds ownership, it must not stop a lineup being built.
+    """
+    from edge import nfl_intel
+    try:
+        info = nfl_intel.attach(pool, _slate_date(meta))
+    except Exception as exc:                                # noqa: BLE001
+        log.warning("dfs_run_nfl: nfl_intel unavailable: %s", exc)
+        stats["intel"] = {"ok": False, "reason": str(exc)}
+        return pool
+    stats["intel"] = info
+    gone = [p for p in pool if p.get("dk_pos") != "DST"
+            and nfl_intel.is_ruled_out(p.get("inj_status"))]
+    if gone:
+        stats["ruled_out"] = [f"{p['name']} ({p.get('team')}, {p['inj_status']})" for p in gone]
+        pool = [p for p in pool if p not in gone]
+    return pool
+
+
 def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftkings",
                 stack_n: int = 2, bring_back: int = 1, own_gamma: float | None = None,
                 own_weight: float = 0.0, groups: list[dict] | None = None,
@@ -403,6 +454,7 @@ def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftki
 
     pool, stats = build_pool(client, salaries, book=book)
     games = slate_games(salaries)
+    pool = attach_intel(pool, meta, stats)
     try:
         stats["buzz_rows"] = attach_buzz(pool, _slate_date(meta))
     except Exception as exc:                                # noqa: BLE001
@@ -442,5 +494,6 @@ def lineup_rows(result: dict) -> list[dict]:
         rows.append({"slot": slot, "player": p["name"], "team": p.get("team", ""),
                      "opp": p.get("opp_team", ""), "salary": p.get("salary", 0),
                      "proj": round(float(p.get("proj") or 0), 1),
-                     "own": p.get("own", 0.0), "leverage": p.get("leverage", 0.0)})
+                     "own": p.get("own", 0.0), "leverage": p.get("leverage", 0.0),
+                     "inj": p.get("inj_status", "")})
     return rows

@@ -290,6 +290,65 @@ projections as truth and every absolute ROI comes out flattering. 10/11 Main: Go
 (175% own) beat the auto pick Brissett (198%) at 100, 5k and 416k entries, with
 Maye (145%) second at 5k+. **Not yet validated against a finished contest.**
 
+### Our own Fantasy Guru tools: injuries, matchups, usage (2026-10-16)
+
+Adam pointed at fantasyguru.com's NFL tool list (Jeff Mans' shop) and asked for
+our own versions of whatever helps projections or ownership. Mapped:
+
+| their tool | ours | where it goes |
+|---|---|---|
+| props, prop finder, odds comparison | already had (edge/odds, arb pages) | the projection IS the props |
+| schedule, player stats | already had (DK draftables, nflverse) | — |
+| **injuries** | `nfl_intel.injuries()` (ESPN live, gzip, 0.5 s) / `injuries_week()` (nflverse) | ruled-out players removed; Questionable -> ownership |
+| **SMASH ratings / matchups** | `nfl_intel.matchup_table()`: DK pts a defence allows a position over what the same offences score elsewhere, shrunk (K=3 games), recency-weighted | ownership + 🎯 Matchups tab |
+| **team stats** | `team_table()`: plays/game, neutral pass rate, PROE (pbp) | research only |
+| player usage (implicit in their stats) | `usage_table()`: snap %, target/carry/air/red-zone share, last game | ownership |
+| SMASH WR coverage | **not built**: per-play coverage is not public in-season (pbp_participation_2026 404s, FTN charting has none) | — |
+| standings, futures | not built, no DFS use | — |
+
+**Tested held out by slate** (`scripts/nfl_intel_backtest.py`, the five 2026
+Main-slate GPPs 9/13-10/11, 11,890-17,835 entries):
+
+- **Projection: no.** Props + every tool, ridge fitted on the other slates:
+  MAE 5.61 vs 5.55 for props alone (5.55 with a bias shift), worse on 5/5
+  slates, 827 player-weeks. Every tool's correlation with the props' miss
+  flips sign between slates. Books already price matchup, pace and injuries.
+- **Ownership: yes.** Mean abs error per player, each slate scored with
+  weights fitted on the others:
+
+  | base | slates | before | + tools |
+  |---|---|---|---|
+  | value + buzz | 4 | 2.37 | **2.16** (4/4 better) |
+  | value only (no buzz collected) | 5 | 2.80 | **2.20** (5/5 better) |
+
+  Terms (`dfs_nfl_theory.INTEL_BUZZ` / `INTEL_NO_BUZZ`): Vegas implied team
+  total, last game's DK points, our matchup rating, snap share (+); a
+  Questionable tag (-). Vacated injury volume fitted to ~0: the props already
+  lift the replacement's projection, so his value carries it. Dan's Est Own%
+  on 9/27 was 2.04; we are 2.22 on that slate held out (2.80 before buzz).
+  Biggest movers on 10/11: Chase (Q, 5.7 last week) 20.5% -> 7.2% (actual
+  3.6); M. Wilson (softest WR matchup) 35 -> 47 (actual 52).
+
+**Ruled-out players come off the board** (`dfs_run_nfl.attach_intel`): Out,
+IR, suspension or PUP on ESPN's report, matched on name AND team; Doubtful/
+Questionable stay, tagged Q/D on the page. The first live build (Sun 10/18
+Main) removed Ja'Kobi Lane and Omar Cooper Jr., both on IR with props still
+posted. If ESPN is unreachable the page says removal is OFF.
+
+**Two bugs found on the way:**
+- `resolve_slate` and the page both picked the Main with the MOST games, and
+  on 10/16 the lobby listed Nov 1's unpriced 11-game Main beside this
+  Sunday's 10-game one, so the page opened on "not priced yet". Both now take
+  the next Main to lock (`dfs_run_nfl.default_slate`).
+- `scripts/nfl_ground_truth_collect.py` fetched `player_stats/...`; nflverse's
+  release tag is `stats_player` (and `stats_team`), so the collector could
+  never have produced `player_week_2026.json` and the props grader above
+  would have "waited on nflverse" forever. Fixed and run: 5,575 player-weeks
+  (2026 wk 1-6). `nfl_props_grade.py` can run now.
+
+2025 player-games are frozen in `data/nfl_player_games_2025.csv` (394 KB) so
+a cold Cloud build does not download 2025's 8.7 MB box scores (23 s here).
+
 ### Still missing for NFL
 
 - **Ownership without buzz is still a prior.** Three GPP exports now exist
@@ -297,9 +356,9 @@ Maye (145%) second at 5k+. **Not yet validated against a finished contest.**
   measurable, so it stays. The calibration join was silently dropping every "Jr."/"III"
   player (up to 49.8% owned) until 2026-09-28 -- `scripts/dfs_calibration.py` (MLB)
   keys its log the same way and has not been checked.
-- **No inactive feed.** NFL inactives land 90 min before kickoff; the only thing
-  tracking them is the books pulling a ruled-out player's props, so snapshot freshness
-  IS the inactive check. The page warns when props are over 90 minutes old.
+- **Injury report, not inactives.** ESPN's report now removes Out/IR players
+  (above), but the 90-minutes-before-kickoff inactive list itself is still only
+  tracked by books pulling props. The page warns when props are over 90 minutes old.
 - **No late-swap** (MLB has one), no field simulator, no real-money log for NFL.
 
 **What exists:**

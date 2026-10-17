@@ -39,11 +39,10 @@ PROVENANCE, PER BLOCK
   * CORR -- scripts/nfl_correlation.py, nflverse 2023+2024, 544 games. The
     same numbers edge/dfs_opt_nfl.py's docstring quotes and the same ones its
     hard DST rule is built on; imported from here now so there is one copy.
-  * OWNERSHIP -- a PRIOR, and the only unmeasured thing in this file. Say so
-    out loud wherever it is used: there are no NFL contest exports on this
-    machine, so unlike MLB's gammas (tuned against real DK entry data) this is
-    a shape with a plausible parameter and no validation behind it. It tilts
-    GPP selection; it is deliberately not allowed to drive it.
+  * OWNERSHIP -- began as a prior; BUZZ_* and INTEL_* are now fitted held out
+    on the 2026 Main-slate GPP exports (see each block). OWNERSHIP_GAMMA, the
+    value term on its own, is still the unrefitted prior (refitting it gained
+    nothing). It tilts GPP selection; it is deliberately not allowed to drive it.
 """
 from __future__ import annotations
 
@@ -320,15 +319,81 @@ BUZZ_BETA = 1.0
 BUZZ_Z_CLIP = 3.0
 
 
+#: The field also reads the rest of the week's content -- Vegas totals, last
+#: week's box score, matchup ratings, the injury report -- and plays who it
+#: says to. edge/nfl_intel.py builds those as our own versions of Fantasy
+#: Guru's tools; each is one more softmax term, z-scored within position
+#: (DSTs excluded), weight theta:
+#:
+#:   implied       the team's Vegas implied total (book total + spread)
+#:   dk_last       log(1 + the player's DK points in his last game)
+#:   matchup       our SMASH: DK points the opponent allows this position over
+#:                 what the same offences score against everyone else
+#:   questionable  1 if tagged Questionable on the final injury report
+#:   snap_avg      offensive snap share, last 3 games
+#:
+#: scripts/nfl_intel_backtest.py, the five 2026 Main-slate GPPs (9/13-10/11,
+#: 11,890-17,835 entries, 979 player-slates), every slate scored with thetas
+#: fitted on the OTHER slates only. Mean abs ownership error per player:
+#:
+#:   | base                     | slates | shipped before | + these terms |
+#:   |--------------------------|--------|----------------|---------------|
+#:   | value + buzz             | 4      | 2.37           | 2.16 (4/4 better) |
+#:   | value only (no buzz)     | 5      | 2.80           | 2.16 (5/5 better) |
+#:
+#: So a Sunday without a buzz collection is now about as good as one with.
+#: Fitted thetas barely moved between folds. Constants below are the fit on
+#: all slates (2026-10-16). Vacated injury volume (nfl_intel.vacated) was
+#: tested and fitted to ~0 on both bases: the props already raise a
+#: replacement's projection, so his value carries it -- not used.
+#: None of these tools improved the PROJECTION held out (props + tools MAE
+#: 5.61 vs props 5.55, 827 player-weeks): books already price them.
+INTEL_BUZZ = {"implied": 0.1, "dk_last": 0.25, "matchup": 0.2, "questionable": -0.25}
+INTEL_NO_BUZZ = {"implied": 0.2, "dk_last": 0.4, "matchup": 0.2, "questionable": -0.25,
+                 "snap_avg": 0.1}
+INTEL_Z_CLIP = 3.0
+
+
+def _intel_value(p: dict, f: str) -> float | None:
+    if f == "questionable":
+        status = p.get("inj_status")
+        return None if status is None else float(status.strip().lower() == "questionable")
+    v = p.get(f)
+    if v is None or v == "":
+        return None
+    if f == "dk_last":
+        return math.log1p(max(0.0, float(v)))
+    return float(v)
+
+
+def _intel_z(players: list, f: str) -> list[float]:
+    """z-scores of feature f within a position; a player without it scores 0
+    (the position average) rather than a fake extreme."""
+    vals = [_intel_value(p, f) for p in players]
+    have = [v for v in vals if v is not None]
+    if len(have) < 2:
+        return [0.0] * len(players)
+    m = sum(have) / len(have)
+    sd = (sum((v - m) ** 2 for v in have) / len(have)) ** 0.5 or 1.0
+    return [0.0 if v is None else max(-INTEL_Z_CLIP, min(INTEL_Z_CLIP, (v - m) / sd))
+            for v in vals]
+
+
 def add_ownership(pool: list, gamma: float | None = None,
-                  cap: float = MAX_OWN, buzz_beta: float = BUZZ_BETA) -> list:
+                  cap: float = MAX_OWN, buzz_beta: float = BUZZ_BETA,
+                  intel: dict | None = None) -> list:
     """Annotate every player with `own` (percent) and `leverage`.
 
     Ownership is a power-softmax over VALUE (projected points per $1,000),
     normalised within a position so the position's total equals the number of
     lineup slots it fills, then capped. When the pool carries `buzz` (YouTube
     mentions, see BUZZ_BETA) that is a second term and `gamma` defaults to
-    BUZZ_GAMMA; without it, to OWNERSHIP_GAMMA, whose note says it is unfitted.
+    BUZZ_GAMMA; without it, to OWNERSHIP_GAMMA.
+
+    `intel` ({feature: theta}, see INTEL_BUZZ) adds the nfl_intel terms; by
+    default INTEL_BUZZ or INTEL_NO_BUZZ, applied only for features some player
+    in the pool actually carries, so a pool built without nfl_intel.attach
+    gets exactly the value(+buzz) model.
 
     `leverage` is the projection percentile minus the ownership percentile
     within position. Positive means the field is underweighting him relative to
@@ -338,6 +403,10 @@ def add_ownership(pool: list, gamma: float | None = None,
     has_buzz = any(p.get("buzz") is not None for p in pool)
     if gamma is None:
         gamma = BUZZ_GAMMA if has_buzz else OWNERSHIP_GAMMA
+    if intel is None:
+        intel = INTEL_BUZZ if has_buzz else INTEL_NO_BUZZ
+    intel = {f: th for f, th in intel.items()
+             if th and any(_intel_value(p, f) is not None for p in pool)}
     by_pos: dict[str, list] = {}
     for p in pool:
         by_pos.setdefault(base_position(p), []).append(p)
@@ -350,16 +419,20 @@ def add_ownership(pool: list, gamma: float | None = None,
             values.append((float(p.get("proj") or 0.0) / salary) if salary else 0.0)
         mean_v = sum(values) / len(values) if values else 0.0
         spread = (sum((v - mean_v) ** 2 for v in values) / len(values)) ** 0.5 or 1.0
-        buzz_z = [0.0] * len(players)
+        extra = [0.0] * len(players)
         if has_buzz:
             logs = [math.log1p(float(p.get("buzz") or 0.0)) for p in players]
             mean_b = sum(logs) / len(logs)
             sd_b = (sum((b - mean_b) ** 2 for b in logs) / len(logs)) ** 0.5 or 1.0
-            buzz_z = [max(-BUZZ_Z_CLIP, min(BUZZ_Z_CLIP, (b - mean_b) / sd_b)) for b in logs]
+            extra = [buzz_beta * max(-BUZZ_Z_CLIP, min(BUZZ_Z_CLIP, (b - mean_b) / sd_b))
+                     for b in logs]
+        if pos != "DST":
+            for f, th in intel.items():
+                extra = [e + th * z for e, z in zip(extra, _intel_z(players, f))]
         weights = []
-        for v, zb in zip(values, buzz_z):
+        for v, e in zip(values, extra):
             z = max(-OWNERSHIP_Z_CLIP, min(OWNERSHIP_Z_CLIP, (v - mean_v) / spread))
-            weights.append(math.exp(gamma * z + buzz_beta * zb))
+            weights.append(math.exp(gamma * z + e))
         for p, own in zip(players, _normalise(players, weights, target, cap)):
             p["own"] = round(own, 1)
 
