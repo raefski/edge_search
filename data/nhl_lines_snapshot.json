@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-17T15:59:39+00:00",
+"generated_at": "2026-10-17T16:29:53+00:00",
 "goalies": {
 "2026-10-17": {
 "BOS": {
@@ -24,7 +24,7 @@
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": null
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "John Gibson",
@@ -60,7 +60,7 @@
 },
 "NYR": {
 "goalie": "Dylan Garand",
-"status": "Likely"
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Linus Ullmark",
@@ -936,6 +936,40 @@
 "pos": "rw",
 "pp": "PP1"
 },
+"Jiri Kulich": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 132,
+"toiSeconds": 28
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 69,
+"toiSeconds": 52
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "Josh Doan": {
 "gtd": false,
 "injury": null,
@@ -1003,40 +1037,6 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
-},
-"Justin Danforth": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 118,
-"toiSeconds": 50
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 46,
-"toiSeconds": 22
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
-"pp": null
 },
 "Konsta Helenius": {
 "gtd": false,
