@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-17T22:59:44+00:00",
+"generated_at": "2026-10-17T23:44:44+00:00",
 "goalies": {
 "2026-10-17": {
 "BOS": {
@@ -52,7 +52,7 @@
 },
 "NSH": {
 "goalie": "Juuse Saros",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
@@ -9591,9 +9591,9 @@
 "toiMinutes": 97,
 "toiSeconds": 8
 },
-"line": "D3",
+"line": "D1",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Alex Kerfoot": {
@@ -9761,9 +9761,9 @@
 "toiMinutes": 67,
 "toiSeconds": 18
 },
-"line": "D1",
+"line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Jonathan Marchessault": {
@@ -14829,7 +14829,7 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "D2",
+"line": "D1",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -14931,7 +14931,7 @@
 "toiMinutes": 112,
 "toiSeconds": 11
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -14999,9 +14999,9 @@
 "toiMinutes": 65,
 "toiSeconds": 7
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Dylan Holloway": {
@@ -15033,7 +15033,7 @@
 "toiMinutes": 89,
 "toiSeconds": 16
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -15069,7 +15069,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Jake Neighbours": {
@@ -15103,7 +15103,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Jimmy Snuggerud": {
@@ -15246,40 +15246,6 @@
 "pos": "g",
 "pp": null
 },
-"Justin Barron": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 15,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 174,
-"toiSeconds": 38
-},
-"last5": {
-"assists": 1,
-"blocks": 11,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 85,
-"toiSeconds": 0
-},
-"line": "D2",
-"pk": null,
-"pos": "ld",
-"pp": null
-},
 "Mason McTavish": {
 "gtd": false,
 "injury": null,
@@ -15343,7 +15309,7 @@
 "toiMinutes": 88,
 "toiSeconds": 26
 },
-"line": "F4",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -15413,7 +15379,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Robert Thomas": {
@@ -15450,14 +15416,38 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Zachary Dean": {
+"Theo Lindstein": {
 "gtd": false,
 "injury": null,
-"last10": {},
-"last5": {},
-"line": "F4",
+"last10": {
+"assists": 2,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 171,
+"toiSeconds": 19
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 79,
+"toiSeconds": 20
+},
+"line": "D2",
 "pk": null,
-"pos": "c",
+"pos": "ld",
 "pp": null
 }
 },
