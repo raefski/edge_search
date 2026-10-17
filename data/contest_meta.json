@@ -1390,5 +1390,29 @@
   "name": "NHL Single Entry $1 Double Up",
   "guaranteed": true,
   "slate": "2026-10-15 (gid 154747)"
+ },
+ "196746007": {
+  "type": "gpp",
+  "sport": "NCAAF",
+  "field": 11514,
+  "entry_fee": 1,
+  "places_paid": 3080,
+  "prize_pool": 10000.0,
+  "draft_group": 155112,
+  "name": "CFB $10K First Down",
+  "guaranteed": true,
+  "slate": "2026-10-16 (gid 155112)"
+ },
+ "196808783": {
+  "type": "cash",
+  "sport": "NCAAF",
+  "field": 56,
+  "entry_fee": 1,
+  "places_paid": 27,
+  "prize_pool": 54.0,
+  "draft_group": 155112,
+  "name": "CFB $1 Double Up",
+  "guaranteed": true,
+  "slate": "2026-10-16 (gid 155112)"
  }
 }
