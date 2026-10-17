@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-17T16:29:53+00:00",
+"generated_at": "2026-10-17T16:59:49+00:00",
 "goalies": {
 "2026-10-17": {
 "BOS": {
@@ -84,7 +84,7 @@
 },
 "STL": {
 "goalie": "Jordan Binnington",
-"status": null
+"status": "Confirmed"
 },
 "TBL": {
 "goalie": "Dennis Hildeby",
@@ -15314,6 +15314,40 @@
 "pos": "c",
 "pp": "PP2"
 },
+"Pavel Buchnevich": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 5,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 8,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 16,
+"toiMinutes": 171,
+"toiSeconds": 11
+},
+"last5": {
+"assists": 4,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 5,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 8,
+"toiMinutes": 88,
+"toiSeconds": 26
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Philip Broberg": {
 "gtd": false,
 "injury": null,
@@ -15415,40 +15449,6 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
-},
-"Ross Johnston": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 90,
-"toiSeconds": 41
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 40,
-"toiSeconds": 3
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Zachary Dean": {
 "gtd": false,
@@ -19639,7 +19639,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Boone Jenner": {
@@ -19780,40 +19780,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Ethen Frank": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 11,
-"toiMinutes": 101,
-"toiSeconds": 44
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 58,
-"toiSeconds": 27
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Ilya Protas": {
 "gtd": false,
 "injury": null,
@@ -19915,6 +19881,40 @@
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP1"
+},
+"Jonny Brodzinski": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 6,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 17,
+"toiMinutes": 120,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 61,
+"toiSeconds": 57
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
 },
 "Jordan Kyrou": {
 "gtd": false,
