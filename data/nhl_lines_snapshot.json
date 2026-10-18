@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-10-17T23:44:44+00:00",
+"generated_at": "2026-10-18T00:59:46+00:00",
 "goalies": {
 "2026-10-17": {
 "BOS": {
 "goalie": "Jeremy Swayman",
-"status": null
+"status": "Confirmed"
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
@@ -301,10 +301,10 @@
 "toiMinutes": 81,
 "toiSeconds": 49
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Frederic Brunet": {
 "gtd": false,
@@ -478,6 +478,40 @@
 "pos": "g",
 "pp": null
 },
+"Jonathan Aspirot": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 14,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 165,
+"toiSeconds": 35
+},
+"last5": {
+"assists": 0,
+"blocks": 9,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 81,
+"toiSeconds": 10
+},
+"line": "D2",
+"pk": "PK2",
+"pos": "ld",
+"pp": null
+},
 "Marat Khusnutdinov": {
 "gtd": false,
 "injury": null,
@@ -609,10 +643,10 @@
 "toiMinutes": 53,
 "toiSeconds": 44
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Michael DiPietro": {
 "gtd": false,
@@ -684,73 +718,39 @@
 "pos": "lw",
 "pp": "PP1"
 },
-"Nikita Zadorov": {
+"Sean Kuraly": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 4,
-"blocks": 11,
+"assists": 1,
+"blocks": 9,
 "gamesPlayed": 10,
-"goals": 0,
-"points": 4,
+"goals": 1,
+"points": 2,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 200,
-"toiSeconds": 35
+"shots": 9,
+"toiMinutes": 130,
+"toiSeconds": 44
 },
 "last5": {
-"assists": 1,
+"assists": 0,
 "blocks": 6,
 "gamesPlayed": 5,
 "goals": 0,
-"points": 1,
+"points": 0,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 7,
-"toiMinutes": 100,
-"toiSeconds": 22
+"toiMinutes": 68,
+"toiSeconds": 6
 },
-"line": "D2",
-"pk": "PK2",
-"pos": "ld",
-"pp": null
-},
-"Pavel Zacha": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 6,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 8,
-"powerplayAssists": 4,
-"powerplayGoals": 0,
-"powerplayPoints": 4,
-"shots": 14,
-"toiMinutes": 178,
-"toiSeconds": 9
-},
-"last5": {
-"assists": 3,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 5,
-"powerplayAssists": 3,
-"powerplayGoals": 0,
-"powerplayPoints": 3,
-"shots": 5,
-"toiMinutes": 90,
-"toiSeconds": 19
-},
-"line": "F1",
+"line": "F4",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP1"
+"pp": null
 },
 "Tanner Jeannot": {
 "gtd": false,
@@ -7239,44 +7239,10 @@
 "toiMinutes": 79,
 "toiSeconds": 37
 },
-"line": "F2",
-"pk": "PK1",
-"pos": "rw",
-"pp": "PP2"
-},
-"Jared Wright": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 14,
-"toiMinutes": 118,
-"toiSeconds": 12
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 57,
-"toiSeconds": 47
-},
 "line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": null
+"pk": "PK1",
+"pos": "lw",
+"pp": "PP2"
 },
 "Joel Armia": {
 "gtd": false,
@@ -7309,7 +7275,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Joel Edmundson": {
