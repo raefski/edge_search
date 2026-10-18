@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-18T13:59:28+00:00",
+"generated_at": "2026-10-18T16:29:36+00:00",
 "goalies": {
 "2026-10-18": {
 "CAR": {
@@ -876,7 +876,7 @@
 "toiSeconds": 50
 },
 "line": "F4",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 },
@@ -1080,7 +1080,7 @@
 "toiSeconds": 45
 },
 "line": "F3",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rw",
 "pp": null
 },
@@ -1148,7 +1148,7 @@
 "toiSeconds": 41
 },
 "line": "F2",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": "PP2"
 },
@@ -1354,7 +1354,7 @@
 "toiSeconds": 2
 },
 "line": "F1",
-"pk": "PK1",
+"pk": null,
 "pos": "c",
 "pp": "PP1"
 },
@@ -1562,7 +1562,7 @@
 "toiSeconds": 25
 },
 "line": "F3",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
 },
@@ -1630,7 +1630,7 @@
 "toiSeconds": 39
 },
 "line": "D1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 },
@@ -1664,7 +1664,7 @@
 "toiSeconds": 22
 },
 "line": "F4",
-"pk": "PK1",
+"pk": null,
 "pos": "lw",
 "pp": null
 },
@@ -1732,7 +1732,7 @@
 "toiSeconds": 58
 },
 "line": "D3",
-"pk": "PK1",
+"pk": null,
 "pos": "ld",
 "pp": null
 },
@@ -1766,7 +1766,7 @@
 "toiSeconds": 46
 },
 "line": "D3",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -1800,7 +1800,7 @@
 "toiSeconds": 44
 },
 "line": "D2",
-"pk": null,
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -2040,7 +2040,7 @@
 "toiSeconds": 18
 },
 "line": "F2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "c",
 "pp": "PP2"
 },
@@ -2108,7 +2108,7 @@
 "toiSeconds": 6
 },
 "line": "D1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": "PP1"
 }
