@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-18T23:44:17+00:00",
+"generated_at": "2026-10-18T23:59:28+00:00",
 "goalies": {
 "2026-10-18": {
 "CAR": {
@@ -909,7 +909,7 @@
 "toiMinutes": 78,
 "toiSeconds": 17
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -1046,7 +1046,7 @@
 "toiSeconds": 38
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": null
 },
@@ -1081,7 +1081,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "K'Andre Miller": {
@@ -1152,40 +1152,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Mark Jankowski": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 7,
-"points": 8,
-"powerplayAssists": 0,
-"powerplayGoals": 2,
-"powerplayPoints": 2,
-"shots": 18,
-"toiMinutes": 140,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 5,
-"points": 5,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 13,
-"toiMinutes": 73,
-"toiSeconds": 31
-},
-"line": "F3",
-"pk": "PK2",
-"pos": "c",
-"pp": "PP2"
-},
 "Mike Reilly": {
 "gtd": false,
 "injury": null,
@@ -1218,6 +1184,40 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
+"pp": null
+},
+"Nicolas Deslauriers": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 84,
+"toiSeconds": 36
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 43,
+"toiSeconds": 39
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Nikolaj Ehlers": {
@@ -1322,7 +1322,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Sebastian Aho": {
 "gtd": false,
