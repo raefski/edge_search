@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-18T16:29:36+00:00",
+"generated_at": "2026-10-18T17:00:22+00:00",
 "goalies": {
 "2026-10-18": {
 "CAR": {
@@ -12,7 +12,7 @@
 },
 "CGY": {
 "goalie": "Devin Cooley",
-"status": null
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -2182,6 +2182,40 @@
 "pos": "lw",
 "pp": "PP2"
 },
+"Brennan Othmann": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 9,
+"toiMinutes": 100,
+"toiSeconds": 26
+},
+"last5": {
+"assists": 3,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 6,
+"toiMinutes": 47,
+"toiSeconds": 56
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": "PP2"
+},
 "Devin Cooley": {
 "gtd": false,
 "injury": null,
@@ -2491,40 +2525,6 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
-},
-"Maxim Tsyplakov": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 113,
-"toiSeconds": 32
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 54,
-"toiSeconds": 41
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
 },
 "Mikael Backlund": {
 "gtd": false,
