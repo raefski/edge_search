@@ -244,3 +244,37 @@ Cash field (13 double-ups, same method, squared error as in §6c): shipped
 NOT shipped: cash ownership drives the field-aware cash lineup, and the gain is
 small enough that it needs `scripts/nhl_cash_field.py` (8 nights hard-coded)
 extended to all 13 nights first.
+
+## 6e. Goalie points: what the market can and cannot predict (2026-10-17)
+
+Adam asked whether the paid-tool approaches (SaberSim's game simulation,
+FantasyLabs' Vegas/saves model, starter-news adjusters) would fix goalies. Our
+build already does the first two (edge/nhl_sim.py: Poisson goals from the
+moneyline + total, saves from simulated opponent shots rescaled to the DK saves
+prop) and the third (DailyFaceoff starters + edge-monitor goalie-change alerts).
+Tested on every graded goalie: 171 on 13 slates (9/29-10/17), box scores from
+the NHL API, pre-lock saves lines and no-vig moneylines from data/odds.db
+(165/171 had both). Leave one slate out:
+
+| predictor of DK points | held-out MAE | corr |
+|---|---|---|
+| a constant (mean) | 8.10 | -- |
+| our projection | 8.12 | +0.05 |
+| moneyline P(win) | 8.09 | -0.02 |
+| P(win) + saves line | 8.13 | -0.08 |
+
+The market predicts the PARTS -- P(win) vs wins +0.33 (Brier 0.227 vs 0.25),
+saves line vs saves +0.32 (ours +0.02) -- but they offset: a favourite faces
+fewer shots, an underdog more, and goals against (sd 5.9 of a 9.9-point total)
+is noise at this n. One extra save on the line is worth -0.14 points net. So
+no median model, ours or a rebuilt "Vegas" one, beats a constant yet; NOT
+shipped, no code changed.
+
+What is worth watching:
+- **Ceiling games skew to busy underdogs** (top 10%, >= 21.4 pts, ~17 games):
+  rate by saves-line tercile 5 / 13 / 14%, by P(win) tercile 16 / 11 / 5%.
+  Too few games to fit; recheck at ~30 slates. It matters for GPP only.
+- **The goalie upper tail is too thin:** 9% beat the logged 95th percentile
+  (target 5%; 15 of 167, binomial p ~0.02). Floor is calibrated (26%, target 25).
+- **Wrong starters cost the most per case:** 4 of 171 (2%) projected starters
+  did not play (0 points); 7 more were pulled.
