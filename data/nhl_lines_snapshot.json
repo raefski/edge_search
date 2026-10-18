@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-18T21:30:52+00:00",
+"generated_at": "2026-10-18T21:44:15+00:00",
 "goalies": {
 "2026-10-18": {
 "CAR": {
@@ -8,7 +8,7 @@
 },
 "CBJ": {
 "goalie": "Cam Talbot",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CGY": {
 "goalie": "Devin Cooley",
@@ -1498,6 +1498,40 @@
 "pos": "g",
 "pp": null
 },
+"Carson Soucy": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 154,
+"toiSeconds": 29
+},
+"last5": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 78,
+"toiSeconds": 55
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Charlie Coyle": {
 "gtd": false,
 "injury": null,
@@ -1701,40 +1735,6 @@
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
-},
-"Emil Andrae": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 124,
-"toiSeconds": 2
-},
-"last5": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 61,
-"toiSeconds": 58
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
 },
 "Erik Gudbranson": {
 "gtd": false,
