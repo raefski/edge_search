@@ -458,8 +458,8 @@ evidence available.
 After every contest you enter (same night):
 
 ```bash
-python3 scripts/dfs_import_contests.py        # Downloads -> data/, tags from DK (1 lookup per new contest)
-python3 scripts/contest_db.py                 # adds the new exports; seconds for unchanged ones
+python3 -m harness run import-contests       # data/contest_inbox/<sport>/<cash|gpp>/ + Downloads -> data/,
+                                              # tags from DK (1 lookup per new contest), updates contests.db, grades
 python3 scripts/contest_db.py --report        # check it MATCHED its draft group; "no log" = autolog missed it
 ```
 

@@ -67,6 +67,7 @@ SLOTS = {
     "NCAAF": {"QB", "RB", "WR", "FLEX", "S-FLEX"},
     "NHL": {"C", "W", "D", "G", "UTIL"},
     "NBA": {"PG", "SG", "SF", "PF", "C", "G", "F", "UTIL"},
+    "NCAAB": {"G", "F", "UTIL"},
     "NASCAR": {"D"},
     "MMA": {"F", "CPT"},
 }
@@ -79,6 +80,10 @@ OUR_LOGS = {
     "NHL": [("data/dfs_proj_log_nhl.csv", "player", "gid")],
     "NASCAR": [("data/dfs_proj_log_nascar.csv", "driver", "gid")],
     "MMA": [("data/dfs_proj_log_mma.csv", "fighter", "gid")],
+    # NBA shipped 2026-10-15 and college (NCAAB) logs the same columns; neither was
+    # loaded here, so every NBA contest read "no projection log for this sport".
+    "NBA": [("data/dfs_proj_log_nba.csv", "player", "gid")],
+    "NCAAB": [("data/dfs_proj_log_ncaab.csv", "player", "gid")],
     "MLB": [("data/dfs_proj_log.csv", "player", None),
             ("data/dfs_proj_log_*_g*.csv", "player", "FILENAME"),
             # 7/25-7/31 pre-lock rows lost from dfs_proj_log.csv, recovered from the

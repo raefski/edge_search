@@ -46,7 +46,7 @@ sys.path.insert(0, str(ROOT))
 import numpy as np                                    # noqa: E402
 
 from edge import dfs_mma_theory as theory, dfs_opt_mma, mma   # noqa: E402
-from edge.dfs_contest import parse_contest_file       # noqa: E402
+from edge.dfs_contest import parse_contest_file, sport_exports, tagged_slate  # noqa: E402
 from edge.names import norm                           # noqa: E402
 
 PROJ_LOG = ROOT / "data" / "dfs_proj_log_mma.csv"
@@ -224,9 +224,21 @@ def fit_ownership(paths: list[str]) -> None:
     fits = collections.defaultdict(list)
     for path in paths:
         contest = parse_contest_file(path)
-        k, board = _match_board(contest, boards)
-        if k is None:
-            continue                                   # not an MMA export we logged
+        # by the draft group DK tagged the export with (edge.dfs_contest.tagged_slate):
+        # the Captain late slate and the main card share fighters, so overlap alone
+        # cannot tell them apart
+        k, why = tagged_slate(path, "MMA", boards)
+        if why:
+            print(f"\n{Path(path).name}: {why} — skipped")
+            continue
+        if k:
+            board = boards[k]
+        else:
+            k, board = _match_board(contest, boards)
+            if k is None:
+                continue                               # not an MMA export we logged
+            print(f"\n{Path(path).name}: UNTAGGED -- matched by fighter overlap; "
+                  "run `python3 -m harness run import-contests` to tag it")
         ctype = _contest_type(path)
         captain = any(v.get("cpt_pct") for v in contest.values())
         rows = list(board.values())
@@ -313,8 +325,7 @@ def main() -> int:
     if args.grade is not None:
         grade(args.grade or None)
     if args.fit_ownership is not None:
-        fit_ownership(args.fit_ownership
-                      or sorted(glob.glob(str(ROOT / "data" / "contest-standings-*.csv"))))
+        fit_ownership(args.fit_ownership or sport_exports("MMA"))
     if args.grade is None and args.fit_ownership is None:
         ap.print_help()
     return 0

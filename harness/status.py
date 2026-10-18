@@ -245,6 +245,16 @@ def proj_logs() -> list[tuple[str, str]]:
     return out
 
 
+def contest_inbox() -> list[str]:
+    """Contest exports Adam dropped in data/contest_inbox/<sport>/<cash|gpp>/, and
+    exports in data/ never tagged from DK -- what the next import-contests files."""
+    try:
+        from scripts.dfs_import_contests import pending
+        return pending()
+    except Exception as exc:                                # noqa: BLE001
+        return [f"(inbox unreadable: {exc})"]
+
+
 def _git() -> list[str]:
     """Code vs origin/main (as of the last fetch -- edge-code-sync fetches every
     10 min) and the data branch's last publish (edge/data_branch.py)."""
@@ -311,6 +321,10 @@ def report(live: bool = False) -> str:
         L.append(f"  {_flag(dt, hours)}{name:<34} {_age(dt):>7} ago  {note}")
     L.append("  projection logs (last slate date): "
              + ", ".join(f"{s} {d}" for s, d in proj_logs()))
+    waiting = contest_inbox()
+    if waiting:
+        L.append(f"  ✗ {len(waiting)} contest export(s) waiting: {', '.join(waiting[:4])}"
+                 f"{' …' if len(waiting) > 4 else ''} -- python3 -m harness run import-contests")
     bad = [r for r in runs(since_hours=24) if r.get("rc")]
     L += ["", "## Odds store"] + ["  " + line for line in odds_storage()]
     L += ["", f"## harness runs, last 24h: {len(runs(since_hours=24))} ({len(bad)} failed)"]

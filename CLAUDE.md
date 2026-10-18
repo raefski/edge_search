@@ -104,8 +104,12 @@ between ad-hoc lookups.
   goes), and `F:\edge_search\odds\raw` holds an exact copy from 2026-10-16.
   Read history through `OddsStore` (`quotes`, `history`, `iter_quotes`), never
   raw SQL on `quote`, so archived scans are included.
-- Contest exports: Adam downloads them to Windows Downloads;
-  `python3 -m harness run import-contests` files and tags them, then
-  `python3 -m harness run contest-db` and the sport's calibration.
+- Contest exports: Adam drops them (.zip or .csv) in
+  `data/contest_inbox/<sport>/<cash|gpp>/`, or leaves them in Windows
+  Downloads; `harness status` lists any waiting. `python3 -m harness run
+  import-contests` files each into `data/contest-standings-<id>.csv`, tags it
+  from DK (DK beats the folder label; tell Adam when it does), empties the
+  inbox, updates `contests.db` and grades each new contest against its own
+  draft group. Fitting constants from those grades is still your held-out step.
 - Commit messages: what changed and the evidence (numbers, n, slates), like
   the existing history; end with the Co-Authored-By trailer.

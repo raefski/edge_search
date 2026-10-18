@@ -39,7 +39,6 @@ from __future__ import annotations
 import argparse
 import collections
 import csv
-import glob
 import math
 import statistics
 import sys
@@ -49,19 +48,22 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from edge import dfs_nascar_theory as theory   # noqa: E402
-from edge.dfs_contest import parse_contest_file  # noqa: E402
+from edge.dfs_contest import parse_contest_file, sport_exports, tagged_slate  # noqa: E402
 from edge.names import norm                    # noqa: E402
 
 PROJ_LOG = ROOT / "data" / "dfs_proj_log_nascar.csv"
 
 
 def load_proj_log() -> dict:
+    """{(date, gid): {norm_driver: row}}. Keyed by RACE, not date: one date can
+    carry two (the 10/11/2026 log holds draft groups 154568 and 154817), and a
+    date-keyed log merged them into one board."""
     if not PROJ_LOG.exists():
         return {}
     out: dict = collections.defaultdict(dict)
     with PROJ_LOG.open(newline="") as fh:
         for row in csv.DictReader(fh):
-            out[row["date"]][norm(row["driver"])] = row
+            out[(row["date"], row.get("gid", ""))][norm(row["driver"])] = row
     return dict(out)
 
 
@@ -72,9 +74,11 @@ def _f(x, default=None):
         return default
 
 
-def best_date(contest: dict, log: dict) -> tuple[str | None, int]:
-    scores = sorted(((len(set(contest) & set(drivers)), date)
-                     for date, drivers in log.items()), reverse=True)
+def best_race(contest: dict, log: dict) -> tuple[tuple | None, int]:
+    """(date, gid) with the most drivers in common -- only for an export DK
+    never tagged; a tagged one is matched by its draft group."""
+    scores = sorted(((len(set(contest) & set(drivers)), key)
+                     for key, drivers in log.items()), reverse=True)
     if not scores or scores[0][0] == 0:
         return None, 0
     return scores[0][1], scores[0][0]
@@ -179,28 +183,41 @@ def main() -> int:
         print(f"No {PROJ_LOG.relative_to(ROOT)} yet. Build a slate first "
               f"(scripts/dfs_lineups_nascar.py or the app).", file=sys.stderr)
         return 1
-    print(f"forward-test log: {len(log)} race(s) — {', '.join(sorted(log))}")
+    print(f"forward-test log: {len(log)} race(s) — "
+          + ", ".join(f"{d} gid {g}" for d, g in sorted(log)))
 
-    files = args.files or sorted(
-        glob.glob(str(ROOT / "data" / "contest-standings-*.csv")))
+    files = args.files or sport_exports("NASCAR")
     pooled: list[dict] = []
     rebuilt: dict = {}
     for path in files:
         contest = parse_contest_file(path)
-        date, overlap = ((args.date, len(set(contest) & set(log.get(args.date, {}))))
-                         if args.date else best_date(contest, log))
-        if not date or overlap < 5:
+        if args.date:
+            key, overlap = best_race(contest, {k: v for k, v in log.items() if k[0] == args.date})
+        else:
+            # by the draft group DK tagged the export with (edge.dfs_contest.tagged_slate)
+            key, why = tagged_slate(path, "NASCAR", log)
+            if why:
+                print(f"\n{Path(path).name}: {why} — skipped")
+                continue
+            if key:
+                overlap = len(set(contest) & set(log[key]))
+            else:
+                key, overlap = best_race(contest, log)
+                print(f"\n{Path(path).name}: UNTAGGED -- matched by driver overlap; "
+                      "run `python3 -m harness run import-contests` to tag it")
+        if not key or overlap < 5:
             print(f"\n{Path(path).name}: no NASCAR race matches "
                   f"({overlap} drivers overlap) — skipped")
             continue
-        board = log[date]
+        date = f"{key[0]} gid {key[1]}"
+        board = log[key]
         if all(str(r.get("start_estimated")) == "1" for r in board.values()):
-            if date not in rebuilt:
-                rebuilt[date] = rebuild(list(board.values()))
-            if rebuilt[date]:
+            if key not in rebuilt:
+                rebuilt[key] = rebuild(list(board.values()))
+            if rebuilt[key]:
                 print(f"\n  logged build for {date} used an ESTIMATED grid; grading the "
                       f"board rebuilt on the real grid instead")
-                board = rebuilt[date]
+                board = rebuilt[key]
         joined = []
         for key, row in board.items():
             real = contest.get(key)

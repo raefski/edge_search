@@ -199,6 +199,13 @@ data/contest_finals.csv
 # navigator captures, generated STATUS.md (python3 -m harness status --write).
 data/harness/
 
+# Adam's contest drop folders (scripts/dfs_import_contests.py files each export
+# into data/ and empties them). Only the folders and their README are committed.
+data/contest_inbox/**
+!data/contest_inbox/**/
+!data/contest_inbox/**/.gitkeep
+!data/contest_inbox/README.md
+
 # Timer feeds live on the `data` branch, not main (edge/data_branch.FEEDS,
 # 2026-10-16). The desktop keeps them on disk; Streamlit Cloud reads them off
 # GitHub (edge/repo_files.py); a fresh clone gets them with

@@ -18,7 +18,10 @@ implementation.
 from __future__ import annotations
 
 import csv
+import glob
+import json
 import re
+from pathlib import Path
 
 from edge.names import norm
 
@@ -27,15 +30,78 @@ from edge.names import norm
 CPT_MULT = 1.5
 
 
-#: DK lobby code -> this repo's sport name.
+#: DK lobby code -> this repo's sport name. CBB is college basketball, which the
+#: repo (logs, pages, theory modules) calls NCAAB.
 SPORT = {"NHL": "NHL", "NFL": "NFL", "CFB": "NCAAF", "NAS": "NASCAR", "MMA": "MMA", "MLB": "MLB",
-         "NBA": "NBA"}
+         "NBA": "NBA", "CBB": "NCAAB"}
+
+META = Path(__file__).resolve().parents[1] / "data" / "contest_meta.json"
 
 
 def contest_id(text: str) -> str | None:
     """A DK contest ID from a pasted link or a bare number."""
     m = re.findall(r"\d{8,10}", text or "")
     return m[-1] if m else None
+
+
+def _export_cid(path) -> str | None:
+    m = re.search(r"contest-standings-(\d+)", Path(path).name)
+    return m.group(1) if m else None
+
+
+def export_tag(path, meta_path=None) -> dict:
+    """data/contest_meta.json's DraftKings tag for one export (sport, type, draft
+    group, ...); {} when it was never tagged, or there is no meta file at all
+    (a mirror repo)."""
+    cid = _export_cid(path)
+    try:
+        tag = json.loads(Path(meta_path or META).read_text()).get(cid) if cid else None
+    except (OSError, ValueError):
+        return {}
+    return tag if isinstance(tag, dict) else {}
+
+
+def tagged_slate(path, sport: str, keys, meta_path=None):
+    """The logged slate a contest export is graded against: the one carrying the
+    draft group DraftKings tagged it with (scripts/dfs_import_contests.py),
+    never the night whose players overlap most. The same players appear night
+    after night, so a different night still "matches": every NHL export from
+    10/1 to 10/7/2026 was graded against 9/29 that way, NASCAR 10/4 against
+    9/27, and the numbers went into the status docs. On 10/17 the NASCAR
+    grader was still scoring 9/27 and 10/4 against the 10/11 race (MAE 26 vs
+    19 on the right one) and NCAAF 10/10 against 9/26 and 10/3.
+
+    `keys` are the projection log's (date, gid) keys. Returns (key, None) on a
+    match; (None, why) when the export must be skipped -- another sport, or its
+    draft group was never logged before lock; and (None, None) when it is
+    untagged, where the caller may fall back to overlap but must say so."""
+    tag = export_tag(path, meta_path)
+    if tag.get("sport") and tag["sport"] != sport:
+        return None, f"a {tag['sport']} contest ({tag.get('name')}), not {sport}"
+    gid = tag.get("draft_group")
+    if not gid:
+        return None, None
+    hits = [k for k in keys if str(k[1]) == str(gid)]
+    if not hits:
+        return None, f"draft group {gid} has no pre-lock {sport} log -- nothing to grade it against"
+    return hits[0], None
+
+
+def sport_exports(sport: str, meta_path=None) -> list[str]:
+    """Every export in data/ a grader should look at by default: those DK tagged
+    as this sport, plus untagged ones (the grader falls back to overlap for those
+    and says so). Without the filter a grader prints a "skipped" line for every
+    other sport's export, a hundred lines of noise per run."""
+    meta_path = Path(meta_path or META)
+    try:
+        meta = json.loads(meta_path.read_text())
+    except (OSError, ValueError):
+        meta = {}
+    def tagged(f):
+        tag = meta.get(_export_cid(f))                  # legacy entries are a bare "cash"
+        return tag.get("sport") if isinstance(tag, dict) else None
+    files = sorted(glob.glob(str(meta_path.parent / "contest-standings-*.csv")))
+    return [f for f in files if tagged(f) in (sport, None)]
 
 
 def lookup(cid: str) -> dict:

@@ -46,7 +46,6 @@ from __future__ import annotations
 import argparse
 import collections
 import csv
-import glob
 import math
 import statistics
 import sys
@@ -57,7 +56,7 @@ sys.path.insert(0, str(ROOT))
 
 from edge import dfs_ncaaf_theory as theory      # noqa: E402
 from edge.ncaaf import base_position, norm       # noqa: E402
-from edge.dfs_contest import parse_contest_file        # noqa: E402
+from edge.dfs_contest import parse_contest_file, sport_exports, tagged_slate  # noqa: E402
 
 PROJ_LOG = ROOT / "data" / "dfs_proj_log_ncaaf.csv"
 
@@ -233,23 +232,38 @@ def main() -> int:
     print(f"forward-test log: {len(log)} slate(s) — "
           + ", ".join(f"{d} gid {g}" for d, g in sorted(log)))
 
-    files = args.files or sorted(glob.glob(str(ROOT / "data" / "contest-standings-*.csv")))
+    files = args.files or sport_exports("NCAAF")
     if not files:
-        print("No contest-standings-*.csv in data/.", file=sys.stderr)
+        print("No NCAAF contest-standings-*.csv in data/.", file=sys.stderr)
         return 1
 
     for path in files:
         contest = parse_contest_file(path)
+        tagged = False
         if args.date:
             cands = {k: v for k, v in log.items() if k[0] == args.date}
             key, overlap = best_slate(contest, cands)
         else:
-            key, overlap = best_slate(contest, log)
+            # by the draft group DK tagged the export with, never the slate
+            # whose players overlap most (edge.dfs_contest.tagged_slate)
+            key, why = tagged_slate(path, "NCAAF", log)
+            if why:
+                print(f"\n{Path(path).name}: {why} — skipped")
+                continue
+            if key:
+                tagged, overlap = True, len(set(contest) & set(log[key]))
+            else:
+                key, overlap = best_slate(contest, log)
+                print(f"\n{Path(path).name}: UNTAGGED -- matched by player overlap; "
+                      "run `python3 -m harness run import-contests` to tag it")
         if not key or overlap < 5:
             # Silently skipping would make an MLB export look like a failed
-            # college join. Say which file and why.
-            print(f"\n{Path(path).name}: no college slate matches "
-                  f"({overlap} players overlap) — skipped")
+            # college join. Say which file and why. A TAGGED slate that barely
+            # joins is the other failure: the night is right, the names are not.
+            print(f"\n{Path(path).name}: " + (
+                f"slate {key[0]} gid {key[1]} is the right one but only {overlap} players "
+                "join -- a name/join bug, not a different night" if tagged else
+                f"no college slate matches ({overlap} players overlap)") + " — skipped")
             continue
         rows = log[key]
         ctype = contest_type(path)

@@ -62,7 +62,8 @@ JOBS: dict[str, Job] = {j.name: j for j in [
        timer="odds-archive.timer",
        doc="move scans older than 14 days to the F: archive (verified first; edge/odds/archive.py)"),
     _j("import-contests", "ingest", "scripts/dfs_import_contests.py",
-       doc="file DK contest exports from Windows Downloads, tag them from DK, grade"),
+       doc="file DK contest exports from data/contest_inbox/<sport>/<cash|gpp>/ + Windows "
+           "Downloads, tag them from DK, update contests.db, grade each by its draft group"),
     _j("entry-history", "evaluate", "scripts/dfs_entry_history.py",
        doc="real-money ROI from DK entry-history exports"),
     _j("buzz-nhl", "ingest", "scripts/buzz_nhl.py", sport="nhl", timer="buzz-nhl-publish.timer",
@@ -167,7 +168,7 @@ EDGE_RULES: list[tuple[str, str]] = [
     (r"^pagereload$", "app"),
     (r"^dfs_forward_log$", "evaluate"),
     (r"^(dfs_run|dfs_slate|dfs_sport|repo_files|names|scanner)", "optimize"),
-    (r"^(client|dfs$|nfl$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
+    (r"^(client|dfs$|nfl$|nfl_intel$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
      r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups)", "ingest"),
 ]
 
