@@ -98,13 +98,16 @@ own OUT/IR status is honoured).
 Export `195958188`, graded against the build logged at 6:35 PM ET (after the
 skater-team fix below). `scripts/nhl_calibration.py --fit-ownership`:
 
-| | n | bias | MAE | rank corr | below floor (25) | above 95th (5) |
+| | n | bias | MAE | rank corr | below floor (25) | above 90th (10) |
 |---|---|---|---|---|---|---|
 | skaters | 113 | +0.47 | 5.14 | +0.23 | 26% | **11%** |
 | goalies | 8 | −0.34 | 7.18 | +0.26 | | |
 
 - The floor is calibrated; **the upper tail is too thin** — 11% of skaters
   beat their 95th percentile against 5% expected. One slate, so not tuned yet;
+  **Corrected 2026-10-17:** the logged ceiling is the 90th percentile (edge/nhl_sim.summarise,
+  since 9/28), so the target is 10%, not 5% -- the grader mislabelled it. On every live build
+  through 10/17, 9.1% of skaters (123/1,350) and 9.3% of goalies beat it: the tail is calibrated.
   the first suspects are the linemate-affinity prior and per-player goal
   variance. Watch it on the next exports.
 - Props-priced skaters ran +0.87 high, last-season estimates +0.11.
@@ -150,6 +153,9 @@ ownership is ~880% of a 900% roster.
   the simulator's main open problem and it matters most for GPP, which
   selects on the 95th. Suspects unchanged: linemate-affinity prior,
   per-player goal variance.
+  **Corrected 2026-10-17:** the logged ceiling is the 90th percentile (edge/nhl_sim.summarise,
+  since 9/28), so the target is 10%, not 5% -- the grader mislabelled it. On every live build
+  through 10/17, 9.1% of skaters (123/1,350) and 9.3% of goalies beat it: the tail is calibrated.
 
 **Ownership by slate size** (top owned / sum of top three, field vs model):
 
@@ -274,7 +280,8 @@ What is worth watching:
 - **Ceiling games skew to busy underdogs** (top 10%, >= 21.4 pts, ~17 games):
   rate by saves-line tercile 5 / 13 / 14%, by P(win) tercile 16 / 11 / 5%.
   Too few games to fit; recheck at ~30 slates. It matters for GPP only.
-- **The goalie upper tail is too thin:** 9% beat the logged 95th percentile
-  (target 5%; 15 of 167, binomial p ~0.02). Floor is calibrated (26%, target 25).
+- **The goalie tail is calibrated** (corrected the same day): 9% beat the logged
+  ceiling, which is the 90th percentile, target 10%. Floor 26% (target 25). No
+  simulator change.
 - **Wrong starters cost the most per case:** 4 of 171 (2%) projected starters
   did not play (0 points); 7 more were pulled.

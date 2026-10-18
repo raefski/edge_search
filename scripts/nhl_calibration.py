@@ -9,8 +9,8 @@ ONE CONTEST AT A TIME: a cash board and a GPP board concentrate differently
 
 Grades the simulator three ways against the real DK points in the export --
 the MEAN (bias, MAE), the ORDER (Spearman), and the SPREAD (the share of
-players under their simulated floor should be ~25%, over their 95th-percentile
-ceiling ~5%) -- and, with --fit-ownership, sweeps the field model's value /
+players under their simulated floor should be ~25%, over their ceiling ~10%:
+the logged ceil is the 90th percentile, edge/nhl_sim.summarise) -- and, with --fit-ownership, sweeps the field model's value /
 salary / PP1 weights against the export's real ownership.
 """
 from __future__ import annotations
@@ -105,7 +105,7 @@ def main() -> int:
               f"MAE {statistics.fmean(abs(e) for e in err):.2f}  "
               f"rho {spearman([r['proj'] for r in grp], [r['actual'] for r in grp]):+.3f}  "
               f"below floor {sum(r['actual'] < r['floor'] for r in grp) / len(grp):.0%} (25)  "
-              f"above ceiling {sum(r['actual'] > r['ceil'] for r in grp) / len(grp):.0%} (5)")
+              f"above ceiling {sum(r['actual'] > r['ceil'] for r in grp) / len(grp):.0%} (10)")
     imputed = [r for r in scored if r.get("imputed") and r["pos"] != "G"]
     priced = [r for r in scored if not r.get("imputed") and r["pos"] != "G"]
     for label, grp in (("priced by props", priced), ("estimated", imputed)):
