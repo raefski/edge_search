@@ -24,7 +24,13 @@ def test_a_contest_that_leaves_the_lobby_stays_listed(monkeypatch):
 def test_past_gpps_offer_each_named_contest_once_with_its_own_field():
     past = {c["n"]: c for c in ui.past_gpps("NHL")}
     dd = past["NHL $500 Daily Dollar [Single Entry]"]
-    assert dd["m"] == 594 and dd["_past"] >= "2026-10-09"
+    # its own field from contest_meta.json (the latest one played), not a pinned
+    # number: the 10/15 one drew 594, the 10/16 one 549
+    import json
+    meta = json.loads(ui._META.read_text())
+    fields = {v["field"] for v in meta.values() if isinstance(v, dict)
+              and v.get("name") == "NHL $500 Daily Dollar [Single Entry]"}
+    assert dd["m"] in fields and dd["_past"] >= "2026-10-09"
     assert ui._from_lobby(dd)["payouts"] is None             # no DK lookup for a past row
     assert "NHL $500 Daily Dollar [Single Entry]" not in {
         c["n"] for c in ui.past_gpps("NHL", {"nhl $500 daily dollar [single entry]"})}
