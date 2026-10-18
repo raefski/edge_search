@@ -32,11 +32,15 @@ CASH_PCT = 25.0
 GPP_PCT = 95.0
 
 #: Ownership: softmax over value (proj per $1K), salary, PP1, and buzz, per position
-#: group, normalised to the group's share of the nine slots. VALUE/SALARY/PP1 are UNFITTED,
-#: BUZZ is unfitted and experimental (collected 9/29, fit pending 4-6 contests).
-VALUE_WEIGHT = 0.8
-SALARY_WEIGHT = 0.5
-PP1_BONUS = 0.4
+#: group, normalised to the group's share of the nine slots. This is the GPP field.
+#: VALUE/SALARY/PP1 FITTED 2026-10-17 on 12 NHL GPPs, 12 slates (9/30-10/17),
+#: leave-one-slate-out on MAE: held-out MAE 3.13 -> 2.86, RMSE 5.45 -> 4.76, rank
+#: +0.68 -> +0.75, better on 11/12 slates; 11/12 folds picked these exact weights.
+#: (Prior was 0.8 / 0.5 / 0.4, unfitted.) The cash field has its own fit
+#: (dfs_nhl_field.CASH_WEIGHTS). BUZZ is unfitted and experimental.
+VALUE_WEIGHT = 0.6
+SALARY_WEIGHT = 0.6
+PP1_BONUS = 0.6
 BUZZ_GAMMA = 0.0
 BUZZ_BETA = 0.0
 Z_CLIP = 2.5

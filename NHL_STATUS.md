@@ -86,7 +86,7 @@ own OUT/IR status is honoured).
 
 | thing | status |
 |---|---|
-| **Ownership** | a PRIOR (value + salary + PP1). Fit on the first export: `scripts/nhl_calibration.py <export> --fit-ownership`, one contest at a time. |
+| **Ownership** | GPP: FITTED 10/17 on 12 GPPs (value 0.6 / salary 0.6 / PP1 0.6), see §6d. Cash field: its own fit (§6c). |
 | **Linemate affinity** (4x line, 3x PP) | a PRIOR — box scores carry no lines. Needs a season of DailyFaceoff lines joined to play-by-play. |
 | **Buzz → ownership** | collected nightly from day one, shown on the board, NOT in the model until exports can fit it (the NFL needed 3 slates). |
 | D pair ↔ forward line on-ice correlation | not modelled (only same-label lines and PP units). |
@@ -223,3 +223,24 @@ Timers (deploy/, systemd --user): `odds-collect-dfs-nhl` / `odds-publish-dfs-nhl
 (props), `nhl-lines-publish` (DailyFaceoff snapshot for the cloud app),
 `buzz-nhl-publish` (YouTube buzz), plus NHL in `draftables-publish`.
 Refit: `python3 scripts/nhl_fit.py --download --sim`.
+
+## 6d. GPP ownership fitted (2026-10-17)
+
+12 GPP exports, 12 slates (9/30-10/17), each graded against its own draft
+group's pre-lock log. Grid over value / salary / PP1 weights, leave one slate
+out (fit on 11, score the 12th), on mean absolute error:
+
+| | MAE | RMSE | rank corr |
+|---|---|---|---|
+| prior 0.8 / 0.5 / 0.4 | 3.13 | 5.45 | +0.68 |
+| held-out fit | **2.86** | **4.76** | **+0.75** |
+
+Better on 11 of 12 slates; 11 of 12 folds chose 0.6 / 0.6 / 0.6, which shipped.
+GPP `own_weight` is still 0, so this changes the ownership and leverage shown,
+not the lineups built.
+
+Cash field (13 double-ups, same method, squared error as in §6c): shipped
+(1.0, 0.5, 0.8) RMSE 7.77 vs held-out (0.8, 0.6, 0.8) 7.51, better on 9 of 13.
+NOT shipped: cash ownership drives the field-aware cash lineup, and the gain is
+small enough that it needs `scripts/nhl_cash_field.py` (8 nights hard-coded)
+extended to all 13 nights first.
