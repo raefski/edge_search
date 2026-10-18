@@ -299,11 +299,22 @@ def nfl(res: dict, contest: dict | None = None, iters: int = 300, seed: int = 0,
                        100 * NormalDist().cdf(theory.Z_GPP), contest)
 
 
+#: name suffixes a surname must skip: "Michael Penix Jr." was tagged "Jr. (ATL)" (2026-10-18)
+_SUFFIXES = {"jr", "jr.", "sr", "sr.", "ii", "iii", "iv", "v"}
+
+
+def surname(name: str) -> str:
+    parts = name.split()
+    while len(parts) > 1 and parts[-1].lower() in _SUFFIXES:
+        parts = parts[:-1]
+    return parts[-1] if parts else name
+
+
 def _qb_tags(cands: list) -> None:
     for c in cands:
         s = c["result"].get("stack") or {}
         if s.get("qb"):
-            c["tag"] = f"{s['qb'].split()[-1]} ({s['team']}) stack"
+            c["tag"] = f"{surname(s['qb'])} ({s['team']}) stack"
 
 
 def _add_extra(cands: list, extra, idx_of) -> None:

@@ -131,3 +131,12 @@ def test_nhl_field_builds_its_stacks_in():
     assert len(stacked) == 300 and all(opt._valid(pool, lu) for lu in stacked)
     # six teams make chance stacks common on this board; deliberate ones add more
     assert rate(stacked) > rate(loose) + 0.05
+
+
+def test_stack_tag_skips_name_suffixes():
+    """2026-10-18: Michael Penix Jr.'s stack was labelled "Jr. (ATL) stack"."""
+    from edge.dfs_leverage_sports import surname
+    assert surname("Michael Penix Jr.") == "Penix"
+    assert surname("Marvin Harrison Jr") == "Harrison"
+    assert surname("Kenneth Walker III") == "Walker"
+    assert surname("Daniel Jones") == "Jones"
