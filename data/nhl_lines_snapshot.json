@@ -1,14 +1,14 @@
 {
-"generated_at": "2026-10-19T16:00:12+00:00",
+"generated_at": "2026-10-19T16:29:45+00:00",
 "goalies": {
 "2026-10-19": {
 "ANA": {
-"goalie": "Lukas Dostal",
-"status": null
+"goalie": "Ville Husso",
+"status": "Confirmed"
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
-"status": null
+"status": "Likely"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -24,7 +24,7 @@
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
@@ -38,7 +38,7 @@
 "2026-10-20": {
 "ANA": {
 "goalie": "Lukas Dostal",
-"status": null
+"status": "Confirmed"
 },
 "BOS": {
 "goalie": "Jeremy Swayman",
@@ -11581,7 +11581,7 @@
 "toiMinutes": 105,
 "toiSeconds": 26
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
@@ -11684,7 +11684,7 @@
 "toiSeconds": 16
 },
 "line": "D1",
-"pk": null,
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -11719,7 +11719,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": "PP1"
 },
 "Igor Chernyshov": {
@@ -11761,7 +11761,7 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -11798,7 +11798,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Kiefer Sherwood": {
 "gtd": false,
@@ -11829,10 +11829,44 @@
 "toiMinutes": 80,
 "toiSeconds": 18
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": null
+},
+"Luca Cagnoni": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 13,
+"toiMinutes": 190,
+"toiSeconds": 29
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 87,
+"toiSeconds": 44
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": "PP2"
 },
 "Macklin Celebrini": {
 "gtd": false,
@@ -11897,7 +11931,7 @@
 "toiMinutes": 82,
 "toiSeconds": 58
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -11965,44 +11999,10 @@
 "toiMinutes": 64,
 "toiSeconds": 59
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
-},
-"Nolan Allan": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 178,
-"toiSeconds": 34
-},
-"last5": {
-"assists": 0,
-"blocks": 10,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 84,
-"toiSeconds": 45
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
-"pp": null
 },
 "Sam Dickinson": {
 "gtd": false,
@@ -12067,7 +12067,7 @@
 "toiMinutes": 65,
 "toiSeconds": 35
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
