@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-19T17:59:42+00:00",
+"generated_at": "2026-10-19T18:29:55+00:00",
 "goalies": {
 "2026-10-19": {
 "ANA": {
@@ -9448,6 +9448,40 @@
 }
 },
 "PHI": {
+"Alex Bump": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 15,
+"toiMinutes": 134,
+"toiSeconds": 9
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 66,
+"toiSeconds": 3
+},
+"line": "F2",
+"pk": null,
+"pos": "lw",
+"pp": "PP1"
+},
 "Christian Dvorak": {
 "gtd": false,
 "injury": null,
@@ -9478,9 +9512,19 @@
 "toiSeconds": 25
 },
 "line": "F1",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP2"
+},
+"Cole Knuble": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Dan Vladar": {
 "gtd": false,
@@ -9618,40 +9662,6 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": null
-},
-"Jack Studnicka": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 79,
-"toiSeconds": 28
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 49,
-"toiSeconds": 6
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
 "pp": null
 },
 "Jamie Drysdale": {
@@ -9891,7 +9901,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Oliver Bonk": {
@@ -9957,9 +9967,9 @@
 "toiMinutes": 67,
 "toiSeconds": 58
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Sean Couturier": {
@@ -10096,40 +10106,6 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
-},
-"Tyson Foerster": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 22,
-"toiMinutes": 175,
-"toiSeconds": 55
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 85,
-"toiSeconds": 46
-},
-"line": "F1",
-"pk": "PK2",
-"pos": "rw",
 "pp": "PP1"
 }
 },
