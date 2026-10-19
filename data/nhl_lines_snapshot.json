@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-19T17:00:29+00:00",
+"generated_at": "2026-10-19T17:29:55+00:00",
 "goalies": {
 "2026-10-19": {
 "ANA": {
@@ -8,7 +8,7 @@
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -264,40 +264,6 @@
 "pos": "rw",
 "pp": "PP1"
 },
-"Drew Helleson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 112,
-"toiSeconds": 17
-},
-"last5": {
-"assists": 1,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 69,
-"toiSeconds": 8
-},
-"line": "D2",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Frank Vatrano": {
 "gtd": false,
 "injury": null,
@@ -397,7 +363,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Judd Caulfield": {
@@ -431,7 +397,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Leo Carlsson": {
@@ -499,7 +465,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -537,6 +503,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
+},
+"Nick Jensen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 13,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 187,
+"toiSeconds": 16
+},
+"last5": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 92,
+"toiSeconds": 36
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
 },
 "Nikita Klepov": {
 "gtd": false,
@@ -635,7 +635,7 @@
 "toiMinutes": 92,
 "toiSeconds": 10
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -737,7 +737,7 @@
 "toiMinutes": 96,
 "toiSeconds": 2
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -771,7 +771,7 @@
 "toiMinutes": 73,
 "toiSeconds": 15
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -807,7 +807,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -3246,40 +3246,6 @@
 "pos": "ld",
 "pp": null
 },
-"Logan O'Connor": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 119,
-"toiSeconds": 9
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 60,
-"toiSeconds": 34
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Mackenzie Blackwood": {
 "gtd": false,
 "injury": null,
@@ -3771,7 +3737,7 @@
 "toiMinutes": 101,
 "toiSeconds": 6
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -3907,7 +3873,7 @@
 "toiMinutes": 102,
 "toiSeconds": 5
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -4015,7 +3981,7 @@
 "pp": null
 },
 "Roope Hintz": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -4043,7 +4009,7 @@
 "toiMinutes": 87,
 "toiSeconds": 8
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -4077,7 +4043,7 @@
 "toiMinutes": 86,
 "toiSeconds": 56
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -4179,7 +4145,7 @@
 "toiMinutes": 78,
 "toiSeconds": 14
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -4213,7 +4179,7 @@
 "toiMinutes": 98,
 "toiSeconds": 0
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -8432,7 +8398,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Ilya Sorokin": {
 "gtd": false,
@@ -8502,7 +8468,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Kyle MacLean": {
 "gtd": false,
@@ -8638,7 +8604,7 @@
 "line": "D3",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Matthew Schaefer": {
 "gtd": false,
@@ -8716,7 +8682,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Ryan Pulock": {
 "gtd": false,
@@ -16251,9 +16217,9 @@
 "toiMinutes": 76,
 "toiSeconds": 51
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Brad Lambert": {
@@ -16561,42 +16527,8 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
-},
-"Jack St. Ivany": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 159,
-"toiSeconds": 7
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 72,
-"toiSeconds": 59
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
 },
 "Kyle Connor": {
 "gtd": false,
@@ -16797,7 +16729,7 @@
 "toiMinutes": 62,
 "toiSeconds": 44
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -16836,6 +16768,40 @@
 "line": "G1",
 "pk": null,
 "pos": "g",
+"pp": null
+},
+"Tyrel Bauer": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 92,
+"toiSeconds": 28
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 44,
+"toiSeconds": 30
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
 "pp": null
 },
 "Viggo Bj\u00f6rck": {
