@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-19T22:44:33+00:00",
+"generated_at": "2026-10-19T23:14:34+00:00",
 "goalies": {
 "2026-10-19": {
 "ANA": {
@@ -13693,7 +13693,7 @@
 "toiMinutes": 78,
 "toiSeconds": 22
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -13831,7 +13831,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Morgan Rielly": {
@@ -14109,7 +14109,7 @@
 "pp": null
 },
 "William Nylander": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 8,
@@ -14137,9 +14137,9 @@
 "toiMinutes": 105,
 "toiSeconds": 3
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Zack MacEwen": {
