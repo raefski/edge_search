@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-19T20:44:26+00:00",
+"generated_at": "2026-10-19T22:44:33+00:00",
 "goalies": {
 "2026-10-19": {
 "ANA": {
@@ -9477,7 +9477,7 @@
 "toiMinutes": 66,
 "toiSeconds": 3
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -9649,41 +9649,41 @@
 "toiMinutes": 75,
 "toiSeconds": 49
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": "PP1"
 },
-"Garrett Wilson": {
+"Jacob Gaucher": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 0,
-"blocks": 1,
+"assists": 1,
+"blocks": 6,
 "gamesPlayed": 10,
-"goals": 0,
-"points": 0,
+"goals": 1,
+"points": 2,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 68,
-"toiSeconds": 7
+"shots": 14,
+"toiMinutes": 102,
+"toiSeconds": 17
 },
 "last5": {
-"assists": 0,
-"blocks": 1,
+"assists": 1,
+"blocks": 3,
 "gamesPlayed": 5,
-"goals": 0,
-"points": 0,
+"goals": 1,
+"points": 2,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 46,
-"toiSeconds": 13
+"shots": 6,
+"toiMinutes": 48,
+"toiSeconds": 20
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -9923,9 +9923,9 @@
 "toiMinutes": 65,
 "toiSeconds": 0
 },
-"line": "F4",
+"line": "F1",
 "pk": "PK1",
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Oliver Bonk": {
@@ -9991,13 +9991,13 @@
 "toiMinutes": 67,
 "toiSeconds": 58
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Sean Couturier": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 3,
