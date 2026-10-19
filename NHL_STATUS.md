@@ -287,3 +287,17 @@ What is worth watching:
   simulator change.
 - **Wrong starters cost the most per case:** 4 of 171 (2%) projected starters
   did not play (0 points); 7 more were pulled.
+
+## 6f. Ownership refits re-checked with whole days held out (2026-10-19)
+
+Adam plays early, main and late slates; an early slate's games are also on that
+day's main slate, so folds now hold out a whole DAY, not a draft group.
+
+- **GPP** (17 contests, 13 days): prior 0.8/0.5/0.4 MAE 3.35 -> held-out refit
+  3.05, RMSE 5.60 -> 5.00, rank +0.67 -> +0.73, better on 16/17; 12/13 folds
+  picked 0.6/0.6/0.6 -- the 10/17 ship stands.
+- **Cash field** (15 nights; 154747 has no rebuildable draftables snapshot),
+  `scripts/nhl_cash_field.py --all --compare`, field-aware lineups on real
+  points: shipped CASH_WEIGHTS cashed 9/15 (mean pct 57%, 110.1 pts, own RMSE
+  8.06); day-held-out refit 10/15 (58%, 111.1, own RMSE 8.34). Ownership worse
+  held out, one extra cash on one night (10/6): NOT changed.
