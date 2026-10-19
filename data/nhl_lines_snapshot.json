@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-19T18:29:55+00:00",
+"generated_at": "2026-10-19T20:29:36+00:00",
 "goalies": {
 "2026-10-19": {
 "ANA": {
@@ -10245,7 +10245,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Bryan Rust": {
@@ -10313,7 +10313,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Declan Carlile": {
@@ -10452,40 +10452,6 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Hendrix Lapierre": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 5,
-"powerplayAssists": 3,
-"powerplayGoals": 0,
-"powerplayPoints": 3,
-"shots": 10,
-"toiMinutes": 131,
-"toiSeconds": 8
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 3,
-"toiMinutes": 58,
-"toiSeconds": 54
-},
-"line": "F2",
-"pk": null,
-"pos": "c",
-"pp": null
-},
 "Kaedan Korczak": {
 "gtd": false,
 "injury": null,
@@ -10583,7 +10549,7 @@
 "toiMinutes": 57,
 "toiSeconds": 38
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
 "pos": "rw",
 "pp": null
@@ -10789,10 +10755,44 @@
 "toiMinutes": 74,
 "toiSeconds": 44
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
+},
+"Ville Koivunen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 143,
+"toiSeconds": 59
+},
+"last5": {
+"assists": 2,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 67,
+"toiSeconds": 21
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": null
 }
 },
 "SEA": {
