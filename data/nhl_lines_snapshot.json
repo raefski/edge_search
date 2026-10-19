@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-19T16:29:45+00:00",
+"generated_at": "2026-10-19T16:59:32+00:00",
 "goalies": {
 "2026-10-19": {
 "ANA": {
@@ -31,8 +31,8 @@
 "status": "Confirmed"
 },
 "UTA": {
-"goalie": "Karel Vejmelka",
-"status": null
+"goalie": "Sebastian Cossa",
+"status": "Likely"
 }
 },
 "2026-10-20": {
@@ -93,8 +93,8 @@
 "status": null
 },
 "SJS": {
-"goalie": "Yaroslav Askarov",
-"status": null
+"goalie": "Alex Nedeljkovic",
+"status": "Likely"
 },
 "STL": {
 "goalie": "Jordan Binnington",
@@ -14525,7 +14525,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -14799,7 +14799,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
