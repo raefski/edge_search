@@ -242,6 +242,8 @@ out (fit on 11, score the 12th), on mean absolute error:
 | held-out fit | **2.86** | **4.76** | **+0.75** |
 
 Better on 11 of 12 slates; 11 of 12 folds chose 0.6 / 0.6 / 0.6, which shipped.
+**Forward check (2026-10-19):** on the 5 GPPs filed after the fit (10/17-10/18, fields
+19-891, 3 slates), new vs old weights: MAE 3.51 vs 3.87, better on 5/5, rank up on 4/5.
 GPP `own_weight` is still 0, so this changes the ownership and leverage shown,
 not the lineups built.
 
