@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-19T15:29:28+00:00",
+"generated_at": "2026-10-19T15:59:22+00:00",
 "goalies": {
 "2026-10-19": {
 "ANA": {
@@ -24,11 +24,11 @@
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
-"status": null
+"status": "Likely"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
-"status": "Likely"
+"status": "Confirmed"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -105,8 +105,8 @@
 "status": null
 },
 "TOR": {
-"goalie": "Sergei Bobrovsky",
-"status": null
+"goalie": "Anthony Stolarz",
+"status": "Confirmed"
 },
 "VAN": {
 "goalie": "Leevi Merilainen",
@@ -13900,7 +13900,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Oliver Ekman-Larsson": {
 "gtd": false,
@@ -14072,7 +14072,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "William Nylander": {
 "gtd": true,
@@ -17330,6 +17330,40 @@
 "pos": "ld",
 "pp": null
 },
+"Matt Roy": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 21,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 198,
+"toiSeconds": 1
+},
+"last5": {
+"assists": 0,
+"blocks": 9,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 100,
+"toiSeconds": 18
+},
+"line": "D1",
+"pk": "PK1",
+"pos": "rd",
+"pp": null
+},
 "Ryan Leonard": {
 "gtd": false,
 "injury": null,
@@ -17393,8 +17427,8 @@
 "toiMinutes": 94,
 "toiSeconds": 10
 },
-"line": "D1",
-"pk": "PK2",
+"line": "D2",
+"pk": null,
 "pos": "rd",
 "pp": null
 },
@@ -17461,8 +17495,8 @@
 "toiMinutes": 101,
 "toiSeconds": 28
 },
-"line": "D2",
-"pk": "PK1",
+"line": "D3",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 }
