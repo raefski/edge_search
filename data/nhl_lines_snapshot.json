@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-19T14:00:30+00:00",
+"generated_at": "2026-10-19T14:29:23+00:00",
 "goalies": {
 "2026-10-19": {
 "ANA": {
@@ -45,7 +45,7 @@
 "status": null
 },
 "CAR": {
-"goalie": "Brandon Bussi",
+"goalie": "Pyotr Kochetkov",
 "status": null
 },
 "CBJ": {
@@ -101,7 +101,7 @@
 "status": null
 },
 "TBL": {
-"goalie": "Dennis Hildeby",
+"goalie": "Andrei Vasilevskiy",
 "status": null
 },
 "TOR": {
@@ -1599,7 +1599,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -1804,9 +1804,9 @@
 "toiSeconds": 0
 },
 "line": "F4",
-"pk": "PK2",
+"pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Jordan Martinook": {
 "gtd": false,
@@ -1906,7 +1906,7 @@
 "toiSeconds": 49
 },
 "line": "F2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "c",
 "pp": "PP2"
 },
@@ -2043,7 +2043,7 @@
 "goalieShutouts": 0,
 "goalieWins": 5
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2080,7 +2080,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Sebastian Aho": {
 "gtd": false,
@@ -2112,7 +2112,7 @@
 "toiSeconds": 51
 },
 "line": "F1",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": "PP1"
 },
@@ -11238,7 +11238,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Matty Beniers": {
 "gtd": false,
@@ -11410,7 +11410,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Ville Ottavainen": {
 "gtd": false,
@@ -11764,7 +11764,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Kiefer Sherwood": {
 "gtd": false,
@@ -12002,7 +12002,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Tyler Toffoli": {
 "gtd": false,
@@ -12152,7 +12152,7 @@
 "line": "D1",
 "pk": null,
 "pos": "rd",
-"pp": "PP1"
+"pp": null
 },
 "Brandon Carlo": {
 "gtd": false,
@@ -12322,7 +12322,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Dylan Holloway": {
 "gtd": false,
@@ -12632,7 +12632,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Philip Broberg": {
 "gtd": false,
@@ -12666,7 +12666,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
+"pp": "PP1"
 },
 "Pius Suter": {
 "gtd": false,
@@ -12803,7 +12803,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12910,6 +12910,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Charle-Edouard D'Astous": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 13,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 14,
+"toiMinutes": 159,
+"toiSeconds": 54
+},
+"last5": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 71,
+"toiSeconds": 26
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Conor Geekie": {
 "gtd": false,
 "injury": null,
@@ -12975,7 +13009,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13349,9 +13383,9 @@
 "toiMinutes": 76,
 "toiSeconds": 14
 },
-"line": "D2",
+"line": null,
 "pk": "PK1",
-"pos": "ld",
+"pos": null,
 "pp": null
 },
 "Victor Hedman": {
@@ -13383,7 +13417,7 @@
 "toiMinutes": 65,
 "toiSeconds": 43
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -14804,7 +14838,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Brendan Gallagher": {
 "gtd": false,
@@ -15352,7 +15386,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Tom Willander": {
 "gtd": false,
@@ -16220,7 +16254,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Clay Stevenson": {
 "gtd": false,
@@ -16732,7 +16766,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Stuart Skinner": {
 "gtd": false,
@@ -17225,40 +17259,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
-},
-"Justin Holl": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 150,
-"toiSeconds": 39
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 72,
-"toiSeconds": 19
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
 },
 "Logan Thompson": {
 "gtd": false,
