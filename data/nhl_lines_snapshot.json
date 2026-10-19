@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-19T20:29:36+00:00",
+"generated_at": "2026-10-19T20:44:26+00:00",
 "goalies": {
 "2026-10-19": {
 "ANA": {
@@ -9519,8 +9519,32 @@
 "Cole Knuble": {
 "gtd": false,
 "injury": null,
-"last10": {},
-"last5": {},
+"last10": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 0,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 0,
+"toiMinutes": 0,
+"toiSeconds": 0
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 0,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 0,
+"toiMinutes": 0,
+"toiSeconds": 0
+},
 "line": "F4",
 "pk": null,
 "pos": "rw",
