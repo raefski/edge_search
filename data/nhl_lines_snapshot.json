@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-20T15:29:29+00:00",
+"generated_at": "2026-10-20T15:59:44+00:00",
 "goalies": {
 "2026-10-20": {
 "ANA": {
@@ -24,7 +24,7 @@
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": null
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "Daniil Tarasov",
@@ -449,7 +449,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -791,7 +791,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -4260,40 +4260,6 @@
 "pos": "rw",
 "pp": null
 },
-"Esa Lindell": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 23,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 205,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 0,
-"blocks": 12,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 109,
-"toiSeconds": 42
-},
-"line": "D1",
-"pk": "PK1",
-"pos": "ld",
-"pp": "PP2"
-},
 "Jake Oettinger": {
 "gtd": false,
 "injury": null,
@@ -4466,6 +4432,40 @@
 "pos": "lw",
 "pp": "PP2"
 },
+"Kyle Capobianco": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 11,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 126,
+"toiSeconds": 3
+},
+"last5": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 64,
+"toiSeconds": 33
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Lian Bichsel": {
 "gtd": false,
 "injury": null,
@@ -4495,7 +4495,7 @@
 "toiMinutes": 73,
 "toiSeconds": 19
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -4597,7 +4597,7 @@
 "toiMinutes": 87,
 "toiSeconds": 29
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -4702,7 +4702,7 @@
 "line": "F1",
 "pk": "PK1",
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Thomas Harley": {
 "gtd": false,
@@ -4733,8 +4733,8 @@
 "toiMinutes": 122,
 "toiSeconds": 27
 },
-"line": "D2",
-"pk": "PK2",
+"line": "D1",
+"pk": "PK1",
 "pos": "ld",
 "pp": "PP2"
 },
@@ -4767,8 +4767,8 @@
 "toiMinutes": 70,
 "toiSeconds": 38
 },
-"line": "D3",
-"pk": null,
+"line": "D2",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
