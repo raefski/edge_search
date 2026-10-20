@@ -196,8 +196,11 @@ def hoops(res: dict, contest: dict | None = None, iters: int = 40, seed: int = 0
         return opt.optimize(pool, sim, mode="gpp", iters=iters, seed=seed, own_weight=w)
 
     cands = lev.sweep(build, lambda r: r["idx"], chalk, chalk["ceil"], chalk["own"])
+    # game_stacks is keyed by DK's game id ("6211331"); show the matchup instead
+    label = {p.get("game"): p.get("matchup") or "/".join(sorted({p["team"], p.get("opp") or "?"}))
+             for p in pool}
     for c in cands:
-        c["tag"] = " ".join(f"{g}×{n}" for g, n in c["result"]["game_stacks"].items() if n >= 3)
+        c["tag"] = " ".join(f"{label.get(g, g)}×{n}" for g, n in c["result"]["game_stacks"].items() if n >= 3)
     raw = simple_field(pool, len(roster.slots), roster.cap, n_field * RAW_MULT, seed=seed + 7,
                        valid=lambda lu: opt.valid(pool, lu), min_spend=47_000)
     field = _tilted(pool, raw, n_field, seed + 8)

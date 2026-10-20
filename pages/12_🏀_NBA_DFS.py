@@ -82,6 +82,22 @@ def _nba_build(gid, sims: int, iters: int, own_weight: float, _nonce: int):
     return R.build_slate(draft_group=gid, n_sims=sims, iters=iters, own_weight=own_weight)
 
 
+@st.cache_data(ttl=600, show_spinner=False)
+def _nba_leverage(gid, sims: int, iters: int, own_weight: float, _nonce: int):
+    """GPP lineups from chalk to contrarian plus a simulated field
+    (edge/dfs_leverage_sports.hoops); built once per slate build."""
+    from edge import dfs_leverage_sports as LS
+    return LS.hoops(_nba_build(gid, sims, iters, own_weight, _nonce), None, iters=max(20, iters // 3))
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _nba_leverage_for(gid, sims: int, iters: int, own_weight: float, _nonce: int, contest: dict):
+    """The same lineups ranked by expected payout in one contest."""
+    from edge import dfs_leverage as lev
+    return lev.with_contest(_nba_leverage(gid, sims, iters, own_weight, _nonce),
+                            _nba_build(gid, sims, iters, own_weight, _nonce)["sim"], contest)
+
+
 def _et(iso: str | None) -> str:
     if not iso:
         return ""
@@ -235,10 +251,28 @@ with t_cash:
                "cash line). Minutes x DK points per minute, the minutes re-shared for "
                "tonight's starters and inactives.")
 with t_gpp:
-    render(res.get("gpp"), "gpp")
+    # Chalk or contrarian is the contest's call (edge/dfs_leverage.py): pick one and
+    # the lineups from the optimiser's own out to deep contrarian are ranked by
+    # expected payout in a field of its size -- the same view the NHL / NFL pages have.
+    from edge import dfs_leverage_ui as LU
+    contest = LU.contest_picker("NBA", res["gid"], key="nba")
+    lev_on = contest is not None or st.toggle(
+        "Chalk ↔ contrarian map", key="nba_lev_on",
+        help="Every GPP lineup from the chalkiest to the most contrarian, on a chart of "
+             "ownership against points, beside a simulated field.")
+    if lev_on:
+        with st.spinner("Building lineups from chalk to contrarian…"):
+            an = (_nba_leverage_for(gid, sims, iters, own_weight, st.session_state.nba_nonce, contest)
+                  if contest else _nba_leverage(gid, sims, iters, own_weight, st.session_state.nba_nonce))
+        chosen = LU.leverage_view(an, key="nba")
+        if chosen:
+            render(chosen["result"], "gpp")
+    else:
+        render(res.get("gpp"), "gpp")
     st.caption("Objective: the 90th percentile, minus the ownership fade if set. No stacking "
                "rule: in NBA what is left after minutes barely co-moves (teammates -0.04, "
-               "opponents 0.00 over 2025-26). Ownership is a PRIOR until fitted.")
+               "opponents 0.00 over 2025-26). Ownership is a PRIOR (value + salary per position, "
+               "not yet fitted to NBA contests), so the map's ORDER is the signal, not its dollars.")
 with t_board:
     params = st.query_params
     default_only = str(params.get("promoted", "")).lower() in ("1", "true", "yes")
