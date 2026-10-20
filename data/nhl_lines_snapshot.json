@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-20T15:59:44+00:00",
+"generated_at": "2026-10-20T16:29:43+00:00",
 "goalies": {
 "2026-10-20": {
 "ANA": {
@@ -64,7 +64,7 @@
 },
 "STL": {
 "goalie": "Joel Hofer",
-"status": null
+"status": "Likely"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -97,7 +97,7 @@
 "status": null
 },
 "FLA": {
-"goalie": "Jacob Markstrom",
+"goalie": "Akira Schmid",
 "status": null
 },
 "OTT": {
@@ -4597,7 +4597,7 @@
 "toiMinutes": 87,
 "toiSeconds": 29
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -4767,7 +4767,7 @@
 "toiMinutes": 70,
 "toiSeconds": 38
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -6255,7 +6255,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6430,6 +6430,42 @@
 "pos": "c",
 "pp": null
 },
+"Cooper Black": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 2,
+"goalieGoalsAgainst": 5,
+"goalieGoalsAgainstAvg": "4.23",
+"goalieLosses": 0,
+"goalieMinutes": 70,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.792",
+"goalieSaves": 19,
+"goalieSeconds": 25,
+"goalieShotsAgainst": 24,
+"goalieShutouts": 0,
+"goalieWins": 1
+},
+"last5": {
+"gamesPlayed": 2,
+"goalieGoalsAgainst": 5,
+"goalieGoalsAgainstAvg": "4.23",
+"goalieLosses": 0,
+"goalieMinutes": 70,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.792",
+"goalieSaves": 19,
+"goalieSeconds": 25,
+"goalieShotsAgainst": 24,
+"goalieShutouts": 0,
+"goalieWins": 1
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Dmitry Kulikov": {
 "gtd": false,
 "injury": null,
@@ -6565,42 +6601,6 @@
 "pk": "PK1",
 "pos": "ld",
 "pp": "PP2"
-},
-"Jacob Markstrom": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 20,
-"goalieGoalsAgainstAvg": "2.24",
-"goalieLosses": 2,
-"goalieMinutes": 534,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.895",
-"goalieSaves": 171,
-"goalieSeconds": 21,
-"goalieShotsAgainst": 191,
-"goalieShutouts": 2,
-"goalieWins": 5
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 12,
-"goalieGoalsAgainstAvg": "2.75",
-"goalieLosses": 1,
-"goalieMinutes": 261,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.883",
-"goalieSaves": 91,
-"goalieSeconds": 29,
-"goalieShotsAgainst": 103,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"line": "G1",
-"pk": null,
-"pos": "g",
-"pp": null
 },
 "Lars Eller": {
 "gtd": false,
@@ -7357,7 +7357,7 @@
 "pp": null
 },
 "Mats Zuccarello": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 7,
@@ -14572,6 +14572,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Marshall Rifai": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 60,
+"toiSeconds": 17
+},
+"last5": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 60,
+"toiSeconds": 17
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Morgan Rielly": {
 "gtd": false,
 "injury": null,
@@ -14606,40 +14640,6 @@
 "pos": "ld",
 "pp": "PP2"
 },
-"Nick Blankenburg": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 11,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 130,
-"toiSeconds": 15
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 67,
-"toiSeconds": 4
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "rd",
-"pp": "PP2"
-},
 "Nick Paul": {
 "gtd": false,
 "injury": null,
@@ -14672,7 +14672,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Oliver Ekman-Larsson": {
 "gtd": false,
@@ -14704,8 +14704,8 @@
 "toiSeconds": 1
 },
 "line": "D3",
-"pk": null,
-"pos": "ld",
+"pk": "PK2",
+"pos": "rd",
 "pp": null
 },
 "Sergei Bobrovsky": {
