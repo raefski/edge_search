@@ -12,7 +12,8 @@ neither, so this writes the compact part it needs:
 
     data/nba_player_history.json
       players: {nba_id: {name, team, pos, hist: [[minutes, started, dk_points], ...]}}
-               (last edge.nba_project.RATE_WINDOW active games, oldest first)
+               (last KEEP active games, oldest first: the rate reads its
+               RATE_WINDOW, a season-opening role the full SEASON_START_WINDOW)
       names:   {norm(name): nba_id}
       teams:   {team: [dk points allowed, opponent minutes] over its last OPP_WINDOW}
       league_pm: DK points per minute, league-wide, same window
@@ -42,6 +43,8 @@ from edge.nba import actual_points                        # noqa: E402
 from edge.nba_lineups import backfill                     # noqa: E402
 from edge.names import norm                               # noqa: E402
 from scripts.nba_ground_truth_collect import HEADERS      # noqa: E402
+
+KEEP = max(NP.RATE_WINDOW, NM.SEASON_START_WINDOW)
 
 GT = ROOT / "data" / "nba_ground_truth"
 OUT = ROOT / "data" / "nba_player_history.json"
@@ -126,7 +129,7 @@ def build() -> dict:
             continue
         players[pid] = {"name": name, "team": team, "pos": pos.get(pid),
                         "season_games": season_games.get(pid, 0),
-                        "hist": [[round(m, 1), bool(s), round(p, 2)] for m, s, p in h[-NP.RATE_WINDOW:]],
+                        "hist": [[round(m, 1), bool(s), round(p, 2)] for m, s, p in h[-KEEP:]],
                         "preseason": used_pre}
         names[norm(name)] = pid
     teams = {}

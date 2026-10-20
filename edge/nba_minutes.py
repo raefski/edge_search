@@ -33,7 +33,17 @@ TEAM_MIN = 240.0
 FULL_ROSTER = 8
 #: A player with fewer than this many games this season gets a longer role window
 #: (SEASON_START_WINDOW): last season's final 10 games are rest days and tanking.
-SEASON_START_WINDOW = 25
+#: 82 (a full season) replaced 25 on 2026-10-20: replaying 2025-26's opening week
+#: (150 team-games, each team's first 5, roles from 2024-25 only, NBA.com actives
+#: and starters as known at the time) minutes mean |error| by window --
+#:   window              10     25     40     60     82
+#:   before lineups     7.03   6.76   6.55   6.49   6.42
+#:   starters confirmed 6.45   6.31   6.21   6.14   6.10
+#: Monotone, one knob, only for players with < 5 games this season. One opening
+#: week is all the cached history allows (no 2023-24 logs), so it is not held out.
+#: Starters still run ~3 min low before lineups post (-3.5 at 82): the roles of 13
+#: players from last season's teams sum to 267-321 on 2026-10-20, over 240.
+SEASON_START_WINDOW = 82
 #: Fitted by scripts/nba_minutes_backtest.py on 2024-25 (2,470 team-games, grid over
 #: role power 0-2, position weight 0-2, promotion weight 0-3, lift 0-1.25), scored on
 #: 2025-26 (2,466 team-games), 2026-10-15. Mean |error| in minutes, held out:

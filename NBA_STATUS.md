@@ -25,6 +25,29 @@
 - **Preseason → regular season** minutes for newcomers: ×0.66 (n=112).
 - A game-night roster is 13 active, roles summing ~241 min; before NBA.com's inactive list posts, the app keeps each team's 13 most-used players.
 
+## Opening week (2026-10-20)
+
+Season-opening minutes come from last season's role (`SEASON_START_WINDOW`), which
+the backtest never covered: its histories start empty each season. Replaying
+2025-26's opening week (150 team-games, each team's first 5; roles from 2024-25 only;
+NBA.com actives and starters as known at the time), minutes mean |error|:
+
+| role window | before lineups | starters confirmed |
+|---|---|---|
+| 25 (was) | 6.76 | 6.31 |
+| 40 | 6.55 | 6.21 |
+| **82 (shipped 10/20)** | **6.42** | **6.10** |
+
+`nba_history_publish.py` now keeps 82 games a player (the rate still reads its
+40). Known bias left in: on opening week, starters run about 3 min low before lineups post
+(-1.9 once confirmed) and the bench +1.5. After the offseason the 13 kept roles sum
+to 267-321 against 240 (PHI 321 on 10/20), so stars are squeezed: Maxey
+projects 26, Embiid 22. Tested and rejected on the same replay: protecting the
+starting five in the overflow (6.45 / 6.16, worse), a start-rate weight, a
+rotation cap (<= 0.04 better, in-sample) and a higher excess power (worse
+overall). One opening week is all the cache allows, so none of this is held out.
+**Build after lineups confirm (late swap): that removes about a third of the bias.**
+
 ## Not done / not verified
 
 - **Props** (`dfs_nba`): DK posts points/rebounds/assists (verified 10/15 for 10/20 games); not blended into projections. Next: log props beside projections, grade both after a week.
