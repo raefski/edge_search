@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-20T22:45:26+00:00",
+"generated_at": "2026-10-20T23:01:03+00:00",
 "goalies": {
 "2026-10-20": {
 "ANA": {
@@ -141,7 +141,7 @@
 "toiMinutes": 57,
 "toiSeconds": 33
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -175,7 +175,7 @@
 "toiMinutes": 88,
 "toiSeconds": 27
 },
-"line": "F1",
+"line": "F3",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
@@ -243,10 +243,44 @@
 "toiMinutes": 82,
 "toiSeconds": 20
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
+},
+"Drew Helleson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 112,
+"toiSeconds": 17
+},
+"last5": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 69,
+"toiSeconds": 8
+},
+"line": "D1",
+"pk": null,
+"pos": "rd",
+"pp": null
 },
 "Frank Vatrano": {
 "gtd": false,
@@ -277,9 +311,9 @@
 "toiMinutes": 60,
 "toiSeconds": 44
 },
-"line": "F2",
+"line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Jackson Lacombe": {
@@ -345,43 +379,9 @@
 "toiMinutes": 50,
 "toiSeconds": 39
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": null
-},
-"Judd Caulfield": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 4,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 8,
-"toiMinutes": 132,
-"toiSeconds": 53
-},
-"last5": {
-"assists": 2,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 6,
-"toiMinutes": 66,
-"toiSeconds": 53
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
 "pp": null
 },
 "Leo Carlsson": {
@@ -488,73 +488,39 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Nick Jensen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 15,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 184,
-"toiSeconds": 5
-},
-"last5": {
-"assists": 0,
-"blocks": 12,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 90,
-"toiSeconds": 16
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
-"Nikita Klepov": {
+"Nikita Nesterenko": {
 "gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
-"blocks": 2,
-"gamesPlayed": 6,
-"goals": 0,
-"points": 1,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 4,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 84,
-"toiSeconds": 56
+"shots": 12,
+"toiMinutes": 125,
+"toiSeconds": 51
 },
 "last5": {
-"assists": 0,
-"blocks": 2,
+"assists": 1,
+"blocks": 0,
 "gamesPlayed": 5,
-"goals": 0,
-"points": 0,
+"goals": 2,
+"points": 3,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 70,
-"toiSeconds": 31
+"shots": 10,
+"toiMinutes": 62,
+"toiSeconds": 22
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
-"pp": "PP2"
+"pos": "lw",
+"pp": null
 },
 "Noah Warren": {
 "gtd": false,
@@ -585,7 +551,7 @@
 "toiMinutes": 94,
 "toiSeconds": 11
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -658,6 +624,40 @@
 "pos": "c",
 "pp": "PP2"
 },
+"Sam Colangelo": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 21,
+"toiMinutes": 117,
+"toiSeconds": 54
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 61,
+"toiSeconds": 2
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
 "Tim Washe": {
 "gtd": false,
 "injury": null,
@@ -721,7 +721,7 @@
 "toiMinutes": 95,
 "toiSeconds": 16
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
