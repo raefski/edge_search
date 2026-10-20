@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-20T16:59:43+00:00",
+"generated_at": "2026-10-20T17:29:41+00:00",
 "goalies": {
 "2026-10-20": {
 "ANA": {
@@ -56,7 +56,7 @@
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
-"status": null
+"status": "Confirmed"
 },
 "SJS": {
 "goalie": "Alex Nedeljkovic",
@@ -76,7 +76,7 @@
 },
 "VAN": {
 "goalie": "Leevi Merilainen",
-"status": null
+"status": "Likely"
 },
 "VGK": {
 "goalie": "Carter Hart",
@@ -862,7 +862,7 @@
 "toiSeconds": 40
 },
 "line": "D1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rd",
 "pp": "PP1"
 },
@@ -963,10 +963,10 @@
 "toiMinutes": 86,
 "toiSeconds": 3
 },
-"line": "F1",
-"pk": null,
+"line": "F2",
+"pk": "PK2",
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Frederic Brunet": {
 "gtd": false,
@@ -1032,7 +1032,7 @@
 "toiSeconds": 30
 },
 "line": "D1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -1140,40 +1140,6 @@
 "pos": "g",
 "pp": null
 },
-"Jonathan Aspirot": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 16,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 170,
-"toiSeconds": 6
-},
-"last5": {
-"assists": 0,
-"blocks": 11,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 83,
-"toiSeconds": 11
-},
-"line": "D2",
-"pk": "PK1",
-"pos": "ld",
-"pp": null
-},
 "Marat Khusnutdinov": {
 "gtd": false,
 "injury": null,
@@ -1204,7 +1170,7 @@
 "toiSeconds": 49
 },
 "line": "F2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 },
@@ -1238,7 +1204,7 @@
 "toiSeconds": 17
 },
 "line": "F4",
-"pk": "PK2",
+"pk": null,
 "pos": "rw",
 "pp": null
 },
@@ -1305,10 +1271,10 @@
 "toiMinutes": 52,
 "toiSeconds": 45
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Michael DiPietro": {
 "gtd": false,
@@ -1380,39 +1346,73 @@
 "pos": "rw",
 "pp": "PP1"
 },
-"Sean Kuraly": {
+"Nikita Zadorov": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 0,
-"blocks": 10,
+"assists": 4,
+"blocks": 11,
 "gamesPlayed": 10,
-"goals": 1,
+"goals": 0,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 200,
+"toiSeconds": 35
+},
+"last5": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 0,
 "points": 1,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 132,
-"toiSeconds": 15
+"shots": 7,
+"toiMinutes": 100,
+"toiSeconds": 22
+},
+"line": "D2",
+"pk": "PK2",
+"pos": "ld",
+"pp": null
+},
+"Pavel Zacha": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 6,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 8,
+"powerplayAssists": 4,
+"powerplayGoals": 0,
+"powerplayPoints": 4,
+"shots": 14,
+"toiMinutes": 178,
+"toiSeconds": 9
 },
 "last5": {
-"assists": 0,
-"blocks": 4,
+"assists": 3,
+"blocks": 2,
 "gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
+"goals": 2,
+"points": 5,
+"powerplayAssists": 3,
 "powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 66,
-"toiSeconds": 49
+"powerplayPoints": 3,
+"shots": 5,
+"toiMinutes": 90,
+"toiSeconds": 19
 },
-"line": "F4",
-"pk": "PK1",
+"line": "F1",
+"pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP1"
 },
 "Tanner Jeannot": {
 "gtd": false,
@@ -1444,7 +1444,7 @@
 "toiSeconds": 58
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
 "pp": null
 },
@@ -1478,7 +1478,7 @@
 "toiSeconds": 44
 },
 "line": "D2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 }
