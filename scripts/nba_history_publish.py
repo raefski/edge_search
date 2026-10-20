@@ -86,17 +86,22 @@ def refresh() -> dict:
     return got
 
 
-def build() -> dict:
-    hist = NM.load_history(SEASONS)
+def build(before: str | None = None, current: str = CURRENT, seasons=SEASONS) -> dict:
+    """The snapshot. `before` = 'YYYY-MM-DD' rebuilds it as it stood that morning
+    (scripts/nba_ownership_fit.py rebuilds past contest nights): only games before
+    it count, and `current` names that night's season for preseason / season_games."""
+    hist = NM.load_history(seasons, before=before)
     pos = json.loads((GT / "positions.json").read_text()) if (GT / "positions.json").exists() else {}
     latest: dict = {}
     allowed: dict = defaultdict(list)
     rows_by_game: dict = defaultdict(list)
-    for s in SEASONS:
+    for s in seasons:
         path = GT / f"player_gamelog_{s}.json"
         if not path.exists():
             continue
         for r in json.loads(path.read_text()):
+            if before and r["GAME_DATE"] >= before:
+                continue
             latest[str(r["PLAYER_ID"])] = (r["GAME_DATE"], r["PLAYER_NAME"], r["TEAM_ABBREVIATION"])
             rows_by_game[(r["GAME_ID"], r["GAME_DATE"])].append(r)
     for (gid, d), rows in sorted(rows_by_game.items(), key=lambda kv: kv[0][1]):
@@ -106,18 +111,22 @@ def build() -> dict:
             allowed[t].append((sum(actual_points(r) for r in opp_rows),
                                sum(float(r["MIN"] or 0) for r in opp_rows)))
     pre: dict = defaultdict(list)
-    pre_path = GT / f"player_gamelog_{CURRENT}_pre.json"
+    pre_path = GT / f"player_gamelog_{current}_pre.json"
     if pre_path.exists():
         for r in sorted(json.loads(pre_path.read_text()), key=lambda r: r["GAME_DATE"]):
+            if before and r["GAME_DATE"] >= before:
+                continue
             pid = str(r["PLAYER_ID"])
             pre[pid].append((float(r["MIN"] or 0) * PRESEASON_MIN_RATIO, False,
                              actual_points(r) * PRESEASON_MIN_RATIO))
             if pid not in latest or latest[pid][0] < r["GAME_DATE"]:
                 latest[pid] = (r["GAME_DATE"], r["PLAYER_NAME"], r["TEAM_ABBREVIATION"])
     season_games: dict = defaultdict(int)
-    cur = GT / f"player_gamelog_{CURRENT}.json"
+    cur = GT / f"player_gamelog_{current}.json"
     if cur.exists():
         for r in json.loads(cur.read_text()):
+            if before and r["GAME_DATE"] >= before:
+                continue
             season_games[str(r["PLAYER_ID"])] += 1
     players, names = {}, {}
     for pid, (_, name, team) in latest.items():
@@ -138,7 +147,7 @@ def build() -> dict:
         teams[t] = [round(sum(a for a, _ in last), 1), round(sum(m for _, m in last), 1)]
     tot_pts = sum(v[0] for v in teams.values())
     tot_min = sum(v[1] for v in teams.values())
-    return {"generated_at": date.today().isoformat(), "players": players, "names": names,
+    return {"generated_at": before or date.today().isoformat(), "players": players, "names": names,
             "teams": teams, "league_pm": round(tot_pts / tot_min, 4) if tot_min else None}
 
 

@@ -51,7 +51,17 @@ overall). One opening week is all the cache allows, so none of this is held out.
 ## Not done / not verified
 
 - **Props** (`dfs_nba`): DK posts points/rebounds/assists (verified 10/15 for 10/20 games); not blended into projections. Next: log props beside projections, grade both after a week.
-- **Ownership** is an unfitted prior. Twelve NBA GPP exports sit in `data/contests.db` (GPP_META: NBA fields rewarded chalk on all 10 slates measured) — rebuild those slates' projections from history and fit it.
+- **Ownership: the prior was tested against real fields on 2026-10-20 and stands.** `scripts/nba_ownership_fit.py`
+  rebuilds each 2025-26 GPP night as it stood: DK salaries for the contest's own draft group, history before
+  that date (`nba_history_publish.build(before=)`), and that day's NBA.com lineups (the day's final file, so
+  late-game starters carry mild hindsight). No odds. It then scores `add_ownership` against the export's
+  %Drafted. 10 contests / 10 nights, leave one night out:
+  prior (value 1.0, salary 0.4, promoted 0.6) MAE **5.39**, rank **+0.71**. A refit of those weights scored
+  5.43-5.49 held out (better 0-5/10); adding DK's FPPG value or tonight's minutes jump scored 5.47 (1/10).
+  The misses are news chalk the rebuild can't see (Kel'el Ware 60% vs 7%, Tre Johnson 45% vs 2%) and
+  stars the field skips (LeBron and Luka 3% vs 22%). The leverage map / contest EV on page 12 uses this
+  prior, so read its ORDER, not its dollars. Next lever: a source of the field's own projections (the NFL
+  needed Dan's sheet / buzz), not more weights.
 - **Late swap on the phone (built 2026-10-20):** page 12's 🔁 Swap tab (`R.late_swap`) takes
   your entered 8, locks players whose game has tipped, replaces an OUT player whose game
   has not, and holds the slot of one who is OUT but already locked. "Also re-optimise"
