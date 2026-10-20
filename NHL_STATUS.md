@@ -301,3 +301,35 @@ day's main slate, so folds now hold out a whole DAY, not a draft group.
   points: shipped CASH_WEIGHTS cashed 9/15 (mean pct 57%, 110.1 pts, own RMSE
   8.06); day-held-out refit 10/15 (58%, 111.1, own RMSE 8.34). Ownership worse
   held out, one extra cash on one night (10/6): NOT changed.
+
+## 6g. Field ownership as a projection signal: tested, not shipped (2026-10-19)
+
+GPP_META.md G found NHL skaters the crowd over-owned (vs. salary + our
+projection) beat projection by +0.45 pts per SD. Is it usable before lock?
+`scripts/nhl_ownership_signal.py`: 15 slates / 13 days / 2,714 skaters,
+leave one day out, MAE vs a recalibrated projection (M0 4.799):
+
+| added to the projection | held-out MAE change [95% CI] | days better |
+|---|---|---|
+| our predicted-ownership excess (pre-lock) | -0.009 [-0.033, +0.022] | 9/13 |
+| actual %Drafted excess (hindsight ceiling) | -0.012 [-0.034, +0.010] | 9/13 |
+| form + role (pre-lock) | -0.019 [-0.043, +0.005] | 8/13 |
+
+Even perfect knowledge of the field's ownership is worth 0.01 points of MAE:
+the crowd's information is real but small. Its surprises (actual minus our
+predicted ownership) track recent form (+0.18 rank corr, 15/15 slates) and
+top-six role (+0.20, 15/15). So the crowd is mostly reading recent form, and
+the form itself is the thing to test, not the ownership.
+
+Pre-lock biases worth a fix once more days land (per day, day bootstrap):
+- **Cold skaters are over-projected:** bottom form quintile (season-to-date DK
+  pts/game, shrunk to last season at k=5 games, minus tonight's projection)
+  scored -0.83 [-1.55, -0.15] vs projection (4/13 days). Hot minus cold
+  +1.15 [+0.26, +2.24] (11/13). Our prop-based means don't fully price form.
+- **Depth skaters (not F1/F2/D1, not PP1) are over-projected** -0.51 [-0.82,
+  -0.11], 1/13 days above. They average 1.4% owned, so GPP lineups barely touch
+  them, but they are cash value plays.
+
+Not shipped: 13 days and several cuts looked at. Recheck both at ~25 days.
+If they hold, the fix belongs in edge/nhl_sim.py's means (form blend, depth
+shrink), not in ownership.

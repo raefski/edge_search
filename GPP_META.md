@@ -486,3 +486,64 @@ python3 -m pytest tests/test_contest_db.py -q
 
 - **Before republishing the MLB calibration dashboard:** its July data now
   lives in `data/dfs_proj_log_mlb_recovered.csv` too.
+
+---
+
+## G. Inverse consensus / reverse sentiment (`inverse_consensus.py`, 2026-10-19)
+
+The investing question: does the crowd overreact, is there a "dumb money"
+cohort to fade, and does any fade rule beat random field lineups by more
+than the noise? 79 final GPPs / 77 slates; every number is held out by slate.
+
+**1. The crowd does not overreact.** Excess sentiment (ownership above what
+salary + our projection imply) predicts players scoring **above** projection
+in every sport, never below. Part of that is lineup news: scratched players
+are 0% owned and score 0. Restricting to players owned >= 2%:
+
+| sport | slates | pts per SD of excess sentiment, owned >= 2% |
+|---|---|---|
+| NHL | 15 | **+0.45 [+0.04, +0.89]** (all players: +0.52) |
+| NFL | 7 | +0.36 [-0.02, +0.86] |
+| MLB | 14 | +0.01 [-0.40, +0.45] (all players +0.54 = lineup news only) |
+| NCAAF | 7 | +0.01 [-1.10, +0.94] |
+
+NHL ownership carries information our projection misses, so follow it rather than fade it.
+MLB: the crowd is neither over- nor under-reacting once lineups are known.
+
+**2. Dumb money exists, and it is the contrarian side.** Entrant skill
+(points percentile on other slates) persists: held-out Q5 - Q1 ROI is
+NHL +0.70 [+0.26, +1.10] (15 slates), NBA +1.32 [+0.93, +1.83] (10), NFL
++0.19 [-0.15, +0.51] (9), MLB +0.03 (28: no persistent skill in MLB GPPs).
+The worst quintile builds **lower-owned** lineups than the field (log-product
+ownership pctile 0.43-0.45 in MLB/NFL/NHL, 0.24 in NBA) and is duplicated
+less. Their *players* are not fadeable: the sharp-minus-dumb ownership signal
+has no player-level edge even with hindsight (NHL +0.18 [-0.13, +0.55],
+MLB -0.16 [-0.42, +0.05], NFL +0.06). They lose by construction, not by
+picking.
+
+**3. No fade rule clears the noise.** Rules pick the top 1% of the real field
+(at least 5 lineups). Excess = ROI minus the field mean; the noise floor is 2 SE of random
+picks.
+
+| sport (slates) | min predicted own (inverse) | max predicted own | max projection | proj - lambda own (lambda out of sample) | noise floor |
+|---|---|---|---|---|---|
+| NHL (15) | **-0.65** (0/15 above field) | +0.02 | +0.31 (8/15) | +0.28 | +/-0.9 |
+| NFL (7) | **-0.73** (0/7) | +0.29 | +0.21 | +0.06 | +/-0.8 |
+| MLB (12-20) | +0.38 (2/12: one lucky slate) | **-0.52** | **-0.49** | -0.50 | +/-0.6-0.8 |
+| NCAAF (6) | -0.17 | +0.50 | +0.55 | +0.48 | +/-0.9 |
+| NBA (10, hindsight own) | **-0.87** (0/10) | +0.17 | - | - | +/-0.7 |
+
+Pure inverse consensus is the worst rule in NHL, NFL and NBA: the
+lowest-owned lineups in a field are the dumb cohort's lineups. Nothing
+beats the noise floor. The floor is the real lesson: with about 15 slates, a top-1%
+selection can only see an edge of about +0.9 ROI. A realistic +0.3 edge needs
+about (0.9/0.3)^2 x 15 = 135 slates.
+
+**Rules.** Don't build a fade-the-crowd strategy. The usable "reverse" is
+to avoid what the dumb cohort does (over-contrarian, under-duplicated
+construction), which the optimizers already do by maximising projection first.
+The NHL "field ownership as a market signal" lead was tested the same day
+(NHL_STATUS.md 6g): even the actual %Drafted improves held-out MAE by only
+0.012 points. The crowd is mostly reading recent form, which is itself a
+small pre-lock projection bias (cold skaters over-projected), not an
+ownership signal.
