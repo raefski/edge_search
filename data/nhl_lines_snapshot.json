@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-20T21:44:34+00:00",
+"generated_at": "2026-10-20T22:44:28+00:00",
 "goalies": {
 "2026-10-20": {
 "ANA": {
@@ -36,7 +36,7 @@
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
-"status": "Likely"
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -3625,7 +3625,7 @@
 "toiMinutes": 99,
 "toiSeconds": 41
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
@@ -3727,9 +3727,9 @@
 "toiMinutes": 69,
 "toiSeconds": 8
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Gabriel Landeskog": {
@@ -3795,7 +3795,7 @@
 "toiMinutes": 40,
 "toiSeconds": 48
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -3829,9 +3829,9 @@
 "toiMinutes": 67,
 "toiSeconds": 58
 },
-"line": "F4",
+"line": "F1",
 "pk": "PK2",
-"pos": "c",
+"pos": "rw",
 "pp": "PP1"
 },
 "Josh Manson": {
@@ -4001,9 +4001,9 @@
 "toiMinutes": 110,
 "toiSeconds": 5
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP1"
 },
 "Noah Juulsen": {
@@ -4071,7 +4071,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Sam Malinski": {
@@ -4149,7 +4149,7 @@
 "injury": null,
 "last10": {},
 "last5": {},
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -12251,7 +12251,7 @@
 "goalieShutouts": 1,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12319,9 +12319,9 @@
 "toiMinutes": 70,
 "toiSeconds": 49
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Darnell Nurse": {
@@ -12389,7 +12389,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP1"
 },
 "Igor Chernyshov": {
@@ -12503,40 +12503,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
-},
-"Luca Cagnoni": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 11,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 13,
-"toiMinutes": 185,
-"toiSeconds": 14
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 81,
-"toiSeconds": 35
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
 },
 "Macklin Celebrini": {
 "gtd": false,
@@ -12674,6 +12640,40 @@
 "pos": "c",
 "pp": "PP2"
 },
+"Nolan Allan": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 12,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 178,
+"toiSeconds": 34
+},
+"last5": {
+"assists": 0,
+"blocks": 10,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 84,
+"toiSeconds": 45
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Sam Dickinson": {
 "gtd": false,
 "injury": null,
@@ -12737,9 +12737,9 @@
 "toiMinutes": 78,
 "toiSeconds": 11
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Tyler Toffoli": {
@@ -12841,7 +12841,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
