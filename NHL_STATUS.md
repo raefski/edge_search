@@ -402,3 +402,27 @@ Against our projection on 18 logged days these are inside the noise.
 body clock, matinees, altitude, NBA-shared ice, division games, a new coach,
 a new team, facing a former team. Published work agrees on contract years
 (IZA 2024: no average effect).
+
+## 6i. Props vs no props, and promoted skaters (2026-10-20)
+
+**What a prop is worth** (`scripts/nhl_props_value.py`): 17 logged nights rebuilt from
+pinned inputs twice, with the DK props and with them switched off (last season x
+implied goals), and graded on the SAME 1,485 prop-player games: MAE 5.576 vs 5.755,
+**-0.186 [-0.292, -0.089], better on 14/17 nights**; bias +0.29 vs +0.45; rank corr
++0.304 vs +0.276 (+0.028 [-0.004, +0.063]). Props help, by about 3% of MAE. At a
+matched projection, no-prop players (57% of the board, mean projection 5.2) are
+not worse: MAE 4.18 vs 4.25 at 5-7 pts, 4.25 vs 5.42 at 7-9. Their errors are about the
+same; they are mostly cheap depth.
+
+**Promoted skaters are not hockey's NBA edge** (`scripts/nhl_promotion.py`): a
+skater DailyFaceoff lists 2+ minutes above his last-5 ice time (a line or PP1
+promotion, usually because someone is out). 512 games, 17 nights:
+- he does play more, **+0.85 min** [+0.58, +1.09], against about +8.6 for an NBA
+  bench player who starts;
+- he **misses our projection, -0.55 [-1.06, -0.05]**. With props it's -1.66
+  [-3.15, -0.27]: the books over-price line promotions. Without props it's -0.08;
+- per +1 min of promotion, -0.061 [-0.104, -0.018] pts vs projection.
+The 2025-26 effect of a top-2 forward being out (+0.36 for teammates vs their own
+baseline, 6h) is real but smaller than what the prop lines already add. Candidate,
+NOT shipped: shrink prop means for promoted skaters toward their last-5 role.
+Recheck at ~30 nights.
