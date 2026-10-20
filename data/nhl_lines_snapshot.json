@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-20T20:59:37+00:00",
+"generated_at": "2026-10-20T21:44:34+00:00",
 "goalies": {
 "2026-10-20": {
 "ANA": {
@@ -12256,40 +12256,6 @@
 "pos": "g",
 "pp": null
 },
-"Alexander Wennberg": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 4,
-"powerplayAssists": 2,
-"powerplayGoals": 0,
-"powerplayPoints": 2,
-"shots": 15,
-"toiMinutes": 197,
-"toiSeconds": 59
-},
-"last5": {
-"assists": 2,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 8,
-"toiMinutes": 101,
-"toiSeconds": 55
-},
-"line": "F3",
-"pk": "PK2",
-"pos": "c",
-"pp": "PP1"
-},
 "Barclay Goodrow": {
 "gtd": false,
 "injury": null,
@@ -12536,7 +12502,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Luca Cagnoni": {
 "gtd": false,
@@ -12570,7 +12536,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Macklin Celebrini": {
 "gtd": false,
@@ -12638,7 +12604,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Michael Kesselring": {
 "gtd": false,
@@ -12740,6 +12706,40 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
+"pp": "PP2"
+},
+"Ty Dellandrea": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 128,
+"toiSeconds": 24
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 78,
+"toiSeconds": 11
+},
+"line": "F3",
+"pk": "PK2",
+"pos": "c",
 "pp": null
 },
 "Tyler Toffoli": {
