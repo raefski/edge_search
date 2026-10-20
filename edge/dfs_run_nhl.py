@@ -20,6 +20,14 @@ underdog. Every fallback is flagged `imputed` in the app.
 
 Goalies: the starter's saves come from his opponents' simulated shots, rescaled
 to his DraftKings Saves O/U when one is posted.
+
+11 F / 7 D LINEUPS
+A team that dresses seven defencemen splits the blue line's minutes seven
+ways: each of the six regulars loses 1.5-1.9 minutes. The books' shots and
+points lines do not absorb it (our prop-based D missed by -0.88 pts on 10
+logged nights), so every defenceman on such a team has his means scaled by
+SEVEN_D_SCALE (NHL_STATUS.md 6h). Forwards gain ~1 minute but no measurable
+DK points, so they are left alone.
 """
 from __future__ import annotations
 
@@ -43,6 +51,14 @@ SPORT = "icehockey_nhl"
 LEAGUE_TEAM_GOALS = 3.128
 LAST_SEASON = "20252026"
 DEFAULT_BLOCKS = {"D": 1.25, "C": 0.45, "W": 0.4}
+#: Per-event multipliers for a defenceman whose team dresses 7 D. Fitted
+#: 2026-10-19 on 2025-26 (707 regular-D games in 111 seven-D team-games,
+#: scripts/nhl_context_features.py): actual over leave-one-out baseline in
+#: 7-D games, divided by the same ratio for the same depth slot in 6-D games.
+#: blocks 0.855 [0.83, 0.89], shots 0.933 [0.90, 0.96], goals 0.92 [0.81,
+#: 1.03], assists 0.97 [0.91, 1.04]; DK points 0.902 [0.88, 0.93]. Applied to
+#: the 7th D too, whose own drop is larger (-3.3 min) but fitted on 110 games.
+SEVEN_D_SCALE = {"blocks": 0.855, "shots": 0.933, "goals": 0.92, "assists": 0.97}
 
 
 def classic_groups(groups: list[dict] | None = None) -> list[dict]:
@@ -167,6 +183,28 @@ def attach_buzz(pool: list, date: str, path: Path = BUZZ_FILE) -> int:
     return len(rows)
 
 
+def seven_d_teams(lines: dict) -> set[str]:
+    """Teams DailyFaceoff lists in an 11 F / 7 D lineup, from {(team, norm
+    name): line row}. A d4 defenceman says so directly; a lines snapshot
+    written before D4 was read (2026-10-19) still shows it as exactly 11
+    forwards in F1-F4 -- 16 of 19 such teams dressed 7 D in the box score
+    (9/30-10/19)."""
+    forwards: dict = {}
+    out = set()
+    for (team, _), row in lines.items():
+        ln = row.get("line") or ""
+        if ln == "D4":
+            out.add(team)
+        elif ln in ("F1", "F2", "F3", "F4"):
+            forwards[team] = forwards.get(team, 0) + 1
+    return out | {t for t, n in forwards.items() if n == 11}
+
+
+def scale_seven_d(means: dict) -> dict:
+    """A defenceman's means on a 7-D team (SEVEN_D_SCALE)."""
+    return {k: v * SEVEN_D_SCALE.get(k, 1.0) for k, v in means.items()}
+
+
 def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0):
     """(pool, sim, info) for one DK NHL Classic slate."""
     salaries = dfs.fetch_draftables(gid)
@@ -193,8 +231,10 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
         log.warning("nhl: no starting goalies (%s)", exc)
         starters = {}
     rates = _season_rates()
+    seven_d = seven_d_teams(lines)
 
     info = {"games": len(games), "priced": len(salaries), "implied": implied,
+            "seven_d": sorted(seven_d & teams),
             "missing_lines": sorted(teams - set(implied)), "date": date,
             "starters": starters, "no_lineup": [], "imputed": 0,
             "wrong_game": wrong_game}
@@ -252,6 +292,9 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
             row["imputed"].append("blocks")
         if row["imputed"]:
             info["imputed"] += 1
+        if pos == "D" and t in seven_d:
+            means = scale_seven_d(means)
+            row["seven_d"] = True
         row["means"] = means
         pool.append(row)
 

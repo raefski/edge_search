@@ -182,3 +182,26 @@ def test_field_aware_cash_clears_the_line_at_least_as_often_as_the_floor():
         return (sim[:, [pool.index(r) for r in res["lineup"]]].sum(axis=1) >= line).mean()
     assert opt._valid(pool, [pool.index(r) for r in fa["lineup"]])
     assert p(fa) >= p(fl) - 0.01
+
+
+def test_seven_d_lineup_is_read_from_d4_or_eleven_forwards():
+    from edge import dfs_run_nhl as R
+    lines = {}
+    for team, n_f, d4 in (("COL", 11, True), ("DET", 11, False), ("BOS", 12, False)):
+        for i in range(n_f):
+            lines[(team, f"f{i}")] = {"line": f"F{i // 3 + 1}"}
+        for i in range(6):
+            lines[(team, f"d{i}")] = {"line": f"D{i // 2 + 1}"}
+        if d4:
+            lines[(team, "d7")] = {"line": "D4"}
+    assert R.seven_d_teams(lines) == {"COL", "DET"}
+    assert "d4" in nhl.LINE_GROUPS and nhl.LINE_GROUPS["d4"] == "D4"
+
+
+def test_seven_d_scale_only_shrinks_and_keeps_keys():
+    from edge import dfs_run_nhl as R
+    m = {"shots": 2.0, "goals": 0.1, "assists": 0.3, "blocks": 1.5}
+    s = R.scale_seven_d(m)
+    assert set(s) == set(m)
+    assert all(0.8 < s[k] / m[k] <= 1.0 for k in m)
+    assert s["blocks"] / m["blocks"] < s["shots"] / m["shots"]   # blocks lose the most

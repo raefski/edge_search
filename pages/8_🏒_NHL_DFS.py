@@ -175,6 +175,10 @@ if info.get("missing_lines"):
     st.markdown("<div class='warn'>No betting line yet for: "
                 + ", ".join(info["missing_lines"]) + " — those teams are left out.</div>",
                 unsafe_allow_html=True)
+if info.get("seven_d"):
+    st.markdown("<div class='summary'><b>7 defencemen tonight:</b> " + ", ".join(info["seven_d"])
+                + " — their D split the minutes seven ways, so each is projected about 10% "
+                "lower (fewer blocks and shots).</div>", unsafe_allow_html=True)
 
 
 def _table(result) -> str:

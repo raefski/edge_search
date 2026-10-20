@@ -333,3 +333,72 @@ Pre-lock biases worth a fix once more days land (per day, day bootstrap):
 Not shipped: 13 days and several cuts looked at. Recheck both at ~25 days.
 If they hold, the fix belongs in edge/nhl_sim.py's means (form blend, depth
 shrink), not in ownership.
+
+## 6h. Context features (not box-score stats, not book prices): what moves a skater's night (2026-10-19)
+
+Adam asked what makes the best skaters other than stats and books.
+`scripts/nhl_context_features.py` (`--fetch` caches NHL API referees, coaches,
+start times and venues beside the box scores). Target: DK points minus the
+player's own leave-one-out mean (shrunk to last season, k=10) minus the
+opponent's allowed, so identity carries skill and only context is left. Fit on
+2025-26 (1,312 games), checked on 2026-27 (139 games), intervals resample
+games. About 30 features were tried, so expect one or two false positives at 5%.
+
+**Ship candidate: 11 F / 7 D lineups, unpriced and visible before lock.**
+DailyFaceoff lists the 7th defenceman as group `d4` (COL, DET, LAK, TBL had one
+on 10/19). `LINE_GROUPS` in edge/nhl.py has no `d4`, so the board drops him and
+projects the other six at full minutes. In 7-D games (111 team-games 2025-26),
+every pair loses 1.5-1.9 min, 0.6-0.7 DK pts and 0.14-0.29 blocks. The top
+three forwards gain about 1 min (+0.40 pts, +0.14 shots). On our own logged
+2026-27 nights the six projected D fell **-0.88 [-1.55, -0.25] pts short of
+our projection** (151 skater-games, 10 days), the size the 2025-26 fit predicts
+(-0.73).
+
+**Built 2026-10-20** (edge/nhl.py reads `d4`; `edge/dfs_run_nhl.seven_d_teams` flags
+a team from a d4 row or exactly 11 listed forwards; each of its D gets
+`SEVEN_D_SCALE`: blocks x0.855, shots x0.933, goals x0.92, assists x0.97; the
+app names the teams). Forwards are left alone: they gain ~1 min, but DK points
+x1.017 [0.99, 1.06]. The pre-lock signal at lock time: 16 of 19 flagged teams
+dressed 7 D; it caught 16 of 25.
+
+Before/after (`scripts/nhl_seven_d_compare.py --placebo 2`): 11 logged slates with a
+7-D team at lock, each rebuilt from pinned inputs with and without the scale:
+
+| | D-games | MAE | bias | nights better |
+|---|---|---|---|---|
+| old board | 110 | 4.135 | +0.98 | |
+| 7-D scale | 110 | **3.975** | **+0.35** | 9/10 |
+
+Lineups: any nudge to a few D reshuffles 3-4 of 9 slots (hill-climb path
+dependence), so the lineup grade is noise at this n. The 15 changed lineups with
+an export scored -13.7 real pts vs the old (sd 24, 4 better / 11 worse). The
+placebo (same scale on random teams that did NOT dress 7 D, 29 changed
+lineups) scored -8.8 (sd 25, 11/18). The difference, -4.9 +/- ~8, is
+indistinguishable. The old lineups happened to hit on these nights. The
+decision rests on the projection, which is better held out.
+
+**Real in 2025-26 but probably already in the books' prices (they move team
+totals, props and the starter):** back-to-back -0.27 [-0.49, -0.06] (shots);
+a back-to-back after last night's OT/SO -0.55 [-0.92, -0.16]; home +0.23
+[+0.07, +0.39]; opponent starts its backup +0.24 [+0.07, +0.40] (goals).
+Against our projection on 18 logged days these are inside the noise.
+
+**Candidates without enough forward data yet:**
+- first game back after missing 3+ team games: -0.50 [-0.79, -0.21] (shots
+  and blocks; DailyFaceoff shows returns);
+- a top-2-minutes teammate forward out: the other forwards +0.36 [+0.11, +0.68],
+  with extra shots (usage vacuum);
+- **rink scorer effect on blocks**: visitors' recorded blocks run 0.81x (CHI)
+  to 1.19x (COL); split-half corr +0.63, 2025-26 to 2026-27 +0.34. As a blocks
+  adjustment (deflate last season by his rinks, inflate by tonight's) it moves
+  a D about +/-0.27 pts per game including the 3+ block bonus. Forward
+  blocks MSE -0.003 [-0.009, +0.002] (4,482 skater-games), not yet
+  significant. Blocks have no market, so this is the one rink channel books
+  can't price. Recheck at ~400 2026-27 games. Shots by rink 0.84 (CAR) to 1.14
+  (TOR), split-half +0.70, but shots have props.
+
+**Nothing there:** referee crews (crew PP rate predicts PP chances +0.10 in
+2025-26, -0.00 in 2026-27: no persistence), travel distance, time-zone shifts,
+body clock, matinees, altitude, NBA-shared ice, division games, a new coach,
+a new team, facing a former team. Published work agrees on contract years
+(IZA 2024: no average effect).

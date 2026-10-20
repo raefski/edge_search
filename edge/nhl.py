@@ -260,8 +260,12 @@ def _next_data(url: str) -> dict:
 
 
 #: DailyFaceoff group ids -> what the simulator calls them.
+#: "d4" is DailyFaceoff's 7th defenceman: an 11 F / 7 D lineup lists him
+#: alone in d4 and leaves only two forwards in f4 (COL, DET, LAK, TBL on
+#: 2026-10-19). Dropping him hid the lineup from the board -- see
+#: edge/dfs_run_nhl.seven_d_teams.
 LINE_GROUPS = {"f1": "F1", "f2": "F2", "f3": "F3", "f4": "F4",
-               "d1": "D1", "d2": "D2", "d3": "D3", "pp1": "PP1", "pp2": "PP2",
+               "d1": "D1", "d2": "D2", "d3": "D3", "d4": "D4", "pp1": "PP1", "pp2": "PP2",
                "pk1": "PK1", "pk2": "PK2", "g": "G"}
 
 
@@ -274,7 +278,7 @@ def _snapshot() -> dict:
 def team_lines(abbr: str, live_only: bool = False) -> dict:
     """{player name: {line, pp, pk, pos, injury, gtd, last10, last5}} for one
     team, from DailyFaceoff's current line combinations. `line` is F1-F4 or
-    D1-D3 (or G1/G2 for goalies), `pp` PP1/PP2/None."""
+    D1-D4 (D4 = a 7th defenceman; or G1/G2 for goalies), `pp` PP1/PP2/None."""
     slug = DFO_SLUGS.get(team(abbr))
     if not slug:
         return {}
