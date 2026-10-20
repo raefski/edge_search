@@ -169,7 +169,11 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         opp = next((team(g["away"]) if team(g["home"]) == t else team(g["home"])
                     for g in games.values() if t in (team(g["home"]), team(g["away"]))), None)
         out = bool(st.get("inactive")) or sal.get("dk_status") in ("OUT", "O")
+        # `start` lets the optimiser put the LATEST tips in G / F / UTIL (DK's
+        # late-swap convention, edge/dfs_opt_climb.assign_slots). Missing until
+        # 2026-10-20, so every NBA lineup kept projection order in the flex slots.
         rows.append({"name": sal["name"], "team": t, "opp": opp, "game": sal.get("game"),
+                     "start": sal.get("start"),
                      "salary": sal["salary"], "dk_pos": sal.get("position"),
                      "elig": dfs_opt_nba.eligible(sal.get("position")),
                      "pid": pid, "nba_pos": h.get("pos"), "history": [tuple(x) for x in h.get("hist", [])],
@@ -231,6 +235,10 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
                 r["proj"] = r["usual"] = round(r["salary"] / 1000.0 * IMPUTED_PER_K, 2)
                 r["imputed"].append("no NBA history")
                 info["imputed"].append(r["name"])
+    # Every priced player's salary / position / tip, so a late swap can hold the
+    # slot of an entered player who is OUT but already locked (late_swap below).
+    info["priced_rows"] = {r["name"]: {"salary": r["salary"], "dk_pos": r["dk_pos"], "team": r["team"],
+                                       "start": r["start"], "game": r["game"]} for r in rows}
     pool = [r for r in rows if not r["out"] and r.get("proj", 0) > 0 and r["elig"]]
     for r in pool:
         r["pos"] = sorted(r["elig"], key=["PG", "SG", "SF", "PF", "C"].index)[0]
@@ -238,6 +246,53 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         r["gain"] = round(r["proj"] - r["usual"], 1)
     info["pool"] = len(pool)
     return pool, info
+
+
+def late_swap(pool: list, sim, entered: list[str], priced: dict, mode: str = "gpp",
+              now: datetime | None = None, improve: bool = False, iters: int = 200,
+              seed: int = 0, own_weight: float = 0.0) -> dict:
+    """Re-optimise an ENTERED lineup after late news (DK locks each game at tip).
+
+    `entered` = the 8 names in the DK lineup; `pool`/`sim` = a fresh build_slate
+    (who is dressing and projected now); `priced` = its stats["priced_rows"].
+      * an entered player whose game has started is LOCKED;
+      * one who is no longer on the board (OUT, not dressing) and whose game has
+        not started is REPLACED; if it has started he is STUCK -- he keeps his
+        slot and salary at 0 points;
+      * the rest stay unless `improve`, which re-optimises every unlocked slot
+        (the lineup's own objective, so in a GPP it drifts toward chalk).
+    Returns {"lineup", "swaps": [(out, in)], "locked", "stuck", "replace", "error"}."""
+    import numpy as np
+    now = now or datetime.now(ET)
+    board = {p["name"]: p for p in pool}
+
+    def started(name: str) -> bool:
+        st = _parse_time((board.get(name) or priced.get(name) or {}).get("start"))
+        return bool(st and st <= now)
+
+    locked = [n for n in entered if n in board and started(n)]
+    stuck = [n for n in entered if n not in board and started(n)]
+    replace = [n for n in entered if n not in board and not started(n)]
+    keep = [] if improve else [n for n in entered if n in board and not started(n)]
+    pool2, sim2 = list(pool), sim
+    for n in stuck:                         # his slot and salary stay, at zero points
+        r = priced.get(n) or {}
+        pool2.append({"name": n, "team": r.get("team"), "salary": r.get("salary") or 0,
+                      "dk_pos": r.get("dk_pos"), "elig": dfs_opt_nba.eligible(r.get("dk_pos")),
+                      "start": r.get("start"), "game": r.get("game"), "proj": 0.0, "floor": 0.0,
+                      "ceil": 0.0, "own": 0.0, "out": True})
+        sim2 = np.hstack([sim2, np.zeros((sim2.shape[0], 1))])
+    res = dfs_opt_nba.optimize(pool2, sim2, mode=mode, iters=iters, seed=seed, own_weight=own_weight,
+                               locked=set(locked) | set(stuck) | set(keep))
+    out = {"locked": locked, "stuck": stuck, "replace": replace, "lineup": res, "swaps": [], "error": None}
+    if res is None:
+        out["error"] = "No legal lineup keeps the locked players (cap, positions or 2-game rule)."
+        return out
+    final = [p["name"] for _, p in res["slots"]]
+    gone = [n for n in entered if n not in final]
+    new = [n for n in final if n not in entered]
+    out["swaps"] = list(zip(gone, new))
+    return out
 
 
 PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp", "dk_pos", "salary", "minutes", "proj",

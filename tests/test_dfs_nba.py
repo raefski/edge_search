@@ -111,3 +111,50 @@ def test_the_main_classic_slate_is_the_default_and_team_codes_match_nba_com():
     gid, meta = R.resolve_slate(None, groups)
     assert gid == 1 and meta["label"] == "Main" and len(R.classic_groups(groups)) == 2
     assert R.team("PHO") == "PHX" and R.team("NYK") == "NYK"
+
+
+# ── late swap ──────────────────────────────────────────────────────────────
+def _swap_slate():
+    from datetime import datetime, timezone
+    teams = {"NYK": "g1", "PHI": "g1", "BOS": "g2", "DET": "g2"}
+    tip = {"g1": "2026-10-20T19:00:00Z", "g2": "2026-10-21T01:30:00Z"}
+    pos = ["PG", "SG", "SF", "PF", "C", "PG/SG", "SF/PF", "PF/C"]
+    pool = []
+    for k, (t, g) in enumerate(teams.items()):
+        for i in range(10):
+            p = _p(f"{t}{i}", pos[i % 8], t, 3000 + 700 * ((i * 7 + k) % 10), 15 + 3 * ((i * 5 + k) % 9), g)
+            p["start"] = tip[g]
+            pool.append(p)
+    sim = T.simulate(pool, n_sims=400, seed=2)
+    T.summarise(sim, pool)
+    priced = {p["name"]: {k: p[k] for k in ("salary", "dk_pos", "team", "start", "game")} for p in pool}
+    lu = O.optimize(pool, sim, mode="gpp", iters=15, seed=0)
+    entered = [p["name"] for _, p in lu["slots"]]
+    between = datetime(2026, 10, 20, 21, 0, tzinfo=timezone.utc)   # g1 tipped, g2 not yet
+    return pool, sim, priced, entered, between
+
+
+def test_late_swap_replaces_only_the_scratched_player_and_keeps_locked_games():
+    pool, sim, priced, entered, now = _swap_slate()
+    late = next(n for n in entered if priced[n]["game"] == "g2")
+    board = [p for p in pool if p["name"] != late]                 # ruled out after the build
+    sim_b = np.delete(sim, [i for i, p in enumerate(pool) if p["name"] == late], axis=1)
+    sw = R.late_swap(board, sim_b, entered, priced, mode="gpp", now=now, iters=15)
+    assert sw["error"] is None and sw["replace"] == [late] and not sw["stuck"]
+    final = [p["name"] for _, p in sw["lineup"]["slots"]]
+    assert late not in final and len(sw["swaps"]) == 1 and sw["swaps"][0][0] == late
+    assert set(entered) - {late} <= set(final)                     # everyone else kept
+    assert set(sw["locked"]) == {n for n in entered if priced[n]["game"] == "g1"}
+    assert sw["lineup"]["salary"] <= O.SALARY_CAP
+
+
+def test_a_scratched_player_whose_game_already_tipped_is_stuck_in_his_slot():
+    pool, sim, priced, entered, now = _swap_slate()
+    early = next(n for n in entered if priced[n]["game"] == "g1")
+    board = [p for p in pool if p["name"] != early]
+    sim_b = np.delete(sim, [i for i, p in enumerate(pool) if p["name"] == early], axis=1)
+    sw = R.late_swap(board, sim_b, entered, priced, mode="gpp", now=now, iters=15, improve=True)
+    assert sw["stuck"] == [early] and sw["error"] is None
+    final = [p["name"] for _, p in sw["lineup"]["slots"]]
+    assert early in final                                          # holds his slot at 0 points
+    assert {n for n in entered if priced[n]["game"] == "g1"} <= set(final)   # locked ones stay

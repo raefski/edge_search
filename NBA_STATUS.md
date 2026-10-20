@@ -52,7 +52,13 @@ overall). One opening week is all the cache allows, so none of this is held out.
 
 - **Props** (`dfs_nba`): DK posts points/rebounds/assists (verified 10/15 for 10/20 games); not blended into projections. Next: log props beside projections, grade both after a week.
 - **Ownership** is an unfitted prior. Twelve NBA GPP exports sit in `data/contests.db` (GPP_META: NBA fields rewarded chalk on all 10 slates measured) — rebuild those slates' projections from history and fit it.
-- The optimiser takes `locked=` (late swap) and `edge/dfs_leverage_sports.hoops` builds the leverage map for NBA results, but page 12 shows neither yet, and there is no field-aware cash (NHL has all three).
+- **Late swap on the phone (built 2026-10-20):** page 12's 🔁 Swap tab (`R.late_swap`) takes
+  your entered 8, locks players whose game has tipped, replaces an OUT player whose game
+  has not, and holds the slot of one who is OUT but already locked. "Also re-optimise"
+  re-climbs the unlocked slots. Same day: board rows now carry `start`. Without it,
+  `assign_slots` never put the latest tips in G/F/UTIL (DK's late-swap convention) for NBA.
+- `edge/dfs_leverage_sports.hoops` builds the leverage map for NBA results, but page 12
+  doesn't show it yet, and there is no field-aware cash.
 - First real slate: **10/20, DK draft group 154575** (3 games). Watch: starters flipping Expected → Confirmed (lineup log `data/nba_lineup_log.csv` records when), the first urgent push, and whether projections for stars look sane once inactives post.
 
 ## Merged 2026-10-16: the web session's parallel basketball build

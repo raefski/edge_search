@@ -228,7 +228,7 @@ def render(result, mode: str) -> None:
                 unsafe_allow_html=True)
 
 
-t_cash, t_gpp, t_board = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board"])
+t_cash, t_gpp, t_board, t_swap = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board", "🔁 Swap"])
 with t_cash:
     render(res.get("cash"), "cash")
     st.caption("Objective: the 30th percentile of the lineup's simulated total (a double-up "
@@ -264,6 +264,45 @@ with t_board:
     st.caption("“starts” = in tonight's starting five. Δ = points vs his usual role (minutes the news "
                "added or took away). Val = points per \\$1,000. * = no NBA history: projected "
                f"from his price ({R.IMPUTED_PER_K} pts per \\$1k).")
+
+
+with t_swap:
+    # Late swap: DK locks each game at its tip, so after a scratch you keep the
+    # players already playing and replace the OUT one (edge/dfs_run_nba.late_swap).
+    priced = (res.get("stats") or {}).get("priced_rows") or {}
+    sw_mode = st.radio("Lineup", ["gpp", "cash"], horizontal=True, key="nba_swap_mode",
+                       format_func=lambda m: "🚀 GPP" if m == "gpp" else "💵 CASH")
+    app_lu = [p["name"] for _, p in ((res.get(sw_mode) or {}).get("slots") or [])]
+    names = sorted(set(priced) | {p["name"] for p in pool})
+    entered = st.multiselect("Your entered lineup (8 players)", names,
+                             default=[n for n in app_lu if n in names], max_selections=8,
+                             key=f"nba_swap_entered_{sw_mode}",
+                             help="Starts as this app's lineup. Change it to what you actually entered on DK.")
+    improve = st.toggle("Also re-optimise the healthy unlocked slots", value=False, key="nba_swap_improve",
+                        help="Off: only replace OUT players (keeps your build). On: re-optimise every "
+                             "slot whose game has not tipped.")
+    if len(entered) == 8 and st.button("🔁 Late swap", width="stretch"):
+        sw = R.late_swap(pool, res["sim"], entered, priced, mode=sw_mode, improve=improve,
+                         iters=iters, own_weight=own_weight)
+        if sw["locked"]:
+            st.caption("🔒 Locked (game started): " + ", ".join(sw["locked"]))
+        if sw["stuck"]:
+            st.markdown("<div class='bad'>⛔ OUT but already locked (0 pts, can't swap): "
+                        + ", ".join(sw["stuck"]) + "</div>", unsafe_allow_html=True)
+        if sw["error"]:
+            st.markdown(f"<div class='bad'>{sw['error']}</div>", unsafe_allow_html=True)
+        else:
+            if sw["swaps"]:
+                st.markdown("<div class='ok'>" + "<br>".join(
+                    f"<span class='out'>{a}</span> → <b>{b}</b>" for a, b in sw["swaps"]) + "</div>",
+                    unsafe_allow_html=True)
+            else:
+                st.markdown("<div class='ok'>✅ No swap needed: everyone is dressing.</div>",
+                            unsafe_allow_html=True)
+            render(sw["lineup"], sw_mode)
+    elif len(entered) != 8:
+        st.caption("Pick all 8 players you entered.")
+    st.caption("Tap 🔄 Refresh first so the board has the latest OUT list and starters.")
 
 
 def _csv() -> bytes:
