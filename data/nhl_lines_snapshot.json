@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-20T22:44:28+00:00",
+"generated_at": "2026-10-20T22:45:26+00:00",
 "goalies": {
 "2026-10-20": {
 "ANA": {
@@ -14261,6 +14261,42 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
+"line": "G1",
+"pk": null,
+"pos": "g",
+"pp": null
+},
+"Artur Akhtyamov": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 4,
+"goalieGoalsAgainst": 13,
+"goalieGoalsAgainstAvg": "5.0",
+"goalieLosses": 2,
+"goalieMinutes": 155,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.865",
+"goalieSaves": 84,
+"goalieSeconds": 50,
+"goalieShotsAgainst": 96,
+"goalieShutouts": 0,
+"goalieWins": 0
+},
+"last5": {
+"gamesPlayed": 4,
+"goalieGoalsAgainst": 13,
+"goalieGoalsAgainstAvg": "5.0",
+"goalieLosses": 2,
+"goalieMinutes": 155,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.865",
+"goalieSaves": 84,
+"goalieSeconds": 50,
+"goalieShotsAgainst": 96,
+"goalieShutouts": 0,
+"goalieWins": 0
+},
 "line": "G2",
 "pk": null,
 "pos": "g",
@@ -14706,42 +14742,6 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
-},
-"Sergei Bobrovsky": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 27,
-"goalieGoalsAgainstAvg": "2.83",
-"goalieLosses": 4,
-"goalieMinutes": 572,
-"goalieOvertimeLosses": 2,
-"goalieSavePercentage": "0.898",
-"goalieSaves": 238,
-"goalieSeconds": 50,
-"goalieShotsAgainst": 265,
-"goalieShutouts": 0,
-"goalieWins": 3
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 15,
-"goalieGoalsAgainstAvg": "2.92",
-"goalieLosses": 1,
-"goalieMinutes": 307,
-"goalieOvertimeLosses": 2,
-"goalieSavePercentage": "0.906",
-"goalieSaves": 145,
-"goalieSeconds": 27,
-"goalieShotsAgainst": 160,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"line": "G1",
-"pk": null,
-"pos": "g",
 "pp": null
 },
 "Teddy Blueger": {
