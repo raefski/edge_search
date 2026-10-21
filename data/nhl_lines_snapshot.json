@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-21T18:59:32+00:00",
+"generated_at": "2026-10-21T20:14:20+00:00",
 "goalies": {
 "2026-10-21": {
 "BUF": {
@@ -2212,40 +2212,6 @@
 "pos": "lw",
 "pp": "PP1"
 },
-"Bradly Nadeau": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 5,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 17,
-"toiMinutes": 160,
-"toiSeconds": 46
-},
-"last5": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 13,
-"toiMinutes": 87,
-"toiSeconds": 21
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Brandon Bussi": {
 "gtd": false,
 "injury": null,
@@ -2311,7 +2277,7 @@
 "toiMinutes": 63,
 "toiSeconds": 16
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -2345,10 +2311,10 @@
 "toiMinutes": 72,
 "toiSeconds": 12
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "rw",
-"pp": "PP2"
+"pos": "c",
+"pp": null
 },
 "Jaccob Slavin": {
 "gtd": false,
@@ -2481,7 +2447,7 @@
 "toiMinutes": 58,
 "toiSeconds": 57
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -2517,7 +2483,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Juuso Valimaki": {
@@ -2552,7 +2518,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "K'Andre Miller": {
 "gtd": false,
@@ -2793,6 +2759,40 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP1"
+},
+"Seth Jarvis": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 4,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 6,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 23,
+"toiMinutes": 199,
+"toiSeconds": 14
+},
+"last5": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 11,
+"toiMinutes": 104,
+"toiSeconds": 31
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
 },
 "Shayne Gostisbehere": {
 "gtd": false,
@@ -17372,6 +17372,40 @@
 "pos": "rw",
 "pp": null
 },
+"Brayden Yager": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 109,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 66,
+"toiSeconds": 40
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Clay Stevenson": {
 "gtd": false,
 "injury": null,
@@ -17406,40 +17440,6 @@
 "line": "G2",
 "pk": null,
 "pos": "g",
-"pp": null
-},
-"Cole Koepke": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 107,
-"toiSeconds": 56
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 46,
-"toiSeconds": 50
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
 "pp": null
 },
 "Cole Perfetti": {
@@ -17643,7 +17643,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Kyle Connor": {
@@ -17845,7 +17845,7 @@
 "toiMinutes": 62,
 "toiSeconds": 29
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
