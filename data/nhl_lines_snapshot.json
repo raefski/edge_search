@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-21T01:59:44+00:00",
+"generated_at": "2026-10-21T02:29:37+00:00",
 "goalies": {
 "2026-10-20": {
 "ANA": {
@@ -68,7 +68,7 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": "Likely"
+"status": "Confirmed"
 },
 "TOR": {
 "goalie": "Anthony Stolarz",
@@ -13747,7 +13747,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
 },
 "Dennis Hildeby": {
@@ -13786,38 +13786,38 @@
 "pos": "g",
 "pp": null
 },
-"Dominic James": {
+"Emil Lilleberg": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 2,
-"blocks": 3,
+"assists": 0,
+"blocks": 5,
 "gamesPlayed": 10,
-"goals": 3,
-"points": 5,
+"goals": 0,
+"points": 0,
 "powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 14,
-"toiMinutes": 123,
-"toiSeconds": 48
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 153,
+"toiSeconds": 11
 },
 "last5": {
-"assists": 2,
+"assists": 0,
 "blocks": 2,
 "gamesPlayed": 5,
-"goals": 2,
-"points": 4,
+"goals": 0,
+"points": 0,
 "powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 10,
-"toiMinutes": 66,
-"toiSeconds": 14
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 77,
+"toiSeconds": 6
 },
-"line": "F4",
+"line": "D3",
 "pk": null,
-"pos": "c",
+"pos": "rd",
 "pp": null
 },
 "Erik Cernak": {
@@ -13990,6 +13990,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Jeffrey Viel": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 105,
+"toiSeconds": 37
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 44,
+"toiSeconds": 43
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "John Carlson": {
 "gtd": false,
 "injury": null,
@@ -14023,40 +14057,6 @@
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
-},
-"Maxwell Crozier": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 19,
-"toiMinutes": 174,
-"toiSeconds": 31
-},
-"last5": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 83,
-"toiSeconds": 48
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
 },
 "Nikita Kucherov": {
 "gtd": false,
