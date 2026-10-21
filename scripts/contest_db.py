@@ -92,8 +92,10 @@ OUR_LOGS = {
             ("data/dfs_proj_log_mlb_recovered.csv", "player", None, "recovered")],
 }
 #: Dan's paid sheets (gitignored): (glob, sport, date regex)
-DAN_FILES = [("Dan*_Projections_*.csv", "NFL"), ("Dans_Projections_*.csv", "NFL"),
-             ("Dans_cfb-projections-*.csv", "NCAAF")]
+#: First match wins: "Dan*_Projections_*" would also claim the NBA sheet, which
+#: has its own columns (Player / Salary / RPS Projection / RPS Ownership / Minutes).
+DAN_FILES = [("Dans_NBA_Projections_*.csv", "NBA"), ("Dan*_Projections_*.csv", "NFL"),
+             ("Dans_Projections_*.csv", "NFL"), ("Dans_cfb-projections-*.csv", "NCAAF")]
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT);
@@ -363,8 +365,12 @@ def load_projections(conn) -> int:
                                      _f(r.get("own")), own_cash, "ours", variant,
                                      str(fp.relative_to(ROOT)),
                                      built.get(f"{sport.lower()}:{gid}"), json.dumps(extra)))
+    claimed: set = set()
     for pattern, sport in DAN_FILES:
         for f in sorted(set(glob.glob(str(ROOT / pattern)))):
+            if f in claimed:
+                continue
+            claimed.add(f)
             fp = Path(f)
             m = re.search(r"(\d{4}-\d{2}-\d{2})", fp.name)
             if not m:
@@ -372,7 +378,12 @@ def load_projections(conn) -> int:
             date = m.group(1)
             with fp.open(newline="", encoding="utf-8-sig") as fh:
                 for r in csv.DictReader(fh):
-                    if sport == "NFL":
+                    extra = "{}"
+                    if sport == "NBA":
+                        name, pos, team = r.get("Player"), r.get("Pos"), r.get("Team")
+                        sal, proj, own, opp = r.get("Salary"), r.get("RPS Projection"), r.get("RPS Ownership"), None
+                        extra = json.dumps({"minutes": _f(r.get("Minutes")), "updated": r.get("Updated (ET)")})
+                    elif sport == "NFL":
                         name, pos, team = r.get("Player"), r.get("Pos"), r.get("Team")
                         sal, proj, own = r.get("DK Salary"), r.get("DK Proj"), r.get("Est Own%")
                         opp = r.get("Opponent")
@@ -385,7 +396,7 @@ def load_projections(conn) -> int:
                                  "DST" if pos in ("DST", "D/ST", "DEF") else pos,
                                  _f(sal), _f(proj), None, None, None,
                                  _f((own or "").rstrip("%")), None, "dan", "sheet",
-                                 fp.name, None, "{}"))
+                                 fp.name, None, extra))
     # one row per (source, sport, draft group/date, player): a sheet can list a
     # player twice (Dan's lists DST under the team and the nickname); keep the first
     seen, out = set(), []

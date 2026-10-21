@@ -178,7 +178,8 @@ data/mma_odds_history/
 #     ownership research (scripts/dfs_compare_dan.py). This repo is public.
 #     Both spellings: the file has arrived as "Dans_Projections_..." and as
 #     "Dan_Projections_Main_DK_...", and the singular form slipped through
-#     untracked-but-not-ignored once (2026-09-27) before this line existed.
+#     untracked-but-not-ignored once (2026-09-27) before this line existed,
+#     and the NBA sheet did again (2026-10-21): the catch-all below covers both.
 #   * dfs_calibration.html -- output of scripts/dfs_calibration_plot.py.
 data/nascar_cache/
 #   * nhl_cache/ -- NHL API box scores and season reports, DailyFaceoff pages;
@@ -188,6 +189,9 @@ data/ncaaf_ground_truth/
 Dan_Projections_*.csv
 Dans_Projections_*.csv
 Dans_cfb-projections-*.csv
+# Any sport: "Dans_NBA_Projections_2026-10-21_dk-classic.csv" (2026-10-21) matched
+# none of the three above and sat untracked-but-not-ignored, like 9/27's did.
+Dan*[Pp]rojections*.csv
 data/dfs_calibration.html
 
 # contest fill snapshots (scripts/dfs_overlay.py): local data, grows every lock
