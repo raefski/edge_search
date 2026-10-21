@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-21T12:59:43+00:00",
+"generated_at": "2026-10-21T13:59:25+00:00",
 "goalies": {
 "2026-10-21": {
 "BUF": {
@@ -89,7 +89,7 @@
 "status": null
 },
 "SJS": {
-"goalie": "Alex Nedeljkovic",
+"goalie": "Yaroslav Askarov",
 "status": null
 },
 "STL": {
@@ -13185,7 +13185,7 @@
 "goalieShutouts": 1,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13426,7 +13426,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Kiefer Sherwood": {
 "gtd": false,
@@ -13664,7 +13664,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Ty Dellandrea": {
 "gtd": false,
@@ -13799,7 +13799,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -14837,7 +14837,7 @@
 "pp": "PP2"
 },
 "Jake McCabe": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 0,
@@ -15038,7 +15038,7 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Teddy Blueger": {
 "gtd": false,
@@ -15140,7 +15140,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "William Nylander": {
 "gtd": false,
