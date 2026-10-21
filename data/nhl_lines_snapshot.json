@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-21T21:44:41+00:00",
+"generated_at": "2026-10-21T23:14:38+00:00",
 "goalies": {
 "2026-10-21": {
 "BUF": {
@@ -11125,7 +11125,7 @@
 "toiMinutes": 62,
 "toiSeconds": 4
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -11365,9 +11365,9 @@
 "toiMinutes": 52,
 "toiSeconds": 19
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Jamie Drysdale": {
@@ -11473,40 +11473,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
-},
-"Michael Bunting": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 0,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 15,
-"toiMinutes": 116,
-"toiSeconds": 2
-},
-"last5": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 55,
-"toiSeconds": 23
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
 },
 "Nick Seeler": {
 "gtd": false,
@@ -11779,6 +11745,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Tyson Foerster": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 22,
+"toiMinutes": 175,
+"toiSeconds": 55
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 85,
+"toiSeconds": 46
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
 }
 },
 "PIT": {
