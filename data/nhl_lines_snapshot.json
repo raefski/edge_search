@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-21T13:59:25+00:00",
+"generated_at": "2026-10-21T14:29:26+00:00",
 "goalies": {
 "2026-10-21": {
 "BUF": {
@@ -29,7 +29,7 @@
 "status": null
 },
 "CAR": {
-"goalie": "Pyotr Kochetkov",
+"goalie": "Brandon Bussi",
 "status": null
 },
 "CGY": {
@@ -41,7 +41,7 @@
 "status": null
 },
 "DET": {
-"goalie": "Daniil Tarasov",
+"goalie": "John Gibson",
 "status": null
 },
 "EDM": {
@@ -105,7 +105,7 @@
 "status": null
 },
 "VAN": {
-"goalie": "Leevi Merilainen",
+"goalie": "Kevin Lankinen",
 "status": null
 },
 "VGK": {
@@ -2277,7 +2277,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2721,7 +2721,7 @@
 "goalieShutouts": 0,
 "goalieWins": 5
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -3824,7 +3824,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Kyle Capobianco": {
 "gtd": false,
@@ -3926,7 +3926,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Miro Heiskanen": {
 "gtd": false,
@@ -4370,7 +4370,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Anton Johansson": {
 "gtd": false,
@@ -4438,7 +4438,7 @@
 "line": "D4",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Ben Chiarot": {
 "gtd": false,
@@ -4539,7 +4539,7 @@
 "goalieShutouts": 2,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -4576,7 +4576,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Emmitt Finnie": {
 "gtd": false,
@@ -4610,7 +4610,7 @@
 "line": "F1",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "John Gibson": {
 "gtd": false,
@@ -4643,7 +4643,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -4748,7 +4748,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Michael Brandsegg-Nyg\u00e5rd": {
 "gtd": false,
@@ -4782,7 +4782,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Michael Rasmussen": {
 "gtd": false,
@@ -4816,7 +4816,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Moritz Seider": {
 "gtd": false,
@@ -4918,7 +4918,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 }
 },
 "EDM": {
@@ -4988,7 +4988,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Connor McDavid": {
 "gtd": false,
@@ -5160,7 +5160,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Isaac Howard": {
 "gtd": false,
@@ -5262,7 +5262,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Leon Draisaitl": {
 "gtd": false,
@@ -5466,7 +5466,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Tristan Jarry": {
 "gtd": false,
@@ -7184,7 +7184,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Jesper Wallstedt": {
 "gtd": false,
@@ -7526,7 +7526,7 @@
 "line": "D1",
 "pk": null,
 "pos": "ld",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Ryan Hartman": {
 "gtd": false,
@@ -16063,7 +16063,7 @@
 "toiMinutes": 103,
 "toiSeconds": 28
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -16233,7 +16233,7 @@
 "toiMinutes": 87,
 "toiSeconds": 28
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -16303,7 +16303,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -16339,7 +16339,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
