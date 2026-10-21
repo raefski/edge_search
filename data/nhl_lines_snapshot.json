@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-21T17:59:33+00:00",
+"generated_at": "2026-10-21T18:59:32+00:00",
 "goalies": {
 "2026-10-21": {
 "BUF": {
@@ -15898,40 +15898,6 @@
 }
 },
 "VAN": {
-"Arshdeep Bains": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 111,
-"toiSeconds": 0
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 52,
-"toiSeconds": 7
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Brendan Gallagher": {
 "gtd": false,
 "injury": null,
@@ -16029,9 +15995,9 @@
 "toiMinutes": 78,
 "toiSeconds": 30
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK1",
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Elias Nils Pettersson": {
@@ -16063,7 +16029,7 @@
 "toiMinutes": 103,
 "toiSeconds": 28
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -16131,7 +16097,7 @@
 "toiMinutes": 70,
 "toiSeconds": 14
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -16199,7 +16165,7 @@
 "toiMinutes": 76,
 "toiSeconds": 34
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -16233,7 +16199,7 @@
 "toiMinutes": 87,
 "toiSeconds": 28
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -16373,10 +16339,10 @@
 "toiMinutes": 68,
 "toiSeconds": 15
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Linus Karlsson": {
 "gtd": false,
@@ -16445,6 +16411,40 @@
 "pk": "PK2",
 "pos": "rd",
 "pp": null
+},
+"Marco Rossi": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 17,
+"toiMinutes": 166,
+"toiSeconds": 36
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 81,
+"toiSeconds": 49
+},
+"line": "F2",
+"pk": null,
+"pos": "c",
+"pp": "PP2"
 },
 "Max Sasson": {
 "gtd": false,
