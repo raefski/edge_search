@@ -266,15 +266,21 @@ with t_gpp:
         with st.spinner("Building lineups from chalk to contrarian…"):
             an = (_nba_leverage_for(gid, sims, iters, own_weight, st.session_state.nba_nonce, contest)
                   if contest else _nba_leverage(gid, sims, iters, own_weight, st.session_state.nba_nonce))
+        st.markdown("<div class='warn'>🏀 <b>NBA: chalk wins.</b> On 11 real NBA GPPs, lineups that were "
+                    "LESS owned than their projection returned 0.59 ROI less than the chalkiest ones "
+                    "(10 of 11 nights), duplicates and all: the field's ownership knows news our "
+                    "projection doesn't. The ⭐ EV assumes our projection is right, so prefer the "
+                    "chalk end of this map.</div>", unsafe_allow_html=True)
         chosen = LU.leverage_view(an, key="nba")
         if chosen:
             render(chosen["result"], "gpp")
     else:
         render(res.get("gpp"), "gpp")
-    st.caption("Objective: the 90th percentile, minus the ownership fade if set. No stacking "
-               "rule: in NBA what is left after minutes barely co-moves (teammates -0.04, "
-               "opponents 0.00 over 2025-26). Ownership is a PRIOR (value + salary per position, "
-               "not yet fitted to NBA contests), so the map's ORDER is the signal, not its dollars.")
+    st.caption("Objective: the 90th percentile, minus the ownership fade if set (leave it at 0 "
+               "in NBA: chalk beat contrarian at equal projection). A game's players are simulated "
+               "together: a team's starters rise and fall as one (+0.05), the bench moves against "
+               "them (-0.09). Cash and GPP often share most players: the best NBA plays are the "
+               "best for both. Ownership: value + salary + today's show buzz.")
 with t_board:
     params = st.query_params
     default_only = str(params.get("promoted", "")).lower() in ("1", "true", "yes")

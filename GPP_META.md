@@ -235,9 +235,10 @@ sign everywhere.
 - **NFL / NCAAF / NASCAR / MMA:** not enough data (1-3 slates each). Keep
   exporting; the earliest sport to become decidable is NFL, at about 5 main
   slates with logs.
-- **NBA:** projection is untestable (no logs yet), but chalk cashed and
-  top-1%'d more on all 10 slates. Start the NBA build assuming chalk is
-  usually right.
+- **NBA (11 slates, tested 2026-10-22 on rebuilt projections, `scripts/nba_gpp_exante.py`):**
+  at a FIXED projection, ownership raised ROI +0.32 per SD [+0.16, +0.48]; the contrarian
+  quintile trailed chalk by -0.59 ROI [-0.93, -0.21] (10/11 nights). NBA is the one sport
+  where fading actively loses: the field knows news the projection doesn't. GPP = cash is fine.
 
 ---
 

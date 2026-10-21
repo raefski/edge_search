@@ -71,6 +71,26 @@ only after lock (Live Before Lock streams). Every show's mentions lean the right
 the prior's miss +0.06..+0.19, Tory Langley -0.02); too few nights to drop one. First live night
 10/21: 19 YouTube + 2 podcasts by 6 PM, 219 players named. Page 12 says when buzz is in.
 
+## Cash = GPP is right in NBA (2026-10-22)
+
+Adam saw identical cash and GPP lineups. Two checks:
+
+1. **The simulator was drawing everyone independently.** That rested on residual correlation AFTER
+   the minutes actually played. On PRE-GAME errors (z = error / sd_for, pre-game projection with
+   starters confirmed, players projected >= 12; 2025-26 / 2024-25), same-team starter pairs run
+   +0.067 / +0.043, starter-bench -0.090 / -0.088, opposing starters +0.019 / +0.010 (blowouts and
+   game script move whole rotations). `simulate` now draws a game's players jointly (Gaussian copula,
+   ROLE_CORR; marginals unchanged, tested). On 10/21's main, cash and GPP still share 6 of 8: the
+   correlation is real but too small to split them.
+2. **Should GPP fade?** `scripts/nba_gpp_exante.py`: the 11 NBA GPP nights rebuilt, every entry
+   scored on our pre-lock projection and its real ownership (59k entries). At a FIXED projection,
+   more ownership paid: ROI +0.32 per SD [+0.16, +0.48], cash +10.6 pp, top-1% +0.49 pp. The contrarian
+   fifth minus the chalk fifth was **-0.59 ROI [-0.93, -0.21], 10/11 nights**, despite 15.8 vs 1.6
+   duplicates. The field's ownership carries news our projection lacks (NHL showed the same, smaller).
+   So: GPP ownership fade stays 0, cash and GPP sharing most players is correct, and page 12
+   warns that the map's EV ⭐ (which treats our projection as truth) leans the wrong way in NBA.
+   Next lever: use predicted ownership + buzz as a projection signal.
+
 ## Not done / not verified
 
 - **Props** (`dfs_nba`): DK posts points/rebounds/assists (verified 10/15 for 10/20 games); not blended into projections. Next: log props beside projections, grade both after a week.

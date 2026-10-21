@@ -80,6 +80,8 @@ JOBS: dict[str, Job] = {j.name: j for j in [
        doc="same players with and without their DK props, pinned rebuilds"),
     _j("buzz-nba", "ingest", "scripts/buzz_nba.py", sport="nba", timer="buzz-nba-publish.timer",
        doc="today's NBA DFS YouTube + podcast mentions (in GPP ownership: BUZZ_BETA)"),
+    _j("nba-gpp-exante", "evaluate", "scripts/nba_gpp_exante.py", sport="nba",
+       doc="NBA GPPs: chalk vs contrarian at a fixed (rebuilt) projection, by night"),
     _j("buzz-fit-nba", "evaluate", "scripts/buzz_fit_nba.py", sport="nba",
        doc="held-out test of NBA buzz vs GPP %Drafted, by night"),
     _j("buzz-nfl", "ingest", "scripts/buzz_nfl.py", sport="nfl", timer="buzz-publish.timer"),

@@ -185,3 +185,17 @@ def test_attach_buzz_reads_only_tonight(tmp_path, monkeypatch):
     assert R.attach_buzz(pool, "2026-10-21") == 1
     assert pool[0]["buzz"] == 30 and pool[1]["buzz"] == 0
     assert R.attach_buzz(pool, "2026-10-22") == 0 and pool[0]["buzz"] is None
+
+
+def test_one_games_starters_move_together_and_the_bench_moves_against_them():
+    pool = []
+    for t, g in (("NYK", "g1"), ("PHI", "g1")):
+        for i in range(9):
+            p = _p(f"{t}{i}", "PG", t, 4000, 30 - 2 * i, g)
+            p["starter"] = i < 5
+            pool.append(p)
+    sim = T.simulate(pool, n_sims=40000, seed=3)
+    c = np.corrcoef(sim.T)
+    ss, sb, opp = c[0, 1], c[0, 6], c[0, 10]                   # NYK0-NYK1, NYK0-NYK6, NYK0-PHI1
+    assert 0.03 < ss < 0.08 and -0.12 < sb < -0.05 and 0.0 < opp < 0.04
+    assert abs(sim[:, 0].mean() - 30) < 0.4                     # the marginal is untouched
