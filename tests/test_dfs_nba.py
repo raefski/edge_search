@@ -158,3 +158,30 @@ def test_a_scratched_player_whose_game_already_tipped_is_stuck_in_his_slot():
     final = [p["name"] for _, p in sw["lineup"]["slots"]]
     assert early in final                                          # holds his slot at 0 points
     assert {n for n in entered if priced[n]["game"] == "g1"} <= set(final)   # locked ones stay
+
+
+# ── buzz ───────────────────────────────────────────────────────────────────
+def test_buzz_raises_a_named_players_ownership_and_none_means_the_prior():
+    pool = [_p(f"g{i}", "PG", "NYK", 4000 + 300 * i, 20 + i) for i in range(8)]
+    T.add_ownership(pool)
+    prior = {p["name"]: p["own"] for p in pool}
+    for p in pool:
+        p["buzz"] = 40 if p["name"] == "g1" else 0
+    T.add_ownership(pool)
+    assert pool[1]["own"] > prior["g1"]
+    for p in pool:
+        p["buzz"] = None                                     # no collection tonight
+    T.add_ownership(pool)
+    assert {p["name"]: p["own"] for p in pool} == prior
+
+
+def test_attach_buzz_reads_only_tonight(tmp_path, monkeypatch):
+    from edge import repo_files
+    f = tmp_path / "buzz_nba.csv"
+    f.write_text("date,player,team,pos,mentions,videos,channels,reach\n"
+                 "2026-10-21,Jalen Brunson,NYK,PG,30,4,3,9000\n2026-10-20,Joel Embiid,PHI,C,50,5,4,9000\n")
+    monkeypatch.setattr(repo_files, "read", lambda p: type("F", (), {"data": f.read_text()})())
+    pool = [{"name": "Jalen Brunson"}, {"name": "Joel Embiid"}]
+    assert R.attach_buzz(pool, "2026-10-21") == 1
+    assert pool[0]["buzz"] == 30 and pool[1]["buzz"] == 0
+    assert R.attach_buzz(pool, "2026-10-22") == 0 and pool[0]["buzz"] is None

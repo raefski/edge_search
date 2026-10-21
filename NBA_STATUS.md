@@ -48,6 +48,29 @@ rotation cap (<= 0.04 better, in-sample) and a higher excess power (worse
 overall). One opening week is all the cache allows, so none of this is held out.
 **Build after lineups confirm (late swap): that removes about a third of the bias.**
 
+## Buzz: YouTube + podcasts in GPP ownership (2026-10-21)
+
+`scripts/buzz_nba.py` (timer `buzz-nba-publish`, 10:30 / 13:00 / 15:30 / 17:30 / 18:20 ET) collects the
+day's NBA DFS shows (date-keyed YouTube search plus the Stokastic and Ship It Nation podcast feeds) and
+counts player mentions with edge/buzz.py's matcher, words cut at lock. A show only counts if its words
+were READABLE before lock: an upload, a live stream that had ended (+45 min for YouTube's transcript),
+or a podcast episode published before lock. Podcasts are mostly reposts of the YouTube streams posted
+after lock, so they add little (5 ready episodes over 10 nights).
+
+`scripts/buzz_fit_nba.py`: 10 GPP nights rebuilt as they stood, buzz backfilled, leave one night out:
+
+| buzz | ownership MAE held out | vs prior 5.355 | nights better | rank corr |
+|---|---|---|---|---|
+| YouTube, readable before lock | 5.116 | -0.238 [-0.453, -0.026] | 7/10 | +0.730 |
+| **YouTube + podcasts, readable (shipped)** | **5.080** | **-0.275 [-0.481, -0.079]** | 7/10 | +0.735 |
+| all pre-lock talk, read afterwards | 4.981 | -0.374 [-0.617, -0.154] | 8/10 | +0.739 |
+
+`BUZZ_BETA = 0.4` (folds: 0.4 x6, 0.3 x4). When the talk happens (mentions, ET): night-before previews
+1,501, mornings 1,384, early afternoon 2,079 -- all readable; late afternoon 2,900 readable + 6,690
+only after lock (Live Before Lock streams). Every show's mentions lean the right way (rank corr with
+the prior's miss +0.06..+0.19, Tory Langley -0.02); too few nights to drop one. First live night
+10/21: 19 YouTube + 2 podcasts by 6 PM, 219 players named. Page 12 says when buzz is in.
+
 ## Not done / not verified
 
 - **Props** (`dfs_nba`): DK posts points/rebounds/assists (verified 10/15 for 10/20 games); not blended into projections. Next: log props beside projections, grade both after a week.

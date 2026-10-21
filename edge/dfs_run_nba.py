@@ -44,6 +44,7 @@ SPORT = "basketball_nba"
 DK_SPORT = "NBA"
 CLASSIC = 70
 HISTORY = ROOT / "data" / "nba_player_history.json"
+BUZZ_FILE = ROOT / "data" / "buzz_nba.csv"
 #: DK points per $1,000 for a player with no history at all (rookie, no preseason).
 IMPUTED_PER_K = 4.5
 #: Players a team dresses on a game night (13 active; 2025-26 NBA.com lineups median).
@@ -82,6 +83,24 @@ def load_history() -> dict:
     if found is None:
         return {"players": {}, "names": {}, "teams": {}, "league_pm": None}
     return found.json()
+
+
+def attach_buzz(pool: list, date: str, path: Path = BUZZ_FILE) -> int:
+    """Tonight's NBA DFS show mentions (scripts/buzz_nba.py: YouTube + podcasts,
+    only what was readable before lock) as `buzz` on every row, for ownership
+    (dfs_nba_theory.BUZZ_BETA). No collection for the date -> `buzz` stays None
+    and ownership is the prior. Returns how many players the night has."""
+    import io
+
+    from edge import repo_files
+    found = repo_files.read(path)
+    if found is None:
+        return 0
+    rows = [r for r in csv.DictReader(io.StringIO(found.data)) if r.get("date") == date]
+    mentions = {norm(r["player"]): int(float(r.get("mentions") or 0)) for r in rows}
+    for p in pool:
+        p["buzz"] = mentions.get(norm(p["name"]), 0) if rows else None
+    return len(rows)
 
 
 def game_lines(client, games: dict) -> dict:
@@ -344,6 +363,11 @@ def build_slate(draft_group=None, client=None, n_sims: int = 3000, iters: int = 
                 "meta": meta, "slates": slates, "stats": info}
     sim = theory.simulate(pool, n_sims=n_sims, seed=seed)
     theory.summarise(sim, pool)
+    try:
+        info["buzz_rows"] = attach_buzz(pool, info["date"])
+    except Exception as exc:                                # noqa: BLE001 -- buzz is optional
+        log.warning("nba: no buzz (%s)", exc)
+        info["buzz_rows"] = 0
     theory.add_ownership(pool)
     cash = dfs_opt_nba.optimize(pool, sim, mode="cash", iters=iters, seed=seed)
     gpp = dfs_opt_nba.optimize(pool, sim, mode="gpp", iters=iters, seed=seed, own_weight=own_weight)

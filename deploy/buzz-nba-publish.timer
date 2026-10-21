@@ -1,0 +1,17 @@
+# NBA DFS shows readable before lock are the night-before previews, the morning
+# shows and the early-afternoon ones (2025-26 backfill: 1,501 / 1,384 / 2,079
+# mentions); "Live Before Lock" streams only become readable after they end.
+# Most slates lock at 7:00 PM ET; the 18:20 pass picks up afternoon streams
+# that ended, ~30 min before the autolog build. Weekend early locks get the
+# morning passes. Verify with `systemd-analyze calendar`.
+[Unit]
+Description=Collect NBA DFS buzz before lock
+[Timer]
+OnCalendar=*-*-* 10:30:00
+OnCalendar=*-*-* 13:00:00
+OnCalendar=*-*-* 15:30:00
+OnCalendar=*-*-* 17:30:00
+OnCalendar=*-*-* 18:20:00
+Persistent=true
+[Install]
+WantedBy=timers.target

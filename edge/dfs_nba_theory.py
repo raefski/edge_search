@@ -102,19 +102,39 @@ def _normalise(weights, target, cap):
     return owns
 
 
-def add_ownership(pool: list, weights: tuple | None = None) -> list:
+#: YouTube / podcast BUZZ (scripts/buzz_nba.py -> data/buzz_nba.csv): how often
+#: the day's NBA DFS shows named a player before lock, as one more softmax term,
+#: z-scored log(1 + mentions) within position -- the NFL's form (dfs_nfl_theory
+#: BUZZ_BETA). Used only when the pool carries `buzz`; a night with no collection
+#: runs the value + salary prior exactly as before.
+#:
+#: Fitted 2026-10-21, scripts/buzz_fit_nba.py: the 10 NBA GPP nights in contests.db
+#: (2025-12-25 .. 2026-03-01) rebuilt as they stood, buzz backfilled with only
+#: what was READABLE before lock (uploads, live streams that had ended, podcast
+#: episodes published before lock), leave one night out, ownership MAE per player:
+#:   prior 5.355 -> 5.080 held out (-0.275 [-0.481, -0.079]), better 7/10,
+#:   rank corr +0.709 -> +0.735. Folds picked 0.4 (6) / 0.3 (4). YouTube alone
+#:   -0.238; all pre-lock talk read afterwards (upper bound) -0.374 at 0.4.
+BUZZ_BETA = 0.4
+
+
+def add_ownership(pool: list, weights: tuple | None = None, buzz_beta: float | None = None) -> list:
     """Annotate `own` (percent) and `leverage` on every row, per primary position.
     `weights` = (value, salary) overrides the prior -- scripts/nba_calibration.py's
-    --fit-ownership grid passes it; the build never does."""
+    --fit-ownership grid passes it; the build never does. `buzz_beta` overrides
+    BUZZ_BETA (scripts/buzz_fit_nba.py's grid)."""
     vw, sw = weights or (VALUE_WEIGHT, SALARY_WEIGHT)
+    bb = BUZZ_BETA if buzz_beta is None else buzz_beta
+    has_buzz = bool(bb) and any(p.get("buzz") is not None for p in pool)
     groups: dict = {}
     for p in pool:
         groups.setdefault(p["pos"], []).append(p)
     for pos, players in groups.items():
         zv = _z([p["proj"] / (p["salary"] / 1000.0) if p.get("salary") else 0.0 for p in players])
         zs = _z([float(p["salary"]) for p in players])
-        w = [math.exp(vw * a + sw * b + (PROMOTED_BONUS if p.get("promoted") else 0))
-             for p, a, b in zip(players, zv, zs)]
+        zb = _z([math.log1p(float(p.get("buzz") or 0.0)) for p in players]) if has_buzz else [0.0] * len(players)
+        w = [math.exp(vw * a + sw * b + bb * c + (PROMOTED_BONUS if p.get("promoted") else 0))
+             for p, a, b, c in zip(players, zv, zs, zb)]
         for p, own in zip(players, _normalise(w, 100.0 * GROUP_SLOTS.get(pos, 1.6), MAX_OWN)):
             p["own"] = round(own, 1)
         n = len(players)
