@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-21T20:14:20+00:00",
+"generated_at": "2026-10-21T21:44:41+00:00",
 "goalies": {
 "2026-10-21": {
 "BUF": {
@@ -11302,6 +11302,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Hunter McDonald": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 12,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 127,
+"toiSeconds": 30
+},
+"last5": {
+"assists": 1,
+"blocks": 9,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 74,
+"toiSeconds": 48
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "ld",
+"pp": null
+},
 "Jacob Gaucher": {
 "gtd": false,
 "injury": null,
@@ -11676,40 +11710,6 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "c",
-"pp": null
-},
-"Simon Benoit": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 147,
-"toiSeconds": 11
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 72,
-"toiSeconds": 9
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
 "pp": null
 },
 "Travis Sanheim": {
