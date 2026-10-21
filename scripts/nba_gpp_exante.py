@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """NBA GPPs: does chalk or contrarian pay at a FIXED projection? (GPP_META.md A2, for NBA)
 
-    python3 scripts/nba_gpp_exante.py
+    python3 scripts/nba_gpp_exante.py                 # every NBA GPP night
+    python3 scripts/nba_gpp_exante.py --night 2026-10-20   # also that night in detail
 
 gpp_meta.py's ex-ante test could not run on NBA: no NBA night had a logged
 projection. scripts/nba_ownership_fit.rebuild now rebuilds each 2025-26 GPP night
@@ -11,6 +12,9 @@ Within each night (contest fixed effects, nights weighted equally), per +1 SD:
 cash / top-1% / ROI on projection and on ownership together; then the
 ownership quintile at fixed projection (Q1 contrarian - Q5 chalk). Intervals
 resample nights. Entries with any player off our board are dropped.
+
+A night with a LIVE pre-lock log matched by draft group (2026-10-20 on) uses the
+logged projection the app actually had, not a rebuild.
 """
 from __future__ import annotations
 
@@ -33,7 +37,13 @@ def load() -> pd.DataFrame:
     rows = []
     for cid, gid, d in c.execute("SELECT contest_id, draft_group, slate_date FROM contest WHERE sport='NBA' "
                                  "AND type='gpp' AND final=1 ORDER BY slate_date").fetchall():
-        proj = {norm(p["name"]): p["proj"] for p in rebuild(int(gid), d)}
+        live = c.execute("SELECT proj_draft_group, proj_date FROM contest_match WHERE contest_id=? AND ok_points=1 "
+                         "AND method='draft_group' AND proj_variant='live'", (cid,)).fetchone()
+        if live:
+            proj = dict(c.execute("SELECT player_norm, AVG(proj) FROM projection WHERE source='ours' AND sport='NBA' "
+                                  "AND draft_group=? AND variant='live' GROUP BY player_norm", (live[0],)))
+        else:
+            proj = {norm(p["name"]): p["proj"] for p in rebuild(int(gid), d)}
         e = pd.read_sql("SELECT f.entry_id, f.points, f.payout, f.own_logprod, f.dup_count, c.entry_fee fee "
                         "FROM entry_feature f JOIN contest c USING(contest_id) WHERE f.contest_id=? AND f.live=1",
                         c, params=(cid,))
@@ -48,12 +58,59 @@ def load() -> pd.DataFrame:
         e["top1"] = (e.points.rank(ascending=False, method="min") <= k).astype(float)
         for col in ("proj", "own_logprod"):
             e["z_" + col] = (e[col] - e[col].mean()) / e[col].std()
-        e["date"] = d
+        e["date"], e["cid"], e["gid"], e["logged"] = d, cid, gid, bool(live)
+        e["is_adam"] = e.entry_id.map(dict(c.execute("SELECT entry_id, is_adam FROM entry WHERE contest_id=?", (cid,))))
         rows.append(e)
     return pd.concat(rows, ignore_index=True)
 
 
+def night_detail(E: pd.DataFrame, night: str) -> list[str]:
+    """One night: chalk vs contrarian at fixed projection, your entry, the app's lineups."""
+    import csv
+    c = sqlite3.connect(ROOT / "data" / "contests.db")
+    g = E[E.date == night].copy()
+    if g.empty:
+        return [f"\nno GPP for {night}"]
+    b = np.polyfit(g.proj, g.own_logprod, 1)
+    g["own_res"] = g.own_logprod - np.polyval(b, g.proj)
+    g["q"] = pd.qcut(g.own_res.rank(method="first"), 5, labels=["Q1 contrarian", "Q2", "Q3", "Q4", "Q5 chalk"])
+    cid = int(g.cid.iloc[0])
+    fee, = c.execute("SELECT entry_fee FROM contest WHERE contest_id=?", (cid,)).fetchone()
+    out = [f"\n## {night}: contest {cid}, {len(g):,} entries, projection {'LOGGED pre-lock' if g.logged.iloc[0] else 'rebuilt'}\n",
+           "| ownership for its projection | entries | mean projection | mean DK points | cash rate | ROI | dup |",
+           "|---|---|---|---|---|---|---|"]
+    for q, x in g.groupby("q", observed=True):
+        out.append(f"| {q} | {len(x)} | {x.proj.mean():.1f} | {x.points.mean():.1f} | {x.cash.mean():.0%} | "
+                   f"{x.roi.mean():+.2f} | {x.dup_count.mean():.1f} |")
+    me = g[g.is_adam == 1]
+    pts = np.sort(g.points.to_numpy())
+    line = g[g.cash == 1].points.min()
+    for r in me.itertuples():
+        out.append(f"\nYour entry: {r.points:.2f} pts, {(pts < r.points).mean():.0%} of the field beaten, "
+                   f"projection {r.proj:.1f} ({(g.proj < r.proj).mean():.0%} pctile), ownership "
+                   f"{(g.own_logprod < r.own_logprod).mean():.0%} pctile, payout ${r.payout or 0:.2f}")
+    fp = dict(c.execute("SELECT player_norm, fpts FROM player_result WHERE contest_id=?", (cid,)))
+    own = dict(c.execute("SELECT player_norm, pct_drafted FROM player_result WHERE contest_id=?", (cid,)))
+    path = ROOT / "data" / f"dfs_lineups_nba_{night}.csv"
+    if path.exists():
+        lus: dict = {}
+        for r in csv.DictReader(path.open()):
+            if str(r["gid"]) == str(int(g.gid.iloc[0])):
+                lus.setdefault(r["mode"], []).append(r["player"])
+        for mode, names in lus.items():
+            p = sum(fp.get(norm(n), 0.0) for n in names)
+            lp = sum(np.log(max(own.get(norm(n), 0.1), 0.1) / 100) for n in names)
+            out.append(f"App {mode.upper()} lineup: {p:.2f} pts, beats {(pts < p).mean():.0%} of the field "
+                       f"(cash line {line:.2f}: {'CASH' if p >= line else 'no cash'}), ownership "
+                       f"{(g.own_logprod < lp).mean():.0%} pctile -- {', '.join(names)}")
+    return out
+
+
 def main() -> int:
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("--night", help="YYYY-MM-DD: also that night in detail")
+    a = ap.parse_args()
     E = load()
     nights = E.date.unique()
 
@@ -83,6 +140,8 @@ def main() -> int:
     out.append(f"\nQ1 (contrarian for its projection) minus Q5 (chalk) ROI: {est:+.3f} [{lo:+.3f}, {hi:+.3f}] "
                f"({(d > 0).sum()}+/{(d < 0).sum()}-); projection Q1 {t['proj'][0].mean():.1f} vs Q5 "
                f"{t['proj'][4].mean():.1f}; duplicates Q1 {t['dup_count'][0].mean():.1f} vs Q5 {t['dup_count'][4].mean():.1f}")
+    if a.night:
+        out += night_detail(E, a.night)
     print("\n".join(out))
     return 0
 

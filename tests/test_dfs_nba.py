@@ -199,3 +199,9 @@ def test_one_games_starters_move_together_and_the_bench_moves_against_them():
     ss, sb, opp = c[0, 1], c[0, 6], c[0, 10]                   # NYK0-NYK1, NYK0-NYK6, NYK0-PHI1
     assert 0.03 < ss < 0.08 and -0.12 < sb < -0.05 and 0.0 < opp < 0.04
     assert abs(sim[:, 0].mean() - 30) < 0.4                     # the marginal is untouched
+
+
+def test_a_first_name_spelled_differently_still_joins_on_team_last_name_and_initial():
+    assert R._sig("Alexandre Sarr") == R._sig("Alex Sarr") == ("sarr", "a")
+    assert R._sig("Mikel Brown Jr.") == ("brown", "m")
+    assert R._sig("Michael Porter Jr.") != R._sig("Mikel Brown Jr.")

@@ -132,6 +132,13 @@ def game_lines(client, games: dict) -> dict:
     return out
 
 
+def _sig(name: str) -> tuple:
+    """(norm(last name), first initial): the fallback join key when DK and NBA.com
+    spell a first name differently (Alexandre / Alex). Suffixes dropped."""
+    parts = [w for w in (name or "").replace(".", " ").split() if w.lower() not in ("jr", "sr", "ii", "iii", "iv")]
+    return (norm(parts[-1]), parts[0][:1].lower()) if len(parts) >= 2 else (norm(name), "")
+
+
 def tonight_status(date: str) -> dict:
     """{(norm name, team): {"starter", "confirmed", "inactive", "id"}} from NBA.com."""
     raw = nba_lineups.tonight(date)
@@ -139,7 +146,8 @@ def tonight_status(date: str) -> dict:
     for g in nba_lineups.parse(raw):
         for p in g["players"]:
             out[(norm(p["name"]), p["team"])] = {"starter": p["starter"], "confirmed": p["confirmed"],
-                                                 "inactive": p["inactive"], "id": str(p["id"])}
+                                                 "inactive": p["inactive"], "id": str(p["id"]),
+                                                 "sig": _sig(p["name"])}
     return out
 
 
@@ -169,12 +177,26 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
     for hp_id, hp in hist["players"].items():
         by_name.setdefault(norm(hp.get("name") or ""), []).append((hp_id, hp.get("team")))
 
-    def history_id(key, t):
+    def history_id(key, t, name=""):
         cands = by_name.get(key, [])
         if len(cands) == 1:
             return cands[0][0]
         mine = [i for i, tm in cands if tm == t]
-        return mine[0] if len(mine) == 1 else None
+        if len(mine) == 1:
+            return mine[0]
+        # DK "Alexandre Sarr" is NBA.com's "Alex Sarr" (2026-10-21: a projected
+        # starter left off the board): same team, last name and first initial,
+        # and only if exactly one player fits -- never a guess.
+        sig = _sig(name)
+        alt = [i for i, hp in hist["players"].items() if hp.get("team") == t and _sig(hp.get("name") or "") == sig]
+        return alt[0] if len(alt) == 1 else None
+
+    def status_of(key, t, name):
+        if (key, t) in status:
+            return status[(key, t)]
+        sig = _sig(name)
+        alt = [v for (k2, t2), v in status.items() if t2 == t and v.get("sig") == sig]
+        return alt[0] if len(alt) == 1 else {}
 
     rows = []
     for sal in salaries.values():
@@ -182,8 +204,8 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
             continue
         t = team(sal.get("team"))
         key = norm(sal["name"])
-        st = status.get((key, t), {})
-        pid = st.get("id") or history_id(key, t)
+        st = status_of(key, t, sal["name"])
+        pid = st.get("id") or history_id(key, t, sal["name"])
         h = hist["players"].get(pid, {}) if pid else {}
         opp = next((team(g["away"]) if team(g["home"]) == t else team(g["home"])
                     for g in games.values() if t in (team(g["home"]), team(g["away"]))), None)
@@ -216,8 +238,10 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
             # Without this the team was held to 240 over 21 roles summing to 300-360,
             # and every starter lost a quarter of his minutes.
             healthy = [r for r in ps if not r["out"]]
-            ranked = sorted(healthy, key=lambda r: -NM.role([(m, s) for m, s, _ in r["history"]],
-                                                            r["window"])["base"])
+            # NBA.com's announced starters always dress: a rookie on preseason
+            # minutes (or a name the join missed) must not be cut by his role.
+            ranked = sorted(healthy, key=lambda r: (not r["starter"], -NM.role(
+                [(m, s) for m, s, _ in r["history"]], r["window"])["base"]))
             for r in ranked[ACTIVE_ROSTER:]:
                 r["not_dressing"] = True
         team_in = [{"id": r["name"], "position": r["nba_pos"],
