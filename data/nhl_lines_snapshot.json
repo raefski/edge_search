@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-10-21T14:29:26+00:00",
+"generated_at": "2026-10-21T14:59:45+00:00",
 "goalies": {
 "2026-10-21": {
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
-"status": null
+"status": "Likely"
 },
 "FLA": {
 "goalie": "Akira Schmid",
@@ -1597,7 +1597,7 @@
 "pp": "PP1"
 },
 "Jason Zucker": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -1971,7 +1971,7 @@
 "pp": null
 },
 "Rasmus Dahlin": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 6,
@@ -10410,40 +10410,6 @@
 }
 },
 "OTT": {
-"Andre Burakovsky": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 4,
-"powerplayAssists": 2,
-"powerplayGoals": 0,
-"powerplayPoints": 2,
-"shots": 6,
-"toiMinutes": 138,
-"toiSeconds": 48
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 64,
-"toiSeconds": 5
-},
-"line": "F2",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Artem Zub": {
 "gtd": false,
 "injury": null,
@@ -10677,10 +10643,44 @@
 "toiMinutes": 59,
 "toiSeconds": 59
 },
+"line": "F1",
+"pk": null,
+"pos": "lw",
+"pp": "PP2"
+},
+"Hayden Hodgson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 68,
+"toiSeconds": 55
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 37,
+"toiSeconds": 6
+},
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Jake Sanderson": {
 "gtd": true,
@@ -10849,7 +10849,7 @@
 "toiMinutes": 48,
 "toiSeconds": 10
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -10883,10 +10883,10 @@
 "toiMinutes": 83,
 "toiSeconds": 47
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Samuel Ersson": {
 "gtd": false,
@@ -11089,7 +11089,7 @@
 "toiMinutes": 59,
 "toiSeconds": 41
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": null
