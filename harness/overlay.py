@@ -25,13 +25,13 @@ fill log cannot see.
 
 Only contests that are not resizable are alerted (DK may shrink a resizable
 one that does not fill, which cancels the overlay); pass --include-resizable
-to see them anyway. Each contest alerts once, and again as a final call when
-it is 20 minutes from lock. Every run appends a fill snapshot to
+to see them anyway. Each contest alerts once inside WARN_MIN, and again as a
+final call 4.5-9.5 minutes from lock -- never later (time to enter). Every run appends a fill snapshot to
 data/contest_fill_log.csv, which is what makes the projection better over time.
 
 Runs on the desktop: payout tables come from api.draftkings.com (datacenter
 IPs are refused, DRAFTKINGS_ACCESS.md). The lobby is one request per sport
-that has a slate locking in the window, every 15 minutes -- see the timer.
+that has a slate locking in the window: hourly, every 5 minutes near a lock -- see the timer.
 """
 from __future__ import annotations
 
@@ -42,6 +42,7 @@ import sys
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from harness import monitor
 from harness.registry import ROOT
@@ -52,10 +53,11 @@ from edge.dfs_entry_edge import (entry_edge, fill_basis, fit_late_fill,  # noqa:
                                   likely_at_lock, projected_fill, weekday)
 from scripts import dfs_overlay as O  # noqa: E402
 
+ET = ZoneInfo("America/New_York")
 STATE_FILE = STATE / "overlay_state.json"
 #: Autolog's cache of each sport's upcoming Classic slates (refreshed hourly).
 SLATES = ROOT / "data" / "cache" / "dfs_autolog_slates.json"
-AUTOLOG_TO_LOBBY = {"nhl": "NHL", "nfl": "NFL", "ncaaf": "CFB", "nascar": "NAS", "mma": "MMA",
+AUTOLOG_TO_LOBBY = {"nba": "NBA", "ncaab": "CBB", "nhl": "NHL", "nfl": "NFL", "ncaaf": "CFB", "nascar": "NAS", "mma": "MMA",
                     "mlb": "MLB"}
 #: Prizes that are a seat in another contest, not cash: their face value overstates the return.
 TICKET = re.compile(r"satellite|qualifier|ticket", re.I)
@@ -63,8 +65,15 @@ TICKET = re.compile(r"satellite|qualifier|ticket", re.I)
 #: earlier "first look" pushed ~1 hour out was noise, Adam 2026-10-14): a warning when
 #: it first qualifies inside WARN_MIN, then a final call inside FINAL_MIN. The overlay
 #: timer polls every 5 min inside NEAR_LOCK_MIN, so both land on fresh fill counts.
+#: Nothing is pushed inside FINAL_FLOOR: Adam needs ~4 minutes to enter (2026-10-22 --
+#: 15 of 16 final calls had landed 1 minute before lock, the installed timer still
+#: firing every 15 min). (FINAL_FLOOR, FINAL_MIN] is exactly one 5-minute poll wide, on
+#: the run's exact minutes to lock, so every lock gets one final call 4.5-9.5 minutes
+#: out; the timer fires on the minute (deploy/edge-overlay.timer: AccuracySec=1s, no
+#: random delay) and pushes go out before the post-lock bookkeeping.
 WARN_MIN = 15
-FINAL_MIN = 5
+FINAL_MIN = 9.5
+FINAL_FLOOR = 4.5
 #: At most this many pushes per run, biggest edge first.
 MAX_PUSH = 6
 #: Every guaranteed contest that was not full at its last snapshot gets its entries
@@ -380,7 +389,7 @@ def assess(found: list[dict], tables: dict, history: dict, now: datetime, hours:
         ok = (not full and not ticket and lock_e["roi"] >= min_roi
               and (include_resizable or pt["resizable"] is not True))
         out.append({"id": cid, "sport": r["sport"], "name": r["name"], "fee": r["fee"],
-                    "entries": r["nt"], "cap": r["m"], "lock": r["lock"], "minutes": round(mins),
+                    "entries": r["nt"], "cap": r["m"], "lock": r["lock"], "minutes": round(mins), "mins": mins,
                     "resizable": pt["resizable"], "places": lock_e["places"], "now": now_e,
                     "ticket": ticket,
                     "at_lock": lock_e, "projected": proj, "n_lock": n_lock, "n_floor": n_floor,
@@ -403,14 +412,15 @@ def _save_state(state: dict) -> None:
 def alerts_for(rows: list[dict], state: dict, now: datetime) -> list[dict]:
     """Pushes not yet sent: a 15-minute warning for a qualifying contest, then its final
     call once it is inside FINAL_MIN. A contest that first qualifies already inside
-    FINAL_MIN gets only the final call."""
+    FINAL_MIN gets only the final call; inside FINAL_FLOOR nothing is sent."""
     out = []
     for r in sorted((r for r in rows if r["alert"]), key=lambda r: -r["at_lock"]["roi"]):
         cid = r["id"]
         prev = state.get(cid)
-        if r["minutes"] > WARN_MIN:
+        mins = r.get("mins", r["minutes"])
+        if mins > WARN_MIN or mins <= FINAL_FLOOR:          # too early, or too late to enter
             continue
-        final = r["minutes"] <= FINAL_MIN
+        final = mins <= FINAL_MIN
         if prev and (prev.get("final") or not final):
             continue
         n_now, e_now = r["entries"], r["now"]
@@ -429,7 +439,8 @@ def alerts_for(rows: list[dict], state: dict, now: datetime) -> list[dict]:
                       f"per $1 ({e_now['roi']:+.0%}). At lock: cash {e_lock['cash']:.0%}, returns "
                       f"${e_lock['return']:.2f} per $1 ({e_lock['roi']:+.0%}), "
                       f"{e_lock['places']} paid places.")
-        body = (f"{r['minutes']} min to lock, {n_now}/{r['cap']} entered. {expect} "
+        lock_et = r["lock"].astimezone(ET).strftime("%-I:%M %p ET")
+        body = (f"{r['minutes']} min to lock ({lock_et}), {n_now}/{r['cap']} entered. {expect} "
                 f"${r['fee']:g} entry. Resizable: {rz}. "
                 f"https://www.draftkings.com/draft/contest/{cid}")
         out.append({"kind": "overlay", "priority": "high" if final or e_lock["roi"] >= 0.25 else "default",
@@ -460,22 +471,13 @@ def run(do_push: bool = False, hours: float = 2.5, min_roi: float = 0.10, max_fe
     tables = price(found)
     history, logged = load_log()
     finals = load_finals()
-    got = []
-    if finals_due(state, now):
-        state["finals_at"] = now.isoformat()                # set even on failure: no retry storm
-        try:
-            got = collect_finals(logged, finals, now)
-        except Exception as exc:                            # noqa: BLE001
-            print(f"finals: lookup unavailable ({exc})")
-    finals.update({g["contest_id"]: g["final"] for g in got})
     model = fit_late_fill(logged, finals) if logged else None
     if model:
         levels = sorted({f"{k[0]} {k[1]}" if k[1] else k[0] for (k, _), n in model["cells"].items()
                          if k[0] and k[2] is not None and n >= 10})
         print(f"late-fill model: {model['n']} contests ({', '.join(levels)}), "
               f"last-minutes share {model['tail']:.2f} "
-              f"({'fitted on ' + str(model['tail_n']) + ' finals' if model['tail_n'] >= 5 else 'default, n=1'})"
-              + (f" · {len(got)} new finals" if got else ""))
+              f"({'fitted on ' + str(model['tail_n']) + ' finals' if model['tail_n'] >= 5 else 'default, n=1'})")
     rows = assess(found, tables, history, now, hours, max_fee, min_roi, include_resizable, model)
     new = alerts_for(rows, state, now)
     print(f"polled {', '.join(polled) or 'nothing (no sport due)'} · {len(found)} guaranteed "
@@ -499,6 +501,16 @@ def run(do_push: bool = False, hours: float = 2.5, min_roi: float = 0.10, max_fe
         monitor.log(sent_now, path=monitor.ALERTS)
     for a in sent_now:
         state[a["contest"]] = {"final": a["final"], "at": a["at"]}
+    # Post-lock finals (up to FINALS_PER_RUN paced DK lookups) AFTER the pushes, so a
+    # final call never waits on them; the next run's late-fill fit picks them up.
+    if finals_due(state, now):
+        state["finals_at"] = now.isoformat()                # set even on failure: no retry storm
+        try:
+            got = collect_finals(logged, finals, now)
+            if got:
+                print(f"finals: {len(got)} new")
+        except Exception as exc:                            # noqa: BLE001
+            print(f"finals: lookup unavailable ({exc})")
     cutoff = (now - timedelta(days=2)).isoformat()
     state = {k: v for k, v in state.items() if k in ("sports", "finals_at") or v.get("at", "") >= cutoff}
     _save_state(state)

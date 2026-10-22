@@ -121,7 +121,7 @@ def test_a_15_minute_warning_then_a_final_call_and_nothing_else():
     assert len(out) == 1 and out[0]["final"] is False and out[0]["title"].startswith("15 MIN")
     state["1"] = {"final": False, "at": T0.isoformat()}
     assert overlay.alerts_for(warn, state, T0) == []                      # warned once
-    late = overlay.assess([_found("1", 11, 23, 1.0, 4)], {"1": DOUBLE}, {}, T0, 2.5, 25,
+    late = overlay.assess([_found("1", 11, 23, 1.0, 7)], {"1": DOUBLE}, {}, T0, 2.5, 25,
                           0.10, False)
     out = overlay.alerts_for(late, state, T0)
     assert len(out) == 1 and out[0]["final"] and out[0]["title"].startswith("FINAL CALL")
@@ -129,11 +129,28 @@ def test_a_15_minute_warning_then_a_final_call_and_nothing_else():
     assert overlay.alerts_for(late, state, T0) == []                      # final once
 
 
-def test_a_contest_first_seen_inside_5_minutes_gets_only_the_final_call():
-    late = overlay.assess([_found("1", 11, 23, 1.0, 4)], {"1": DOUBLE}, {}, T0, 2.5, 25,
+def test_a_contest_first_seen_inside_the_final_window_gets_only_the_final_call():
+    late = overlay.assess([_found("1", 11, 23, 1.0, 6)], {"1": DOUBLE}, {}, T0, 2.5, 25,
                           0.10, False)
     out = overlay.alerts_for(late, {}, T0)
     assert len(out) == 1 and out[0]["final"]
+
+
+def test_the_final_call_leaves_time_to_enter():
+    """Adam 2026-10-22: a final call 1 minute before lock is too late to enter. Every
+    lock gets exactly one 5-minute poll inside (FINAL_FLOOR, FINAL_MIN] = (4.5, 9.5]
+    minutes, and nothing is pushed later than that."""
+    def final_at(mins):
+        rows = overlay.assess([_found("1", 11, 23, 1.0, mins)], {"1": DOUBLE}, {}, T0, 2.5, 25, 0.10, False)
+        return [a["final"] for a in overlay.alerts_for(rows, {"1": {"final": False, "at": T0.isoformat()}}, T0)]
+    assert final_at(4.0) == [] and final_at(4.5) == []                   # too late: quiet
+    assert final_at(5.0) == [True] and final_at(9.5) == [True]
+    assert final_at(10.0) == []                                          # still the warning window
+    for lock_offset in range(0, 300, 7):                                 # any lock second vs. the polls
+        polls = [lock_offset / 60 + 5 * k for k in range(4)]             # minutes to lock at each poll
+        assert sum(overlay.FINAL_FLOOR < m <= overlay.FINAL_MIN for m in polls) == 1
+    rows = overlay.assess([_found("1", 11, 23, 1.0, 7)], {"1": DOUBLE}, {}, T0, 2.5, 25, 0.10, False)
+    assert "ET)" in overlay.alerts_for(rows, {}, T0)[0]["body"]          # says when it locks
 
 
 def test_history_moves_the_at_lock_numbers():
@@ -237,7 +254,7 @@ def test_the_cfb_contest_is_no_longer_sold_as_plus_495():
     assert old["n_lock"] == 6 and old["at_lock"]["roi"] > 4.0               # the old +495%
     assert new["n_lock"] == n and 0.0 < new["at_lock"]["roi"] < 0.5           # real lock: +28%
     assert overlay.alerts_for([new], {}, T0) == []                         # 16 min out: not pushed yet
-    body = overlay.alerts_for([{**new, "minutes": 15}], {}, T0)[0]["body"]  # same contest, in the window
+    body = overlay.alerts_for([{**new, "minutes": 15, "mins": 15}], {}, T0)[0]["body"]  # in the window
     assert f"Expect ~{n}/78" in body and "Best case, if no one else enters" in body
     assert "how all sports contests" in body                 # MODEL has only the broad level
 

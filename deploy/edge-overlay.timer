@@ -3,7 +3,9 @@ Description=Overlay alerts every 5 minutes, 10:00-23:55 local (DK polled per spo
 
 [Timer]
 OnCalendar=*-*-* 10..23:00/5:00
-RandomizedDelaySec=30
+# On the minute: the final call's 4.5-9.5 minute window (harness/overlay.py FINAL_*) is
+# exactly one poll wide, so no random delay, and systemd's default 1 min slack is off.
+AccuracySec=1s
 Persistent=false
 
 [Install]
