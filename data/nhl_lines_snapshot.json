@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-22T17:29:20+00:00",
+"generated_at": "2026-10-22T17:59:39+00:00",
 "goalies": {
 "2026-10-22": {
 "ANA": {
@@ -40,7 +40,7 @@
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
-"status": null
+"status": "Likely"
 },
 "NJD": {
 "goalie": "Nico Daws",
@@ -3681,7 +3681,7 @@
 "toiMinutes": 99,
 "toiSeconds": 25
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
@@ -3783,7 +3783,7 @@
 "toiMinutes": 72,
 "toiSeconds": 17
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -3822,40 +3822,6 @@
 "pos": "lw",
 "pp": "PP2"
 },
-"Gavin Brindley": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 78,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 37,
-"toiSeconds": 29
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Jaden Schwartz": {
 "gtd": false,
 "injury": null,
@@ -3885,9 +3851,9 @@
 "toiMinutes": 75,
 "toiSeconds": 36
 },
-"line": "F1",
+"line": "F3",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Josh Manson": {
@@ -3922,6 +3888,40 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "ld",
+"pp": null
+},
+"Logan O'Connor": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 119,
+"toiSeconds": 9
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 60,
+"toiSeconds": 34
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Mackenzie Blackwood": {
@@ -3989,7 +3989,7 @@
 "toiMinutes": 103,
 "toiSeconds": 31
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -4059,7 +4059,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP1"
 },
 "Noah Juulsen": {
@@ -4125,9 +4125,9 @@
 "toiMinutes": 63,
 "toiSeconds": 39
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Sam Malinski": {
