@@ -348,3 +348,48 @@ def test_simulated_assists_hit_their_targets(monkeypatch):
     assert per_goal == pytest.approx(nhl_sim.ASSISTS_PER_GOAL, rel=0.01)
     assert got == pytest.approx(targets, rel=0.04)
     assert got[0] == pytest.approx(targets[0], rel=0.02)
+
+
+def test_skater_means_is_the_board_recipe():
+    from edge import dfs_run_nhl as R
+    base = {"goals": 0.3, "assists": 0.4, "shots": 2.5, "blocks": 0.6, "toi": 18.0}
+    # no props: last season x scale, all flagged; role scales them (r = 1 without games)
+    m, imp, r = R.skater_means(base, "C", 1.1)
+    assert imp == ["shots", "points"] and r == 1.0
+    assert m == pytest.approx({"shots": 2.75, "goals": 0.33, "assists": 0.44, "blocks": 0.6})
+    m2, _, r2 = R.skater_means(base, "C", 1.1, toi_recent=[12.0] * 10)
+    assert r2 < 1 and m2["goals"] < m["goals"] and m2["blocks"] < m["blocks"]
+    # props: market means, stretched points, blocks still last season's; nothing imputed
+    mp, impp, _ = R.skater_means(base, "C", 1.1, shots=3.0, points=0.9, assists=0.5)
+    assert impp == [] and mp["shots"] == 3.0 and mp["goals"] + mp["assists"] > 0.9
+    # unknown skater: defaults, blocks flagged too; 7-D shrinks a defenceman
+    md, impd, _ = R.skater_means({}, "D", 1.0, seven_d=True)
+    assert impd == ["shots", "points", "blocks"]
+    assert md["blocks"] == pytest.approx(R.DEFAULT_BLOCKS["D"] * R.SEVEN_D_SCALE["blocks"])
+
+
+def test_blend_season_weights_this_season_by_games_played():
+    from edge import dfs_run_nhl as R
+    m = {"goals": 0.1, "assists": 0.2, "shots": 2.0, "blocks": 1.0}
+    k = {"points": 30.0, "shots": 7.0, "blocks": 20.0}
+    assert R.blend_season(m, None, 1.0, ["shots", "points"]) is m
+    # 10 games: 4 goals, 0 assists, 30 shots, 5 blocks at scale 1.2
+    out = R.blend_season(m, (10, 4, 0, 30, 5), 1.2, ["shots", "points"], k)
+    w_p, w_s, w_b = 30 / 40, 7 / 17, 20 / 30
+    assert out["goals"] == pytest.approx(w_p * 0.1 + (1 - w_p) * 0.4 * 1.2)
+    assert out["assists"] == pytest.approx(w_p * 0.2)
+    assert out["shots"] == pytest.approx(w_s * 2.0 + (1 - w_s) * 3.0 * 1.2)
+    assert out["blocks"] == pytest.approx(w_b * 1.0 + (1 - w_b) * 0.5)    # blocks: no scale
+    # a prop skater keeps his market goals / assists / shots; only blocks blend
+    props = R.blend_season(m, (10, 4, 0, 30, 5), 1.2, [], k)
+    assert {x: props[x] for x in ("goals", "assists", "shots")} == {x: m[x] for x in ("goals", "assists", "shots")}
+    assert props["blocks"] == pytest.approx(out["blocks"])
+
+
+def test_skater_means_blends_this_season_before_the_seven_d_scale():
+    from edge import dfs_run_nhl as R
+    base = {"goals": 0.1, "assists": 0.2, "shots": 1.5, "blocks": 1.5, "toi": 20.0}
+    six, _, _ = R.skater_means(base, "D", 1.0, season=(20, 1, 4, 20, 20))
+    seven, _, _ = R.skater_means(base, "D", 1.0, season=(20, 1, 4, 20, 20), seven_d=True)
+    assert seven["blocks"] == pytest.approx(six["blocks"] * R.SEVEN_D_SCALE["blocks"])
+    assert six["blocks"] < 1.5                                   # 1.0 a game this season pulls it down

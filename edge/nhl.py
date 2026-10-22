@@ -252,6 +252,33 @@ def season_skater_stats(season_id: str, refresh: bool = False) -> dict:
     return out
 
 
+def skater_season_to_date(season_id: str, before: str) -> list[dict]:
+    """Each skater's regular-season totals over games dated before `before`:
+    [{id, name, pos, gp, goals, assists, shots, blocks}], from the stats API's
+    summary and realtime reports aggregated with a gameDate filter (one request
+    each, limit=-1). Matched the box scores for 676 of 677 skaters on 10/13
+    (the other: games played 3 vs 4)."""
+    rep = {}
+    for report in ("summary", "realtime"):
+        url = (f"https://api.nhle.com/stats/rest/en/skater/{report}?isAggregate=true&isGame=false"
+               f"&limit=-1&cayenneExp=seasonId={season_id}%20and%20gameTypeId=2"
+               f"%20and%20gameDate%3C%22{before}%22")
+        rows = json.loads(_get(url, timeout=20)).get("data", [])
+        if len({r["playerId"] for r in rows}) != len(rows):
+            raise RuntimeError(f"nhl: {report} to {before}: repeated players")
+        rep[report] = {r["playerId"]: r for r in rows}
+    out = []
+    for pid, r in rep["summary"].items():
+        rt = rep["realtime"].get(pid)
+        if rt is None:
+            continue
+        out.append({"id": pid, "name": r.get("skaterFullName") or "", "pos": r.get("positionCode"),
+                    "gp": r.get("gamesPlayed") or 0, "goals": r.get("goals") or 0,
+                    "assists": r.get("assists") or 0, "shots": r.get("shots") or 0,
+                    "blocks": rt.get("blockedShots") or 0})
+    return out
+
+
 def skater_game_toi(season_id: str, before: str) -> list[dict]:
     """Every regular-season skater-game of `season_id` dated before `before`
     (YYYY-MM-DD, the game's local date): [{id, name, team, pos, date, toi}],

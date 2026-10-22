@@ -72,6 +72,18 @@ SEVEN_D_SCALE = {"blocks": 0.855, "shots": 0.933, "goals": 0.92, "assists": 0.97
 POINTS_REF = 0.556
 POINTS_STRETCH = 1.1
 CURRENT_SEASON = "20262027"
+#: THIS SEASON'S PRODUCTION (NHL_CRITIQUE_LOG.md cycle 4). Beyond the ice-time
+#: scaling, a mean no market sets is blended with the skater's own per-game rate
+#: this season: m = w * m + (1 - w) * rate (x scale for goals, assists, shots;
+#: blocks unscaled), w = K / (K + games this season). A rookie with no last
+#: season otherwise ran on flat defaults all year, and last season's blocks ran
+#: high (2025-26: 0.853 projected vs 0.765 blocked in H2). FITTED 2026-10-22 on
+#: scripts/nhl_season_lab.py H1 (2025-26 to 12/31, 81 dates, 22,716 skater-games,
+#: 1 seed), grid K points {10..80} x shots {3..40} x blocks {10..40}: H1 RMSE
+#: 6.0991 -> 6.0317, flat near the argmin (6.032-6.035). Checked on H2 (86 dates,
+#: 24,515): RMSE 6.2622 -> 6.1190, squared error -1.77 [-2.01, -1.53] per skater-
+#: game, better on 78/86 dates; on the 2026-27 lab's TEST not worse in either state.
+SEASON_K = {"points": 30.0, "shots": 7.0, "blocks": 20.0}
 #: THIS SEASON'S ROLE (NHL_CRITIQUE_LOG.md cycle 1). Every mean no market sets
 #: -- goals, assists and shots of a skater without props, blocks of every
 #: skater -- is last season's rate, so a skater whose ice time has moved keeps
@@ -183,17 +195,24 @@ def _season_rates() -> dict:
         return {}
     out = {}
     for r in stats.values():
-        gp = r.get("gamesPlayed") or 0
-        if gp < 5 or not r.get("skaterFullName"):
-            continue
-        # A field one report lacks stays MISSING (the board's default + `imputed`
-        # flag), never 0.0: a missing realtime row once zeroed 27 skaters' blocks.
-        row = {k: (r.get(src) or 0) / gp for k, src in
-               (("goals", "goals"), ("assists", "assists"), ("shots", "shots"),
-                ("blocks", "blockedShots")) if src in r}
-        row.update({"toi": (r.get("timeOnIcePerGame") or 0) / 60.0 or None, "gp": gp})
-        out[norm(r["skaterFullName"])] = row
+        row = rate_row(r)
+        if row is not None:
+            out[norm(r["skaterFullName"])] = row
     return out
+
+
+def rate_row(r: dict) -> dict | None:
+    """One skater's per-game rates from a season_skater_stats row; None under 5
+    games. A field one report lacks stays MISSING (the board's default + `imputed`
+    flag), never 0.0: a missing realtime row once zeroed 27 skaters' blocks."""
+    gp = r.get("gamesPlayed") or 0
+    if gp < 5 or not r.get("skaterFullName"):
+        return None
+    row = {k: (r.get(src) or 0) / gp for k, src in
+           (("goals", "goals"), ("assists", "assists"), ("shots", "shots"),
+            ("blocks", "blockedShots")) if src in r}
+    row.update({"toi": (r.get("timeOnIcePerGame") or 0) / 60.0 or None, "gp": gp})
+    return row
 
 
 def group_toi(rows: list[dict]) -> dict:
@@ -215,6 +234,43 @@ def current_toi(date: str) -> list | None:
     except Exception as exc:                                # noqa: BLE001
         log.warning("nhl: this season's ice time unavailable (%s)", exc)
         return None
+
+
+def current_production(date: str) -> dict | None:
+    """{(norm(name), 'D' | 'F'): (games, goals, assists, shots, blocks)} this
+    season before `date`, or None when the NHL stats API cannot be reached (the
+    board then runs without it and says so, info["season_source"])."""
+    try:
+        rows = nhl.skater_season_to_date(CURRENT_SEASON, date)
+    except Exception as exc:                                # noqa: BLE001
+        log.warning("nhl: this season's production unavailable (%s)", exc)
+        return None
+    return {(norm(r["name"]), "D" if r.get("pos") == "D" else "F"):
+            (r["gp"], r["goals"], r["assists"], r["shots"], r["blocks"]) for r in rows if r["gp"]}
+
+
+def blend_season(means: dict, season: tuple | None, scale: float, imputed,
+                 k: dict | None = None) -> dict:
+    """`means` blended with this season's per-game production (SEASON_K):
+    season = (games, goals, assists, shots, blocks). Only what last season set
+    ('points' -> goals and assists, 'shots'); blocks always."""
+    if not season or season[0] <= 0:
+        return means
+    k = SEASON_K if k is None else k
+    n = season[0]
+    g, a, sh, b = (x / n for x in season[1:])
+    out = dict(means)
+    if "points" in imputed:
+        w = k["points"] / (k["points"] + n)
+        out["goals"] = w * out["goals"] + (1 - w) * g * scale
+        out["assists"] = w * out["assists"] + (1 - w) * a * scale
+    if "shots" in imputed:
+        w = k["shots"] / (k["shots"] + n)
+        out["shots"] = w * out["shots"] + (1 - w) * sh * scale
+    w = k["blocks"] / (k["blocks"] + n)
+    out["blocks"] = w * out["blocks"] + (1 - w) * b
+    out["shots"] = max(out["shots"], out["goals"] + 0.05)
+    return out
 
 
 def _initial_last(team: str, name: str) -> tuple:
@@ -308,6 +364,43 @@ def scale_seven_d(means: dict) -> dict:
     return {k: v * SEVEN_D_SCALE.get(k, 1.0) for k, v in means.items()}
 
 
+def skater_means(base: dict, pos: str, scale: float, shots: float | None = None,
+                 points: float | None = None, assists: float | None = None,
+                 toi_recent: list | None = None, seven_d: bool = False,
+                 season: tuple | None = None) -> tuple[dict, list, float]:
+    """(means, imputed, role ratio) for one skater: the DK market where it posts a
+    line (shots / points + assists, Poisson means), last season's per-game rates
+    (`base`, x `scale` = tonight's implied goals over the league's) where it does
+    not, blocks always from last season; then this season's ice time (role_ratio
+    on `toi_recent`), this season's production (blend_season on `season`) and an
+    11 F / 7 D lineup (SEVEN_D_SCALE). The one recipe
+    build_board and scripts/nhl_season_lab.py (2025-26 replay) both run."""
+    imputed = []
+    if shots is None:
+        shots = base.get("shots", 1.0 if pos != "D" else 1.2) * scale
+        imputed.append("shots")
+    if points is None or assists is None:
+        g_ = base.get("goals", 0.08 if pos != "D" else 0.04) * scale
+        a_ = base.get("assists", 0.12 if pos != "D" else 0.12) * scale
+        imputed.append("points")
+    else:
+        a_ = assists
+        g_ = max(points - assists, 0.02)
+        k = POINTS_REF * (points / POINTS_REF) ** POINTS_STRETCH / (g_ + a_)
+        g_, a_ = g_ * k, a_ * k
+    means = {"shots": max(shots, g_ + 0.05), "goals": g_, "assists": a_,
+             "blocks": base.get("blocks", DEFAULT_BLOCKS[pos])}
+    if "blocks" not in base:
+        imputed.append("blocks")
+    r = role_ratio(base.get("toi"), toi_recent)
+    if r != 1.0:
+        means = scale_role(means, r, imputed)
+    means = blend_season(means, season, scale, imputed)
+    if seven_d:
+        means = scale_seven_d(means)
+    return means, imputed, r
+
+
 def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0):
     """(pool, sim, info) for one DK NHL Classic slate."""
     salaries = dfs.fetch_draftables(gid)
@@ -337,6 +430,7 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
     toi_rows = current_toi(date)
     toi_now = group_toi(toi_rows) if toi_rows is not None else None
     aliases = name_aliases(toi_rows or [], rates)
+    produced = current_production(date)
     seven_d = seven_d_teams(lines)
 
     info = {"games": len(games), "priced": len(salaries), "implied": implied,
@@ -344,7 +438,8 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
             "missing_lines": sorted(teams - set(implied)), "date": date,
             "starters": starters, "no_lineup": [], "imputed": 0,
             "wrong_game": wrong_game,
-            "role_source": "this season's ice time" if toi_now is not None else "unavailable"}
+            "role_source": "this season's ice time" if toi_now is not None else "unavailable",
+            "season_source": "this season's production" if produced is not None else "unavailable"}
     pool = []
     for sal in salaries.values():
         if not sal.get("salary"):
@@ -380,34 +475,17 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
         scale = implied[t] / LEAGUE_TEAM_GOALS
         rkey = key if key in rates else aliases.get(_initial_last(t, sal["name"]), key)
         base = rates.get(rkey) or {}
-        shots = nhl_sim.market_mean(pm.get("player_shots_on_goal"))
-        points = nhl_sim.market_mean(pm.get("player_points"))
-        assists = nhl_sim.market_mean(pm.get("player_assists"))
-        means = {}
-        if shots is None:
-            shots = base.get("shots", 1.0 if pos != "D" else 1.2) * scale
-            row["imputed"].append("shots")
-        if points is None or assists is None:
-            g_ = base.get("goals", 0.08 if pos != "D" else 0.04) * scale
-            a_ = base.get("assists", 0.12 if pos != "D" else 0.12) * scale
-            row["imputed"].append("points")
-        else:
-            a_ = assists
-            g_ = max(points - assists, 0.02)
-            k = POINTS_REF * (points / POINTS_REF) ** POINTS_STRETCH / (g_ + a_)
-            g_, a_ = g_ * k, a_ * k
-        means.update({"shots": max(shots, g_ + 0.05), "goals": g_, "assists": a_,
-                      "blocks": base.get("blocks", DEFAULT_BLOCKS[pos])})
-        if "blocks" not in base:
-            row["imputed"].append("blocks")
-        if row["imputed"]:
+        means, imputed, r = skater_means(
+            base, pos, scale, nhl_sim.market_mean(pm.get("player_shots_on_goal")),
+            nhl_sim.market_mean(pm.get("player_points")), nhl_sim.market_mean(pm.get("player_assists")),
+            (toi_now or {}).get((rkey, "D" if pos == "D" else "F")), pos == "D" and t in seven_d,
+            (produced or {}).get((rkey, "D" if pos == "D" else "F")))
+        row["imputed"] += imputed
+        if imputed:
             info["imputed"] += 1
-        r = role_ratio(base.get("toi"), (toi_now or {}).get((rkey, "D" if pos == "D" else "F")))
         if r != 1.0:
-            means = scale_role(means, r, row["imputed"])
             row["role"] = round(r, 3)
         if pos == "D" and t in seven_d:
-            means = scale_seven_d(means)
             row["seven_d"] = True
         row["means"] = means
         pool.append(row)

@@ -535,3 +535,14 @@ time. Rule from here: mean changes to unpriced components get validated on 2025-
 scores first (harness to build), since 8 test nights cannot certify gains under ~0.02
 RMSE. Candidate next focus: the simulated spread (3-8% wider than realised errors),
 which sets the cash floor and GPP ceiling.
+
+## 6n. This season's production in the unpriced means (2026-10-22, critique cycle 4)
+
+New harness `scripts/nhl_season_lab.py`: the 2025-26 season (47,231 skater-games, 167
+dates) replayed through `skater_means` (the board's recipe, now one function) and the
+simulator, on the no-prop path; H1 to 12/31 fits, H2 checks. Shipped: every mean last
+season sets is blended with this season's per-game production (`blend_season`, K points
+30 / shots 7 / blocks 20; `nhl.skater_season_to_date`, two stats-API requests a build).
+Season lab H2: RMSE 6.262 -> 6.119, bias +0.30 -> +0.15, rank +0.393 -> +0.423 (78/86
+dates better). 2026-27 test: not worse (lock RMSE 5.928 -> 5.926, early 5.943 -> 5.939);
+the gain grows as games accumulate. Details: NHL_CRITIQUE_LOG.md cycle 4.

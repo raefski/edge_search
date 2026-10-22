@@ -291,3 +291,74 @@ TEST is not worse. That harness is not built yet: it is the next cycle's work.
 - The simulator's spread runs 3-8% wider than realised errors, assuming the mean is
   right. That feeds the cash 25th / GPP 90th percentiles directly, and is the critic's
   suggested next focus (a distribution metric, not the mean).
+
+## Cycle 4: the 2025-26 season harness (built first), then a critic
+
+**Harness: `scripts/nhl_season_lab.py`** (cycle 3's rule needed it). Each 2025-26 game is
+replayed as of the morning of its date through production's own recipe and simulator:
+- the box score's dressed skaters (7+ D → the 7-D scale);
+- 2024-25 per-game rates by NHL id (`edge/dfs_run_nhl.rate_row`, as `_season_rates`);
+- this season's ice time from earlier box scores (the cycle-1 role scaling);
+- `edge/dfs_run_nhl.skater_means` with no props, the refactored recipe build_board now
+  calls, unchanged: means, flags and projections identical on 3 rebuilt slates;
+- `edge/nhl_sim.simulate`, one call per date.
+
+No odds exist before 2026-09-28, so team goals are a form estimate: goals for × the
+opponent's goals against so far, shrunk to the league's to-date rate (TEAM_K 10,
+LEAGUE_K 50, prior 3.04 from 2024-25). Every skater runs the no-prop path, so this lab
+judges that path (57% of a 2026-27 board) and blocks (everyone); stars' goals and shots
+come from props in production. H1 = dates before 2026-01-01 (fit), H2 = after (check);
+the date is the bootstrap unit.
+
+Baseline, 4 seeds:
+
+| half | dates | skater-games | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|---|---|
+| H1 | 81 | 22,716 | 4.545 | 6.0957 | +0.187 | +0.3827 |
+| H2 | 86 | 24,515 | 4.621 | 6.2622 | +0.300 | +0.3933 |
+
+**Cycle 1 checked out of season** (1 seed): role scaling off (`no_role`) vs shipped,
+squared error H1 +0.092 [−0.102, +0.290], H2 +0.183 [−0.139, +0.507]; rank corr
++0.366 / +0.364 without it, +0.382 / +0.393 with it. Same direction as the 2026-27 slates.
+
+**Critic #4 (fresh `dfs-model-critic`, ~18 min, read-only).** "Beyond ice time, the skater
+projection never uses what a player has produced this season: every mean no market sets
+is last season's rate (a rookie runs on flat defaults all year)." Shipped blocks ran
+0.853 a game vs 0.765 blocked in H2; skaters with no 2024-25 rates −0.83 bias.
+
+**Fix.** `edge/dfs_run_nhl.blend_season`, inside `skater_means` after the role scaling
+and before the 7-D scale. m = w·m + (1−w)·this season's per-game rate, w = K / (K + games
+this season); goals, assists and shots are × scale and blend only where last season set
+them, blocks always and unscaled. Live: `edge/nhl.skater_season_to_date`, the stats
+API's summary + realtime reports aggregated to games before the date (two requests;
+matched the box scores for 676 of 677 skaters). Joined like the ice time; the page warns
+if it is unreachable. K **points 30, shots 7, blocks 20**, fitted on season-lab H1 (grid
+re-run here: argmin 6.0317, flat 6.032-6.035 near it).
+
+**Decision: SHIPPED.** Season lab (4 seeds), recipe before vs after:
+
+| half | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|
+| H1 (fit) | 4.545 -> 4.481 | 6.0957 -> 6.0300 | +0.187 -> +0.119 | +0.383 -> +0.402 |
+| **H2 (check)** | 4.621 -> **4.508** | 6.2622 -> **6.1190** | +0.300 -> **+0.150** | +0.393 -> **+0.423** |
+
+H2 squared error −1.77 [−2.01, −1.53] per skater-game, better on 78/86 dates. The gain
+grows with games played (critic: −0.12 in a player's first 10 games, −1.2 past 40).
+
+2026-27 lab (re-cached through the shipped code, 4 seeds), the rule's "not worse":
+
+| state | split | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|---|
+| lock | test, before -> after | 4.453 -> 4.449 | 5.928 -> 5.926 | +0.203 -> +0.183 | +0.388 -> +0.396 |
+| early | test, before -> after | 4.458 -> 4.451 | 5.943 -> 5.939 | +0.192 -> +0.173 | +0.382 -> +0.387 |
+
+Per night lock −0.087 [−0.42, +0.26] (4/8), early +0.011 [−0.32, +0.46] (5/8): flat this
+early in the season (test nights fall at games 4-12; stars' goals and shots are props).
+
+**Risks / runners-up (critic):**
+- The season lab's team goals are a form estimate, so part of the gain may be
+  this-season rates standing in for team strength the market already gives production.
+  Goals and assists are renormalised within each team; shots and blocks are not.
+- K_shots = 7 is aggressive; recheck on the 2026-27 lab at ~30 nights.
+- Shots scale one-for-one with implied goals; ~0.25 of that fits H1 better. It interacts
+  with the market, so only the 2026-27 lab can judge it.
