@@ -75,3 +75,64 @@ almost all of any surplus or shortfall."
 legacy protocol 2025-26, confirmed: all 4.929, teammates of a scratch 5.026, promoted starters 5.227 (+1.10), n 29,311
 
 legacy protocol 2025-26, inactives: all 5.394, teammates of a scratch 5.485, promoted starters 7.688 (-6.21), n 29,311
+
+## Cycle 2: a bench role that ignores whether the coach is playing him right now
+
+**Critic #2 (fresh general-purpose agent, ~33 min, read-only).** "Every player outside
+tonight's five gets a slow average of his bench minutes, ignoring the two strongest
+signals the model already has: his last game, and -- for a regular starter -- being
+left out of the announced five." Critic #1 listed these as two runners-up; tested
+against everything else, they are one hole and nothing else is close.
+
+- **Last-game slope:** bench error rises 0.18 minutes per minute his last game was
+  above his role (+0.175 on 2024-25, n 18,893; +0.181 on 2025-26, n 18,514).
+  Starters are flat.
+- **Dropped regular starters** (start rate ≥ 0.8, active, not in the five):
+  - play 0 minutes 67% / 60% of the time, bias +8.3 / +5.6;
+  - 1.3% of rows but 6.7% / 5.5% of all squared error;
+  - examples: Jaylen Brown 2026-02-04, Trae Young 2025-12-05.
+- **Residual GBM ranking of signals** (fit 2024-25, scored 2025-26, MSE gains):
+  start status × start rate −1.7, last game −0.9, days since last game −0.28,
+  standings −0.18, everything else smaller.
+
+**Fix (shipped, `edge/nba_minutes.py` RECENCY_* / DROP_*).**
+- **Recency:** non-starters with start rate < 0.8 move λ of the way to their last
+  game's minutes (a DNP counts 0).
+- **Drop:** regular starters left out of the five get q × role.
+- **Guards:** at least 1 game this season (3 for the drop), not back from an absence.
+- Rank-gap coefficients refitted under the new roles (`edge/nba_minutes_gap.py`,
+  `nba_minutes_lab.py cycle2 --write`).
+- **Chosen on 2024-25 only:** λ 0.25, q 0.2 (grid λ 0.1-0.3 × q 0-0.5, coefficients
+  refitted per cell). The critic's own picks were λ 0.2, q 0.3.
+- **Judgment call on the guards:** 2024-25 alone prefers no guards (6.9355 vs
+  6.9439). Without them, 2025-26 opening week goes 5.01 → 5.18, first game back
+  5.97 → 6.27, and 2026-27 night one 6.98 → 8.54: rotation players get cut on last
+  season's finale. Kept on mechanism, and recorded here because the held-out
+  numbers were seen before deciding.
+- Production matches the lab to rounding (RMSE 6.586 / 7.396 both).
+
+**Result** (2025-26 held out, starters confirmed):
+- RMSE 6.692 → **6.586**, MAE 5.03 → **4.93**
+- inactives only: RMSE 7.474 → **7.396**, MAE 5.49 → **5.41**
+- high role 28+: 4.44 (+0.2) → **4.33 (−0.0)**
+- legacy protocol: 4.929 → **4.845** confirmed, 5.394 → **5.332** inactives only
+- 2026-27 (3 games): RMSE 7.001 → 6.984, MAE 5.75 → 5.83
+
+**Runners-up:**
+- days since the last game;
+- the lab doesn't replay the pre-inactives live state (expected starters, DK OUT,
+  the 13-man cut);
+- end-of-season effects (April MSE 60 vs 45).
+
+| mode | season | n | RMSE all | all | opening (team games 1-5) | rookie / no NBA history | lottery rookie | new team (first 5) | back from 5+ missed | teammate of a scratch | promoted starter | high role (base 28+) | roles/240 >1.15, starter |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| confirmed | 2024-25 | 32,566 | 6.427 | 4.77 (-0.1) | 4.45 (-0.1) | 3.66 (+0.1) | 4.71 (-1.1) | 5.24 (-0.4) | 5.57 (-0.3) | 4.79 (-0.1) | 5.19 (+0.6) | 4.29 (-0.2) | 4.35 (-0.2) |
+| confirmed | 2025-26 | 32,224 | 6.586 | 4.93 (-0.1) | 5.01 (-0.2) | 5.09 (-0.8) | 4.89 (-1.0) | 5.91 (-0.3) | 5.97 (-0.9) | 5.00 (-0.1) | 5.12 (+0.9) | 4.33 (-0.0) | 4.27 (+0.2) |
+| confirmed | 2026-27 | 103 | 6.984 | 5.83 (-0.0) | 5.83 (-0.0) | 4.93 (+4.2) | 6.04 (-6.0) | 8.70 (+2.2) | - | - | 5.84 (+5.8) | 5.31 (-4.7) | 5.44 (-3.2) |
+| inactives | 2024-25 | 32,566 | 7.460 | 5.37 (-0.1) | 4.37 (-0.1) | 3.79 (+0.0) | 4.88 (-1.5) | 5.58 (-0.2) | 6.14 (+0.9) | 5.39 (-0.1) | 8.20 (-6.9) | 4.89 (+0.1) | 5.02 (-2.3) |
+| inactives | 2025-26 | 32,224 | 7.396 | 5.41 (-0.1) | 5.05 (-0.2) | 5.51 (-1.4) | 5.35 (-2.4) | 5.95 (+0.2) | 6.32 (+0.6) | 5.52 (-0.1) | 7.77 (-6.4) | 4.73 (+0.1) | 4.76 (-1.9) |
+| inactives | 2026-27 | 103 | 6.999 | 5.36 (-0.0) | 5.36 (-0.0) | 4.07 (+3.2) | 6.99 (-7.0) | 9.11 (+2.1) | - | - | 9.15 (-9.2) | 3.47 (-2.9) | 4.84 (-4.5) |
+
+legacy protocol 2025-26, confirmed: all 4.845, teammates of a scratch 4.928, promoted starters 5.224 (+1.14), n 29,311
+
+legacy protocol 2025-26, inactives: all 5.332, teammates of a scratch 5.424, promoted starters 7.427 (-5.80), n 29,311

@@ -133,6 +133,21 @@ SALARY_NUDGE = None
 #: gap. Held out 2025-26, starters confirmed: RMSE 6.810 -> 6.692, MAE 5.26 -> 5.03;
 #: inactives only 7.649 -> 7.474. Coefficients: edge/nba_minutes_gap.py (generated).
 ALLOC = "rank_gap"
+#: Critique cycle 2: is the coach playing him RIGHT NOW? A non-starter's role (bench role
+#: once the five is announced; start rate < 0.5 before) moves RECENCY_LAM of the way to his
+#: last game's minutes (a DNP counts 0), if his start rate < RECENCY_TAU; a regular starter
+#: (start rate >= DROP_TAU) who is active but NOT in the announced five gets DROP_Q of his
+#: role (they play 0 in 60-67% of cases). Fitted on 2024-25 (lambda 0.1-0.3 x q 0-0.5, the
+#: rank-gap coefficients refitted for each): lambda 0.25, q 0.2. Guards: this season's games
+#: >= 1 (>= 3 for the drop) and not back from an absence -- otherwise the "last game" is
+#: last season's finale or weeks old. The guards cost 0.008 RMSE on 2024-25 but without them
+#: 2025-26 opening week 5.01 -> 5.18 and 2026-27's night one 6.98 -> 8.54 (a judgment call,
+#: recorded in NBA_MINUTES_CRITIQUE_LOG.md). Held out 2025-26: RMSE 6.692 -> 6.586
+#: (confirmed), 7.474 -> 7.396 (inactives only).
+RECENCY_LAM = 0.25
+RECENCY_TAU = 0.8
+DROP_Q = 0.2
+DROP_TAU = 0.8
 #: History kept per player (a full season).
 HIST_GAMES = 82
 
@@ -248,6 +263,7 @@ def project(team: list, params: dict | None = None) -> dict:
 
     p = {"ROLE_POW": ROLE_POW_V2, "POS_W": POS_W_V2, "ALLOC_POW": ALLOC_POW, "STARTER_TILT": STARTER_TILT,
          "RAMP": RAMP, "ROOKIE_PRIOR": ROOKIE_PRIOR, "ROOKIE_K": ROOKIE_K, "SALARY_NUDGE": SALARY_NUDGE,
+         "RECENCY_LAM": RECENCY_LAM, "DROP_Q": DROP_Q,
          **(params or {})}
     roles_, start_, promoted = {}, {}, {}
     for pl in team:
@@ -257,18 +273,31 @@ def project(team: list, params: dict | None = None) -> dict:
         b, s = r["base"], r["start_rate"]
         real = hist[: len(hist) - n_pre] if n_pre else hist
         n_real = len(real)
+        season = pl.get("cur_n") if pl.get("cur_n") is not None else n_real
+        special = False
         if n_pre and sum(1 for m, _ in real if m > 0) < 5:
             # the live rule for a player with < 5 real games: his preseason counts
-            season = pl.get("cur_n") if pl.get("cur_n") is not None else n_real
             seq = [m for m, _ in hist][-(SEASON_START_WINDOW if season < 5 else WINDOW):]
             b, s = (sum(seq) / len(seq) if seq else 0.0), 0.0
+            special = True
         if n_real < ROOKIE_GAMES and p["ROOKIE_PRIOR"]:
+            special = True
             a0, a1 = p["ROOKIE_PRIOR"]
             prior = max(0.0, a0 + a1 * math.log(max(1, pl.get("pick") or PICK_UNDRAFTED)))
             own = sum(m for m, _ in real) / n_real if n_real else 0.0
             b = (n_real * own + p["ROOKIE_K"] * prior) / (n_real + p["ROOKIE_K"])
         if pl.get("starter") is not None and (r["ns"] + r["nb"]) > 0:
             b = r["ms"] if pl["starter"] else r["mb"]
+        # critique cycle 2: last game for a non-starter; a regular starter left out of the five
+        sr0, back = r["start_rate"], pl.get("since_return")
+        announced = pl.get("starter") is not None
+        benchish = (announced and not pl["starter"]) or (not announced and sr0 < 0.5)
+        if (p["RECENCY_LAM"] and benchish and not special and sr0 < RECENCY_TAU and real
+                and season >= 1 and back is None):
+            b = b + p["RECENCY_LAM"] * (real[-1][0] - b)
+        if (p["DROP_Q"] is not None and announced and not pl["starter"] and sr0 >= DROP_TAU
+                and back is None and season >= 3):
+            b *= p["DROP_Q"]
         sr = pl.get("since_return")
         if sr is not None and 0 <= sr < len(p["RAMP"]):
             b *= p["RAMP"][sr]

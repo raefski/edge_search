@@ -252,3 +252,22 @@ def test_a_short_handed_team_gives_the_extra_minutes_to_the_bench_end_not_the_st
     gain = {i: out[str(i)]["minutes"] - roles[i] for i in range(12)}
     assert abs(gain[0]) < 1.0 and sum(gain[i] for i in range(7, 12)) > sum(gain[i] for i in range(5))
     assert NM.SALARY_NUDGE is None                                      # cycle 1: salary adds nothing now
+
+
+def test_a_regular_starter_left_out_of_the_five_is_cut_and_a_bench_role_reads_the_last_game():
+    """Critique cycle 2: a regular starter active but not in tonight's announced five
+    plays 0 in most such games (DROP_Q); a bench player's role moves RECENCY_LAM of the
+    way to his last game."""
+    starter_hist = [(32.0, True)] * 10
+    bench_hist = [(18.0, False)] * 9 + [(0.0, False)]                  # a DNP last game
+    def one(hist, starter):
+        team = [{"id": "x", "position": "G", "inactive": False, "starter": starter, "history": hist,
+                 "cur_n": len(hist)}]
+        return NM.project(team)["x"]["minutes"]
+    assert one(starter_hist, False) < 0.5 * one(starter_hist, True)      # dropped from the five
+    bench = one(bench_hist, False)
+    role = NM.role_v2(bench_hist, cur_n=10)["mb"]
+    assert bench == pytest.approx(role + NM.RECENCY_LAM * (0.0 - role), abs=0.15)
+    # no game this season yet: last season's finale must not move him
+    quiet = [{"id": "x", "position": "G", "inactive": False, "starter": False, "history": bench_hist, "cur_n": 0}]
+    assert NM.project(quiet)["x"]["minutes"] == pytest.approx(NM.role_v2(bench_hist, cur_n=0)["mb"], abs=0.15)

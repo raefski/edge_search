@@ -129,6 +129,33 @@ On the first, second and third game back from a 5+ team-game absence, multiply
 the role by `RAMP = (0.8, 0.9, 1.0)`. Without it, the first game back ran +3.0
 minutes high; with it, −0.6.
 
+### 1e. Is the coach playing him right now? (critique cycle 2)
+
+Both rules apply after the split (1b) and before the return ramp (1d).
+
+**Recency blend.** A player who isn't in tonight's announced five (or, before the
+five is announced, has start rate < 0.5) and whose start rate is < 0.8 moves a
+quarter of the way to his last game's minutes, with a coach's-decision DNP
+counting as 0:
+
+```
+role = role + 0.25 · (last_game_minutes − role)
+```
+
+**Dropped regular starter.** A regular starter (start rate ≥ 0.8) who is active
+but not in tonight's announced five gets 0.2 × his role. In the data such players
+play 0 minutes in 60–67% of cases.
+
+**Guards.** Both rules need at least 1 game this season (3 for the drop) and no
+return from an absence. Otherwise the "last game" is last season's finale or
+weeks old.
+
+**Fitting.** λ = 0.25 and q = 0.2 were chosen on 2024-25 (grid 0.1–0.3 × 0–0.5,
+rank-gap coefficients refitted for each). The guards are a judgment call:
+2024-25 alone slightly prefers no guards (RMSE 6.9355 vs 6.9439), but without
+them 2025-26 opening week goes 5.01 → 5.18 and 2026-27's night one goes 6.98 →
+8.54 (rotation players cut to 4 minutes on last season's finale).
+
 ## Step 2: who dresses tonight
 
 - **Inactive:** on NBA.com's inactive list, or flagged OUT by DK.
@@ -209,32 +236,32 @@ Two information states are scored:
 
 ### Held out on 2025-26 (32,224 active player-games): MAE (bias) in minutes
 
-| slice | v1, confirmed | v2, confirmed | **current, confirmed** | v1, inactives | v2, inactives | **current, inactives** |
-|---|---|---|---|---|---|---|
-| RMSE, all | 7.76 | 6.81 | **6.69** | 8.15 | 7.65 | **7.47** |
-| all | 5.74 (−0.1) | 5.26 (−0.1) | **5.03 (−0.1)** | 5.97 | 5.78 | **5.49** |
-| opening week (team games 1–5) | 6.21 | 5.30 | **5.06** | 6.54 | 5.41 | **5.11** |
-| rookies / no NBA history | 6.30 (−0.2) | 5.46 (−0.6) | **5.15 (−0.9)** | 6.75 | 5.99 | **5.52** |
-| lottery rookies (75) | 7.32 (−3.7) | 5.17 (−1.4) | **4.90 (−1.0)** | 8.61 | 6.10 | **5.36** |
-| new team, first 5 games | 7.11 | 6.21 | **6.00** | 7.50 | 6.27 | **6.10** |
-| first game back from 5+ out | 6.59 (+3.0) | 5.99 (−0.6) | **5.98 (−0.9)** | 6.96 | 6.34 | **6.27** |
-| teammates of a scratch | 5.80 | 5.34 | **5.11** | 6.05 | 5.88 | **5.59** |
-| promoted starters | 5.71 (+0.4) | 5.20 (+1.3) | **5.13 (+0.9)** | — | — | — |
-| high role (28+) | 5.22 (+0.2) | 4.63 (−0.5) | **4.44 (+0.2)** | 5.31 | 5.10 | **4.73** |
-| starters, roles > 1.15 × 240 | 5.65 (−4.1) | 4.68 (−2.2) | **4.26 (−0.0)** | 5.77 (−4.4) | 5.70 (−4.4) | **4.80 (−2.0)** |
+| slice | v1, confirmed | v2, confirmed | cycle 1, confirmed | **current, confirmed** | v1, inactives | v2, inactives | **current, inactives** |
+|---|---|---|---|---|---|---|---|
+| RMSE, all | 7.76 | 6.81 | 6.69 | **6.59** | 8.15 | 7.65 | **7.40** |
+| all | 5.74 (−0.1) | 5.26 (−0.1) | 5.03 (−0.1) | **4.93 (−0.1)** | 5.97 | 5.78 | **5.41** |
+| opening week (team games 1–5) | 6.21 | 5.30 | 5.06 | **5.01** | 6.54 | 5.41 | **5.05** |
+| rookies / no NBA history | 6.30 (−0.2) | 5.46 (−0.6) | 5.15 (−0.9) | **5.09 (−0.8)** | 6.75 | 5.99 | **5.51** |
+| lottery rookies (75) | 7.32 (−3.7) | 5.17 (−1.4) | 4.90 (−1.0) | **4.89 (−1.0)** | 8.61 | 6.10 | **5.35** |
+| new team, first 5 games | 7.11 | 6.21 | 6.00 | **5.91** | 7.50 | 6.27 | **5.95** |
+| first game back from 5+ out | 6.59 (+3.0) | 5.99 (−0.6) | 5.98 (−0.9) | **5.97 (−0.9)** | 6.96 | 6.34 | **6.32** |
+| teammates of a scratch | 5.80 | 5.34 | 5.11 | **5.00** | 6.05 | 5.88 | **5.52** |
+| promoted starters | 5.71 (+0.4) | 5.20 (+1.3) | 5.13 (+0.9) | **5.12 (+0.9)** | — | — | — |
+| high role (28+) | 5.22 (+0.2) | 4.63 (−0.5) | 4.44 (+0.2) | **4.33 (−0.0)** | 5.31 | 5.10 | **4.73** |
+| starters, roles > 1.15 × 240 | 5.65 (−4.1) | 4.68 (−2.2) | 4.26 (−0.0) | **4.27 (+0.2)** | 5.77 (−4.4) | 5.70 (−4.4) | **4.76 (−1.9)** |
 
-"current" = v2 + critique cycle 1 (rank-gap allocation, salary nudge off); see
-NBA_MINUTES_CRITIQUE_LOG.md for every cycle.
+"current" = v2 + critique cycle 1 (rank-gap allocation, salary nudge off) + cycle 2
+(recency blend, dropped regular starter); NBA_MINUTES_CRITIQUE_LOG.md has every cycle.
 
 **Legacy protocol** (2025-26 held out, 29,311 player-games, players with 5+
 games that season):
 
-| | v1 | v2 | current |
-|---|---|---|---|
-| all, confirmed | 5.601 | 5.123 | **4.929** |
-| teammates of a scratch, confirmed | 5.681 | 5.216 | **5.026** |
-| promoted starters, confirmed | 5.653 (+0.9) | 5.346 (+1.5) | **5.227 (+1.1)** |
-| all, inactives only | 5.831 | 5.624 | **5.394** |
+| | v1 | v2 | cycle 1 | current |
+|---|---|---|---|---|
+| all, confirmed | 5.601 | 5.123 | 4.929 | **4.845** |
+| teammates of a scratch, confirmed | 5.681 | 5.216 | 5.026 | **4.928** |
+| promoted starters, confirmed | 5.653 (+0.9) | 5.346 (+1.5) | 5.227 (+1.1) | **5.224 (+1.1)** |
+| all, inactives only | 5.831 | 5.624 | 5.394 | **5.332** |
 
 ### What each change bought (2025-26, confirmed, RMSE / MAE)
 
@@ -247,6 +274,7 @@ games that season):
 | + return ramp and rookie draft prior | 6.83 / 5.24 |
 | + redistribution refit (= v2) | 6.81 / 5.26 |
 | + critique cycle 1: rank-gap allocation, salary off | 6.69 / 5.03 |
+| + critique cycle 2: recency blend, dropped regular starter | 6.59 / 4.93 |
 
 The power share is a squared-error trade: slightly better RMSE, slightly worse
 MAE.
@@ -260,24 +288,26 @@ MAE.
 - a fitted per-game discount on last-season games (it read last season's final
   week at season start).
 
-## Known weaknesses (open as of 2026-10-21, after critique cycle 1)
+## Known weaknesses (open as of 2026-10-21, after critique cycle 2)
 
-1. **This season's opening night still runs stars low:** −5.1 minutes for roles
-   28+ (it was −8.0 before cycle 1). Only 3 games, 103 players.
+1. **This season's opening night still runs stars low:** −4.7 minutes for roles
+   28+ (it was −8.0 before the critique loop). Only 3 games, 103 players.
 2. **The rank-gap allocation is position-blind.** v2's position weighting of
-   missing minutes went with the old step 3. The first-game-back slice is
-   slightly worse on RMSE (7.76 → 7.88 by the critic's measure).
+   missing minutes went with the old step 3.
 3. **Promoted starters run about +0.9 minutes high.**
-4. **Critic #1's runners-up:**
-   - regular starters (start rate ≥ 0.8) who are active but not in tonight's
-     five play 0 minutes 60–67% of the time, against 14.5 projected (bias +6 to
-     +8, about 430 a season);
-   - bench players run high after a DNP and low after a 20–30-minute game
-     (recency);
-   - a gradient-boosted residual model reaches RMSE 6.43 on 2025-26, so
-     systematic error remains.
-5. **Blowouts and overtime** aren't projected, only simulated through role
-   correlations in `edge/dfs_nba_theory.py`.
+4. **The dropped-starter factor drifts between seasons.** The share playing 0 went
+   from 67% to 60%, so q = 0.2 over-corrects 2025-26 (bias −1.6). Live, DK's OUT
+   flags remove some of these players first.
+5. **Critic #2's runners-up:**
+   - days since the player's last game (a bigger signal than the back-to-back flag);
+   - the lab never replays the live state before the inactive list posts (expected
+     starters, DK OUT flags, the 13-man cut; 26% of 2025-26 team-games dressed
+     14–15 players);
+   - end of season: April MSE is 60 against 45 for the season, and standings are
+     worth something.
+6. **Headroom:** a gradient-boosted residual model still reaches RMSE about 6.41
+   on 2025-26.
+7. **Blowouts and overtime** aren't projected.
 
 ## Pseudocode
 
@@ -305,6 +335,12 @@ def project_team(players, starters_announced, inactive_list_posted):
             base = (p.real_games * p.own_mean + 0.5 * prior) / (p.real_games + 0.5)
         if starters_announced and nw > 0:
             base = ms if p.starts_tonight else mb
+        bench = (not p.starts_tonight) if starters_announced else sr < 0.5
+        if bench and sr < 0.8 and p.games_this_season >= 1 and p.since_return is None and not rookie:
+            base += 0.25 * (p.last_game_minutes - base)          # cycle 2: recency
+        if starters_announced and not p.starts_tonight and sr >= 0.8 and p.games_this_season >= 3 \
+                and p.since_return is None:
+            base *= 0.2                                          # cycle 2: dropped regular starter
         if p.since_return in (0, 1, 2):
             base *= (0.8, 0.9, 1.0)[p.since_return]
         p.role, p.starting = base, (float(p.starts_tonight) if starters_announced else sr)
