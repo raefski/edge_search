@@ -87,6 +87,55 @@ def record_failure(source: str, reason: str,
     except OSError:
         pass
 
+#: How far a banked snapshot's captured_at may sit from a failure's stamp and
+#: still be the capture that failure was about. The unit's two capture passes
+#: run seconds apart (2026-10-02 week 4 midweek: rows at 16:34:54, failure
+#: logged 16:34:55 by the merge pass), so 15 minutes is generous without
+#: reaching the next deadline (hours away at the closest).
+_RESOLVE_WINDOW = datetime.timedelta(minutes=15)
+
+
+def unresolved_failures(lines: list[str], rows: list[dict]) -> list[str]:
+    """The failure lines whose snapshot never made it into the line log.
+
+    WHY: the banner on pages/4_*_Pickem.py rendered every line in the
+    failures log forever. 2026-10-02's midweek failure came from the soft
+    merge pass AFTER the market half and CBS half had both been banked
+    (16/16 games with cbs_line_home + comm_pct_*), yet it stayed up for three
+    weeks as "a market reading that no longer exists". A failure is resolved
+    when rows for its label, captured within _RESOLVE_WINDOW of it, all carry
+    both halves (games already kicked off
+    excepted). Anything that does not parse stays visible: a fallback must
+    be visible, and so must a failure we cannot account for.
+    """
+    def _ts(text: str) -> datetime.datetime | None:
+        try:
+            return datetime.datetime.fromisoformat(
+                text.strip().replace("Z", "+00:00"))
+        except ValueError:
+            return None
+
+    out = []
+    for line in lines:
+        parts = [p.strip() for p in line.split("|", 2)]
+        stamp = _ts(parts[0]) if len(parts) == 3 else None
+        label = parts[2].split(":", 1)[0].strip() if stamp else ""
+        banked = [r for r in rows
+                  if stamp and r.get("snapshot") == label
+                  and (t := _ts(r.get("captured_at") or "")) is not None
+                  and abs(t - stamp) <= _RESOLVE_WINDOW]
+        # A game already kicked off has no market line to take (PIT@CLE,
+        # Thursday night, in that same 10/02 capture) -- not a loss.
+        pending = [r for r in banked
+                   if (k := _ts(r.get("kickoff_utc") or "")) is None
+                   or k > stamp]
+        if banked and all(r.get("cbs_line_home") and r.get("comm_pct_away")
+                          and r.get("market_line_home") for r in pending):
+            continue
+        out.append(line)
+    return out
+
+
 # 'post' = the moment CBS's line is first seen (Tuesday, the freeze).
 # 'lock' = last reading before that day's picks deadline.
 # anything else = a free-form mid-week reading, useful for velocity.

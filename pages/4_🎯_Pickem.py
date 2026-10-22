@@ -51,6 +51,7 @@ from edge.pickem import make_pick  # noqa: E402
 from edge.pickem_live import fetch_week  # noqa: E402
 from edge.pickem_deadline import RULE as LOCK_RULE, game_deadlines  # noqa: E402
 from edge.pickem_log import load as load_line_log  # noqa: E402
+from edge.pickem_log import unresolved_failures  # noqa: E402
 # The pool calendar and the CBS/market alias, shared with
 # scripts/pickem_capture.py rather than reimplemented here. Only one
 # implementation left to drift from -- the rule adopted after 2026-08-21.
@@ -199,6 +200,8 @@ try:
     _failures = [l for l in FAILURES_LOG.read_text().splitlines() if l.strip()]
 except OSError:
     _failures = []
+# Drop the ones whose snapshot was banked anyway (see unresolved_failures).
+_failures = unresolved_failures(_failures, load_line_log()) if _failures else []
 if _failures:
     st.error(
         f"⚠️ {len(_failures)} pick'em capture(s) FAILED. Each one is a market "

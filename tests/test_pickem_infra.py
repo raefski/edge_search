@@ -1467,3 +1467,26 @@ def test_the_label_is_read_off_argv(monkeypatch, argv, expected):
     from scripts import pickem_capture as cap
     monkeypatch.setattr(sys, "argv", argv)
     assert cap._snapshot_arg() == expected
+
+
+def test_unresolved_failures_drops_banked_snapshot():
+    # 2026-10-02: the merge pass failed a second after both halves were banked.
+    from edge.pickem_log import unresolved_failures
+    row = {"snapshot": "midweek", "captured_at": "2026-10-02T16:34:54Z",
+           "cbs_line_home": "-1.5", "comm_pct_away": "60",
+           "market_line_home": "-2.5"}
+    banked = "2026-10-02T16:34:55Z | pickem-capture | midweek: exited 1"
+    lost = "2026-10-09T16:34:55Z | pickem-capture | midweek: exited 1"
+    odd = "garbage"
+    assert unresolved_failures([banked, lost, odd], [row]) == [lost, odd]
+    assert unresolved_failures([banked], [dict(row, comm_pct_away="")]) == [banked]
+
+
+def test_unresolved_failures_ignores_kicked_off_game():
+    from edge.pickem_log import unresolved_failures
+    base = {"snapshot": "midweek", "captured_at": "2026-10-02T16:34:54Z",
+            "cbs_line_home": "2.5", "comm_pct_away": "55"}
+    rows = [dict(base, market_line_home="", kickoff_utc="2026-10-02T00:16:00Z"),
+            dict(base, market_line_home="-3", kickoff_utc="2026-10-04T17:00:00Z")]
+    line = "2026-10-02T16:34:55Z | pickem-capture | midweek: exited 1"
+    assert unresolved_failures([line], rows) == []
