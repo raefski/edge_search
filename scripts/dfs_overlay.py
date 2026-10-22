@@ -33,7 +33,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from edge import dfs  # noqa: E402
 
-SPORTS = ("NHL", "NFL", "CFB", "NAS", "MMA", "MLB")
+# NBA / CBB added 2026-10-22: the NBA season opened 10/20 and the page never listed it.
+SPORTS = ("NBA", "NHL", "NFL", "CFB", "NAS", "MMA", "MLB", "CBB")
 FILL_LOG = ROOT / "data" / "contest_fill_log.csv"
 PAYOUTS = ROOT / "data" / "cache" / "contest_payouts.json"
 #: Prize-table lookups per run, best candidates first (one DK request each).

@@ -24,7 +24,7 @@ st.caption("Guaranteed contests pay their prize table even if they don't fill â€
            "contests fill in the last hour, so check close to lock.")
 
 c1, c2, c3 = st.columns(3)
-sports = c1.multiselect("Sports", O.SPORTS, default=["NHL", "NFL", "CFB", "NAS", "MMA", "MLB"])
+sports = c1.multiselect("Sports", O.SPORTS, default=["NBA", "NHL", "NFL", "CFB", "NAS", "MMA", "MLB"])
 # A range, not just a ceiling: the lobby is mostly 10c-$1 contests, so a
 # floor is what makes the list short enough to scroll on a phone.
 min_fee, max_fee = c2.select_slider("Entry fee ($)", options=[0.1, 0.25, 1, 2, 3, 5, 10, 15, 25, 50],
