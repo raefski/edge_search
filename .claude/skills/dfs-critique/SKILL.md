@@ -23,7 +23,7 @@ actually predicts -- not one metric for all.
 | mlb | **hitter DK points** (pitchers separately: strikeouts / outs) | DFS_STATUS.md, edge/dfs.py, scripts/dfs_hitter_backtest.py, dfs_calibration.py | MLB_CRITIQUE_LOG.md |
 | nascar | **finishing position** (and place differential) | NASCAR_STATUS.md, edge/nascar_sim.py, scripts/nascar_calibration.py | NASCAR_CRITIQUE_LOG.md |
 | mma | **fight outcome probability + DK points given method** | MMA_STATUS.md, edge/mma_sim.py, scripts/mma_calibration.py | MMA_CRITIQUE_LOG.md |
-| overlay | **field at lock, Classic only**, forecast at the final call (4.5-9.5 min out): err/cap MAE/RMSE/bias + overlay calls missed / false; split by lock date (a day never straddles) | edge/dfs_entry_edge.py (fit_late_fill, likely_at_lock), harness/overlay.py (assess, collect_finals), scripts/dfs_overlay.py, data/contest_fill_log.csv, data/contest_finals.csv, scripts/overlay_lab.py (`report --cutoff`) | OVERLAY_CRITIQUE_LOG.md |
+| overlay | **field at lock, Classic only**, forecast at the final call (4.5-9.5 min out): err/cap MAE/RMSE/bias + overlay calls missed / false + **$ of the calls (decides shipping)**; split by lock date (a day never straddles) | edge/dfs_entry_edge.py (fit_late_fill, likely_at_lock), harness/overlay.py (assess, collect_finals), scripts/dfs_overlay.py, data/contest_fill_log.csv, data/contest_finals.csv, scripts/overlay_lab.py (`report --cutoff`) | OVERLAY_CRITIQUE_LOG.md |
 
 Read the sport's STATUS file and its log (if any) first. If the sport has no
 reproducible held-out harness for its metric, building one (like nba_minutes_lab.py:
