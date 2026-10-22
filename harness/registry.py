@@ -146,6 +146,8 @@ JOBS: dict[str, Job] = {j.name: j for j in [
     Job("monitor", "monitor", (PY, "-m", "harness", "monitor"), timeout=600, timer="edge-monitor.timer",
         doc="goalie changes + line moves near lock; --push sends ntfy alerts"),
     _j("overlay", "monitor", "scripts/dfs_overlay.py", doc="guaranteed contests that are not filling (table)"),
+    _j("overlay-lab", "evaluate", "scripts/overlay_lab.py", "report",
+       doc="held-out at-lock field forecast, Classic, scored at the final call (OVERLAY_CRITIQUE_LOG.md)"),
     Job("overlay-alert", "monitor", (PY, "-m", "harness", "overlay"), timeout=900,
         timer="edge-overlay.timer",
         doc="push guaranteed contests whose next entry is worth it at lock (ntfy)"),
