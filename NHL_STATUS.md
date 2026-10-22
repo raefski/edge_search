@@ -523,3 +523,15 @@ q_ik / (1 − q_ik). Now: 1.692 per goal, every salary tier within 0.5% of targe
 4 seeds, test: RMSE 5.929 -> 5.928 (lock), 5.945 -> 5.943 (early); MAE 4.449 -> 4.453;
 rank flat; bias +0.18 -> +0.20 (projections +0.023 per skater). A correctness fix,
 neutral on held-out error. It leaves the general over-projection a little more exposed.
+
+## 6m. Critique cycle 3: the test nights are the limit (2026-10-22)
+
+Nothing shipped (NHL_CRITIQUE_LOG.md cycle 3). Skater error is now at the simulator's
+own spread (test MSE 35.2 vs simulated variance 38.3), the books' shots / points lines
+are calibrated, and no player or team miss persists from train to test except blocks.
+The best mean change found (this season's blocks + rink scorer) was better on TRAIN and
+worse on pooled TEST; 8,000 sims instead of 2,000 was mixed held out and doubles build
+time. Rule from here: mean changes to unpriced components get validated on 2025-26 box
+scores first (harness to build), since 8 test nights cannot certify gains under ~0.02
+RMSE. Candidate next focus: the simulated spread (3-8% wider than realised errors),
+which sets the cash floor and GPP ceiling.

@@ -229,3 +229,65 @@ it was fitted to; RMSE is marginally better in both states, MAE marginally worse
 adds ~0.02 to an over-projection that is now **+0.18 to +0.20 per skater**. That bias
 is the next cycle's natural target: it is spread across PP1 (+0.44 test) and mid-salary
 skaters (3.5-6.5k +0.4-0.6 in Cycle 0), and does not live in the assist draw.
+
+## Cycle 3: no mean hole the test nights can see -- nothing shipped
+
+Baseline (4 seeds, after the assist fix): lock test MAE 4.453, RMSE 5.928, bias +0.203,
+rank +0.388; early 4.458 / 5.943 / +0.192 / +0.382.
+
+**Critic #3 (fresh `dfs-model-critic`, ~18 min, read-only).** "After cycles 0-2, no
+information we hold locally moves held-out skater error by more than ~0.006 RMSE. The
+real hole is that 8 test nights resolve only ~±0.02 RMSE, so further mean tuning on
+them chooses among noise."
+
+- Realised error matches the simulator's own spread: test MSE 35.2 vs mean simulated
+  variance 38.3 (0.92), train 37.0 vs 38.0 (0.97); every slice 0.78-1.03 except
+  $6.5-7.5k 1.20 (n 190). 2025-26 within-player variance is 37.7 pts², so even each
+  skater's true season mean would leave more error than the model has now.
+- No persistent player / team miss: a player's TRAIN mean miss predicts nothing on TEST
+  (corr −0.02, 566 players; team −0.22). Only blocks carry over (player +0.14, team
+  +0.22), the one component with no market.
+- The books are calibrated: shots-line over rates within 0.01-0.04 of the devigged
+  price at 1.5 / 2.5 / 3.5; points 0.5 line 0.446 / 0.473 hit vs 0.471 / 0.475 priced.
+- Best TEST gains of every probe it fitted on TRAIN: linear recalibration −0.074 pts²
+  (changes no lineup), salary-tier bias ≤ −0.07, this season's no-prop shots −0.017,
+  this season's blocks + rink −0.016, shots power on implied goals ~−0.005, scratches
+  as 0 with a dress probability −0.004 to −0.008 RMSE.
+
+**Its best variant, `blocks_now`** (this season's blocks blended at K = 10 games, rink
+scorer power E = 1, TRAIN grid 6.076-6.084 across all cells), re-run here:
+
+| state | split | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|---|
+| lock | train, shipped -> blocks_now | 4.576 -> 4.575 | 6.080 -> 6.077 | +0.185 -> +0.187 | +0.365 -> +0.368 |
+| lock | test, shipped -> blocks_now | 4.453 -> 4.463 | 5.928 -> **5.936** | +0.203 -> +0.219 | +0.388 -> +0.393 |
+| early | test, shipped -> blocks_now | 4.458 -> | 5.943 -> **5.951** | | |
+
+Per night: train −0.133 [−0.266, −0.002] (8/11), test lock −0.046 [−0.270, +0.203]
+(5/8), test early +0.010 [−0.22, +0.28]. **Not shipped**: pooled test RMSE worse in
+both states.
+
+**Production Monte Carlo (critic's runner-up), tested here: not shipped.** One seed of
+8,000 sims vs 2,000 (as production): lock test RMSE 5.9350 -> 5.9330 (−0.149 per night
+[−0.298, +0.001], 5/8), but early test 5.9404 -> 5.9437 (−0.054, 3/8 nights) and early
+train 6.0850 -> 6.0906. Mixed held out, and the three lineups on a 448-player board take
+184 s instead of 80 s (simulate 0.6 -> 1.6 s; the optimizers scale with sims).
+
+**Rule adopted for NHL mean changes from here (the critic's fix).** The 8 test nights
+cannot certify a change under ~0.02 RMSE. A change to a component no market prices
+(blocks; no-prop goals / assists / shots; role scaling; rink) should first be validated
+on the 2025-26 box scores (~40k skater-games, every input rebuildable as of each game
+date: prior-season rates, rolling ice time, rink factors from other games). Fit on the
+first half, check on the second, ship only if that interval excludes zero and the lab's
+TEST is not worse. That harness is not built yet: it is the next cycle's work.
+
+**Runners-up (critic):**
+- Each team's assists are renormalised to implied goals × 1.69; scaling the input assist
+  means to that total instead is better in all four split/state cells, by 0.014-0.040
+  pts². It needs a per-team assists-per-goal change inside simulate().
+- Mid-salary skaters ($3.5-6.5k, mostly with props) are over-projected by +0.35 to +0.93,
+  and $7.5k+ under by −0.58 to −0.83, in both splits. A correction is worth ≤ 0.07 pts²
+  on TEST.
+- The simulator's spread runs 3-8% wider than realised errors, assuming the mean is
+  right. That feeds the cash 25th / GPP 90th percentiles directly, and is the critic's
+  suggested next focus (a distribution metric, not the mean).
