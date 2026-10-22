@@ -264,6 +264,9 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         team_in = [{"id": r["name"], "position": r["nba_pos"],
                     "inactive": r["out"] or r.get("not_dressing", False),
                     "starter": r["starter"] if announced else None, "window": r["window"],
+                    # NBA.com's Expected five is a guess (wrong in 7 of 28 team-games on
+                    # 2026-10-20/21): project() blends it with no five until it's confirmed
+                    "confirmed": bool(r["confirmed"]) if announced else None,
                     "history": [(m, s) for m, s, _ in r["history"]], "cur_n": r["cur_n"],
                     "n_pre": r["n_pre"], "since_return": r["since_return"], "pick": r["pick"],
                     "salary": r["salary"]} for r in ps]

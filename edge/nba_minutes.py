@@ -148,6 +148,21 @@ RECENCY_LAM = 0.25
 RECENCY_TAU = 0.8
 DROP_Q = 0.2
 DROP_TAU = 0.8
+#: Critique cycle 4 (2026-10-21): until a team CONFIRMS its five (~30 min before tip),
+#: NBA.com's starters are *Expected* -- its guess -- and the last Expected five missed a
+#: starter in 7 of 28 regular-season team-games on 2026-10-20/21 (8 of 140 starters;
+#: data/nba_lineup_log.csv; 50% in preseason). The live build applied the start/bench
+#: split and the dropped-starter cut to it as if confirmed. Now minutes = EXPECTED_W x
+#: project(Expected five) + (1 - EXPECTED_W) x project(no five). Chosen on 2024-25 ONLY
+#: (scripts/nba_minutes_lab.py cycle4: every team-game projected with its five right,
+#: with one miss -- the lowest-start-rate starter swapped for the highest-start-rate
+#: active non-starter -- and with no five) by minimax regret over error rates 10-30%
+#: (25% measured on opening nights; CI ~11-45%): w = 0.70, regret <= 0.018 RMSE; the
+#: closed-form optimum is 0.82 at 10%, 0.66 at 25%. Held out 2025-26 (32,224
+#: player-games), RMSE as confirmed -> blend: 10% wrong 6.800 -> 6.744, 25% wrong
+#: 7.108 -> 6.955 (live state: 7.155 -> 6.994); cost when the five is right 6.586 ->
+#: 6.599, promoted starters' bias +0.9 -> -1.3 until the five is confirmed.
+EXPECTED_W = 0.70
 #: History kept per player (a full season).
 HIST_GAMES = 82
 
@@ -258,13 +273,22 @@ def project(team: list, params: dict | None = None) -> dict:
     "inactive": bool, "starter": bool | None (None = not announced), "history":
     [(min, started), ...]}] plus, when known: "cur_n" (this season's entries),
     "n_pre" (trailing preseason entries), "since_return", "pick", "salary".
+    A starter row with "confirmed": False makes the five NBA.com's *Expected* guess:
+    minutes are then EXPECTED_W x this five + (1 - EXPECTED_W) x no five (critique
+    cycle 4); a missing "confirmed" means the five is known (backtests, the lab).
     Returns {id: {"minutes", "base", "promoted", "share"}} for active players."""
     import math
 
     p = {"ROLE_POW": ROLE_POW_V2, "POS_W": POS_W_V2, "ALLOC_POW": ALLOC_POW, "STARTER_TILT": STARTER_TILT,
          "RAMP": RAMP, "ROOKIE_PRIOR": ROOKIE_PRIOR, "ROOKIE_K": ROOKIE_K, "SALARY_NUDGE": SALARY_NUDGE,
-         "RECENCY_LAM": RECENCY_LAM, "DROP_Q": DROP_Q,
+         "RECENCY_LAM": RECENCY_LAM, "DROP_Q": DROP_Q, "EXPECTED_W": EXPECTED_W,
          **(params or {})}
+    if p["EXPECTED_W"] is not None and any(pl.get("starter") and pl.get("confirmed") is False for pl in team):
+        w, known = p["EXPECTED_W"], {**p, "EXPECTED_W": None}
+        hard = project([{**pl, "confirmed": None} for pl in team], known)
+        soft = project([{**pl, "starter": None} for pl in team], known)
+        return {i: {**v, "minutes": round(w * v["minutes"] + (1 - w) * soft.get(i, v)["minutes"], 1)}
+                for i, v in hard.items()}
     roles_, start_, promoted = {}, {}, {}
     for pl in team:
         hist = pl["history"]

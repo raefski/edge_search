@@ -198,7 +198,81 @@ legacy protocol 2025-26, confirmed: all 4.845, teammates of a scratch 4.928, pro
 
 legacy protocol 2025-26, inactives: all 5.332, teammates of a scratch 5.424, promoted starters 7.427 (-5.80), n 29,311
 
-## Final summary: three cycles
+## Cycle 4: the Expected five was used as if confirmed
+
+First cycle run through the `dfs-critique` skill. **Baseline** (`report`, unchanged since
+cycle 3): 2025-26 RMSE 6.586 confirmed, 7.396 inactives only; live state 6.634 / 7.435.
+
+**Critic #4 (fresh `dfs-model-critic` agent, ~17 min, read-only).** "Before the confirmed
+lineups, the app treats NBA.com's *Expected* five as certain -- the start/bench split and
+the dropped-starter cut -- yet it was wrong in 7 of 28 regular-season team-games, and the
+lab never scores that state (only true fives or none)." Cycle 3 listed this as a runner-up;
+the critic measured it as bigger than cycle 1 or 2.
+
+- **Error rate:** last Expected snapshot vs the final Confirmed five in
+  `data/nba_lineup_log.csv`, 2026-10-20/21: 7 of 28 team-games, 8 of 140 starters
+  (preseason 50%). Misses were coaches' choices that still played: Jalen Williams 30
+  minutes, Grayson Allen 29 (both left out of the confirmed five).
+- **Cost, simulated on 2025-26:** at 25% wrong, Expected-as-confirmed RMSE 7.148
+  (8.49 in the wrong team-games) vs 6.586 with true fives and 7.396 with none.
+- **Cross-check:** a five guessed from last game's starters, treated as confirmed,
+  scores 8.81 in team-games with one wrong starter, against 7.78 for no five.
+  Confidently wrong costs more than not knowing.
+
+**Fix (shipped, `edge/nba_minutes.py` EXPECTED_W).**
+- **Model:** while any announced starter is unconfirmed, minutes =
+  w · project(Expected five) + (1 − w) · project(no five). Confirmed or absent fives
+  are unchanged.
+- **Wiring:** `build_board` and the scratch monitor (`harness/nba_scratch.py`) pass
+  NBA.com's `confirmed` flag. Page 12's "not confirmed" banner says the five counts 70%.
+- **Lab:** `nba_minutes_lab.py cycle4` scores the Expected state exactly. Every
+  team-game is projected three ways: five right; one miss (the lowest-start-rate
+  starter swapped for the highest-start-rate active non-starter, the critic's
+  process); no five. Error at miss rate ρ is the mixture, and the optimal w has a
+  closed form.
+- **Chosen on 2024-25 only:** w = 0.70, by minimax regret over ρ = 10–30% (regret
+  ≤ 0.018 RMSE; the same w in the live state). Closed-form optimum 0.82 at ρ = 10%,
+  0.66 at 25%; the critic's pick was 0.65 at 25%.
+- **Judgment call:** the ρ range. 25% comes from two opening nights (CI about
+  11–45%); midseason rotations are steadier, so the range was centred lower. The
+  critic's 2025-26 numbers at w = 0.65–0.80 had been seen before choosing it.
+- **Parity:** production equals 0.7 × hard + 0.3 × no-five to rounding (max 0.05
+  minutes, 7,870 player-games). Legacy protocol through production, every five marked
+  Expected and right: MAE 4.891 vs 4.845 confirmed (lab: +0.042).
+- **Live builds:** 10/22 (no five posted) is identical (0.0). 10/21 with the five
+  forced to Expected: e.g. Herbert Jones, dropped from the confirmed five, 5.0 → 8.5
+  projected (he played 17).
+
+**Result** (2025-26 held out, 32,224 player-games; RMSE / MAE (bias)):
+
+| Expected five wrong in | lab: as confirmed (before) | lab: blend w 0.70 (after) | live state: before | live state: after | no five (lab / live) |
+|---|---|---|---|---|---|
+| 0% | 6.586 / 4.929 (−0.09) | 6.599 / 4.971 (−0.09) | 6.634 / 4.942 | 6.637 / 4.985 | 7.396 / 7.435 |
+| 10% | 6.800 / 5.040 | **6.744 / 5.050** | 6.847 / 5.052 | **6.782 / 5.064** | |
+| 15% | 6.904 / 5.095 | **6.815 / 5.089** | 6.952 / 5.108 | **6.853 / 5.103** | |
+| 20% | 7.007 / 5.151 | **6.885 / 5.128** | 7.054 / 5.163 | **6.924 / 5.143** | |
+| 25% (measured) | 7.108 / 5.206 | **6.955 / 5.168** | 7.155 / 5.218 | **6.994 / 5.182** | |
+| 30% | 7.208 / 5.262 | **7.024 / 5.207** | 7.255 / 5.274 | **7.063 / 5.222** | |
+
+- **Wrong team-games:** RMSE 8.484 → 7.928.
+- **The price, while the five is Expected and right:** RMSE 6.586 → 6.599, and
+  promoted starters' MAE 5.12 → 5.21 with bias +0.9 → −1.3 (n 1,940). Part of the
+  late-news edge waits for the Confirmed five.
+- **Confirmed and inactives-only states:** unchanged (6.586 / 7.396). Below about 10%
+  wrong, MAE (not the fitting criterion) is flat to slightly worse.
+
+**Runners-up (critic #4):**
+- **The starting role's memory is too short.** Start-role decay 0.93 and κ 3 (best on
+  the 2024-25 grid, gap refitted) take confirmed 6.586 → 6.550 and MAE 4.929 → 4.891.
+- **Diffuse headroom.** A residual GBM (34 features, fit on 2024-25) reaches
+  6.407 / 7.272, and no single feature is worth more than 0.04.
+- **No shrinkage toward rank.** Starters' actual minutes rise only 0.84–0.89 per
+  projected minute (0.76 for rank 1); a per-rank linear recalibration gains 0.013.
+- **Not tried:** a per-player Expected weight (by agreement with start rate). It would
+  be fitted to the assumed one-swap process. Re-measure ρ from the lineup log after a
+  few weeks.
+
+## Summary of cycles 1-3
 
 Every version scored the same way (`python3 scripts/nba_minutes_lab.py cycles`),
 fitted on 2024-25 and scored on 2025-26. The lab protocol assumes NBA.com's inactive

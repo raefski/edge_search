@@ -271,3 +271,23 @@ def test_a_regular_starter_left_out_of_the_five_is_cut_and_a_bench_role_reads_th
     # no game this season yet: last season's finale must not move him
     quiet = [{"id": "x", "position": "G", "inactive": False, "starter": False, "history": bench_hist, "cur_n": 0}]
     assert NM.project(quiet)["x"]["minutes"] == pytest.approx(NM.role_v2(bench_hist, cur_n=0)["mb"], abs=0.15)
+
+
+def test_an_expected_five_is_blended_with_no_five_until_confirmed():
+    """Critique cycle 4: NBA.com's *Expected* five missed a starter in 7 of 28 team-games
+    (2026-10-20/21), so until the team confirms, minutes = EXPECTED_W x the five's
+    projection + the rest x no five. Confirmed (or no flag: backtests) is unchanged."""
+    roles = [34, 32, 30, 28, 26, 22, 20, 16, 12, 10, 6, 4]
+    team = [{"id": str(i), "position": "G", "inactive": False, "starter": i in (0, 1, 2, 3, 5),
+             "history": [(float(m), i < 5)] * 10, "cur_n": 10} for i, m in enumerate(roles)]
+    hard = NM.project(team)
+    assert NM.project([{**p, "confirmed": True} for p in team]) == hard
+    none = NM.project([{**p, "starter": None} for p in team])
+    exp = NM.project([{**p, "confirmed": False if p["starter"] else None} for p in team])
+    w = NM.EXPECTED_W
+    for i in exp:
+        assert exp[i]["minutes"] == pytest.approx(w * hard[i]["minutes"] + (1 - w) * none[i]["minutes"], abs=0.06)
+    # the regular starter left out of the Expected five is cut less than if confirmed
+    assert hard["4"]["minutes"] < exp["4"]["minutes"] < none["4"]["minutes"]
+    assert exp["5"]["promoted"] is hard["5"]["promoted"]
+    assert sum(p["minutes"] for p in exp.values()) == pytest.approx(240, abs=0.6)

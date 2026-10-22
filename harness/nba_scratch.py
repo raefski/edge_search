@@ -162,6 +162,7 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
                 ex = (extra or {}).get(pid, {})
                 rows.append({"id": pid, "team": team, "position": pos.get(pid), "inactive": out, "window": win,
                              "starter": p["starter"] if any(q["starter"] for q in ps) else None,
+                             "confirmed": p.get("confirmed"),     # Expected five: blended (cycle 4)
                              "history": [(m, s) for m, s, _ in h], "name": p["name"],
                              "dk": d, "ppm": NM.points_per_minute(h), "base": r["base"],
                              # the app's minutes inputs, so an alert and the page agree

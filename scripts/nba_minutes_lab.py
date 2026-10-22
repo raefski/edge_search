@@ -8,6 +8,8 @@ slice, and candidate improvements -- each fitted on 2024-25 and scored on 2025-2
     python3 scripts/nba_minutes_lab.py fit               # re-run the coordinate-descent fit (~30 min)
     python3 scripts/nba_minutes_lab.py salary            # DK salary on top of v2, leave one night out
     python3 scripts/nba_minutes_lab.py report            # the shipped model's standard table (critique loop)
+    python3 scripts/nba_minutes_lab.py live              # the information state the app actually has (cycle 3)
+    python3 scripts/nba_minutes_lab.py cycle4            # NBA.com's Expected five: blend weight + held-out table
 
 WHY NOT scripts/nba_minutes_backtest.py ALONE
 That backtest starts every season with empty histories and scores only players with
@@ -841,6 +843,36 @@ def report(D: dict, prm: dict, legacy: bool = True) -> str:
     return "\n".join(out)
 
 
+def _prev_inactive(D: dict) -> dict:
+    """{row: was he inactive in his team's previous game (None = no previous game)}."""
+    rows, prev, last = D["rows"], {}, {}
+    for g in sorted(D["games"], key=lambda g: g["date"]):
+        for i in g["idx"]:
+            prev[i] = last.get((g["team"], rows[i]["pid"]))
+        for i in g["idx"]:
+            last[(g["team"], rows[i]["pid"])] = rows[i]["inactive"]
+    return prev
+
+
+def _live_out(D: dict, R: dict, g: dict, prev: dict, known: str, cut: int | None) -> dict:
+    """{row: treated as not dressing} under live_replay's Out list `known` and `cut`."""
+    rows = D["rows"]
+    K = set()
+    for i in g["idx"]:
+        if not rows[i]["inactive"]:
+            continue
+        b = float(R["base"][i])
+        if known == "all" or (known == "role10" and b >= 10) or (known == "stale10" and b >= 10 and prev[i] in (True, None)):
+            K.add(i)
+    cand = [i for i in g["idx"] if i not in K]
+    if cut:
+        ranked = sorted(cand, key=lambda i: (not rows[i]["starter"], -float(R["base"][i])))
+        keep = set(ranked[:cut])
+    else:
+        keep = set(cand)
+    return {i: i not in keep for i in g["idx"]}
+
+
 def live_replay(Dt: dict, Dh: dict, prm: dict, season: str, known: str, cut: int | None = 13,
                 mode: str = "confirmed") -> dict:
     """Critique cycle 3: score the LIVE information state on a past season. Histories (and
@@ -853,30 +885,12 @@ def live_replay(Dt: dict, Dh: dict, prm: dict, season: str, known: str, cut: int
     then, with `cut`, each team keeps its `cut` largest roles (announced starters first),
     the live rule before NBA.com's inactive list. Rows Dt / Dh align one to one."""
     rows, R = Dt["rows"], roles(Dh, prm)
-    prev, last = {}, {}
-    for g in sorted(Dt["games"], key=lambda g: g["date"]):
-        for i in g["idx"]:
-            prev[i] = last.get((g["team"], rows[i]["pid"]))
-        for i in g["idx"]:
-            last[(g["team"], rows[i]["pid"])] = rows[i]["inactive"]
+    prev = _prev_inactive(Dt)
     E = []
     for g in Dt["games"]:
         if g["season"] != season:
             continue
-        K = set()
-        for i in g["idx"]:
-            if not rows[i]["inactive"]:
-                continue
-            b = float(R["base"][i])
-            if known == "all" or (known == "role10" and b >= 10) or (known == "stale10" and b >= 10 and prev[i] in (True, None)):
-                K.add(i)
-        cand = [i for i in g["idx"] if i not in K]
-        if cut:
-            ranked = sorted(cand, key=lambda i: (not rows[i]["starter"], -float(R["base"][i])))
-            keep = set(ranked[:cut])
-        else:
-            keep = set(cand)
-        sim = {i: i not in keep for i in g["idx"]}
+        sim = _live_out(Dt, R, g, prev, known, cut)
         saved = {i: Dh["rows"][i]["inactive"] for i in g["idx"]}
         for i in g["idx"]:
             Dh["rows"][i]["inactive"] = sim[i]
@@ -893,10 +907,86 @@ def live_replay(Dt: dict, Dh: dict, prm: dict, season: str, known: str, cut: int
     return {"rmse": float(np.sqrt((E ** 2).mean())), "mae": float(np.abs(E).mean()), "bias": float(E.mean()), "n": len(E)}
 
 
+def expected_preds(D: dict, prm: dict, seasons=("2024-25", "2025-26"), live: tuple | None = None) -> dict:
+    """Critique cycle 4: the EXPECTED state -- NBA.com's afternoon five, which the live
+    build used as if confirmed. On 2026-10-20/21 the last Expected five missed a starter
+    in 7 of 28 regular-season team-games (8 of 140 starters; data/nba_lineup_log.csv).
+    Every team-game is projected three ways, so any error rate rho is an exact mixture
+    rather than one random draw:
+      right  the Expected five is the true five ("confirmed" mode);
+      wrong  one miss: the true starter with the lowest start rate is benched and the
+             active non-starter with the highest start rate starts in his place (the
+             surprise starter NBA.com misses -- 2026-27's misses look like this:
+             Jaylin Williams for Jalen Williams, Sion James for Grayson Allen);
+      none   no five at all ("inactives" mode).
+    `live` = (known, cut) replays the app's Out list and roster cut (live_replay) instead
+    of the full inactive list; a player cut who did play is projected 0.
+    Returns {season: {"right", "wrong", "none", "y", "pr"}} arrays over active
+    player-games; "pr" flags the promoted starters of the right five (start rate < 0.5)."""
+    R = roles(D, prm)
+    rows = D["rows"]
+    prev = _prev_inactive(D) if live else None
+    acc: dict = defaultdict(lambda: defaultdict(list))
+    for g in D["games"]:
+        if g["season"] not in seasons:
+            continue
+        truth = {i: rows[i]["inactive"] for i in g["idx"]}
+        sim = _live_out(D, R, g, prev, *live) if live else truth
+        for i in g["idx"]:
+            rows[i]["inactive"] = sim[i]
+        right = project_game(D, g, R, prm, "confirmed")
+        none = project_game(D, g, R, prm, "inactives")
+        T = [i for i in g["idx"] if rows[i]["starter"]]
+        B = [i for i in g["idx"] if not rows[i]["starter"] and not rows[i]["inactive"]]
+        wrong = right
+        if len(T) == 5 and B:
+            out = min(T, key=lambda i: float(R["srate"][i]))
+            inn = max(B, key=lambda i: float(R["srate"][i]))
+            rows[out]["starter"], rows[inn]["starter"] = False, True
+            try:
+                wrong = project_game(D, g, R, prm, "confirmed")
+            finally:
+                rows[out]["starter"], rows[inn]["starter"] = True, False
+        for i in g["idx"]:
+            rows[i]["inactive"] = truth[i]
+        a = acc[g["season"]]
+        for i in g["idx"]:
+            r = rows[i]
+            if r["inactive"] or r["actual"] is None:
+                continue
+            a["right"].append(right.get(i, 0.0))
+            a["wrong"].append(wrong.get(i, 0.0))
+            a["none"].append(none.get(i, 0.0))
+            a["y"].append(r["actual"])
+            a["pr"].append(bool(r["starter"]) and float(R["srate"][i]) < 0.5)
+    return {s: {k: np.array(v, dtype=float if k != "pr" else bool) for k, v in a.items()} for s, a in acc.items()}
+
+
+def expected_score(P: dict, w: float, rho: float) -> dict:
+    """RMSE / MAE / bias of minutes = w x project(Expected five) + (1 - w) x project(no five)
+    when a share rho of Expected fives miss one starter -- the exact mixture over states."""
+    y, n = P["y"], P["none"]
+    eR, eW = w * P["right"] + (1 - w) * n - y, w * P["wrong"] + (1 - w) * n - y
+    mix = lambda f: (1 - rho) * f(eR) + rho * f(eW)  # noqa: E731
+    pr = P["pr"]
+    return {"rmse": math.sqrt(mix(lambda e: float((e ** 2).mean()))), "mae": mix(lambda e: float(np.abs(e).mean())),
+            "bias": mix(lambda e: float(e.mean())), "n": len(y),
+            "right": math.sqrt(float((eR ** 2).mean())), "wrong": math.sqrt(float((eW ** 2).mean())),
+            "promoted": (float(np.abs(eR[pr]).mean()), float(eR[pr].mean()), int(pr.sum()))}
+
+
+def expected_w(P: dict, rho: float) -> float:
+    """The squared-error-optimal w at error rate rho, in closed form (clipped to 0-1)."""
+    e, dR, dW = P["none"] - P["y"], P["right"] - P["none"], P["wrong"] - P["none"]
+    num = (1 - rho) * float((e * dR).mean()) + rho * float((e * dW).mean())
+    den = (1 - rho) * float((dR ** 2).mean()) + rho * float((dW ** 2).mean())
+    return min(1.0, max(0.0, -num / den))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("cmd", choices=["diagnose", "ablate", "fit", "salary", "report", "cycle1", "cycle2", "live",
-                                    "cycles"])
+                                    "cycles", "cycle4"])
     ap.add_argument("--mode", default="confirmed", choices=["confirmed", "inactives"])
     ap.add_argument("--write", action="store_true", help="cycle1: write edge/nba_minutes_gap.py")
     a = ap.parse_args()
@@ -936,6 +1026,39 @@ def main() -> int:
         print(report(D, P, legacy=False))
         if a.write:
             write_gap_module(D, P["gap_coef"], P, cycle=2, extra=f"recency_lam {lam}, drop_q {q}")
+        return 0
+    if a.cmd == "cycle4":
+        # the Expected five: blend w x project(Expected five) + (1 - w) x project(no five).
+        # w is chosen on 2024-25 ONLY, by minimax regret over the plausible error rates:
+        # 2026-27 measured 7 of 28 (25%, 95% CI ~11-45%) but on opening nights, when
+        # rotations are least settled, so 10-30% is the range a season should live in.
+        F = final_params()
+        rhos = (0.10, 0.15, 0.20, 0.25, 0.30)
+        out = []
+        for name, live in (("lab protocol (full inactive list)", None),
+                           ("live state (injury-list Out, cut 15)", ("role10", 15))):
+            P = expected_preds(D, F, live=live)
+            tr = P["2024-25"]
+            grid = [round(x, 2) for x in np.arange(0.5, 1.001, 0.05)]
+            best = {r: min(expected_score(tr, w, r)["rmse"] for w in grid) for r in rhos}
+            regret = {w: max(expected_score(tr, w, r)["rmse"] - best[r] for r in rhos) for w in grid}
+            w = min(grid, key=lambda x: (regret[x], -x))
+            print(f"{name}: w chosen on 2024-25 = {w} (max regret {regret[w]:.4f}); "
+                  f"closed-form w* at 0.10 / 0.25: {expected_w(tr, 0.10):.3f} / {expected_w(tr, 0.25):.3f}",
+                  file=sys.stderr, flush=True)
+            out += [f"\n{name}, 2025-26 held out (w = {w} chosen on 2024-25), RMSE / MAE (bias):\n",
+                    "| Expected five wrong in | n | as confirmed (shipped) | no five (inactives mode) | blend w | "
+                    "Expected right: shipped / blend RMSE | Expected wrong: shipped / blend RMSE | "
+                    "promoted starters, Expected right: shipped / blend MAE (bias) |",
+                    "|---|---|---|---|---|---|---|---|"]
+            te = P["2025-26"]
+            for r in (0.0, 0.10, 0.15, 0.20, 0.25, 0.30):
+                h, z, b = expected_score(te, 1.0, r), expected_score(te, 0.0, r), expected_score(te, w, r)
+                cell = lambda x: f"{x['rmse']:.3f} / {x['mae']:.3f} ({x['bias']:+.2f})"  # noqa: E731
+                out.append(f"| {r:.0%} | {h['n']:,} | {cell(h)} | {cell(z)} | **{cell(b)}** | {h['right']:.3f} / {b['right']:.3f} | "
+                           f"{h['wrong']:.3f} / {b['wrong']:.3f} | {h['promoted'][0]:.2f} ({h['promoted'][1]:+.1f}) / "
+                           f"{b['promoted'][0]:.2f} ({b['promoted'][1]:+.1f}), n {h['promoted'][2]:,} |")
+        print("\n".join(out))
         return 0
     if a.cmd == "cycles":
         # every version of the critique loop, scored the same way (the final report)

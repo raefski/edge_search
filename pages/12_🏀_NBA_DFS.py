@@ -193,7 +193,10 @@ if pending:
                 + (f"expected (NBA.com's guess) {', '.join(exp)}" if exp else "")
                 + ("; " if exp and none else "") + (f"not posted {', '.join(none)}" if none else "")
                 + "<br>Teams confirm 30 minutes before tip — <b>Refresh</b> then. A bench player "
-                "who starts plays ~8.6 more minutes than usual.</div>", unsafe_allow_html=True)
+                "who starts plays ~8.6 more minutes than usual."
+                + (f" An expected five counts {R.NM.EXPECTED_W:.0%} until confirmed: NBA.com's guess "
+                   "missed a starter in 1 of 4 team-games." if exp else "")
+                + "</div>", unsafe_allow_html=True)
 else:
     st.markdown("<div class='ok'>✅ Every starting five on the slate is confirmed.</div>",
                 unsafe_allow_html=True)

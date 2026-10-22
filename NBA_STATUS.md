@@ -91,14 +91,18 @@ Adam saw identical cash and GPP lineups. Two checks:
    warns that the map's EV ⭐ (which treats our projection as truth) leans the wrong way in NBA.
    Next lever: use predicted ownership + buzz as a projection signal.
 
-## Critique loop, three cycles (2026-10-21) -- NBA_MINUTES_CRITIQUE_LOG.md
+## Critique loop, four cycles (2026-10-21) -- NBA_MINUTES_CRITIQUE_LOG.md
 
-Three independent critic agents (`.claude/agents/nba-minutes-critic.md`), each fixed and re-measured:
+Independent critic agents (`.claude/agents/nba-minutes-critic.md`), each fixed and re-measured:
 1. the 240 step moved stars like bench players -> rank-gap allocation (2025-26 RMSE 6.810 -> 6.692; salary nudge off);
 2. the bench role ignored the last game and dropped starters -> recency 0.25 / drop 0.2 (6.692 -> 6.586);
 3. **NBA.com's lineups feed stopped flagging inactives in 2026-27** -> box-score availability for history
    (edge/nba_availability.py, stats.nba.com v3 comments) and ESPN's Out list tonight, cut 13 -> 15.
    Live-state replay: 6.954 -> 6.634 (confirmed), 8.204 -> 7.435 (inactives only).
+4. **NBA.com's afternoon *Expected* five was used as if confirmed** (wrong in 7 of 28 team-games, 10/20-21)
+   -> minutes = 0.70 x project(Expected five) + 0.30 x project(no five) until the team confirms; w chosen on
+   2024-25 by minimax regret over 10-30% miss rates. Expected state, 2025-26 held out at 25% wrong:
+   7.108 -> 6.955 (lab), 7.155 -> 6.994 (live state); 10% wrong 6.800 -> 6.744.
 v1 -> now, lab protocol: 7.758 -> 6.586 confirmed, 8.146 -> 7.396 inactives only.
 
 ## Revised: chalk vs contrarian under the v2 projections (2026-10-21)

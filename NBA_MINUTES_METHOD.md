@@ -209,6 +209,40 @@ team-game. Step 4 then squeezed about 18% back out, mostly from starters.
 **Fewer than 8 active** (preseason-style files): inactive regulars' minutes are
 shared by `max(role, 1) ^ 0.25 × (1 + 0.25 × position share)`, with no 240 step.
 
+## Step 3b: an Expected five counts 70% (critique cycle 4)
+
+NBA.com posts an *Expected* five in the afternoon (its guess) and the team's
+*Confirmed* five about 30 minutes before tip. On 2026-10-20/21 the last Expected
+five missed a starter in **7 of 28** regular-season team-games (8 of 140 starters;
+`data/nba_lineup_log.csv`; 50% in preseason). The misses were coaches' choices, not
+scratches: Jalen Williams (30 minutes off the bench), Grayson Allen (29).
+
+Until then the build applied steps 1b and 1e (the start/bench split and the
+dropped-starter cut) to the Expected five as if it were confirmed. Now, per team,
+while any announced starter is unconfirmed:
+
+```
+minutes = EXPECTED_W · project(Expected five) + (1 − EXPECTED_W) · project(no five)
+EXPECTED_W = 0.70
+```
+
+Both projections sum to 240, so the blend does too. A confirmed five, or none,
+is unchanged. The scratch monitor uses the same rule, so alerts and the page agree.
+
+**How w was chosen (2024-25 only).** `nba_minutes_lab.py cycle4` projects every
+team-game three ways:
+
+- with the five right;
+- with one miss: the true starter with the lowest start rate is benched and the
+  active non-starter with the highest start rate starts;
+- with no five.
+
+At any miss rate ρ the error is then an exact mixture of those. w is chosen by
+minimax regret over ρ = 10–30%. The 25% was measured on opening nights, when
+rotations are least settled (95% CI about 11–45%). Result: w = 0.70, at most 0.018
+RMSE from the best w at any ρ in that range. The closed-form optimum is 0.82 at
+10% and 0.66 at 25%.
+
 ## Step 4: DK salary (off)
 
 v2 nudged minutes by DK salary: `−2.22 + 1.031 × minutes + 0.365 × salary($k)`.
@@ -297,6 +331,7 @@ games that season):
 | + redistribution refit (= v2) | 6.81 / 5.26 |
 | + critique cycle 1: rank-gap allocation, salary off | 6.69 / 5.03 |
 | + critique cycle 2: recency blend, dropped regular starter | 6.59 / 4.93 |
+| + critique cycle 4: Expected five counts 70% (Expected state, 25% wrong) | 7.11 → 6.96 RMSE |
 
 ### The live state (2025-26 replay, starters confirmed / inactives only, RMSE)
 
@@ -311,6 +346,20 @@ games that season):
 The power share is a squared-error trade: slightly better RMSE, slightly worse
 MAE.
 
+### The Expected state (critique cycle 4; 2025-26 held out, 32,224 player-games, RMSE)
+
+| Expected five wrong in | lab: as confirmed → blend | live state: as confirmed → blend |
+|---|---|---|
+| 0% | 6.586 → 6.599 | 6.634 → 6.637 |
+| 10% | 6.800 → **6.744** | 6.847 → **6.782** |
+| 25% (measured) | 7.108 → **6.955** | 7.155 → **6.994** |
+| 30% | 7.208 → **7.024** | 7.255 → **7.063** |
+
+No five at all: 7.396 (lab) and 7.435 (live state). In team-games where the Expected
+five is wrong, RMSE goes 8.48 → 7.93. The price is paid when the Expected five is
+right: promoted starters' bias goes +0.9 → −1.3 minutes (MAE 5.12 → 5.21, n 1,940)
+until the team confirms.
+
 ### Tried and not kept (no held-out gain on 2024-25)
 
 - back-to-back adjustment;
@@ -320,7 +369,7 @@ MAE.
 - a fitted per-game discount on last-season games (it read last season's final
   week at season start).
 
-## Known weaknesses (open as of 2026-10-21, after critique cycle 3)
+## Known weaknesses (open as of 2026-10-21, after critique cycle 4)
 
 1. **ESPN's Out list is not the official injury report.** It misses G-League and
    two-way assignments and late scratches; the 15-man cut absorbs most of them.
@@ -328,9 +377,12 @@ MAE.
    RMSE).
 2. **2026-27 opening-week stars still run low:** about −4 minutes on the 85 true
    actives of night one. Only 3 games.
-3. **Expected vs Confirmed starters:** NBA.com's afternoon *Expected* five
-   changed in 6 of 28 team-games, but live applies the start/bench split and the
-   dropped-starter cut to it.
+3. **The Expected-five miss rate is measured on two opening nights** (7 of 28).
+   w = 0.70 is robust from 10% to 30%. `data/nba_lineup_log.csv` keeps logging;
+   re-measure ρ after a few weeks (`exp2`-style: last Expected vs final Confirmed).
+   The one-swap error model is assumed. A per-player weight (by how well the five
+   agrees with start rates) was not tried: it would be fitted to that assumed
+   process.
 4. **The dropped-starter factor** is a single q (0.2). Dropped starters whose
    last game was 15–25 minutes play about 9.8 minutes against 3.9 projected.
 5. **End of season:** April MSE runs 57.7 against about 42.
@@ -386,6 +438,13 @@ def project_team(players, starters_announced, inactive_list_posted):
         p.min, p.slope = p.role + a + b * G, max(b, 1e-3)
     close_to_240_by_slopes_clip_0_48(active)                  # share the rest by p.slope
     return {p.name: p.min for p in active}
+
+def project(team):                                             # critique cycle 4
+    if any(p.starter and p.confirmed is False for p in team):  # NBA.com's Expected five
+        hard = project_team(team, starters_announced=True, ...)
+        none = project_team(team, starters_announced=False, ...)
+        return {k: 0.70 * hard[k] + 0.30 * none[k] for k in hard}
+    return project_team(team, ...)
 ```
 
 ## Where to look in the repo
@@ -398,6 +457,6 @@ def project_team(players, starters_announced, inactive_list_posted):
 | `edge/dfs_run_nba.py` (`build_board`) | joins, who dresses (ESPN / DK Out, the 15-man cut), usual vs tonight |
 | `edge/nba_availability.py` | box-score availability (history) and ESPN's Out list (tonight) |
 | `scripts/nba_history_publish.py` | the history file and its `cur_n` / `n_pre` / `pick` / `since_return` fields |
-| `scripts/nba_minutes_lab.py` | `diagnose`, `ablate`, `fit`, `salary`, `report`, `live`, `cycles`: the live-faithful backtest |
+| `scripts/nba_minutes_lab.py` | `diagnose`, `ablate`, `fit`, `salary`, `report`, `live`, `cycles`, `cycle4` (the Expected state): the live-faithful backtest |
 | `scripts/nba_minutes_backtest.py` | the legacy protocol |
 | `NBA_STATUS.md` | results, open items |
