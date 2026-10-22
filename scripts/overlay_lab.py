@@ -58,9 +58,50 @@ def call_point(c, first: float, last: float):
     return min(ms) if ms else None
 
 
-def forecast(c, cid, hist, model, m_call):
+PACE_LO, PACE_HI = 12.0, 25.0   # earlier snapshot this far before the call sets the pace
+
+
+def pace_v(c, m_call):
+    """Straight-line share of the empty room the recent pace would fill by lock."""
+    e, cap = c["points"][m_call], c["cap"]
+    older = [m for m in c["points"] if m_call + PACE_LO <= m <= m_call + PACE_HI]
+    if not older or cap <= e:
+        return None
+    m0 = min(older)
+    rate = max(0.0, (e - c["points"][m0]) / (m0 - m_call))
+    return rate * m_call / (cap - e)
+
+
+def fit_pace(train, finals, first, last, k=5):
+    """Quintile edges of pace v and the median realised call->final share in each."""
+    xs = []
+    for cid, c in train.items():
+        if cid not in finals or c["cap"] < 10:
+            continue
+        m = call_point(c, first, last)
+        if m is None or c["points"][m] >= c["cap"]:
+            continue
+        v = pace_v(c, m)
+        if v is None:
+            continue
+        e = c["points"][m]
+        xs.append((v, max(0.0, (min(finals[cid], c["cap"]) - e) / (c["cap"] - e))))
+    xs.sort()
+    n = len(xs)
+    cuts = [xs[n * i // k][0] for i in range(1, k)]
+    bins = [[s for v, s in xs if (i == 0 or v >= cuts[i - 1]) and (i == k - 1 or v < cuts[i])]
+            for i in range(k)]
+    return {"cuts": cuts, "share": [E._median(b) for b in bins], "n": n}
+
+
+def forecast(c, cid, hist, model, m_call, pace=None):
     """n_lock as harness/overlay.py assess() computes it, from data up to the call."""
     e = c["points"][m_call]
+    if pace:
+        v = pace_v(c, m_call)
+        if v is not None:
+            i = sum(v >= x for x in pace["cuts"])
+            return min(c["cap"], round(e + min(1.0, pace["share"][i]) * (c["cap"] - e)))
     t_call = c["lock"] - timedelta(minutes=m_call)
     h = [(t, x) for t, x in hist.get(cid, []) if t <= t_call]
     proj = E.projected_fill(h, c["cap"], m_call)
@@ -69,13 +110,14 @@ def forecast(c, cid, hist, model, m_call):
     return max(floor, likely)
 
 
-def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None):
+def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None, pace=False):
     hist, contests = H.load_log()
     finals = H.load_finals()
     keep = classic_ids()
     contests = {k: v for k, v in contests.items() if k in keep}
     train = {k: v for k, v in contests.items() if lock_day(v) < cutoff}
     model = (model_fn or E.fit_late_fill)(train, {k: v for k, v in finals.items() if k in train})
+    pace = fit_pace(train, finals, first, last) if pace else None
     rows = []
     for cid, c in contests.items():
         if lock_day(c) < cutoff or cid not in finals or c["cap"] < 10:
@@ -84,12 +126,15 @@ def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None)
         if m is None or c["points"][m] >= c["cap"]:
             continue
         final = min(finals[cid], c["cap"])
-        f = forecast(c, cid, hist, model, m)
+        f = forecast(c, cid, hist, model, m, pace)
         pp, fee = c.get("prize_pool"), c.get("fee")
         rows.append({"cid": cid, "sport": c.get("sport"), "cap": c["cap"],
                      "band": E._band(c["points"][m] / c["cap"]), "err": (f - final) / c["cap"],
                      "ov_true": None if pp is None or fee is None else pp > fee * final,
-                     "ov_pred": None if pp is None or fee is None else pp > fee * f})
+                     "ov_pred": None if pp is None or fee is None else pp > fee * f,
+                     # one extra entry's value if entered on this call: an even share of the
+                     # pool less the fee (flat-payout approximation; tiers ignored)
+                     "ev": None if pp is None or fee is None else pp / (final + 1) - fee})
     return rows, model
 
 
@@ -103,7 +148,8 @@ def summarize(rows) -> dict:
             "bias": sum(errs) / n,
             "ov_n": sum(r["ov_true"] for r in ov),
             "missed": sum(r["ov_true"] and not r["ov_pred"] for r in ov),
-            "false": sum(r["ov_pred"] and not r["ov_true"] for r in ov)}
+            "false": sum(r["ov_pred"] and not r["ov_true"] for r in ov),
+            "ev": sum(r["ev"] for r in ov if r["ov_pred"])}
 
 
 def fmt(label, s) -> str:
@@ -111,11 +157,11 @@ def fmt(label, s) -> str:
         return f"{label:<14} n=0"
     flag = "  (not enough data)" if s["n"] < 30 else ""
     return (f"{label:<14} n={s['n']:>5}  MAE {s['mae']:.3f}  RMSE {s['rmse']:.3f}  bias {s['bias']:+.3f}"
-            f"  overlays {s['ov_n']:>4}  missed {s['missed']:>3}  false {s['false']:>3}{flag}")
+            f"  overlays {s['ov_n']:>4}  missed {s['missed']:>3}  false {s['false']:>3}  $/1-entry-each {s['ev']:+8.0f}{flag}")
 
 
-def report(cutoff: date, first: float, last: float) -> list[str]:
-    rows, model = evaluate(cutoff, first, last)
+def report(cutoff: date, first: float, last: float, pace=False) -> list[str]:
+    rows, model = evaluate(cutoff, first, last, pace=pace)
     days = sorted({r["cid"] for r in rows})
     out = [f"overlay lab: Classic, call {last}-{first} min out, fit locks < {cutoff} "
            f"(model n={model['n']}, tail {model['tail']:.2f} n={model['tail_n']}), test >= {cutoff}",
@@ -133,8 +179,9 @@ def main(argv=None) -> int:
     ap.add_argument("--cutoff", default="2026-10-18")
     ap.add_argument("--first", type=float, default=9.5)
     ap.add_argument("--last", type=float, default=4.5)
+    ap.add_argument("--pace", action="store_true", help="cycle 1 candidate: pace-binned share")
     a = ap.parse_args(argv)
-    print("\n".join(report(date.fromisoformat(a.cutoff), a.first, a.last)))
+    print("\n".join(report(date.fromisoformat(a.cutoff), a.first, a.last, a.pace)))
     return 0
 
 

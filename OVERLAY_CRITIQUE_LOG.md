@@ -40,3 +40,46 @@ over-fills nearly-full contests. The false calls sit in the emptier bands.
 Caveats for the critic: finals exist only for contests collect_finals looked up
 (cap >= 10, not full at the last snapshot), and the call snapshot depends on the
 timer's cadence, which is every minute since 10/22 and was coarser before.
+
+Baseline re-run 10/22 later (more finals collected): A n=784, MAE 0.082, bias +0.020,
+missed 199, false 77; B n=364, MAE 0.061, missed 42, false 26. The lab now also
+reports "$/1-entry-each": the sum, over every test contest called an overlay, of one
+extra entry's value pool/(final+1) - fee (flat-payout approximation, tiers ignored).
+
+## Cycle 1 -- pace at the call (2026-10-22): NOT SHIPPED
+
+**Hole (critic):** the forecast at the final call adds a fixed median share of the
+empty room by fill band x minutes and ignores the contest's own current pace. The
+straight-line floor that carries pace almost never binds (removing it moves MAE
+0.001). On train, the realised call->final share runs 0.33 / 0.35 / 0.56 / 0.64 / 1.00
+by quintile of pace v (n=444, corr 0.34). Here v = straight-line share of the room
+from the snapshot 12-25 min before the call.
+
+**Fix tried:** `overlay_lab.py report --pace`: forecast = e + median share of v's
+quintile x room, with quintiles and medians fitted on train only. Contests without an
+earlier snapshot keep the shipped forecast.
+
+| split | model | n | MAE | RMSE | bias | missed | false | $ (1 entry each call) |
+|---|---|---|---|---|---|---|---|---|
+| A (<10/18 / 10/18-22) | shipped | 784 | 0.082 | 0.111 | +0.020 | 199 | 77 | +280 |
+| A | pace | 784 | **0.072** | **0.103** | -0.031 | **60** | 132 | +277 |
+| B (<10/20 / 10/20-22) | shipped | 364 | 0.061 | 0.091 | +0.012 | 42 | 26 | +321 |
+| B | pace | 364 | **0.052** | **0.082** | -0.002 | **25** | 32 | +316 |
+
+**Decision: not shipped.** Field error drops 12-15% on both splits. But the money the
+calls make does not move (-$3 / -$5, inside noise on 5 and 3 test days). The
+recovered misses are small overlays, and the new false calls give it back. A better
+forecast fed into a hard threshold on a point estimate doesn't pay. The pace option
+stays in the lab as a candidate input for the next cycle.
+
+**Runner-ups:**
+- (Next cycle) Make the call on the probability that the final stays under
+  pool/fee, with the spread taken from the pace bins, and enter only on positive
+  expected value. That is the decision the pace forecast would feed.
+- Finals are only looked up for contests not full at their last snapshot, so
+  fast fillers are under-represented in both the tail fit and the test.
+- The tail share drifts (0.45 -> 0.33 between fits) and is pooled across sports.
+  Weight recent days or fold it into pace.
+
+Critic retrospective note: the critic optimised the error metric it was handed;
+the money metric only came in at fix time. The next critic prompt includes $ up front.
