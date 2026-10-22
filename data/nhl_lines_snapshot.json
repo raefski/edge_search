@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-22T15:29:29+00:00",
+"generated_at": "2026-10-22T15:59:24+00:00",
 "goalies": {
 "2026-10-22": {
 "ANA": {
@@ -44,7 +44,7 @@
 },
 "NJD": {
 "goalie": "Nico Daws",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -56,7 +56,7 @@
 },
 "NYR": {
 "goalie": "Dylan Garand",
-"status": null
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Samuel Ersson",
@@ -64,7 +64,7 @@
 },
 "PIT": {
 "goalie": "Arturs Silovs",
-"status": "Likely"
+"status": "Confirmed"
 },
 "SEA": {
 "goalie": "Joey Daccord",
@@ -72,11 +72,11 @@
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
-"status": null
+"status": "Likely"
 },
 "STL": {
 "goalie": "Joel Hofer",
-"status": null
+"status": "Confirmed"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
@@ -7113,7 +7113,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7285,7 +7285,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9205,7 +9205,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Dawson Mercer": {
@@ -9445,7 +9445,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Jesper Bratt": {
@@ -12054,6 +12054,42 @@
 "pos": "ld",
 "pp": "PP1"
 },
+"Jonas Johansson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 39,
+"goalieGoalsAgainstAvg": "4.07",
+"goalieLosses": 4,
+"goalieMinutes": 574,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.867",
+"goalieSaves": 254,
+"goalieSeconds": 35,
+"goalieShotsAgainst": 293,
+"goalieShutouts": 0,
+"goalieWins": 4
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 20,
+"goalieGoalsAgainstAvg": "4.35",
+"goalieLosses": 2,
+"goalieMinutes": 275,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.87",
+"goalieSaves": 134,
+"goalieSeconds": 25,
+"goalieShotsAgainst": 154,
+"goalieShutouts": 0,
+"goalieWins": 1
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Jordan Spence": {
 "gtd": false,
 "injury": null,
@@ -12086,42 +12122,6 @@
 "line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": null
-},
-"Linus Ullmark": {
-"gtd": true,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 16,
-"goalieGoalsAgainstAvg": "1.69",
-"goalieLosses": 2,
-"goalieMinutes": 568,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.93",
-"goalieSaves": 212,
-"goalieSeconds": 43,
-"goalieShotsAgainst": 228,
-"goalieShutouts": 0,
-"goalieWins": 8
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 7,
-"goalieGoalsAgainstAvg": "1.44",
-"goalieLosses": 1,
-"goalieMinutes": 290,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.939",
-"goalieSaves": 107,
-"goalieSeconds": 4,
-"goalieShotsAgainst": 114,
-"goalieShutouts": 0,
-"goalieWins": 4
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
 "pp": null
 },
 "Michael Amadio": {
@@ -14009,7 +14009,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": "PP1"
 },
 "Igor Chernyshov": {
@@ -14315,7 +14315,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Sam Dickinson": {
@@ -16241,7 +16241,7 @@
 "pp": "PP1"
 },
 "Marshall Rifai": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 1,
