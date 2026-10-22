@@ -251,3 +251,36 @@ def test_current_toi_unavailable_is_none_not_an_error(monkeypatch):
         raise OSError("offline")
     monkeypatch.setattr(R.nhl, "skater_game_toi", down)
     assert R.current_toi("2026-10-22") is None
+
+
+def test_season_stats_refetch_a_cache_with_repeated_players(monkeypatch, tmp_path):
+    # Unsorted 100-row paging once repeated players and dropped others (cycle 2).
+    import json
+    monkeypatch.setattr(nhl, "CACHE_DIR", tmp_path)
+    dup = [{"playerId": 1, "skaterFullName": "A B"}, {"playerId": 1, "skaterFullName": "A B"}]
+    for rep in ("summary", "realtime"):
+        (tmp_path / f"skater_{rep}_X.json").write_text(json.dumps(dup))
+    good = {"data": [{"playerId": 1, "skaterFullName": "A B", "gamesPlayed": 10},
+                     {"playerId": 2, "skaterFullName": "C D", "gamesPlayed": 10}], "total": 2}
+    urls = []
+    monkeypatch.setattr(nhl, "_get", lambda url, **k: urls.append(url) or json.dumps(good).encode())
+    assert set(nhl.season_skater_stats("X")) == {1, 2}
+    assert len(urls) == 2 and all("limit=-1" in u for u in urls)
+    bad = {"data": good["data"][:1], "total": 2}                  # short of the API's total
+    monkeypatch.setattr(nhl, "_get", lambda url, **k: json.dumps(bad).encode())
+    with pytest.raises(RuntimeError):
+        nhl.season_skater_stats("X", refresh=True)
+
+
+def test_season_rates_leave_a_missing_report_field_missing(monkeypatch):
+    from edge import dfs_run_nhl as R
+    monkeypatch.setattr(R.nhl, "season_skater_stats", lambda s: {
+        1: {"skaterFullName": "Has Both", "gamesPlayed": 10, "goals": 2, "assists": 3, "shots": 20,
+            "blockedShots": 0, "timeOnIcePerGame": 900},
+        2: {"skaterFullName": "No Realtime", "gamesPlayed": 10, "goals": 2, "assists": 3, "shots": 20,
+            "timeOnIcePerGame": 900}})
+    from edge.names import norm
+    r = R._season_rates()
+    assert r[norm("Has Both")]["blocks"] == 0.0                   # a real zero stays zero
+    assert "blocks" not in r[norm("No Realtime")]                 # missing -> board default + imputed
+    assert r[norm("No Realtime")]["shots"] == 2.0

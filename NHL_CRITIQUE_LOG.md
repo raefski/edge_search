@@ -93,3 +93,57 @@ the lab cache re-built through the shipped code reproduces the "after" rows exac
   alone did not move test RMSE.
 - Silent name-join misses ("Tommy" / "Thomas" Novak, "Jack" / "John (Jack)" Roslovic)
   drop players to default rates; 310 graded rows have no last-season rates.
+
+## Cycle 2: last season's rates silently dropped 34 skaters' stats
+
+**Critic #2 (fresh `dfs-model-critic`, ~17 min, read-only).** "Last season's per-game
+rates come from two NHL stats-API reports fetched 100 rows at a time with no sort key,
+so the pages overlap and drop players: 43 board skaters carry wrong rates, many of them
+expensive."
+
+- The cached 2025-26 reports: 940 rows, 929 (summary) / 917 (realtime) distinct players;
+  the API returns 940 distinct in one `limit=-1` call (checked).
+- `_season_rates` read a missing field as `or 0`: 27 board skaters had blocks 0.0
+  (Dahlin, Robertson, Chiarot, Schmidt, Buium), 10 had goals/assists/shots 0.0 (Fox,
+  Coyle, Teravainen, Chatfield), 6 none at all. The key existed, so the board default
+  and the `imputed` flag never fired. The live app read the same cache.
+- Affected rows under-projected by 1.31 (train, n 103) / 0.90 (test, n 84) pts.
+
+**Fix (no parameters).** `edge/nhl.season_skater_stats`: one `limit=-1` request per
+report sorted by playerId; refused unless one row per player and the API's total; a
+cache with repeated players refetches itself (Cloud too, after a reboot).
+`edge/dfs_run_nhl._season_rates`: a field a report lacks stays missing. Lab cache rebuilt
+through the fixed code (before = the post-cycle-1 cache). Tests: duplicate cache refetch,
+short fetch refused, missing field stays missing.
+
+**Decision: SHIPPED** (a correctness fix): RMSE and rank better on test in both states,
+at 1 seed and 4; MAE flat; bias +0.04 worse (see below).
+
+| state | split | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|---|
+| lock (4 seeds) | train, before -> after | 4.581 -> 4.581 | 6.099 -> 6.090 | +0.124 -> +0.164 | +0.366 -> +0.367 |
+| lock (4 seeds) | **test**, before -> after | 4.469 -> 4.469 | 5.959 -> **5.946** | +0.135 -> +0.174 | +0.376 -> **+0.385** |
+| early (4 seeds) | train, before -> after | 4.589 -> 4.590 | 6.110 -> 6.103 | +0.115 -> +0.154 | +0.370 -> +0.371 |
+| early (4 seeds) | **test**, before -> after | 4.474 -> 4.475 | 5.975 -> **5.961** | +0.124 -> +0.160 | +0.370 -> **+0.381** |
+| lock (1 seed, production) | test | 4.470 -> 4.477 | 5.962 -> 5.955 | +0.137 -> +0.186 | +0.375 -> +0.381 |
+
+Test squared error per night (4 seeds): lock −0.34 [−0.86, +0.04], 6/8 nights; early
+−0.32 [−0.85, +0.07], 5/8. Skaters moved > 0.25 pts: test n 113, bias −0.73 -> −0.08,
+MSE 53.3 -> 50.7 (lock). Their under-projection was offsetting a general
+over-projection, now about +0.17 per skater: a candidate for the next cycle.
+
+**Evaluation change (critic's runner-up, adopted).** One seed's Monte Carlo noise moves
+train RMSE by ~0.01 (seeds 0-3: 6.093-6.104), as large as cycle 1's whole grid
+surface. `report --seeds 4` averages seeds and prints per-night paired differences
+(`paired`); decisions from here are taken at 4 seeds. **Cycle 1 re-checked** at 4 seeds
+on the corrected rates (scaling undone by 1/r): test squared error −0.58 [−1.13, −0.09]
+per night at lock (6/8), −0.56 [−1.08, −0.10] early (5/8): it stands.
+
+**Runners-up (critic):**
+- The 7-D blocks scale doesn't hold this season: D on flagged 7-D teams projected
+  1.08-1.18 blocks, blocked 1.38-1.57 (n 129, both splits).
+- Points props are compressed: actual points rise ~1.3x as fast as the market's
+  (s.e. ~0.13), all four split/state cells, mostly assists (1.35-1.45x); stretching it
+  on TRAIN moved nothing yet.
+- The box score writes "J.Kulich" without a space, so his games count as scratches,
+  not graded (lab `box_key`).

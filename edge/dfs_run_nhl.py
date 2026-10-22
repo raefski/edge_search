@@ -174,10 +174,13 @@ def _season_rates() -> dict:
         gp = r.get("gamesPlayed") or 0
         if gp < 5 or not r.get("skaterFullName"):
             continue
-        out[norm(r["skaterFullName"])] = {
-            "goals": (r.get("goals") or 0) / gp, "assists": (r.get("assists") or 0) / gp,
-            "shots": (r.get("shots") or 0) / gp, "blocks": (r.get("blockedShots") or 0) / gp,
-            "toi": (r.get("timeOnIcePerGame") or 0) / 60.0 or None, "gp": gp}
+        # A field one report lacks stays MISSING (the board's default + `imputed`
+        # flag), never 0.0: a missing realtime row once zeroed 27 skaters' blocks.
+        row = {k: (r.get(src) or 0) / gp for k, src in
+               (("goals", "goals"), ("assists", "assists"), ("shots", "shots"),
+                ("blocks", "blockedShots")) if src in r}
+        row.update({"toi": (r.get("timeOnIcePerGame") or 0) / 60.0 or None, "gp": gp})
+        out[norm(r["skaterFullName"])] = row
     return out
 
 

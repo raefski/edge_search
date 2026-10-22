@@ -224,22 +224,27 @@ def season_game_ids(season: int, game_type: int = 2, count: int = 1312) -> list[
 def season_skater_stats(season_id: str, refresh: bool = False) -> dict:
     """{player_id: {...}} season aggregates, merging the NHL's summary and
     realtime reports (the latter has blocked shots, the former short-handed
-    points and shots)."""
+    points and shots).
+
+    ONE request per report (limit=-1). Paging 100 at a time with no sort key
+    returned overlapping pages: the 2025-26 cache held 940 rows but only 929
+    (summary) / 917 (realtime) players, so 34 skaters -- Dahlin, Fox, Robertson
+    among them -- ran on 0.0 blocks or 0.0 goals/shots until 2026-10-22
+    (NHL_CRITIQUE_LOG.md cycle 2). A cache that is not one row per player is
+    refetched; a fetch that is not is refused."""
     out: dict = {}
     for report in ("summary", "realtime"):
         path = CACHE_DIR / f"skater_{report}_{season_id}.json"
-        rows, start = [], 0
-        if path.exists() and not refresh:
-            rows = json.loads(path.read_text())
-        else:
-            while True:
-                url = (f"https://api.nhle.com/stats/rest/en/skater/{report}?limit=100&start={start}"
-                       f"&cayenneExp=seasonId={season_id}%20and%20gameTypeId=2")
-                page = json.loads(_get(url))
-                rows += page.get("data", [])
-                start += 100
-                if start >= page.get("total", 0):
-                    break
+        rows = json.loads(path.read_text()) if path.exists() and not refresh else None
+        if rows is None or len({r["playerId"] for r in rows}) != len(rows):
+            url = (f"https://api.nhle.com/stats/rest/en/skater/{report}?limit=-1"
+                   f"&sort=%5B%7B%22property%22:%22playerId%22,%22direction%22:%22ASC%22%7D%5D"
+                   f"&cayenneExp=seasonId={season_id}%20and%20gameTypeId=2")
+            page = json.loads(_get(url))
+            rows = page.get("data", [])
+            if len({r["playerId"] for r in rows}) != len(rows) or len(rows) != page.get("total"):
+                raise RuntimeError(f"nhl: {report} {season_id}: {len(rows)} rows, "
+                                   f"{len({r['playerId'] for r in rows})} players, total {page.get('total')}")
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(rows))
         for r in rows:

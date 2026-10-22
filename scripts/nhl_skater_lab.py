@@ -213,15 +213,18 @@ def box_by_date() -> tuple[dict, dict]:
 
 
 def project(slates: list[dict], name: str = "shipped", prm: dict | None = None,
-            n_sims: int = N_SIMS) -> pd.DataFrame:
-    """One row per board player per slate: the variant's simulated mean + the inputs."""
+            n_sims: int = N_SIMS, seeds: int = 1) -> pd.DataFrame:
+    """One row per board player per slate: the variant's simulated mean + the inputs.
+    `seeds` > 1 averages seeds 0..seeds-1: one seed's Monte Carlo noise moves train
+    RMSE by ~0.01 (seeds 0-3: 6.093-6.104, cycle 2), as much as the changes judged,
+    so decisions are taken at 4 seeds; 1 seed is the production build (parity)."""
     fn = VARIANTS[name]
     rows = []
     for s in slates:
         s2 = fn(copy.deepcopy(s), prm or {})
         pool = s2["pool"]
-        sim = nhl_sim.simulate(pool, s2["games"], n_sims=n_sims, seed=0)
-        mean = sim.mean(axis=0)
+        mean = np.mean([nhl_sim.simulate(pool, s2["games"], n_sims=n_sims, seed=k).mean(axis=0)
+                        for k in range(seeds)], axis=0)
         for i, p in enumerate(pool):
             rows.append({"gid": s["gid"], "date": s["date"], "lock": s["lock"], "name": p["name"],
                          "team": p["team"], "opp": p.get("opp"), "pos": p["pos"],
@@ -300,10 +303,26 @@ def slice_table(results: dict) -> list[str]:
     return out
 
 
-def report(names: list[str], states=("lock", "early"), prm: dict | None = None) -> str:
+def paired(a: pd.DataFrame, b: pd.DataFrame) -> list[str]:
+    """Variant b minus a: squared error per skater-game on each split, its per-night
+    mean with a 95% night-bootstrap interval, and nights better."""
+    from scripts.contest_stats import cluster_bootstrap
+    m = b.merge(a[["date", "team", "name", "proj"]], on=["date", "team", "name"], suffixes=("", "_0"))
+    m["d"] = (m.proj - m.actual) ** 2 - (m.proj_0 - m.actual) ** 2
+    out = []
+    for sp, y in split(m).items():
+        per = y.groupby("date").d.mean().to_numpy()
+        est, lo, hi, _ = cluster_bootstrap(np.arange(len(per)), lambda i: per[i].mean(), n_boot=4000, seed=7)
+        out.append(f"{sp}: squared error per night {est:+.3f} [{lo:+.3f}, {hi:+.3f}], "
+                   f"better {(per < 0).sum()}/{len(per)} nights")
+    return out
+
+
+def report(names: list[str], states=("lock", "early"), prm: dict | None = None, seeds: int = 1) -> str:
     box = box_by_date()
     out = ["# NHL skater lab: DK points vs pre-lock projection, held out\n",
-           f"TRAIN nights < {TEST_FROM} <= TEST. Played skaters only; each (date, team, player) once.\n"]
+           f"TRAIN nights < {TEST_FROM} <= TEST. Played skaters only; each (date, team, player) once. "
+           f"Seeds averaged: {seeds}.\n"]
     for state in states:
         slates = load(state)
         if not slates:
@@ -311,8 +330,10 @@ def report(names: list[str], states=("lock", "early"), prm: dict | None = None) 
             continue
         results, extra = {}, {}
         for n in names:
-            results[n], extra[n] = grade(project(slates, n, prm), box)
+            results[n], extra[n] = grade(project(slates, n, prm, seeds=seeds), box)
         out += table(results, state)
+        for n in names[1:]:
+            out += ["", f"{n} vs {names[0]}, {state}:"] + [f"- {x}" for x in paired(results[names[0]], results[n])]
         e = extra[names[0]]
         g = e["goalies"]
         if len(g):
@@ -344,6 +365,8 @@ def main() -> int:
     r = sub.add_parser("report")
     r.add_argument("--variant", action="append", default=[])
     r.add_argument("--state", choices=list(STATES))
+    r.add_argument("--seeds", type=int, default=1, help="average seeds 0..n-1 (decisions: 4)")
+    r.add_argument("--lab", help="another cache directory (e.g. a copy taken before a ship)")
     sub.add_parser("parity")
     a = ap.parse_args()
     if a.cmd == "cache":
@@ -351,7 +374,10 @@ def main() -> int:
         cache([int(g) for g in gids], {a.state: STATES[a.state]} if a.state else STATES)
     elif a.cmd == "report":
         names = ["shipped"] + [v for v in a.variant if v != "shipped"]
-        print(report(names, (a.state,) if a.state else ("lock", "early")))
+        if a.lab:
+            global LAB
+            LAB = Path(a.lab)
+        print(report(names, (a.state,) if a.state else ("lock", "early"), seeds=a.seeds))
     else:
         print(parity("lock"))
         print(parity("early"))

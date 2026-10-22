@@ -455,3 +455,29 @@ Squared error per night −0.60 [−1.24, −0.05] at lock (6/8 nights), −0.57
 −0.10] early (5/8). It moves depth skaters most (F4 bias +0.42 -> +0.28, D3 +0.63 ->
 +0.26), so it helps cash value plays more than stars; the 6.5k+ skaters' −0.4 bias
 is untouched (a critic runner-up: the assist draw under-feeds stars).
+
+## 6k. Last season's rates were missing 34 skaters' stats (2026-10-22, critique cycle 2)
+
+`edge/nhl.season_skater_stats` paged the NHL stats API 100 rows at a time with no
+sort key; the pages overlapped, so the 2025-26 cache held 940 rows but 929 / 917
+distinct players (summary / realtime). A player missing from a report got 0.0, not
+"unknown": 27 board skaters ran on zero blocks (Dahlin, Robertson, Chiarot ...) and
+10 on zero goals/assists/shots (Fox, Coyle, Teravainen ...) since 9/28. Fixed: one
+`limit=-1` request per report, refused unless one row per player matching the API's
+total, a duplicated cache refetches itself, and `_season_rates` leaves a missing field
+missing (board default + `imputed`). No parameters. Lab, 4 seeds averaged, test:
+
+| state | RMSE | bias | rank corr |
+|---|---|---|---|
+| lock, before -> after | 5.959 -> 5.946 | +0.135 -> +0.174 | +0.376 -> +0.385 |
+| early, before -> after | 5.975 -> 5.961 | +0.124 -> +0.160 | +0.370 -> +0.381 |
+
+MAE unchanged (4.469 / 4.475). The skaters it moved (> 0.25 pts, 113 at lock) went
+from −0.73 to −0.08 bias. Their under-projection had been hiding a general
+over-projection, now about +0.17 per skater.
+
+**Lab noise:** one simulation seed moves train RMSE by ~0.01, as much as some changes
+judged; `scripts/nhl_skater_lab.py report --seeds 4` averages four, and decisions
+are now taken at 4 seeds with per-night paired differences. Re-checked that way,
+cycle 1's ice-time scaling still holds: test squared error −0.58 [−1.13, −0.09] per
+night at lock, −0.56 [−1.08, −0.10] early.
