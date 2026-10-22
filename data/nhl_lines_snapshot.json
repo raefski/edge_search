@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-22T16:59:34+00:00",
+"generated_at": "2026-10-22T17:29:20+00:00",
 "goalies": {
 "2026-10-22": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "CGY": {
 "goalie": "Devin Cooley",
-"status": null
+"status": "Confirmed"
 },
 "DAL": {
 "goalie": "Jake Oettinger",
@@ -92,7 +92,7 @@
 },
 "VGK": {
 "goalie": "Adin Hill",
-"status": null
+"status": "Likely"
 },
 "WPG": {
 "goalie": "Stuart Skinner",
@@ -2241,10 +2241,44 @@
 "toiMinutes": 70,
 "toiSeconds": 48
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
+},
+"Ben Jones": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 105,
+"toiSeconds": 12
+},
+"last5": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 62,
+"toiSeconds": 17
+},
+"line": "F2",
+"pk": null,
+"pos": "c",
+"pp": null
 },
 "Brennan Othmann": {
 "gtd": false,
@@ -2415,8 +2449,8 @@
 "toiMinutes": 98,
 "toiSeconds": 44
 },
-"line": "F1",
-"pk": null,
+"line": "F2",
+"pk": "PK1",
 "pos": "lw",
 "pp": "PP1"
 },
@@ -2450,7 +2484,7 @@
 "toiSeconds": 23
 },
 "line": "F4",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "c",
 "pp": null
 },
@@ -2551,7 +2585,7 @@
 "toiMinutes": 88,
 "toiSeconds": 52
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -2590,40 +2624,6 @@
 "pos": "lw",
 "pp": "PP1"
 },
-"Mikael Backlund": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 27,
-"toiMinutes": 174,
-"toiSeconds": 33
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 15,
-"toiMinutes": 90,
-"toiSeconds": 28
-},
-"line": "F1",
-"pk": "PK1",
-"pos": "c",
-"pp": null
-},
 "Morgan Frost": {
 "gtd": false,
 "injury": null,
@@ -2653,7 +2653,7 @@
 "toiMinutes": 79,
 "toiSeconds": 39
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -2789,8 +2789,8 @@
 "toiMinutes": 83,
 "toiSeconds": 3
 },
-"line": "F2",
-"pk": "PK2",
+"line": "F1",
+"pk": "PK1",
 "pos": "rw",
 "pp": "PP2"
 },
