@@ -69,7 +69,9 @@ factor ~70.
 **Means:** Poisson inversion of the two-sided lines (P(shots ≥ 4) at the posted
 price → mean). Goals = points − assists. No prop → last season per game, scaled
 by tonight's implied goals over 3.128, flagged `*` on the board. Blocks have no
-market anywhere and always come from last season. The board is who is DRESSING:
+market anywhere and always come from last season. Since 2026-10-22 every mean last
+season sets (no-prop goals / assists / shots, everyone's blocks) is scaled by this
+season's ice time over last season's (§6j). The board is who is DRESSING:
 DailyFaceoff's projected lineup plus anyone a book priced, and only the projected
 starting goalie — a priced healthy scratch or IR player is dropped (and DK's
 own OUT/IR status is honoured).
@@ -426,3 +428,30 @@ The 2025-26 effect of a top-2 forward being out (+0.36 for teammates vs their ow
 baseline, 6h) is real but smaller than what the prop lines already add. Candidate,
 NOT shipped: shrink prop means for promoted skaters toward their last-5 role.
 Recheck at ~30 nights.
+
+## 6j. This season's ice time in the last-season means (2026-10-22, critique cycle 1)
+
+The first `/dfs-critique nhl` cycle (NHL_CRITIQUE_LOG.md) built the held-out harness,
+`scripts/nhl_skater_lab.py`: every logged slate rebuilt from pinned inputs at lock and
+at lock − 3 h, graded on box-score DK points, TRAIN 9/29-10/12 (11 nights), TEST
+10/13-10/21 (8 nights; 10/15 has no draftables snapshot). An independent critic
+found that nothing from 2026-27 reached the skater means: 57% of the board (no props)
+and every skater's blocks ran on last season's per-game rates, whatever his role now.
+
+Shipped (`edge/dfs_run_nhl.role_ratio` / `scale_role`, `edge/nhl.skater_game_toi`):
+r = (5·toi_last + n·mean(last 5 toi)) / (5 + n) / toi_last, n = games this season;
+no-prop goals, assists, shots × r², everyone's blocks × r^2.5; prop means untouched.
+One NHL stats API call per build (game-level ice-time report); if it fails the
+board runs on last season and the page says so (`info["role_source"]`).
+Fitted on TRAIN only (RMSE 6.107 -> 6.093); the surface is flat, so the powers are
+loose. TEST:
+
+| state | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|
+| lock, before -> after | 4.509 -> 4.470 | 5.991 -> 5.962 | +0.14 -> +0.14 | +0.353 -> +0.375 |
+| early, before -> after | 4.510 -> 4.478 | 6.003 -> 5.981 | +0.12 -> +0.13 | +0.342 -> +0.368 |
+
+Squared error per night −0.60 [−1.24, −0.05] at lock (6/8 nights), −0.57 [−1.11,
+−0.10] early (5/8). It moves depth skaters most (F4 bias +0.42 -> +0.28, D3 +0.63 ->
++0.26), so it helps cash value plays more than stars; the 6.5k+ skaters' −0.4 bias
+is untouched (a critic runner-up: the assist draw under-feeds stars).

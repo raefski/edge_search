@@ -59,6 +59,24 @@ DEFAULT_BLOCKS = {"D": 1.25, "C": 0.45, "W": 0.4}
 #: 1.03], assists 0.97 [0.91, 1.04]; DK points 0.902 [0.88, 0.93]. Applied to
 #: the 7th D too, whose own drop is larger (-3.3 min) but fitted on 110 games.
 SEVEN_D_SCALE = {"blocks": 0.855, "shots": 0.933, "goals": 0.92, "assists": 0.97}
+CURRENT_SEASON = "20262027"
+#: THIS SEASON'S ROLE (NHL_CRITIQUE_LOG.md cycle 1). Every mean no market sets
+#: -- goals, assists and shots of a skater without props, blocks of every
+#: skater -- is last season's rate, so a skater whose ice time has moved keeps
+#: last year's output. Each is scaled by r ** ROLE_POWER, where r is his ice
+#: time this season (mean of the last ROLE_LAST games, shrunk toward last
+#: season with ROLE_K games of prior weight) over last season's. Prop means are
+#: left alone: scaling them did not help held out (any power 0-1.5 within
+#: +/-0.003 RMSE). FITTED 2026-10-22 on the lab's TRAIN nights (9/29-10/12,
+#: 11 nights, 2,187 skater-games at lock, scripts/nhl_skater_lab.py), grid on
+#: RMSE over K {3,5,10,20} x power {0.5..2.5} x blocks power {0.5..4} x last
+#: {5,10}: train RMSE 6.107 -> 6.093. The surface is flat (most cells
+#: 6.093-6.100), so the powers are loosely determined; > 1 says ice time moves
+#: with role quality (PP / PK time), not just minutes. TEST (10/13-10/21, 8
+#: nights): RMSE 5.991 -> 5.96, both states -- NHL_CRITIQUE_LOG.md cycle 1.
+ROLE_K = 5.0
+ROLE_LAST = 5
+ROLE_POWER = {"goals": 2.0, "assists": 2.0, "shots": 2.0, "blocks": 2.5}
 
 
 def classic_groups(groups: list[dict] | None = None) -> list[dict]:
@@ -159,7 +177,57 @@ def _season_rates() -> dict:
         out[norm(r["skaterFullName"])] = {
             "goals": (r.get("goals") or 0) / gp, "assists": (r.get("assists") or 0) / gp,
             "shots": (r.get("shots") or 0) / gp, "blocks": (r.get("blockedShots") or 0) / gp,
-            "gp": gp}
+            "toi": (r.get("timeOnIcePerGame") or 0) / 60.0 or None, "gp": gp}
+    return out
+
+
+def group_toi(rows: list[dict]) -> dict:
+    """{(norm(name), 'D' | 'F'): [minutes, oldest game first]} from
+    nhl.skater_game_toi rows. Keyed by name, not team, so a traded skater keeps
+    his games; the D/F split keeps VAN's two Elias Petterssons apart."""
+    out: dict = {}
+    for r in sorted(rows, key=lambda r: r["date"]):
+        out.setdefault((norm(r["name"]), "D" if r.get("pos") == "D" else "F"), []).append(r["toi"])
+    return out
+
+
+def current_toi(date: str) -> dict | None:
+    """This season's ice time before `date` (group_toi), or None when the NHL
+    stats API cannot be reached -- the board then runs on last season alone and
+    says so (info["role_source"])."""
+    try:
+        return group_toi(nhl.skater_game_toi(CURRENT_SEASON, date))
+    except Exception as exc:                                # noqa: BLE001
+        log.warning("nhl: this season's ice time unavailable (%s)", exc)
+        return None
+
+
+def role_ratio(toi_last: float | None, recent: list | None, k: float = ROLE_K,
+               last: int = ROLE_LAST) -> float:
+    """This season's ice time over last season's, shrunk toward 1 (ROLE_K).
+    1.0 without both: a rookie, or a skater yet to play this season."""
+    if not toi_last or not recent:
+        return 1.0
+    tail = recent[-last:]
+    cur = sum(tail) / len(tail)
+    n = len(recent)
+    return (k * toi_last + n * cur) / (k + n) / toi_last
+
+
+def scale_role(means: dict, r: float, imputed, power: dict | None = None) -> dict:
+    """Scale the means last season set (`imputed`: 'points' -> goals and
+    assists, 'shots' -> shots; blocks always) by r ** power."""
+    power = ROLE_POWER if power is None else power
+    if r == 1.0:
+        return means
+    out = dict(means)
+    if "points" in imputed:
+        out["goals"] *= r ** power["goals"]
+        out["assists"] *= r ** power["assists"]
+    if "shots" in imputed:
+        out["shots"] *= r ** power["shots"]
+    out["blocks"] *= r ** power["blocks"]
+    out["shots"] = max(out["shots"], out["goals"] + 0.05)
     return out
 
 
@@ -231,13 +299,15 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
         log.warning("nhl: no starting goalies (%s)", exc)
         starters = {}
     rates = _season_rates()
+    toi_now = current_toi(date)
     seven_d = seven_d_teams(lines)
 
     info = {"games": len(games), "priced": len(salaries), "implied": implied,
             "seven_d": sorted(seven_d & teams),
             "missing_lines": sorted(teams - set(implied)), "date": date,
             "starters": starters, "no_lineup": [], "imputed": 0,
-            "wrong_game": wrong_game}
+            "wrong_game": wrong_game,
+            "role_source": "this season's ice time" if toi_now is not None else "unavailable"}
     pool = []
     for sal in salaries.values():
         if not sal.get("salary"):
@@ -292,6 +362,10 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
             row["imputed"].append("blocks")
         if row["imputed"]:
             info["imputed"] += 1
+        r = role_ratio(base.get("toi"), (toi_now or {}).get((key, "D" if pos == "D" else "F")))
+        if r != 1.0:
+            means = scale_role(means, r, row["imputed"])
+            row["role"] = round(r, 3)
         if pos == "D" and t in seven_d:
             means = scale_seven_d(means)
             row["seven_d"] = True

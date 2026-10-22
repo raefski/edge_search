@@ -179,6 +179,10 @@ if info.get("seven_d"):
     st.markdown("<div class='summary'><b>7 defencemen tonight:</b> " + ", ".join(info["seven_d"])
                 + " — their D split the minutes seven ways, so each is projected about 10% "
                 "lower (fewer blocks and shots).</div>", unsafe_allow_html=True)
+if info.get("role_source") == "unavailable":
+    st.markdown("<div class='warn'>NHL stats unreachable: skaters without props (and every "
+                "skater's blocks) are on last season's rates, not adjusted for this season's "
+                "ice time.</div>", unsafe_allow_html=True)
 
 
 def _table(result) -> str:

@@ -247,6 +247,21 @@ def season_skater_stats(season_id: str, refresh: bool = False) -> dict:
     return out
 
 
+def skater_game_toi(season_id: str, before: str) -> list[dict]:
+    """Every regular-season skater-game of `season_id` dated before `before`
+    (YYYY-MM-DD, the game's local date): [{id, name, team, pos, date, toi}],
+    toi in minutes. One request -- the stats API's game-level ice-time report
+    returns the whole season with limit=-1 (5,507 rows in ~1 s on 2026-10-22).
+    Not cached: a build wants every game up to tonight."""
+    url = ("https://api.nhle.com/stats/rest/en/skater/timeonice?isAggregate=false&isGame=true"
+           f"&limit=-1&cayenneExp=seasonId={season_id}%20and%20gameTypeId=2"
+           f"%20and%20gameDate%3C%22{before}%22")
+    rows = json.loads(_get(url, timeout=20)).get("data", [])
+    return [{"id": r["playerId"], "name": r.get("skaterFullName") or "", "team": r.get("teamAbbrev"),
+             "pos": r.get("positionCode"), "date": (r.get("gameDate") or "")[:10],
+             "toi": (r.get("timeOnIce") or 0) / 60.0} for r in rows]
+
+
 # ---------------------------------------------------------------------------
 # DailyFaceoff
 # ---------------------------------------------------------------------------

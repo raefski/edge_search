@@ -205,3 +205,49 @@ def test_seven_d_scale_only_shrinks_and_keeps_keys():
     assert set(s) == set(m)
     assert all(0.8 < s[k] / m[k] <= 1.0 for k in m)
     assert s["blocks"] / m["blocks"] < s["shots"] / m["shots"]   # blocks lose the most
+
+
+def test_role_ratio_shrinks_this_season_toward_last():
+    from edge import dfs_run_nhl as R
+    assert R.role_ratio(None, [15.0]) == 1.0                  # rookie: no last season
+    assert R.role_ratio(18.0, []) == 1.0                      # yet to play this season
+    # two games at 12 min against 18 last season, K=5: (5*18 + 2*12) / 7 / 18
+    assert R.role_ratio(18.0, [12.0, 12.0], k=5) == pytest.approx((90 + 24) / 7 / 18)
+    # only the last `last` games set the current level; all of them count as n
+    assert R.role_ratio(10.0, [30.0] * 5 + [10.0] * 5, k=5, last=5) == pytest.approx(1.0)
+    assert R.role_ratio(10.0, [20.0] * 50, k=5) > 1.9
+
+
+def test_scale_role_touches_only_what_last_season_set():
+    from edge import dfs_run_nhl as R
+    m = {"shots": 2.0, "goals": 0.2, "assists": 0.3, "blocks": 1.0}
+    p = {"goals": 1.0, "assists": 1.0, "shots": 1.0, "blocks": 1.0}
+    props = R.scale_role(m, 0.5, [], p)                       # props priced shots + points
+    assert props["shots"] == 2.0 and props["goals"] == 0.2 and props["blocks"] == 0.5
+    none = R.scale_role(m, 0.5, ["shots", "points"], p)
+    assert none == pytest.approx({"shots": 1.0, "goals": 0.1, "assists": 0.15, "blocks": 0.5})
+    assert R.scale_role(m, 1.0, ["shots", "points"]) is m
+    assert m["shots"] == 2.0                                  # the input is not mutated
+
+
+def test_group_toi_keeps_namesakes_apart_and_traded_players_together():
+    from edge import dfs_run_nhl as R
+    from edge.names import norm
+    rows = [{"name": "Elias Pettersson", "pos": "C", "date": "2026-10-02", "toi": 19.0},
+            {"name": "Elias Pettersson", "pos": "D", "date": "2026-10-02", "toi": 14.0},
+            {"name": "Elias Pettersson", "pos": "C", "date": "2026-10-01", "toi": 18.0},
+            {"name": "A Trade", "pos": "L", "date": "2026-10-05", "toi": 11.0},
+            {"name": "A Trade", "pos": "L", "date": "2026-10-03", "toi": 15.0}]
+    g = R.group_toi(rows)
+    assert g[(norm("Elias Pettersson"), "F")] == [18.0, 19.0]  # oldest first
+    assert g[(norm("Elias Pettersson"), "D")] == [14.0]
+    assert g[(norm("A Trade"), "F")] == [15.0, 11.0]
+
+
+def test_current_toi_unavailable_is_none_not_an_error(monkeypatch):
+    from edge import dfs_run_nhl as R
+
+    def down(*a, **k):
+        raise OSError("offline")
+    monkeypatch.setattr(R.nhl, "skater_game_toi", down)
+    assert R.current_toi("2026-10-22") is None
