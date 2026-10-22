@@ -193,3 +193,39 @@ early; per night better on 5/8 nights in both states. The gain concentrates on t
 stars rather than spreading across nights. Nickname re-joins: bias −2.64 -> −1.96,
 MSE 55.3 -> 51.9 (n 21). Parity: production == lab variants to 0.005 on 3 slates (the
 lab's reference level rounded to production's 0.556).
+
+## The dropped second assist, fixed (2026-10-22, at Adam's request)
+
+Left open after the runner-ups: simulate() redrew a clashing second assister once and
+dropped the assist on a second clash. Fix (`edge/nhl_sim.simulate` + `_assist_matrix`):
+the second assister is drawn from the scorer's OTHER teammates, renormalised, and the
+weight solve uses P(j second | i scored) = q_ij · Σ_{k≠j} q_ik / (1 − q_ik). No
+parameters.
+
+**Measured on the real simulator** (10/20, 12 games, 20,000 sims): assists per goal 1.666
+-> **1.692** (fitted 1.692). Simulated / target by salary: <4k 0.986 -> 1.003, 4-6.5k
+0.984 -> 0.998, 6.5-7.5k 0.988 -> 1.005, 7.5k+ 0.975 -> 0.996. Toy team (test): the
+original solve gave 1.598 per goal with the star at 82% of target, this morning's
+1.575 / 93%, now 1.692 / 100%. The new test runs simulate() end to end and fails on both.
+
+**Held out** (same cached means, 4 seeds; before = the simulator as of `83a1a7ba`):
+
+| state | split | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|---|
+| lock | train, before -> after | 4.571 -> 4.576 | 6.078 -> 6.080 | +0.162 -> +0.185 | +0.366 -> +0.365 |
+| lock | **test**, before -> after | 4.449 -> 4.453 | 5.929 -> **5.928** | +0.181 -> +0.203 | +0.387 -> +0.388 |
+| early | train, before -> after | 4.581 -> 4.582 | 6.092 -> 6.087 | +0.154 -> +0.178 | +0.370 -> +0.370 |
+| early | **test**, before -> after | 4.455 -> 4.458 | 5.945 -> **5.943** | +0.168 -> +0.192 | +0.382 -> +0.382 |
+
+Per night: lock test +0.081 [−0.013, +0.185] (better 2/8), early test +0.015 (6/8);
+pooled test dMSE −0.006 [−0.050, +0.105] lock, −0.027 [−0.074, +0.045] early.
+Projections rise +0.023 per skater on average. Stars' bias −0.91 -> −0.86, PP1 +0.44 ->
++0.47.
+
+Parity: lab re-cached through the shipped code, lab == production to 0.005 on all 5,366 board rows.
+
+**Decision: SHIPPED** as a correctness fix. The simulator now produces the assist rate
+it was fitted to; RMSE is marginally better in both states, MAE marginally worse. It
+adds ~0.02 to an over-projection that is now **+0.18 to +0.20 per skater**. That bias
+is the next cycle's natural target: it is spread across PP1 (+0.44 test) and mid-salary
+skaters (3.5-6.5k +0.4-0.6 in Cycle 0), and does not live in the assist draw.

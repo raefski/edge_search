@@ -314,36 +314,37 @@ def test_points_stretch_widens_around_the_reference_and_keeps_the_split():
     assert g + a < 0.3
 
 
-def _drawn_assists(assist_matrix, star_target):
-    """Per-goal assists each skater gets when simulate()'s draw (second assister
-    redrawn once on a clash) runs on assist_matrix's rows, and the targets."""
-    rng = np.random.default_rng(0)
+def _simulated_assists(sim_module, monkeypatch):
+    """(simulated assists per game, the targets the solve was given) for one toy
+    team, through sim_module.simulate itself."""
     team = [{"line": "F1", "pp": "PP1"}] * 3 + [{"line": f"F{i}", "pp": None} for i in (2, 2, 2, 3, 3, 3)]
-    scorer = np.array([0.25, 0.15, 0.15, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05])
-    targets = np.array([star_target, 0.5, 0.5, 0.4, 0.4, 0.4, 0.2, 0.2, 0.2])
-    goals = 3.0
-    q = assist_matrix(team, scorer, targets, goals)
-    targets = targets * goals * nhl_sim.ASSISTS_PER_GOAL / targets.sum()
-    n, got = 200_000, np.zeros(len(team))
-    s = rng.choice(len(team), n, p=scorer)
-    cum = np.cumsum(q, axis=1)
-    n_ast = np.where(rng.random(n) < nhl_sim.P_UNASSISTED, 0,
-                     np.where(rng.random(n) < nhl_sim.P_TWO_ASSISTS, 2, 1))
-    first = (rng.random(n)[:, None] > cum[s]).sum(axis=1)
-    second = (rng.random(n)[:, None] > cum[s]).sum(axis=1)
-    clash = second == first
-    second[clash] = (rng.random(clash.sum())[:, None] > cum[s[clash]]).sum(axis=1)
-    np.add.at(got, first[n_ast >= 1], 1)
-    np.add.at(got, second[(n_ast == 2) & (second != first)], 1)
-    return got / n * goals, targets
+    goals = [0.5, 0.3, 0.3, 0.2, 0.2, 0.2, 0.1, 0.1, 0.1]
+    assists = [0.9, 0.5, 0.5, 0.4, 0.4, 0.4, 0.2, 0.2, 0.2]
+    pool = [{"name": f"h{i}", "team": "HOM", "pos": "C", **t,
+             "means": {"goals": g, "assists": a, "shots": 2.0, "blocks": 0.5}}
+            for i, (t, g, a) in enumerate(zip(team, goals, assists))]
+    pool += [{"name": f"a{i}", "team": "AWY", "pos": "C", "line": f"F{i // 3 + 1}", "pp": None,
+              "means": {"goals": 0.2, "assists": 0.3, "shots": 2.0, "blocks": 0.5}} for i in range(9)]
+    games = {"g": {"home": "HOM", "away": "AWY", "lam_home": 3.4, "lam_away": 2.8}}
+    got = []
+    real = nhl.skater_points
+
+    def capture(G, AS, S, B, *a, **k):
+        got.append((G.sum(axis=1), AS))
+        return real(G, AS, S, B, *a, **k)
+    monkeypatch.setattr(nhl, "skater_points", capture)
+    sim_module.simulate(pool, games, n_sims=40_000, seed=1)
+    team_goals, AS = got[0]
+    targets = np.array(assists) * team_goals.mean() * nhl_sim.ASSISTS_PER_GOAL / sum(assists)
+    return AS.mean(axis=0), targets, AS.sum() / team_goals.sum()
 
 
-def test_assist_solve_does_not_short_the_top_assister():
-    # The solve must use the expectation simulate() draws, or a skater with a big
-    # share of his line's assists comes out short of his target while the rest
-    # don't (the old solve: a 0.90 target drew 0.78, every other skater ~0.97x).
-    # A small even shortfall remains: a twice-clashing second assist is dropped.
-    got, targets = _drawn_assists(nhl_sim._assist_matrix, 0.6)
-    ratio = got / targets
-    assert ratio[0] == pytest.approx(ratio[1:].mean(), rel=0.02)
-    assert ratio.min() > 0.9
+def test_simulated_assists_hit_their_targets(monkeypatch):
+    # Every assisted goal carries 1 + P_TWO assists to OTHER teammates, and each
+    # skater gets his target -- the top assister included. Before 2026-10-22 a
+    # clashing second assist could be dropped (fewer assists per goal than fitted)
+    # and the solve over-credited high-share assisters.
+    got, targets, per_goal = _simulated_assists(nhl_sim, monkeypatch)
+    assert per_goal == pytest.approx(nhl_sim.ASSISTS_PER_GOAL, rel=0.01)
+    assert got == pytest.approx(targets, rel=0.04)
+    assert got[0] == pytest.approx(targets[0], rel=0.02)

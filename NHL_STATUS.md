@@ -514,6 +514,12 @@ Not shipped: **7-D blocks factor** (0.855 -> 0.95, the TRAIN argmin): TRAIN RMSE
 0.0002; TEST worse per night at lock (+0.047 [−0.018, +0.141], 3/8). The critic's
 gap came mostly from TEST nights; recheck at ~30 nights.
 
-Still open: the assist draw delivers about 4.5% fewer assists than ASSISTS_PER_GOAL
-for every skater (a twice-clashing second assist is dropped); fixing it would add
-~0.06 pts per skater to a model that already over-projects by +0.17.
+**Fixed the same day (at Adam's request): the dropped second assist.** simulate()
+redrew a second assister once on a clash with the first and dropped the assist on a
+second clash, so teams ran below the fitted 1.689 assists per goal (1.666 on the
+12-game 10/20 slate, stars the most short at 0.975 of target). The second assister is
+now drawn from the other teammates, and the solve uses P(j second | i) = q_ij Σ_{k≠j}
+q_ik / (1 − q_ik). Now: 1.692 per goal, every salary tier within 0.5% of target. Lab,
+4 seeds, test: RMSE 5.929 -> 5.928 (lock), 5.945 -> 5.943 (early); MAE 4.449 -> 4.453;
+rank flat; bias +0.18 -> +0.20 (projections +0.023 per skater). A correctness fix,
+neutral on held-out error. It leaves the general over-projection a little more exposed.
