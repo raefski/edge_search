@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-22T14:29:25+00:00",
+"generated_at": "2026-10-22T14:59:39+00:00",
 "goalies": {
 "2026-10-22": {
 "ANA": {
@@ -7,8 +7,8 @@
 "status": null
 },
 "BOS": {
-"goalie": "Jeremy Swayman",
-"status": null
+"goalie": "Michael DiPietro",
+"status": "Likely"
 },
 "CAR": {
 "goalie": "Brandon Bussi",
@@ -52,7 +52,7 @@
 },
 "NYI": {
 "goalie": "Semyon Varlamov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -80,7 +80,7 @@
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
-"status": "Likely"
+"status": "Confirmed"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -1143,7 +1143,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -1315,7 +1315,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10645,7 +10645,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10987,7 +10987,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12567,44 +12567,10 @@
 "toiMinutes": 65,
 "toiSeconds": 4
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
 "pos": "c",
 "pp": null
-},
-"Bryan Rust": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 5,
-"blocks": 11,
-"gamesPlayed": 10,
-"goals": 4,
-"points": 9,
-"powerplayAssists": 2,
-"powerplayGoals": 1,
-"powerplayPoints": 3,
-"shots": 19,
-"toiMinutes": 168,
-"toiSeconds": 10
-},
-"last5": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 2,
-"powerplayGoals": 0,
-"powerplayPoints": 2,
-"shots": 4,
-"toiMinutes": 83,
-"toiSeconds": 38
-},
-"line": "F1",
-"pk": "PK2",
-"pos": "rw",
-"pp": "PP1"
 },
 "Connor Dewar": {
 "gtd": false,
@@ -12637,7 +12603,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Declan Carlile": {
@@ -12703,10 +12669,44 @@
 "toiMinutes": 77,
 "toiSeconds": 51
 },
-"line": "F1",
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
+"Elmer Soderblom": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 120,
+"toiSeconds": 42
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 61,
+"toiSeconds": 52
+},
+"line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Erik Karlsson": {
 "gtd": false,
@@ -12774,7 +12774,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Hendrix Lapierre": {
 "gtd": false,
@@ -12805,7 +12805,7 @@
 "toiMinutes": 58,
 "toiSeconds": 54
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -12944,7 +12944,7 @@
 "line": "F4",
 "pk": "PK2",
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Rickard Rakell": {
 "gtd": false,
@@ -12975,8 +12975,8 @@
 "toiMinutes": 99,
 "toiSeconds": 0
 },
-"line": "F3",
-"pk": null,
+"line": "F1",
+"pk": "PK2",
 "pos": "rw",
 "pp": "PP1"
 },
@@ -13113,9 +13113,9 @@
 "toiMinutes": 73,
 "toiSeconds": 14
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP1"
 },
 "Ville Koivunen": {
@@ -16173,7 +16173,7 @@
 "pp": "PP2"
 },
 "Jake McCabe": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 0,
