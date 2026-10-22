@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-22T16:29:46+00:00",
+"generated_at": "2026-10-22T16:59:34+00:00",
 "goalies": {
 "2026-10-22": {
 "ANA": {
@@ -28,7 +28,7 @@
 },
 "EDM": {
 "goalie": "Devon Levi",
-"status": null
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Cooper Black",
@@ -60,7 +60,7 @@
 },
 "OTT": {
 "goalie": "Samuel Ersson",
-"status": null
+"status": "Likely"
 },
 "PIT": {
 "goalie": "Arturs Silovs",
@@ -96,7 +96,7 @@
 },
 "WPG": {
 "goalie": "Stuart Skinner",
-"status": null
+"status": "Likely"
 }
 },
 "2026-10-23": {
@@ -2964,7 +2964,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Arvid Soderblom": {
 "gtd": false,
@@ -3237,7 +3237,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Patrick Kane": {
@@ -3339,7 +3339,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Ryan Greene": {
@@ -3408,7 +3408,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Spencer Knight": {
 "gtd": false,
@@ -5671,7 +5671,7 @@
 "toiMinutes": 72,
 "toiSeconds": 25
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -5814,40 +5814,6 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Filip Hallander": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 119,
-"toiSeconds": 23
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 52,
-"toiSeconds": 36
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Isaac Howard": {
 "gtd": false,
 "injury": null,
@@ -5914,7 +5880,7 @@
 "line": "D3",
 "pk": null,
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Kasperi Kapanen": {
 "gtd": false,
@@ -5947,8 +5913,8 @@
 },
 "line": "F2",
 "pk": "PK1",
-"pos": "lw",
-"pp": null
+"pos": "rw",
+"pp": "PP2"
 },
 "Leon Draisaitl": {
 "gtd": false,
@@ -6050,7 +6016,7 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Owen Michaels": {
 "gtd": false,
@@ -6086,6 +6052,40 @@
 "pos": "c",
 "pp": null
 },
+"Ryan Nugent-Hopkins": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 6,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 9,
+"powerplayAssists": 0,
+"powerplayGoals": 2,
+"powerplayPoints": 2,
+"shots": 14,
+"toiMinutes": 184,
+"toiSeconds": 3
+},
+"last5": {
+"assists": 5,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 6,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 6,
+"toiMinutes": 90,
+"toiSeconds": 25
+},
+"line": "F2",
+"pk": null,
+"pos": "c",
+"pp": "PP1"
+},
 "Ryan Shea": {
 "gtd": false,
 "injury": null,
@@ -6118,7 +6118,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Trent Frederic": {
 "gtd": false,
@@ -6151,8 +6151,8 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "c",
-"pp": "PP2"
+"pos": "lw",
+"pp": null
 },
 "Tristan Jarry": {
 "gtd": false,
@@ -6256,7 +6256,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Zach Hyman": {
 "gtd": false,
@@ -6289,7 +6289,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 }
 },
