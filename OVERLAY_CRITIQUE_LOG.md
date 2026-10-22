@@ -83,3 +83,37 @@ stays in the lab as a candidate input for the next cycle.
 
 Critic retrospective note: the critic optimised the error metric it was handed;
 the money metric only came in at fix time. The next critic prompt includes $ up front.
+
+## Cycle 2 -- call on expected entry value, pace spread (2026-10-22): NOT SHIPPED
+
+Adam's spec: keep the pace forecast as an input. Instead of a yes/no on one forecast
+number, use the train spread of call->final shares in the contest's pace bin, and
+call only when one entry's expected value is positive:
+mean over the spread of pool/(field+1) - fee. Contests with no pace snapshot use
+every train share. `overlay_lab.py report --pace --ev`; everything fitted on train.
+
+Re-run with more finals (n grew 784 -> 796 on A):
+
+| split | model | n | missed | false | calls | $ (1 entry each call) |
+|---|---|---|---|---|---|---|
+| A <10/18 | shipped | 796 | 203 | 77 | 252 | +390 |
+| A | pace point | 796 | 61 | 132 | 449 | +405 |
+| A | pace + EV | 796 | 107 | 110 | 381 | **+412** |
+| B <10/20 | shipped | 376 | 44 | 26 | 139 | +434 |
+| B | pace point | 376 | 26 | 32 | 163 | **+444** |
+| B | pace + EV | 376 | 41 | 25 | 141 | +434 |
+
+By lock day (A), $ for shipped / pace / EV: 10/18 -33 / -39 / -23; 10/19 +2 / +1 / +2;
+10/20 +36 / +52 / +52; 10/21 +1 / -10 / -4; 10/22 +384 / +401 / +385.
+
+**Decision: not shipped.** The same 5 contests make $232 of every model's total, and
+all three models call them. 10/22, which is still locking, is ~90% of the money. The
+differences between models (+-$10-20) are a handful of $1-5 entries, which is noise
+on 5 test days. EV is best on A and ties shipped on B. Pace point is best on B. No
+model wins both.
+
+**What would decide it:**
+- The flat-payout EV is crude for an EV rule. Price each call with the contest's
+  real payout tiers (`entry_edge`, as live does), so the lab's $ matches the alert.
+- 2+ more weeks of test days, so no single day carries the result.
+- Re-run cycle 2 with both.

@@ -74,24 +74,39 @@ def pace_v(c, m_call):
 
 def fit_pace(train, finals, first, last, k=5):
     """Quintile edges of pace v and the median realised call->final share in each."""
-    xs = []
+    xs, every = [], []
     for cid, c in train.items():
         if cid not in finals or c["cap"] < 10:
             continue
         m = call_point(c, first, last)
         if m is None or c["points"][m] >= c["cap"]:
             continue
-        v = pace_v(c, m)
-        if v is None:
-            continue
         e = c["points"][m]
-        xs.append((v, max(0.0, (min(finals[cid], c["cap"]) - e) / (c["cap"] - e))))
+        share = max(0.0, (min(finals[cid], c["cap"]) - e) / (c["cap"] - e))
+        every.append(share)
+        v = pace_v(c, m)
+        if v is not None:
+            xs.append((v, share))
     xs.sort()
     n = len(xs)
     cuts = [xs[n * i // k][0] for i in range(1, k)]
     bins = [[s for v, s in xs if (i == 0 or v >= cuts[i - 1]) and (i == k - 1 or v < cuts[i])]
             for i in range(k)]
-    return {"cuts": cuts, "share": [E._median(b) for b in bins], "n": n}
+    # The whole spread per bin is kept for the EV call; contests with no pace
+    # snapshot draw from every train share.
+    return {"cuts": cuts, "share": [E._median(b) for b in bins], "spread": bins,
+            "all": every, "n": n}
+
+
+def entry_ev(c, m_call, pace) -> tuple[float, float]:
+    """(expected value of one entry, P(overlay at lock)) over the train spread of
+    call->final shares in this contest's pace bin. Flat payout: pool/(field+1) - fee."""
+    e, cap, pp, fee = c["points"][m_call], c["cap"], c["prize_pool"], c["fee"]
+    v = pace_v(c, m_call)
+    ss = pace["all"] if v is None else pace["spread"][sum(v >= x for x in pace["cuts"])]
+    fields = [e + min(1.0, x) * (cap - e) for x in ss]
+    return (sum(pp / (f + 1) - fee for f in fields) / len(fields),
+            sum(pp > fee * f for f in fields) / len(fields))
 
 
 def forecast(c, cid, hist, model, m_call, pace=None):
@@ -110,14 +125,14 @@ def forecast(c, cid, hist, model, m_call, pace=None):
     return max(floor, likely)
 
 
-def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None, pace=False):
+def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None, pace=False, ev=False):
     hist, contests = H.load_log()
     finals = H.load_finals()
     keep = classic_ids()
     contests = {k: v for k, v in contests.items() if k in keep}
     train = {k: v for k, v in contests.items() if lock_day(v) < cutoff}
     model = (model_fn or E.fit_late_fill)(train, {k: v for k, v in finals.items() if k in train})
-    pace = fit_pace(train, finals, first, last) if pace else None
+    pace = fit_pace(train, finals, first, last) if (pace or ev) else None
     rows = []
     for cid, c in contests.items():
         if lock_day(c) < cutoff or cid not in finals or c["cap"] < 10:
@@ -128,10 +143,13 @@ def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None,
         final = min(finals[cid], c["cap"])
         f = forecast(c, cid, hist, model, m, pace)
         pp, fee = c.get("prize_pool"), c.get("fee")
+        pred = None if pp is None or fee is None else pp > fee * f
+        if ev and pred is not None:
+            pred = entry_ev(c, m, pace)[0] > 0
         rows.append({"cid": cid, "sport": c.get("sport"), "cap": c["cap"],
                      "band": E._band(c["points"][m] / c["cap"]), "err": (f - final) / c["cap"],
                      "ov_true": None if pp is None or fee is None else pp > fee * final,
-                     "ov_pred": None if pp is None or fee is None else pp > fee * f,
+                     "ov_pred": pred,
                      # one extra entry's value if entered on this call: an even share of the
                      # pool less the fee (flat-payout approximation; tiers ignored)
                      "ev": None if pp is None or fee is None else pp / (final + 1) - fee})
@@ -160,8 +178,8 @@ def fmt(label, s) -> str:
             f"  overlays {s['ov_n']:>4}  missed {s['missed']:>3}  false {s['false']:>3}  $/1-entry-each {s['ev']:+8.0f}{flag}")
 
 
-def report(cutoff: date, first: float, last: float, pace=False) -> list[str]:
-    rows, model = evaluate(cutoff, first, last, pace=pace)
+def report(cutoff: date, first: float, last: float, pace=False, ev=False) -> list[str]:
+    rows, model = evaluate(cutoff, first, last, pace=pace, ev=ev)
     days = sorted({r["cid"] for r in rows})
     out = [f"overlay lab: Classic, call {last}-{first} min out, fit locks < {cutoff} "
            f"(model n={model['n']}, tail {model['tail']:.2f} n={model['tail_n']}), test >= {cutoff}",
@@ -180,8 +198,10 @@ def main(argv=None) -> int:
     ap.add_argument("--first", type=float, default=9.5)
     ap.add_argument("--last", type=float, default=4.5)
     ap.add_argument("--pace", action="store_true", help="cycle 1 candidate: pace-binned share")
+    ap.add_argument("--ev", action="store_true",
+                    help="cycle 2 candidate: call on expected entry value over the pace bin's spread")
     a = ap.parse_args(argv)
-    print("\n".join(report(date.fromisoformat(a.cutoff), a.first, a.last, a.pace)))
+    print("\n".join(report(date.fromisoformat(a.cutoff), a.first, a.last, a.pace, a.ev)))
     return 0
 
 
