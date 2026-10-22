@@ -436,6 +436,116 @@ teammates who do play, and earns 0 DFS points."
 - with/without-teammate history: 6.547;
 - prior-game blowout or overtime: bias shifts under 0.7 minutes.
 
+## Cycle 7: the NBA's official injury report
+
+**Baseline** (cycle 6):
+- lab 6.550 / 7.396;
+- live 6.598 / 7.435;
+- board at 25% missed: 6.459 / 7.889.
+
+**Critic #7 (fresh `dfs-model-critic` agent, ~15 min, read-only).** "Before the official
+inactive list exists, the build decides who dresses from ESPN's 'Out' list, which
+leaves out two-way and G-League players and treats Questionable or Doubtful players as
+playing. The NBA's official injury report covers both groups, has public archives
+going back years, and is not used."
+
+- **Out list vs modelling:** an Out list worth up to 0.72 board RMSE (no five) and
+  0.14 (five announced), against every modelling lever it tested:
+  - online residual corrections: 0.004 / 0.015;
+  - a five guessed from last game's starters: 0.044 (no five);
+  - a residual GBM: 0.14–0.16 of headroom, spread thin.
+- **Runners-up:**
+  - starters in lopsided games run high (+0.4 to +1.4), but the proxy is worth
+    0.01 or less;
+  - veterans on a new team in opening week (RMSE 8.4–8.7, n about 100 a season);
+  - the guessed-five blend for the no-five state (0.044).
+
+**Found on the way, shipped first (5:15 PM, `0246b174`).** Cycle 6's stale flag read
+across seasons, so before a team's opener it flagged whoever sat last April's finale.
+On CLE's opener, Sam Merrill and Thomas Bryant were projected at 50% / 20% to dress,
+and the 5 PM official report listed neither.
+- Players who sat the previous finale dressed in **77%** of 2025-26 openers (n 95)
+  and **91%** of 2026-27's (n 92), against 16–22% for stale players in season. The
+  2024-25 fit never saw an opener.
+- Only a game of this season counts now. Lab, 2025-26 board: no five 7.206 → 7.179;
+  five announced 6.319 → 6.315.
+- The history was republished before Adam's 6:30 build.
+
+**Building the data.**
+- **`edge/nba_injury_report.py`:** fetches a report by date and time (hourly
+  `_06PM.pdf` before 2026, 15-minute `_06_00PM.pdf` after), caches it in
+  `data/nba_injury_reports/` (a missing one is cached too) and parses it with pypdf's
+  layout text.
+  - **Row regex:** "Last, First  Status  Reason". The parsed row count equals the
+    count of status words on all 8 PDFs checked, 45–169 rows each.
+- **Archive:** the report about 60 minutes before every 2024-25 / 2025-26 tip,
+  floored to the hour (tips from stats.nba.com `scheduleleaguev2`, `fetch_tips`).
+  1,182 slots, all found, 0 errors, 100 MB, about 25 minutes at 1.2 s a request.
+
+**Lab (`cycle7`: `report_status`, `report_preds`, `report_score`, `report_fit`).**
+- **Out list:** the report's Out → not dressing; the cut keeps 15.
+- **Uncertain** (not announced starters): Doubtful, Questionable, Probable/Available,
+  or not listed but stale. Each dresses with p by (status, role ≥ 10).
+- **Expected minutes:** `m_i = A_i + Σ_k (1 − p_k)(B_k,i − A_i)`, × p_i for an
+  uncertain player himself. No fitted teammate weight; the p's are the 2024-25 dress
+  shares.
+- **Harness check:** fed the true inactive flags as the "report", it reproduces the
+  lab's 6.5505 exactly.
+
+**An evaluation hole found on the way.** In 2025-26, **1,014 player-games listed Out
+on the report were flagged active by NBA.com's lineups and played 0 minutes, every
+one** (average role 15.5).
+- The lab's truth counts them as active, so the lab protocol (6.550 / 7.396) has
+  projected them at their role all along. Every earlier table is pessimistic by that
+  much.
+- It's also why "official report" first looked better than "full inactive list". The
+  report knows something the flags don't.
+
+**The fair baseline.** Cycle 6's random-miss replay drew from the same flags, so it
+missed these injured players, which ESPN would list. The baseline is therefore
+replayed on the same reports, "ESPN-like":
+- Out for an injury only (an empty, wrapped reason counts as an injury, which
+  flatters the baseline);
+- two-ways not listed;
+- Doubtful / Questionable / Probable ignored;
+- cycle 6's stale p.
+
+**Metric.** The board's squared error per active player-game (`fixed`). Board RMSE
+over each method's own rows rewards keeping many cheap phantoms: on it, ESPN-like
+looked better, 6.222 vs 6.257.
+
+**Result** (P fitted on 2024-25):
+
+| season | state | ESPN-like Out + cycle-6 hedge (shipped) | official Out only | **official + P by status** | active RMSE: shipped → new |
+|---|---|---|---|---|---|
+| 2024-25 | five announced | 6.323 (4,302 phantoms) | 6.238 | **6.160** (1,386) | 6.031 → 6.005 |
+| 2025-26 | five announced | 6.624 (4,297) | 6.563 | **6.438** (1,894) | 6.298 → 6.261 |
+| 2024-25 | no five | 6.967 (4,314) | 6.803 | **6.736** (1,395) | 6.478 → 6.452 |
+| 2025-26 | no five | 7.357 (4,321) | 7.304 | **7.077** (1,905) | 6.721 → 6.674 |
+
+**P(dress), 2024-25** (starters known; no five):
+- Doubtful 0.20 / 0.36 (n 15 / 14); 0.20 / 0.40 with no five;
+- Questionable 0.72 / 0.80 (n 36 / 113); 0.72 / 0.88;
+- Probable 0.95 / 0.99; 0.95 / 1.00;
+- stale, not listed, 0.45 / 0.51 (n 1,255 / 427); 0.45 / 0.68.
+
+**Decision: ship** (after the 7 PM lock, so Adam's build and the autolog ran on the
+previous code). Production:
+- `NM.project_uncertain` + `REPORT_P`;
+- `build_board` reads `nba_injury_report.latest()` and unions its Out with ESPN and DK;
+- the scratch monitor uses the official Out;
+- page 12 shows each uncertain player's status and chance;
+- `pypdf` added to requirements;
+- ESPN alone is the visible fallback.
+
+**Judgment calls and open items.**
+- **Lead time:** about 60 minutes before tip. The build is about 30 minutes before the
+  first lock, so later games' reports are older.
+- **Doubtful:** n is thin.
+- **Reasons:** about a quarter of Out rows have an empty reason (wrapped); only the
+  baseline uses it.
+- **No new model holes:** none of the critic's modelling levers exceeds 0.05.
+
 ## Summary of cycles 1-3
 
 Every version scored the same way (`python3 scripts/nba_minutes_lab.py cycles`),

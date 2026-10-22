@@ -132,7 +132,8 @@ def dk_players(state: dict, now: datetime, day: date) -> dict:
 
 def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
            prime: bool = False, windows: dict | None = None,
-           extra: dict | None = None, espn_out: set | None = None) -> tuple[list, dict]:
+           extra: dict | None = None, espn_out: set | None = None,
+           official_out: set | None = None) -> tuple[list, dict]:
     """(alerts, new `seen`) for tonight's games. `seen` = {player_id: {"out", "starter"}}
     from the previous run; an event fires on a change into OUT or into the starting five.
     `prime` = the day's first look: who is already out is old news (priced into DK's
@@ -151,7 +152,8 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
                 win = (windows or {}).get(pid)
                 r = NM.role([(m, s) for m, s, _ in h], win)
                 # NBA.com's lineups carry no inactive list in 2026-27: ESPN's Out list too
-                out = p["inactive"] or d.get("status") == "OUT" or (norm(p["name"]), team) in (espn_out or set())
+                out = (p["inactive"] or d.get("status") == "OUT" or (norm(p["name"]), team) in (espn_out or set())
+                       or norm(p["name"]) in (official_out or set()))
                 now_seen[pid] = {"out": out, "starter": p["starter"]}
                 before = {"out": out, "starter": False} if prime else seen.get(pid, {})
                 if out and not before.get("out") and r["base"] >= NM.REGULAR_MIN:
@@ -285,6 +287,7 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
         windows: dict = {}
         extra: dict = {}
         espn_out: set = set()
+        official_out: set = set()
     else:
         # The same history the app projects from (data/nba_player_history.json), so
         # an alert and the page it opens cannot disagree about a player's role.
@@ -298,6 +301,12 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
                  for pid, p in snap["players"].items()}
         from edge import nba_availability
         espn_out = {(norm(n), t) for n, t in nba_availability.tonight_out()}
+        # critique cycle 7: the NBA's official report's Out list too (two-ways included);
+        # no team on it, so any team's player of that name
+        from edge import nba_injury_report
+        got = nba_injury_report.latest()
+        official_out = {norm(nba_injury_report.full_name(a, b)) for a, b, st_, _ in (got[1]["rows"] if got else [])
+                        if st_ == "Out"}
     dk = {}
     if not replay:
         try:
@@ -308,7 +317,7 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
             state["log"] = _log_changes(games, dk, state.get("log", {}), now)
     alerts, seen = assess(games, hist, pos, dk, state.get("seen", {}),
                           prime=not replay and not state.get("seen"), windows=windows, extra=extra,
-                          espn_out=espn_out)
+                          espn_out=espn_out, official_out=official_out)
     new = [a for a in alerts if a["key"] not in state["sent"]]
     if any(a["preseason"] for a in new):
         new = sorted(new, key=lambda a: a["preseason"])[:PRESEASON_MAX_PUSH]

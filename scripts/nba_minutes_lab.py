@@ -1082,10 +1082,159 @@ def avail_fit(P: dict) -> tuple:
               for bb in (False, True))
     return w, p
 
+
+# ── critique cycle 7: the NBA's official injury report ────────────────────────
+REPORT_CATS = ("Doubtful", "Questionable", "Probable", "stale")
+
+
+def fetch_tips(seasons=("2024-25", "2025-26")) -> None:
+    """data/nba_ground_truth/schedule_tips.json: {game id: tip 'YYYY-MM-DDTHH:MM:SSZ'} --
+    the 'Z' is NBA.com's label, the clock is Eastern. One stats.nba.com call a season."""
+    import time as _time
+    import urllib.request
+    from edge.nba_availability import _headers
+    tips = {}
+    for s_ in seasons:
+        url = f"https://stats.nba.com/stats/scheduleleaguev2?Season={s_}&LeagueID=00"
+        with urllib.request.urlopen(urllib.request.Request(url, headers=_headers()), timeout=60) as r:
+            d = json.load(r)
+        tips.update({g["gameId"]: g["gameDateTimeEst"] for day in d["leagueSchedule"]["gameDates"]
+                     for g in day["games"] if g["gameId"].startswith("002")})
+        _time.sleep(1.5)
+    (GT / "schedule_tips.json").write_text(json.dumps(tips))
+
+
+def report_status(D: dict, lead_min: int = 60, espn_like: bool = False) -> dict:
+    """{row: official injury-report status} from the report published `lead_min` before
+    the game's tip, floored to the hour, falling back 1-2 hours (edge.nba_injury_report,
+    cache only: scripts fetch the archive). None = not listed; rows of a game with no
+    report are absent. Names join on edge.names.norm over the night's report.
+    `espn_like` keeps only what ESPN's Out feed + the app used through cycle 6: Out for
+    an injury (not "G League ..."), Doubtful / Questionable / Probable ignored."""
+    from datetime import datetime as _dt, timedelta as _td
+    from edge import nba_injury_report as IR
+    from edge.names import norm
+    names: dict = {}
+    for f in sorted(CACHE.glob("*.json")):
+        try:
+            for g_ in parse(json.loads(f.read_text())):
+                for p_ in g_["players"]:
+                    names[str(p_["id"])] = p_["name"]
+        except (ValueError, KeyError):
+            continue
+    tips = json.loads((GT / "schedule_tips.json").read_text())
+    parsed: dict = {}
+    out = {}
+    for g in D["games"]:
+        t = tips.get(g["gid"])
+        if not t:
+            continue
+        at = _dt.fromisoformat(t.replace("Z", "")) - _td(minutes=lead_min)
+        got = None
+        for back in (0, 1, 2):
+            got = IR.report(at.date().isoformat(), at.hour - back, 0, fetch=False)
+            if got:
+                break
+        if not got:
+            continue
+        if got[0] not in parsed:
+            parsed[got[0]] = {norm(IR.full_name(a, b)): (st if not (espn_like and st == "Out" and why.startswith("G League"))
+                                                          else None) if not espn_like or st == "Out" else None
+                              for a, b, st, why in IR.parse(got[1])["rows"]}
+        st_by = parsed[got[0]]
+        for i in g["idx"]:
+            out[i] = st_by.get(norm(names.get(D["rows"][i]["pid"], "")))
+    return out
+
+
+def report_preds(D: dict, prm: dict, season: str, mode: str, status: dict, cut: int = 15) -> dict:
+    """The live state with the official report as the Out list. Out -> not dressing;
+    the cut keeps `cut` (starters first, then role). A kept player is UNCERTAIN if he is
+    Doubtful / Questionable / Probable (Available counts as Probable), or not listed but
+    did not dress in his team's latest game this season ("stale"); announced starters
+    are certain. For any P(dress) per (category, role >= 10) the expected minutes are
+      m_i = A_i + sum over uncertain k != i of (1 - p_k) (B_k,i - A_i),  x p_i if i is uncertain
+    with A = everyone kept dresses, B_k = k sits (cut re-run). Stored per row: A, the
+    (k's category, B_k - A) terms, own category, dressed, actual (0 if not dressed)."""
+    R = roles(D, prm)
+    rows = D["rows"]
+    prev = _prev_inactive(D)
+    out = defaultdict(list)
+    for g in D["games"]:
+        if g["season"] != season or not all(i in status for i in g["idx"]):
+            continue
+        truth = {i: rows[i]["inactive"] for i in g["idx"]}
+        cand = [i for i in g["idx"] if status[i] != "Out"]
+        rank = lambda c: set(sorted(c, key=lambda i: (not rows[i]["starter"], -float(R["base"][i])))[:cut])  # noqa: E731
+        keep = rank(cand)
+
+        def cat(i):
+            if mode == "confirmed" and rows[i]["starter"]:
+                return None
+            st = status[i]
+            if st in ("Doubtful", "Questionable"):
+                return st
+            if st in ("Probable", "Available"):
+                return "Probable"
+            if prev[i] is True and rows[i]["team_game_no"] > 1:
+                return "stale"
+            return None
+        unc = {i: (cat(i), float(R["base"][i]) >= 10) for i in keep if cat(i)}
+
+        def proj(kept):
+            for i in g["idx"]:
+                rows[i]["inactive"] = i not in kept
+            try:
+                return project_game(D, g, R, prm, mode)
+            finally:
+                for i in g["idx"]:
+                    rows[i]["inactive"] = truth[i]
+        A = proj(keep)
+        B = {k: proj(rank([i for i in cand if i != k])) for k in unc}
+        members = set(keep) | {i for b in B.values() for i in b} | {i for i in g["idx"] if not truth[i]}
+        for i in g["idx"]:
+            if i not in members or (not truth[i] and rows[i]["actual"] is None):
+                continue
+            a = A.get(i, 0.0)
+            out["a"].append(a)
+            out["terms"].append([(unc[k], B[k].get(i, 0.0) - a) for k in unc if k != i])
+            out["own"].append(unc.get(i))
+            out["dressed"].append(not truth[i])
+            out["y"].append(float(rows[i]["actual"]) if not truth[i] else 0.0)
+            out["status"].append(status[i])
+    return dict(out)
+
+
+def report_score(P: dict, p: dict | None) -> dict:
+    """Board / active RMSE for P(dress) p = {(category, big): prob}; None = no hedge
+    (every kept player dresses: the report's Out list alone)."""
+    pr = (lambda c: 1.0) if p is None else (lambda c: p[c])  # noqa: E731
+    m = np.array([a + sum((1 - pr(c)) * d for c, d in t) for a, t in zip(P["a"], P["terms"])])
+    own = np.array([pr(c) if c else 1.0 for c in P["own"]])
+    mean = own * m
+    y, dr = np.array(P["y"]), np.array(P["dressed"])
+    eb, ea = mean - y, (m - y)[dr]
+    # "fixed": the board's squared error over the ACTIVE player-games -- comparable across
+    # Out lists that keep different numbers of phantoms (a player no board keeps costs 0)
+    return {"board": float(np.sqrt((eb ** 2).mean())), "board_bias": float(eb.mean()), "n_board": len(y),
+            "active": float(np.sqrt((ea ** 2).mean())), "n_active": int(dr.sum()), "phantoms": int((~dr).sum()),
+            "fixed": float(np.sqrt((eb ** 2).sum() / max(int(dr.sum()), 1)))}
+
+
+def report_fit(P: dict) -> dict:
+    """P(dress) per (category, role >= 10): the share of such kept players who dressed (train)."""
+    acc = defaultdict(lambda: [0, 0])
+    for c, d in zip(P["own"], P["dressed"]):
+        if c:
+            acc[c][0] += 1
+            acc[c][1] += d
+    return {c: (acc[c][1] / acc[c][0] if acc[c][0] else 1.0) for c in
+            [(k, b) for k in REPORT_CATS for b in (False, True)]}, dict(acc)
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("cmd", choices=["diagnose", "ablate", "fit", "salary", "report", "cycle1", "cycle2", "live",
-                                    "cycles", "cycle4", "cycle5", "cycle6"])
+                                    "cycles", "cycle4", "cycle5", "cycle6", "cycle7"])
     ap.add_argument("--mode", default="confirmed", choices=["confirmed", "inactives"])
     ap.add_argument("--write", action="store_true", help="cycle1 / cycle5: write edge/nba_minutes_gap.py")
     a = ap.parse_args()
@@ -1125,6 +1274,31 @@ def main() -> int:
         print(report(D, P, legacy=False))
         if a.write:
             write_gap_module(D, P["gap_coef"], P, cycle=2, extra=f"recency_lam {lam}, drop_q {q}")
+        return 0
+    if a.cmd == "cycle7":
+        # the official injury report as the Out list, P(dress) by status fitted on 2024-25.
+        # Needs the archive: scripts fetch it into data/nba_injury_reports/ (see the log).
+        if not (GT / "schedule_tips.json").exists():
+            fetch_tips()
+        F = final_params()
+        status, espn = report_status(D), report_status(D, espn_like=True)
+        print(f"  report status for {len(status):,} rows", file=sys.stderr, flush=True)
+        for m in ("confirmed", "inactives"):
+            tr = report_preds(D, F, "2024-25", m, status)
+            p, n = report_fit(tr)
+            lo, hi = NM.AVAIL_P[m]
+            p6 = {(c, b): 1.0 for c in REPORT_CATS for b in (False, True)}
+            p6.update({("stale", False): lo, ("stale", True): hi})
+            print(f"\n{m}: P(dress) fitted on 2024-25 (n kept): " + ", ".join(
+                f"{c} {'10+' if b else '<10'} {p[(c, b)]:.2f} ({n.get((c, b), [0])[0]})" for c, b in p))
+            print("| season | ESPN-like Out + cycle-6 stale hedge (shipped) | official Out only | official + P(dress) "
+                  "by status | active RMSE: shipped -> official + P |\n|---|---|---|---|---|")
+            for s_ in ("2024-25", "2025-26"):
+                P = tr if s_ == "2024-25" else report_preds(D, F, s_, m, status)
+                E = report_preds(D, F, s_, m, espn)
+                e, h, z = report_score(E, p6), report_score(P, None), report_score(P, p)
+                print(f"| {s_} | {e['fixed']:.3f} ({e['phantoms']:,} phantoms) | {h['fixed']:.3f} | **{z['fixed']:.3f}** "
+                      f"({z['phantoms']:,} phantoms) | {e['active']:.3f} -> {z['active']:.3f} |", flush=True)
         return 0
     if a.cmd == "cycle6":
         # stale players the Out list may have missed: fit w, p on 2024-25 at each miss rate,

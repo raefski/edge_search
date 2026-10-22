@@ -323,3 +323,23 @@ def test_a_player_who_sat_last_game_gets_expected_minutes_and_his_teammates_a_bl
     assert out["7"]["minutes"] > a["7"]["minutes"]                       # the next man up gains
     _, avail = NM.project_available(team, {"11"}, "confirmed")
     assert avail == {"11": NM.AVAIL_P["confirmed"][0]}                   # deep bench: role < AVAIL_ROLE
+
+
+def test_injury_report_statuses_give_expected_minutes_by_their_chance_to_dress():
+    """Critique cycle 7: a Questionable / Doubtful / stale player gets P(dress) x his
+    minutes if he plays; each teammate gets A + sum (1 - p_k)(B_k - A) over them."""
+    roles = [34, 32, 30, 28, 26, 22, 20, 16, 12, 10, 6, 4]
+    team = [{"id": str(i), "position": "G", "inactive": False, "starter": None,
+             "history": [(float(m), i < 5)] * 10, "cur_n": 10} for i, m in enumerate(roles)]
+    plain, none = NM.project_uncertain(team, {}, "inactives")
+    assert plain == NM.project(team) and none == {}
+    out, p = NM.project_uncertain(team, {"1": "Questionable", "10": "stale"}, "inactives")
+    P = NM.REPORT_P["inactives"]
+    assert p == {"1": P[("Questionable", True)], "10": P[("stale", False)]}
+    a = NM.project(team)
+    b = {k: NM.project([{**x, "inactive": x["id"] == k} for x in team]) for k in ("1", "10")}
+    assert out["1"]["minutes"] == pytest.approx(
+        p["1"] * (a["1"]["minutes"] + (1 - p["10"]) * (b["10"]["1"]["minutes"] - a["1"]["minutes"])), abs=0.06)
+    m7 = a["7"]["minutes"] + sum((1 - p[k]) * (b[k]["7"]["minutes"] - a["7"]["minutes"]) for k in b)
+    assert out["7"]["minutes"] == pytest.approx(m7, abs=0.06) and out["7"]["minutes"] > a["7"]["minutes"]
+    assert sum(v["minutes"] for v in out.values()) == pytest.approx(240, abs=1.5)   # expected minutes still ~240

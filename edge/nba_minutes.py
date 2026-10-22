@@ -195,6 +195,27 @@ EXPECTED_W = 0.70
 AVAIL_ROLE = 10.0
 AVAIL_W = {"confirmed": 0.4, "inactives": 0.4}
 AVAIL_P = {"confirmed": (0.2, 0.5), "inactives": (0.25, 0.7)}
+#: Critique cycle 7 (2026-10-22): the NBA's official injury report (edge/nba_injury_report.py)
+#: is the Out list; a kept player who is Doubtful / Questionable / Probable (Available =
+#: Probable) or not listed but "stale" (sat his team's latest game this season) dresses with
+#: P = REPORT_P[mode][(category, role >= REPORT_ROLE)] -- the share who dressed among such
+#: kept players in 2024-25 (report ~60 min before tip, n in brackets), applied by
+#: project_uncertain. Held out 2025-26, squared error of the board (non-dressers = 0) per
+#: active player-game, ESPN-like Out + cycle 6's stale hedge -> official + these:
+#: five announced 6.624 -> 6.438, no five 7.357 -> 7.077 (active RMSE 6.298 -> 6.261,
+#: 6.721 -> 6.674); phantoms 4,297 -> 1,894 (scripts/nba_minutes_lab.py cycle7).
+#: Doubtful is thin (n 14-15). Without a report (fetch failed) the stale p fall back to AVAIL_P.
+REPORT_ROLE = 10.0
+REPORT_P = {
+    "confirmed": {("Doubtful", False): 0.20, ("Doubtful", True): 0.36,          # n 15 / 14
+                  ("Questionable", False): 0.72, ("Questionable", True): 0.80,  # n 36 / 113
+                  ("Probable", False): 0.95, ("Probable", True): 0.99,          # n 477 / 597
+                  ("stale", False): 0.45, ("stale", True): 0.51},               # n 1,255 / 427
+    "inactives": {("Doubtful", False): 0.20, ("Doubtful", True): 0.40,          # n 15 / 15
+                  ("Questionable", False): 0.72, ("Questionable", True): 0.88,  # n 36 / 188
+                  ("Probable", False): 0.95, ("Probable", True): 1.00,          # n 498 / 1,866
+                  ("stale", False): 0.45, ("stale", True): 0.68},               # n 1,258 / 664
+}
 #: History kept per player (a full season).
 HIST_GAMES = 82
 
@@ -438,6 +459,42 @@ def project_available(team: list, stale: set, mode: str, keep: set | None = None
             out[i] = {**(ai or bi), "minutes": round(w * (ai or {}).get("minutes", 0.0)
                                                     + (1 - w) * (bi or {}).get("minutes", 0.0), 1)}
     return out, avail
+
+
+def project_uncertain(team: list, unc: dict, mode: str, keeps: dict | None = None,
+                      probs: dict | None = None, params: dict | None = None) -> tuple[dict, dict]:
+    """Critique cycle 7: expected minutes when some dressing players may sit. `unc` =
+    {id: category} -- "Doubtful" / "Questionable" / "Probable" on the NBA's official
+    injury report, or "stale" (not listed, did not dress for his team's latest game this
+    season); announced starters are never uncertain. `keeps` = {id: ids kept if he sits}
+    (the roster cut re-run; None = everyone not inactive). With A = all dress and B_k =
+    k sits, and P(dress) p by (category, role >= REPORT_ROLE):
+        m_i = A_i + sum over uncertain k != i of (1 - p_k) (B_k,i - A_i),   x p_i if i is uncertain
+    Mirrors scripts/nba_minutes_lab.report_score. Returns (minutes as project(), {id: p})."""
+    a = project(team, params)
+    if not unc:
+        return a, {}
+    probs = probs or REPORT_P[mode]
+    by_id = {pl["id"]: pl for pl in team}
+    p = {}
+    for k, c in unc.items():
+        pl = by_id[k]
+        big = role_v2(pl["history"], pl.get("cur_n"), int(pl.get("n_pre") or 0))["base"] >= REPORT_ROLE
+        p[k] = probs[(c, big)]
+    B = {}
+    for k in unc:
+        kept = None if keeps is None else keeps.get(k)
+        B[k] = project([{**pl, "inactive": pl["id"] == k or (pl["inactive"] if kept is None else pl["id"] not in kept)}
+                        for pl in team], params)
+    out = {}
+    for i in set(a) | {i for b in B.values() for i in b}:
+        ai = a.get(i, {}).get("minutes", 0.0)
+        m = ai + sum((1 - p[k]) * (B[k].get(i, {}).get("minutes", 0.0) - ai) for k in unc if k != i)
+        if i in unc:
+            m *= p[i]
+        base = a.get(i) or next(B[k][i] for k in unc if i in B[k])
+        out[i] = {**base, "minutes": round(max(0.0, m), 1)}
+    return out, p
 
 #: Role ranks with their own allocation cell; rank 14 and below share the last one.
 GAP_RANKS = 13

@@ -5,3 +5,4 @@ streamlit>=1.36
 pytest>=8.0
 # pandas>=2.0      # optional: nicer report tables / parquet export
 # duckdb>=1.0      # optional: backtest queries over stored snapshots
+pypdf>=5.0          # the NBA's official injury report PDFs (edge/nba_injury_report.py)

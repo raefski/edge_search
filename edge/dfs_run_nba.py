@@ -174,6 +174,25 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         else "past slate (not read)"
     espn_out = {(norm(n), t) for n, t in espn_rows}
     espn_sig = {(_sig(n), t) for n, t in espn_rows}
+    # Critique cycle 7: the NBA's official injury report (every 15 min) -- Out, plus
+    # Doubtful / Questionable / Probable, two-ways included -- keyed by norm name and,
+    # for a name the two spell differently, (last name, first initial) when unique.
+    official, official_sig = {}, {}
+    if date >= datetime.now(ET).date().isoformat():
+        from edge import nba_injury_report
+        got = nba_injury_report.latest()
+        if got:
+            for last, first, st_, _why in got[1]["rows"]:
+                full = nba_injury_report.full_name(last, first)
+                official[norm(full)] = st_
+                official_sig.setdefault(_sig(full), []).append(st_)
+        info["injuries_source"] = f"{nba_injury_report.LAST_SOURCE} + {info['injuries_source']}"
+
+    def report_status(name):
+        if norm(name) in official:
+            return official[norm(name)]
+        alt = official_sig.get(_sig(name), [])
+        return alt[0] if len(alt) == 1 else None
     implied = game_lines(client, games) if client is not None else {}
     league_pm = hist.get("league_pm")
     info["preseason"] = date < REGULAR_SEASON_START
@@ -223,7 +242,8 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         opp = next((team(g["away"]) if team(g["home"]) == t else team(g["home"])
                     for g in games.values() if t in (team(g["home"]), team(g["away"]))), None)
         espn = (key, t) in espn_out or (_sig(sal["name"]), t) in espn_sig
-        out = bool(st.get("inactive")) or sal.get("dk_status") in ("OUT", "O") or espn
+        injury = report_status(sal["name"])
+        out = bool(st.get("inactive")) or sal.get("dk_status") in ("OUT", "O") or espn or injury == "Out"
         # `start` lets the optimiser put the LATEST tips in G / F / UTIL (DK's
         # late-swap convention, edge/dfs_opt_climb.assign_slots). Missing until
         # 2026-10-20, so every NBA lineup kept projection order in the flex slots.
@@ -237,6 +257,7 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
                      "cur_n": h.get("cur_n"), "n_pre": h.get("n_pre") or 0, "pick": h.get("pick"),
                      "since_return": h.get("since_return") if h.get("team") == t else None,
                      "missed_last": bool(h.get("missed_last")) and h.get("team") == t,
+                     "injury": injury,
                      "dk_status": sal.get("dk_status"), "starter": st.get("starter"),
                      "confirmed": st.get("confirmed"), "inactive_listed": bool(st.get("inactive")),
                      "window": (NM.SEASON_START_WINDOW if h.get("season_games", 0) < 5 else None)})
@@ -271,20 +292,30 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
                     "history": [(m, s) for m, s, _ in r["history"]], "cur_n": r["cur_n"],
                     "n_pre": r["n_pre"], "since_return": r["since_return"], "pick": r["pick"],
                     "salary": r["salary"]} for r in ps]
-        # Critique cycle 6: ESPN's Out list misses two-way / G-League players and most
-        # Day-To-Day sits, so a player who did not dress for his team's latest game (and
-        # is not an announced starter) may sit again: NM.project_available blends his
-        # teammates between "he plays" and "he sits" and gives him his expected minutes.
-        stale = {r["name"] for r in ps if r["missed_last"] and not r["out"] and not r.get("not_dressing")
-                 and not (announced and r["starter"])}
-        keep_b = ({x["name"] for x in [x for x in ranked if x["name"] not in stale][:ACTIVE_ROSTER]}
-                  if stale and not listed else None)
-        mins, avail = NM.project_available(team_in, stale, "confirmed" if announced else "inactives", keep_b)
+        # Critique cycles 6-7: a kept player who is Doubtful / Questionable / Probable on
+        # the official report, or not listed but sat his team's latest game ("stale"),
+        # may not dress: he gets P(dress) x his minutes, his teammates their expected
+        # minutes over his two cases (NM.project_uncertain). Not an announced starter.
+        unc = {}
+        for r in ps:
+            if r["out"] or r.get("not_dressing") or (announced and r["starter"]):
+                continue
+            inj = {"Available": "Probable"}.get(r["injury"], r["injury"])
+            if inj in ("Doubtful", "Questionable", "Probable"):
+                unc[r["name"]] = inj
+            elif r["missed_last"]:
+                unc[r["name"]] = "stale"
+        keeps = ({k: {x["name"] for x in [x for x in ranked if x["name"] != k][:ACTIVE_ROSTER]} for k in unc}
+                 if unc and not listed else None)
+        mode_ = "confirmed" if announced else "inactives"
+        probs = NM.REPORT_P[mode_] if official else {
+            **NM.REPORT_P[mode_], ("stale", False): NM.AVAIL_P[mode_][0], ("stale", True): NM.AVAIL_P[mode_][1]}
+        mins, avail = NM.project_uncertain(team_in, unc, mode_, keeps, probs)
         for r in ps:
             if r["name"] in avail:
-                r["avail"] = avail[r["name"]]
-        if stale:
-            info.setdefault("stale", []).extend(sorted(stale))
+                r["avail"], r["avail_why"] = avail[r["name"]], unc[r["name"]]
+        if unc:
+            info.setdefault("uncertain", []).extend(f"{k} ({v})" for k, v in sorted(unc.items()))
         # "Usual" = the same team with no news: everyone healthy who dresses, no
         # starting five announced. Δ = proj - usual is then what tonight's scratches
         # and lineup changes did, not the 240-minute sharing every team goes through.

@@ -173,15 +173,40 @@ them 2025-26 opening week goes 5.01 → 5.18 and 2026-27's night one goes 6.98 �
 
 ## Step 2: who dresses tonight
 
-- **Out:** on ESPN's Out list, flagged OUT by DK, or (historically) on NBA.com's
-  inactive list.
+- **The official injury report (critique cycle 7).** The NBA's own report
+  (`edge/nba_injury_report.py`) is a PDF published every 15 minutes, hourly before
+  2026, and archived. It lists every team's injured players and its two-way /
+  G-League players with a status: Out, Doubtful, Questionable, Probable or Available.
+  ESPN's feed lists injuries only.
+- **Out:** Out on the official report, on ESPN's Out list, or flagged OUT by DK
+  (historically: NBA.com's inactive list). ESPN alone is the visible fallback when the
+  report can't be read.
 - **Then the cut:** DK lists about 20 per team. Keep each team's **15** largest
   roles (step-1 base), with NBA.com's announced starters always first, and treat
   the rest as not dressing. Without NBA.com's inactive list this cut runs all
   day.
   - 15 was chosen on the live-state replay, 2024-25: cut 13 / 14 / 15 / none →
     RMSE 6.478 / 6.467 / 6.465 / 6.477.
-- **Then players who sat last game (critique cycle 6).** ESPN's Out list covers
+- **Then the uncertain ones (critique cycle 7; cycle 6 for the stale rule).** A kept
+  player who isn't an announced starter is uncertain if he is Doubtful, Questionable
+  or Probable (Available counts as Probable), or if he isn't listed but didn't dress
+  for his team's latest game this season.
+  - **Probability (`REPORT_P`):** each dresses with probability p by status and role
+    (< 10 / 10+). The p's are the shares who dressed in 2024-25, about 60 minutes
+    before tip:
+
+    | status | starters known, role < 10 / 10+ | no five, role < 10 / 10+ |
+    |---|---|---|
+    | Doubtful | 0.20 / 0.36 | 0.20 / 0.40 |
+    | Questionable | 0.72 / 0.80 | 0.72 / 0.88 |
+    | Probable | 0.95 / 0.99 | 0.95 / 1.00 |
+    | stale | 0.45 / 0.51 | 0.45 / 0.68 |
+
+  - **Expected minutes (`NM.project_uncertain`):**
+    `m_i = A_i + Σ_k (1 − p_k)(B_k,i − A_i)`, × p_i if i is uncertain himself. A =
+    everyone kept dresses; B_k = k sits, with the cut re-run.
+  - Without a report, the stale rule below applies with cycle 6's p.
+- **Cycle 6's version, the fallback.** ESPN's Out list covers
   injuries, not two-way / G-League players or most Day-To-Day sits. Of the 47 role-10+
   players who didn't dress on 2026-10-20/21, ESPN's 10/22 feed had 18 Out, 16
   Day-To-Day and 11 not listed at all.
@@ -390,6 +415,31 @@ five is wrong, RMSE goes 8.48 → 7.93. The price is paid when the Expected five
 right: promoted starters' bias goes +0.9 → −1.3 minutes (MAE 5.12 → 5.21, n 1,940)
 until the team confirms.
 
+### The official injury report (critique cycle 7; 2025-26 held out)
+
+All three columns are replayed on the archived reports (`nba_minutes_lab.py cycle7`).
+The metric is the board's squared error per **active** player-game: the board's
+non-dressers count as 0, and dividing by a fixed n keeps Out lists with different
+phantom counts comparable.
+
+| | ESPN-like Out + cycle-6 stale hedge (shipped before) | official Out only | **official + P by status** |
+|---|---|---|---|
+| starters announced | 6.624 (4,297 phantoms) | 6.563 | **6.438** (1,894 phantoms) |
+| no five | 7.357 (4,321) | 7.304 | **7.077** (1,905) |
+
+- **ESPN-like:** Out for an injury, two-way / G-League players not listed, and
+  Doubtful / Questionable / Probable ignored.
+- **Active players only:** 6.298 → 6.261 (starters announced) and 6.721 → 6.674
+  (no five).
+- **2024-25 shows the same ordering:** 6.323 → 6.160 and 6.967 → 6.736.
+
+**A caveat on every earlier table.** The lab's truth is NBA.com's lineup `inactive`
+flag. In 2025-26, 1,014 player-games listed **Out** on the report were flagged active
+and played 0 minutes, all of them; their average role was 15.5. The lab protocol
+(`report`: 6.550 / 7.396) projects them at their role, so it is pessimistic. Fed the
+true flags, the report replay reproduces 6.5505 exactly, so the harness agrees with
+`evaluate`.
+
 ### Players who sat last game (critique cycle 6; 2025-26 held out, live state, RMSE)
 
 **Board** = every player the board projects plus everyone who dressed. A non-dresser
@@ -416,16 +466,17 @@ role-10+ scratches weren't listed at all, so the miss rate is at least about 23%
 - a fitted per-game discount on last-season games (it read last season's final
   week at season start).
 
-## Known weaknesses (open as of 2026-10-22, after critique cycle 6)
+## Known weaknesses (open as of 2026-10-22, after critique cycle 7)
 
-1. **The Out list's miss rate is unmeasured.** Cycle 6 hedges it: AVAIL_* are robust
-   over 0–50%. But the miss process in the lab is random, while real misses are
-   either habitual (two-ways: stale) or fresh (Day-To-Day late scratches: not stale).
-   ESPN's Day-To-Day status itself is unused, because there is no history to fit it
-   on. Both can be measured from `data/nba_espn_injuries/` against the box scores
-   after a few weeks. The production stale flag matches the lab's on 94% of
-   lab-stale rows (4 dates of 2025-26), never flags one the lab doesn't, and misses
-   recent trades.
+1. **The report's timing.**
+   - **The lab uses the report about 60 minutes before tip.** Adam builds about 30
+     minutes before the first lock, so later games are read further out, and the
+     p's were fitted at one lead time.
+   - **Reasons that wrap onto a second line** come back empty (about a quarter of
+     Out rows). Only the ESPN-like baseline uses the reason.
+   - **The Doubtful p** rests on n 14–15.
+   - **The lab's truth** is NBA.com's inactive flags; see the caveat above.
+   - **The stale flag** matches the lab's on 94% of rows and misses recent trades.
 2. **2026-27 opening-week stars ran low:** about −4 minutes on night one.
    Cycle 5's longer starting memory cut high-role bias from −1.8 to −0.3 (lab, 2026-27,
    387 player-games, 2 nights). Starters still run about −1.3 on 10/21's live board,
@@ -510,6 +561,7 @@ def project(team):                                             # critique cycle 
 | `NBA_MINUTES_CRITIQUE_LOG.md` | the critique loop: each cycle's hole, fix and numbers |
 | `edge/dfs_run_nba.py` (`build_board`) | joins, who dresses (ESPN / DK Out, the 15-man cut), usual vs tonight |
 | `edge/nba_availability.py` | box-score availability (history), ESPN's Out list (tonight), the ESPN snapshot log |
+| `edge/nba_injury_report.py` | the NBA's official injury report: fetch (cached, archive), parse, latest |
 | `scripts/nba_history_publish.py` | the history file and its `cur_n` / `n_pre` / `pick` / `since_return` fields |
 | `scripts/nba_minutes_lab.py` | `diagnose`, `ablate`, `fit`, `salary`, `report`, `live`, `cycles`, `cycle4` (the Expected state): the live-faithful backtest |
 | `scripts/nba_minutes_backtest.py` | the legacy protocol |
