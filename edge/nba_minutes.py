@@ -175,6 +175,26 @@ DROP_TAU = 0.8
 #: 7.108 -> 6.955 (live state: 7.155 -> 6.994); cost when the five is right 6.586 ->
 #: 6.599, promoted starters' bias +0.9 -> -1.3 until the five is confirmed.
 EXPECTED_W = 0.70
+#: Critique cycle 6 (2026-10-22): the live Out list misses scratches. ESPN's Out feed
+#: lists injuries, not two-way / G-League players or most Day-To-Day sits: of the 47
+#: role-10+ players who did not dress on 2026-10-20/21, ESPN's 10/22 feed had 18 Out,
+#: 16 Day-To-Day and 11 not at all. A player the board keeps who did NOT dress for his
+#: team's latest game (history `missed_last`; announced starters excepted) is STALE:
+#:   teammates   minutes = AVAIL_W x (stale players in) + (1 - AVAIL_W) x (stale out,
+#:               the next-largest roles kept)
+#:   himself     minutes = AVAIL_P[role < AVAIL_ROLE, role >= AVAIL_ROLE] x his minutes if in
+#:               (expected minutes: DFS scores a non-dresser 0)
+#: Chosen on 2024-25 ONLY (scripts/nba_minutes_lab.py cycle6), per information state, by
+#: minimax regret of the board RMSE -- every player the board projects, a non-dresser as
+#: 0 -- over Out-list miss rates 0 / 25 / 50% (a role-10+ scratch missed at random).
+#: Held out 2025-26, board RMSE shipped -> soft at 0 / 25 / 50% missed:
+#:   five announced  6.385 -> 6.319, 6.766 -> 6.459, 7.078 -> 6.578
+#:   no five         7.168 -> 7.206, 8.334 -> 7.889, 9.219 -> 8.442
+#: (no five costs 0.04 if the list were complete; 11 of 47 unlisted puts it above ~23%).
+#: For stale players under role 10 the fitted P(dress) is 0.22-0.27 whatever the miss rate.
+AVAIL_ROLE = 10.0
+AVAIL_W = {"confirmed": 0.4, "inactives": 0.4}
+AVAIL_P = {"confirmed": (0.2, 0.5), "inactives": (0.25, 0.7)}
 #: History kept per player (a full season).
 HIST_GAMES = 82
 
@@ -389,6 +409,35 @@ def project(team: list, params: dict | None = None) -> dict:
                        "promoted": promoted[pl["id"]], "share": round(weights[pl["id"]] / tw, 3)}
             for pl in active}
 
+
+
+def project_available(team: list, stale: set, mode: str, keep: set | None = None,
+                      params: dict | None = None) -> tuple[dict, dict]:
+    """Critique cycle 6: `project` when some dressing players may not dress after all.
+    `stale` = ids of players who did not dress for their team's latest game and are not
+    on the Out list (nor announced starters); `keep` = the ids kept if they all sit (the
+    roster cut re-run without them; None = everyone not inactive). Teammates get
+    AVAIL_W x (stale in) + (1 - AVAIL_W) x (stale out); a stale player gets his EXPECTED
+    minutes, AVAIL_P (by role < / >= AVAIL_ROLE) x his minutes if he plays. Mirrors
+    scripts/nba_minutes_lab.avail_score. Returns (minutes as project(), {id: P(dress)})."""
+    a = project(team, params)
+    if not stale:
+        return a, {}
+    b = project([{**pl, "inactive": pl["id"] in stale or (pl["inactive"] if keep is None else pl["id"] not in keep)}
+                 for pl in team], params)
+    w, (lo, hi) = AVAIL_W[mode], AVAIL_P[mode]
+    out, avail = {}, {}
+    for pl in team:
+        i = pl["id"]
+        ai, bi = a.get(i), b.get(i)
+        if i in stale and ai:
+            big = role_v2(pl["history"], pl.get("cur_n"), int(pl.get("n_pre") or 0))["base"] >= AVAIL_ROLE
+            avail[i] = hi if big else lo
+            out[i] = {**ai, "minutes": round(avail[i] * ai["minutes"], 1)}
+        elif ai or bi:                          # bi alone: dresses only if the stale players sit
+            out[i] = {**(ai or bi), "minutes": round(w * (ai or {}).get("minutes", 0.0)
+                                                    + (1 - w) * (bi or {}).get("minutes", 0.0), 1)}
+    return out, avail
 
 #: Role ranks with their own allocation cell; rank 14 and below share the last one.
 GAP_RANKS = 13

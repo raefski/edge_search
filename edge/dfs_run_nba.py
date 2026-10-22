@@ -236,6 +236,7 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
                      # the minutes model's inputs (edge/nba_minutes.project, NBA_MINUTES_METHOD.md)
                      "cur_n": h.get("cur_n"), "n_pre": h.get("n_pre") or 0, "pick": h.get("pick"),
                      "since_return": h.get("since_return") if h.get("team") == t else None,
+                     "missed_last": bool(h.get("missed_last")) and h.get("team") == t,
                      "dk_status": sal.get("dk_status"), "starter": st.get("starter"),
                      "confirmed": st.get("confirmed"), "inactive_listed": bool(st.get("inactive")),
                      "window": (NM.SEASON_START_WINDOW if h.get("season_games", 0) < 5 else None)})
@@ -270,7 +271,20 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
                     "history": [(m, s) for m, s, _ in r["history"]], "cur_n": r["cur_n"],
                     "n_pre": r["n_pre"], "since_return": r["since_return"], "pick": r["pick"],
                     "salary": r["salary"]} for r in ps]
-        mins = NM.project(team_in)
+        # Critique cycle 6: ESPN's Out list misses two-way / G-League players and most
+        # Day-To-Day sits, so a player who did not dress for his team's latest game (and
+        # is not an announced starter) may sit again: NM.project_available blends his
+        # teammates between "he plays" and "he sits" and gives him his expected minutes.
+        stale = {r["name"] for r in ps if r["missed_last"] and not r["out"] and not r.get("not_dressing")
+                 and not (announced and r["starter"])}
+        keep_b = ({x["name"] for x in [x for x in ranked if x["name"] not in stale][:ACTIVE_ROSTER]}
+                  if stale and not listed else None)
+        mins, avail = NM.project_available(team_in, stale, "confirmed" if announced else "inactives", keep_b)
+        for r in ps:
+            if r["name"] in avail:
+                r["avail"] = avail[r["name"]]
+        if stale:
+            info.setdefault("stale", []).extend(sorted(stale))
         # "Usual" = the same team with no news: everyone healthy who dresses, no
         # starting five announced. Δ = proj - usual is then what tonight's scratches
         # and lineup changes did, not the 240-minute sharing every team goes through.
@@ -284,7 +298,7 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
             if r["out"]:
                 info["out"].append(r["name"])
                 continue
-            if r.get("not_dressing"):
+            if r.get("not_dressing") and r["name"] not in mins:
                 r["proj"] = 0.0
                 continue
             m = mins.get(r["name"], {})

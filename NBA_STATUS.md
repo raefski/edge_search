@@ -91,7 +91,7 @@ Adam saw identical cash and GPP lineups. Two checks:
    warns that the map's EV ⭐ (which treats our projection as truth) leans the wrong way in NBA.
    Next lever: use predicted ownership + buzz as a projection signal.
 
-## Critique loop, five cycles (2026-10-21/22) -- NBA_MINUTES_CRITIQUE_LOG.md
+## Critique loop, six cycles (2026-10-21/22) -- NBA_MINUTES_CRITIQUE_LOG.md
 
 Independent critic agents (`.claude/agents/nba-minutes-critic.md`), each fixed and re-measured:
 1. the 240 step moved stars like bench players -> rank-gap allocation (2025-26 RMSE 6.810 -> 6.692; salary nudge off);
@@ -106,6 +106,10 @@ Independent critic agents (`.claude/agents/nba-minutes-critic.md`), each fixed a
 5. the starting role forgot too fast -> its own memory, decay 0.9 / last season worth 3 games (bench and
    pre-lineup roles keep 0.8 / 1): 2025-26 confirmed 6.586 -> 6.550, live state 6.634 -> 6.598; 2026-27 so far
    7.58 -> 7.29, stars' bias -1.8 -> -0.3.
+6. ESPN's Out list misses two-ways and Day-To-Day sits (29 of 47 role-10+ scratches of 10/20-21 not 'Out')
+   -> a player who sat his team's last game gets P(dress) x minutes, teammates a blend (NM.project_available);
+   board RMSE incl. phantoms, five announced, 2025-26: 6.766 -> 6.459 at 25% missed (6.385 -> 6.319 at 0%).
+   ESPN snapshots now logged (data/nba_espn_injuries/) to measure the miss rate.
 v1 -> now, lab protocol: 7.758 -> 6.550 confirmed, 8.146 -> 7.396 inactives only.
 
 ## Revised: chalk vs contrarian under the v2 projections (2026-10-21)

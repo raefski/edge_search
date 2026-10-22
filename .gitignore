@@ -229,3 +229,6 @@ data/dfs_proj_log*.csv
 data/dfs_lineups_*.csv
 # box-score availability per NBA game (edge/nba_availability.py): free, re-fetchable
 data/nba_availability/
+# ESPN injuries snapshots per ET date (edge/nba_availability.ESPN_LOG): NOT re-fetchable, desktop-only,
+# like data/nba_lineup_log.csv -- the Out list's miss rate (critique cycle 6) is measured from it
+data/nba_espn_injuries/

@@ -112,8 +112,11 @@ def build(before: str | None = None, current: str = CURRENT, seasons=SEASONS) ->
                 continue
             latest[str(r["PLAYER_ID"])] = (r["GAME_DATE"], r["PLAYER_NAME"], r["TEAM_ABBREVIATION"])
             rows_by_game[(r["GAME_ID"], r["GAME_DATE"])].append(r)
+    team_last: dict = {}                        # each team's latest regular-season game (any season)
     for (gid, d), rows in sorted(rows_by_game.items(), key=lambda kv: kv[0][1]):
         teams = {r["TEAM_ABBREVIATION"] for r in rows}
+        for t in teams:
+            team_last[t] = max(team_last.get(t, ""), d[:10])
         for t in teams:
             opp_rows = [r for r in rows if r["TEAM_ABBREVIATION"] != t]
             allowed[t].append((sum(actual_points(r) for r in opp_rows),
@@ -165,7 +168,10 @@ def build(before: str | None = None, current: str = CURRENT, seasons=SEASONS) ->
                         "preseason": used_pre, "n_pre": len(pre[pid]) if used_pre else 0,
                         "cur_n": len(this), "pick": draft.get(pid, PICK_UNDRAFTED),
                         "since_return": NM.games_since_return(
-                            this, team, len(sched.get(team, ())) + 1, len(this), m_[-1][1] if m_ else None)}
+                            this, team, len(sched.get(team, ())) + 1, len(this), m_[-1][1] if m_ else None),
+                        # critique cycle 6: did not dress for his team's latest game (his last
+                        # active game was with this team, before it) -- he may be out again
+                        "missed_last": bool(m_ and m_[-1][1] == team and m_[-1][0] < team_last.get(team, ""))}
         names[norm(name)] = pid
     teams = {}
     for t, v in allowed.items():

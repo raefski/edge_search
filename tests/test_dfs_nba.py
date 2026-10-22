@@ -301,3 +301,25 @@ def test_the_starting_role_remembers_further_back_than_the_bench_role():
     short = NM.role_v2(hist, cur_n=14, params={"MS_DECAY": None})
     assert NM.MS_DECAY is not None and short["ms"] < long_["ms"] < 34.0
     assert long_["mb"] == short["mb"] and long_["base"] == short["base"]          # bench / pre-lineup unchanged
+
+
+def test_a_player_who_sat_last_game_gets_expected_minutes_and_his_teammates_a_blend():
+    """Critique cycle 6: a stale player (did not dress for his team's latest game, not on
+    the Out list) may sit again -- his minutes are AVAIL_P x his minutes if he plays, and
+    teammates get AVAIL_W x (he plays) + the rest x (he sits)."""
+    roles = [34, 32, 30, 28, 26, 22, 20, 16, 12, 10, 6, 4]
+    team = [{"id": str(i), "position": "G", "inactive": False, "starter": None,
+             "history": [(float(m), i < 5)] * 10, "cur_n": 10} for i, m in enumerate(roles)]
+    plain, none = NM.project_available(team, set(), "inactives")
+    assert plain == NM.project(team) and none == {}
+    out, avail = NM.project_available(team, {"6"}, "inactives")
+    a = NM.project(team)
+    b = NM.project([{**p, "inactive": p["id"] == "6"} for p in team])
+    w, (lo, hi) = NM.AVAIL_W["inactives"], NM.AVAIL_P["inactives"]
+    assert avail == {"6": hi} and out["6"]["minutes"] == pytest.approx(hi * a["6"]["minutes"], abs=0.06)
+    for i in a:
+        if i != "6":
+            assert out[i]["minutes"] == pytest.approx(w * a[i]["minutes"] + (1 - w) * b[i]["minutes"], abs=0.06)
+    assert out["7"]["minutes"] > a["7"]["minutes"]                       # the next man up gains
+    _, avail = NM.project_available(team, {"11"}, "confirmed")
+    assert avail == {"11": NM.AVAIL_P["confirmed"][0]}                   # deep bench: role < AVAIL_ROLE

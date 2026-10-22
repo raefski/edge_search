@@ -181,6 +181,25 @@ them 2025-26 opening week goes 5.01 → 5.18 and 2026-27's night one goes 6.98 �
   day.
   - 15 was chosen on the live-state replay, 2024-25: cut 13 / 14 / 15 / none →
     RMSE 6.478 / 6.467 / 6.465 / 6.477.
+- **Then players who sat last game (critique cycle 6).** ESPN's Out list covers
+  injuries, not two-way / G-League players or most Day-To-Day sits. Of the 47 role-10+
+  players who didn't dress on 2026-10-20/21, ESPN's 10/22 feed had 18 Out, 16
+  Day-To-Day and 11 not listed at all.
+  - **Stale:** a kept player who didn't dress for his team's latest game (history
+    `missed_last`) and isn't an announced starter. Opening night uses last season's
+    final game.
+  - **The blend** (`NM.project_available`): his teammates get
+    `AVAIL_W · project(he plays) + (1 − AVAIL_W) · project(he sits)`, with the cut
+    re-run without him. He gets his **expected** minutes, `AVAIL_P × minutes if he
+    plays`, because DFS scores a non-dresser 0.
+  - **Constants:**
+    - starters announced: AVAIL_W 0.4, AVAIL_P 0.20 (role < 10) / 0.50 (10+);
+    - no five: AVAIL_W 0.4, AVAIL_P 0.25 / 0.70.
+  - **How they were chosen:** on 2024-25 only (`nba_minutes_lab.py cycle6`), by
+    minimax regret of the board RMSE over Out-list miss rates of 0, 25 and 50%. In
+    the replay, each role-10+ scratch is missed at random.
+  - **On the page:** "sat last game: x% to dress". Every ESPN snapshot is logged to
+    `data/nba_espn_injuries/` so the real miss rate can be measured.
 
 ## Step 3: close the team's gap to 240 by role rank (critique cycle 1)
 
@@ -371,6 +390,23 @@ five is wrong, RMSE goes 8.48 → 7.93. The price is paid when the Expected five
 right: promoted starters' bias goes +0.9 → −1.3 minutes (MAE 5.12 → 5.21, n 1,940)
 until the team confirms.
 
+### Players who sat last game (critique cycle 6; 2025-26 held out, live state, RMSE)
+
+**Board** = every player the board projects plus everyone who dressed. A non-dresser
+counts as 0, which is what DFS scores. It's the DFS-relevant metric, because the
+standard metric never charges for a projected player who sits.
+
+| Out list misses | starters announced, board: shipped → now | no five, board | starters announced, active players (minutes if he plays) |
+|---|---|---|---|
+| 0% | 6.385 → **6.319** | 7.168 → 7.206 | 6.598 → **6.560** |
+| 25% | 6.766 → **6.459** | 8.334 → **7.889** | 6.711 → **6.598** |
+| 50% | 7.078 → **6.578** | 9.219 → **8.442** | 6.845 → **6.650** |
+
+(36,191–38,257 board rows, of which 3,967–6,033 are phantoms; 32,224 active rows.)
+
+The no-five state would lose 0.04 if the Out list were complete. It isn't: 11 of 47
+role-10+ scratches weren't listed at all, so the miss rate is at least about 23%.
+
 ### Tried and not kept (no held-out gain on 2024-25)
 
 - back-to-back adjustment;
@@ -380,12 +416,16 @@ until the team confirms.
 - a fitted per-game discount on last-season games (it read last season's final
   week at season start).
 
-## Known weaknesses (open as of 2026-10-22, after critique cycle 5)
+## Known weaknesses (open as of 2026-10-22, after critique cycle 6)
 
-1. **ESPN's Out list is not the official injury report.** It misses G-League and
-   two-way assignments and late scratches; the 15-man cut absorbs most of them.
-   The live state still trails the lab's full-information numbers (6.63 vs 6.59
-   RMSE).
+1. **The Out list's miss rate is unmeasured.** Cycle 6 hedges it: AVAIL_* are robust
+   over 0–50%. But the miss process in the lab is random, while real misses are
+   either habitual (two-ways: stale) or fresh (Day-To-Day late scratches: not stale).
+   ESPN's Day-To-Day status itself is unused, because there is no history to fit it
+   on. Both can be measured from `data/nba_espn_injuries/` against the box scores
+   after a few weeks. The production stale flag matches the lab's on 94% of
+   lab-stale rows (4 dates of 2025-26), never flags one the lab doesn't, and misses
+   recent trades.
 2. **2026-27 opening-week stars ran low:** about −4 minutes on night one.
    Cycle 5's longer starting memory cut high-role bias from −1.8 to −0.3 (lab, 2026-27,
    387 player-games, 2 nights). Starters still run about −1.3 on 10/21's live board,
@@ -469,7 +509,7 @@ def project(team):                                             # critique cycle 
 | `edge/nba_minutes_gap.py` | the rank-gap coefficients (generated; do not edit) |
 | `NBA_MINUTES_CRITIQUE_LOG.md` | the critique loop: each cycle's hole, fix and numbers |
 | `edge/dfs_run_nba.py` (`build_board`) | joins, who dresses (ESPN / DK Out, the 15-man cut), usual vs tonight |
-| `edge/nba_availability.py` | box-score availability (history) and ESPN's Out list (tonight) |
+| `edge/nba_availability.py` | box-score availability (history), ESPN's Out list (tonight), the ESPN snapshot log |
 | `scripts/nba_history_publish.py` | the history file and its `cur_n` / `n_pre` / `pick` / `since_return` fields |
 | `scripts/nba_minutes_lab.py` | `diagnose`, `ablate`, `fit`, `salary`, `report`, `live`, `cycles`, `cycle4` (the Expected state): the live-faithful backtest |
 | `scripts/nba_minutes_backtest.py` | the legacy protocol |

@@ -332,6 +332,110 @@ really moves (bench decay 0.7 or 0.9 are both worse).
   - diffuse residual headroom (a GBM reaches 6.41);
   - shrinkage toward rank, which gains only 0.013.
 
+## Cycle 6: the Out list misses scratches, and the replay assumed it didn't
+
+**Baseline** (cycle 5): lab 6.550 / 7.396; live state 6.598 / 7.435; Expected five at
+25% wrong 6.939.
+
+**Critic #6 (fresh `dfs-model-critic` agent, ~19 min, read-only).** "The live state
+assumes the Out list catches every meaningful scratch, and the model has no notion of
+availability risk. A player who won't dress keeps his full role, takes minutes from
+teammates who do play, and earns 0 DFS points."
+
+- **Claimed evidence:** 11 of 47 role-10+ scratches of 10/20-21 were still projected
+  by the live board.
+- **Simulated on 2025-26:** at 23% missed, the replay's 6.598 / 7.435 becomes
+  6.700 / 7.682.
+- **Proposed fix:** soft availability for unlisted players who didn't dress in their
+  team's last game ("stale"). Fitted on 2024-25, it reaches 6.588 / 7.523 at 23%
+  missed and 6.561 / 7.412 at 0%.
+
+**Corrections to the evidence.**
+- **The 23% measured the old pipeline.** Cycle 3 (ESPN's Out list, cut 15) was
+  committed 10/21 22:54, after that night's games, so both logged boards ran on DK's
+  OUT flags, a 13-man cut and phantom history.
+- **The hole holds up on the current list anyway.** ESPN's 10/21 pre-game list
+  wasn't saved. As a proxy, ESPN's 10/22 feed lists the 47 as: 18 **Out**, 16
+  **Day-To-Day** (ignored by the app), 11 **not at all** (Julian Reese, Malachi Smith,
+  Javon Small and other two-ways, plus Brandon Ingram).
+- **So the realistic miss rate is at least about 23%.** That's the unlisted share
+  alone, before any Day-To-Day player who sat.
+
+**Fix (shipped).**
+- **Lab, `nba_minutes_lab.py cycle6` (`avail_preds`, `avail_score`, `avail_fit`):**
+  - each role-10+ scratch is missed with probability m (a fixed per-row draw), then
+    the cut keeps 15;
+  - every team-game is projected with its stale players in and out;
+  - **board metric (new):** every player the board projects plus everyone who
+    dressed, with a non-dresser scored as 0. The standard metric never charges for a
+    phantom, and DFS does.
+- **Model:**
+  - teammates get w · (stale in) + (1 − w) · (stale out, cut re-run);
+  - a stale player gets his expected minutes, p × his minutes if he plays, with p
+    split by role < 10 and 10+ (the critic's suggestion to treat big roles apart);
+  - announced starters are never stale (with no five, starters are unknown, so they
+    can be).
+- **Chosen on 2024-25 only**, per information state: a grid w 0–1 × p_lo 0.15–0.4 ×
+  p_hi 0.3–1.0, by minimax regret of the board RMSE over m = 0 / 25 / 50%.
+  - **starters announced:** w 0.4, p 0.20 / 0.50 (regret 0.052);
+  - **no five:** w 0.4, p 0.25 / 0.70 (regret 0.137).
+  - **Why minimax:** fitted at a single m, w runs 0.05–0.80 and p_hi 0.28–0.94, so a
+    point fit would be a bet on the unknown miss rate. For stale players under role
+    10 the fitted p is 0.22–0.27 at any m.
+- **Production:**
+  - `scripts/nba_history_publish.py` writes `missed_last` (his last active game was
+    with this team, before the team's latest game);
+  - `NM.project_available` holds the blend, and `build_board` uses it;
+  - page 12 shows "sat last game: x% to dress".
+- **ESPN logging:** `edge/nba_availability.tonight_out` now logs each distinct ESPN
+  snapshot, all statuses, to `data/nba_espn_injuries/<ET date>.jsonl` (git-ignored,
+  not re-fetchable), so the miss rate can be measured.
+- **Parity:**
+  - stale definition, production `missed_last` (rebuilt as of 4 mornings of 2025-26)
+    vs the lab's: 247 agree, 16 lab-only (recent trades), 0 production-only;
+  - blend: `project_available` uses the lab's formula, tested;
+  - live 10/22 board: two stale players, Sam Merrill 22.4 → 11.2 (p 0.5) and
+    Thomas Bryant 5.8 → 1.2 (p 0.2); Cleveland teammates gain; other teams unchanged.
+
+**Result** (2025-26 held out, live state):
+
+| Out list misses | starters announced, board (n; phantoms) | starters announced, active | no five, board | no five, active |
+|---|---|---|---|---|
+| 0% | 6.385 → **6.319** (36,191; 3,967) | 6.598 → **6.560** | 7.168 → 7.206 | 7.435 → 7.460 |
+| 25% | 6.766 → **6.459** (37,297; 5,073) | 6.711 → **6.598** | 8.334 → **7.889** | 7.704 → **7.529** |
+| 50% | 7.078 → **6.578** (38,257; 6,033) | 6.845 → **6.650** | 9.219 → **8.442** | 8.008 → **7.626** |
+
+- "Active" scores minutes if he plays. With his expected minutes on the same rows,
+  starters announced at 0% is 6.652, worse by construction: a stale player who does
+  dress is under-projected. The board is the metric that charges both ways.
+- **Starters announced:** better in every cell.
+- **No five:** costs 0.04 (board) at 0% missed and gains 0.45–0.78 at 25–50%. Shipped
+  on the measured lower bound of about 23%.
+- The lab protocol (full inactive list) and the Expected-five weight are unchanged.
+
+**Judgment calls.**
+- The board metric replaces "active players only" for this decision.
+- The miss process is random; real misses are habitual (two-ways) or fresh
+  (Day-To-Day).
+- The 0–50% range: 23% unlisted is a floor, and today's feed is only a proxy for the
+  10/21 pre-game list.
+
+**Runners-up (critic #6):**
+- **The no-five role ignores last game's start.** Using
+  `p_start = 0.3·last_start + 0.7·start_rate` and role `= p·ms + (1−p)·mb` takes
+  inactives-only 7.396 → 7.366 (2024-25 grid, gap refitted).
+- **Diffuse residual in recent-minutes features.** A residual GBM reaches 6.42 /
+  7.26; a linear stack recovers only 0.01–0.035.
+- **Postponed games in the lab.** 8 games (99 rows, e.g. LAL–CHA 2025-01-09) are
+  dated by their make-up date: a tiny leak.
+- **Not tried:** ESPN Day-To-Day as an input (no history to fit; it's now being
+  logged).
+
+**Null results (critic #6):**
+- a position-aware gap: 6.548;
+- with/without-teammate history: 6.547;
+- prior-game blowout or overtime: bias shifts under 0.7 minutes.
+
 ## Summary of cycles 1-3
 
 Every version scored the same way (`python3 scripts/nba_minutes_lab.py cycles`),

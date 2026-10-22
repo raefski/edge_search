@@ -18,7 +18,8 @@ Two consequences, both fixed here:
             (6 of 35 non-players on 10/20). `tonight_out` reads ESPN's public
             injuries JSON: every player listed "Out" is treated as out. Day-To-Day
             players are left to the news (NBA.com's starters, DK's flags).
-            LAST_SOURCE records what was read, for the page.
+            LAST_SOURCE records what was read, for the page; every distinct
+            snapshot is logged to ESPN_LOG (critique cycle 6: the Out list's miss rate).
 """
 from __future__ import annotations
 
@@ -36,6 +37,10 @@ BOX_URL = ("https://stats.nba.com/stats/boxscoretraditionalv3?GameID={gid}&Leagu
 ESPN_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/injuries"
 #: What tonight_out last read: "espn <fetched UTC>" | "failed: ..." | "none".
 LAST_SOURCE = "none"
+#: Every distinct ESPN injuries snapshot, all statuses (Out, Day-To-Day, ...), one JSON
+#: line per change, per ET date -- critique cycle 6 needs the Out list's real miss rate
+#: (role-10+ scratches it did not list Out), measured against the box scores in CACHE.
+ESPN_LOG = ROOT / "data" / "nba_espn_injuries"
 
 
 def _headers() -> dict:
@@ -116,15 +121,35 @@ def tonight_out(fetch=None) -> list[tuple[str, str]]:
     except Exception as exc:                                # noqa: BLE001
         LAST_SOURCE = f"failed: {exc}"
         return []
-    out = []
+    out, listed = [], []
     for team in data.get("injuries") or []:
         for inj in team.get("injuries") or []:
-            if (inj.get("status") or "").lower() != "out":
-                continue
             ath = inj.get("athlete") or {}
             abbr = nba.team(((ath.get("team") or {}).get("abbreviation")) or (team.get("abbreviation") or ""))
             name = ath.get("displayName") or ""
             if name and abbr:
-                out.append((name, abbr))
+                listed.append([name, abbr, inj.get("status") or ""])
+                if (inj.get("status") or "").lower() == "out":
+                    out.append((name, abbr))
+    if fetch is None:
+        _log_snapshot(sorted(listed))
     LAST_SOURCE = f"espn {datetime.now(timezone.utc).isoformat(timespec='minutes')} ({len(out)} out)"
     return out
+
+
+def _log_snapshot(listed: list) -> None:
+    """Append ESPN's list to today's log when it differs from the last line (the scratch
+    monitor reads it every few minutes). Best effort: a read-only disk (the cloud) skips."""
+    try:
+        from zoneinfo import ZoneInfo
+        now = datetime.now(timezone.utc)
+        path = ESPN_LOG / f"{now.astimezone(ZoneInfo('America/New_York')).date().isoformat()}.jsonl"
+        if path.exists():
+            lines = path.read_text().splitlines()
+            if lines and json.loads(lines[-1]).get("players") == listed:
+                return
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a") as f:
+            f.write(json.dumps({"at": now.isoformat(timespec="seconds"), "players": listed}) + "\n")
+    except Exception:                                       # noqa: BLE001
+        pass

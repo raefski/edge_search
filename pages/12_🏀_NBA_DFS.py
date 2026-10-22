@@ -219,7 +219,8 @@ def _who(p) -> str:
     tag = "🟢 " if p.get("promoted") else ""
     star = " *" if p.get("imputed") else ""
     sub = " · ".join(x for x in (p["team"], p.get("dk_pos") or "",
-                                 "starts" if p.get("starter") else "") if x)
+                                 "starts" if p.get("starter") else "",
+                                 f"sat last game: {p['avail']:.0%} to dress" if p.get("avail") else "") if x)
     return f"<td class='nm'>{tag}{p['name']}{star}<small>{sub}</small></td>"
 
 
@@ -308,7 +309,8 @@ with t_board:
                 + body + "</table></div>", unsafe_allow_html=True)
     st.caption("“starts” = in tonight's starting five. Δ = points vs his usual role (minutes the news "
                "added or took away). Val = points per \\$1,000. * = no NBA history: projected "
-               f"from his price ({R.IMPUTED_PER_K} pts per \\$1k).")
+               f"from his price ({R.IMPUTED_PER_K} pts per \\$1k). “sat last game” = didn't dress for his "
+               "team's last game and isn't on ESPN's Out list: Min is his chance to dress × his minutes.")
 
 
 with t_swap:

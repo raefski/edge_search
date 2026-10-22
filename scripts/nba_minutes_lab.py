@@ -10,6 +10,8 @@ slice, and candidate improvements -- each fitted on 2024-25 and scored on 2025-2
     python3 scripts/nba_minutes_lab.py report            # the shipped model's standard table (critique loop)
     python3 scripts/nba_minutes_lab.py live              # the information state the app actually has (cycle 3)
     python3 scripts/nba_minutes_lab.py cycle4            # NBA.com's Expected five: blend weight + held-out table
+    python3 scripts/nba_minutes_lab.py cycle5            # the starting role's own memory (grid on 2024-25)
+    python3 scripts/nba_minutes_lab.py cycle6            # players who sat last game vs an imperfect Out list
 
 WHY NOT scripts/nba_minutes_backtest.py ALONE
 That backtest starts every season with empty histories and scores only players with
@@ -991,10 +993,97 @@ def expected_w(P: dict, rho: float) -> float:
     return min(1.0, max(0.0, -num / den))
 
 
+
+def _u(i: int) -> float:
+    """A fixed pseudo-random uniform per row (which scratches the Out list misses)."""
+    import hashlib
+    return int(hashlib.md5(str(i).encode()).hexdigest()[:8], 16) / 2 ** 32
+
+
+def avail_preds(D: dict, prm: dict, season: str, mode: str, miss: float, cut: int = 15) -> dict:
+    """Critique cycle 6: the live Out list misses scratches. Each inactive with role >= 10
+    is on the Out list unless _u(row) < miss (2026-27's DTD / unlisted players: 29 of 47
+    role-10+ scratches of 10/20-21 were not 'Out' on ESPN's 10/22 feed); the cut keeps
+    `cut` (starters first, then role). A kept player who did not dress in his team's last
+    game and is not an announced starter is STALE: he may be out again. Each team-game
+    is projected with every stale player in (A) and out (B, the next-largest roles kept).
+    Rows = everyone the board projects or who dressed (a phantom is a 0-minute row).
+    Returns arrays: a, b (projection with stale in / out, 0 if not kept), stale, dressed,
+    y (0 when he did not dress), big (role >= 10)."""
+    R = roles(D, prm)
+    rows = D["rows"]
+    prev = _prev_inactive(D)
+    out = defaultdict(list)
+    for g in D["games"]:
+        if g["season"] != season:
+            continue
+        K = {i for i in g["idx"] if rows[i]["inactive"] and float(R["base"][i]) >= 10 and _u(i) >= miss}
+        cand = [i for i in g["idx"] if i not in K]
+        rank = lambda c: set(sorted(c, key=lambda i: (not rows[i]["starter"], -float(R["base"][i])))[:cut])  # noqa: E731
+        keep = rank(cand)
+        stale = {i for i in keep if prev[i] is True and not (mode == "confirmed" and rows[i]["starter"])}
+        truth = {i: rows[i]["inactive"] for i in g["idx"]}
+
+        def proj(kept):
+            for i in g["idx"]:
+                rows[i]["inactive"] = i not in kept
+            try:
+                return project_game(D, g, R, prm, mode)
+            finally:
+                for i in g["idx"]:
+                    rows[i]["inactive"] = truth[i]
+        pa = proj(keep)
+        keep_b = rank([i for i in cand if i not in stale]) if stale else keep
+        pb = proj(keep_b) if stale else pa
+        for i in g["idx"]:
+            dressed = not truth[i]
+            if not dressed and i not in keep:
+                continue
+            if dressed and rows[i]["actual"] is None:
+                continue
+            out["a"].append(pa.get(i, 0.0) if i in keep else 0.0)
+            out["b"].append(pb.get(i, 0.0) if i in keep_b else 0.0)
+            out["stale"].append(i in stale)
+            out["dressed"].append(dressed)
+            out["y"].append(float(rows[i]["actual"]) if dressed else 0.0)
+            out["big"].append(float(R["base"][i]) >= 10)
+    return {k: np.array(v, dtype=bool if k in ("stale", "dressed", "big") else float) for k, v in out.items()}
+
+
+def avail_score(P: dict, w: float | None, p: tuple | None) -> dict:
+    """minutes = w x (stale in) + (1 - w) x (stale out) for everyone else; a stale player's
+    own minutes stay 'if he dresses' (a), his DFS mean is p x a (p by role < 10 / >= 10).
+    w / p None = shipped (everyone in, full minutes). Two metrics:
+      active  RMSE of minutes over players who dressed (the loop's metric)
+      board   RMSE of the DFS mean (p x minutes for stale) over the board, phantoms = 0."""
+    a, b, st, dr, y, big = P["a"], P["b"], P["stale"], P["dressed"], P["y"], P["big"]
+    w_ = 1.0 if w is None else w
+    m = np.where(st, a, w_ * a + (1 - w_) * b)
+    pp = np.ones_like(a) if p is None else np.where(big, p[1], p[0])
+    mean = np.where(st, pp * m, m)
+    ea, eb, es = (m - y)[dr], mean - y, (mean - y)[dr]
+    return {"active": float(np.sqrt((ea ** 2).mean())), "active_bias": float(ea.mean()), "n_active": int(dr.sum()),
+            "active_mean": float(np.sqrt((es ** 2).mean())),
+            "board": float(np.sqrt((eb ** 2).mean())), "board_bias": float(eb.mean()), "n_board": len(y),
+            "phantoms": int((~dr).sum()), "stale": int(st.sum()), "stale_dressed": float(dr[st].mean()) if st.any() else float("nan")}
+
+
+def avail_fit(P: dict) -> tuple:
+    """On a TRAIN season: w = the closed-form squared-error optimum for the non-stale rows
+    who dressed; p = each role bucket's share of stale players who dressed (the
+    squared-error optimum of p x a against y when a is right)."""
+    a, b, st, dr, y, big = P["a"], P["b"], P["stale"], P["dressed"], P["y"], P["big"]
+    k = ~st & dr
+    d, e = (a - b)[k], (b - y)[k]
+    w = float(np.clip(-(d * e).sum() / max((d * d).sum(), 1e-9), 0, 1))
+    p = tuple(float((a[st & (big == bb)] * y[st & (big == bb)]).sum() / max((a[st & (big == bb)] ** 2).sum(), 1e-9))
+              for bb in (False, True))
+    return w, p
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("cmd", choices=["diagnose", "ablate", "fit", "salary", "report", "cycle1", "cycle2", "live",
-                                    "cycles", "cycle4", "cycle5"])
+                                    "cycles", "cycle4", "cycle5", "cycle6"])
     ap.add_argument("--mode", default="confirmed", choices=["confirmed", "inactives"])
     ap.add_argument("--write", action="store_true", help="cycle1 / cycle5: write edge/nba_minutes_gap.py")
     a = ap.parse_args()
@@ -1034,6 +1123,36 @@ def main() -> int:
         print(report(D, P, legacy=False))
         if a.write:
             write_gap_module(D, P["gap_coef"], P, cycle=2, extra=f"recency_lam {lam}, drop_q {q}")
+        return 0
+    if a.cmd == "cycle6":
+        # stale players the Out list may have missed: fit w, p on 2024-25 at each miss rate,
+        # then choose ONE (w, p) by minimax regret (board metric) over the miss rates
+        F = final_params()
+        misses = (0.0, 0.25, 0.5)
+        P = {(s_, m, mi): avail_preds(D, F, s_, m, mi) for s_ in ("2024-25", "2025-26")
+             for m in ("confirmed", "inactives") for mi in misses}
+        print("  built", file=sys.stderr, flush=True)
+        for m in ("confirmed", "inactives"):
+            fits = {mi: avail_fit(P[("2024-25", m, mi)]) for mi in misses}
+            for mi, (w, p) in fits.items():
+                x = P[("2024-25", m, mi)]
+                print(f"  {m} miss {mi:.2f}: 2024-25 fit w {w:.3f}, p {p[0]:.3f} / {p[1]:.3f}; stale {avail_score(x, None, None)['stale']:,}, "
+                      f"dressed {avail_score(x, None, None)['stale_dressed']:.3f}", file=sys.stderr, flush=True)
+            cands = [(w_, (p0, p1)) for w_ in np.round(np.arange(0, 1.01, 0.1), 2) for p0 in (0.15, 0.2, 0.25, 0.3, 0.4)
+                     for p1 in np.round(np.arange(0.3, 1.01, 0.1), 2)]
+            best = {mi: min(avail_score(P[("2024-25", m, mi)], *c)["board"] for c in cands) for mi in misses}
+            reg = [max(avail_score(P[("2024-25", m, mi)], *c)["board"] - best[mi] for mi in misses) for c in cands]
+            w, p = cands[int(np.argmin(reg))]
+            print(f"\n{m}: chosen on 2024-25 (minimax regret {min(reg):.4f}): w {w:.3f}, p {p[0]:.3f} (role < 10) / {p[1]:.3f} (10+)")
+            print("| Out list misses | season | active n | active RMSE: shipped -> soft (bias) | active, DFS mean | board n (phantoms) | "
+                  "board RMSE: shipped -> soft (bias) |\n|---|---|---|---|---|---|---|")
+            for mi in misses:
+                for s_ in ("2024-25", "2025-26"):
+                    x = P[(s_, m, mi)]
+                    h, z = avail_score(x, None, None), avail_score(x, w, p)
+                    print(f"| {mi:.0%} | {s_} | {h['n_active']:,} | {h['active']:.3f} ({h['active_bias']:+.2f}) -> **{z['active']:.3f}** "
+                          f"({z['active_bias']:+.2f}) | {z['active_mean']:.3f} | {h['n_board']:,} ({h['phantoms']:,}) | {h['board']:.3f} ({h['board_bias']:+.2f}) -> "
+                          f"**{z['board']:.3f}** ({z['board_bias']:+.2f}) |")
         return 0
     if a.cmd == "cycle5":
         # the starting role's own memory: grid on 2024-25 ONLY, rank-gap coefficients
