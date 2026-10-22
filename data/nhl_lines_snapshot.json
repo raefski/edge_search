@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-22T19:00:00+00:00",
+"generated_at": "2026-10-22T20:29:17+00:00",
 "goalies": {
 "2026-10-22": {
 "ANA": {
@@ -32,7 +32,7 @@
 },
 "FLA": {
 "goalie": "Cooper Black",
-"status": "Likely"
+"status": "Confirmed"
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
@@ -67,7 +67,7 @@
 "status": "Confirmed"
 },
 "SEA": {
-"goalie": "Joey Daccord",
+"goalie": "Philipp Grubauer",
 "status": null
 },
 "SJS": {
@@ -6324,7 +6324,7 @@
 "toiSeconds": 17
 },
 "line": "D1",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
 },
@@ -6500,6 +6500,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Cole Reinhardt": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 8,
+"points": 11,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 18,
+"toiMinutes": 134,
+"toiSeconds": 53
+},
+"last5": {
+"assists": 2,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 4,
+"points": 6,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 69,
+"toiSeconds": 38
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Cole Schwindt": {
 "gtd": false,
 "injury": null,
@@ -6600,7 +6634,7 @@
 "toiSeconds": 52
 },
 "line": "D3",
-"pk": "PK2",
+"pk": null,
 "pos": "ld",
 "pp": null
 },
@@ -6702,7 +6736,7 @@
 "toiSeconds": 47
 },
 "line": "D1",
-"pk": null,
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -6808,40 +6842,6 @@
 "pos": "ld",
 "pp": null
 },
-"Radko Gudas": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 20,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 137,
-"toiSeconds": 38
-},
-"last5": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 71,
-"toiSeconds": 34
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "rd",
-"pp": null
-},
 "Sam Bennett": {
 "gtd": false,
 "injury": null,
@@ -6910,40 +6910,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Sandis Vilmanis": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 129,
-"toiSeconds": 38
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 66,
-"toiSeconds": 56
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Seth Jones": {
 "gtd": false,
 "injury": null,
@@ -6977,6 +6943,40 @@
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP1"
+},
+"Uvis Balinskis": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 166,
+"toiSeconds": 26
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 73,
+"toiSeconds": 36
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
 }
 },
 "LAK": {
@@ -13457,7 +13457,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13663,7 +13663,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
