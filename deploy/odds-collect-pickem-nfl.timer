@@ -9,10 +9,16 @@
 # Daily rather than exactly twice weekly because the history is the point: a
 # day not collected cannot be bought back later at any price, and each run is
 # ~10 seconds (ODDS_LAYER.md section 5).
+#
+# odds-publish@, not odds-collect@ (2026-10-22): the collect-only unit never
+# pushed the snapshot, so Cloud's copy only moved when someone tapped a scan
+# request. It aged past the profile's 24 h contract, StaleOdds fired, and the
+# page showed 14 of 14 games with NO market reading. Pushing every run keeps
+# the snapshot under 12 h old.
 [Unit]
 Description=Collect NFL lines for pick'em
 [Timer]
-Unit=odds-collect@pickem_nfl.service
+Unit=odds-publish@pickem_nfl.service
 OnCalendar=*-*-* 12:20:00
 OnCalendar=*-*-* 23:20:00
 RandomizedDelaySec=300
