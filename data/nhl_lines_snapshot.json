@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-22T15:00:29+00:00",
+"generated_at": "2026-10-22T15:29:29+00:00",
 "goalies": {
 "2026-10-22": {
 "ANA": {
@@ -8,7 +8,7 @@
 },
 "BOS": {
 "goalie": "Michael DiPietro",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CAR": {
 "goalie": "Brandon Bussi",
@@ -63,8 +63,8 @@
 "status": null
 },
 "PIT": {
-"goalie": "Sergei Murashov",
-"status": null
+"goalie": "Arturs Silovs",
+"status": "Likely"
 },
 "SEA": {
 "goalie": "Joey Daccord",
@@ -12774,7 +12774,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Hendrix Lapierre": {
 "gtd": false,
@@ -12944,7 +12944,7 @@
 "line": "F4",
 "pk": "PK2",
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Rickard Rakell": {
 "gtd": false,
@@ -13150,7 +13150,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP1"
 }
 },
 "SEA": {
@@ -16170,7 +16170,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Jake McCabe": {
 "gtd": false,
@@ -16512,7 +16512,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "William Nylander": {
 "gtd": false,
