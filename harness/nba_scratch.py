@@ -131,7 +131,8 @@ def dk_players(state: dict, now: datetime, day: date) -> dict:
 
 
 def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
-           prime: bool = False, windows: dict | None = None) -> tuple[list, dict]:
+           prime: bool = False, windows: dict | None = None,
+           extra: dict | None = None) -> tuple[list, dict]:
     """(alerts, new `seen`) for tonight's games. `seen` = {player_id: {"out", "starter"}}
     from the previous run; an event fires on a change into OUT or into the starting five.
     `prime` = the day's first look: who is already out is old news (priced into DK's
@@ -157,10 +158,15 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
                 if (p["starter"] and not before.get("starter") and not out
                         and r["games"] >= 5 and r["start_rate"] < 0.5):
                     events.append(("promoted", p, d, r))
+                ex = (extra or {}).get(pid, {})
                 rows.append({"id": pid, "team": team, "position": pos.get(pid), "inactive": out, "window": win,
                              "starter": p["starter"] if any(q["starter"] for q in ps) else None,
                              "history": [(m, s) for m, s, _ in h], "name": p["name"],
-                             "dk": d, "ppm": NM.points_per_minute(h), "base": r["base"]})
+                             "dk": d, "ppm": NM.points_per_minute(h), "base": r["base"],
+                             # the app's minutes inputs, so an alert and the page agree
+                             "cur_n": ex.get("cur_n"), "n_pre": ex.get("n_pre") or 0, "pick": ex.get("pick"),
+                             "since_return": ex.get("since_return") if ex.get("team") == team else None,
+                             "salary": d.get("salary")})
             if not events:
                 continue
             proj = NM.project(rows)
@@ -275,6 +281,7 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
         hist = NM.load_history(before=d.isoformat())
         pos = json.loads(POSITIONS.read_text()) if POSITIONS.exists() else {}
         windows: dict = {}
+        extra: dict = {}
     else:
         # The same history the app projects from (data/nba_player_history.json), so
         # an alert and the page it opens cannot disagree about a player's role.
@@ -284,6 +291,8 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
         pos = {pid: p.get("pos") for pid, p in snap["players"].items()}
         windows = {pid: NM.SEASON_START_WINDOW for pid, p in snap["players"].items()
                    if p.get("season_games", 0) < 5}
+        extra = {pid: {k: p.get(k) for k in ("cur_n", "n_pre", "pick", "since_return", "team")}
+                 for pid, p in snap["players"].items()}
     dk = {}
     if not replay:
         try:
@@ -293,7 +302,7 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
         if do_push:                                         # the timer's runs are the record
             state["log"] = _log_changes(games, dk, state.get("log", {}), now)
     alerts, seen = assess(games, hist, pos, dk, state.get("seen", {}),
-                          prime=not replay and not state.get("seen"), windows=windows)
+                          prime=not replay and not state.get("seen"), windows=windows, extra=extra)
     new = [a for a in alerts if a["key"] not in state["sent"]]
     if any(a["preseason"] for a in new):
         new = sorted(new, key=lambda a: a["preseason"])[:PRESEASON_MAX_PUSH]

@@ -235,10 +235,12 @@ sign everywhere.
 - **NFL / NCAAF / NASCAR / MMA:** not enough data (1-3 slates each). Keep
   exporting; the earliest sport to become decidable is NFL, at about 5 main
   slates with logs.
-- **NBA (11 slates, tested 2026-10-22 on rebuilt projections, `scripts/nba_gpp_exante.py`):**
-  at a FIXED projection, ownership raised ROI +0.32 per SD [+0.16, +0.48]; the contrarian
-  quintile trailed chalk by -0.59 ROI [-0.93, -0.21] (10/11 nights). NBA is the one sport
-  where fading actively loses: the field knows news the projection doesn't. GPP = cash is fine.
+- **NBA (11 slates, `scripts/nba_gpp_exante.py`):** with the v1 minutes model, ownership at a
+  fixed projection raised ROI +0.32 per SD and contrarian trailed chalk by -0.59 -- but that was
+  the field knowing minutes v1 got wrong. With the v2 minutes model (2026-10-21) the projection
+  predicts ROI (+0.33 per SD [+0.07, +0.60]) and ownership at fixed projection is not significant
+  (+0.10 [-0.11, +0.34]; contrarian - chalk -0.15 [-0.58, +0.34]). Same rule as everywhere:
+  maximize projection, ownership breaks ties.
 
 ---
 

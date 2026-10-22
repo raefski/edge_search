@@ -266,18 +266,17 @@ with t_gpp:
         with st.spinner("Building lineups from chalk to contrarian…"):
             an = (_nba_leverage_for(gid, sims, iters, own_weight, st.session_state.nba_nonce, contest)
                   if contest else _nba_leverage(gid, sims, iters, own_weight, st.session_state.nba_nonce))
-        st.markdown("<div class='warn'>🏀 <b>NBA: chalk wins.</b> On 11 real NBA GPPs, lineups that were "
-                    "LESS owned than their projection returned 0.59 ROI less than the chalkiest ones "
-                    "(10 of 11 nights), duplicates and all: the field's ownership knows news our "
-                    "projection doesn't. The ⭐ EV assumes our projection is right, so prefer the "
-                    "chalk end of this map.</div>", unsafe_allow_html=True)
+        st.markdown("<div class='warn'>🏀 <b>NBA: projection first.</b> On 11 real NBA GPPs our projection "
+                    "predicted ROI (+0.33 per SD); at equal projection, chalk vs contrarian made no clear ROI "
+                    "difference (-0.15, 5 of 11 nights). Don't pay projection for leverage: use the map "
+                    "to break ties between near-equal lineups.</div>", unsafe_allow_html=True)
         chosen = LU.leverage_view(an, key="nba")
         if chosen:
             render(chosen["result"], "gpp")
     else:
         render(res.get("gpp"), "gpp")
     st.caption("Objective: the 90th percentile, minus the ownership fade if set (leave it at 0 "
-               "in NBA: chalk beat contrarian at equal projection). A game's players are simulated "
+               "in NBA: at equal projection, ownership made no clear ROI difference). A game's players are simulated "
                "together: a team's starters rise and fall as one (+0.05), the bench moves against "
                "them (-0.09). Cash and GPP often share most players: the best NBA plays are the "
                "best for both. Ownership: value + salary + today's show buzz.")

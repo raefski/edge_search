@@ -79,8 +79,9 @@ def test_too_many_roles_are_shared_so_a_star_keeps_more_than_proportional():
     team += [{"id": str(i), "position": "F", "inactive": False, "starter": None,
               "history": [(24.0, False)] * 10} for i in range(11)]          # 300 minutes of roles
     shared = NM.project(team)["star"]["minutes"]
-    proportional = NM.project(team, {"EXCESS_POW": 1.0})["star"]["minutes"]
+    proportional = NM.project(team, {"STARTER_TILT": 0.0})["star"]["minutes"]
     assert proportional == pytest.approx(36 * 240 / 300, abs=0.2) and shared > proportional
+    assert sum(p["minutes"] for p in NM.project(team).values()) == pytest.approx(240, abs=0.6)
 
 
 # ── the lineup snapshot ────────────────────────────────────────────────────
@@ -205,3 +206,44 @@ def test_a_first_name_spelled_differently_still_joins_on_team_last_name_and_init
     assert R._sig("Alexandre Sarr") == R._sig("Alex Sarr") == ("sarr", "a")
     assert R._sig("Mikel Brown Jr.") == ("brown", "m")
     assert R._sig("Michael Porter Jr.") != R._sig("Mikel Brown Jr.")
+
+
+def test_games_since_return_counts_from_the_first_game_after_a_five_game_gap():
+    tail = [("BOS", 1), ("BOS", 2), ("BOS", 3)]
+    assert NM.games_since_return(tail, "BOS", 4, 3, "BOS") is None          # never missed
+    assert NM.games_since_return(tail, "BOS", 9, 3, "BOS") == 0             # missed 4-8: tonight is game 1 back
+    back = tail + [("BOS", 9), ("BOS", 10)]
+    assert NM.games_since_return(back, "BOS", 11, 5, "BOS") == 2            # third game back
+    assert NM.games_since_return([], "BOS", 7, 0, "BOS") == 0               # missed the first six games
+    assert NM.games_since_return([], "BOS", 7, 0, "NYK") is None            # new team: not an absence
+    assert NM.games_since_return([("BOS", 1)], "BOS", 30, 1, "BOS", cap=10) == 0
+
+
+
+# ── the 2026-10-21 minutes model ───────────────────────────────────────────
+def test_the_role_weights_this_season_against_a_one_game_prior_of_last_season():
+    last = [(36.0, True)] * 60                                   # last season: 36 a night
+    assert NM.role_v2(last, cur_n=0)["base"] == pytest.approx(36.0)        # night one = last season
+    now = last + [(26.0, True)] * 10                             # this season: 26
+    r = NM.role_v2(now, cur_n=10)["base"]
+    assert 26.0 < r < 28.0                                       # mostly this season (prior worth 1 game)
+
+
+def test_a_lottery_rookie_starts_from_his_draft_pick_and_a_late_pick_lower():
+    def mins(pick):
+        team = [{"id": "r", "position": "G", "inactive": False, "starter": None, "history": [], "pick": pick}]
+        return NM.project(team, {"SALARY_NUDGE": None})["r"]["minutes"]
+    assert mins(1) == pytest.approx(22.19, abs=0.1) and mins(30) < mins(10) < mins(1)
+
+
+def test_the_first_games_back_from_an_absence_are_ramped():
+    team = [{"id": "x", "position": "G", "inactive": False, "starter": None, "history": [(30.0, True)] * 20,
+             "since_return": 0}]
+    assert NM.project(team, {"SALARY_NUDGE": None})["x"]["minutes"] == pytest.approx(30 * NM.RAMP[0], abs=0.1)
+
+
+def test_salary_nudges_minutes_toward_the_expensive_player():
+    team = [{"id": str(i), "position": "G", "inactive": False, "starter": None,
+             "history": [(24.0, i < 5)] * 10, "salary": 9000 if i == 0 else 4000} for i in range(10)]
+    out = NM.project(team)
+    assert out["0"]["minutes"] > out["1"]["minutes"]

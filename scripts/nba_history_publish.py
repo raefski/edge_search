@@ -51,6 +51,8 @@ OUT = ROOT / "data" / "nba_player_history.json"
 SEASONS = ("2024-25", "2025-26", "2026-27")
 CURRENT = "2026-27"
 PRESEASON_IF = 5
+#: An undrafted player's "pick" for the rookie minutes prior (edge/nba_minutes.ROOKIE_PRIOR).
+PICK_UNDRAFTED = 70
 #: Preseason minutes overstate a newcomer's regular-season role. 2025-26 players with
 #: no prior NBA season (n=112): 14.8 preseason minutes -> 9.7 over their first 10
 #: regular-season games = 0.66 (a 20-minute preseason rookie played ~13; a fifth
@@ -90,7 +92,8 @@ def build(before: str | None = None, current: str = CURRENT, seasons=SEASONS) ->
     """The snapshot. `before` = 'YYYY-MM-DD' rebuilds it as it stood that morning
     (scripts/nba_ownership_fit.py rebuilds past contest nights): only games before
     it count, and `current` names that night's season for preseason / season_games."""
-    hist = NM.load_history(seasons, before=before)
+    meta: dict = {}
+    hist = NM.load_history(seasons, before=before, meta=meta)
     pos = json.loads((GT / "positions.json").read_text()) if (GT / "positions.json").exists() else {}
     latest: dict = {}
     allowed: dict = defaultdict(list)
@@ -122,12 +125,21 @@ def build(before: str | None = None, current: str = CURRENT, seasons=SEASONS) ->
             if pid not in latest or latest[pid][0] < r["GAME_DATE"]:
                 latest[pid] = (r["GAME_DATE"], r["PLAYER_NAME"], r["TEAM_ABBREVIATION"])
     season_games: dict = defaultdict(int)
+    sched: dict = defaultdict(set)              # this season's game dates per team
     cur = GT / f"player_gamelog_{current}.json"
     if cur.exists():
         for r in json.loads(cur.read_text()):
             if before and r["GAME_DATE"] >= before:
                 continue
             season_games[str(r["PLAYER_ID"])] += 1
+            sched[r["TEAM_ABBREVIATION"]].add(r["GAME_DATE"])
+    game_no = {t: {d: i + 1 for i, d in enumerate(sorted(ds))} for t, ds in sched.items()}
+    draft = {}
+    dpath = GT / "draft_history.json"
+    if dpath.exists():
+        for r in json.loads(dpath.read_text()):
+            draft[str(r["PERSON_ID"])] = int(r["OVERALL_PICK"] or PICK_UNDRAFTED)
+    first_day = min((d for ds in sched.values() for d in ds), default=None)
     players, names = {}, {}
     for pid, (_, name, team) in latest.items():
         h = hist.get(pid, [])
@@ -136,10 +148,19 @@ def build(before: str | None = None, current: str = CURRENT, seasons=SEASONS) ->
             h = h + pre[pid]
         if not h:
             continue
+        # this season's ACTIVE games (DNPs included, unlike season_games' box rows):
+        # the newest cur_n real entries are this season's -- the minutes role weighs
+        # them apart from last season's (edge/nba_minutes.role)
+        m_ = meta.get(pid, [])
+        this = [(t, game_no.get(t, {}).get(d)) for d, t in m_ if first_day and d >= first_day]
+        this = [(t, no) for t, no in this if no]
         players[pid] = {"name": name, "team": team, "pos": pos.get(pid),
                         "season_games": season_games.get(pid, 0),
                         "hist": [[round(m, 1), bool(s), round(p, 2)] for m, s, p in h[-KEEP:]],
-                        "preseason": used_pre}
+                        "preseason": used_pre, "n_pre": len(pre[pid]) if used_pre else 0,
+                        "cur_n": len(this), "pick": draft.get(pid, PICK_UNDRAFTED),
+                        "since_return": NM.games_since_return(
+                            this, team, len(sched.get(team, ())) + 1, len(this), m_[-1][1] if m_ else None)}
         names[norm(name)] = pid
     teams = {}
     for t, v in allowed.items():

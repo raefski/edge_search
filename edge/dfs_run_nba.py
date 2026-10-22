@@ -219,6 +219,9 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
                      "elig": dfs_opt_nba.eligible(sal.get("position")),
                      "pid": pid, "nba_pos": h.get("pos"), "history": [tuple(x) for x in h.get("hist", [])],
                      "preseason": bool(h.get("preseason")), "out": out,
+                     # the minutes model's inputs (edge/nba_minutes.project, NBA_MINUTES_METHOD.md)
+                     "cur_n": h.get("cur_n"), "n_pre": h.get("n_pre") or 0, "pick": h.get("pick"),
+                     "since_return": h.get("since_return") if h.get("team") == t else None,
                      "dk_status": sal.get("dk_status"), "starter": st.get("starter"),
                      "confirmed": st.get("confirmed"), "inactive_listed": bool(st.get("inactive")),
                      "window": (NM.SEASON_START_WINDOW if h.get("season_games", 0) < 5 else None)})
@@ -240,14 +243,16 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
             healthy = [r for r in ps if not r["out"]]
             # NBA.com's announced starters always dress: a rookie on preseason
             # minutes (or a name the join missed) must not be cut by his role.
-            ranked = sorted(healthy, key=lambda r: (not r["starter"], -NM.role(
-                [(m, s) for m, s, _ in r["history"]], r["window"])["base"]))
+            ranked = sorted(healthy, key=lambda r: (not r["starter"], -NM.role_v2(
+                [(m, s) for m, s, _ in r["history"]], r["cur_n"], r["n_pre"])["base"]))
             for r in ranked[ACTIVE_ROSTER:]:
                 r["not_dressing"] = True
         team_in = [{"id": r["name"], "position": r["nba_pos"],
                     "inactive": r["out"] or r.get("not_dressing", False),
                     "starter": r["starter"] if announced else None, "window": r["window"],
-                    "history": [(m, s) for m, s, _ in r["history"]]} for r in ps]
+                    "history": [(m, s) for m, s, _ in r["history"]], "cur_n": r["cur_n"],
+                    "n_pre": r["n_pre"], "since_return": r["since_return"], "pick": r["pick"],
+                    "salary": r["salary"]} for r in ps]
         mins = NM.project(team_in)
         # "Usual" = the same team with no news: everyone healthy who dresses, no
         # starting five announced. Δ = proj - usual is then what tonight's scratches

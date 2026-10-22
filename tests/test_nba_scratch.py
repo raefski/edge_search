@@ -36,11 +36,14 @@ def test_a_starting_five_alone_is_not_pushed_to_48_minutes_each():
     assert all(p["minutes"] == pytest.approx(32.0) for p in NM.project(team).values())
 
 
-def test_a_promoted_starter_is_flagged_and_lifted_toward_starter_minutes():
+def test_a_promoted_starter_is_flagged_and_gets_the_starting_role():
+    """A bench player who starts tonight takes his STARTING role: with no starts of
+    his own, his bench role + SPLIT_GAP (the 2026-10-21 model's start/bench split)."""
     team = [{"id": "bench", "position": "G", "inactive": False, "starter": True,
              "history": [(16.0, False)] * 10}]
-    p = NM.project(team, {"PROMO_LIFT": 0.5})["bench"]
-    assert p["promoted"] and p["minutes"] == pytest.approx(16 + 0.5 * (31 - 16))
+    p = NM.project(team)["bench"]
+    assert p["promoted"] and p["minutes"] == pytest.approx(16 + NM.SPLIT_GAP, abs=0.1)
+    assert NM.project_v1(team, {"PROMO_LIFT": 0.5})["bench"]["minutes"] == pytest.approx(16 + 0.5 * (31 - 16))
 
 
 # ── the alert ──────────────────────────────────────────────────────────────

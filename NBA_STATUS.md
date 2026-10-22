@@ -91,6 +91,28 @@ Adam saw identical cash and GPP lineups. Two checks:
    warns that the map's EV ⭐ (which treats our projection as truth) leans the wrong way in NBA.
    Next lever: use predicted ownership + buzz as a projection signal.
 
+## Revised: chalk vs contrarian under the v2 projections (2026-10-21)
+
+`scripts/nba_gpp_exante.py` re-run with v2 projections (same 11 nights, 60k entries): projection now
+predicts ROI, **+0.33 per SD [+0.07, +0.60]** (cash +8.1 pp); ownership at a fixed projection is no
+longer significant for ROI (+0.10 [-0.11, +0.34]; cash still +5.8 pp); contrarian minus chalk quintile
+-0.15 [-0.58, +0.34] (5+/6-). The 10/22 "chalk wins, -0.59" was largely the field knowing the minutes v1
+got wrong. Rule now, as in every sport: maximize projection, ownership breaks ties; the fade stays 0.
+Page 12's note says so. BUZZ_BETA refit 0.4 -> 0.2 under v2 (prior 4.913 -> 4.713 with buzz, 9/10).
+
+## Minutes model v2 (2026-10-21)
+
+`edge/nba_minutes.project` was rebuilt on a live-faithful backtest (`scripts/nba_minutes_lab.py`:
+histories across seasons from 2023-24, every active player scored, fit 2024-25 / test 2025-26,
+squared error). Full method and tables: NBA_MINUTES_METHOD.md. Held out on 2025-26, starters
+confirmed: RMSE 7.76 -> **6.81**, MAE 5.74 -> **5.26**; opening week 6.21 -> 5.30, lottery rookies 7.32 -> 5.17,
+first game back 6.59 (+3.0) -> 5.99 (-0.6); legacy protocol 5.601 -> 5.123. Changes: weighted role
+(decay 0.8) against a one-game prior of last season as a whole; start/bench split replaces the promotion
+lift; 240 shared by power 1.0 + starter tilt 0.05 both ways; return ramp 0.8/0.9; rookie role from the
+draft pick; DK salary nudge (11 nights, LOO MAE 5.14 -> 4.97). The history file gained cur_n / n_pre /
+pick / since_return (republish it with the code). Not fixed: 2026-27 opening-week stars still about
+8 min low on night one (3 games); recheck on more nights.
+
 ## Not done / not verified
 
 - **Props** (`dfs_nba`): DK posts points/rebounds/assists (verified 10/15 for 10/20 games); not blended into projections. Next: log props beside projections, grade both after a week.

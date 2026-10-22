@@ -180,7 +180,11 @@ def _normalise(weights, target, cap):
 #:   prior 5.355 -> 5.080 held out (-0.275 [-0.481, -0.079]), better 7/10,
 #:   rank corr +0.709 -> +0.735. Folds picked 0.4 (6) / 0.3 (4). YouTube alone
 #:   -0.238; all pre-lock talk read afterwards (upper bound) -0.374 at 0.4.
-BUZZ_BETA = 0.4
+#: REFIT 2026-10-21 under the v2 minutes model (edge/nba_minutes.project), whose
+#: better projections make the value prior itself better: prior 5.355 -> 4.913,
+#: + buzz 4.713 (-0.200 [-0.292, -0.111]), better 9/10 nights, rank +0.776 -> +0.792.
+#: Folds picked 0.2 (6) / 0.3 (4).
+BUZZ_BETA = 0.2
 
 
 def add_ownership(pool: list, weights: tuple | None = None, buzz_beta: float | None = None) -> list:

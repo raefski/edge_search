@@ -4,22 +4,25 @@ Adam, 2026-10-15: the NBA DFS edge is a late scratch -- a cheap bench player
 promoted to starter. DK's salary is fixed the night before, so his minutes (and
 points) jump while his price does not. This module turns tonight's lineup news
 (edge/nba_lineups.py: starters, inactives) into a minutes projection for every
-player on the team, from each player's recent role:
+player on the team. `project` is the model rebuilt 2026-10-21 (NBA_MINUTES_METHOD.md,
+scripts/nba_minutes_lab.py):
 
-  1. baseline  b_i = his average minutes over his last WINDOW team games in which
-               he was active (0 for a DNP-coach's-decision);
-  2. missing   M   = the baselines of tonight's inactive players;
-  3. shared    each available player gets b_i^ROLE_POW weight, times (1 + POS_W)
-               if he shares a position group with the minutes that went missing,
-               times (1 + PROMO_W) if he starts tonight but has not been starting
-               (started < half his last WINDOW games); M is split by weight;
-  4. promoted  a promoted starter is also lifted toward starter minutes even when
-               nobody is out (a coach's switch): + PROMO_LIFT x (starter level - b_i);
-  5. scaled    the team is scaled back to 240 minutes (overtime aside).
+  1. role       an EXPONENTIALLY WEIGHTED mean of his active games this season
+                (DECAY per game), against a PRIOR worth PRIOR_KAPPA games: last
+                season's role as a whole. Split into a starting role and a bench
+                role (SPLIT_K, SPLIT_GAP); once the five is announced he gets the
+                one that matches tonight. A rookie (< ROOKIE_GAMES games) starts
+                from his draft pick (ROOKIE_PRIOR); a player back from a 5+ game
+                absence is ramped in (RAMP).
+  2. missing    M = the roles of tonight's inactive regulars;
+  3. shared     each available player gets role^ROLE_POW x (1 + POS_W x his share
+                of the missing position groups); M is split by weight;
+  4. 240        the team is shared to 240 by m^ALLOC_POW x (1 + STARTER_TILT x
+                starting) -- both ways, over or under -- nobody past 48;
+  5. salary     the DK salary nudges the result (SALARY_NUDGE).
 
-The weights are fitted on 2024-25 and reported on 2025-26 by
-scripts/nba_minutes_backtest.py -- see the constants for the numbers. Minutes only;
-points come from each player's DK points per minute (points_per_minute below).
+`project_v1` is the 2026-10-15 model (fixed windows, promotion lift, EXCESS_POW),
+kept for the record. Minutes only; points come from DK points per minute.
 """
 from __future__ import annotations
 
@@ -67,6 +70,66 @@ EXCESS_POW = 1.15
 #: Typical minutes of a starter (refined per team from history when available).
 STARTER_MIN = 31.0
 
+# ── the 2026-10-21 model (project) ────────────────────────────────────────────
+# Fitted by scripts/nba_minutes_lab.py on 2024-25 (2,470 team-games; squared error,
+# because DFS needs MEAN minutes -- expected points -- not medians), scored on
+# 2025-26 (2,466 team-games, 32,224 active player-games) with histories carried
+# across seasons as the live build does. Held out, mean |error| (bias) in minutes:
+#
+#                                  starters confirmed          inactives only
+#                                  v1 (10/15)   this model     v1        this model
+#   all                            5.74 (-0.1)  5.26 (-0.1)    5.97      5.78
+#   RMSE all                       7.76         6.81           8.15      7.65
+#   opening week (team games 1-5)  6.21         5.30           6.54      5.41
+#   rookies / no NBA history       6.30         5.46           6.75      5.99
+#   lottery rookies (75)           7.32 (-3.7)  5.17 (-1.4)    8.61      6.10
+#   new team, first 5 games        7.11         6.21           7.50      6.27
+#   first game back from 5+ out    6.59 (+3.0)  5.99 (-0.6)    6.96      6.34
+#   teammates of a scratch         5.80         5.34           6.05      5.88
+#   promoted starters              5.71 (+0.4)  5.20 (+1.3)    --        --
+#   starters, roles > 1.15 x 240   5.65 (-4.1)  4.68 (-2.2)    5.77      5.70
+# Legacy protocol (scripts/nba_minutes_backtest.py, 29,311 player-games): 5.601 -> 5.123
+# confirmed, 5.831 -> 5.624 inactives only. `scripts/nba_minutes_lab.py ablate` regenerates all of it.
+# Tried and NOT kept (no held-out gain): back-to-back and blowout (expected
+# margin) adjustments, an overflow-dependent starter tilt, splitting the 240
+# excess between starter and bench pools, a flat-power 240 share.
+#: Weight per game of this season's games, newest = 1 (0.8: about the last 5).
+DECAY = 0.8
+#: Last season's role (all of it, flat: PRIOR_DECAY 1.0) as a prior worth this many
+#: games. Night one = last season as a whole; ten games in, mostly this season.
+#: kappa 0.5 / 1 / 2 on 2025-26: 5.24 / 5.26 / 5.33 all, 5.38 / 5.30 / 5.29 opening.
+PRIOR_KAPPA = 1.0
+PRIOR_DECAY = 1.0
+#: Starting and bench roles, each shrunk toward the other +/- SPLIT_GAP minutes with
+#: SPLIT_K pseudo-games: a bench player who starts tonight is projected ~SPLIT_GAP up.
+SPLIT_K = 0.5
+SPLIT_GAP = 12.0
+#: Redistribution of missing minutes (refitted with the split).
+ROLE_POW_V2 = 0.25
+POS_W_V2 = 0.25
+#: The 240 share: m^ALLOC_POW x (1 + STARTER_TILT x starting) (starting = the
+#: announced flag, else the start rate).
+ALLOC_POW = 1.0
+STARTER_TILT = 0.05
+#: First, second, third game back from a 5+ team-game absence (fitted 0.75 / 0.85;
+#: 0.8 / 0.9 held out better on 2025-26: first game back bias +3.0 -> -0.6).
+RAMP = (0.8, 0.9, 1.0)
+#: Fewer NBA games than this: role from the draft pick, minutes = a + b ln(pick)
+#: (2024-25, 611 first games of players with < 5 NBA games; preseason minutes add
+#: nothing on top: -0.003 per minute), shrunk with ROOKIE_K pseudo-games of his own.
+ROOKIE_GAMES = 5
+ROOKIE_PRIOR = (22.19, -4.28)
+ROOKIE_K = 0.5
+#: Undrafted / unknown pick.
+PICK_UNDRAFTED = 70
+#: DK salary on top of the model: minutes = a + b x model + c x salary ($k). Leave one
+#: night out on the 11 nights with cached DK salaries (2025-26 contest nights + 10/20/26,
+#: 1,517 player-games): MAE 5.141 -> 4.973, RMSE 6.546 -> 6.491 (on v1 it added nothing).
+#: Small sample; refit as nights accrue.
+SALARY_NUDGE = (-2.22, 1.031, 0.365)
+#: History kept per player (a full season).
+HIST_GAMES = 82
+
 
 def groups(position: str | None) -> set:
     """'G-F' -> {'G', 'F'}; unknown -> empty."""
@@ -83,8 +146,8 @@ def role(history: list, window: int | None = None) -> dict:
             "start_rate": sum(1 for _, s in recent if s) / len(recent), "games": len(recent)}
 
 
-def project(team: list, params: dict | None = None) -> dict:
-    """Minutes for tonight. `team` = [{"id", "position", "inactive": bool,
+def project_v1(team: list, params: dict | None = None) -> dict:
+    """The 2026-10-15 model (fixed windows, promotion lift, EXCESS_POW). Minutes for tonight. `team` = [{"id", "position", "inactive": bool,
     "starter": bool | None (None = not announced), "history": [(min, started), ...]}].
     Returns {id: {"minutes", "base", "promoted", "share"}} for active players."""
     p = {"ROLE_POW": ROLE_POW, "POS_W": POS_W, "PROMO_W": PROMO_W, "PROMO_LIFT": PROMO_LIFT,
@@ -135,11 +198,146 @@ def project(team: list, params: dict | None = None) -> dict:
                        "share": round(weights[pl["id"]] / total_w, 3)} for pl in active}
 
 
-def load_history(seasons=("2024-25", "2025-26", "2026-27"), before: str | None = None) -> dict:
+def role_v2(history: list, cur_n: int | None = None, n_pre: int = 0, params: dict | None = None) -> dict:
+    """Weighted role from [(minutes, started), ...] newest last. `cur_n` = how many of
+    the newest REAL entries are this season (None = all); the last `n_pre` entries are
+    preseason games (kept for the points rate, not the minutes role)."""
+    p = {"DECAY": DECAY, "PRIOR_KAPPA": PRIOR_KAPPA, "PRIOR_DECAY": PRIOR_DECAY,
+         "SPLIT_K": SPLIT_K, "SPLIT_GAP": SPLIT_GAP, **(params or {})}
+    real = list(history[: len(history) - n_pre]) if n_pre else list(history)
+    real = real[-HIST_GAMES:]
+    n = len(real)
+    cur = n if cur_n is None else max(0, min(int(cur_n), n))
+    w = [0.0] * n
+    for j in range(n - cur, n):
+        w[j] = p["DECAY"] ** (n - 1 - j)
+    n_prior = n - cur
+    if n_prior:
+        pw = [p["PRIOR_DECAY"] ** (n_prior - 1 - j) for j in range(n_prior)]
+        tot = sum(pw) or 1.0
+        for j in range(n_prior):
+            w[j] = p["PRIOR_KAPPA"] * pw[j] / tot
+    W = sum(w)
+    if W <= 0:
+        return {"base": 0.0, "start_rate": 0.0, "ms": 0.0, "mb": 0.0, "ns": 0.0, "nb": 0.0, "games": n}
+    base = sum(wi * m for wi, (m, _) in zip(w, real)) / W
+    srate = sum(wi * bool(s) for wi, (_, s) in zip(w, real)) / W
+    ns = sum(wi for wi, (_, s) in zip(w, real) if s)
+    nb = sum(wi for wi, (_, s) in zip(w, real) if not s)
+    ms_raw = sum(wi * m for wi, (m, s) in zip(w, real) if s) / ns if ns > 0 else 0.0
+    mb_raw = sum(wi * m for wi, (m, s) in zip(w, real) if not s) / nb if nb > 0 else 0.0
+    k, gap = p["SPLIT_K"], p["SPLIT_GAP"]
+    ms = (ns * ms_raw + k * (mb_raw + gap if nb > 0 else base + gap * (1 - srate))) / (ns + k)
+    mb = (nb * mb_raw + k * (ms_raw - gap if ns > 0 else base - gap * srate)) / (nb + k)
+    return {"base": base, "start_rate": srate, "ms": ms, "mb": mb, "ns": ns, "nb": nb, "games": n}
+
+
+def project(team: list, params: dict | None = None) -> dict:
+    """Minutes for tonight (the 2026-10-21 model). `team` = [{"id", "position",
+    "inactive": bool, "starter": bool | None (None = not announced), "history":
+    [(min, started), ...]}] plus, when known: "cur_n" (this season's entries),
+    "n_pre" (trailing preseason entries), "since_return", "pick", "salary".
+    Returns {id: {"minutes", "base", "promoted", "share"}} for active players."""
+    import math
+
+    p = {"ROLE_POW": ROLE_POW_V2, "POS_W": POS_W_V2, "ALLOC_POW": ALLOC_POW, "STARTER_TILT": STARTER_TILT,
+         "RAMP": RAMP, "ROOKIE_PRIOR": ROOKIE_PRIOR, "ROOKIE_K": ROOKIE_K, "SALARY_NUDGE": SALARY_NUDGE,
+         **(params or {})}
+    roles_, start_, promoted = {}, {}, {}
+    for pl in team:
+        hist = pl["history"]
+        n_pre = int(pl.get("n_pre") or 0)
+        r = role_v2(hist, pl.get("cur_n"), n_pre, p)
+        b, s = r["base"], r["start_rate"]
+        real = hist[: len(hist) - n_pre] if n_pre else hist
+        n_real = len(real)
+        if n_pre and sum(1 for m, _ in real if m > 0) < 5:
+            # the live rule for a player with < 5 real games: his preseason counts
+            season = pl.get("cur_n") if pl.get("cur_n") is not None else n_real
+            seq = [m for m, _ in hist][-(SEASON_START_WINDOW if season < 5 else WINDOW):]
+            b, s = (sum(seq) / len(seq) if seq else 0.0), 0.0
+        if n_real < ROOKIE_GAMES and p["ROOKIE_PRIOR"]:
+            a0, a1 = p["ROOKIE_PRIOR"]
+            prior = max(0.0, a0 + a1 * math.log(max(1, pl.get("pick") or PICK_UNDRAFTED)))
+            own = sum(m for m, _ in real) / n_real if n_real else 0.0
+            b = (n_real * own + p["ROOKIE_K"] * prior) / (n_real + p["ROOKIE_K"])
+        if pl.get("starter") is not None and (r["ns"] + r["nb"]) > 0:
+            b = r["ms"] if pl["starter"] else r["mb"]
+        sr = pl.get("since_return")
+        if sr is not None and 0 <= sr < len(p["RAMP"]):
+            b *= p["RAMP"][sr]
+        roles_[pl["id"]] = max(0.0, b)
+        start_[pl["id"]] = (1.0 if pl["starter"] else 0.0) if pl.get("starter") is not None else s
+        promoted[pl["id"]] = bool(pl.get("starter")) and r["start_rate"] < 0.5
+    out_pl = [pl for pl in team if pl["inactive"] and roles_[pl["id"]] >= REGULAR_MIN]
+    missing = sum(roles_[pl["id"]] for pl in out_pl)
+    lost: dict = {}
+    for pl in out_pl:
+        for g in groups(pl.get("position")):
+            lost[g] = lost.get(g, 0.0) + roles_[pl["id"]]
+    active = [pl for pl in team if not pl["inactive"]]
+    weights = {}
+    for pl in active:
+        share = sum(v for g, v in lost.items() if g in groups(pl.get("position"))) / missing if missing else 0.0
+        weights[pl["id"]] = max(roles_[pl["id"]], 1.0) ** p["ROLE_POW"] * (1 + p["POS_W"] * min(1.0, share))
+    tw = sum(weights.values()) or 1.0
+    mins = {pl["id"]: min(48.0, max(0.0, roles_[pl["id"]] + missing * weights[pl["id"]] / tw)) for pl in active}
+    if sum(mins.values()) > 0 and len(active) >= FULL_ROSTER:
+        w = {i: max(m, 0.0) ** p["ALLOC_POW"] * (1 + p["STARTER_TILT"] * start_[i]) for i, m in mins.items()}
+        free, fixed, trial = dict(w), {}, {}
+        for _ in range(5):                      # nobody past 48: cap and re-share the rest
+            room = TEAM_MIN - sum(fixed.values())
+            ws = sum(free.values()) or 1.0
+            trial = {i: room * x / ws for i, x in free.items()}
+            over = [i for i, m in trial.items() if m > 48.0]
+            if not over:
+                break
+            for i in over:
+                fixed[i] = 48.0
+                free.pop(i)
+        mins = {**trial, **fixed}
+    nudge = p["SALARY_NUDGE"]
+    if nudge and active and all(pl.get("salary") for pl in active):
+        a0, a1, a2 = nudge
+        mins = {pl["id"]: min(48.0, max(0.0, a0 + a1 * mins[pl["id"]] + a2 * pl["salary"] / 1000.0))
+                for pl in active}
+    return {pl["id"]: {"minutes": round(mins[pl["id"]], 1), "base": round(roles_[pl["id"]], 1),
+                       "promoted": promoted[pl["id"]], "share": round(weights[pl["id"]] / tw, 3)}
+            for pl in active}
+
+
+def games_since_return(tail: list, team: str, next_game: int, season_games: int,
+                       last_team: str | None, gap: int = 5, cap: int = 10) -> int | None:
+    """Games a player has played since coming back from a `gap`+ team-game absence
+    this season, counting tonight's as 0 when tonight is the first game back; None
+    when there is no such absence (or it is more than `cap` games ago).
+
+    `tail` = his ACTIVE games this season, oldest first, as (team, team_game_no);
+    `next_game` = tonight's team game number; `season_games` = len of his games this
+    season; `last_team` = the team of his last game (any season). A player who missed
+    the season's first `gap`+ games and is back with the same team counts too.
+    Exactly the walk scripts/nba_minutes_lab.py fits the return ramp on."""
+    prev_no, k, found = next_game, 0, None
+    for t, no in reversed(tail):
+        if t != team:
+            break
+        if prev_no - no - 1 >= gap:
+            found = k
+            break
+        prev_no, k = no, k + 1
+    if found is None and last_team == team and k == season_games and prev_no - 1 >= gap:
+        found = k
+    return found if found is not None and found <= cap else None
+
+
+def load_history(seasons=("2024-25", "2025-26", "2026-27"), before: str | None = None,
+                 meta: dict | None = None) -> dict:
     """{player_id: [(minutes, started, dk_points), ...]} oldest first, the same
     definition the backtest fits on: every game he was ACTIVE for (from the cached
     NBA.com lineups, data/nba_lineups/), with 0 for a DNP-coach's-decision. A day
-    with no cached lineup falls back to the box score alone. `before` = 'YYYY-MM-DD'."""
+    with no cached lineup falls back to the box score alone. `before` = 'YYYY-MM-DD'.
+    `meta`, if given, is filled with {player_id: [(date, team), ...]} aligned with
+    the entries (scripts/nba_history_publish.py: this season's games, absences)."""
     import json
     from collections import defaultdict
     from pathlib import Path
@@ -169,9 +367,13 @@ def load_history(seasons=("2024-25", "2025-26", "2026-27"), before: str | None =
                     r = box.get((pid, g["game_id"]))
                     hist[pid].append((float(r["MIN"] or 0), p["starter"], actual_points(r))
                                      if r else (0.0, p["starter"], 0.0))
+                    if meta is not None:
+                        meta.setdefault(pid, []).append((d, p["team"]))
         else:
             for (pid, _), r in box.items():
                 hist[pid].append((float(r["MIN"] or 0), False, actual_points(r)))
+                if meta is not None:
+                    meta.setdefault(pid, []).append((d, r["TEAM_ABBREVIATION"]))
     return dict(hist)
 
 
