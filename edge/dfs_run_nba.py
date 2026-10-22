@@ -47,8 +47,13 @@ HISTORY = ROOT / "data" / "nba_player_history.json"
 BUZZ_FILE = ROOT / "data" / "buzz_nba.csv"
 #: DK points per $1,000 for a player with no history at all (rookie, no preseason).
 IMPUTED_PER_K = 4.5
-#: Players a team dresses on a game night (13 active; 2025-26 NBA.com lineups median).
-ACTIVE_ROSTER = 13
+#: Players kept per team before an inactive list is known (largest roles, announced
+#: starters first). 13 = the median game-night roster, but NBA.com's feed carries no
+#: inactive list in 2026-27, so this cut now runs all day after DK's and ESPN's Out lists
+#: (critique cycle 3). Live-state replay with an injury-list-like Out list (inactives with
+#: role >= 10), 2024-25 fit: cut 13 / 14 / 15 / none RMSE 6.478 / 6.467 / 6.465 / 6.477;
+#: 2025-26 held out 6.655 / 6.634 / 6.634 / 6.644 (scripts/nba_minutes_lab.py live).
+ACTIVE_ROSTER = 15
 ET = ZoneInfo("America/New_York")
 #: First regular-season night. Before it, DK's slates are PRESEASON games, where
 #: starters play 15-25 minutes -- the projections assume regular-season roles.
@@ -161,6 +166,14 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
     hist = load_history()
     status = tonight_status(date)
     info["lineups_source"] = nba_lineups.LAST_SOURCE
+    # NBA.com's feed has no inactive list in 2026-27 (critique cycle 3): ESPN's Out list
+    # stands in before tip, shown on the page with when it was read
+    from edge import nba_availability
+    espn_rows = nba_availability.tonight_out() if date >= datetime.now(ET).date().isoformat() else []
+    info["injuries_source"] = nba_availability.LAST_SOURCE if espn_rows or date >= datetime.now(ET).date().isoformat() \
+        else "past slate (not read)"
+    espn_out = {(norm(n), t) for n, t in espn_rows}
+    espn_sig = {(_sig(n), t) for n, t in espn_rows}
     implied = game_lines(client, games) if client is not None else {}
     league_pm = hist.get("league_pm")
     info["preseason"] = date < REGULAR_SEASON_START
@@ -209,7 +222,8 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         h = hist["players"].get(pid, {}) if pid else {}
         opp = next((team(g["away"]) if team(g["home"]) == t else team(g["home"])
                     for g in games.values() if t in (team(g["home"]), team(g["away"]))), None)
-        out = bool(st.get("inactive")) or sal.get("dk_status") in ("OUT", "O")
+        espn = (key, t) in espn_out or (_sig(sal["name"]), t) in espn_sig
+        out = bool(st.get("inactive")) or sal.get("dk_status") in ("OUT", "O") or espn
         # `start` lets the optimiser put the LATEST tips in G / F / UTIL (DK's
         # late-swap convention, edge/dfs_opt_climb.assign_slots). Missing until
         # 2026-10-20, so every NBA lineup kept projection order in the flex slots.

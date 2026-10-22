@@ -227,3 +227,5 @@ data/pickem_current_week.csv
 data/pickem_line_log.csv
 data/dfs_proj_log*.csv
 data/dfs_lineups_*.csv
+# box-score availability per NBA game (edge/nba_availability.py): free, re-fetchable
+data/nba_availability/

@@ -136,3 +136,94 @@ against everything else, they are one hole and nothing else is close.
 legacy protocol 2025-26, confirmed: all 4.845, teammates of a scratch 4.928, promoted starters 5.224 (+1.14), n 29,311
 
 legacy protocol 2025-26, inactives: all 5.332, teammates of a scratch 5.424, promoted starters 7.427 (-5.80), n 29,311
+
+## Cycle 3: the live build had no inactive list
+
+**Critic #3 (fresh general-purpose agent, ~26 min, read-only).** "NBA.com's
+daily-lineups feed no longer marks anyone inactive. Both history builders rely on that
+flag, so live histories record every injured, G-League or two-way player as a
+0-minute game, and tonight's roster falls back to DK's sparse OUT flags plus the
+13-man cut -- a path the lab has never scored."
+
+- **Verified:**
+  - the 2025-26 lineup file for 12/26 flags 78 inactives; 2026-10-20's flags 0 of 103;
+  - stats.nba.com's InactivePlayers table is empty for 10/20 too;
+  - the box score (v3) comments name 6 inactives in game 1 alone, 18 across 10/20.
+- **One correction:** the critic's example, Taurean Prince, was a genuine coach's
+  DNP on 10/20 per the box score.
+- **Replay of the live state on 2025-26** (shipped model): RMSE 6.586 with a full
+  inactive list and clean history, against 6.716-6.954 in the broken live state.
+  That's bigger than cycles 1 and 2 combined.
+- **Runners-up:**
+  - dropped starters whose last game was 15-25 minutes (9.8 actual vs 3.9
+    projected, n ≈ 90 a season);
+  - April (MSE 57.7 vs about 42);
+  - NBA.com's afternoon *Expected* five changes in 6 of 28 team-games, but live
+    applies the split and the dropped-starter cut to it.
+
+**Fix (shipped).**
+- **`edge/nba_availability.py`:**
+  - after the game, stats.nba.com `boxscoretraditionalv3` comments: "Inactive - …"
+    → skipped, "DNP - Coach's Decision" → a 0 kept, absent from the box → didn't
+    dress; cached in `data/nba_availability/`;
+  - before the game, ESPN's public injuries JSON: every player listed Out is out,
+    with the source and timestamp shown on page 12 and used by the scratch monitor.
+- `NM.load_history` and the lab apply the box-score availability.
+- `nba_history_publish.refresh` caches every finished game.
+- The pre-inactives cut is now 15 (it runs all day without NBA.com's list). On the
+  live-state replay, 2024-25 fit: 13 / 14 / 15 / none = 6.478 / 6.467 / 6.465 /
+  6.477.
+- `scripts/nba_minutes_lab.py live` replays any information state; `cycles` scores
+  every version.
+
+**Result.**
+- **Live state on 2025-26** (the error the app actually had vs has):
+  - starters confirmed: RMSE 6.954 → **6.634**, MAE 5.062 → 4.942, bias −0.80 → −0.51;
+  - inactives only: 8.204 → **7.435**.
+- **Lab protocol:** unchanged (6.586 / 7.396). The fix restores the inputs the lab
+  always assumed.
+- **2026-27, re-scored on the 85 players who actually dressed** (18 of the 103
+  "actives" never did): confirmed RMSE 7.12, inactives only 6.31.
+
+| mode | season | n | RMSE all | all | opening (team games 1-5) | rookie / no NBA history | lottery rookie | new team (first 5) | back from 5+ missed | teammate of a scratch | promoted starter | high role (base 28+) | roles/240 >1.15, starter |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| confirmed | 2024-25 | 32,566 | 6.427 | 4.77 (-0.1) | 4.45 (-0.1) | 3.66 (+0.1) | 4.71 (-1.1) | 5.24 (-0.4) | 5.57 (-0.3) | 4.79 (-0.1) | 5.19 (+0.6) | 4.29 (-0.2) | 4.35 (-0.2) |
+| confirmed | 2025-26 | 32,224 | 6.586 | 4.93 (-0.1) | 5.01 (-0.2) | 5.09 (-0.8) | 4.89 (-1.0) | 5.91 (-0.3) | 5.97 (-0.9) | 5.00 (-0.1) | 5.12 (+0.9) | 4.33 (-0.0) | 4.27 (+0.2) |
+| confirmed | 2026-27 | 85 | 7.123 | 5.72 (-0.0) | 5.72 (-0.0) | 4.70 (+4.2) | 2.07 (-2.1) | 9.76 (+2.1) | - | 5.61 (-0.0) | 6.47 (+6.5) | 4.91 (-4.2) | 4.89 (-3.8) |
+| inactives | 2024-25 | 32,566 | 7.460 | 5.37 (-0.1) | 4.37 (-0.1) | 3.79 (+0.0) | 4.88 (-1.5) | 5.58 (-0.2) | 6.14 (+0.9) | 5.39 (-0.1) | 8.20 (-6.9) | 4.89 (+0.1) | 5.02 (-2.3) |
+| inactives | 2025-26 | 32,224 | 7.396 | 5.41 (-0.1) | 5.05 (-0.2) | 5.51 (-1.4) | 5.35 (-2.4) | 5.95 (+0.2) | 6.32 (+0.6) | 5.52 (-0.1) | 7.77 (-6.4) | 4.73 (+0.1) | 4.76 (-1.9) |
+| inactives | 2026-27 | 85 | 6.305 | 4.71 (+0.0) | 4.71 (+0.0) | 4.16 (+3.3) | 3.63 (-3.6) | 8.28 (+1.2) | - | 5.13 (-0.0) | 6.17 (-6.2) | 2.99 (-2.3) | 3.56 (-3.0) |
+
+legacy protocol 2025-26, confirmed: all 4.845, teammates of a scratch 4.928, promoted starters 5.224 (+1.14), n 29,311
+
+legacy protocol 2025-26, inactives: all 5.332, teammates of a scratch 5.424, promoted starters 7.427 (-5.80), n 29,311
+
+## Final summary: three cycles
+
+Every version scored the same way (`python3 scripts/nba_minutes_lab.py cycles`),
+fitted on 2024-25 and scored on 2025-26. The lab protocol assumes NBA.com's inactive
+list; the second table is the information state the app actually had.
+
+| version | mode | RMSE | MAE (bias) | opening | rookies | lottery | new team | 1st game back | scratch teammates | promoted | high role 28+ | 2026-27 RMSE / MAE (n) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| v1 (10/15) | confirmed | 7.758 | 5.74 (-0.1) | 6.21 (-0.2) | 6.30 (-0.2) | 7.32 (-3.7) | 7.11 (+0.5) | 6.59 (+3.0) | 5.80 (-0.1) | 5.71 (+0.4) | 5.22 (+0.2) | 7.39 / 6.14 (85) |
+| v1 (10/15) | inactives | 8.146 | 5.97 (-0.1) | 6.54 (-0.2) | 6.75 (-0.3) | 8.61 (-4.8) | 7.50 (+0.3) | 6.96 (+3.3) | 6.05 (-0.1) | 8.74 (-7.2) | 5.31 (+0.9) | 7.27 / 5.93 (85) |
+| cycle 0: v2 | confirmed | 6.810 | 5.26 (-0.1) | 5.30 (-0.2) | 5.46 (-0.6) | 5.17 (-1.4) | 6.21 (+0.1) | 5.99 (-0.6) | 5.34 (-0.1) | 5.20 (+1.3) | 4.63 (-0.5) | 7.63 / 6.45 (85) |
+| cycle 0: v2 | inactives | 7.649 | 5.78 (-0.1) | 5.41 (-0.2) | 5.99 (-0.7) | 6.10 (-3.0) | 6.27 (+0.6) | 6.34 (+1.0) | 5.88 (-0.1) | 8.31 (-7.2) | 5.10 (-0.9) | 7.25 / 6.04 (85) |
+| cycle 1: + rank-gap | confirmed | 6.692 | 5.03 (-0.1) | 5.06 (-0.2) | 5.15 (-0.9) | 4.90 (-1.0) | 6.00 (-0.2) | 5.98 (-0.9) | 5.11 (-0.1) | 5.13 (+0.9) | 4.44 (+0.2) | 7.09 / 5.64 (85) |
+| cycle 1: + rank-gap | inactives | 7.474 | 5.49 (-0.1) | 5.11 (-0.2) | 5.52 (-1.5) | 5.36 (-2.6) | 6.10 (+0.3) | 6.27 (+0.6) | 5.59 (-0.1) | 8.03 (-6.8) | 4.73 (+0.1) | 6.26 / 4.69 (85) |
+| cycles 2-3: + recency / dropped starter | confirmed | 6.586 | 4.93 (-0.1) | 5.01 (-0.2) | 5.09 (-0.8) | 4.89 (-1.0) | 5.91 (-0.3) | 5.97 (-0.9) | 5.00 (-0.1) | 5.12 (+0.9) | 4.33 (-0.0) | 7.12 / 5.72 (85) |
+| cycles 2-3: + recency / dropped starter | inactives | 7.396 | 5.41 (-0.1) | 5.05 (-0.2) | 5.51 (-1.4) | 5.35 (-2.4) | 5.95 (+0.2) | 6.32 (+0.6) | 5.52 (-0.1) | 7.77 (-6.4) | 4.73 (+0.1) | 6.31 / 4.71 (85) |
+
+| version | live state on 2025-26 | mode | RMSE | MAE | bias |
+|---|---|---|---|---|---|
+| v1 (10/15) | broken feed: phantom history, DK-like Out, cut 13 | confirmed | 8.307 | 6.123 | -1.10 |
+| v1 (10/15) | broken feed: phantom history, DK-like Out, cut 13 | inactives | 9.113 | 6.638 | -1.23 |
+| cycle 0: v2 | broken feed: phantom history, DK-like Out, cut 13 | confirmed | 7.195 | 5.290 | -0.83 |
+| cycle 0: v2 | broken feed: phantom history, DK-like Out, cut 13 | inactives | 8.361 | 6.135 | -1.41 |
+| cycle 1: + rank-gap | broken feed: phantom history, DK-like Out, cut 13 | confirmed | 7.074 | 5.193 | -0.89 |
+| cycle 1: + rank-gap | broken feed: phantom history, DK-like Out, cut 13 | inactives | 8.317 | 6.138 | -1.41 |
+| cycles 2-3: + recency / dropped starter | broken feed: phantom history, DK-like Out, cut 13 | confirmed | 6.954 | 5.062 | -0.80 |
+| cycles 2-3: + recency / dropped starter | broken feed: phantom history, DK-like Out, cut 13 | inactives | 8.204 | 6.023 | -1.33 |
+| cycle 3: availability fixed | box-score history, injury-list Out, cut 15 | confirmed | 6.634 | 4.942 | -0.51 |
+| cycle 3: availability fixed | box-score history, injury-list Out, cut 15 | inactives | 7.435 | 5.437 | -0.55 |

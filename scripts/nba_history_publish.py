@@ -85,6 +85,11 @@ def refresh() -> dict:
         new = sorted({r["GAME_DATE"] for r in rows if r["GAME_DATE"] < today})
         if kind == "Regular Season" and new:
             got["lineup days fetched"] = backfill(new, pace=1.0)
+            # NBA.com's lineups carry no inactive list in 2026-27: the box scores do
+            # (edge/nba_availability.py, critique cycle 3)
+            from edge.nba_availability import backfill as availability_backfill
+            gids = sorted({r["GAME_ID"] for r in rows if r["GAME_DATE"] < today})
+            got["availability games fetched"] = availability_backfill(gids, pace=1.0)
     return got
 
 

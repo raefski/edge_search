@@ -35,8 +35,15 @@ error (MAE) and bias as well.
    and DK's status flag (`OUT` / `O` removes the player).
 2. **NBA.com daily lineups JSON** for the date. For each game it lists the
    starting five, marked *Expected* and later *Confirmed* about 30 minutes
-   before tip, and the inactive list, which also posts about 30 minutes before
-   tip.
+   before tip. Through 2025-26 it also carried the inactive list. **From
+   2026-27 it marks everyone Active**, so availability comes from:
+   - **after the game:** stats.nba.com's traditional box score (v3) comments,
+     cached per game (`edge/nba_availability.py`). "Inactive - …" games are
+     skipped from history, "DNP - Coach's Decision" is kept as a 0, and a player
+     absent from the box didn't dress;
+   - **before the game:** ESPN's public injuries JSON. Every player listed **Out**
+     is out, with the source and time shown on page 12. Day-To-Day players are
+     left to the news.
 3. **Player history** (`data/nba_player_history.json`, built by
    `scripts/nba_history_publish.py`): every game the player was *active* for,
    oldest first, as `(minutes, started, dk_points)`. A coach's-decision DNP
@@ -158,10 +165,14 @@ them 2025-26 opening week goes 5.01 → 5.18 and 2026-27's night one goes 6.98 �
 
 ## Step 2: who dresses tonight
 
-- **Inactive:** on NBA.com's inactive list, or flagged OUT by DK.
-- **Before NBA.com posts the inactive list:** a team dresses 13 but DK lists
-  about 20. Keep each team's 13 largest roles (step-1 base), with NBA.com's
-  announced starters always kept first, and treat the rest as not dressing.
+- **Out:** on ESPN's Out list, flagged OUT by DK, or (historically) on NBA.com's
+  inactive list.
+- **Then the cut:** DK lists about 20 per team. Keep each team's **15** largest
+  roles (step-1 base), with NBA.com's announced starters always first, and treat
+  the rest as not dressing. Without NBA.com's inactive list this cut runs all
+  day.
+  - 15 was chosen on the live-state replay, 2024-25: cut 13 / 14 / 15 / none →
+    RMSE 6.478 / 6.467 / 6.465 / 6.477.
 
 ## Step 3: close the team's gap to 240 by role rank (critique cycle 1)
 
@@ -234,6 +245,17 @@ Two information states are scored:
   minutes before tip);
 - **inactives:** inactive lists only.
 
+**The live state** (`nba_minutes_lab.py live`) replays what the app actually knows
+instead:
+
+- **histories** clean or "phantom" (missed games recorded as 0-minute
+  appearances, as the 2026-27 feed did before critique cycle 3);
+- **tonight's Out list** full, injury-list-like (inactives with role ≥ 10), or
+  DK-like (those also out last game);
+- **then the cut.**
+
+`nba_minutes_lab.py cycles` scores every version of the model both ways.
+
 ### Held out on 2025-26 (32,224 active player-games): MAE (bias) in minutes
 
 | slice | v1, confirmed | v2, confirmed | cycle 1, confirmed | **current, confirmed** | v1, inactives | v2, inactives | **current, inactives** |
@@ -276,6 +298,16 @@ games that season):
 | + critique cycle 1: rank-gap allocation, salary off | 6.69 / 5.03 |
 | + critique cycle 2: recency blend, dropped regular starter | 6.59 / 4.93 |
 
+### The live state (2025-26 replay, starters confirmed / inactives only, RMSE)
+
+| version | live state | RMSE |
+|---|---|---|
+| v1 | broken feed: phantom history, DK-like Out, cut 13 | 8.31 / 9.11 |
+| v2 (cycle 0) | broken feed | 7.20 / 8.36 |
+| cycle 1 | broken feed | 7.07 / 8.32 |
+| cycle 2 | broken feed | 6.95 / 8.20 |
+| **cycle 3** | **box-score history, ESPN-like Out, cut 15** | **6.63 / 7.44** |
+
 The power share is a squared-error trade: slightly better RMSE, slightly worse
 MAE.
 
@@ -288,26 +320,22 @@ MAE.
 - a fitted per-game discount on last-season games (it read last season's final
   week at season start).
 
-## Known weaknesses (open as of 2026-10-21, after critique cycle 2)
+## Known weaknesses (open as of 2026-10-21, after critique cycle 3)
 
-1. **This season's opening night still runs stars low:** −4.7 minutes for roles
-   28+ (it was −8.0 before the critique loop). Only 3 games, 103 players.
-2. **The rank-gap allocation is position-blind.** v2's position weighting of
-   missing minutes went with the old step 3.
-3. **Promoted starters run about +0.9 minutes high.**
-4. **The dropped-starter factor drifts between seasons.** The share playing 0 went
-   from 67% to 60%, so q = 0.2 over-corrects 2025-26 (bias −1.6). Live, DK's OUT
-   flags remove some of these players first.
-5. **Critic #2's runners-up:**
-   - days since the player's last game (a bigger signal than the back-to-back flag);
-   - the lab never replays the live state before the inactive list posts (expected
-     starters, DK OUT flags, the 13-man cut; 26% of 2025-26 team-games dressed
-     14–15 players);
-   - end of season: April MSE is 60 against 45 for the season, and standings are
-     worth something.
-6. **Headroom:** a gradient-boosted residual model still reaches RMSE about 6.41
-   on 2025-26.
-7. **Blowouts and overtime** aren't projected.
+1. **ESPN's Out list is not the official injury report.** It misses G-League and
+   two-way assignments and late scratches; the 15-man cut absorbs most of them.
+   The live state still trails the lab's full-information numbers (6.63 vs 6.59
+   RMSE).
+2. **2026-27 opening-week stars still run low:** about −4 minutes on the 85 true
+   actives of night one. Only 3 games.
+3. **Expected vs Confirmed starters:** NBA.com's afternoon *Expected* five
+   changed in 6 of 28 team-games, but live applies the start/bench split and the
+   dropped-starter cut to it.
+4. **The dropped-starter factor** is a single q (0.2). Dropped starters whose
+   last game was 15–25 minutes play about 9.8 minutes against 3.9 projected.
+5. **End of season:** April MSE runs 57.7 against about 42.
+6. **The rank-gap allocation is position-blind.** Blowouts and overtime aren't
+   projected.
 
 ## Pseudocode
 
@@ -344,11 +372,12 @@ def project_team(players, starters_announced, inactive_list_posted):
         if p.since_return in (0, 1, 2):
             base *= (0.8, 0.9, 1.0)[p.since_return]
         p.role, p.starting = base, (float(p.starts_tonight) if starters_announced else sr)
-    if not inactive_list_posted:
-        healthy = sorted((p for p in players if not p.out),
-                         key=lambda p: (not p.announced_starter, -p.role))
-        for p in healthy[13:]:
-            p.out = True                                      # not dressing
+    for p in players:
+        p.out = p.out or p.on_espn_out_list or p.dk_out          # no NBA.com inactive list in 2026-27
+    healthy = sorted((p for p in players if not p.out),
+                     key=lambda p: (not p.announced_starter, -p.role))
+    for p in healthy[15:]:
+        p.out = True                                          # not dressing
     active = [p for p in players if not p.out]
     coef = GAP_COEF["confirmed" if starters_announced else "inactives"]
     G = 240 - sum(p.role for p in active)
@@ -366,8 +395,9 @@ def project_team(players, starters_announced, inactive_list_posted):
 | `edge/nba_minutes.py` | `role_v2`, `project`, `rank_gap`, `games_since_return`, every constant with its provenance; `project_v1` |
 | `edge/nba_minutes_gap.py` | the rank-gap coefficients (generated; do not edit) |
 | `NBA_MINUTES_CRITIQUE_LOG.md` | the critique loop: each cycle's hole, fix and numbers |
-| `edge/dfs_run_nba.py` (`build_board`) | joins, who dresses, the 13-man rule, usual vs tonight |
+| `edge/dfs_run_nba.py` (`build_board`) | joins, who dresses (ESPN / DK Out, the 15-man cut), usual vs tonight |
+| `edge/nba_availability.py` | box-score availability (history) and ESPN's Out list (tonight) |
 | `scripts/nba_history_publish.py` | the history file and its `cur_n` / `n_pre` / `pick` / `since_return` fields |
-| `scripts/nba_minutes_lab.py` | `diagnose`, `ablate`, `fit`, `salary`: the live-faithful backtest |
+| `scripts/nba_minutes_lab.py` | `diagnose`, `ablate`, `fit`, `salary`, `report`, `live`, `cycles`: the live-faithful backtest |
 | `scripts/nba_minutes_backtest.py` | the legacy protocol |
 | `NBA_STATUS.md` | results, open items |

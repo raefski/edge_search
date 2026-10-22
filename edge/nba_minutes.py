@@ -429,8 +429,11 @@ def load_history(seasons=("2024-25", "2025-26", "2026-27"), before: str | None =
         box = {(str(r["PLAYER_ID"]), r["GAME_ID"]): r for r in by_day[d]}
         f = CACHE / f"{d.replace('-', '')}.json"
         if f.exists():
+            from edge.nba_availability import apply as availability
             for g in parse(json.loads(f.read_text())):
-                for p in g["players"]:
+                # NBA.com stopped flagging inactives in 2026-27: the box score's comments
+                # (edge/nba_availability.py) say who was really out -- critique cycle 3
+                for p in availability(g["players"], g["game_id"]):
                     if p["inactive"]:
                         continue
                     pid = str(p["id"])

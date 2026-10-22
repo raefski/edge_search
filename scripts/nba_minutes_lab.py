@@ -63,7 +63,10 @@ def season_of(d: str) -> str:
 # ──────────────────────────────────────────────────────────────────────────────
 # data
 # ──────────────────────────────────────────────────────────────────────────────
-def load(verbose: bool = True) -> dict:
+def load(verbose: bool = True, phantom: bool = False) -> dict:
+    """`phantom` rebuilds HISTORIES the way the 2026-27 NBA.com feed did before critique
+    cycle 3: no inactive flags, so a missed game is a 0-minute appearance (tonight's
+    flags and the scoring are unchanged)."""
     box: dict = {}
     pts: dict = defaultdict(float)
     box_dates: dict = defaultdict(list)
@@ -99,8 +102,10 @@ def load(verbose: bool = True) -> dict:
         path = CACHE / f"{d.replace('-', '')}.json"
         tonight = []
         if path.exists():
+            from edge.nba_availability import apply as availability
             for g in parse(json.loads(path.read_text())):
                 gid = g["game_id"]
+                g = {**g, "players": availability(g["players"], gid)}   # box-score truth where cached
                 by_team = defaultdict(list)
                 for p in g["players"]:
                     by_team[p["team"]].append(p)
@@ -186,7 +191,7 @@ def load(verbose: bool = True) -> dict:
             if (gid, team) in pts and (gid, opp) in pts:
                 margin[(team, season)].append(pts[(gid, team)] - pts[(gid, opp)])
             for p in ps:
-                if p["inactive"]:
+                if p["inactive"] and not phantom:
                     continue
                 pid = str(p["id"])
                 h = H[pid]
@@ -836,9 +841,62 @@ def report(D: dict, prm: dict, legacy: bool = True) -> str:
     return "\n".join(out)
 
 
+def live_replay(Dt: dict, Dh: dict, prm: dict, season: str, known: str, cut: int | None = 13,
+                mode: str = "confirmed") -> dict:
+    """Critique cycle 3: score the LIVE information state on a past season. Histories (and
+    roles) come from `Dh` (clean, or phantom = the 2026-27 feed's missing inactive list);
+    flags and actual minutes from the truth `Dt`. Tonight's Out list:
+      "all"     every inactive (the lab's usual assumption)
+      "role10"  inactives with a role >= 10 (what an injury report / ESPN's Out list covers)
+      "stale10" inactives with a role >= 10 who were also out in their team's last game
+                (about what DK's OUT flags covered on 2026-10-20)
+    then, with `cut`, each team keeps its `cut` largest roles (announced starters first),
+    the live rule before NBA.com's inactive list. Rows Dt / Dh align one to one."""
+    rows, R = Dt["rows"], roles(Dh, prm)
+    prev, last = {}, {}
+    for g in sorted(Dt["games"], key=lambda g: g["date"]):
+        for i in g["idx"]:
+            prev[i] = last.get((g["team"], rows[i]["pid"]))
+        for i in g["idx"]:
+            last[(g["team"], rows[i]["pid"])] = rows[i]["inactive"]
+    E = []
+    for g in Dt["games"]:
+        if g["season"] != season:
+            continue
+        K = set()
+        for i in g["idx"]:
+            if not rows[i]["inactive"]:
+                continue
+            b = float(R["base"][i])
+            if known == "all" or (known == "role10" and b >= 10) or (known == "stale10" and b >= 10 and prev[i] in (True, None)):
+                K.add(i)
+        cand = [i for i in g["idx"] if i not in K]
+        if cut:
+            ranked = sorted(cand, key=lambda i: (not rows[i]["starter"], -float(R["base"][i])))
+            keep = set(ranked[:cut])
+        else:
+            keep = set(cand)
+        sim = {i: i not in keep for i in g["idx"]}
+        saved = {i: Dh["rows"][i]["inactive"] for i in g["idx"]}
+        for i in g["idx"]:
+            Dh["rows"][i]["inactive"] = sim[i]
+        proj = project_game(Dh, g, R, prm, mode)
+        for i in g["idx"]:
+            Dh["rows"][i]["inactive"] = saved[i]
+        for i in g["idx"]:
+            r = rows[i]
+            if r["inactive"] or r["actual"] is None:
+                continue
+            e = (0.0 if sim[i] else proj.get(i, 0.0)) - r["actual"]
+            E.append(e)
+    E = np.array(E)
+    return {"rmse": float(np.sqrt((E ** 2).mean())), "mae": float(np.abs(E).mean()), "bias": float(E.mean()), "n": len(E)}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("cmd", choices=["diagnose", "ablate", "fit", "salary", "report", "cycle1", "cycle2"])
+    ap.add_argument("cmd", choices=["diagnose", "ablate", "fit", "salary", "report", "cycle1", "cycle2", "live",
+                                    "cycles"])
     ap.add_argument("--mode", default="confirmed", choices=["confirmed", "inactives"])
     ap.add_argument("--write", action="store_true", help="cycle1: write edge/nba_minutes_gap.py")
     a = ap.parse_args()
@@ -878,6 +936,54 @@ def main() -> int:
         print(report(D, P, legacy=False))
         if a.write:
             write_gap_module(D, P["gap_coef"], P, cycle=2, extra=f"recency_lam {lam}, drop_q {q}")
+        return 0
+    if a.cmd == "cycles":
+        # every version of the critique loop, scored the same way (the final report)
+        F = final_params()
+        v2 = {**F, "alloc": "power", "gap_coef": None, "recency_lam": None, "drop_q": None}
+        c1 = {**v2, "alloc": "rank_gap"}
+        c1["gap_coef"] = fit_gap(D, c1)
+        versions = [("v1 (10/15)", SHIPPED), ("cycle 0: v2", v2), ("cycle 1: + rank-gap", c1),
+                    ("cycles 2-3: + recency / dropped starter", F)]
+        head = ["| version | mode | RMSE | MAE (bias) | opening | rookies | lottery | new team | 1st game back | "
+                "scratch teammates | promoted | high role 28+ | 2026-27 RMSE / MAE (n) |", "|---" * 13 + "|"]
+        rows_ = []
+        for name, p in versions:
+            res = run(D, p)
+            for m in ("confirmed", "inactives"):
+                c, z = res[m]["2025-26"], res[m].get("2026-27", {})
+                cell = lambda k: f"{c[k]['mae']:.2f} ({c[k]['bias']:+.1f})" if k in c else "-"  # noqa: E731
+                rows_.append(f"| {name} | {m} | {c['all']['rmse']:.3f} | {cell('all')} | {cell('opening (team games 1-5)')} | "
+                             f"{cell('rookie / no NBA history')} | {cell('lottery rookie')} | {cell('new team (first 5)')} | "
+                             f"{cell('back from 5+ missed')} | {cell('teammate of a scratch')} | {cell('promoted starter')} | "
+                             f"{cell('high role (base 28+)')} | "
+                             + (f"{z['all']['rmse']:.2f} / {z['all']['mae']:.2f} ({z['all']['n']})" if z else "-") + " |")
+                print(rows_[-1], file=sys.stderr, flush=True)
+        Dp = load(verbose=False, phantom=True)
+        live = ["\n| version | live state on 2025-26 | mode | RMSE | MAE | bias |", "|---|---|---|---|---|---|"]
+        for name, p in versions:
+            for m in ("confirmed", "inactives"):
+                r_ = live_replay(D, Dp, p, "2025-26", "stale10", 13, mode=m)
+                live.append(f"| {name} | broken feed: phantom history, DK-like Out, cut 13 | {m} | {r_['rmse']:.3f} | "
+                            f"{r_['mae']:.3f} | {r_['bias']:+.2f} |")
+        for m in ("confirmed", "inactives"):
+            r_ = live_replay(D, D, F, "2025-26", "role10", 15, mode=m)
+            live.append(f"| cycle 3: availability fixed | box-score history, injury-list Out, cut 15 | {m} | "
+                        f"{r_['rmse']:.3f} | {r_['mae']:.3f} | {r_['bias']:+.2f} |")
+        print("\n".join(head + rows_ + live))
+        return 0
+    if a.cmd == "live":
+        Dp = load(verbose=False, phantom=True)
+        F = final_params()
+        out = ["| history | tonight's Out list | 13-man cut | season | n | RMSE | MAE | bias |", "|---|---|---|---|---|---|---|---|"]
+        for season in ("2024-25", "2025-26"):
+            for hist, Dh in (("clean", D), ("phantom (2026-27 feed)", Dp)):
+                for known, cut in (("all", None), ("all", 13), ("role10", 13), ("stale10", 13)):
+                    m = live_replay(D, Dh, F, season, known, cut)
+                    out.append(f"| {hist} | {known} | {'yes' if cut else 'no'} | {season} | {m['n']:,} | "
+                               f"{m['rmse']:.3f} | {m['mae']:.3f} | {m['bias']:+.2f} |")
+                    print(out[-1], file=sys.stderr, flush=True)
+        print("\n".join(out))
         return 0
     if a.cmd == "report":
         print(report(D, final_params()))
