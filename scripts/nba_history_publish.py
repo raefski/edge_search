@@ -170,8 +170,13 @@ def build(before: str | None = None, current: str = CURRENT, seasons=SEASONS) ->
                         "since_return": NM.games_since_return(
                             this, team, len(sched.get(team, ())) + 1, len(this), m_[-1][1] if m_ else None),
                         # critique cycle 6: did not dress for his team's latest game (his last
-                        # active game was with this team, before it) -- he may be out again
-                        "missed_last": bool(m_ and m_[-1][1] == team and m_[-1][0] < team_last.get(team, ""))}
+                        # active game was with this team, before it) -- he may be out again.
+                        # Only a game of THIS season: before a team's opener the "latest game"
+                        # is last season's finale, a rest night -- players who sat it dressed
+                        # 77% (2025-26 openers, n 95) / 91% (2026-27, n 92) vs 16-22% in season.
+                        # Sam Merrill / Thomas Bryant, CLE's opener 2026-10-22, flagged 50% / 20%.
+                        "missed_last": bool(m_ and m_[-1][1] == team and m_[-1][0] < team_last.get(team, "")
+                                            and first_day is not None and team_last.get(team, "") >= first_day)}
         names[norm(name)] = pid
     teams = {}
     for t, v in allowed.items():

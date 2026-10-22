@@ -1000,7 +1000,8 @@ def _u(i: int) -> float:
     return int(hashlib.md5(str(i).encode()).hexdigest()[:8], 16) / 2 ** 32
 
 
-def avail_preds(D: dict, prm: dict, season: str, mode: str, miss: float, cut: int = 15) -> dict:
+def avail_preds(D: dict, prm: dict, season: str, mode: str, miss: float, cut: int = 15,
+                opener_stale: bool = True) -> dict:
     """Critique cycle 6: the live Out list misses scratches. Each inactive with role >= 10
     is on the Out list unless _u(row) < miss (2026-27's DTD / unlisted players: 29 of 47
     role-10+ scratches of 10/20-21 were not 'Out' on ESPN's 10/22 feed); the cut keeps
@@ -1021,7 +1022,8 @@ def avail_preds(D: dict, prm: dict, season: str, mode: str, miss: float, cut: in
         cand = [i for i in g["idx"] if i not in K]
         rank = lambda c: set(sorted(c, key=lambda i: (not rows[i]["starter"], -float(R["base"][i])))[:cut])  # noqa: E731
         keep = rank(cand)
-        stale = {i for i in keep if prev[i] is True and not (mode == "confirmed" and rows[i]["starter"])}
+        stale = {i for i in keep if prev[i] is True and not (mode == "confirmed" and rows[i]["starter"])
+                 and (opener_stale or rows[i]["team_game_no"] > 1)}
         truth = {i: rows[i]["inactive"] for i in g["idx"]}
 
         def proj(kept):
