@@ -291,3 +291,13 @@ def test_an_expected_five_is_blended_with_no_five_until_confirmed():
     assert hard["4"]["minutes"] < exp["4"]["minutes"] < none["4"]["minutes"]
     assert exp["5"]["promoted"] is hard["5"]["promoted"]
     assert sum(p["minutes"] for p in exp.values()) == pytest.approx(240, abs=0.6)
+
+
+def test_the_starting_role_remembers_further_back_than_the_bench_role():
+    """Critique cycle 5: a starter's role reads ~10 games and last season as 3 games
+    (MS_DECAY, MS_KAPPA), so one cold week moves it less than the shared role."""
+    hist = [(34.0, True)] * 60 + [(34.0, True)] * 10 + [(24.0, True)] * 4      # last season 34, now 4 cold games
+    long_ = NM.role_v2(hist, cur_n=14)
+    short = NM.role_v2(hist, cur_n=14, params={"MS_DECAY": None})
+    assert NM.MS_DECAY is not None and short["ms"] < long_["ms"] < 34.0
+    assert long_["mb"] == short["mb"] and long_["base"] == short["base"]          # bench / pre-lineup unchanged

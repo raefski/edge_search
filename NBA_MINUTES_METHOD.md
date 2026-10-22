@@ -96,7 +96,7 @@ prior with a fixed weight removes that trade-off. On 2025-26: κ = 0.5 / 1 / 2
 
 ### 1b. Starting role and bench role
 
-With the same weights:
+With the same weights (the starting role `ms` with its own, longer ones, below):
 
 - `ns`, `nb` = weighted counts of starts and bench games.
 - `ms_raw`, `mb_raw` = weighted mean minutes in starts and in bench games.
@@ -108,6 +108,14 @@ ms = (ns·ms_raw + K·(mb_raw + GAP  if nb > 0 else base + GAP·(1 − start_rat
 mb = (nb·mb_raw + K·(ms_raw − GAP  if ns > 0 else base − GAP·start_rate))       / (nb + K)
 K = SPLIT_K = 0.5,  GAP = SPLIT_GAP = 12 minutes
 ```
+
+**The starting role remembers further back (critique cycle 5).** `ms` is computed
+exactly as above but with this season's games decaying `MS_DECAY = 0.9` per game
+(about the last 10) and last season worth `MS_KAPPA = 3` games. `mb` and `base` keep
+0.8 / 1. A starter's minutes are stable, so a hot or cold week is mostly noise; a
+bench role really moves week to week (critic #4: bench decay 0.7 or 0.9 both
+worse). Grid 0.8–0.97 × 1–8 on 2024-25 only, rank-gap coefficients refitted per
+cell: 0.9 / 3 best. Held out on 2025-26 with starters confirmed: RMSE 6.586 → 6.550.
 
 **Once the starting five is announced**, a starter's role is `ms` and a bench
 player's is `mb`. This replaces v1's hand-set promotion lift: a bench player who
@@ -292,29 +300,31 @@ instead:
 
 ### Held out on 2025-26 (32,224 active player-games): MAE (bias) in minutes
 
-| slice | v1, confirmed | v2, confirmed | cycle 1, confirmed | **current, confirmed** | v1, inactives | v2, inactives | **current, inactives** |
-|---|---|---|---|---|---|---|---|
-| RMSE, all | 7.76 | 6.81 | 6.69 | **6.59** | 8.15 | 7.65 | **7.40** |
-| all | 5.74 (−0.1) | 5.26 (−0.1) | 5.03 (−0.1) | **4.93 (−0.1)** | 5.97 | 5.78 | **5.41** |
-| opening week (team games 1–5) | 6.21 | 5.30 | 5.06 | **5.01** | 6.54 | 5.41 | **5.05** |
-| rookies / no NBA history | 6.30 (−0.2) | 5.46 (−0.6) | 5.15 (−0.9) | **5.09 (−0.8)** | 6.75 | 5.99 | **5.51** |
-| lottery rookies (75) | 7.32 (−3.7) | 5.17 (−1.4) | 4.90 (−1.0) | **4.89 (−1.0)** | 8.61 | 6.10 | **5.35** |
-| new team, first 5 games | 7.11 | 6.21 | 6.00 | **5.91** | 7.50 | 6.27 | **5.95** |
-| first game back from 5+ out | 6.59 (+3.0) | 5.99 (−0.6) | 5.98 (−0.9) | **5.97 (−0.9)** | 6.96 | 6.34 | **6.32** |
-| teammates of a scratch | 5.80 | 5.34 | 5.11 | **5.00** | 6.05 | 5.88 | **5.52** |
-| promoted starters | 5.71 (+0.4) | 5.20 (+1.3) | 5.13 (+0.9) | **5.12 (+0.9)** | — | — | — |
-| high role (28+) | 5.22 (+0.2) | 4.63 (−0.5) | 4.44 (+0.2) | **4.33 (−0.0)** | 5.31 | 5.10 | **4.73** |
-| starters, roles > 1.15 × 240 | 5.65 (−4.1) | 4.68 (−2.2) | 4.26 (−0.0) | **4.27 (+0.2)** | 5.77 (−4.4) | 5.70 (−4.4) | **4.76 (−1.9)** |
+| slice | v1, confirmed | v2, confirmed | cycle 1, confirmed | cycle 2, confirmed | **current, confirmed** | v1, inactives | v2, inactives | **current, inactives** |
+|---|---|---|---|---|---|---|---|---|
+| RMSE, all | 7.76 | 6.81 | 6.69 | 6.59 | **6.55** | 8.15 | 7.65 | **7.40** |
+| all | 5.74 (−0.1) | 5.26 (−0.1) | 5.03 (−0.1) | 4.93 (−0.1) | **4.89 (−0.1)** | 5.97 | 5.78 | **5.41** |
+| opening week (team games 1–5) | 6.21 | 5.30 | 5.06 | 5.01 | **4.84** | 6.54 | 5.41 | **5.05** |
+| rookies / no NBA history | 6.30 (−0.2) | 5.46 (−0.6) | 5.15 (−0.9) | 5.09 (−0.8) | **5.07 (−0.9)** | 6.75 | 5.99 | **5.51** |
+| lottery rookies (75) | 7.32 (−3.7) | 5.17 (−1.4) | 4.90 (−1.0) | 4.89 (−1.0) | **5.00 (−1.2)** | 8.61 | 6.10 | **5.35** |
+| new team, first 5 games | 7.11 | 6.21 | 6.00 | 5.91 | **5.88** | 7.50 | 6.27 | **5.95** |
+| first game back from 5+ out | 6.59 (+3.0) | 5.99 (−0.6) | 5.98 (−0.9) | 5.97 (−0.9) | **5.87 (−0.7)** | 6.96 | 6.34 | **6.32** |
+| teammates of a scratch | 5.80 | 5.34 | 5.11 | 5.00 | **4.97** | 6.05 | 5.88 | **5.52** |
+| promoted starters | 5.71 (+0.4) | 5.20 (+1.3) | 5.13 (+0.9) | 5.12 (+0.9) | **5.10 (+0.5)** | — | — | — |
+| high role (28+) | 5.22 (+0.2) | 4.63 (−0.5) | 4.44 (+0.2) | 4.33 (−0.0) | **4.20 (+0.1)** | 5.31 | 5.10 | **4.73** |
+| starters, roles > 1.15 × 240 | 5.65 (−4.1) | 4.68 (−2.2) | 4.26 (−0.0) | 4.27 (+0.2) | **4.02 (+0.5)** | 5.77 (−4.4) | 5.70 (−4.4) | **4.76 (−1.9)** |
 
 "current" = v2 + critique cycle 1 (rank-gap allocation, salary nudge off) + cycle 2
-(recency blend, dropped regular starter); NBA_MINUTES_CRITIQUE_LOG.md has every cycle.
+(recency blend, dropped regular starter) + cycle 5 (the starting role's longer memory;
+inactives only does not use it). "cycle 2" = before cycle 5. NBA_MINUTES_CRITIQUE_LOG.md
+has every cycle.
 
 **Legacy protocol** (2025-26 held out, 29,311 player-games, players with 5+
 games that season):
 
 | | v1 | v2 | cycle 1 | current |
 |---|---|---|---|---|
-| all, confirmed | 5.601 | 5.123 | 4.929 | **4.845** |
+| all, confirmed | 5.601 | 5.123 | 4.929 | **4.845** (cycle 5: **4.814**) |
 | teammates of a scratch, confirmed | 5.681 | 5.216 | 5.026 | **4.928** |
 | promoted starters, confirmed | 5.653 (+0.9) | 5.346 (+1.5) | 5.227 (+1.1) | **5.224 (+1.1)** |
 | all, inactives only | 5.831 | 5.624 | 5.394 | **5.332** |
@@ -332,6 +342,7 @@ games that season):
 | + critique cycle 1: rank-gap allocation, salary off | 6.69 / 5.03 |
 | + critique cycle 2: recency blend, dropped regular starter | 6.59 / 4.93 |
 | + critique cycle 4: Expected five counts 70% (Expected state, 25% wrong) | 7.11 → 6.96 RMSE |
+| + critique cycle 5: starting role decay 0.9, last season worth 3 games | 6.55 / 4.89 |
 
 ### The live state (2025-26 replay, starters confirmed / inactives only, RMSE)
 
@@ -369,14 +380,16 @@ until the team confirms.
 - a fitted per-game discount on last-season games (it read last season's final
   week at season start).
 
-## Known weaknesses (open as of 2026-10-21, after critique cycle 4)
+## Known weaknesses (open as of 2026-10-22, after critique cycle 5)
 
 1. **ESPN's Out list is not the official injury report.** It misses G-League and
    two-way assignments and late scratches; the 15-man cut absorbs most of them.
    The live state still trails the lab's full-information numbers (6.63 vs 6.59
    RMSE).
-2. **2026-27 opening-week stars still run low:** about −4 minutes on the 85 true
-   actives of night one. Only 3 games.
+2. **2026-27 opening-week stars ran low:** about −4 minutes on night one.
+   Cycle 5's longer starting memory cut high-role bias from −1.8 to −0.3 (lab, 2026-27,
+   387 player-games, 2 nights). Starters still run about −1.3 on 10/21's live board,
+   which is anecdotal.
 3. **The Expected-five miss rate is measured on two opening nights** (7 of 28).
    w = 0.70 is robust from 10% to 30%. `data/nba_lineup_log.csv` keeps logging;
    re-measure ρ after a few weeks (`exp2`-style: last Expected vs final Confirmed).
@@ -404,6 +417,7 @@ def role(history, cur_n, n_pre, decay=0.8, kappa=1.0, k=0.5, gap=12.0):
     ns, nb = sum(w where started), sum(w where not started)
     ms_raw, mb_raw = wmean(minutes | started), wmean(minutes | bench)
     ms = (ns*ms_raw + k*(mb_raw + gap if nb else base + gap*(1 - start_rate))) / (ns + k)
+    # cycle 5: ms is then recomputed by this same function with decay=0.9, kappa=3.0
     mb = (nb*mb_raw + k*(ms_raw - gap if ns else base - gap*start_rate)) / (nb + k)
     return base, start_rate, ms, mb, ns + nb
 

@@ -272,6 +272,66 @@ the critic measured it as bigger than cycle 1 or 2.
   be fitted to the assumed one-swap process. Re-measure ρ from the lineup log after a
   few weeks.
 
+## Cycle 5: the starting role forgot too fast
+
+Adam, 2026-10-22: "use the best idea for next cycle". No new critic: this is critic
+#4's first runner-up, re-decided on 2024-25.
+
+**Hole.** One memory (DECAY 0.8, last season worth κ = 1 game) served the bench role,
+the pre-lineup role and the starting role. Critic #4: starters' residuals rise 0.20
+minutes per minute their 10-game median sits above their role. A starter's minutes
+are stable, so a short memory reads one hot or cold week as a new role. A bench role
+really moves (bench decay 0.7 or 0.9 are both worse).
+
+**Fix (shipped, `edge/nba_minutes.py` MS_DECAY / MS_KAPPA).**
+- `role_v2` recomputes `ms` (the starting role) with its own weights. Bench and
+  pre-lineup roles are unchanged, so the inactives-only state is untouched.
+- **Chosen on 2024-25 only:** `nba_minutes_lab.py cycle5`, grid decay 0.8–0.97 ×
+  κ 1–8, rank-gap coefficients refitted for every cell. Best was decay 0.9 / κ 3
+  (2024-25 RMSE 6.9245 both modes, 6.3886 confirmed); 0.93 / 3 ties, and the
+  critic's pick was 0.93 / 3. The surface is flat: 0.85–0.95 × 2–5 all within 0.005.
+- Rank-gap coefficients regenerated: confirmed cells only; inactives identical.
+- **Parity:** production `role_v2` equals the lab's roles exactly (ms, mb, base;
+  max difference 0.0000 over 4,919 rows). Legacy protocol through production:
+  confirmed 4.845 → **4.814**, inactives 5.332 unchanged.
+- EXPECTED_W (cycle 4) kept at 0.70. With the new roles, the Expected state at 25%
+  wrong goes 6.955 → 6.939.
+
+**Result** (2025-26 held out, starters confirmed; inactives-only rows are unchanged):
+
+| | before (cycle 4) | after (cycle 5) |
+|---|---|---|
+| RMSE, all (32,224) | 6.586 | **6.550** |
+| MAE (bias) | 4.93 (−0.1) | **4.89 (−0.1)** |
+| opening week | 5.01 | **4.84** |
+| high role 28+ | 4.33 (−0.0) | **4.20 (+0.1)** |
+| starters, roles > 1.15 × 240 | 4.27 (+0.2) | **4.02 (+0.5)** |
+| promoted starters | 5.12 (+0.9) | **5.10 (+0.5)** |
+| back from 5+ missed | 5.97 (−0.9) | **5.87 (−0.7)** |
+| lottery rookies | 4.89 (−1.0) | 5.00 (−1.2) |
+| live state (injury-list Out, cut 15), confirmed | 6.634 | **6.598** |
+| Expected five, 25% wrong (lab / live) | 6.955 / 6.994 | **6.939 / 6.978** |
+| 2026-27 so far, confirmed (387, 2 nights) | 7.582, high role 4.92 (−1.8) | **7.290**, high role **3.73 (−0.3)** |
+
+**The 10/21 live board, rebuilt.**
+- **Leak:** a naive rebuild disagreed: everyone who dressed went 4.56 → 4.67. But
+  today's `nba_player_history.json` already holds 10/21's games, so the short memory
+  put half its weight on the game being scored (Curry's last entry: 21 minutes).
+  **Any rebuild of a past slate from the current history file leaks.**
+- **With 10/21 stripped from history** (DNPs scored as 0, n 281):
+  - everyone who dressed: RMSE 8.30 → **8.05**, MAE 6.73 → 6.39;
+  - starters (110): 7.17 → **6.24**, bias −2.48 → −1.28;
+  - bench (171): 8.95 → 9.02.
+  - One night, anecdotal.
+
+**Open.**
+- Lottery rookies are slightly worse (4.89 → 5.00, n ≈ 75).
+- Bench bias moves down a little, since the closing step takes starters' gains from
+  the bench.
+- Critic #4's other runners-up still stand:
+  - diffuse residual headroom (a GBM reaches 6.41);
+  - shrinkage toward rank, which gains only 0.013.
+
 ## Summary of cycles 1-3
 
 Every version scored the same way (`python3 scripts/nba_minutes_lab.py cycles`),

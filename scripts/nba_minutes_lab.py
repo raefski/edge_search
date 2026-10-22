@@ -256,6 +256,9 @@ SHIPPED = {
     # critique cycle 2: a non-starter's role reads his LAST game (recency_lam) and a regular
     # starter left out of tonight's five is cut (drop_q); None = off
     "recency_lam": None, "recency_tau": 0.8, "drop_q": None, "drop_tau": 0.8, "recency_guard": True,
+    # critique cycle 5: the STARTING role (ms) with its own, longer memory -- this season's
+    # decay ms_decay, last season worth ms_kappa games; None = the shared DECAY / PRIOR_KAPPA
+    "ms_decay": None, "ms_kappa": None,
 }
 
 
@@ -267,7 +270,8 @@ def final_params() -> dict:
             "role_pow": NM.ROLE_POW_V2, "pos_w": NM.POS_W_V2, "alloc": "power", "alloc_pow": NM.ALLOC_POW,
             "starter_tilt": NM.STARTER_TILT, "tilt_over": 0.0, **_shipped_alloc(),
             "recency_lam": getattr(NM, "RECENCY_LAM", None), "recency_tau": getattr(NM, "RECENCY_TAU", 0.8),
-            "drop_q": getattr(NM, "DROP_Q", None), "drop_tau": getattr(NM, "DROP_TAU", 0.8)}
+            "drop_q": getattr(NM, "DROP_Q", None), "drop_tau": getattr(NM, "DROP_TAU", 0.8),
+            "ms_decay": getattr(NM, "MS_DECAY", None), "ms_kappa": getattr(NM, "MS_KAPPA", None)}
 
 
 def _shipped_alloc() -> dict:
@@ -331,6 +335,10 @@ def roles(D: dict, prm: dict) -> dict:
         out["ms"] = (ns * ms + k * np.where(nb > 0, mb + gap, base + gap * (1 - srate))) / (ns + k)
         out["mb"] = (nb * mb + k * np.where(ns > 0, ms - gap, base - gap * srate)) / (nb + k)
         out["ns"], out["nb"] = ns, nb
+        if prm.get("ms_decay") is not None:
+            # critique cycle 5: the starting role reads further back than the bench role
+            long_ = {**prm, "decay": prm["ms_decay"], "prior_kappa": prm["ms_kappa"], "ms_decay": None}
+            out["ms"] = roles(D, long_)["ms"]
     return out
 
 
@@ -986,9 +994,9 @@ def expected_w(P: dict, rho: float) -> float:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("cmd", choices=["diagnose", "ablate", "fit", "salary", "report", "cycle1", "cycle2", "live",
-                                    "cycles", "cycle4"])
+                                    "cycles", "cycle4", "cycle5"])
     ap.add_argument("--mode", default="confirmed", choices=["confirmed", "inactives"])
-    ap.add_argument("--write", action="store_true", help="cycle1: write edge/nba_minutes_gap.py")
+    ap.add_argument("--write", action="store_true", help="cycle1 / cycle5: write edge/nba_minutes_gap.py")
     a = ap.parse_args()
     D = load()
     if a.cmd == "diagnose":
@@ -1026,6 +1034,38 @@ def main() -> int:
         print(report(D, P, legacy=False))
         if a.write:
             write_gap_module(D, P["gap_coef"], P, cycle=2, extra=f"recency_lam {lam}, drop_q {q}")
+        return 0
+    if a.cmd == "cycle5":
+        # the starting role's own memory: grid on 2024-25 ONLY, rank-gap coefficients
+        # refitted for every cell; objective = 2024-25 RMSE averaged over both modes
+        F = final_params()
+        best = None
+        for d_ in (0.8, 0.85, 0.9, 0.93, 0.95, 0.97):
+            for k_ in (1.0, 2.0, 3.0, 5.0, 8.0):
+                P = {**F, "ms_decay": d_, "ms_kappa": k_}
+                P["gap_coef"] = fit_gap(D, P)
+                res = run(D, P, seasons=["2024-25"])
+                o = obj(res, "2024-25")
+                print(f"  ms_decay {d_} ms_kappa {k_}: 2024-25 RMSE confirmed "
+                      f"{res['confirmed']['2024-25']['all']['rmse']:.4f}, both modes {o:.4f}", file=sys.stderr, flush=True)
+                if best is None or o < best[0]:
+                    best = (o, d_, k_, P)
+        o, d_, k_, P = best
+        print(f"  chosen on 2024-25: ms_decay {d_}, ms_kappa {k_}", file=sys.stderr)
+        print(report(D, P, legacy=False))
+        for live in (None, ("role10", 15)):
+            for name, q in (("before", F), ("after", P)):
+                E = expected_preds(D, q, seasons=("2025-26",), live=live)["2025-26"]
+                x = expected_score(E, NM.EXPECTED_W, 0.25)
+                print(f"Expected state, 25% wrong, {'live' if live else 'lab'}, {name}: "
+                      f"RMSE {x['rmse']:.3f} MAE {x['mae']:.3f} ({x['bias']:+.2f})")
+        for m in ("confirmed", "inactives"):
+            print(f"live state (injury-list Out, cut 15), {m}, 2025-26 RMSE: before "
+                  f"{live_replay(D, D, F, '2025-26', 'role10', 15, mode=m)['rmse']:.3f} "
+                  f"after {live_replay(D, D, P, '2025-26', 'role10', 15, mode=m)['rmse']:.3f}")
+        if a.write:
+            write_gap_module(D, P["gap_coef"], P, cycle=5,
+                             extra=f"recency_lam {P['recency_lam']}, drop_q {P['drop_q']}, ms_decay {d_}, ms_kappa {k_}")
         return 0
     if a.cmd == "cycle4":
         # the Expected five: blend w x project(Expected five) + (1 - w) x project(no five).

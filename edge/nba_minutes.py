@@ -103,6 +103,18 @@ PRIOR_DECAY = 1.0
 #: SPLIT_K pseudo-games: a bench player who starts tonight is projected ~SPLIT_GAP up.
 SPLIT_K = 0.5
 SPLIT_GAP = 12.0
+#: Critique cycle 5 (2026-10-22): the STARTING role (ms) has its own, longer memory --
+#: this season's games decay 0.9 per game (about the last 10, vs 5 for the bench role
+#: and the pre-lineup role) and last season counts as 3 games (vs 1). A starter's
+#: minutes are stable, so one hot or cold week is mostly noise; a bench role really
+#: does move week to week (critic #4: bench decay 0.7 / 0.9 both worse). Grid 0.8-0.97
+#: x 1-8 on 2024-25 ONLY, rank-gap coefficients refitted per cell
+#: (scripts/nba_minutes_lab.py cycle5): 0.9 / 3 best (6.9245, both modes; 0.93 / 3 ties).
+#: Held out 2025-26 (32,224 player-games), starters confirmed: RMSE 6.586 -> 6.550,
+#: MAE 4.929 -> 4.891; live state 6.634 -> 6.598; Expected five (25% wrong) 6.955 ->
+#: 6.939; inactives only unchanged (7.396). 2026-27 so far (387): 7.582 -> 7.290.
+MS_DECAY = 0.9
+MS_KAPPA = 3.0
 #: Redistribution of missing minutes (refitted with the split).
 ROLE_POW_V2 = 0.25
 POS_W_V2 = 0.25
@@ -239,7 +251,8 @@ def role_v2(history: list, cur_n: int | None = None, n_pre: int = 0, params: dic
     the newest REAL entries are this season (None = all); the last `n_pre` entries are
     preseason games (kept for the points rate, not the minutes role)."""
     p = {"DECAY": DECAY, "PRIOR_KAPPA": PRIOR_KAPPA, "PRIOR_DECAY": PRIOR_DECAY,
-         "SPLIT_K": SPLIT_K, "SPLIT_GAP": SPLIT_GAP, **(params or {})}
+         "SPLIT_K": SPLIT_K, "SPLIT_GAP": SPLIT_GAP, "MS_DECAY": MS_DECAY, "MS_KAPPA": MS_KAPPA,
+         **(params or {})}
     real = list(history[: len(history) - n_pre]) if n_pre else list(history)
     real = real[-HIST_GAMES:]
     n = len(real)
@@ -265,6 +278,10 @@ def role_v2(history: list, cur_n: int | None = None, n_pre: int = 0, params: dic
     k, gap = p["SPLIT_K"], p["SPLIT_GAP"]
     ms = (ns * ms_raw + k * (mb_raw + gap if nb > 0 else base + gap * (1 - srate))) / (ns + k)
     mb = (nb * mb_raw + k * (ms_raw - gap if ns > 0 else base - gap * srate)) / (nb + k)
+    if p["MS_DECAY"] is not None:
+        # critique cycle 5: the starting role reads further back (MS_DECAY, MS_KAPPA)
+        ms = role_v2(history, cur_n, n_pre, {**p, "DECAY": p["MS_DECAY"], "PRIOR_KAPPA": p["MS_KAPPA"],
+                                              "MS_DECAY": None})["ms"]
     return {"base": base, "start_rate": srate, "ms": ms, "mb": mb, "ns": ns, "nb": nb, "games": n}
 
 
