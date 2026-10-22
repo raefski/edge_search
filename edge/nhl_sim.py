@@ -148,7 +148,16 @@ def _win_prob(lh: float, la: float) -> float:
 def _assist_matrix(team_players: list[dict], scorer_p: np.ndarray, targets: np.ndarray,
                    team_goals: float) -> np.ndarray:
     """Row i = P(teammate j is AN assister | i scored). Weights are solved so
-    each skater's expected assists match his target given who scores."""
+    each skater's expected assists match his target given who scores.
+
+    The expectation is the one simulate() actually draws: a first assister from
+    row q with P1 = 1 - P_UNASSISTED, a second with P2 = P1 * P_TWO_ASSISTS drawn
+    again, redrawn once if it repeats the first and dropped if it repeats twice,
+    so P(j is second | i scored) = q_ij * sum_{k != j} q_ik (1 + q_ik). Until
+    2026-10-22 the solve assumed two independent draws (q_ij * (1 + P_TWO)),
+    which over-credits a high-q assister: on a 12-game slate $7.5k+ skaters were
+    given 0.706 assists and simulated 0.656 (now 0.690). NHL_CRITIQUE_LOG.md,
+    runner-ups of cycles 1-2."""
     n = len(team_players)
     aff = np.ones((n, n))
     for i, a in enumerate(team_players):
@@ -160,14 +169,16 @@ def _assist_matrix(team_players: list[dict], scorer_p: np.ndarray, targets: np.n
                 aff[i, j] *= LINE_AFFINITY
             if a.get("pp") and a.get("pp") == b.get("pp"):
                 aff[i, j] *= PP_AFFINITY
-    per_goal = ASSISTS_PER_GOAL
+    p1 = 1 - P_UNASSISTED
+    p2 = p1 * P_TWO_ASSISTS
     # Targets must add up to what the team's goals can carry, or no weights fit.
-    targets = targets * (team_goals * per_goal / max(targets.sum(), 1e-9))
+    targets = targets * (team_goals * ASSISTS_PER_GOAL / max(targets.sum(), 1e-9))
     w = np.maximum(targets, 1e-4).copy()
-    for _ in range(40):
-        rows = aff * w[None, :]
-        rows /= rows.sum(axis=1, keepdims=True).clip(1e-12)
-        expected = team_goals * per_goal * (scorer_p @ rows)
+    for _ in range(60):
+        q = aff * w[None, :]
+        q /= q.sum(axis=1, keepdims=True).clip(1e-12)
+        second = (q * (1 + q)).sum(axis=1, keepdims=True) - q * (1 + q)
+        expected = team_goals * (scorer_p @ (p1 * q + p2 * q * second))
         w *= np.where(expected > 1e-9, targets / expected.clip(1e-9), 1.0)
         w = np.maximum(w, 1e-6)
     rows = aff * w[None, :]

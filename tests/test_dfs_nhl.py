@@ -284,3 +284,66 @@ def test_season_rates_leave_a_missing_report_field_missing(monkeypatch):
     assert r[norm("Has Both")]["blocks"] == 0.0                   # a real zero stays zero
     assert "blocks" not in r[norm("No Realtime")]                 # missing -> board default + imputed
     assert r[norm("No Realtime")]["shots"] == 2.0
+
+
+def test_name_aliases_match_nicknames_but_not_namesakes():
+    from edge import dfs_run_nhl as R
+    from edge.names import norm
+    rows = [{"id": 1, "team": "PIT", "name": "Nick Robertson"},
+            {"id": 2, "team": "WSH", "name": "Aliaksei Protas"},
+            {"id": 3, "team": "WSH", "name": "Ilya Protas"},
+            {"id": 4, "team": "MTL", "name": "Zachary Bolduc"}]
+    rates = {norm("Nick Robertson"): {}, norm("Aliaksei Protas"): {}}
+    al = R.name_aliases(rows, rates)
+    assert al[R._initial_last("PIT", "Nicholas Robertson")] == norm("Nick Robertson")
+    assert R._initial_last("WSH", "Ilya Protas") not in al            # a rookie, not his brother
+    assert R._initial_last("MTL", "Zack Bolduc") not in al            # no last-season rates to borrow
+
+
+def test_points_stretch_widens_around_the_reference_and_keeps_the_split():
+    from edge import dfs_run_nhl as R
+    def stretched(points, assists):
+        g, a = max(points - assists, 0.02), assists
+        k = R.POINTS_REF * (points / R.POINTS_REF) ** R.POINTS_STRETCH / (g + a)
+        return g * k, a * k
+    g, a = stretched(R.POINTS_REF, 0.3)
+    assert g + a == pytest.approx(R.POINTS_REF)                       # the reference is a fixed point
+    g, a = stretched(1.2, 0.7)
+    assert g + a > 1.2 and a / (g + a) == pytest.approx(0.7 / 1.2)    # stars rise, split kept
+    g, a = stretched(0.3, 0.2)
+    assert g + a < 0.3
+
+
+def _drawn_assists(assist_matrix, star_target):
+    """Per-goal assists each skater gets when simulate()'s draw (second assister
+    redrawn once on a clash) runs on assist_matrix's rows, and the targets."""
+    rng = np.random.default_rng(0)
+    team = [{"line": "F1", "pp": "PP1"}] * 3 + [{"line": f"F{i}", "pp": None} for i in (2, 2, 2, 3, 3, 3)]
+    scorer = np.array([0.25, 0.15, 0.15, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05])
+    targets = np.array([star_target, 0.5, 0.5, 0.4, 0.4, 0.4, 0.2, 0.2, 0.2])
+    goals = 3.0
+    q = assist_matrix(team, scorer, targets, goals)
+    targets = targets * goals * nhl_sim.ASSISTS_PER_GOAL / targets.sum()
+    n, got = 200_000, np.zeros(len(team))
+    s = rng.choice(len(team), n, p=scorer)
+    cum = np.cumsum(q, axis=1)
+    n_ast = np.where(rng.random(n) < nhl_sim.P_UNASSISTED, 0,
+                     np.where(rng.random(n) < nhl_sim.P_TWO_ASSISTS, 2, 1))
+    first = (rng.random(n)[:, None] > cum[s]).sum(axis=1)
+    second = (rng.random(n)[:, None] > cum[s]).sum(axis=1)
+    clash = second == first
+    second[clash] = (rng.random(clash.sum())[:, None] > cum[s[clash]]).sum(axis=1)
+    np.add.at(got, first[n_ast >= 1], 1)
+    np.add.at(got, second[(n_ast == 2) & (second != first)], 1)
+    return got / n * goals, targets
+
+
+def test_assist_solve_does_not_short_the_top_assister():
+    # The solve must use the expectation simulate() draws, or a skater with a big
+    # share of his line's assists comes out short of his target while the rest
+    # don't (the old solve: a 0.90 target drew 0.78, every other skater ~0.97x).
+    # A small even shortfall remains: a twice-clashing second assist is dropped.
+    got, targets = _drawn_assists(nhl_sim._assist_matrix, 0.6)
+    ratio = got / targets
+    assert ratio[0] == pytest.approx(ratio[1:].mean(), rel=0.02)
+    assert ratio.min() > 0.9

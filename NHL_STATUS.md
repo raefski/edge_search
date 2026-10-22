@@ -481,3 +481,39 @@ judged; `scripts/nhl_skater_lab.py report --seeds 4` averages four, and decision
 are now taken at 4 seeds with per-night paired differences. Re-checked that way,
 cycle 1's ice-time scaling still holds: test squared error −0.58 [−1.13, −0.09] per
 night at lock, −0.56 [−1.08, −0.10] early.
+
+## 6l. Critique runner-ups, implemented and tested (2026-10-22)
+
+Every open runner-up from cycles 1-2 (NHL_CRITIQUE_LOG.md), each a lab variant fitted
+on TRAIN at 4 seeds and judged on TEST in both states.
+
+Shipped:
+- **Exact assist draw** (`edge/nhl_sim._assist_matrix`): the weight solve assumed two
+  independent assist draws; simulate() redraws a clashing second assister once. High-q
+  assisters came out short: $7.5k+ skaters given 0.706 assists simulated 0.656 (now 0.690).
+- **Points-prop stretch** (`POINTS_REF` 0.556, `POINTS_STRETCH` 1.1 in
+  edge/dfs_run_nhl.py): actual points rise ~1.3x as fast as the market's points mean.
+  Alone the stretch fit 1.3 on TRAIN; refitted with the exact draw it is 1.1.
+- **Nickname joins** (`name_aliases`): DK's Nicholas Robertson, Zack Bolduc, Will
+  Borgen, Joe Veleno and Jeffrey Viel matched to last season's stats through this
+  season's games (unique team + initial + last name; brothers never matched).
+- **Grading** (lab, `box_key`): 'J.Kulich' / 'D.Jiricek' had no space, so their games
+  were counted as scratches.
+
+Together, TEST, 4 seeds:
+
+| state | MAE | RMSE | bias | rank corr | $7.5k+ bias |
+|---|---|---|---|---|---|
+| lock, before -> after | 4.461 -> 4.449 | 5.938 -> 5.929 | +0.181 -> +0.181 | +0.386 -> +0.387 | −1.51 -> −0.91 |
+| early, before -> after | 4.467 -> 4.455 | 5.954 -> 5.945 | +0.167 -> +0.168 | +0.381 -> +0.382 | −1.47 -> −0.89 |
+
+Per night the gain is not uniform (better on 5/8 test nights in both states, pooled
+dMSE −0.12 [−0.27, +0.10] at lock). It concentrates on the stars.
+
+Not shipped: **7-D blocks factor** (0.855 -> 0.95, the TRAIN argmin): TRAIN RMSE moved
+0.0002; TEST worse per night at lock (+0.047 [−0.018, +0.141], 3/8). The critic's
+gap came mostly from TEST nights; recheck at ~30 nights.
+
+Still open: the assist draw delivers about 4.5% fewer assists than ASSISTS_PER_GOAL
+for every skater (a twice-clashing second assist is dropped); fixing it would add
+~0.06 pts per skater to a model that already over-projects by +0.17.

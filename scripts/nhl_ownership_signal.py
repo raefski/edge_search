@@ -52,9 +52,13 @@ BOX = ROOT / "data" / "nhl_cache" / "box"
 
 
 def box_key(team: str, name: str) -> tuple:
-    """(team, first initial, norm(last)) -- the box score writes 'C. McDavid'."""
+    """(team, first initial, norm(last)) -- the box score writes 'C. McDavid', and
+    for two players 'J.Kulich' / 'D.Jiricek' with no space (whose games were counted
+    as scratches until 2026-10-22)."""
     if ". " in name:
         ini, _, last = name.partition(". ")
+    elif "." in name and " " not in name:
+        ini, _, last = name.partition(".")
     else:
         first, *rest = name.split()
         ini, last = first[:1], " ".join(rest)

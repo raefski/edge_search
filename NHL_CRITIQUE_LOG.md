@@ -147,3 +147,49 @@ per night at lock (6/8), −0.56 [−1.08, −0.10] early (5/8): it stands.
   on TRAIN moved nothing yet.
 - The box score writes "J.Kulich" without a space, so his games count as scratches,
   not graded (lab `box_key`).
+
+## Runner-ups of cycles 1-2, implemented (2026-10-22, at Adam's request)
+
+Fresh 4-seed baseline after fixing the lab's grading (`box_key`: 'J.Kulich' /
+'D.Jiricek', written without a space, were counted as scratches; scratches at lock
+70 -> 59): lock test RMSE 5.938, early 5.954. Each candidate fitted on TRAIN lock at
+4 seeds (`scratchpad ru/ru.py`), then TEST in both states.
+
+| candidate | TRAIN fit | lock test RMSE | early test RMSE | test per night (lock) | decision |
+|---|---|---|---|---|---|
+| 7-D blocks factor | 0.855 -> 0.95 (train RMSE −0.0002, flat 0.855-1.05) | 5.938 -> 5.938 | 5.954 -> 5.953 | +0.047 [−0.018, +0.141], 3/8 | **not shipped** |
+| points stretch alone | power 1.3 (6.0857 -> 6.0816) | 5.938 -> 5.927 | 5.954 -> 5.941 | −0.04 [−0.63, +0.46], 3/8; train per night worse 7/11 | superseded |
+| exact assist draw | no parameter (6.0857 -> 6.0816) | 5.938 -> 5.936 | 5.954 -> 5.953 | +0.004, 5/8 | **shipped** (correctness) |
+| exact draw + stretch | power 1.1 given the draw (6.0803) | 5.938 -> 5.929 | 5.954 -> 5.946 | −0.036 [−0.38, +0.26], 5/8 | **shipped** |
+| nickname name joins | none (5 skaters, 21 games) | in the row below | | | **shipped** (correctness) |
+
+- **The assist draw** was confirmed on a 12-game slate at 20,000 sims: $7.5k+ given 0.706
+  simulated 0.656 under the old solve, 0.690 under the exact one. The 0.5-4k tier was
+  0.218 -> 0.221 before, 0.216 after. A uniform ~4.5% shortfall remains, because a
+  twice-clashing second assist is dropped. It is left alone: fixing it adds ~0.06 pts per
+  skater to a model already +0.18 high.
+- **The 7-D blocks gap** (flagged D proj 1.17 vs 1.38 actual on TRAIN, against 1.34 vs
+  1.44 unflagged) is half the size on TRAIN that it is on TEST. Choosing the factor on
+  TEST would be fitting on held-out data.
+- **Nickname joins** go through this season's NHL game rows: a unique (team, first
+  initial, last name), and the NHL name must have last-season rates. Of 66 board
+  skaters without rates, 5 were spellings (Nicholas/Nick Robertson, Zack/Zachary
+  Bolduc, Will/William Borgen, Joe/Joseph Veleno, Jeffrey/Jeff Viel). The rest are
+  rookies, or Barkov, who has no 2025-26 season. The Novak / Roslovic misses the cycle-1
+  critic named were the paging bug fixed in cycle 2.
+
+**Shipped together** (lab re-cached through the shipped code; before = the post-cycle-2
+cache with the old solve), 4 seeds:
+
+| state | split | MAE | RMSE | bias | rank corr | $7.5k+ bias |
+|---|---|---|---|---|---|---|
+| lock | train, before -> after | 4.578 -> 4.571 | 6.086 -> 6.078 | +0.164 -> +0.162 | +0.367 -> +0.366 | −1.27 -> −0.67 |
+| lock | **test**, before -> after | 4.461 -> **4.449** | 5.938 -> **5.929** | +0.181 -> +0.181 | +0.386 -> +0.387 | −1.51 -> **−0.91** |
+| early | train, before -> after | 4.587 -> 4.581 | 6.098 -> 6.092 | +0.155 -> +0.154 | +0.371 -> +0.370 | −1.36 -> −0.75 |
+| early | **test**, before -> after | 4.467 -> **4.455** | 5.954 -> **5.945** | +0.167 -> +0.168 | +0.381 -> +0.382 | −1.47 -> **−0.89** |
+
+Pooled test squared error −0.118 [−0.273, +0.101] at lock, −0.103 [−0.253, +0.113]
+early; per night better on 5/8 nights in both states. The gain concentrates on the
+stars rather than spreading across nights. Nickname re-joins: bias −2.64 -> −1.96,
+MSE 55.3 -> 51.9 (n 21). Parity: production == lab variants to 0.005 on 3 slates (the
+lab's reference level rounded to production's 0.556).

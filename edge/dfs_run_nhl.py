@@ -59,6 +59,18 @@ DEFAULT_BLOCKS = {"D": 1.25, "C": 0.45, "W": 0.4}
 #: 1.03], assists 0.97 [0.91, 1.04]; DK points 0.902 [0.88, 0.93]. Applied to
 #: the 7th D too, whose own drop is larger (-3.3 min) but fitted on 110 games.
 SEVEN_D_SCALE = {"blocks": 0.855, "shots": 0.933, "goals": 0.92, "assists": 0.97}
+#: The DK points line is too flat: actual points rise ~1.3x as fast as the
+#: market's points mean (all four lab split/state cells), and $7.5k+ skaters ran
+#: 1.3-1.5 pts under projection. A prop skater's points mean m becomes
+#: POINTS_REF * (m / POINTS_REF) ** POINTS_STRETCH, goals and assists keeping the
+#: market's split. POINTS_REF = geometric mean of the prop points means on the
+#: lab's TRAIN nights at lock (0.556). POINTS_STRETCH FITTED 2026-10-22 on TRAIN
+#: (11 nights, 2,192 skater-games, 4 seeds) together with the exact assist draw
+#: (edge/nhl_sim._assist_matrix): grid 1.0-1.3, RMSE 6.0816 -> 6.0803. Alone, the
+#: stretch fit 1.3; with the draw fixed (which also feeds stars) it is 1.1.
+#: NHL_CRITIQUE_LOG.md, runner-ups.
+POINTS_REF = 0.556
+POINTS_STRETCH = 1.1
 CURRENT_SEASON = "20262027"
 #: THIS SEASON'S ROLE (NHL_CRITIQUE_LOG.md cycle 1). Every mean no market sets
 #: -- goals, assists and shots of a skater without props, blocks of every
@@ -194,15 +206,35 @@ def group_toi(rows: list[dict]) -> dict:
     return out
 
 
-def current_toi(date: str) -> dict | None:
-    """This season's ice time before `date` (group_toi), or None when the NHL
-    stats API cannot be reached -- the board then runs on last season alone and
-    says so (info["role_source"])."""
+def current_toi(date: str) -> list | None:
+    """This season's skater-games before `date` (nhl.skater_game_toi rows), or
+    None when the NHL stats API cannot be reached -- the board then runs on last
+    season alone and says so (info["role_source"])."""
     try:
-        return group_toi(nhl.skater_game_toi(CURRENT_SEASON, date))
+        return nhl.skater_game_toi(CURRENT_SEASON, date)
     except Exception as exc:                                # noqa: BLE001
         log.warning("nhl: this season's ice time unavailable (%s)", exc)
         return None
+
+
+def _initial_last(team: str, name: str) -> tuple:
+    first, _, last = name.partition(" ")
+    return (team, norm(first)[:1], norm(last or first))
+
+
+def name_aliases(rows: list[dict], rates: dict) -> dict:
+    """{(team, first initial, norm(last)): the NHL's norm(full name)} from this
+    season's games, for a DK spelling the NHL writes differently -- DK's
+    "Nicholas Robertson", "Zack Bolduc", "Will Borgen", "Joe Veleno", "Jeffrey
+    Viel" are the NHL's Nick / Zachary / William / Joseph / Jeff and had no
+    last-season rates (2026-10-22). Only when exactly one player on the team has
+    that initial and last name, and he has last-season rates: a debuting rookie
+    who shares a teammate's surname (the two Protas) is never matched."""
+    ids: dict = {}
+    for r in rows:
+        ids.setdefault(_initial_last(r["team"], r["name"]), {})[r["id"]] = norm(r["name"])
+    return {k: next(iter(v.values())) for k, v in ids.items()
+            if len(v) == 1 and next(iter(v.values())) in rates}
 
 
 def role_ratio(toi_last: float | None, recent: list | None, k: float = ROLE_K,
@@ -302,7 +334,9 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
         log.warning("nhl: no starting goalies (%s)", exc)
         starters = {}
     rates = _season_rates()
-    toi_now = current_toi(date)
+    toi_rows = current_toi(date)
+    toi_now = group_toi(toi_rows) if toi_rows is not None else None
+    aliases = name_aliases(toi_rows or [], rates)
     seven_d = seven_d_teams(lines)
 
     info = {"games": len(games), "priced": len(salaries), "implied": implied,
@@ -344,7 +378,8 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
         if (ln.get("injury") or "").lower() in ("ir", "out", "ltir"):
             continue
         scale = implied[t] / LEAGUE_TEAM_GOALS
-        base = rates.get(key) or {}
+        rkey = key if key in rates else aliases.get(_initial_last(t, sal["name"]), key)
+        base = rates.get(rkey) or {}
         shots = nhl_sim.market_mean(pm.get("player_shots_on_goal"))
         points = nhl_sim.market_mean(pm.get("player_points"))
         assists = nhl_sim.market_mean(pm.get("player_assists"))
@@ -359,13 +394,15 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
         else:
             a_ = assists
             g_ = max(points - assists, 0.02)
+            k = POINTS_REF * (points / POINTS_REF) ** POINTS_STRETCH / (g_ + a_)
+            g_, a_ = g_ * k, a_ * k
         means.update({"shots": max(shots, g_ + 0.05), "goals": g_, "assists": a_,
                       "blocks": base.get("blocks", DEFAULT_BLOCKS[pos])})
         if "blocks" not in base:
             row["imputed"].append("blocks")
         if row["imputed"]:
             info["imputed"] += 1
-        r = role_ratio(base.get("toi"), (toi_now or {}).get((key, "D" if pos == "D" else "F")))
+        r = role_ratio(base.get("toi"), (toi_now or {}).get((rkey, "D" if pos == "D" else "F")))
         if r != 1.0:
             means = scale_role(means, r, row["imputed"])
             row["role"] = round(r, 3)
