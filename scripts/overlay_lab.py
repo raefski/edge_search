@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import math
 import sys
 from datetime import date, datetime, timedelta
@@ -98,14 +99,29 @@ def fit_pace(train, finals, first, last, k=5):
             "all": every, "n": n}
 
 
-def entry_ev(c, m_call, pace) -> tuple[float, float]:
+def tables() -> dict:
+    """Payout tiers per contest id (data/cache/contest_payouts.json: the live alert's
+    pricing cache plus the tables collect_finals keeps from its finals lookups)."""
+    return json.loads(O.PAYOUTS.read_text()) if O.PAYOUTS.exists() else {}
+
+
+def entry_value(c, field: float, tiers=None) -> float:
+    """$ one more entry is worth when `field` others are in: the contest's real
+    payout tiers as the live alert prices it (entry_edge), else the flat
+    approximation pool/(field+1) - fee."""
+    if tiers:
+        return E.entry_edge(tiers, round(field), c["fee"])["roi"] * c["fee"]
+    return c["prize_pool"] / (field + 1) - c["fee"]
+
+
+def entry_ev(c, m_call, pace, tiers=None) -> tuple[float, float]:
     """(expected value of one entry, P(overlay at lock)) over the train spread of
-    call->final shares in this contest's pace bin. Flat payout: pool/(field+1) - fee."""
+    call->final shares in this contest's pace bin."""
     e, cap, pp, fee = c["points"][m_call], c["cap"], c["prize_pool"], c["fee"]
     v = pace_v(c, m_call)
     ss = pace["all"] if v is None else pace["spread"][sum(v >= x for x in pace["cuts"])]
     fields = [e + min(1.0, x) * (cap - e) for x in ss]
-    return (sum(pp / (f + 1) - fee for f in fields) / len(fields),
+    return (sum(entry_value(c, f, tiers) for f in fields) / len(fields),
             sum(pp > fee * f for f in fields) / len(fields))
 
 
@@ -133,6 +149,7 @@ def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None,
     train = {k: v for k, v in contests.items() if lock_day(v) < cutoff}
     model = (model_fn or E.fit_late_fill)(train, {k: v for k, v in finals.items() if k in train})
     pace = fit_pace(train, finals, first, last) if (pace or ev) else None
+    tabs = tables()
     rows = []
     for cid, c in contests.items():
         if lock_day(c) < cutoff or cid not in finals or c["cap"] < 10:
@@ -144,15 +161,17 @@ def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None,
         f = forecast(c, cid, hist, model, m, pace)
         pp, fee = c.get("prize_pool"), c.get("fee")
         pred = None if pp is None or fee is None else pp > fee * f
+        tiers = (tabs.get(cid) or {}).get("tiers")
         if ev and pred is not None:
-            pred = entry_ev(c, m, pace)[0] > 0
+            pred = entry_ev(c, m, pace, tiers)[0] > 0
         rows.append({"cid": cid, "sport": c.get("sport"), "cap": c["cap"],
                      "band": E._band(c["points"][m] / c["cap"]), "err": (f - final) / c["cap"],
                      "ov_true": None if pp is None or fee is None else pp > fee * final,
                      "ov_pred": pred,
-                     # one extra entry's value if entered on this call: an even share of the
-                     # pool less the fee (flat-payout approximation; tiers ignored)
-                     "ev": None if pp is None or fee is None else pp / (final + 1) - fee})
+                     # one extra entry's value at the real final field, priced with the
+                     # contest's payout tiers when cached (else flat; "priced" counts them)
+                     "priced": bool(tiers),
+                     "ev": None if pp is None or fee is None else entry_value(c, final, tiers)})
     return rows, model
 
 
@@ -167,7 +186,8 @@ def summarize(rows) -> dict:
             "ov_n": sum(r["ov_true"] for r in ov),
             "missed": sum(r["ov_true"] and not r["ov_pred"] for r in ov),
             "false": sum(r["ov_pred"] and not r["ov_true"] for r in ov),
-            "ev": sum(r["ev"] for r in ov if r["ov_pred"])}
+            "ev": sum(r["ev"] for r in ov if r["ov_pred"]),
+            "priced": sum(r["priced"] for r in rows)}
 
 
 def fmt(label, s) -> str:
@@ -175,7 +195,7 @@ def fmt(label, s) -> str:
         return f"{label:<14} n=0"
     flag = "  (not enough data)" if s["n"] < 30 else ""
     return (f"{label:<14} n={s['n']:>5}  MAE {s['mae']:.3f}  RMSE {s['rmse']:.3f}  bias {s['bias']:+.3f}"
-            f"  overlays {s['ov_n']:>4}  missed {s['missed']:>3}  false {s['false']:>3}  $/1-entry-each {s['ev']:+8.0f}{flag}")
+            f"  overlays {s['ov_n']:>4}  missed {s['missed']:>3}  false {s['false']:>3}  $/1-entry-each {s['ev']:+8.0f}  tiered {s['priced']}/{s['n']}{flag}")
 
 
 def report(cutoff: date, first: float, last: float, pace=False, ev=False) -> list[str]:

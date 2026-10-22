@@ -117,3 +117,20 @@ model wins both.
   real payout tiers (`entry_edge`, as live does), so the lab's $ matches the alert.
 - 2+ more weeks of test days, so no single day carries the result.
 - Re-run cycle 2 with both.
+
+### Cycle 2 follow-up -- real payout tiers (2026-10-22)
+
+The lab now prices each call with the contest's payout tiers (`entry_edge`, as the
+live alert does), from data/cache/contest_payouts.json. Contests without a cached
+table fall back to the flat approximation, and the lab prints the tiered count.
+
+Result: tiered == flat for all 1,124 contests with both a table and a final
+(|diff| <= $0.01). Every contest here finished with at least as many entries as
+paid places, so the whole pool pays out, and one entry's mean value is exactly
+pool/(field+1) - fee. **Cycle 2's $ figures were already exact in expectation; its
+decision stands.** Tiers would only matter for the spread of an entry's outcome
+(variance, bankroll), not for its mean. So I stopped a paced backfill of the 557
+test contests missing tables after 2 lookups, and dropped a collector change that
+would have kept tables from the finals lookups.
+What would still decide cycle 2: 2+ more weeks of test days (the 5 contests worth
+$232 dominate today).
