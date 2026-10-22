@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-22T18:29:36+00:00",
+"generated_at": "2026-10-22T19:00:00+00:00",
 "goalies": {
 "2026-10-22": {
 "ANA": {
@@ -12,7 +12,7 @@
 },
 "CAR": {
 "goalie": "Brandon Bussi",
-"status": null
+"status": "Likely"
 },
 "CGY": {
 "goalie": "Devin Cooley",
@@ -5298,6 +5298,40 @@
 "pos": "c",
 "pp": "PP2"
 },
+"J.T. Compher": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 160,
+"toiSeconds": 27
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 78,
+"toiSeconds": 56
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "John Gibson": {
 "gtd": false,
 "injury": null,
@@ -5537,40 +5571,6 @@
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP1"
-},
-"Sheldon Dries": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 93,
-"toiSeconds": 37
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 47,
-"toiSeconds": 17
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
-"pp": null
 },
 "Viktor Arvidsson": {
 "gtd": false,
