@@ -78,10 +78,9 @@ def test_too_many_roles_are_shared_so_a_star_keeps_more_than_proportional():
              "history": [(36.0, True)] * 10}]
     team += [{"id": str(i), "position": "F", "inactive": False, "starter": None,
               "history": [(24.0, False)] * 10} for i in range(11)]          # 300 minutes of roles
-    shared = NM.project(team)["star"]["minutes"]
-    proportional = NM.project(team, {"STARTER_TILT": 0.0})["star"]["minutes"]
-    assert proportional == pytest.approx(36 * 240 / 300, abs=0.2) and shared > proportional
-    assert sum(p["minutes"] for p in NM.project(team).values()) == pytest.approx(240, abs=0.6)
+    out = NM.project(team)
+    assert out["star"]["minutes"] > 36 * 240 / 300 + 2                # far more than proportional (28.8)
+    assert sum(p["minutes"] for p in out.values()) == pytest.approx(240, abs=0.6)
 
 
 # ── the lineup snapshot ────────────────────────────────────────────────────
@@ -242,8 +241,14 @@ def test_the_first_games_back_from_an_absence_are_ramped():
     assert NM.project(team, {"SALARY_NUDGE": None})["x"]["minutes"] == pytest.approx(30 * NM.RAMP[0], abs=0.1)
 
 
-def test_salary_nudges_minutes_toward_the_expensive_player():
+def test_a_short_handed_team_gives_the_extra_minutes_to_the_bench_end_not_the_star():
+    """Critique cycle 1: the team's gap to 240 is absorbed by role rank -- stars barely move,
+    the 8th-12th men take most of it (edge/nba_minutes_gap.py)."""
+    roles = [36, 32, 30, 28, 26, 20, 16, 12, 10, 8, 6, 4]               # 228: 12 short of 240
     team = [{"id": str(i), "position": "G", "inactive": False, "starter": None,
-             "history": [(24.0, i < 5)] * 10, "salary": 9000 if i == 0 else 4000} for i in range(10)]
+             "history": [(float(m), i < 5)] * 10} for i, m in enumerate(roles)]
     out = NM.project(team)
-    assert out["0"]["minutes"] > out["1"]["minutes"]
+    assert sum(p["minutes"] for p in out.values()) == pytest.approx(240, abs=0.6)
+    gain = {i: out[str(i)]["minutes"] - roles[i] for i in range(12)}
+    assert abs(gain[0]) < 1.0 and sum(gain[i] for i in range(7, 12)) > sum(gain[i] for i in range(5))
+    assert NM.SALARY_NUDGE is None                                      # cycle 1: salary adds nothing now

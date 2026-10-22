@@ -21,12 +21,14 @@ def _player(pid, name, team="NYK", starter=False, inactive=False, confirmed=True
 
 # ── the minutes model ──────────────────────────────────────────────────────
 def test_a_scratched_regulars_minutes_go_to_the_teammates_and_the_team_stays_at_240():
-    team = [{"id": str(i), "position": "G", "inactive": i == 0, "starter": None,
-             "history": [(30.0 if i < 5 else 18.0, i < 5)] * 10} for i in range(10)]
+    roles = [36, 32, 30, 30, 28, 24, 20, 14, 10, 8, 4, 3, 1]            # 240 with everyone in
+    team = [{"id": str(i), "position": "G", "inactive": i == 1, "starter": None,
+             "history": [(float(m), i < 5)] * 10} for i, m in enumerate(roles)]
     proj = NM.project(team)
-    assert "0" not in proj                                          # he does not play
+    assert "1" not in proj                                          # he does not play
     assert sum(p["minutes"] for p in proj.values()) == pytest.approx(240, abs=0.5)
-    assert all(p["minutes"] > p["base"] for p in proj.values())     # 30 minutes shared out
+    assert sum(p["minutes"] - p["base"] for p in proj.values()) == pytest.approx(32, abs=0.6)
+    assert proj["0"]["minutes"] - proj["0"]["base"] < proj["8"]["minutes"] - proj["8"]["base"]  # the bench absorbs
 
 
 def test_a_starting_five_alone_is_not_pushed_to_48_minutes_each():
@@ -58,15 +60,19 @@ def _night(game_id="0022600001", out_star=False, promoted=False):
     star = _player("1", "Jalen Brunson", starter=not out_star, inactive=out_star)
     bench = _player("2", "Miles McBride", starter=promoted)
     others = [_player(str(i), f"Player {i}", starter=(i < 7 and not promoted) or i < 6)
-              for i in range(3, 11)]
+              for i in range(3, 14)]
     return [{"game_id": game_id, "status": "7:30 pm ET", "home": "NYK", "away": "PHI",
              "players": [star, bench] + others}]
 
 
+# A real game-night roster: 13 dressed, roles summing to ~233 (the rank-gap allocation
+# of 2026-10-21 is fitted on such teams; a 10-man team summing to 208 is not one).
+_BENCH = {7: 14, 8: 12, 9: 10, 10: 8, 11: 6, 12: 4, 13: 3}
 HIST = {"1": _hist(36, True, 1.2), "2": _hist(20, False, 1.0),
-        **{str(i): _hist(26 if i < 7 else 12, i < 7, 0.9) for i in range(3, 11)}}
+        **{str(i): _hist(30 if i < 7 else _BENCH[i], i < 7, 0.9) for i in range(3, 14)}}
 DK = {("milesmcbride", "NYK"): {"salary": 3900, "status": None},
-      ("jalenbrunson", "NYK"): {"salary": 9800, "status": None}}
+      ("jalenbrunson", "NYK"): {"salary": 9800, "status": None},
+      **{(f"player{i}", "NYK"): {"salary": 3000, "status": None} for i in range(7, 14)}}
 
 
 def test_a_star_ruled_out_after_the_first_look_fires_and_names_the_cheap_beneficiary():
@@ -74,7 +80,8 @@ def test_a_star_ruled_out_after_the_first_look_fires_and_names_the_cheap_benefic
     alerts, _ = S.assess(_night(out_star=True), HIST, {}, DK, seen)
     a = alerts[0]
     assert "🔴 Brunson OUT (inactive list)" in a["title"] and a["team"] == "NYK"
-    assert "McBride [NYK] $3,900" in a["body"] and a["priority"] in ("high", "urgent")
+    # his minutes go down the rotation: the cheap end of the bench gains most (rank-gap, 10/21)
+    assert "[NYK] $3,000" in a["body"] and a["priority"] in ("high", "urgent")
     assert "red_circle" in a["tags"] and a["players"] == ["1"]
 
 

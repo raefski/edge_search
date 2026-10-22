@@ -7,6 +7,7 @@ slice, and candidate improvements -- each fitted on 2024-25 and scored on 2025-2
     python3 scripts/nba_minutes_lab.py ablate            # v1 -> the shipped v2, one change at a time
     python3 scripts/nba_minutes_lab.py fit               # re-run the coordinate-descent fit (~30 min)
     python3 scripts/nba_minutes_lab.py salary            # DK salary on top of v2, leave one night out
+    python3 scripts/nba_minutes_lab.py report            # the shipped model's standard table (critique loop)
 
 WHY NOT scripts/nba_minutes_backtest.py ALONE
 That backtest starts every season with empty histories and scores only players with
@@ -254,7 +255,15 @@ def final_params() -> dict:
             "split": True, "split_k": NM.SPLIT_K, "split_gap": NM.SPLIT_GAP,
             "rookie": (NM.ROOKIE_PRIOR[0], NM.ROOKIE_PRIOR[1], 0.0), "rookie_k": NM.ROOKIE_K, "ramp": NM.RAMP,
             "role_pow": NM.ROLE_POW_V2, "pos_w": NM.POS_W_V2, "alloc": "power", "alloc_pow": NM.ALLOC_POW,
-            "starter_tilt": NM.STARTER_TILT, "tilt_over": 0.0}
+            "starter_tilt": NM.STARTER_TILT, "tilt_over": 0.0, **_shipped_alloc()}
+
+
+def _shipped_alloc() -> dict:
+    """The shipped 240 step: critique cycle 1's rank-gap allocation (edge/nba_minutes_gap.py)."""
+    if getattr(NM, "ALLOC", None) != "rank_gap":
+        return {}
+    from edge.nba_minutes_gap import GAP_COEF
+    return {"alloc": "rank_gap", "gap_coef": GAP_COEF}
 
 
 def roles(D: dict, prm: dict) -> dict:
@@ -322,6 +331,101 @@ def _rookie_role(r: dict, prm: dict) -> float | None:
 
 
 def project_game(D: dict, g: dict, R: dict, prm: dict, mode: str) -> dict:
+    team, base, srate = game_roles(D, g, R, prm, mode)
+    if prm.get("alloc") == "rank_gap" and sum(1 for pl in team if not pl["inactive"]) >= prm["full_roster"]:
+        return _rank_gap(team, base, prm["gap_coef"][mode])
+    return _redistribute(team, base, srate, prm)
+
+
+GAP_RANKS = 13          # ranks 1-13 get their own cell, 14+ pooled with 13 (0-based cell 13 = rank 14+)
+
+
+def _rank_gap(team: list, base: list, coef: dict) -> dict:
+    """Critique cycle 1: close the team's gap to 240 by ROLE RANK, not in proportion to
+    role. G = 240 - sum of active roles; player at rank k gets a(k, sign G) + b(k, sign G) x G,
+    then the remaining difference is shared by the slopes, clipped to 0-48 and re-shared."""
+    act = [(pl["id"], b) for pl, b in zip(team, base) if not pl["inactive"]]
+    G = NM.TEAM_MIN - sum(b for _, b in act)
+    order = sorted(act, key=lambda x: -x[1])
+    d, slope = {}, {}
+    for rk, (i, b) in enumerate(order):
+        a0, a1 = coef[(min(rk, GAP_RANKS), G > 0)]
+        d[i], slope[i] = a0 + a1 * G, max(a1, 1e-3)
+    role = dict(act)
+    out = {i: role[i] + d[i] for i in role}
+    for _ in range(5):                          # close to 240 by the slopes; nobody outside 0-48
+        miss = NM.TEAM_MIN - sum(out.values())
+        free = {i: slope[i] for i in out if (miss > 0 and out[i] < 48.0) or (miss < 0 and out[i] > 0.0)}
+        if abs(miss) < 1e-6 or not free:
+            break
+        ss = sum(free.values())
+        for i in free:
+            out[i] += miss * free[i] / ss
+        out = {i: min(48.0, max(0.0, m)) for i, m in out.items()}
+    return out
+
+
+def gap_rows(D: dict, prm: dict, season: str, mode: str) -> list:
+    """(cell, G > 0, G, actual - role) for every active player of a full team-game."""
+    R = roles(D, prm)
+    out = []
+    for g in D["games"]:
+        if g["season"] != season:
+            continue
+        team, base, _ = game_roles(D, g, R, prm, mode)
+        act = [(pl["id"], b) for pl, b in zip(team, base) if not pl["inactive"]]
+        if len(act) < prm["full_roster"]:
+            continue
+        G = NM.TEAM_MIN - sum(b for _, b in act)
+        for rk, (i, b) in enumerate(sorted(act, key=lambda x: -x[1])):
+            a = D["rows"][i]["actual"]
+            if a is not None:
+                out.append((min(rk, GAP_RANKS), G > 0, G, a - b))
+    return out
+
+
+def fit_gap(D: dict, prm: dict, season: str = "2024-25") -> dict:
+    """OLS of (actual - role) on G in each (rank cell, sign of G), per mode."""
+    coef = {}
+    for mode in ("confirmed", "inactives"):
+        cells = defaultdict(list)
+        for k, pos_, G, y in gap_rows(D, prm, season, mode):
+            cells[(k, pos_)].append((G, y))
+        c = {}
+        for key, v in cells.items():
+            v = np.array(v)
+            c[key] = tuple(float(x) for x in np.linalg.lstsq(np.c_[np.ones(len(v)), v[:, 0]], v[:, 1], rcond=None)[0])
+        coef[mode] = c
+    return coef
+
+
+def write_gap_module(D: dict, coef: dict, prm: dict) -> None:
+    """edge/nba_minutes_gap.py: the rank-gap coefficients with their provenance."""
+    from datetime import date as _date
+    n = {m: len(gap_rows(D, prm, "2024-25", m)) for m in coef}
+    lines = ['"""Rank-gap allocation coefficients for edge/nba_minutes.project (critique cycle 1).',
+             "",
+             "GENERATED by `python3 scripts/nba_minutes_lab.py cycle1 --write` -- do not edit by hand.",
+             f"Fitted {_date.today().isoformat()} on 2024-25: OLS of (actual minutes - role) on",
+             "G = 240 - sum of the team's active roles, in each (role rank, sign of G) cell -- ranks",
+             f"1-13 by role, 14+ pooled into cell 13 -- separately for the two information states",
+             f"(player-games: confirmed {n['confirmed']:,}, inactives {n['inactives']:,}).",
+             "Key: (0-based rank cell, G > 0) -> (intercept a, slope b); minutes = role + a + b x G,",
+             "then the team is closed to 240 by the slopes. NBA_MINUTES_CRITIQUE_LOG.md has the numbers.",
+             '"""', "", "GAP_COEF = {"]
+    for mode, c in coef.items():
+        lines.append(f'    "{mode}": {{')
+        for key in sorted(c):
+            a0, a1 = c[key]
+            lines.append(f"        ({key[0]}, {key[1]}): ({a0:.4f}, {a1:.5f}),")
+        lines.append("    },")
+    lines.append("}")
+    (ROOT / "edge" / "nba_minutes_gap.py").write_text("\n".join(lines) + "\n")
+    print("wrote edge/nba_minutes_gap.py", file=sys.stderr)
+
+
+def game_roles(D: dict, g: dict, R: dict, prm: dict, mode: str):
+    """(team, adjusted roles, start rates) for one team-game, before any allocation."""
     rows = D["rows"]
     idx = g["idx"]
     ps = [rows[i] for i in idx]
@@ -358,7 +462,7 @@ def project_game(D: dict, g: dict, R: dict, prm: dict, mode: str) -> dict:
              "starter": r["starter"] if known_starters else None,
              "starting": (1.0 if r["starter"] else 0.0) if known_starters else s_}
             for i, r, s_ in zip(idx, ps, srate)]
-    return _redistribute(team, base, srate, prm)
+    return team, base, srate
 
 
 def _groups(position):
@@ -678,10 +782,45 @@ def salary_test(D: dict, prm: dict) -> list[str]:
             f"all nights: minutes = {b[0]:.2f} + {b[1]:.3f} x model + {b[2]:+.3f} x salary($k)"]
 
 
+REPORT_SLICES = ["all", "opening (team games 1-5)", "rookie / no NBA history", "lottery rookie",
+                 "new team (first 5)", "back from 5+ missed", "teammate of a scratch", "promoted starter",
+                 "high role (base 28+)", "roles/240 >1.15, starter"]
+
+
+def report(D: dict, prm: dict, legacy: bool = True) -> str:
+    """The standard table of the critique loop: RMSE and MAE (bias) by slice, both modes,
+    every season; plus the legacy protocol (scripts/nba_minutes_backtest.py) through the
+    production edge/nba_minutes.project."""
+    res = run(D, prm)
+    out = ["| mode | season | n | RMSE all | " + " | ".join(REPORT_SLICES) + " |",
+           "|---|---|---|---|" + "---|" * len(REPORT_SLICES)]
+    for m in res:
+        for s_ in EVAL:
+            c = res[m].get(s_)
+            if not c:
+                continue
+            out.append(f"| {m} | {s_} | {c['all']['n']:,} | {c['all']['rmse']:.3f} | " + " | ".join(
+                f"{c[k]['mae']:.2f} ({c[k]['bias']:+.1f})" if k in c else "-" for k in REPORT_SLICES) + " |")
+    if not legacy:
+        return "\n".join(out)
+    try:
+        import scripts.nba_minutes_backtest as BT
+        test = BT.build("2025-26")
+        for known, lab in ((True, "confirmed"), (False, "inactives")):
+            sc = BT.score(test, {"SALARY_NUDGE": None}, starters_known=known)
+            out.append(f"\nlegacy protocol 2025-26, {lab}: all {sc['all'][0]:.3f}, teammates of a scratch "
+                       f"{sc['teammates of a scratch'][0]:.3f}, promoted starters {sc['promoted starters'][0]:.3f} "
+                       f"({sc['promoted starters'][1]:+.2f}), n {sc['all'][2]:,}")
+    except Exception as exc:  # noqa: BLE001
+        out.append(f"(legacy protocol unavailable: {exc})")
+    return "\n".join(out)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("cmd", choices=["diagnose", "ablate", "fit", "salary"])
+    ap.add_argument("cmd", choices=["diagnose", "ablate", "fit", "salary", "report", "cycle1"])
     ap.add_argument("--mode", default="confirmed", choices=["confirmed", "inactives"])
+    ap.add_argument("--write", action="store_true", help="cycle1: write edge/nba_minutes_gap.py")
     a = ap.parse_args()
     D = load()
     if a.cmd == "diagnose":
@@ -689,6 +828,18 @@ def main() -> int:
             print(table(evaluate(D, SHIPPED, mode), f"shipped model, {mode}"))
         return 0
     head = ["| model | mode | season | RMSE all | " + " | ".join(KEY) + " |", "|---|---|---|---|" + "---|" * len(KEY)]
+    if a.cmd == "cycle1":
+        F = final_params()
+        coef = fit_gap(D, F)
+        P = {**F, "alloc": "rank_gap", "gap_coef": coef}
+        print(report(D, P, legacy=False))
+        print("\n".join(salary_test(D, P)))
+        if a.write:
+            write_gap_module(D, coef, F)
+        return 0
+    if a.cmd == "report":
+        print(report(D, final_params()))
+        return 0
     if a.cmd == "salary":
         print("\n".join(salary_test(D, final_params()) + salary_test(D, SHIPPED)))
         return 0

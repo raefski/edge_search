@@ -14,12 +14,11 @@ scripts/nba_minutes_lab.py):
                 one that matches tonight. A rookie (< ROOKIE_GAMES games) starts
                 from his draft pick (ROOKIE_PRIOR); a player back from a 5+ game
                 absence is ramped in (RAMP).
-  2. missing    M = the roles of tonight's inactive regulars;
-  3. shared     each available player gets role^ROLE_POW x (1 + POS_W x his share
-                of the missing position groups); M is split by weight;
-  4. 240        the team is shared to 240 by m^ALLOC_POW x (1 + STARTER_TILT x
-                starting) -- both ways, over or under -- nobody past 48;
-  5. salary     the DK salary nudges the result (SALARY_NUDGE).
+  2. 240        G = 240 - the sum of the active players' roles; the player at role
+                rank k moves a(k) + b(k) x G (rank_gap, coefficients fitted per rank
+                and sign of G in edge/nba_minutes_gap.py): stars barely move, the
+                8th-12th men absorb the gap (critique cycle 1). Fewer than 8 active:
+                the missing minutes are shared by role^ROLE_POW x position, no 240.
 
 `project_v1` is the 2026-10-15 model (fixed windows, promotion lift, EXCESS_POW),
 kept for the record. Minutes only; points come from DK points per minute.
@@ -122,11 +121,18 @@ ROOKIE_PRIOR = (22.19, -4.28)
 ROOKIE_K = 0.5
 #: Undrafted / unknown pick.
 PICK_UNDRAFTED = 70
-#: DK salary on top of the model: minutes = a + b x model + c x salary ($k). Leave one
-#: night out on the 11 nights with cached DK salaries (2025-26 contest nights + 10/20/26,
-#: 1,517 player-games): MAE 5.141 -> 4.973, RMSE 6.546 -> 6.491 (on v1 it added nothing).
-#: Small sample; refit as nights accrue.
-SALARY_NUDGE = (-2.22, 1.031, 0.365)
+#: DK salary on top of the model: minutes = a + b x model + c x salary ($k). It helped v2
+#: (leave one night out, 11 salary nights, 1,517 player-games: MAE 5.141 -> 4.973) only
+#: because v2's 240 step squeezed stars; after critique cycle 1's rank-gap allocation it
+#: adds nothing (4.830 -> 4.834), so it is OFF. (-2.22, 1.031, 0.365) was the v2 fit.
+SALARY_NUDGE = None
+#: Critique cycle 1 (NBA_MINUTES_CRITIQUE_LOG.md): the team's gap to 240 is closed by ROLE
+#: RANK. v2 added every inactive regular's minutes back (most of them already out for days,
+#: their absence already in teammates' roles) and then shared 240 in proportion to role, so
+#: stars moved as much as the bench. In the data stars barely move and ranks 8-12 absorb the
+#: gap. Held out 2025-26, starters confirmed: RMSE 6.810 -> 6.692, MAE 5.26 -> 5.03;
+#: inactives only 7.649 -> 7.474. Coefficients: edge/nba_minutes_gap.py (generated).
+ALLOC = "rank_gap"
 #: History kept per player (a full season).
 HIST_GAMES = 82
 
@@ -269,13 +275,21 @@ def project(team: list, params: dict | None = None) -> dict:
         roles_[pl["id"]] = max(0.0, b)
         start_[pl["id"]] = (1.0 if pl["starter"] else 0.0) if pl.get("starter") is not None else s
         promoted[pl["id"]] = bool(pl.get("starter")) and r["start_rate"] < 0.5
+    active = [pl for pl in team if not pl["inactive"]]
+    if p.get("ALLOC", ALLOC) == "rank_gap" and len(active) >= FULL_ROSTER:
+        from edge.nba_minutes_gap import GAP_COEF
+        mode = "confirmed" if any(pl.get("starter") is not None for pl in team) else "inactives"
+        mins, slope = rank_gap({pl["id"]: roles_[pl["id"]] for pl in active}, GAP_COEF[mode])
+        ss = sum(slope.values()) or 1.0
+        return {pl["id"]: {"minutes": round(mins[pl["id"]], 1), "base": round(roles_[pl["id"]], 1),
+                           "promoted": promoted[pl["id"]], "share": round(slope[pl["id"]] / ss, 3)}
+                for pl in active}
     out_pl = [pl for pl in team if pl["inactive"] and roles_[pl["id"]] >= REGULAR_MIN]
     missing = sum(roles_[pl["id"]] for pl in out_pl)
     lost: dict = {}
     for pl in out_pl:
         for g in groups(pl.get("position")):
             lost[g] = lost.get(g, 0.0) + roles_[pl["id"]]
-    active = [pl for pl in team if not pl["inactive"]]
     weights = {}
     for pl in active:
         share = sum(v for g, v in lost.items() if g in groups(pl.get("position"))) / missing if missing else 0.0
@@ -304,6 +318,33 @@ def project(team: list, params: dict | None = None) -> dict:
     return {pl["id"]: {"minutes": round(mins[pl["id"]], 1), "base": round(roles_[pl["id"]], 1),
                        "promoted": promoted[pl["id"]], "share": round(weights[pl["id"]] / tw, 3)}
             for pl in active}
+
+
+#: Role ranks with their own allocation cell; rank 14 and below share the last one.
+GAP_RANKS = 13
+
+
+def rank_gap(roles: dict, coef: dict) -> tuple[dict, dict]:
+    """Close a team's gap to 240 by role rank (critique cycle 1). G = 240 - sum of the
+    active players' roles; the player at rank k moves a(k, G > 0) + b(k, G > 0) x G, then
+    the remaining difference is shared by the slopes, nobody outside 0-48.
+    Returns (minutes, slope) by player id. Mirrors scripts/nba_minutes_lab._rank_gap."""
+    G = TEAM_MIN - sum(roles.values())
+    order = sorted(roles.items(), key=lambda x: -x[1])
+    out, slope = {}, {}
+    for rk, (i, b) in enumerate(order):
+        a0, a1 = coef[(min(rk, GAP_RANKS), G > 0)]
+        out[i], slope[i] = b + a0 + a1 * G, max(a1, 1e-3)
+    for _ in range(5):
+        miss = TEAM_MIN - sum(out.values())
+        free = {i: slope[i] for i in out if (miss > 0 and out[i] < 48.0) or (miss < 0 and out[i] > 0.0)}
+        if abs(miss) < 1e-6 or not free:
+            break
+        ss = sum(free.values())
+        for i in free:
+            out[i] += miss * free[i] / ss
+        out = {i: min(48.0, max(0.0, m)) for i, m in out.items()}
+    return out, slope
 
 
 def games_since_return(tail: list, team: str, next_game: int, season_games: int,
