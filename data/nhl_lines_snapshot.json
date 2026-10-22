@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-22T21:44:35+00:00",
+"generated_at": "2026-10-22T22:44:26+00:00",
 "goalies": {
 "2026-10-22": {
 "ANA": {
@@ -47,8 +47,8 @@
 "status": "Confirmed"
 },
 "NSH": {
-"goalie": "Juuse Saros",
-"status": null
+"goalie": "Justus Annunen",
+"status": "Confirmed"
 },
 "NYI": {
 "goalie": "Semyon Varlamov",
@@ -10061,7 +10061,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10097,7 +10097,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10137,7 +10137,7 @@
 "pp": "PP2"
 },
 "Mavrik Bourque": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
