@@ -130,3 +130,11 @@ def test_totals_do_not_affect_games_that_actually_moved():
     a = make_pick('A', 'B', -3.0, -5.0)
     b = make_pick('A', 'B', -3.0, -5.0, total_open=50.0, total_close=40.0)
     assert a.side == b.side == 'home'
+
+
+def test_public_against_marker():
+    from edge.pickem import public_against
+    assert public_against("home", 30.0) is True      # 70% on the away team
+    assert public_against("away", 30.0) is False
+    assert public_against("home", 50.0) is False     # a split is not "against"
+    assert public_against("home", None) is None

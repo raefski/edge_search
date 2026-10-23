@@ -139,11 +139,17 @@ def readings(path=LINE_LOG) -> list[dict]:
             "post": None, "total_open": None,
             "lock": None, "total_close": None, "lock_at": "", "lock_label": "",
             "deadline": deadlines.get(key),
+            "comm_home": None,
         })
         if r.get("kickoff_utc"):
             g["kickoff"] = r["kickoff_utc"]
         if _f(r.get("cbs_line_home")) is not None:
             g["cbs"] = _f(r["cbs_line_home"])
+        # The community split as of the last reading before the deadline --
+        # what the public had picked when ours locked.
+        if (_f(r.get("comm_pct_home")) is not None
+                and before_deadline(r.get("captured_at"), g["deadline"])):
+            g["comm_home"] = _f(r["comm_pct_home"])
         mkt = _f(r.get("market_line_home"))
         if mkt is None:
             continue
@@ -194,6 +200,25 @@ def grade(games: list[dict], sched: dict[tuple, dict]) -> list[dict]:
                        g["total_open"], g["total_close"])
         out.append(dict(g, pick=pk, home_score=home, away_score=away,
                         result=ats_result(home - away, g["cbs"], pk.side)))
+    return out
+
+
+def marker_record(graded: list[dict], min_week: int = 1) -> dict:
+    """W-L of picks WITH the confidence marker (public against our pick) and
+    without, from `min_week` on, split into all picks and coin flips.
+    {("marked"|"unmarked", "all"|"coin"): [W, L]} -- pushes dropped."""
+    from edge.pickem import public_against
+    out = {(m, k): [0, 0] for m in ("marked", "unmarked") for k in ("all", "coin")}
+    for g in graded:
+        if g["week"] < min_week or g["result"] == "P":
+            continue
+        mark = public_against(g["pick"].side, g.get("comm_home"))
+        if mark is None:
+            continue
+        m = "marked" if mark else "unmarked"
+        kinds = ("all", "coin") if g["pick"].tier == "COIN FLIP" else ("all",)
+        for k in kinds:
+            out[(m, k)][g["result"] == "L"] += 1
     return out
 
 

@@ -47,7 +47,7 @@ fresh()   # a Cloud deploy reloads every repo module (edge/pagereload.py)
 from edge import repo_files  # noqa: E402
 from edge.client import CreditFloorError, DryRunBlocked, NoApiKey, OddsAPIClient  # noqa: E402
 from edge.odds.source import StaleOdds  # noqa: E402
-from edge.pickem import make_pick  # noqa: E402
+from edge.pickem import make_pick, public_against  # noqa: E402
 from edge.pickem_live import fetch_week  # noqa: E402
 from edge.pickem_deadline import RULE as LOCK_RULE, game_deadlines  # noqa: E402
 from edge.pickem_log import load as load_line_log  # noqa: E402
@@ -122,6 +122,7 @@ h1 {font-size: 1.55rem !important; margin-bottom: .1rem;}
 /* A card with no market reading. It must not look like a pick at any glance
    distance: the box is empty and recessed, and the label sits at the same
    15px weight the team name used to, so the eye lands on the absence. */
+.pk-conf {font-size: 11px; font-weight: 600; color: #7ee0a8; margin-top: 4px;}
 .pk-card.dark {opacity: .72; border-style: dashed;}
 .pk-pickbox.pk-nopick {background: transparent; border: 1px dashed rgba(255,255,255,.22);
                        color: #7f8a9c; font-weight: 500;}
@@ -512,6 +513,15 @@ for r, pk, no_live, live_g, played in rows:
             f'<span class="pk-pill {TIER_CLASS.get(pk.tier, "")}">{pk.tier}</span>')
         badge = ""
         comm_pct = home_pct if pk.side == "home" else away_pct
+        # Confidence marker (PICKEM_MODEL.md 5r): the public is on the other
+        # team. Changes no pick; graded below as marked vs unmarked.
+        if (r.get("comm_pct_home") and
+                public_against(pk.side, float(r["comm_pct_home"]))):
+            other = (pk.matchup.split(" @ ")[1] if pk.side == "away"
+                     else pk.matchup.split(" @ ")[0])
+            note_html = (f'<div class="pk-conf">🎯 Confidence: {side_name} — '
+                         f'{100 - comm_pct}% of the CBS public is on {other}</div>'
+                         + note_html)
         nums = (f'CBS <b>{pk.pool_line:+.1f}</b> &nbsp; MARKET <b>{pk.live_line:+.1f}</b>'
                 f' &nbsp; EDGE <b>{abs(pk.edge_pts):.1f}</b>'
                 f' &nbsp; COMMUNITY <b>{comm_pct}%</b>')
@@ -530,6 +540,41 @@ for r, pk, no_live, live_g, played in rows:
   {note_html}
 </div>
 ''', unsafe_allow_html=True)
+
+
+
+@st.cache_data(ttl=6 * 3600, show_spinner=False)
+def _pickem_marker_record() -> dict:
+    """Graded live picks, marked vs unmarked. nflverse scores (GitHub, reachable
+    from Cloud); cached 6 h because scores land once a day."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import pickem_grade as _pg
+    games = _pg.readings()
+    graded = _pg.grade(games, _pg.fetch_schedule({g["season"] for g in games}))
+    return {"all": _pg.marker_record(graded),
+            "fwd": _pg.marker_record(graded, min_week=8)}
+
+
+with st.expander("🎯 Confidence marker — how it is doing"):
+    st.caption("🎯 = most of the CBS public picked the other team. It changes no "
+               "pick. Found on weeks 1–7 (one season, mostly an underdog year), "
+               "so weeks 8+ are the real test.")
+    try:
+        _rec = _pickem_marker_record()
+
+        def _fmt(v):
+            w, l = v
+            return f"{w}-{l} ({w / (w + l):.0%})" if w + l else "—"
+        st.markdown(
+            "| | 🎯 marked | unmarked |\n|---|---|---|\n"
+            + "\n".join(
+                f"| {lbl} | {_fmt(_rec[per][('marked', k)])} | {_fmt(_rec[per][('unmarked', k)])} |"
+                for lbl, per, k in (("Weeks 8+ (forward test), all picks", "fwd", "all"),
+                                    ("Weeks 8+, coin flips", "fwd", "coin"),
+                                    ("Season, all picks", "all", "all"),
+                                    ("Season, coin flips", "all", "coin"))))
+    except Exception as _exc:                                # noqa: BLE001
+        st.caption(f"⚠️ Could not grade the marker ({_exc}).")
 
 st.caption(f"Lock times use the '{LOCK_RULE}' rule (edge/pickem_deadline.py): "
            "the earlier of 2 hours before kickoff and the day's first kickoff, "

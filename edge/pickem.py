@@ -204,3 +204,21 @@ def ats_result(home_margin: float, pool_line: float, side: str) -> str:
         return 'P'
     home_covers = v > 0
     return 'W' if (home_covers == (side == 'home')) else 'L'
+
+
+def public_against(side: str, comm_pct_home: float | None) -> bool | None:
+    """CONFIDENCE MARKER: True when most of CBS's community picked the OTHER
+    team from our pick. None when the percentages are missing.
+
+    A marker, never a pick rule -- it changes no side. Live 2026 weeks 1-7
+    (94 graded games, PICKEM_MODEL.md 5r): picks with the public against them
+    went 28-12, picks with the public on them 25-27; on coin flips 13-4 vs
+    11-17 (scripts/pickem_grade.marker_record, public % at the deadline). ONE season, found by looking at it, and mostly an underdog year
+    (public on CBS's favourite in 72/94). Forward test from week 8: the page
+    grades marked vs unmarked every week (scripts/pickem_grade.marker_record).
+    A 50/50 split is not "against".
+    """
+    if comm_pct_home is None:
+        return None
+    ours = comm_pct_home if side == "home" else 100.0 - comm_pct_home
+    return ours < 50.0
