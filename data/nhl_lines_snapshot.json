@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-23T02:29:38+00:00",
+"generated_at": "2026-10-23T02:30:28+00:00",
 "goalies": {
 "2026-10-22": {
 "ANA": {
@@ -16240,40 +16240,6 @@
 "pos": "lw",
 "pp": "PP1"
 },
-"Marshall Rifai": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 79,
-"toiSeconds": 31
-},
-"last5": {
-"assists": 1,
-"blocks": 9,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 74,
-"toiSeconds": 56
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
-},
 "Morgan Rielly": {
 "gtd": false,
 "injury": null,
@@ -16307,6 +16273,40 @@
 "pk": null,
 "pos": "ld",
 "pp": "PP2"
+},
+"Nick Blankenburg": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 11,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 7,
+"toiMinutes": 127,
+"toiSeconds": 57
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 55,
+"toiSeconds": 43
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
 },
 "Nick Paul": {
 "gtd": false,
