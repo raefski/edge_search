@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-23T22:44:45+00:00",
+"generated_at": "2026-10-23T23:44:19+00:00",
 "goalies": {
 "2026-10-23": {
 "CHI": {
@@ -8352,40 +8352,6 @@
 }
 },
 "MTL": {
-"Adam Engstrom": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 142,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 56,
-"toiSeconds": 58
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": "PP2"
-},
 "Alex Newhook": {
 "gtd": false,
 "injury": null,
@@ -8589,40 +8555,6 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
-},
-"Florian Xhekaj": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 101,
-"toiSeconds": 2
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 48,
-"toiSeconds": 17
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Jacob Fowler": {
 "gtd": false,
@@ -8900,6 +8832,40 @@
 "pos": "ld",
 "pp": "PP1"
 },
+"Mike Matheson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 4,
+"blocks": 13,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 19,
+"toiMinutes": 244,
+"toiSeconds": 45
+},
+"last5": {
+"assists": 1,
+"blocks": 10,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 120,
+"toiSeconds": 46
+},
+"line": "D1",
+"pk": null,
+"pos": "rd",
+"pp": "PP2"
+},
 "Noah Dobson": {
 "gtd": false,
 "injury": null,
@@ -8929,7 +8895,7 @@
 "toiMinutes": 104,
 "toiSeconds": 11
 },
-"line": "D1",
+"line": "D3",
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP1"
@@ -8967,6 +8933,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
+},
+"Owen Beck": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 94,
+"toiSeconds": 28
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 53,
+"toiSeconds": 13
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Phillip Danault": {
 "gtd": false,
