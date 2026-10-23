@@ -67,7 +67,7 @@ def season_of(d: str) -> str:
 # ──────────────────────────────────────────────────────────────────────────────
 # data
 # ──────────────────────────────────────────────────────────────────────────────
-def load(verbose: bool = True, phantom: bool = False) -> dict:
+def load(verbose: bool = True, phantom: bool = False, report_skip: bool = True) -> dict:
     """`phantom` rebuilds HISTORIES the way the 2026-27 NBA.com feed did before critique
     cycle 3: no inactive flags, so a missed game is a 0-minute appearance (tonight's
     flags and the scoring are unchanged)."""
@@ -189,15 +189,21 @@ def load(verbose: bool = True, phantom: bool = False) -> dict:
                 idx.append(len(rows) - 1)
             games.append({"date": d, "season": season, "team": team, "gid": gid, "idx": idx})
         # the day's results become history only after every game of the day is built
+        from edge import nba_injury_report as IR
+        from edge.names import norm
         for team, opp, gid, ps, home in tonight:
             tgn_now = sum(1 for x in sched[team] if x[1] == season) + 1
             sched[team].append((d, season))
             if (gid, team) in pts and (gid, opp) in pts:
                 margin[(team, season)].append(pts[(gid, team)] - pts[(gid, opp)])
+            out = IR.out_at_tip(gid) if report_skip and not phantom else None
             for p in ps:
                 if p["inactive"] and not phantom:
                     continue
                 pid = str(p["id"])
+                # cycle 8: listed Out by the official report yet "active" with 0 minutes
+                if out and not box.get((pid, gid)) and norm(p["name"]) in out:
+                    continue
                 h = H[pid]
                 h["m"].append(box.get((pid, gid), 0.0))
                 h["s"].append(bool(p["starter"]))

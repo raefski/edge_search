@@ -47,7 +47,10 @@ error (MAE) and bias as well.
 3. **Player history** (`data/nba_player_history.json`, built by
    `scripts/nba_history_publish.py`): every game the player was *active* for,
    oldest first, as `(minutes, started, dk_points)`. A coach's-decision DNP
-   counts as 0 minutes; inactive games are absent. History runs across
+   counts as 0 minutes; inactive games are absent, and so (critique cycle 8) are
+   0-minute games of players the official report listed Out about 60 minutes
+   before tip (`nba_injury_report.out_at_tip`); NBA.com flagged about 1,100 of them
+   a season active through 2025-26. History runs across
    seasons, up to the last 82 games. Per player it also stores:
    - `cur_n`: how many of the newest real entries are this season;
    - `n_pre`: how many trailing entries are this preseason's games, scaled
@@ -432,6 +435,21 @@ phantom counts comparable.
 - **Active players only:** 6.298 → 6.261 (starters announced) and 6.721 → 6.674
   (no five).
 - **2024-25 shows the same ordering:** 6.323 → 6.160 and 6.967 → 6.736.
+
+### Report-Out zeros kept out of history (critique cycle 8; same metric)
+
+Before cycle 8, history counted these phantoms as 0-minute games: 1,200 in 2024-25
+and 1,018 in 2025-26. That decayed the role while the player was hurt and hid the
+5-game gap the return ramp looks for. Skipping them changes nothing else; P(dress)
+is refit on 2024-25. The bias stays at −0.10 and n is 32,224 active.
+
+| 2025-26 | before | **after** | active only |
+|---|---|---|---|
+| starters announced | 6.438 | **6.383** | 6.261 → 6.214 |
+| no five | 7.077 | **6.953** | 6.674 → 6.568 |
+
+The history-fitted constants (kappa, `RAMP`, `RECENCY_LAM`, `DROP_Q`, `GAP_COEF`)
+have not been refit on the clean history yet.
 
 **A caveat on every earlier table.** The lab's truth is NBA.com's lineup `inactive`
 flag. In 2025-26, 1,014 player-games listed **Out** on the report were flagged active

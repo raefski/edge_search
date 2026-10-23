@@ -577,14 +577,21 @@ def load_history(seasons=("2024-25", "2025-26", "2026-27"), before: str | None =
         f = CACHE / f"{d.replace('-', '')}.json"
         if f.exists():
             from edge.nba_availability import apply as availability
+            from edge.nba_injury_report import out_at_tip
+            from edge.names import norm
             for g in parse(json.loads(f.read_text())):
                 # NBA.com stopped flagging inactives in 2026-27: the box score's comments
                 # (edge/nba_availability.py) say who was really out -- critique cycle 3
+                out = out_at_tip(g["game_id"])
                 for p in availability(g["players"], g["game_id"]):
                     if p["inactive"]:
                         continue
                     pid = str(p["id"])
                     r = box.get((pid, g["game_id"]))
+                    # listed Out by the official report yet flagged active, 0 minutes:
+                    # not a role game (critique cycle 8, -0.055 / -0.124 board RMSE)
+                    if out and not (r and float(r["MIN"] or 0)) and norm(p["name"]) in out:
+                        continue
                     hist[pid].append((float(r["MIN"] or 0), p["starter"], actual_points(r))
                                      if r else (0.0, p["starter"], 0.0))
                     if meta is not None:

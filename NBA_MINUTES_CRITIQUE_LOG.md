@@ -575,3 +575,50 @@ list; the second table is the information state the app actually had.
 | cycles 2-3: + recency / dropped starter | broken feed: phantom history, DK-like Out, cut 13 | inactives | 8.204 | 6.023 | -1.33 |
 | cycle 3: availability fixed | box-score history, injury-list Out, cut 15 | confirmed | 6.634 | 4.942 | -0.51 |
 | cycle 3: availability fixed | box-score history, injury-list Out, cut 15 | inactives | 7.435 | 5.437 | -0.55 |
+
+## Cycle 8: report-Out phantoms counted as 0-minute games in history
+
+**The hole** (from a fresh critic). Cycle 7 removed the phantoms (players listed Out
+on the official report but flagged active by NBA.com, with 0 minutes) from the board
+and from scoring, but not from the role history.
+- **Size:** 1,200 such games in 2024-25 and 1,018 in 2025-26 still counted as
+  0-minute games in both the lab's `load()` and production's `NM.load_history`.
+  Production skipped 2,201.
+- **Effect:** each one decayed the player's role while he was hurt and hid the
+  5-game gap the return ramp needs. The 2024-26 history also feeds this season's
+  last-season prior.
+
+**The fix.** It is a data rule with no new parameters.
+- `edge.nba_injury_report.out_at_tip(game_id)` returns who the report listed Out
+  60 minutes before tip, from the cache only.
+- History skips a game when the player is on that list and played 0 minutes:
+  `load(report_skip=True)` in the lab, and the same rule in `NM.load_history`.
+- The tonight rows and the scoring are unchanged.
+
+**Result** (scored as cycle 7 does: P(dress) refit on 2024-25, scored on 2025-26,
+32,224 active player-games, bias −0.10 before and after):
+
+| state | train 2024-25: fixed (active) | **test 2025-26: fixed** | test 2025-26: active |
+|---|---|---|---|
+| five announced, before | 6.160 (6.005) | 6.438 | 6.261 |
+| five announced, after | 6.111 (5.957) | **6.383** | 6.214 |
+| no five, before | 6.736 (6.452) | 7.077 | 6.674 |
+| no five, after | 6.577 (6.297) | **6.953** | 6.568 |
+
+**Decision: ship.** It improves held out in both states. Checks:
+- `harness verify` passes;
+- page 12 runs under AppTest with no errors;
+- production skips 2,201 games, the lab 2,218.
+
+**Open items.**
+- The history-fitted constants (kappa, `RAMP`, `RECENCY_LAM`, `DROP_Q`, `GAP_COEF`)
+  have not been refit on the clean history. Refitting them is the next cheap cycle.
+- 2023-24 has no report archive, so its history stays as it was.
+
+**Runner-ups** (2025-26 residuals):
+- **Questionable / Doubtful / Probable players who dress:** n 2,536, RMSE 7.19 / 8.37,
+  bias −0.4 / −0.7. A minutes-restriction multiplier is untested.
+- **Players who dress and play 0 minutes:** n 5,625, bias +3.9 / +4.6. A per-role
+  chance of not playing might help; the gain is likely small.
+- **No five:** actual starters run −2.3 while bench players run +0.66, but most of
+  that is conditioning on who turned out to start. Likely under 0.05.

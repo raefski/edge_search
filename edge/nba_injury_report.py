@@ -19,6 +19,7 @@ rows and its label sits mid-block), which joins on edge.names.norm.
 from __future__ import annotations
 
 import io
+import json
 import re
 import time
 import urllib.error
@@ -108,6 +109,33 @@ def parse(pdf: bytes) -> dict:
 def full_name(last: str, first: str) -> str:
     """'Jackson Jr.', 'Jaren' -> 'Jaren Jackson Jr.' (edge.names.norm drops the suffix anyway)."""
     return f"{first} {last}".strip()
+
+
+_OUT_CACHE: dict = {}
+
+
+def out_at_tip(game_id: str, lead_min: int = 60) -> set[str] | None:
+    """edge.names.norm names the official report listed Out `lead_min` before the
+    game's tip (floored to the hour, falling back 1-2 hours; cache only), or None when
+    there is no report or no tip time. Critique cycle 8: through 2025-26 NBA.com
+    flagged ~1,100 a season of these injured players active with 0 minutes; as history
+    they decayed the role while hurt and hid the return ramp's 5-game gap, so role
+    history skips them (lab and edge.nba_minutes.load_history alike)."""
+    from edge.names import norm
+    if "tips" not in _OUT_CACHE:
+        f = Path(__file__).resolve().parents[1] / "data" / "nba_ground_truth" / "schedule_tips.json"
+        _OUT_CACHE["tips"] = json.loads(f.read_text()) if f.exists() else {}
+    t = _OUT_CACHE["tips"].get(game_id)
+    if not t:
+        return None
+    at = datetime.fromisoformat(t.replace("Z", "")) - timedelta(minutes=lead_min)
+    for back in (0, 1, 2):
+        got = report(at.date().isoformat(), at.hour - back, 0, fetch=False)
+        if got:
+            if got[0] not in _OUT_CACHE:
+                _OUT_CACHE[got[0]] = {norm(full_name(a, b)) for a, b, st, _ in parse(got[1])["rows"] if st == "Out"}
+            return _OUT_CACHE[got[0]]
+    return None
 
 
 def latest(now: datetime | None = None, back_min: int = 120, fetch: bool = True) -> tuple[str, dict] | None:
