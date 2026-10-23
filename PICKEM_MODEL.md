@@ -1680,3 +1680,22 @@ python3 -m pytest tests/test_pickem.py -q
 nothing. It's the evidence behind section 5, it re-runs on demand, and if someone ever
 wants to test a new efficiency idea the as-of-week plumbing (the hard, easy-to-get-wrong
 part) already exists and is already leak-proof.
+
+## 5q. Our own handicap (score-based power rating) -- KILLED 2026-10-23
+
+`scripts/pickem_handicap.py`: walk-forward weighted ridge rating on nflverse
+margins (half-life 10 wk, prior season x0.5, ridge 4, HFA 2.0 -- chosen on
+2014-19 margin RMSE 13.32, never on pick record). Picking the side our line
+says CBS mis-set:
+
+| split | ours W-L | shipped market-move W-L | blend 50/50 |
+|---|---|---|---|
+| train 2014-19 (102 wk) | 554-519 51.6% | 596-477 55.5% | 51.9% |
+| test 2020-22 (53 wk) | 257-290 47.0% | 314-233 57.4% | 52.1% |
+| live 2026 CBS (7 wk) | 45-49 47.9% | 53-41 56.4% | 53.2% |
+
+When ours disagrees with the market it wins 45.7% / 38.8% / 40.9% (train /
+test / live): the market has already priced what a score-only rating cannot
+see (injuries, QB changes), and our margin MAE is worse than even the frozen
+pool line (test 11.38 vs 11.01). Blending dilutes the market signal. Not a
+feature; do not retry without injury/QB information.
