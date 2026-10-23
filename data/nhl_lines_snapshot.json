@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-23T01:59:25+00:00",
+"generated_at": "2026-10-23T02:29:38+00:00",
 "goalies": {
 "2026-10-22": {
 "ANA": {
@@ -4951,8 +4951,8 @@
 "toiMinutes": 72,
 "toiSeconds": 7
 },
-"line": "D2",
-"pk": null,
+"line": "D3",
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -4989,40 +4989,6 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
-},
-"Andreas Englund": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 112,
-"toiSeconds": 16
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 57,
-"toiSeconds": 10
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
-"pp": null
 },
 "Andrew Copp": {
 "gtd": false,
@@ -5092,40 +5058,6 @@
 "pos": "rd",
 "pp": null
 },
-"Axel Sandin-Pellikka": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 11,
-"toiMinutes": 131,
-"toiSeconds": 34
-},
-"last5": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 42,
-"toiSeconds": 16
-},
-"line": "D4",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Ben Chiarot": {
 "gtd": false,
 "injury": null,
@@ -5189,45 +5121,9 @@
 "toiMinutes": 48,
 "toiSeconds": 10
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "rw",
-"pp": null
-},
-"Daniil Tarasov": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 12,
-"goalieGoalsAgainstAvg": "1.45",
-"goalieLosses": 0,
-"goalieMinutes": 496,
-"goalieOvertimeLosses": 2,
-"goalieSavePercentage": "0.938",
-"goalieSaves": 181,
-"goalieSeconds": 19,
-"goalieShotsAgainst": 193,
-"goalieShutouts": 2,
-"goalieWins": 5
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 4,
-"goalieGoalsAgainstAvg": "1.13",
-"goalieLosses": 0,
-"goalieMinutes": 211,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.947",
-"goalieSaves": 72,
-"goalieSeconds": 19,
-"goalieShotsAgainst": 76,
-"goalieShutouts": 2,
-"goalieWins": 2
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
+"pos": "lw",
 "pp": null
 },
 "Dylan Larkin": {
@@ -5299,7 +5195,7 @@
 "pp": "PP2"
 },
 "J.T. Compher": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -5327,9 +5223,9 @@
 "toiMinutes": 78,
 "toiSeconds": 56
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "John Gibson": {
@@ -5499,9 +5395,9 @@
 "toiMinutes": 80,
 "toiSeconds": 34
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Michael Rasmussen": {
@@ -5538,6 +5434,42 @@
 "pos": "lw",
 "pp": "PP2"
 },
+"Michal Postava": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 1,
+"goalieGoalsAgainst": 0,
+"goalieGoalsAgainstAvg": "0.0",
+"goalieLosses": 0,
+"goalieMinutes": 25,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "1.0",
+"goalieSaves": 10,
+"goalieSeconds": 0,
+"goalieShotsAgainst": 10,
+"goalieShutouts": 0,
+"goalieWins": 0
+},
+"last5": {
+"gamesPlayed": 1,
+"goalieGoalsAgainst": 0,
+"goalieGoalsAgainstAvg": "0.0",
+"goalieLosses": 0,
+"goalieMinutes": 25,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "1.0",
+"goalieSaves": 10,
+"goalieSeconds": 0,
+"goalieShotsAgainst": 10,
+"goalieShutouts": 0,
+"goalieWins": 0
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Moritz Seider": {
 "gtd": false,
 "injury": null,
@@ -5572,6 +5504,40 @@
 "pos": "rd",
 "pp": "PP1"
 },
+"Nate Danielson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 116,
+"toiSeconds": 54
+},
+"last5": {
+"assists": 2,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 55,
+"toiSeconds": 6
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "Viktor Arvidsson": {
 "gtd": false,
 "injury": null,
@@ -5601,10 +5567,44 @@
 "toiMinutes": 80,
 "toiSeconds": 32
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
+},
+"William Wallinder": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 14,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 7,
+"toiMinutes": 165,
+"toiSeconds": 44
+},
+"last5": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 72,
+"toiSeconds": 16
+},
+"line": "D2",
+"pk": null,
+"pos": "ld",
+"pp": null
 }
 },
 "EDM": {
@@ -14013,7 +14013,7 @@
 "pp": "PP1"
 },
 "Igor Chernyshov": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
