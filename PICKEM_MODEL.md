@@ -1699,3 +1699,36 @@ test / live): the market has already priced what a score-only rating cannot
 see (injuries, QB changes), and our margin MAE is worse than even the frozen
 pool line (test 11.38 vs 11.01). Blending dilutes the market signal. Not a
 feature; do not retry without injury/QB information.
+
+## 5r. Public-sentiment model -- does the line lean toward what the public saw? (Adam, 2026-10-23)
+
+`scripts/pickem_sentiment.py`. Per team, from earlier games only: last
+margin, last ATS margin, covers in last 3, season win%, and a "public gap" =
+a win/loss-only transitive rating (A beat B, B beat C; 2-week memory) minus
+the objective margin rating of 5q. Signs chosen / logit fitted on 2014-19.
+
+**It is a real model of the public.** Live 2026 (94 games, 7 weeks), CBS's
+community pick % correlates with win% +0.55, last margin +0.47, covers +0.35
+-- and still +0.30-0.34 AFTER controlling for the line. The public does pick
+on what it saw last week.
+
+**The line does not carry that lean in a way we can attack.**
+
+| split | market (shipped) | sentiment model alone | on market coin flips: market / sentiment |
+|---|---|---|---|
+| train 2014-19 | 596-477 55.5% | 587-486 54.7% | 122-86 / 115-93 |
+| test 2020-22 | 314-233 57.4% | 289-258 52.8% | 54-53 / 49-58 |
+| live 2026 | 53-41 56.4% | 37-57 39.4% | 24-23 / 15-32 |
+
+The best single feature, fade the public gap, is 55.4% train, 53.6% test, and
+39.4% live. Teams off big wins covered MORE on train (corr +0.06), the
+opposite of an overreaction. This matches 2.4 / 1.6 / round 7: what the
+public saw is already priced. Not shipped.
+
+**The one live lead: fade CBS's actual community picks** (not modelled
+sentiment): 57-37 (60.6%), at or above .500 every week. Mostly it is the
+underdog year (public on the CBS favourite 72/94; blind dogs 55-39; when the
+public is on the dog, fading is 12-10). Where fading agrees with the market
+model: 28-12 (70%); where they disagree, the fade beat the market 29-25.
+One season, found by looking -- forward test from week 8 as a CONFIDENCE
+marker (market pick + public on the other side), not a pick rule.
