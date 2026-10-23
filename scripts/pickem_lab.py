@@ -50,7 +50,24 @@ from edge.pickem_data import Split, load  # noqa: E402
 
 #: name -> pick function(away, home, pool_line, live_line, total_open,
 #: total_close) -> Pick. "shipped" is always production.
-VARIANTS = {"shipped": make_pick}
+def pick_any_move(away, home, pool_line, live_line, total_open=None,
+                  total_close=None):
+    """Critique cycle 1: follow ANY nonzero move. Live edges are a 3-book
+    weighted mean, so one book moving 0.5 reads 0.125 and fell under the 0.5
+    floor that was validated on single-book half-point data. Identical to
+    make_pick on history (no sub-0.5 moves there): live is its only test."""
+    import dataclasses
+    pk = make_pick(away, home, pool_line, live_line, total_open, total_close)
+    e = live_line - pool_line
+    if 0 < abs(e) < 0.5:
+        side = "home" if e < 0 else "away"
+        pk = dataclasses.replace(
+            pk, side=side, tier="LEAN",
+            side_line=pool_line if side == "home" else -pool_line)
+    return pk
+
+
+VARIANTS = {"shipped": make_pick, "any_move": pick_any_move}
 
 
 def history(split: Split) -> list[dict]:
