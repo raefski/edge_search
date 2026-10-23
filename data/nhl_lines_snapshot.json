@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-23T13:59:37+00:00",
+"generated_at": "2026-10-23T14:29:23+00:00",
 "goalies": {
 "2026-10-23": {
 "CHI": {
@@ -33,7 +33,7 @@
 "status": null
 },
 "CAR": {
-"goalie": "Brandon Bussi",
+"goalie": "Pyotr Kochetkov",
 "status": null
 },
 "CBJ": {
@@ -2243,7 +2243,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2653,7 +2653,7 @@
 "goalieShutouts": 0,
 "goalieWins": 5
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7732,7 +7732,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Calvin Pickard": {
 "gtd": false,
@@ -7799,7 +7799,7 @@
 "toiMinutes": 82,
 "toiSeconds": 50
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -7836,7 +7836,7 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Jared Spurgeon": {
 "gtd": false,
@@ -7867,7 +7867,7 @@
 "toiMinutes": 114,
 "toiSeconds": 14
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
@@ -7971,7 +7971,7 @@
 "toiMinutes": 114,
 "toiSeconds": 43
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -8141,7 +8141,7 @@
 "toiMinutes": 97,
 "toiSeconds": 50
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -13596,7 +13596,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Matty Beniers": {
 "gtd": false,
@@ -13768,7 +13768,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Ville Ottavainen": {
 "gtd": false,
@@ -16817,7 +16817,7 @@
 "toiMinutes": 83,
 "toiSeconds": 48
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -16989,7 +16989,7 @@
 "toiMinutes": 73,
 "toiSeconds": 11
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK1",
 "pos": "rw",
 "pp": null
@@ -17193,7 +17193,7 @@
 "toiMinutes": 88,
 "toiSeconds": 38
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP1"
@@ -17263,7 +17263,7 @@
 "toiMinutes": 78,
 "toiSeconds": 53
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
