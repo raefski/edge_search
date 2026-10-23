@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-23T19:29:21+00:00",
+"generated_at": "2026-10-23T22:44:45+00:00",
 "goalies": {
 "2026-10-23": {
 "CHI": {
@@ -6632,6 +6632,42 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
+"pp": null
+},
+"Matt Tomkins": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 8,
+"goalieGoalsAgainstAvg": "3.5",
+"goalieLosses": 0,
+"goalieMinutes": 136,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.875",
+"goalieSaves": 56,
+"goalieSeconds": 32,
+"goalieShotsAgainst": 64,
+"goalieShutouts": 0,
+"goalieWins": 2
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 4,
+"goalieGoalsAgainstAvg": "3.08",
+"goalieLosses": 0,
+"goalieMinutes": 77,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.846",
+"goalieSaves": 22,
+"goalieSeconds": 8,
+"goalieShotsAgainst": 26,
+"goalieShutouts": 0,
+"goalieWins": 1
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
 "pp": null
 },
 "Max Jones": {
