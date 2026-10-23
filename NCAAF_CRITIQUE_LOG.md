@@ -80,3 +80,42 @@ rises with volume, refitted on cfbfastR.
   the undrafted from cfbfastR.
 - Rush-attempt, pass+rush-yard and completion markets are collected in odds.db
   but not used. RB carries could shape the TD imputation. Needs a replay.
+
+### Cycle 1 runner-ups, explored (2026-10-22) — all three NOT SHIPPED
+
+Same split: train 9/26 + 10/3, test 5 slates from 10/14. The cfbfastR 2026
+file was refreshed to week 7. Scripts are in the session scratchpad
+(build/eval/pull/att.py) and are not committed, since nothing ships.
+
+**Grading undrafted players from cfbfastR.** cfbfastR matches DK's FPTS to
+MAE 0.81 on the 430 drafted players both sources have, so it is a valid stand-in.
+A player whose team played but who has no cfbfastR row counts as 0.
+Only 30 of 480 logged players were undrafted.
+
+| | drafted only | all logged | undrafted |
+|---|---|---|---|
+| train | 193: MAE 7.85, bias +2.31 | 204: MAE 7.73, bias +1.91 | 11: MAE 5.63, bias −5.19 |
+| test | 257: MAE 6.17, bias +0.11 | 275: MAE 6.08, bias +0.16 | 18: MAE 4.78, bias +0.84 |
+
+Grading only drafted players does not flatter the model. The lab stays
+DK-truth-only. The test undrafted bias of +0.84 rules out "laddered and
+unpicked means a hidden zero".
+
+**Blending in DK FPPG.** p = (1−w)·proj + w·FPPG. FPPG is DK's logged column
+when present; otherwise it is rebuilt from cfbfastR as DK points per team game
+before the slate week. The rebuild matches DK's column at r 0.961, MAE 0.97
+(n=198). The rebuild makes a train fit possible: w = 0.35, train MAE
+7.73→7.65.
+Held out it **hurts**: 6.08→6.20, worse on 4 of 5 slates, and WR 5.55→5.78.
+Leave-one-slate-out over all 7 slates is also worse: 6.79→6.81 (n=479,
+w 0–0.2). The critic's leave-one-slate-out gain on test-only slates does not
+survive an honest fit. Dead.
+
+**Rush-attempt ladders for RBs.** DK's `player_rush_attempts` ladder was taken
+from the last scan before kickoff. The feature is carries beyond what the
+rush-yards ladder implies, att − (1.63 + 0.179·yds), fitted on train.
+Correlation with the residual: train +0.035 (n=38, 2 slates), test −0.301
+(n=41, 5 slates). The fitted term moves test MAE 7.81→7.85. Carries add nothing
+the yards ladder hasn't already priced. This also weakens the critic's guess
+that TDs-per-yard is the cause of the compression: if volume beyond yards
+predicted TDs, extra carries would show up here.
