@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-23T17:59:18+00:00",
+"generated_at": "2026-10-23T18:59:29+00:00",
 "goalies": {
 "2026-10-23": {
 "CHI": {
@@ -49,8 +49,8 @@
 "status": null
 },
 "EDM": {
-"goalie": "Devon Levi",
-"status": null
+"goalie": "Tristan Jarry",
+"status": "Confirmed"
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
@@ -6431,7 +6431,7 @@
 "pp": null
 },
 "Devon Levi": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
@@ -6461,7 +6461,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6871,7 +6871,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
