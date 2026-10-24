@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-24T15:59:37+00:00",
+"generated_at": "2026-10-24T16:29:30+00:00",
 "goalies": {
 "2026-10-24": {
 "ANA": {
@@ -24,7 +24,7 @@
 },
 "CGY": {
 "goalie": "Devin Cooley",
-"status": null
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "Michal Postava",
@@ -72,7 +72,7 @@
 },
 "SJS": {
 "goalie": "Alex Nedeljkovic",
-"status": "Likely"
+"status": "Confirmed"
 },
 "STL": {
 "goalie": "Joel Hofer",
@@ -5736,6 +5736,40 @@
 "pos": "rw",
 "pp": null
 },
+"David Perron": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 16,
+"toiMinutes": 140,
+"toiSeconds": 15
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 75,
+"toiSeconds": 34
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Jake Oettinger": {
 "gtd": false,
 "injury": null,
@@ -5869,7 +5903,7 @@
 "toiMinutes": 57,
 "toiSeconds": 25
 },
-"line": "F4",
+"line": "F1",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -6142,43 +6176,9 @@
 "toiSeconds": 39
 },
 "line": "F2",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": "PP1"
-},
-"Sam Steel": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 159,
-"toiSeconds": 14
-},
-"last5": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 82,
-"toiSeconds": 55
-},
-"line": "F1",
-"pk": "PK1",
-"pos": "lw",
-"pp": null
 },
 "Thomas Harley": {
 "gtd": false,
@@ -21821,7 +21821,7 @@
 "pp": "PP1"
 },
 "Justin Sourdif": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 0,
@@ -21852,42 +21852,6 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": null
-},
-"Logan Thompson": {
-"gtd": true,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 24,
-"goalieGoalsAgainstAvg": "2.4",
-"goalieLosses": 3,
-"goalieMinutes": 598,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.914",
-"goalieSaves": 254,
-"goalieSeconds": 49,
-"goalieShotsAgainst": 278,
-"goalieShutouts": 1,
-"goalieWins": 6
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 15,
-"goalieGoalsAgainstAvg": "3.05",
-"goalieLosses": 3,
-"goalieMinutes": 294,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.892",
-"goalieSaves": 124,
-"goalieSeconds": 26,
-"goalieShotsAgainst": 139,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
 "pp": null
 },
 "Martin Fehervary": {
@@ -21958,8 +21922,44 @@
 "pos": "rd",
 "pp": null
 },
+"Mitchell Gibson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 6,
+"goalieGoalsAgainst": 0,
+"goalieGoalsAgainstAvg": "0.0",
+"goalieLosses": 0,
+"goalieMinutes": 0,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.0",
+"goalieSaves": 0,
+"goalieSeconds": 0,
+"goalieShotsAgainst": 0,
+"goalieShutouts": 0,
+"goalieWins": 0
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 0,
+"goalieGoalsAgainstAvg": "0.0",
+"goalieLosses": 0,
+"goalieMinutes": 0,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.0",
+"goalieSaves": 0,
+"goalieSeconds": 0,
+"goalieShotsAgainst": 0,
+"goalieShutouts": 0,
+"goalieWins": 0
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Pierre-Luc Dubois": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 7,
