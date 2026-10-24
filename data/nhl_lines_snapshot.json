@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-24T18:59:24+00:00",
+"generated_at": "2026-10-24T19:29:26+00:00",
 "goalies": {
 "2026-10-24": {
 "ANA": {
@@ -35,8 +35,8 @@
 "status": "Confirmed"
 },
 "LAK": {
-"goalie": "Darcy Kuemper",
-"status": null
+"goalie": "Anton Forsberg",
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -8749,7 +8749,7 @@
 "toiMinutes": 91,
 "toiSeconds": 35
 },
-"line": "D1",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": "PP2"
@@ -8885,7 +8885,7 @@
 "toiMinutes": 86,
 "toiSeconds": 40
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -10667,7 +10667,7 @@
 "toiMinutes": 78,
 "toiSeconds": 11
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -10839,7 +10839,7 @@
 "toiMinutes": 61,
 "toiSeconds": 54
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": null
