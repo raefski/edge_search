@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-24T22:45:25+00:00",
+"generated_at": "2026-10-24T22:59:46+00:00",
 "goalies": {
 "2026-10-24": {
 "ANA": {
@@ -11634,40 +11634,6 @@
 "pos": "rw",
 "pp": null
 },
-"Reid Schaefer": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 113,
-"toiSeconds": 9
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 52,
-"toiSeconds": 16
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Roman Josi": {
 "gtd": false,
 "injury": null,
@@ -11731,7 +11697,7 @@
 "toiMinutes": 58,
 "toiSeconds": 57
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -11803,6 +11769,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Vitali Pinchuk": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 49,
+"toiSeconds": 16
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 49,
+"toiSeconds": 16
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": null
 }
 },
 "NYI": {
@@ -20792,34 +20792,34 @@
 "pos": "lw",
 "pp": null
 },
-"Brad Lambert": {
+"Cole Koepke": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 1,
-"blocks": 0,
+"assists": 0,
+"blocks": 8,
 "gamesPlayed": 10,
-"goals": 0,
-"points": 1,
+"goals": 2,
+"points": 2,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 92,
-"toiSeconds": 41
+"shots": 13,
+"toiMinutes": 107,
+"toiSeconds": 56
 },
 "last5": {
-"assists": 1,
-"blocks": 0,
+"assists": 0,
+"blocks": 3,
 "gamesPlayed": 5,
-"goals": 0,
+"goals": 1,
 "points": 1,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 35,
-"toiSeconds": 56
+"shots": 7,
+"toiMinutes": 46,
+"toiSeconds": 50
 },
 "line": "F4",
 "pk": null,
@@ -20923,7 +20923,7 @@
 "toiMinutes": 107,
 "toiSeconds": 1
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -20960,6 +20960,40 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
+"pp": null
+},
+"Elias Salomonsson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 10,
+"toiMinutes": 177,
+"toiSeconds": 35
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 71,
+"toiSeconds": 38
+},
+"line": "D2",
+"pk": null,
+"pos": "rd",
 "pp": null
 },
 "Gabriel Vilardi": {
@@ -21338,40 +21372,6 @@
 "line": "G1",
 "pk": null,
 "pos": "g",
-"pp": null
-},
-"Tyrel Bauer": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 109,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 45,
-"toiSeconds": 28
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
 "pp": null
 },
 "Viggo Bj\u00f6rck": {
