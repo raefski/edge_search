@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-24T22:14:31+00:00",
+"generated_at": "2026-10-24T22:29:33+00:00",
 "goalies": {
 "2026-10-24": {
 "ANA": {
@@ -10446,9 +10446,9 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 14,
-"toiMinutes": 100,
-"toiSeconds": 28
+"shots": 16,
+"toiMinutes": 105,
+"toiSeconds": 12
 },
 "last5": {
 "assists": 2,
@@ -10459,9 +10459,9 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 48,
-"toiSeconds": 38
+"shots": 11,
+"toiMinutes": 53,
+"toiSeconds": 22
 },
 "line": "F4",
 "pk": null,
@@ -10473,29 +10473,29 @@
 "injury": null,
 "last10": {
 "assists": 1,
-"blocks": 1,
+"blocks": 3,
 "gamesPlayed": 10,
-"goals": 2,
-"points": 3,
+"goals": 3,
+"points": 4,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 119,
-"toiSeconds": 52
+"shots": 12,
+"toiMinutes": 123,
+"toiSeconds": 50
 },
 "last5": {
 "assists": 0,
-"blocks": 1,
+"blocks": 3,
 "gamesPlayed": 5,
-"goals": 1,
-"points": 1,
+"goals": 2,
+"points": 2,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 57,
-"toiSeconds": 51
+"shots": 6,
+"toiMinutes": 61,
+"toiSeconds": 49
 },
 "line": "F3",
 "pk": null,
@@ -10515,8 +10515,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 2,
 "shots": 22,
-"toiMinutes": 139,
-"toiSeconds": 55
+"toiMinutes": 145,
+"toiSeconds": 29
 },
 "last5": {
 "assists": 1,
@@ -10528,8 +10528,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 1,
 "shots": 13,
-"toiMinutes": 66,
-"toiSeconds": 25
+"toiMinutes": 71,
+"toiSeconds": 59
 },
 "line": "F1",
 "pk": null,
@@ -10549,8 +10549,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 6,
-"toiMinutes": 154,
-"toiSeconds": 14
+"toiMinutes": 159,
+"toiSeconds": 38
 },
 "last5": {
 "assists": 0,
@@ -10562,8 +10562,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 1,
-"toiMinutes": 61,
-"toiSeconds": 36
+"toiMinutes": 67,
+"toiSeconds": 0
 },
 "line": "D3",
 "pk": null,
@@ -10583,8 +10583,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 11,
-"toiMinutes": 197,
-"toiSeconds": 55
+"toiMinutes": 206,
+"toiSeconds": 5
 },
 "last5": {
 "assists": 3,
@@ -10596,8 +10596,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 6,
-"toiMinutes": 90,
-"toiSeconds": 38
+"toiMinutes": 98,
+"toiSeconds": 48
 },
 "line": "D1",
 "pk": "PK2",
@@ -10616,9 +10616,9 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 119,
-"toiSeconds": 45
+"shots": 13,
+"toiMinutes": 124,
+"toiSeconds": 22
 },
 "last5": {
 "assists": 0,
@@ -10629,9 +10629,9 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 57,
-"toiSeconds": 18
+"shots": 8,
+"toiMinutes": 61,
+"toiSeconds": 55
 },
 "line": "F4",
 "pk": "PK2",
@@ -10651,8 +10651,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 18,
-"toiMinutes": 158,
-"toiSeconds": 6
+"toiMinutes": 162,
+"toiSeconds": 53
 },
 "last5": {
 "assists": 1,
@@ -10664,8 +10664,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 10,
-"toiMinutes": 64,
-"toiSeconds": 12
+"toiMinutes": 68,
+"toiSeconds": 59
 },
 "line": "F4",
 "pk": null,
@@ -10684,9 +10684,9 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 20,
-"toiMinutes": 197,
-"toiSeconds": 21
+"shots": 22,
+"toiMinutes": 203,
+"toiSeconds": 14
 },
 "last5": {
 "assists": 3,
@@ -10697,9 +10697,9 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 90,
-"toiSeconds": 22
+"shots": 8,
+"toiMinutes": 96,
+"toiSeconds": 15
 },
 "line": "D2",
 "pk": "PK1",
@@ -10710,30 +10710,30 @@
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 2,
+"assists": 3,
 "blocks": 4,
 "gamesPlayed": 10,
 "goals": 2,
-"points": 4,
+"points": 5,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 14,
-"toiMinutes": 142,
-"toiSeconds": 55
+"toiMinutes": 146,
+"toiSeconds": 21
 },
 "last5": {
-"assists": 1,
+"assists": 2,
 "blocks": 3,
 "gamesPlayed": 5,
 "goals": 1,
-"points": 2,
+"points": 3,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 4,
-"toiMinutes": 66,
-"toiSeconds": 44
+"toiMinutes": 70,
+"toiSeconds": 10
 },
 "line": "F3",
 "pk": "PK1",
@@ -10752,9 +10752,9 @@
 "powerplayAssists": 4,
 "powerplayGoals": 0,
 "powerplayPoints": 4,
-"shots": 32,
-"toiMinutes": 185,
-"toiSeconds": 21
+"shots": 35,
+"toiMinutes": 193,
+"toiSeconds": 12
 },
 "last5": {
 "assists": 2,
@@ -10765,9 +10765,9 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 82,
-"toiSeconds": 8
+"shots": 15,
+"toiMinutes": 89,
+"toiSeconds": 59
 },
 "line": "F1",
 "pk": null,
@@ -10779,29 +10779,29 @@
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
-"goalieGoalsAgainst": 23,
-"goalieGoalsAgainstAvg": "2.64",
+"goalieGoalsAgainst": 24,
+"goalieGoalsAgainstAvg": "2.66",
 "goalieLosses": 2,
-"goalieMinutes": 521,
+"goalieMinutes": 541,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.892",
-"goalieSaves": 190,
-"goalieSeconds": 3,
-"goalieShotsAgainst": 213,
+"goalieSavePercentage": "0.889",
+"goalieSaves": 192,
+"goalieSeconds": 48,
+"goalieShotsAgainst": 216,
 "goalieShutouts": 0,
 "goalieWins": 6
 },
 "last5": {
 "gamesPlayed": 5,
-"goalieGoalsAgainst": 12,
-"goalieGoalsAgainstAvg": "2.76",
+"goalieGoalsAgainst": 13,
+"goalieGoalsAgainstAvg": "2.77",
 "goalieLosses": 1,
-"goalieMinutes": 260,
+"goalieMinutes": 281,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.892",
-"goalieSaves": 99,
-"goalieSeconds": 20,
-"goalieShotsAgainst": 111,
+"goalieSavePercentage": "0.886",
+"goalieSaves": 101,
+"goalieSeconds": 5,
+"goalieShotsAgainst": 114,
 "goalieShutouts": 0,
 "goalieWins": 3
 },
@@ -10814,30 +10814,30 @@
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 2,
+"assists": 3,
 "blocks": 2,
 "gamesPlayed": 10,
 "goals": 3,
-"points": 5,
+"points": 6,
 "powerplayAssists": 1,
 "powerplayGoals": 0,
 "powerplayPoints": 1,
 "shots": 15,
-"toiMinutes": 118,
-"toiSeconds": 42
+"toiMinutes": 121,
+"toiSeconds": 7
 },
 "last5": {
-"assists": 1,
+"assists": 2,
 "blocks": 1,
 "gamesPlayed": 5,
 "goals": 1,
-"points": 2,
+"points": 3,
 "powerplayAssists": 1,
 "powerplayGoals": 0,
 "powerplayPoints": 1,
 "shots": 4,
-"toiMinutes": 56,
-"toiSeconds": 20
+"toiMinutes": 58,
+"toiSeconds": 45
 },
 "line": "F3",
 "pk": null,
@@ -10857,8 +10857,8 @@
 "powerplayGoals": 1,
 "powerplayPoints": 5,
 "shots": 20,
-"toiMinutes": 157,
-"toiSeconds": 22
+"toiMinutes": 164,
+"toiSeconds": 17
 },
 "last5": {
 "assists": 2,
@@ -10870,8 +10870,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 1,
 "shots": 7,
-"toiMinutes": 68,
-"toiSeconds": 46
+"toiMinutes": 75,
+"toiSeconds": 41
 },
 "line": "F1",
 "pk": null,
@@ -10891,8 +10891,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 7,
-"toiMinutes": 158,
-"toiSeconds": 22
+"toiMinutes": 162,
+"toiSeconds": 17
 },
 "last5": {
 "assists": 0,
@@ -10904,8 +10904,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 5,
-"toiMinutes": 67,
-"toiSeconds": 53
+"toiMinutes": 71,
+"toiSeconds": 48
 },
 "line": "D3",
 "pk": "PK2",
@@ -10925,8 +10925,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 3,
-"toiMinutes": 181,
-"toiSeconds": 5
+"toiMinutes": 187,
+"toiSeconds": 11
 },
 "last5": {
 "assists": 1,
@@ -10938,8 +10938,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 1,
-"toiMinutes": 86,
-"toiSeconds": 32
+"toiMinutes": 92,
+"toiSeconds": 38
 },
 "line": "D2",
 "pk": "PK1",
@@ -10958,9 +10958,9 @@
 "powerplayAssists": 1,
 "powerplayGoals": 2,
 "powerplayPoints": 3,
-"shots": 26,
-"toiMinutes": 158,
-"toiSeconds": 24
+"shots": 27,
+"toiMinutes": 165,
+"toiSeconds": 45
 },
 "last5": {
 "assists": 2,
@@ -10971,9 +10971,9 @@
 "powerplayAssists": 1,
 "powerplayGoals": 0,
 "powerplayPoints": 1,
-"shots": 14,
-"toiMinutes": 69,
-"toiSeconds": 29
+"shots": 15,
+"toiMinutes": 76,
+"toiSeconds": 50
 },
 "line": "F2",
 "pk": null,
@@ -10992,9 +10992,9 @@
 "powerplayAssists": 1,
 "powerplayGoals": 0,
 "powerplayPoints": 1,
-"shots": 25,
-"toiMinutes": 222,
-"toiSeconds": 51
+"shots": 26,
+"toiMinutes": 232,
+"toiSeconds": 53
 },
 "last5": {
 "assists": 0,
@@ -11005,9 +11005,9 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 103,
-"toiSeconds": 27
+"shots": 14,
+"toiMinutes": 113,
+"toiSeconds": 29
 },
 "line": "D1",
 "pk": null,
@@ -11019,29 +11019,29 @@
 "injury": null,
 "last10": {
 "assists": 2,
-"blocks": 4,
+"blocks": 5,
 "gamesPlayed": 10,
 "goals": 5,
 "points": 7,
 "powerplayAssists": 1,
 "powerplayGoals": 4,
 "powerplayPoints": 5,
-"shots": 20,
-"toiMinutes": 169,
-"toiSeconds": 1
+"shots": 23,
+"toiMinutes": 175,
+"toiSeconds": 32
 },
 "last5": {
 "assists": 1,
-"blocks": 1,
+"blocks": 2,
 "gamesPlayed": 5,
 "goals": 2,
 "points": 3,
 "powerplayAssists": 0,
 "powerplayGoals": 1,
 "powerplayPoints": 1,
-"shots": 9,
-"toiMinutes": 73,
-"toiSeconds": 5
+"shots": 12,
+"toiMinutes": 79,
+"toiSeconds": 36
 },
 "line": "F2",
 "pk": "PK1",
@@ -11089,29 +11089,29 @@
 "injury": null,
 "last10": {
 "assists": 3,
-"blocks": 3,
+"blocks": 4,
 "gamesPlayed": 10,
 "goals": 1,
 "points": 4,
 "powerplayAssists": 0,
 "powerplayGoals": 1,
 "powerplayPoints": 1,
-"shots": 40,
-"toiMinutes": 152,
-"toiSeconds": 6
+"shots": 41,
+"toiMinutes": 158,
+"toiSeconds": 12
 },
 "last5": {
 "assists": 2,
-"blocks": 1,
+"blocks": 2,
 "gamesPlayed": 5,
 "goals": 1,
 "points": 3,
 "powerplayAssists": 0,
 "powerplayGoals": 1,
 "powerplayPoints": 1,
-"shots": 19,
-"toiMinutes": 67,
-"toiSeconds": 32
+"shots": 20,
+"toiMinutes": 73,
+"toiSeconds": 38
 },
 "line": "F2",
 "pk": "PK2",
