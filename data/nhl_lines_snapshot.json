@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-24T22:29:33+00:00",
+"generated_at": "2026-10-24T22:44:30+00:00",
 "goalies": {
 "2026-10-24": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
-"status": null
+"status": "Confirmed"
 },
 "CBJ": {
 "goalie": "Cam Talbot",
@@ -92,7 +92,7 @@
 },
 "VGK": {
 "goalie": "Carter Hart",
-"status": "Likely"
+"status": "Confirmed"
 },
 "WSH": {
 "goalie": "Charlie Lindgren",
@@ -1586,6 +1586,40 @@
 "pos": "g",
 "pp": null
 },
+"Dennis Gilbert": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 135,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 1,
+"blocks": 7,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 72,
+"toiSeconds": 46
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "ld",
+"pp": null
+},
 "Jack Quinn": {
 "gtd": false,
 "injury": null,
@@ -1685,7 +1719,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Josh Norris": {
@@ -1717,7 +1751,7 @@
 "toiMinutes": 66,
 "toiSeconds": 18
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
@@ -1751,7 +1785,7 @@
 "toiMinutes": 62,
 "toiSeconds": 36
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -1957,7 +1991,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Rasmus Dahlin": {
@@ -2025,7 +2059,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Tage Thompson": {
@@ -2059,7 +2093,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP1"
 },
 "Tyson Kozak": {
@@ -2093,7 +2127,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Ukko-Pekka Luukkonen": {
@@ -2165,40 +2199,6 @@
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP1"
-},
-"Zach Metsa": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 127,
-"toiSeconds": 9
-},
-"last5": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 68,
-"toiSeconds": 52
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
-"pp": null
 }
 },
 "CAR": {
@@ -14649,7 +14649,7 @@
 "toiMinutes": 70,
 "toiSeconds": 57
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -14823,40 +14823,6 @@
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP1"
-},
-"Evgeni Malkin": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 5,
-"points": 8,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 20,
-"toiMinutes": 172,
-"toiSeconds": 0
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 3,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 79,
-"toiSeconds": 46
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
 },
 "Hendrix Lapierre": {
 "gtd": false,
@@ -15061,6 +15027,40 @@
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP1"
+},
+"Rutger McGroarty": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 126,
+"toiSeconds": 8
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 70,
+"toiSeconds": 5
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
 },
 "Sergei Murashov": {
 "gtd": false,
@@ -15954,7 +15954,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Alex Nedeljkovic": {
 "gtd": false,
@@ -16058,7 +16058,7 @@
 "line": "F1",
 "pk": "PK2",
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Darnell Nurse": {
 "gtd": false,
