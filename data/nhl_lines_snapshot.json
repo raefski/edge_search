@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-24T19:59:24+00:00",
+"generated_at": "2026-10-24T20:14:25+00:00",
 "goalies": {
 "2026-10-24": {
 "ANA": {
@@ -9166,40 +9166,6 @@
 "pos": "g",
 "pp": null
 },
-"Daemon Hunt": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 11,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 145,
-"toiSeconds": 26
-},
-"last5": {
-"assists": 0,
-"blocks": 8,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 82,
-"toiSeconds": 50
-},
-"line": "D2",
-"pk": null,
-"pos": "ld",
-"pp": null
-},
 "Danila Yurov": {
 "gtd": false,
 "injury": null,
@@ -9439,6 +9405,40 @@
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP1"
+},
+"Matt Kiersted": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 14,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 154,
+"toiSeconds": 36
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 70,
+"toiSeconds": 35
+},
+"line": "D2",
+"pk": null,
+"pos": "ld",
+"pp": null
 },
 "Michael McCarron": {
 "gtd": false,
