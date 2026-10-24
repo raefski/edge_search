@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-24T15:29:19+00:00",
+"generated_at": "2026-10-24T15:59:37+00:00",
 "goalies": {
 "2026-10-24": {
 "ANA": {
@@ -12,7 +12,7 @@
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
-"status": null
+"status": "Confirmed"
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
@@ -20,7 +20,7 @@
 },
 "CBJ": {
 "goalie": "Cam Talbot",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CGY": {
 "goalie": "Devin Cooley",
@@ -48,11 +48,11 @@
 },
 "NSH": {
 "goalie": "Juuse Saros",
-"status": null
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "Dylan Garand",
-"status": null
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Jonas Johansson",
@@ -71,12 +71,12 @@
 "status": null
 },
 "SJS": {
-"goalie": "Yaroslav Askarov",
-"status": null
+"goalie": "Alex Nedeljkovic",
+"status": "Likely"
 },
 "STL": {
 "goalie": "Joel Hofer",
-"status": null
+"status": "Confirmed"
 },
 "TBL": {
 "goalie": "Dennis Hildeby",
@@ -92,7 +92,7 @@
 },
 "VGK": {
 "goalie": "Carter Hart",
-"status": null
+"status": "Likely"
 },
 "WSH": {
 "goalie": "Charlie Lindgren",
@@ -15922,6 +15922,40 @@
 }
 },
 "SJS": {
+"Adam Gaudette": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 100,
+"toiSeconds": 2
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 50,
+"toiSeconds": 27
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Alex Nedeljkovic": {
 "gtd": false,
 "injury": null,
@@ -16021,10 +16055,10 @@
 "toiMinutes": 78,
 "toiSeconds": 39
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK2",
-"pos": "c",
-"pp": null
+"pos": "lw",
+"pp": "PP2"
 },
 "Darnell Nurse": {
 "gtd": false,
@@ -16093,40 +16127,6 @@
 "pk": null,
 "pos": "ld",
 "pp": "PP1"
-},
-"Igor Chernyshov": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 137,
-"toiSeconds": 5
-},
-"last5": {
-"assists": 1,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 62,
-"toiSeconds": 47
-},
-"line": "F1",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
 },
 "Ivar Stenberg": {
 "gtd": false,
@@ -16463,9 +16463,9 @@
 "toiMinutes": 68,
 "toiSeconds": 25
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Tyler Toffoli": {
