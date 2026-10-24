@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-24T16:59:19+00:00",
+"generated_at": "2026-10-24T17:00:14+00:00",
 "goalies": {
 "2026-10-24": {
 "ANA": {
@@ -7896,40 +7896,6 @@
 "pos": "lw",
 "pp": "PP1"
 },
-"Cole Reinhardt": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 8,
-"points": 11,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 18,
-"toiMinutes": 134,
-"toiSeconds": 31
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 3,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 63,
-"toiSeconds": 31
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Cole Schwindt": {
 "gtd": false,
 "injury": null,
@@ -8165,7 +8131,7 @@
 "toiMinutes": 86,
 "toiSeconds": 44
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
@@ -8305,6 +8271,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
+},
+"Sandis Vilmanis": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 129,
+"toiSeconds": 38
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 66,
+"toiSeconds": 56
+},
+"line": "F2",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Seth Jones": {
 "gtd": false,
