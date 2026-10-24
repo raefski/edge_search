@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-23T23:44:19+00:00",
+"generated_at": "2026-10-24T00:29:29+00:00",
 "goalies": {
 "2026-10-23": {
 "CHI": {
@@ -65,7 +65,7 @@
 "status": null
 },
 "NSH": {
-"goalie": "Justus Annunen",
+"goalie": "Juuse Saros",
 "status": null
 },
 "NYR": {
@@ -81,7 +81,7 @@
 "status": null
 },
 "PIT": {
-"goalie": "Sergei Murashov",
+"goalie": "Arturs Silovs",
 "status": null
 },
 "SEA": {
@@ -101,7 +101,7 @@
 "status": null
 },
 "TOR": {
-"goalie": "Sergei Bobrovsky",
+"goalie": "Anthony Stolarz",
 "status": null
 },
 "UTA": {
@@ -9823,7 +9823,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Brady Skjei": {
@@ -9855,7 +9855,7 @@
 "toiMinutes": 93,
 "toiSeconds": 11
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
 "pos": "ld",
 "pp": "PP2"
@@ -9889,44 +9889,10 @@
 "toiMinutes": 104,
 "toiSeconds": 43
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
-},
-"Ilya Lyubushkin": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 15,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 147,
-"toiSeconds": 52
-},
-"last5": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 73,
-"toiSeconds": 54
-},
-"line": "D2",
-"pk": "PK1",
-"pos": "rd",
-"pp": null
 },
 "Jack Drury": {
 "gtd": false,
@@ -9991,7 +9957,7 @@
 "toiMinutes": 77,
 "toiSeconds": 50
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -10025,7 +9991,7 @@
 "toiMinutes": 84,
 "toiSeconds": 25
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -10061,7 +10027,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10097,7 +10063,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10131,9 +10097,9 @@
 "toiMinutes": 69,
 "toiSeconds": 51
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Mavrik Bourque": {
@@ -10165,10 +10131,44 @@
 "toiMinutes": 78,
 "toiSeconds": 9
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
+},
+"Nick Perbix": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 20,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 186,
+"toiSeconds": 23
+},
+"last5": {
+"assists": 0,
+"blocks": 11,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 87,
+"toiSeconds": 51
+},
+"line": "D3",
+"pk": "PK1",
+"pos": "rd",
+"pp": null
 },
 "Nicolas Hague": {
 "gtd": false,
@@ -10199,7 +10199,7 @@
 "toiMinutes": 87,
 "toiSeconds": 50
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -10233,7 +10233,7 @@
 "toiMinutes": 54,
 "toiSeconds": 40
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -10335,7 +10335,7 @@
 "toiMinutes": 58,
 "toiSeconds": 57
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -10405,7 +10405,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 }
 },
@@ -12533,7 +12533,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13011,7 +13011,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15929,7 +15929,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -16407,7 +16407,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
