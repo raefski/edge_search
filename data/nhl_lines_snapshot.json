@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-24T14:59:42+00:00",
+"generated_at": "2026-10-24T15:29:19+00:00",
 "goalies": {
 "2026-10-24": {
 "ANA": {
@@ -8,7 +8,7 @@
 },
 "BOS": {
 "goalie": "Jeremy Swayman",
-"status": null
+"status": "Confirmed"
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
@@ -56,7 +56,7 @@
 },
 "OTT": {
 "goalie": "Jonas Johansson",
-"status": "Likely"
+"status": "Confirmed"
 },
 "PHI": {
 "goalie": "Joseph Woll",
@@ -64,7 +64,7 @@
 },
 "PIT": {
 "goalie": "Arturs Silovs",
-"status": null
+"status": "Likely"
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
@@ -14620,6 +14620,40 @@
 "pos": "g",
 "pp": null
 },
+"Avery Hayes": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 16,
+"toiMinutes": 122,
+"toiSeconds": 5
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 3,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 70,
+"toiSeconds": 57
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
 "Blake Lizotte": {
 "gtd": false,
 "injury": null,
@@ -15027,40 +15061,6 @@
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP1"
-},
-"Rutger McGroarty": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 126,
-"toiSeconds": 8
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 70,
-"toiSeconds": 5
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
 },
 "Sergei Murashov": {
 "gtd": false,
@@ -17911,7 +17911,7 @@
 "pp": null
 },
 "Victor Hedman": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
