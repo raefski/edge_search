@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-25T14:29:08+00:00",
+"generated_at": "2026-10-25T14:59:12+00:00",
 "goalies": {
 "2026-10-25": {
 "CHI": {
@@ -65,7 +65,7 @@
 "status": null
 },
 "TOR": {
-"goalie": "Anthony Stolarz",
+"goalie": "Sergei Bobrovsky",
 "status": null
 }
 }
@@ -3704,7 +3704,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Jake Walman": {
 "gtd": false,
@@ -3738,7 +3738,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Kasperi Kapanen": {
 "gtd": false,
@@ -9021,7 +9021,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9499,7 +9499,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
