@@ -10,6 +10,7 @@ DK MLB Classic: roster 2 P / C / 1B / 2B / 3B / SS / 3 OF, $50,000 cap.
 from __future__ import annotations
 
 import json
+import re
 import sys
 import urllib.parse
 import urllib.request
@@ -263,9 +264,58 @@ class SalaryLookup:
         for k in dup:
             self.bare.pop(k, None)
         self.ambiguous = sorted(dup)
+        # every board entry by suffix-free full name (namesakes kept, "|TEAM" keys
+        # included) and by surname, for the alias fallback below; key_of maps an
+        # entry back to its salaries key
+        self.by_full: dict = {}
+        self.by_last: dict = {}
+        self._keys = {id(v): k for k, v in salaries.items()}
+        for info in salaries.values():
+            first, _, last = (info.get("name") or "").strip().partition(" ")
+            self.by_full.setdefault(self._bare(info.get("name") or ""), []).append(info)
+            if first and last:
+                self.by_last.setdefault(self._bare(last), []).append((self._bare(first), info))
 
     def get(self, name: str):
-        return self.exact.get(norm(name)) or self.bare.get(self._bare(name))
+        hit = self.exact.get(norm(name)) or self.bare.get(self._bare(name))
+        if hit or not name:
+            return hit
+        return self._alias(name)
+
+    def key_of(self, info) -> str | None:
+        """The salaries key of an entry get() returned (namesakes: "name|TEAM")."""
+        return self._keys.get(id(info))
+
+    # The book's tag in "Sebastian Aho (CAR)" / "Elias Pettersson (F)": a team, or a
+    # hockey position class. NHL critique cycle 5 (2026-10-24): DK's sportsbook posted
+    # Aho (CAR), Pettersson (F), "Mitchell Marner", "Cameron York", "Zachary Bolduc",
+    # "Christopher Tanev"... and those stars' props were silently dropped (73 board
+    # skater-slates in 19 nights, 23% of the $5k+ no-prop skaters).
+    _POS_TAG = {"F": ("C", "W", "LW", "RW", "F"), "D": ("D",)}
+
+    def _alias(self, name: str):
+        m = re.match(r"^(.*?)\s*\((\w+)\)\s*$", name)
+        base, tag = (m.group(1), m.group(2).upper()) if m else (name, None)
+        cands = self.by_full.get(self._bare(base)) or self._nick(base)
+        if tag in self._POS_TAG:
+            cands = [i for i in cands
+                     if any(x in self._POS_TAG[tag] for x in str(i.get("position") or "").upper().split("/"))]
+        elif tag:
+            cands = [i for i in cands if tag == str(i.get("team") or "").upper()]
+        elif m is None and self.by_full.get(self._bare(base)):
+            return None                                  # an untagged namesake: never guessed
+        return cands[0] if len(cands) == 1 else None
+
+    def _nick(self, name: str) -> list:
+        """Mitch <-> Mitchell, Cam <-> Cameron: same surname, one first name a prefix
+        of the other (3+ letters). A bare first initial was not enough (Mike / Malik
+        Williams); the caller still needs exactly one."""
+        first, _, last = name.strip().partition(" ")
+        f = self._bare(first)
+        if len(f) < 3 or not last:
+            return []
+        return [i for g, i in self.by_last.get(self._bare(last), ())
+                if len(g) >= 3 and (g.startswith(f) or f.startswith(g))]
 
 
 class DraftablesUnavailable(RuntimeError):

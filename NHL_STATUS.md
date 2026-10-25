@@ -546,3 +546,19 @@ season sets is blended with this season's per-game production (`blend_season`, K
 Season lab H2: RMSE 6.262 -> 6.119, bias +0.30 -> +0.15, rank +0.393 -> +0.423 (78/86
 dates better). 2026-27 test: not worse (lock RMSE 5.928 -> 5.926, early 5.943 -> 5.939);
 the gain grows as games accumulate. Details: NHL_CRITIQUE_LOG.md cycle 4.
+
+## 6o. Props under another spelling (2026-10-24, critique cycle 5)
+
+DK's sportsbook spells some skaters differently from the DK board: "Mitchell
+Marner", "Sebastian Aho (CAR)", "Elias Pettersson (F)", "Christopher Tanev",
+"Cameron York", "Alexander Wennberg". Those props were dropped, and the stars ran
+on last season's rates.
+- `edge.dfs.SalaryLookup` now resolves a (TEAM) or (F)/(D) tag, which must agree
+  with the player, and a nickname: same surname, one first name a prefix of the
+  other, exactly one match.
+- `own_game_markets(key_of=...)` keys props by the salaries key, so namesakes stay
+  apart (two Ahos, two Petterssons).
+- Lab re-cached: 41 lock skater-slates gained their props. Test RMSE 5.926 → 5.919
+  at lock and 5.939 → 5.932 early; train flat, within ±0.002. The season lab has no
+  props, so it is unchanged.
+

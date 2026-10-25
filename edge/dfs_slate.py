@@ -168,12 +168,13 @@ def player_markets_by_event(client, sport_key: str, markets: list[str],
 
 
 def own_game_markets(by_event: dict, kickoffs: dict, resolve, games: dict,
-                     tolerance: timedelta = EVENT_TOLERANCE) -> tuple[dict, list]:
+                     tolerance: timedelta = EVENT_TOLERANCE, key_of=None) -> tuple[dict, list]:
     """({subject: markets from HIS game's event only}, [names refused]).
 
     The guarded replacement for `{name: markets}` built by .update() across
     every event in a scan. Subjects that resolve to no DK player are kept as
-    before (the caller counts them not_on_slate)."""
+    before (the caller counts them not_on_slate). With `key_of` (SalaryLookup.key_of)
+    a resolved subject is keyed by his salaries key instead of the book's spelling."""
     owner, refused = subject_events({ev: set(p) for ev, p in by_event.items()},
                                     resolve, kickoffs, games, tolerance)
     out: dict = {}
@@ -183,7 +184,9 @@ def own_game_markets(by_event: dict, kickoffs: dict, resolve, games: dict,
                 continue
             if name in owner:
                 if owner[name] == ev:
-                    out[name] = pm
+                    # the book may spell him differently ("Mitchell Marner", "Sebastian
+                    # Aho (CAR)") -- NHL critique cycle 5
+                    out[(key_of(resolve(name)) if key_of else None) or name] = pm
             elif resolve(name) is None:
                 out.setdefault(name, pm)
     return out, refused

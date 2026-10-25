@@ -182,8 +182,11 @@ def player_props(client, markets: list[str], book: str = "draftkings",
                     out.setdefault(name, {}).update(pm)
         return out, []
     lookup = dfs.SalaryLookup(salaries)
+    # keyed by salaries key: build_board reads props[k], so a book spelling
+    # ("Sebastian Aho (CAR)") lands on the right one of two Ahos (critique cycle 5)
     return dfs_slate.own_game_markets(by_event, kickoffs, lookup.get,
-                                      games if games is not None else slate_games(salaries))
+                                      games if games is not None else slate_games(salaries),
+                                      key_of=lookup.key_of)
 
 
 def _season_rates() -> dict:
@@ -410,7 +413,7 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
     props, wrong_game = player_props(client, ["player_shots_on_goal", "player_points",
                                               "player_assists", "player_total_saves"],
                                      salaries=salaries, games=games)
-    props = {norm(k): v for k, v in props.items()}
+    props = {k if k in salaries else norm(k): v for k, v in props.items()}
     start = _parse_time(meta.get("start") or next(iter(games.values()), {}).get("start"))
     date = (start.astimezone(ZoneInfo("America/New_York")).date().isoformat()
             if start else datetime.now(ZoneInfo("America/New_York")).date().isoformat())
@@ -441,7 +444,7 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
             "role_source": "this season's ice time" if toi_now is not None else "unavailable",
             "season_source": "this season's production" if produced is not None else "unavailable"}
     pool = []
-    for sal in salaries.values():
+    for skey, sal in salaries.items():
         if not sal.get("salary"):
             continue
         t = nhl.team(sal.get("team"))
@@ -462,11 +465,11 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
             if norm(st.get("goalie") or "") != key:
                 continue
             row["starter_status"] = st.get("status") or "Projected"
-            saves = nhl_sim.market_mean((props.get(key) or {}).get("player_total_saves"))
+            saves = nhl_sim.market_mean((props.get(skey) or {}).get("player_total_saves"))
             row["means"] = {"saves": saves} if saves else {}
             pool.append(row)
             continue
-        pm = props.get(key) or {}
+        pm = props.get(skey) or {}
         if not ln.get("line") and not pm:
             info["no_lineup"].append(sal["name"])
             continue

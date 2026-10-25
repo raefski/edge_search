@@ -362,3 +362,52 @@ early in the season (test nights fall at games 4-12; stars' goals and shots are 
 - K_shots = 7 is aggressive; recheck on the 2026-27 lab at ~30 nights.
 - Shots scale one-for-one with implied goals; ~0.25 of that fits H1 better. It interacts
   with the market, so only the 2026-27 lab can judge it.
+
+## Cycle 5: stars' props dropped when the book spells them differently
+
+**The hole** (from a fresh critic). `own_game_markets` keyed props by the book's
+subject, and `SalaryLookup` resolved neither tags nor nicknames. So DK-book props for
+"Mitchell Marner", "Sebastian Aho (CAR)", "Elias Pettersson (F)", "Christopher Tanev",
+"Cameron York" and "Alexander Wennberg" never reached `build_board`
+(`props.get(norm(DK name))`). They were 23% of the $5k+ no-prop skaters. The critic
+found nothing larger in the no-prop path: the season lab's components match the box
+scores within 0.06 a game.
+
+**The fix.** A join correction with no parameters.
+- `SalaryLookup._alias`: a (TEAM) tag must match the player's team, and an (F)/(D)
+  tag his position.
+- `_nick`: same surname and one first name a prefix of the other (3+ letters), with
+  exactly one candidate. Mike / Malik Williams is refused.
+- `own_game_markets(key_of=lookup.key_of)` keys props by the salaries key, and NHL
+  `build_board` reads `props[salaries key]`.
+- Tests: `tests/test_dfs_slate_guard.py`.
+- Every sport that uses `SalaryLookup` gets the alias rules: NFL, MLB, NCAAB.
+
+**Result** (2026-27 lab re-cached through production code, nights as defined in the
+lab):
+
+| state | split | before RMSE (n) | **after RMSE (n)** | MAE | bias |
+|---|---|---|---|---|---|
+| lock | train | 6.077 (2,192) | 6.079 (2,196) | 4.570 → 4.572 | +0.18 |
+| lock | test | 5.926 (1,811) | **5.919** (1,814) | 4.449 → 4.446 | +0.19 |
+| early | train | 6.088 (2,172) | 6.090 (2,176) | 4.577 → 4.578 | +0.17 |
+| early | test | 5.939 (1,789) | **5.932** (1,792) | 4.451 → 4.446 | +0.17 |
+
+- 41 lock skater-slates gained their props (42 early).
+- Namesakes landed correctly: Aho on CAR C, Pettersson on VAN C.
+- A few skaters newly enter the scored rows (+3/+4): players with no line but with
+  props were dropped before.
+- The season lab has no props, so H1/H2 are unchanged at 6.0300 / 6.1190.
+
+**Decision: ship.** It is a correctness fix on the highest-salary players. Test
+improves a little in both states and train is flat. The gain is inside the 8-night
+resolution (±0.02), and I say so.
+
+**Runner-ups:**
+- **Games with no props in the lock scan** (10/06 VGK-SEA, 10/14 COL-DAL) run on
+  rates. Use the latest earlier scan that has props: about 20 star skater-games so
+  far, untested.
+- **Blocks drift down across the season** (0.822 a game in H1 vs 0.755 in H2): a
+  drift term is worth about 0.01 pts².
+- **Test bias for PP1 (+0.50) and $3.5-6.5k (+0.5-0.6):** worth 0.07 pts² or less
+  (cycle 3).

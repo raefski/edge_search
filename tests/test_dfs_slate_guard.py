@@ -68,3 +68,30 @@ def test_a_same_named_second_player_on_one_board_is_not_dropped(monkeypatch):
     assert sorted((v["team"], v["salary"]) for v in sal.values()) == [("CAR", 7000), ("NYI", 3500)]
     # A name-only lookup cannot pick between them.
     assert dfs.SalaryLookup(sal).bare.get("sebastianaho") is None
+
+
+def _alias_board():
+    from edge.dfs import SalaryLookup
+    from edge.names import norm
+    s: dict = {}
+    for n, t, p in [("Mitch Marner", "VGK", "RW"), ("Sebastian Aho", "CAR", "C"),
+                    ("Sebastian Aho", "NYI", "D"), ("Elias Pettersson", "VAN", "C"),
+                    ("Elias Pettersson", "VAN", "D"), ("Malik Williams", "CHI", "WR")]:
+        k = norm(n)
+        s[k if k not in s else f"{k}|{t}"] = {"name": n, "team": t, "position": p}
+    return SalaryLookup(s)
+
+
+def test_book_spellings_resolve_to_the_right_dk_player():
+    # NHL critique cycle 5: these stars' props were silently dropped
+    L = _alias_board()
+    key = lambda q: L.key_of(L.get(q)) if L.get(q) else None
+    assert key("Mitchell Marner") == "mitchmarner"
+    assert key("Sebastian Aho (CAR)") == "sebastianaho"
+    assert key("Sebastian Aho (NYI)") == "sebastianaho|NYI"
+    assert key("Elias Pettersson (F)") == "eliaspettersson"
+    assert key("Elias Pettersson (D)") == "eliaspettersson|VAN"
+    assert key("Mike Williams") is None          # a shared first initial is not a match
+    assert key("Sebastian Aho (TOR)") is None
+
+
