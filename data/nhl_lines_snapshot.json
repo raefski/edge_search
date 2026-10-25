@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-25T20:44:09+00:00",
+"generated_at": "2026-10-25T20:59:10+00:00",
 "goalies": {
 "2026-10-25": {
 "CHI": {
@@ -12,7 +12,7 @@
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": null
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Akira Schmid",
@@ -2231,37 +2231,37 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
-"David Perron": {
-"gtd": true,
+"Dylan Hryckowian": {
+"gtd": false,
 "injury": null,
 "last10": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 3,
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 3,
+"goals": 0,
+"points": 1,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 16,
-"toiMinutes": 140,
-"toiSeconds": 15
+"shots": 4,
+"toiMinutes": 46,
+"toiSeconds": 2
 },
 "last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 2,
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 3,
+"goals": 0,
+"points": 1,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 75,
-"toiSeconds": 34
+"shots": 4,
+"toiMinutes": 46,
+"toiSeconds": 2
 },
 "line": "F4",
 "pk": null,
@@ -2508,6 +2508,40 @@
 "pos": "ld",
 "pp": null
 },
+"Matthew Seminoff": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 66,
+"toiSeconds": 13
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 56,
+"toiSeconds": 4
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Mikko Rantanen": {
 "gtd": false,
 "injury": null,
@@ -2608,40 +2642,6 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": null
-},
-"Radek Faksa": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 107,
-"toiSeconds": 28
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 51,
-"toiSeconds": 45
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
 "pp": null
 },
 "Roope Hintz": {
