@@ -64,8 +64,10 @@ import numpy as np
 # Fitted constants. scripts/nascar_fit.py, NASCAR Cup 2022-2026,
 # 6,088 scored driver-races with leak-free prior-12-race form.
 # ---------------------------------------------------------------------------
-#: E[finish] = c + b_start*start + b_form*form_finish + b_led*form_led
+#: E[finish] = c + b_start*start + b_run*ew12 + b_type*ewtt + b_led*form_led
 #:                + b_dnf*form_dnf,  with `resid_sd` the unexplained spread.
+#: (Before cycle 1 the form term was form_finish; the history below is that
+#: model's and its reasoning still holds.)
 #:
 #: THE R-SQUARED COLUMN IS THE POINT. Starting position correlates 0.458 with
 #: finish at a short track and 0.076 at a superspeedway; the regressions land
@@ -94,12 +96,25 @@ import numpy as np
 #:
 #: The other three rows are stable. Refitting them without 2026 moves `start`
 #: by 0.009 at most (short 0.295 vs 0.290) and R^2 by 0.01.
+#:
+#: CYCLE 1 (2026-10-25, NASCAR_CRITIQUE_LOG.md): form_finish is replaced by
+#: two RUNNING-POSITION terms (running_form above): ew12, recency-weighted
+#: average running position over all earlier races, and ewtt, the same at
+#: this track type only. Held out (fit 2022-24, test 2025-26, 66 races):
+#: finish MAE 8.30 -> 8.18, mean race Spearman 0.394 -> 0.427, every track
+#: type better; a 2022-23 -> 2024 check agrees (8.33 -> 8.26). The
+#: superspeedway row stays REDUCED for the reason above: its full fit put
+#: form_led at +22.0, and dropping led/dnf there costs 0.02 MAE on the 2024
+#: check (9.63 vs 9.65) -- noise, not signal.
+#:
+#: Fitted by `python3 scripts/nascar_lab.py fit`, Cup 2022-2026, 6,162
+#: driver-races with prior form, 2-season form history (as live).
 FINISH_MODEL = {
-    #                const   start   formFin  formLed  formDNF  resid_sd   R2
-    "superspeedway": (13.18, 0.006, 0.335, 0.0, 0.0, 11.08, 0.027),
-    "intermediate": (5.68, 0.214, 0.533, -8.08, -5.70, 9.64, 0.181),
-    "short": (2.98, 0.290, 0.641, -16.16, -10.62, 8.88, 0.287),
-    "road": (6.93, 0.335, 0.346, -4.60, -5.09, 9.87, 0.182),
+    #                const    start   ew12    ewtt   formLed  formDNF  resid_sd  R2
+    "superspeedway": (12.961, -0.014, 0.354, 0.012, 0.0, 0.0, 11.05, 0.032),
+    "intermediate": (3.247, 0.154, 0.463, 0.207, 4.88, -0.91, 9.48, 0.209),
+    "short": (2.098, 0.226, 0.289, 0.393, -3.32, -2.63, 8.69, 0.318),
+    "road": (4.753, 0.271, 0.240, 0.250, 3.82, -1.90, 9.79, 0.195),
 }
 
 #: P(DNF) by track type and starting bucket.
@@ -143,6 +158,11 @@ LAP_MODEL = {
 
 DEFAULT_TRACK = "intermediate"
 
+#: Half-lives, in races, of the running-position form (cycle 1, chosen on
+#: 2022-24: NASCAR_CRITIQUE_LOG.md).
+RUN_HL_ALL = 12.0
+RUN_HL_TYPE = 6.0
+
 #: League-average form, for a driver with no history -- a rookie, or the first
 #: race of a season. Deliberately mediocre rather than optimistic: an unknown
 #: car is far more likely to be a backmarker than a contender, and a model that
@@ -172,13 +192,48 @@ def dnf_probability(start: int, track: str, form_dnf: float | None = None) -> fl
     return float(min(0.60, max(0.02, 0.75 * base + 0.25 * float(form_dnf))))
 
 
+def running_form(history: list[tuple[float, str]]) -> dict:
+    """Recency-weighted AVERAGE RUNNING POSITION from a driver's earlier races.
+
+    `history` is [(avg_pos, track_type), ...] oldest first, races with loop
+    data only. Returns {"ew12": all races, half-life RUN_HL_ALL races;
+    "ewtt_by_type": {track_type: same, that type only, half-life RUN_HL_TYPE}}
+    -- empty when there is no history.
+
+    WHY (NASCAR_CRITIQUE_LOG.md cycle 1): a finishing position is a running
+    position scrambled by wrecks, late cautions and pit cycles. Kyle Larson's
+    12-race finish average read 17.4 at Kansas because two wrecks sat in the
+    window; where he RAN is the cleaner speed signal. And a short-track car is
+    not a superspeedway car, so the same-type history gets its own term.
+    """
+    if not history:
+        return {}
+
+    def ew(xs, hl):
+        w = 0.5 ** (np.arange(len(xs))[::-1] / hl)
+        return float(np.dot(w, xs) / w.sum())
+    out = {"ew12": ew([x for x, _ in history], RUN_HL_ALL), "ewtt_by_type": {}}
+    for t in {t for _, t in history}:
+        out["ewtt_by_type"][t] = ew([x for x, tt in history if tt == t], RUN_HL_TYPE)
+    return out
+
+
 def expected_finish(driver: dict, track: str) -> float:
-    """The fitted E[finish] for one driver, before race-day noise."""
-    c, b_s, b_f, b_l, b_d, _sd, _r2 = FINISH_MODEL.get(
+    """The fitted E[finish] for one driver, before race-day noise.
+
+    A driver with no loop-data history falls back to his finish form for both
+    running terms (and that to DEFAULT_FORM) -- the same fallback the fit used.
+    """
+    c, b_s, b_r, b_t, b_l, b_d, _sd, _r2 = FINISH_MODEL.get(
         track, FINISH_MODEL[DEFAULT_TRACK])
+    fin = float(driver.get("form_finish") or DEFAULT_FORM["form_finish"])
+    ew12 = driver.get("ew12")
+    ew12 = fin if ew12 is None else float(ew12)
+    ewtt = (driver.get("ewtt_by_type") or {}).get(track, driver.get("ewtt"))
+    ewtt = ew12 if ewtt is None else float(ewtt)
     return (c
             + b_s * float(driver.get("start") or 20)
-            + b_f * float(driver.get("form_finish") or DEFAULT_FORM["form_finish"])
+            + b_r * ew12 + b_t * ewtt
             + b_l * float(driver.get("form_led") or DEFAULT_FORM["form_led"])
             + b_d * float(driver.get("form_dnf") or DEFAULT_FORM["form_dnf"]))
 
@@ -205,7 +260,7 @@ def simulate(drivers: list[dict], race: dict, n_sims: int = 2000,
     laps = float(race.get("actual_laps") or 300)
     green = float(race.get("green_laps") or max(1.0, laps * 0.88))
     lap_cfg = LAP_MODEL.get(track, LAP_MODEL[DEFAULT_TRACK])
-    resid_sd = FINISH_MODEL.get(track, FINISH_MODEL[DEFAULT_TRACK])[5]
+    resid_sd = FINISH_MODEL.get(track, FINISH_MODEL[DEFAULT_TRACK])[6]
 
     starts = np.array([float(d.get("start") or 20) for d in drivers])
     mu = np.array([expected_finish(d, track) for d in drivers])

@@ -137,6 +137,20 @@ was only ever explaining noise — `form_finish` alone gets R² 0.0269 of the
 total 0.0287. The other three terms are zeroed rather than shipped at an
 unstable point estimate.
 
+## 4a. Finish form = running position, not finishing position (critique cycle 1, 2026-10-25)
+
+`FINISH_MODEL` now reads two recency-weighted AVERAGE RUNNING POSITION terms
+from NASCAR's loop data (`nascar_sim.running_form`): `ew12` over every
+earlier race in the two loaded seasons (half-life 12 races) and `ewtt` over
+earlier races at the same track type (half-life 6). They replace
+`form_finish`, which a wreck or a late caution scrambles; `form_finish` is
+only the fallback for a driver with no loop history. Held out
+(`scripts/nascar_lab.py`, fit 2022-24, test 2025-26, 66 races): finish MAE
+8.30 -> 8.18, mean race Spearman 0.394 -> 0.427, every track type better.
+On the Kansas 9/27 board rebuilt from the real grid: DK-points MAE 19.4 ->
+18.0, rank correlation +0.25 -> +0.62 (one race). The superspeedway row stays
+reduced. Log: NASCAR_CRITIQUE_LOG.md.
+
 ## 5. The two theories are percentiles, not mean ± k·sd
 
 ```
@@ -187,7 +201,7 @@ most important action in the weekly loop.
 | thing | status |
 |---|---|
 | **Ownership** | **fitted on ONE race** (Kansas 2026-09-27, §7a): salary + starting position. Intermediate track only; a superspeedway may need a steeper start weight. |
-| **Projection order** | rank correlation +0.27 on one race; the flat 12-race form average under-rates a hot elite driver (Larson, §7a). Open. |
+| **Projection order** | Kansas rebuilt: +0.27 -> +0.62 after running-position form (§4a). One race; the forward log grades the rest. |
 | **Drafting partners** | at a superspeedway, teammates' and manufacturer allies' finishes are genuinely correlated beyond what the permutation implies. **Not modelled.** A known gap, not an oversight. |
 | **Lineup head-to-head** | no backtest of cash-vs-GPP objectives against real contest outcomes yet. The objectives are argued from the measured distribution, not from a demonstrated edge. |
 | **Pit strategy, fuel windows, caution timing** | absorbed into the residual spread rather than simulated. |

@@ -170,7 +170,9 @@ def test_superspeedway_finish_does_not_depend_on_starting_position():
 
     short_gap = abs(nascar_sim.expected_finish(a, "short")
                     - nascar_sim.expected_finish(b, "short"))
-    assert short_gap > 8.0
+    # 34 grid slots x the short-track start coefficient (0.226 since cycle 1,
+    # when running position took some of what start used to carry).
+    assert short_gap > 6.0
 
 
 def test_superspeedway_dnf_is_highest_at_the_front():
@@ -302,3 +304,16 @@ def test_ownership_is_not_purely_a_function_of_salary():
     by_salary = sorted(pool, key=lambda d: -d["salary"])
     priciest = by_salary[0]
     assert priciest["own"] > min(d["own"] for d in pool)
+
+
+def test_running_form_weights_recent_and_same_type():
+    """Cycle 1: recency-weighted running position, plus a same-track-type
+    term; expected_finish uses the race's type and falls back to ew12."""
+    hist = [(30.0, "short")] * 10 + [(10.0, "intermediate")] * 10
+    f = nascar_sim.running_form(hist)
+    assert f["ew12"] < 20.0                      # recent races weigh more
+    assert f["ewtt_by_type"]["short"] == 30.0
+    d = {"start": 20, "form_finish": 20.0, "form_led": 0.0, "form_dnf": 0.1, **f}
+    assert (nascar_sim.expected_finish(d, "short")
+            > nascar_sim.expected_finish(d, "intermediate"))
+    assert nascar_sim.running_form([]) == {}
