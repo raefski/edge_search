@@ -107,14 +107,26 @@ import numpy as np
 #: form_led at +22.0, and dropping led/dnf there costs 0.02 MAE on the 2024
 #: check (9.63 vs 9.65) -- noise, not signal.
 #:
-#: Fitted by `python3 scripts/nascar_lab.py fit`, Cup 2022-2026, 6,162
+#: CYCLE 2 (2026-10-25): the latent is fitted on drivers STILL RUNNING at
+#: the end, and resid_sd is 0.7 x that fit's residual spread. simulate()
+#: sends its own DNFs to the back; a latent fitted on every finish already
+#: carried the wrecks, so each was counted twice and the simulated mean
+#: finishes bunched toward mid-pack (slope of actual on simulated mean 1.34
+#: at intermediates). k = 0.7 chosen on the inner 2022-23 -> 2024 split
+#: (MAE 8.15 / 8.10 / 8.09 / 8.09 / 8.11 for k 1 / .8 / .7 / .6 / .5). Held
+#: out 2025-26: finish MAE 8.18 -> 7.96, Spearman 0.424 -> 0.429, every
+#: track type better; actual DK points inside a driver's simulated 10-90%
+#: band 83.7% -> 79.6% (target 80), simulated DK sd 25.2 vs real 26.2 (4%
+#: narrow, inside the 10% bar). The R2 column is the running-only fit's.
+#:
+#: Fitted by `python3 scripts/nascar_lab.py fit`, Cup 2022-2026, non-DNF
 #: driver-races with prior form, 2-season form history (as live).
 FINISH_MODEL = {
     #                const    start   ew12    ewtt   formLed  formDNF  resid_sd  R2
-    "superspeedway": (12.961, -0.014, 0.354, 0.012, 0.0, 0.0, 11.05, 0.032),
-    "intermediate": (3.247, 0.154, 0.463, 0.207, 4.88, -0.91, 9.48, 0.209),
-    "short": (2.098, 0.226, 0.289, 0.393, -3.32, -2.63, 8.69, 0.318),
-    "road": (4.753, 0.271, 0.240, 0.250, 3.82, -1.90, 9.79, 0.195),
+    "superspeedway": (6.590, 0.010, 0.471, -0.019, 0.0, 0.0, 6.14, 0.086),
+    "intermediate": (-0.495, 0.167, 0.423, 0.320, 3.18, -1.15, 5.50, 0.320),
+    "short": (1.052, 0.218, 0.272, 0.411, -8.88, -1.75, 5.44, 0.368),
+    "road": (3.165, 0.269, 0.183, 0.312, -0.07, -1.08, 6.13, 0.240),
 }
 
 #: P(DNF) by track type and starting bucket.

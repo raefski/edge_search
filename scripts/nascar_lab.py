@@ -48,6 +48,8 @@ from edge import nascar_sim as S  # noqa: E402
 
 TRAIN = (2022, 2023, 2024)
 TEST = (2025, 2026)
+#: Cycle 2 noise scale, chosen on the inner 2022-23 -> 2024 split.
+COND_K = 0.7
 
 
 def load_all() -> list[dict]:
@@ -148,12 +150,17 @@ def baseline_variant(train):
     return predict
 
 
-def fit_running(rows: list[dict]) -> dict:
+def fit_running(rows: list[dict], cond: bool = False, k: float = 1.0) -> dict:
     """FINISH_MODEL in production's shape, fitted on `rows`:
-    finish ~ 1, start, ew12, ewtt, form_led, form_dnf per track type."""
+    finish ~ 1, start, ew12, ewtt, form_led, form_dnf per track type.
+
+    cond / k (cycle 2): fit the latent on drivers still running at the end
+    and scale its residual sd by k. simulate() sends its own DNFs to the
+    back, so a latent fitted on every finish counted each wreck twice."""
     fm = {}
     for t in F.TRACK_TYPES:
-        sel = [r for r in rows if r["track_type"] == t]
+        sel = [r for r in rows if r["track_type"] == t
+               and not (cond and r["dnf"])]
         X = np.array([[1.0, r["start"],
                        r["ew12"] if r["ew12"] is not None else r["form_finish"],
                        r["ewtt"] if r["ewtt"] is not None else
@@ -165,15 +172,15 @@ def fit_running(rows: list[dict]) -> dict:
         b, *_ = np.linalg.lstsq(X, y, rcond=None)
         res = y - X @ b
         b = list(b) + [0.0] * (6 - len(b))
-        fm[t] = (*[round(float(v), 4) for v in b], round(float(res.std()), 3),
+        fm[t] = (*[round(float(v), 4) for v in b], round(k * float(res.std()), 3),
                  round(float(1 - res.var() / y.var()), 4))
     return fm
 
 
-def running_variant(train):
-    """Cycle 1 (shipped): production expected_finish with the table fitted on
-    train."""
-    fm = fit_running(train)
+def running_variant(train, cond=False, k=1.0):
+    """Cycle 1: production expected_finish with the table fitted on train.
+    cond/k: cycle 2 (see fit_running)."""
+    fm = fit_running(train, cond, k)
     _fm, dnf = fit_tables(train)
 
     def predict(race_rows, n_sims):
@@ -185,6 +192,7 @@ def running_variant(train):
 VARIANTS = {
     "baseline": baseline_variant,
     "running_pos": running_variant,
+    "cond_latent": lambda train: running_variant(train, cond=True, k=COND_K),
 }
 
 
@@ -239,7 +247,7 @@ def main() -> None:
     rows = load_all()
     if a.cmd == "fit":
         # Production table: every season, as the shipped constants always were.
-        for t, v in fit_running(rows).items():
+        for t, v in fit_running(rows, cond=True, k=COND_K).items():
             print(f"    {t!r}: {v},")
         return
     train = [r for r in rows if r["season"] in TRAIN]

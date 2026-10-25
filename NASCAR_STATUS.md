@@ -151,6 +151,17 @@ On the Kansas 9/27 board rebuilt from the real grid: DK-points MAE 19.4 ->
 18.0, rank correlation +0.25 -> +0.62 (one race). The superspeedway row stays
 reduced. Log: NASCAR_CRITIQUE_LOG.md.
 
+## 4b. The latent no longer counts wrecks twice (critique cycle 2, 2026-10-25)
+
+`FINISH_MODEL` is fitted on cars still running at the end, with `resid_sd`
+0.7 x that fit's spread. `simulate()` sends its own DNFs to the back, so a
+latent fitted on every finish had each wreck in it twice and bunched the
+simulated means toward mid-pack. Held out (2025-26, 66 races): finish MAE
+8.18 -> 7.96, Spearman 0.424 -> 0.429; actual DK points inside a driver's
+simulated 10-90% band 83.7% -> 79.6% (target 80). Kansas rebuilt: DK MAE
+18.0 -> 15.2, rho +0.62 -> +0.68, below-floor 30.6% (target 25, one race --
+watch it). Log: NASCAR_CRITIQUE_LOG.md.
+
 ## 5. The two theories are percentiles, not mean ± k·sd
 
 ```

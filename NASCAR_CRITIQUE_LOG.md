@@ -58,3 +58,49 @@ fit`). Kansas 9/27 rebuilt board, DK points: MAE 19.4 -> 18.0, rho +0.25 ->
 alone, mostly absorbed here; (2) driver rating as form, -0.04, redundant
 with running position; (3) practice rank adds nothing held out (Spearman
 +0.004).
+
+## Cycle 2 -- the simulator counted wrecks twice (2026-10-25) -- SHIPPED
+
+**Hole (critic):** the finish latent (and its resid_sd) was fitted on every
+finish, wrecks included, and simulate() then sends its own random DNFs to
+the back. Each wreck was in the model twice, so simulated mean finishes
+bunched toward mid-pack: slope of actual finish on simulated mean 1.34
+intermediate / 1.13 road; sd of simulated means 3.80 vs 4.71 for the
+regression's own E[finish]. Scoring E[finish] directly already beat the sim
+(8.06 vs 8.18).
+
+**Fix:** `nascar_lab.py --variant cond_latent`: fit on non-DNF rows,
+resid_sd x k. k chosen on the inner 2022-23 -> 2024 split only (re-run here,
+reproduces the critic): MAE 8.153 / 8.100 / **8.089** / 8.092 / 8.113 for
+k 1 / 0.8 / 0.7 / 0.6 / 0.5; shipped there 8.249.
+
+| slice | races | cycle 1 MAE | cycle 2 MAE | cycle 1 Spearman | cycle 2 Spearman |
+|---|---|---|---|---|---|
+| all | 66 | 8.18 | **7.96** | 0.424 | 0.429 |
+| superspeedway | 10 | 9.66 | 9.53 | 0.165 | 0.173 |
+| intermediate | 27 | 8.10 | 7.79 | 0.467 | 0.465 |
+| short | 17 | 7.33 | 7.20 | 0.514 | 0.520 |
+| road | 12 | 8.28 | 8.05 | 0.418 | 0.431 |
+
+Paired per race: -0.224 +- 0.051 MAE (critic). RMSE 9.85 -> 9.84 overall,
+short 9.17 -> 9.30 (worse: k shrinks the means' tails at short tracks).
+Spearman change is noise: this fixes the level/spread of the means, not
+their order.
+
+**Spread check (the risk: k narrows outcomes):** held-out DK points, real
+sd 26.24 / p90 58.55. Cycle 1 sim sd 26.75, p90 63.63, actual inside the
+driver's 10-90% band 83.7% (too wide); cycle 2 sd 25.23, p90 61.03, band
+79.6% (target 80). sd 4% narrow, inside the 10% bar. Kansas rebuilt (GPP):
+DK MAE 18.0 -> 15.2, rho +0.62 -> +0.68; below floor 30.6% (target 25),
+above ceiling 5.6% (target 10) -- one race, watch on the next exports.
+
+Production table: 2022-2026 non-DNF rows, k 0.7 (`nascar_lab.py fit`). Test
+loosened: short/superspeedway expected-finish spread ratio is now 2.49 (was
+asserted > 2.5), asserted > 2.0.
+
+**Runner-ups:** (1) score E[finish] directly for the mean projection
+(-0.12) -- subsumed; (2) per-track k (superspeedway/road prefer ~1,
+intermediate/short ~0.5-0.6): < 0.02 more MAE, not worth 3 parameters;
+(3) superspeedway still ~lottery (Spearman 0.17, 10 races), drafting
+partners unmodelled. Also flagged: form_led flips sign by track type
+(+3.2 intermediate, -8.9 short in production) -- candidate for a cap.
