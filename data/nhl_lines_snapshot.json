@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-25T22:44:00+00:00",
+"generated_at": "2026-10-25T23:44:06+00:00",
 "goalies": {
 "2026-10-25": {
 "CHI": {
@@ -8,7 +8,7 @@
 },
 "COL": {
 "goalie": "Scott Wedgewood",
-"status": "Likely"
+"status": "Confirmed"
 },
 "DAL": {
 "goalie": "Jake Oettinger",
@@ -28,7 +28,7 @@
 },
 "NSH": {
 "goalie": "Justus Annunen",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
@@ -1421,8 +1421,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 6,
-"toiMinutes": 181,
-"toiSeconds": 39
+"toiMinutes": 188,
+"toiSeconds": 49
 },
 "last5": {
 "assists": 1,
@@ -1434,8 +1434,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 2,
-"toiMinutes": 87,
-"toiSeconds": 6
+"toiMinutes": 94,
+"toiSeconds": 16
 },
 "line": "D2",
 "pk": "PK2",
@@ -4305,8 +4305,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 8,
-"toiMinutes": 76,
-"toiSeconds": 40
+"toiMinutes": 78,
+"toiSeconds": 28
 },
 "last5": {
 "assists": 0,
@@ -4318,8 +4318,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 3,
-"toiMinutes": 36,
-"toiSeconds": 10
+"toiMinutes": 37,
+"toiSeconds": 58
 },
 "line": "F4",
 "pk": null,
@@ -7029,7 +7029,7 @@
 "toiMinutes": 89,
 "toiSeconds": 16
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
@@ -7067,6 +7067,40 @@
 "pk": "PK1",
 "pos": "ld",
 "pp": "PP2"
+},
+"Daemon Hunt": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 11,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 145,
+"toiSeconds": 26
+},
+"last5": {
+"assists": 0,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 82,
+"toiSeconds": 50
+},
+"line": "D4",
+"pk": null,
+"pos": "ld",
+"pp": null
 },
 "Filip Forsberg": {
 "gtd": false,
@@ -7199,7 +7233,7 @@
 "toiMinutes": 82,
 "toiSeconds": 28
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -7305,9 +7339,9 @@
 "toiMinutes": 68,
 "toiSeconds": 47
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
 },
 "Mavrik Bourque": {
@@ -7341,7 +7375,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Nick Perbix": {
@@ -7443,7 +7477,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Roman Josi": {
@@ -7611,9 +7645,9 @@
 "toiMinutes": 40,
 "toiSeconds": 7
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 }
 },
@@ -7965,7 +7999,7 @@
 "injury": null,
 "last10": {
 "assists": 5,
-"blocks": 15,
+"blocks": 14,
 "gamesPlayed": 10,
 "goals": 0,
 "points": 5,
@@ -7973,12 +8007,12 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 6,
-"toiMinutes": 206,
-"toiSeconds": 43
+"toiMinutes": 192,
+"toiSeconds": 0
 },
 "last5": {
 "assists": 1,
-"blocks": 7,
+"blocks": 6,
 "gamesPlayed": 5,
 "goals": 0,
 "points": 1,
@@ -7986,8 +8020,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 2,
-"toiMinutes": 109,
-"toiSeconds": 37
+"toiMinutes": 89,
+"toiSeconds": 16
 },
 "line": "D1",
 "pk": "PK2",
@@ -8033,28 +8067,28 @@
 "injury": null,
 "last10": {
 "assists": 7,
-"blocks": 7,
+"blocks": 6,
 "gamesPlayed": 10,
 "goals": 2,
 "points": 9,
 "powerplayAssists": 3,
 "powerplayGoals": 0,
 "powerplayPoints": 3,
-"shots": 42,
-"toiMinutes": 262,
-"toiSeconds": 11
+"shots": 39,
+"toiMinutes": 234,
+"toiSeconds": 49
 },
 "last5": {
-"assists": 4,
-"blocks": 3,
+"assists": 2,
+"blocks": 2,
 "gamesPlayed": 5,
 "goals": 1,
-"points": 5,
+"points": 3,
 "powerplayAssists": 1,
 "powerplayGoals": 0,
 "powerplayPoints": 1,
-"shots": 22,
-"toiMinutes": 134,
+"shots": 18,
+"toiMinutes": 109,
 "toiSeconds": 57
 },
 "line": "D1",
