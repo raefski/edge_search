@@ -108,7 +108,7 @@ import numpy as np
 #: check (9.63 vs 9.65) -- noise, not signal.
 #:
 #: CYCLE 2 (2026-10-25): the latent is fitted on drivers STILL RUNNING at
-#: the end, and resid_sd is 0.7 x that fit's residual spread. simulate()
+#: the end, and resid_sd is k x that fit's residual spread (k: cycle 3 below). simulate()
 #: sends its own DNFs to the back; a latent fitted on every finish already
 #: carried the wrecks, so each was counted twice and the simulated mean
 #: finishes bunched toward mid-pack (slope of actual on simulated mean 1.34
@@ -119,14 +119,22 @@ import numpy as np
 #: band 83.7% -> 79.6% (target 80), simulated DK sd 25.2 vs real 26.2 (4%
 #: narrow, inside the 10% bar). The R2 column is the running-only fit's.
 #:
+#: CYCLE 3 (2026-10-25): k is 0.85, not 0.7. 0.7 was chosen by MAE, the
+#: median's loss; lineups sum MEANS and read floors/ceilings off the spread,
+#: and at 0.7 top-10 starters projected ~1.5 places too good (held out).
+#: Re-chosen on the inner split by the DK 10-90% band hitting 80% (78.4 /
+#: 80.3 / 81.7% at k 0.7 / 0.85 / 1.0). Held out 2025-26: RMSE 9.84 -> 9.80,
+#: bias starts 1-10 -1.49 -> -0.87, starts 26+ +0.82 -> +0.28, band 81.5%;
+#: MAE 7.96 -> 8.00 (the price of the mean over the median).
+#:
 #: Fitted by `python3 scripts/nascar_lab.py fit`, Cup 2022-2026, non-DNF
 #: driver-races with prior form, 2-season form history (as live).
 FINISH_MODEL = {
     #                const    start   ew12    ewtt   formLed  formDNF  resid_sd  R2
-    "superspeedway": (6.590, 0.010, 0.471, -0.019, 0.0, 0.0, 6.14, 0.086),
-    "intermediate": (-0.495, 0.167, 0.423, 0.320, 3.18, -1.15, 5.50, 0.320),
-    "short": (1.052, 0.218, 0.272, 0.411, -8.88, -1.75, 5.44, 0.368),
-    "road": (3.165, 0.269, 0.183, 0.312, -0.07, -1.08, 6.13, 0.240),
+    "superspeedway": (6.590, 0.010, 0.471, -0.019, 0.0, 0.0, 7.46, 0.086),
+    "intermediate": (-0.495, 0.167, 0.423, 0.320, 3.18, -1.15, 6.68, 0.320),
+    "short": (1.052, 0.218, 0.272, 0.411, -8.88, -1.75, 6.60, 0.368),
+    "road": (3.165, 0.269, 0.183, 0.312, -0.07, -1.08, 7.45, 0.240),
 }
 
 #: P(DNF) by track type and starting bucket.

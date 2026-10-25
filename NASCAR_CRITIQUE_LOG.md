@@ -104,3 +104,41 @@ intermediate/short ~0.5-0.6): < 0.02 more MAE, not worth 3 parameters;
 (3) superspeedway still ~lottery (Spearman 0.17, 10 races), drafting
 partners unmodelled. Also flagged: form_led flips sign by track type
 (+3.2 intermediate, -8.9 short in production) -- candidate for a cap.
+
+## Cycle 3 -- cycle 2's noise scale was chosen for the median, lineups use the mean (2026-10-25) -- SHIPPED (k 0.7 -> 0.85)
+
+**Hole (critic):** cycle 2 picked k = 0.7 by MAE, the median's loss. The
+lineup builder sums MEANS and reads floors/ceilings off the spread; at 0.7
+the means over-spread: slope of actual on simulated mean 0.82 test / 0.75
+inner, top-10 starters projected ~1.5 places too good and the back of the
+grid too bad -- over-projecting the most expensive cars and under-projecting
+place-differential plays.
+
+**Judgment call (recorded): what k is chosen by.** Not MAE (median) and not
+the test seasons. Chosen on the inner 2022-23 -> 2024 split by the DK 10-90%
+band's coverage hitting 80%, the quantity floors/ceilings use, with RMSE and
+bias by grid slot reported alongside:
+
+| k | inner band | inner RMSE | inner bias st1-10 | test MAE | test RMSE | test bias st1-10 / 11-25 / 26+ | test band |
+|---|---|---|---|---|---|---|---|
+| 0.7 (cycle 2) | 78.4% | 9.985 | -2.35 | **7.96** | 9.84 | -1.49 / +0.01 / +0.82 | 79.6% |
+| **0.85 (shipped)** | **80.3%** | 9.919 | -1.76 | 8.00 | 9.80 | -0.87 / +0.04 / +0.28 | 81.5% |
+| 1.0 (critic's pick, by RMSE) | 81.7% | 9.892 | -1.24 | 8.06 | **9.79** | -0.34 / +0.07 / -0.18 | 82.7% |
+
+1.0 removes more bias but its band is too wide on both splits; 0.85 is the
+band-calibrated point and is better than 0.7 on RMSE and grid-slot bias in
+both splits. MAE gets 0.04 worse -- the price of predicting the mean.
+Spearman 0.429 -> 0.427 (noise; k moves spread, not order). By track
+(test RMSE, 0.7 -> 0.85): superspeedway 11.24 -> 11.23, intermediate 9.56
+-> 9.53, short 9.30 -> 9.22, road 9.87 -> 9.84. Kansas rebuilt (GPP): DK MAE
+15.2 -> 16.0, rho +0.68 -> +0.70, floor/ceiling unchanged (one race).
+
+From this cycle on the NASCAR ship rule is RMSE + bias by grid slot + band
+coverage, with MAE reported; MAE alone chose the wrong k once.
+
+**Runner-ups (critic, tested, null):** (1) team/equipment running-position
+form on top of cond_latent: MAE change -0.004..+0.010 per race (se ~0.008)
+on both splits -- nothing; (2) the harness drops drivers with < 4 prior
+races (35 test driver-races, mean finish 29.7) -- minor; (3) superspeedway
+still the biggest error (RMSE 11.2, inner slope 0.41); drafting /
+manufacturer effects remain the only untested lead.

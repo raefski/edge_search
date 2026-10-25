@@ -154,7 +154,9 @@ reduced. Log: NASCAR_CRITIQUE_LOG.md.
 ## 4b. The latent no longer counts wrecks twice (critique cycle 2, 2026-10-25)
 
 `FINISH_MODEL` is fitted on cars still running at the end, with `resid_sd`
-0.7 x that fit's spread. `simulate()` sends its own DNFs to the back, so a
+0.85 x that fit's spread (0.7 in cycle 2; re-chosen in cycle 3 by the
+DK 10-90% band, because lineups sum means -- 0.7 over-projected the front
+of the grid by ~1.5 places). `simulate()` sends its own DNFs to the back, so a
 latent fitted on every finish had each wreck in it twice and bunched the
 simulated means toward mid-pack. Held out (2025-26, 66 races): finish MAE
 8.18 -> 7.96, Spearman 0.424 -> 0.429; actual DK points inside a driver's

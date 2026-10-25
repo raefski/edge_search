@@ -48,8 +48,12 @@ from edge import nascar_sim as S  # noqa: E402
 
 TRAIN = (2022, 2023, 2024)
 TEST = (2025, 2026)
-#: Cycle 2 noise scale, chosen on the inner 2022-23 -> 2024 split.
-COND_K = 0.7
+#: Noise scale on the non-DNF latent, chosen on the inner 2022-23 -> 2024
+#: split. Cycle 2 picked 0.7 by MAE (the median's loss); cycle 3 re-chose it
+#: by the DK 10-90% band hitting 80% (inner 78.4 / 80.3 / 81.7% at k 0.7 /
+#: 0.85 / 1.0), because lineups sum MEANS and read floors/ceilings off the
+#: spread -- 0.7 left top-10 starters ~1.5 places too good.
+COND_K = 0.85
 
 
 def load_all() -> list[dict]:
