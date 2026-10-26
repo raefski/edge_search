@@ -389,6 +389,7 @@ def assess(found: list[dict], tables: dict, history: dict, now: datetime, hours:
         ok = (not full and not ticket and lock_e["roi"] >= min_roi
               and (include_resizable or pt["resizable"] is not True))
         out.append({"id": cid, "sport": r["sport"], "name": r["name"], "fee": r["fee"],
+                    "ctype": r.get("ctype", "Tournaments"), "mec": r.get("mec", 1),
                     "entries": r["nt"], "cap": r["m"], "lock": r["lock"], "minutes": round(mins), "mins": mins,
                     "resizable": pt["resizable"], "places": lock_e["places"], "now": now_e,
                     "ticket": ticket,
@@ -426,7 +427,7 @@ def alerts_for(rows: list[dict], state: dict, now: datetime) -> list[dict]:
         n_now, e_now = r["entries"], r["now"]
         e_lock, p = r["at_lock"], r["projected"]
         rz = {True: "yes", False: "no", None: "not priced"}[r["resizable"]]
-        head = ("FINAL CALL — " if final else "15 MIN WARNING — ") + f"{r['sport']} · {r['name'][:46]}"
+        head = ("FINAL CALL — " if final else "15 MIN WARNING — ") + f"{r['sport']} · {r.get('ctype', 'Tournaments')} · ${r['fee']:g}"
         if r.get("modelled"):
             expect = (f"Expect ~{r['n_lock']}/{r['cap']} at lock (how {r['fill_basis']} contests "
                       f"this empty fill late): cash {e_lock['cash']:.0%}, returns ${e_lock['return']:.2f} per $1 "
@@ -440,9 +441,11 @@ def alerts_for(rows: list[dict], state: dict, now: datetime) -> list[dict]:
                       f"${e_lock['return']:.2f} per $1 ({e_lock['roi']:+.0%}), "
                       f"{e_lock['places']} paid places.")
         lock_et = r["lock"].astimezone(ET).strftime("%-I:%M %p ET")
-        body = (f"{r['minutes']} min to lock ({lock_et}), {n_now}/{r['cap']} entered. {expect} "
-                f"${r['fee']:g} entry. Resizable: {rz}. "
-                f"https://www.draftkings.com/draft/contest/{cid}")
+        # Lines 1-2 are what Adam scans the DK lobby for: the contest's name, then its
+        # multi-entry cap (M1, M20 ...); sport / tab / fee are in the title.
+        body = (f"{r['name']}\nM{r.get('mec', 1)}\n"
+                f"{r['minutes']} min to lock ({lock_et}), {n_now}/{r['cap']} entered. {expect} "
+                f"Resizable: {rz}.")
         out.append({"kind": "overlay", "priority": "high" if final or e_lock["roi"] >= 0.25 else "default",
                     "title": head, "body": body, "contest": cid, "final": final, "at": now.isoformat()})
     return out[:MAX_PUSH]

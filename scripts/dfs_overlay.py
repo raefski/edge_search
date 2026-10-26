@@ -56,6 +56,22 @@ def rows(sport: str, now: datetime, max_fee: float, hours: float, classic_only: 
     return rows_from(contests(sport), sport, now, max_fee, hours, classic_only)
 
 
+def contest_type(c: dict) -> str:
+    """The DK lobby filter tab a contest sits under (Tournaments, 50/50s & Double Ups,
+    ...), so a push names the tab Adam taps to find it. 'Featured' is a cross-cut
+    (IsStarred) over the others, so the specific tab wins."""
+    attr = c.get("attr") or {}
+    if attr.get("IsQualifier") == "true":
+        return "Satellites & Qualifiers"
+    if attr.get("IsDoubleUp") == "true" or attr.get("IsFiftyfifty") == "true":
+        return "50/50s & Double Ups"
+    if attr.get("Multiplier") == "true":
+        return "Multipliers"
+    if int(c.get("m") or 0) == 2:
+        return "Head to Head"
+    return "Tournaments"
+
+
 def rows_from(cs: list[dict], sport: str, now: datetime, max_fee: float, hours: float,
               classic_only: bool) -> list[dict]:
     """The guaranteed contests locking within `hours`, from one lobby listing."""
@@ -74,7 +90,8 @@ def rows_from(cs: list[dict], sport: str, now: datetime, max_fee: float, hours: 
         places = int(po // (2 * fee)) if dbl else None
         out.append({"sport": sport, "id": c["id"], "tmpl": c.get("tmpl"), "dg": c.get("dg"),
                     "name": c.get("n", ""), "fee": fee, "m": m, "nt": nt, "po": po, "lock": t,
-                    "dbl": dbl, "game_type": c.get("gameType"), "fee_ok": fee <= max_fee,
+                    "dbl": dbl, "game_type": c.get("gameType"),
+                    "ctype": contest_type(c), "mec": int(c.get("mec") or 1), "fee_ok": fee <= max_fee,
                     "bound": po / (nt * fee), "places": places, "resizable": None,
                     "return": 2.0 * min(nt, places) / nt if places else None,
                     "cash_rate": min(1.0, places / nt) if places else None})
