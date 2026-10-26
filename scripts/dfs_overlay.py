@@ -89,6 +89,11 @@ def rows_from(cs: list[dict], sport: str, now: datetime, max_fee: float, hours: 
         attr = c.get("attr") or {}
         if attr.get("IsGuaranteed") != "true" or not c.get("a") or not c.get("nt"):
             continue
+        # Beginner contests bar anyone past 50 contests or with a badge, and League ones
+        # are private: DK hides both from Adam, so an alert for one can't be acted on
+        # (a 'Beginner NBA $1 Double Up' was pushed 10/26).
+        if attr.get("IsBeginner") == "true" or attr.get("League") == "true":
+            continue
         if classic_only and c.get("gameType") != "Classic":
             continue
         t = lock_time(c)
