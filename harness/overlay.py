@@ -398,6 +398,24 @@ def assess(found: list[dict], tables: dict, history: dict, now: datetime, hours:
     return out
 
 
+def publish_tables(found: list[dict]) -> None:
+    """The payout tables for this run's contests -> data branch, for the phone page
+    (which cannot reach api.draftkings.com). Only when they changed: the timer runs
+    every minute and most minutes add nothing."""
+    cache = json.loads(O.PAYOUTS.read_text()) if O.PAYOUTS.exists() else {}
+    live = {str(r["id"]): cache[str(r["id"])] for r in found if str(r["id"]) in cache}
+    text = json.dumps(live, sort_keys=True)
+    old = O.LIVE_PAYOUTS.read_text() if O.LIVE_PAYOUTS.exists() else ""
+    if not live or text == old:
+        return
+    O.LIVE_PAYOUTS.write_text(text)
+    try:
+        from edge import data_branch
+        data_branch.publish_one(O.LIVE_PAYOUTS, f"overlay payout tables ({len(live)})")
+    except Exception as exc:                                # noqa: BLE001
+        print(f"payout tables not published: {exc}")
+
+
 def _load_state() -> dict:
     try:
         return json.loads(STATE_FILE.read_text())
@@ -472,6 +490,8 @@ def run(do_push: bool = False, hours: float = 2.5, min_roi: float = 0.10, max_fe
         found += O.rows_from(cs, code, now, max_fee, hours, classic_only=not all_types)
     O.log(found, now)                                       # fill snapshot for the projection
     tables = price(found)
+    if do_push and found:
+        publish_tables(found)
     history, logged = load_log()
     finals = load_finals()
     model = fit_late_fill(logged, finals) if logged else None

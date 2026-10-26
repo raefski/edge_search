@@ -62,6 +62,7 @@ FEEDS: tuple[str, ...] = (
     "data/pickem_line_log.csv",           # scripts/pickem_capture.py
     "data/dfs_proj_log*.csv",             # scripts/dfs_autolog.py (+ CLI builds)
     "data/dfs_lineups_*.csv",             # scripts/dfs_autolog.py
+    "data/overlay_payouts_live.json",     # harness/overlay.py (the page prices from it)
 )
 
 

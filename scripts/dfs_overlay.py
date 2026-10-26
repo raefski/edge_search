@@ -39,6 +39,10 @@ FILL_LOG = ROOT / "data" / "contest_fill_log.csv"
 PAYOUTS = ROOT / "data" / "cache" / "contest_payouts.json"
 #: Prize-table lookups per run, best candidates first (one DK request each).
 MAX_DETAILS = 40
+#: The desktop scanner's payout tables for contests in its current window, published to
+#: the data branch (harness/overlay.py) because api.draftkings.com refuses Streamlit
+#: Cloud: without it the page priced only double-ups and showed "0 contests" (10/26).
+LIVE_PAYOUTS = ROOT / "data" / "overlay_payouts_live.json"
 FILL_COLS = ("seen_at", "sport", "contest_id", "template", "draft_group", "name", "fee", "max_entries",
              "entries", "prize_pool", "lock", "double_up", "game_type")
 
@@ -130,10 +134,14 @@ def paid_out(tiers: list, entries: int) -> float:
     return sum(v * max(0, min(hi, entries) - lo + 1) for lo, hi, v in tiers)
 
 
-def price(found: list[dict]) -> None:
-    """Exact return and resizable flag for the best candidates (cached tables)."""
+def price(found: list[dict], published: dict | None = None) -> None:
+    """Exact return and resizable flag for the best candidates (cached tables).
+    `published` (the desktop's LIVE_PAYOUTS) seeds the cache, so the cloud prices
+    what it cannot look up itself."""
     import json
     cache = json.loads(PAYOUTS.read_text()) if PAYOUTS.exists() else {}
+    for k, v in (published or {}).items():
+        cache.setdefault(k, v)
     cands = sorted((r for r in found if r["fee_ok"] and r["bound"] > 1.0), key=lambda r: -r["bound"])
     for r in cands[:MAX_DETAILS]:
         try:

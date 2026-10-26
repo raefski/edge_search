@@ -43,14 +43,23 @@ def _scan(sports: tuple, max_fee: float, hours: float):
             found += O.rows(s, now, max_fee, hours, classic_only=True)
         except Exception as exc:                            # noqa: BLE001
             errs.append(f"{s}: {exc}")
-    O.price(found)
-    return now, found, errs
+    # The desktop scanner's tables (data branch): the cloud's own lookups are refused.
+    from edge import repo_files
+    got = repo_files.read(O.LIVE_PAYOUTS)
+    try:
+        published = got.json() if got else {}
+    except ValueError:
+        published = {}
+    O.price(found, published)
+    src = (f"desktop payout tables from {got.updated_at.astimezone(ZoneInfo('America/New_York')):%-I:%M %p} ET"
+           f" ({got.source})" if got else "no desktop payout tables")
+    return now, found, errs, src
 
 
 if st.button("🔄 Refresh", width="stretch"):
     _scan.clear()
 with st.spinner("Reading the DraftKings lobby…"):
-    now, found, errs = _scan(tuple(sports), float(max_fee), float(hours))
+    now, found, errs, src = _scan(tuple(sports), float(max_fee), float(hours))
 for e in errs:
     st.warning(e)
 rows = [r for r in found if r["fee_ok"] and r["fee"] >= min_fee and r["return"] is not None and r["return"] >= min_ret
@@ -59,9 +68,11 @@ rows.sort(key=lambda r: -r["return"])
 unpriced = sum(1 for r in found if r["fee_ok"] and r["fee"] >= min_fee and r["return"] is None)
 et = ZoneInfo("America/New_York")
 st.markdown(f"**{len(rows)}** contests · lobby read {now.astimezone(et):%-I:%M %p} ET")
+st.caption(src)
 if unpriced:
     st.caption(f"{unpriced} non-double-up contests have no payout table here (DraftKings "
-               "blocks that lookup from the cloud); the desktop scanner prices them.")
+               "blocks that lookup from the cloud and the desktop scanner hasn't published "
+               "them yet -- it prices the 40 most promising every minute).")
 
 def _esc(t: str) -> str:
     # a bare $ pair is read as LaTeX by st.markdown (it garbled every card on 10/26)

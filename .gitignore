@@ -210,6 +210,14 @@ data/contest_inbox/**
 !data/contest_inbox/**/.gitkeep
 !data/contest_inbox/README.md
 
+# box-score availability per NBA game (edge/nba_availability.py): free, re-fetchable
+data/nba_availability/
+# ESPN injuries snapshots per ET date (edge/nba_availability.ESPN_LOG): NOT re-fetchable, desktop-only,
+# like data/nba_lineup_log.csv -- the Out list's miss rate (critique cycle 6) is measured from it
+data/nba_espn_injuries/
+# the NBA's official injury report PDFs (edge/nba_injury_report.py): archived by the league, re-fetchable
+data/nba_injury_reports/
+
 # Timer feeds live on the `data` branch, not main (edge/data_branch.FEEDS,
 # 2026-10-16). The desktop keeps them on disk; Streamlit Cloud reads them off
 # GitHub (edge/repo_files.py); a fresh clone gets them with
@@ -227,10 +235,4 @@ data/pickem_current_week.csv
 data/pickem_line_log.csv
 data/dfs_proj_log*.csv
 data/dfs_lineups_*.csv
-# box-score availability per NBA game (edge/nba_availability.py): free, re-fetchable
-data/nba_availability/
-# ESPN injuries snapshots per ET date (edge/nba_availability.ESPN_LOG): NOT re-fetchable, desktop-only,
-# like data/nba_lineup_log.csv -- the Out list's miss rate (critique cycle 6) is measured from it
-data/nba_espn_injuries/
-# the NBA's official injury report PDFs (edge/nba_injury_report.py): archived by the league, re-fetchable
-data/nba_injury_reports/
+data/overlay_payouts_live.json
