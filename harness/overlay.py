@@ -445,7 +445,7 @@ def alerts_for(rows: list[dict], state: dict, now: datetime) -> list[dict]:
         # multi-entry cap (M1, M20 ...); sport / tab / fee are in the title.
         body = (f"{r['name']}\nM{r.get('mec', 1)}\n"
                 f"{r['minutes']} min to lock ({lock_et}), {n_now}/{r['cap']} entered. {expect} "
-                f"Resizable: {rz}.")
+                f"Resizable: {rz}. https://www.draftkings.com/draft/contest/{cid}")
         out.append({"kind": "overlay", "priority": "high" if final or e_lock["roi"] >= 0.25 else "default",
                     "title": head, "body": body, "contest": cid, "final": final, "at": now.isoformat()})
     return out[:MAX_PUSH]
