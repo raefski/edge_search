@@ -1,12 +1,22 @@
 ---
 name: dfs-critique
-description: Run ONE cycle of the recursive self-improvement loop on a DFS sport's projection model -- a fresh, independent critic agent finds the single biggest hole, you fix it, re-measure held out, ship only if it improves, and log it. Use when Adam says "run a critique cycle", "/dfs-critique <sport>", or asks to improve a sport's model the critic way. Argument: the sport (nba, ncaab, nhl, nfl, ncaaf, mlb, nascar, mma) or a non-projection model (overlay).
+description: Run ONE cycle of the recursive self-improvement loop on a DFS sport's projection model -- a fresh, independent critic agent finds the single biggest hole, you fix it, re-measure held out, ship only if it improves, and log it. Use when Adam says "run a critique cycle", "/dfs-critique <sport>", or asks to improve a sport's model the critic way. Argument: the sport (nba, ncaab, nhl, nfl, ncaaf, mlb, nascar, mma) or a non-projection model (overlay), optionally followed by a target ("nhl goalies", "nascar dk points", "nba ownership").
 ---
 
 # One critique cycle on a DFS model
 
 Proven on NBA minutes 2026-10-21 (three cycles, NBA_MINUTES_CRITIQUE_LOG.md: RMSE
-7.76 -> 6.59 held out). One invocation = ONE cycle. Argument = sport; if missing, ask.
+7.76 -> 6.59 held out). One invocation = ONE cycle. Argument = sport, optionally followed by a target;
+if the sport is missing, ask.
+
+**Target override.** Anything after the sport names what this cycle aims at, and it
+replaces the table's target metric for this cycle only: `/dfs-critique nhl goalies`,
+`/dfs-critique nascar dk points`, `/dfs-critique nba ownership`, `/dfs-critique nfl rb`.
+Turn it into a concrete held-out metric (e.g. "goalies" -> goalie DK points MAE + rank
+correlation vs projection, per slate; "ownership" -> GPP %Drafted MAE, cash never
+pooled), say which metric you chose, give the critic THAT metric and only that, and
+log the cycle under the sport's log with the target in its heading. Ownership
+targets use contests.db exports (scripts/model_accuracy.py), held out by slate.
 
 ## 1. The sport's target metric and where things are
 
@@ -21,7 +31,7 @@ actually predicts -- not one metric for all.
 | nfl | **DK points by position (QB/RB/WR/TE/DST), players with a role** | DFS_STATUS.md, edge/dfs_run_nfl.py, scripts/model_accuracy.py, nfl_*_backtest.py | NFL_CRITIQUE_LOG.md |
 | ncaaf | **DK points vs. projection** (known −2.3 bias) | NCAAF_STATUS.md, edge/dfs_run_ncaaf.py, scripts/ncaaf_calibration.py | NCAAF_CRITIQUE_LOG.md |
 | mlb | **hitter DK points** (pitchers separately: strikeouts / outs) | DFS_STATUS.md, edge/dfs.py, scripts/dfs_hitter_backtest.py, dfs_calibration.py | MLB_CRITIQUE_LOG.md |
-| nascar | **finishing position** (and place differential) | NASCAR_STATUS.md, edge/nascar_sim.py, scripts/nascar_calibration.py | NASCAR_CRITIQUE_LOG.md |
+| nascar | **DK points per driver** (finish + place differential + laps led + fastest laps; finishing position alone left points rho ~0.17, 10/26) | NASCAR_STATUS.md, edge/nascar_sim.py, scripts/nascar_calibration.py | NASCAR_CRITIQUE_LOG.md |
 | mma | **fight outcome probability + DK points given method** | MMA_STATUS.md, edge/mma_sim.py, scripts/mma_calibration.py | MMA_CRITIQUE_LOG.md |
 | overlay | **field at lock, Classic only**, forecast at the final call (4.5-9.5 min out): err/cap MAE/RMSE/bias + overlay calls missed / false + **$ of the calls (decides shipping)**; split by lock date (a day never straddles) | edge/dfs_entry_edge.py (fit_late_fill, likely_at_lock), harness/overlay.py (assess, collect_finals), scripts/dfs_overlay.py, data/contest_fill_log.csv, data/contest_finals.csv, scripts/overlay_lab.py (`report --cutoff`) | OVERLAY_CRITIQUE_LOG.md |
 

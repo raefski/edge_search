@@ -25,6 +25,40 @@ from edge.odds import PROFILES, OddsStore, collect, get_profile  # noqa: E402
 from edge.data_branch import publish_one  # noqa: E402
 from edge.odds.store import DEFAULT_PATH  # noqa: E402
 
+# Hours to the sport's next DK slate beyond which a scan missing its required
+# props counts as "not posted yet", not broken. 48h keeps Thursday/Friday CFB
+# scans strict ahead of a Saturday noon lock.
+OFFDAY_HOURS = 48
+# The autolog refreshes the lobby cache several times a day; older than this
+# and it cannot vouch for "no slate soon", so the guard stays strict.
+LOBBY_CACHE_MAX_AGE_H = 24
+
+
+def _next_slate(profile_name: str) -> tuple[float, str] | None:
+    """(hours until the sport's next listed slate, label) from the autolog's
+    lobby cache, or None when the profile is not a DFS sport or the cache is
+    missing/stale. A sport listed with no slates at all counts as infinitely
+    far away."""
+    from datetime import datetime, timezone
+    if not profile_name.startswith("dfs_"):
+        return None
+    sport = profile_name[4:]
+    try:
+        cache = json.loads((ROOT / "data" / "cache" / "dfs_autolog_slates.json").read_text())
+        entry = cache[sport]
+        now = datetime.now(timezone.utc)
+        at = datetime.fromisoformat(entry["at"])
+        if (now - at).total_seconds() > LOBBY_CACHE_MAX_AGE_H * 3600:
+            return None
+        hours = []
+        for _gid, start, label in entry.get("slates", []):
+            t = datetime.fromisoformat(start.rstrip("Z")[:26]).replace(tzinfo=timezone.utc)
+            if t > now:
+                hours.append(((t - now).total_seconds() / 3600, f"{sport.upper()} {label}"))
+        return min(hours) if hours else (float("inf"), sport.upper())
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
@@ -107,6 +141,21 @@ def main() -> int:
             res = collect(prof, store, progress=progress,
                           strict=not args.no_strict)
         except Exception as exc:
+            # A college/weekly sport's books post player props only a day or
+            # two before its slate, so a Monday scan of dfs_ncaaf finds none
+            # and the required-market guard fires every morning -- a red ✗ in
+            # `harness status` that is not a fault (10/26: next CFB slate was
+            # Saturday). Skip, loudly, ONLY when the autolog's lobby cache
+            # says this sport has no slate locking within OFFDAY_HOURS; with a
+            # slate near (or no cache to ask) a missing market is still a
+            # failure, because a broken parser looks exactly like this too.
+            from edge.odds import CollectionError
+            nxt = _next_slate(prof.name)
+            if isinstance(exc, CollectionError) and nxt is not None and nxt[0] > OFFDAY_HOURS:
+                print(f"\nSKIPPED (off day): {exc}\n  next {nxt[1]} slate locks in "
+                      f"{nxt[0]:.0f}h (> {OFFDAY_HOURS}h); props are not posted yet. "
+                      f"Nothing committed or published.")
+                return 0
             print(f"\nFAILED: {type(exc).__name__}: {exc}", file=sys.stderr)
             return 2
 

@@ -122,6 +122,36 @@ def load_pool(slate: str) -> list[dict]:
         return [r for r in csv.DictReader(fh) if r["date"] == slate]
 
 
+def draftables_pool(slate: str) -> list[dict]:
+    """The slate's DK Main board when no projection pool is logged yet.
+
+    The autolog logs the NFL pool ~12 min before the 1:00 PM lock, after every
+    one of this timer's runs (Sat 20:00 .. Sun 11:45), so from 10/25 every run
+    died on "no pool logged" -- buzz went 8 days stale. The buzz counts only
+    need the names on the board; `own` stays blank and `in_pool` reads 1 for
+    every draftable. Says so on stdout, so the source stays visible."""
+    from edge.dfs import fetch_draftables
+    try:
+        slates = json.loads((ROOT / "data/cache/dfs_autolog_slates.json").read_text())["nfl"]["slates"]
+    except (OSError, ValueError, KeyError):
+        return []
+    gids = [gid for gid, start, label in slates
+            if label == "Main" and lock_day(start) == slate]
+    if not gids:
+        return []
+    players = fetch_draftables(gids[0])
+    print(f"no pool logged for {slate}: using DK draftables for Main draft group "
+          f"{gids[0]} ({len(players)} players, no ownership)")
+    return [{"date": slate, "gid": str(gids[0]), "player": p["name"], "dk_pos": p["position"],
+             "team": p.get("team", ""), "own": ""} for p in players.values()]
+
+
+def lock_day(start: str) -> str:
+    """DK's UTC startTime -> the ET calendar date of the lock."""
+    t = datetime.fromisoformat(start.rstrip("Z")[:26]).replace(tzinfo=ZoneInfo("UTC"))
+    return t.astimezone(ZoneInfo("America/New_York")).date().isoformat()
+
+
 def load_board(slate: str, pool: list[dict]) -> list[dict]:
     """Every DK name on the slate: the priced pool, plus the draftables
     snapshot when there is one, plus any contest export for the slate (a big
@@ -306,7 +336,10 @@ def main():
     start = lock - timedelta(days=WINDOW_DAYS)
     pool = load_pool(args.date)
     if not pool:
-        raise SystemExit(f"no pool logged for {args.date} in {PROJ_LOG.name}")
+        pool = draftables_pool(args.date)
+    if not pool:
+        raise SystemExit(f"no pool logged for {args.date} in {PROJ_LOG.name}, and no DK "
+                         f"Main draft group for it in the autolog's lobby cache")
     board = load_board(args.date, pool)
     aliases = build_aliases(board, first_name_history())
     print(f"week {week}, window {start:%a %m-%d %H:%M} -> {lock:%a %m-%d %H:%M} UTC, "
