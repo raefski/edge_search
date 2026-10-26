@@ -25,7 +25,23 @@ same three lines (latent + noise, DNFs to the back, argsort).
 Variants (critique cycles) are VARIANTS entries: a function
 (train_rows) -> predictor(race_rows) -> array of mean finishes.
 
+DK POINTS (`dk`, added 10/26): the quantity the lineup is actually paid on.
+Runs production nascar_sim.simulate() per test race -- finish + place
+differential + laps led + fastest laps -- with the train-fitted FINISH_MODEL
+and DNF_RATE swapped in, and scores each driver's MEAN simulated DK points
+against his real `dk`. Race inputs are what the live build passes
+(dfs_run_nascar.build_slate): laps = the race distance (the loop data's
+actual_laps stands in for scheduled_laps; they differ only in overtime) and
+no green_laps, as live has no caution count before the race (simulate() then
+sizes the fastest-lap pool with FAST_FRAC; before cycle 4 both passed the race
+distance -- variant pre_cycle4). LAP_MODEL (lap-led/fastest-lap concentration) is production's as-is,
+measured on 2022-2026 -- in-sample on the test seasons, stated, not refitted.
+Reports MAE/RMSE/bias/per-race Spearman of DK points, the same split by
+component (finish+PD / laps-led pts / fastest-lap pts), and the 10-90% band
+and 25th/90th floor/ceiling coverage.
+
 Run:  python3 scripts/nascar_lab.py report [--variant baseline|running_pos]
+      python3 scripts/nascar_lab.py dk      [--variant ...]   # DK points
       python3 scripts/nascar_lab.py fit     # production FINISH_MODEL, 2022-2026
 """
 from __future__ import annotations
@@ -231,6 +247,90 @@ def evaluate(rows, predictor, n_sims) -> dict:
     return res
 
 
+#: DK variants (target: DK points). Each takes train rows and returns
+#: predict(race_rows, n_sims) -> (n_sims, n_drivers) DK points matrix, the
+#: same shape production simulate() returns. Fit only on train.
+def dk_cond_latent(train, front_a=None, old_green=False):
+    """Production simulate() with train-fitted tables. front_a=0 and
+    old_green=True reproduce the pre-cycle-4 model (no front-row lead boost,
+    fastest-lap pool = race distance); otherwise production's FRONT_A and
+    FAST_FRAC (FAST_FRAC is fitted on 2022-24 = train)."""
+    fm = fit_running(train, cond=True, k=COND_K)
+    _fm, dnf = fit_tables(train)
+
+    def predict(race_rows, n_sims):
+        r0 = race_rows[0]
+        meta = {"track_type": r0["track_type"], "actual_laps": r0["actual_laps"]}
+        if old_green:
+            meta["green_laps"] = r0["actual_laps"]
+        old_a = S.FRONT_A
+        if front_a is not None:
+            S.FRONT_A = front_a
+        try:
+            with tables(fm, dnf):
+                return S.simulate(race_rows, meta, n_sims=n_sims, seed=7)
+        finally:
+            S.FRONT_A = old_a
+    return predict
+
+
+DK_VARIANTS = {"shipped": dk_cond_latent,
+               "pre_cycle4": lambda train: dk_cond_latent(train, front_a=0.0, old_green=True),
+               "front_only": lambda train: dk_cond_latent(train, old_green=True)}
+
+
+def dk_components(race_rows) -> np.ndarray:
+    """Actual (finish+PD, laps-led pts, fast-lap pts) per driver."""
+    from edge.nascar import finish_points
+    return np.array([[finish_points(int(r["finish"])) + r["start"] - r["finish"],
+                      0.25 * float(r["laps_led"] or 0), 0.45 * float(r["fast_laps"] or 0)]
+                     for r in race_rows])
+
+
+def evaluate_dk(rows, predictor, n_sims) -> dict:
+    """Mean simulated DK points vs real, per driver-race; sliced by track type."""
+    by_race = collections.defaultdict(list)
+    for r in rows:
+        by_race[r["race_id"]].append(r)
+    out = collections.defaultdict(lambda: collections.defaultdict(list))
+    for race in by_race.values():
+        sims = predictor(race, n_sims)
+        mean = sims.mean(axis=0)
+        act = np.array([float(r["dk"]) for r in race])
+        lo10, p25, p90 = np.percentile(sims, [10, 25, 90], axis=0)
+        for key in ("all", race[0]["track_type"]):
+            o = out[key]
+            o["err"].extend(mean - act)
+            o["rho"].append(_spearman(mean, act))
+            o["band"].extend((act >= lo10) & (act <= p90))
+            o["below_floor"].extend(act < p25)
+            o["above_ceil"].extend(act > p90)
+            o["races"].append(1)
+            o["act"].extend(act)
+    res = {}
+    for k, o in out.items():
+        e = np.array(o["err"])
+        res[k] = dict(races=len(o["races"]), n=len(e), mae=float(np.abs(e).mean()),
+                      rmse=float(math.sqrt((e ** 2).mean())), bias=float(e.mean()),
+                      rho=float(np.mean(o["rho"])), band=float(np.mean(o["band"])),
+                      below=float(np.mean(o["below_floor"])),
+                      above=float(np.mean(o["above_ceil"])),
+                      sd_act=float(np.std(o["act"])))
+    return res
+
+
+def dk_table(res: dict) -> str:
+    lines = ["| slice | races | driver-races | DK MAE | RMSE | bias | race Spearman | 10-90 band | <floor(25) | >ceil(90) |",
+             "|---|---|---|---|---|---|---|---|---|---|"]
+    for k in ("all",) + F.TRACK_TYPES:
+        if k in res:
+            r = res[k]
+            lines.append(f"| {k} | {r['races']} | {r['n']} | {r['mae']:.2f} | {r['rmse']:.2f} | "
+                         f"{r['bias']:+.2f} | {r['rho']:.3f} | {100*r['band']:.1f}% | "
+                         f"{100*r['below']:.1f}% | {100*r['above']:.1f}% |")
+    return "\n".join(lines)
+
+
 def table(res: dict) -> str:
     lines = ["| slice | races | driver-races | finish MAE | RMSE | bias | mean race Spearman |",
              "|---|---|---|---|---|---|---|"]
@@ -244,8 +344,9 @@ def table(res: dict) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["report", "fit"])
-    ap.add_argument("--variant", default="running_pos", choices=sorted(VARIANTS))
+    ap.add_argument("cmd", choices=["report", "dk", "fit"])
+    ap.add_argument("--variant", default=None,
+                    help=f"report: {sorted(VARIANTS)} (running_pos); dk: {sorted(DK_VARIANTS)} (shipped)")
     ap.add_argument("--sims", type=int, default=400)
     a = ap.parse_args()
     rows = load_all()
@@ -256,6 +357,14 @@ def main() -> None:
         return
     train = [r for r in rows if r["season"] in TRAIN]
     test = [r for r in rows if r["season"] in TEST]
+    if a.cmd == "dk":
+        v = a.variant or "shipped"
+        pred = DK_VARIANTS[v](train)
+        print(f"DK points, variant {v}: train {TRAIN} ({len(train)} driver-races), "
+              f"test {TEST}\n")
+        print(dk_table(evaluate_dk(test, pred, a.sims)))
+        return
+    a.variant = a.variant or "running_pos"
     pred = VARIANTS[a.variant](train)
     print(f"variant {a.variant}: train {TRAIN} ({len(train)} driver-races), "
           f"test {TEST}\n")

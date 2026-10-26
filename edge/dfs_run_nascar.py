@@ -316,8 +316,10 @@ def build_board(gid: int, meta: dict, n_sims: int = 2000, seed: int = 0):
 def _simulate_board(pool: list, race: dict, n_sims: int, seed: int):
     race_meta = {"track_type": nascar.track_type(race),
                  "actual_laps": int(race.get("scheduled_laps") or 300),
-                 "green_laps": nascar.green_laps(
-                     {**race, "actual_laps": race.get("scheduled_laps")})}
+                 # No green_laps: before the race there is no caution count, and
+                 # green_laps(scheduled) was the full distance (pool ~25% too
+                 # big, cycle 4) -- simulate() sizes it with FAST_FRAC instead.
+                 }
     sim = nascar_sim.simulate(pool, race_meta, n_sims=n_sims, seed=seed)
     pool = nascar_sim.summarise(sim, pool)
     theory.add_ownership(pool)

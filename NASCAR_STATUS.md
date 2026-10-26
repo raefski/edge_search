@@ -164,6 +164,22 @@ simulated 10-90% band 83.7% -> 79.6% (target 80). Kansas rebuilt: DK MAE
 18.0 -> 15.2, rho +0.62 -> +0.68, below-floor 30.6% (target 25, one race --
 watch it). Log: NASCAR_CRITIQUE_LOG.md.
 
+## 4c. The pole leads; the fastest-lap pool is green laps (critique cycle 4, 2026-10-26)
+
+The critique target is now **DK points** (`python3 scripts/nascar_lab.py dk`),
+not finishing position. Two fixes in `simulate()`:
+* lap-led weight x `1 + FRONT_A*exp(-(start-1)/FRONT_S)` (2.0, 1.5): the pole
+  leads the opening run wherever he finishes. Held out the pole was projected
+  32.2 DK pts vs 55.8 actual (66 races), front row 30.9 vs 37.8.
+* the fastest-lap pool is `FAST_FRAC[track] x laps` (~0.78) when no green-lap
+  count is given -- live always, since cautions are unknown before the race;
+  it used to be the full scheduled distance.
+Held out (2025-26, 66 races, 2461 driver-races): DK RMSE 24.48 -> 24.14, MAE
+18.84 -> 18.69, bias +0.90 -> +0.23, race Spearman 0.340 -> 0.348, 10-90 band
+83.1% -> 82.1%; RMSE better on all four track types. Still open: the pole's
+FINISH is projected low (20.4 vs 27.6 pts) and the finish component carries
+most of the error (RMSE 20.6) -- the next cycle's lead.
+
 ## 5. The two theories are percentiles, not mean ± k·sd
 
 ```

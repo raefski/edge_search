@@ -142,3 +142,59 @@ on both splits -- nothing; (2) the harness drops drivers with < 4 prior
 races (35 test driver-races, mean finish 29.7) -- minor; (3) superspeedway
 still the biggest error (RMSE 11.2, inner slope 0.41); drafting /
 manufacturer effects remain the only untested lead.
+
+---
+
+# Target: DK points per driver (from 2026-10-26)
+
+Cycles 1-3 were judged on finishing position. Live DK grading on 10/26 (2 races,
+n=76 drivers) showed points rho ~0.17 and Adam losing, so the target moves to the
+DK points a lineup is actually paid: `python3 scripts/nascar_lab.py dk` (production
+simulate(), train 2022-24 tables, test 2025-26, live-faithful race inputs:
+green_laps = race distance as live has no caution count; LAP_MODEL in-sample).
+
+## Cycle 4.0 -- DK points baseline, shipped model (2026-10-26)
+
+| slice | races | driver-races | DK MAE | RMSE | bias | race Spearman | 10-90 band | <floor(25) | >ceil(90) |
+|---|---|---|---|---|---|---|---|---|---|
+| all | 66 | 2461 | 18.85 | 24.51 | +0.90 | 0.338 | 82.6% | 25.5% | 7.1% |
+| superspeedway | 10 | 386 | 20.94 | 24.89 | +1.38 | 0.320 | 80.6% | 26.7% | 7.8% |
+| intermediate | 27 | 1003 | 18.29 | 23.88 | +0.79 | 0.352 | 84.5% | 25.3% | 6.4% |
+| short | 17 | 626 | 19.06 | 26.84 | +1.00 | 0.407 | 81.0% | 23.8% | 7.5% |
+| road | 12 | 446 | 18.01 | 22.02 | +0.60 | 0.220 | 82.5% | 27.1% | 7.6% |
+
+## Cycle 4 -- DK points: no front-of-grid lead, and a fastest-lap pool 25% too big (2026-10-26) -- SHIPPED
+
+**Hole (critic):** simulate()'s lap-led weight depended only on simulated finish
+and lead form, so starting on the pole was worth nothing in laps led. Held out,
+by start: pole projected 32.2 DK pts vs 55.8 actual (laps-led pts 4.6 vs 16.2,
+fast-lap 7.2 vs 12.1), P2 30.9 vs 37.8, starts 3-10 ~29 vs ~24.6 (over). Same
+in train (pole -8.5, P2 -7.3) and on every track type. Pole alone ~15 of ~600 MSE.
+
+**Fix:** lead weight x (1 + FRONT_A*exp(-(start-1)/FRONT_S)); FRONT_A 2.0,
+FRONT_S 1.5 chosen on the inner 2022-23 -> 2024 split (grid FA {0,2,4,8,16} x
+FS {0.7,1.5}; 2024 RMSE 23.73 -> 23.63). Plus the critic's live-faithfulness
+find: live passed green_laps = scheduled laps (no caution count pre-race), the
+lab copied it; the fastest-lap pool is now FAST_FRAC[track] x laps (mean
+sum(fast_laps)/actual_laps 2022-24: ss .748, int .782, short .832, road .753).
+
+| variant (2000 sims, test 2025-26) | MAE | RMSE | bias | race Spearman | 10-90 band | <p25 | >p90 |
+|---|---|---|---|---|---|---|---|
+| pre_cycle4 | 18.84 | 24.48 | +0.90 | 0.340 | 83.1% | 25.6% | 6.7% |
+| front_only | 18.68 | 24.14 | +0.90 | 0.350 | 82.9% | 25.6% | 6.9% |
+| **shipped** | 18.69 | **24.14** | **+0.23** | 0.348 | 82.1% | 25.5% | 7.7% |
+
+Paired per-race squared error, front vs pre: -17.1 +- 5.2 (3.3 se; intermediate
+-28.1 +- 5.1, road -5.3 +- 2.8, short -17 +- 18, superspeedway -1.0 +- 2.1).
+RMSE by track 24.89/23.83/26.82/22.00 -> 24.84/23.31/26.44/21.88 (ss/int/short/road).
+Latest cached race (10/11 Charlotte): RMSE 25.20 -> 24.58, rho 0.368 -> 0.405,
+pole 37.3 -> 49.9 proj (actual 66.7). Live 11/1 board not priced yet.
+
+**Risks:** 2025-26 poles were unusually dominant (test +23.7 vs train +8.5),
+so the gain may shrink; boost spills onto starts 3-5 (already high).
+
+**Runner-ups:** (1) the finish component is most of the error (RMSE 20.6,
+corr 0.32), starts 3-10 over-projected 3-5 pts and the pole's finish low
+(20.4 vs 27.6) -- a start-curve shape / front-row term in fit_running is the
+next cycle; (2) lead/fast form multipliers 8.0/4.0 never fitted (~0.03 RMSE);
+(3) loop-data cache stops at 10/11 -- the 10/18 and 10/25 races are not in it.

@@ -178,6 +178,30 @@ LAP_MODEL = {
 
 DEFAULT_TRACK = "intermediate"
 
+#: Front-of-grid lead boost (critique cycle 4, DK-points target, 2026-10-26).
+#: The lap-led weight used to depend only on the simulated finish and the
+#: driver's lead form, so the pole sitter -- who leads the opening run and
+#: banks laps-led and fastest-lap points wherever he finishes -- got nothing
+#: for starting there. Held out (fit 2022-24, test 2025-26, 66 races) the
+#: pole was projected 32.2 DK points against 55.8 actual (laps-led pts 4.6 vs
+#: 16.2), front row 30.9 vs 37.8; in train too (pole -8.5, P2 -7.3). The lead
+#: weight is multiplied by 1 + FRONT_A * exp(-(start-1) / FRONT_S); grid FA
+#: {0,2,4,8,16} x FS {0.7,1.5} chosen on the inner 2022-23 -> 2024 split
+#: (2024 RMSE 23.73 -> 23.63, front-row bias -6.5 -> +1.6). The boost feeds
+#: fastest laps through the same weight. NASCAR_CRITIQUE_LOG.md cycle 4.
+FRONT_A = 2.0
+FRONT_S = 1.5
+
+#: Fastest-lap pool as a share of race distance, per track type: mean over
+#: races of sum(fast_laps) / actual_laps, 2022-24 Cup loop data (cycle 4).
+#: Only green-flag laps award a fastest lap, and the live build has no caution
+#: count before the race, so nascar.green_laps() returned the full scheduled
+#: distance -- a pool ~25% too big and +0.9 DK points/driver of bias (held out
+#: +0.90 -> +0.23). simulate() uses this whenever the caller gives no
+#: green_laps.
+FAST_FRAC = {"superspeedway": 0.748, "intermediate": 0.782, "short": 0.832,
+             "road": 0.753}
+
 #: Half-lives, in races, of the running-position form (cycle 1, chosen on
 #: 2022-24: NASCAR_CRITIQUE_LOG.md).
 RUN_HL_ALL = 12.0
@@ -278,7 +302,8 @@ def simulate(drivers: list[dict], race: dict, n_sims: int = 2000,
 
     track = race.get("track_type") or DEFAULT_TRACK
     laps = float(race.get("actual_laps") or 300)
-    green = float(race.get("green_laps") or max(1.0, laps * 0.88))
+    green = float(race.get("green_laps")
+                  or max(1.0, laps * FAST_FRAC.get(track, FAST_FRAC[DEFAULT_TRACK])))
     lap_cfg = LAP_MODEL.get(track, LAP_MODEL[DEFAULT_TRACK])
     resid_sd = FINISH_MODEL.get(track, FINISH_MODEL[DEFAULT_TRACK])[6]
 
@@ -312,7 +337,8 @@ def simulate(drivers: list[dict], race: dict, n_sims: int = 2000,
     #    that dominated and then blew up. That is a real and known bias, and it
     #    is small: most DNFs are not leaders.
     decay, conc = lap_cfg["decay"], lap_cfg["conc"]
-    weight = np.exp(-decay * (finish - 1)) * (1.0 + 8.0 * lead_form)
+    weight = (np.exp(-decay * (finish - 1)) * (1.0 + 8.0 * lead_form)
+              * (1.0 + FRONT_A * np.exp(-(starts[None, :] - 1.0) / FRONT_S)))
     weight = np.where(dnf, weight * 0.15, weight)
     laps_led = _dirichlet_alloc(rng, weight, conc, laps)
 
