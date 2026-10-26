@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-26T22:30:18+00:00",
+"generated_at": "2026-10-26T22:44:21+00:00",
 "goalies": {
 "2026-10-26": {
 "CGY": {
@@ -16,7 +16,7 @@
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "James Reimer",
@@ -3618,6 +3618,40 @@
 "pos": "rw",
 "pp": "PP2"
 },
+"Brennan Othmann": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 10,
+"toiMinutes": 101,
+"toiSeconds": 51
+},
+"last5": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 6,
+"toiMinutes": 60,
+"toiSeconds": 12
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Devin Cooley": {
 "gtd": false,
 "injury": null,
@@ -3927,40 +3961,6 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
-},
-"Maxim Tsyplakov": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 113,
-"toiSeconds": 32
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 54,
-"toiSeconds": 41
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Mikael Backlund": {
 "gtd": true,
@@ -8073,9 +8073,9 @@
 "toiMinutes": 81,
 "toiSeconds": 10
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
 },
 "Joel Armia": {
@@ -8181,7 +8181,7 @@
 "pp": null
 },
 "Quinton Byfield": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -8279,7 +8279,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Taylor Ward": {
@@ -8311,9 +8311,9 @@
 "toiMinutes": 47,
 "toiSeconds": 48
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Trevor Moore": {
