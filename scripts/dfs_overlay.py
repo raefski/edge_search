@@ -49,7 +49,16 @@ def lock_time(c) -> datetime | None:
 
 
 def contests(sport: str) -> list[dict]:
-    return dfs._get(f"https://www.draftkings.com/lobby/getcontests?sport={sport}").get("Contests", [])
+    """The lobby's contests, each tagged `_slate` with its draft group's slate label:
+    DK leaves ContestStartTimeSuffix empty on the main slate and sets ' (Early)',
+    ' (Turbo)', ' (Night)' ... on the others, which is how Adam tells them apart."""
+    d = dfs._get(f"https://www.draftkings.com/lobby/getcontests?sport={sport}")
+    suffix = {g.get("DraftGroupId"): (g.get("ContestStartTimeSuffix") or "").strip(" ()")
+              for g in d.get("DraftGroups") or []}
+    cs = d.get("Contests", [])
+    for c in cs:
+        c["_slate"] = suffix.get(c.get("dg")) or "Main"
+    return cs
 
 
 def rows(sport: str, now: datetime, max_fee: float, hours: float, classic_only: bool) -> list[dict]:
@@ -91,7 +100,7 @@ def rows_from(cs: list[dict], sport: str, now: datetime, max_fee: float, hours: 
         out.append({"sport": sport, "id": c["id"], "tmpl": c.get("tmpl"), "dg": c.get("dg"),
                     "name": c.get("n", ""), "fee": fee, "m": m, "nt": nt, "po": po, "lock": t,
                     "dbl": dbl, "game_type": c.get("gameType"),
-                    "ctype": contest_type(c), "mec": int(c.get("mec") or 1), "fee_ok": fee <= max_fee,
+                    "ctype": contest_type(c), "slate": c.get("_slate", "Main"), "mec": int(c.get("mec") or 1), "fee_ok": fee <= max_fee,
                     "bound": po / (nt * fee), "places": places, "resizable": None,
                     "return": 2.0 * min(nt, places) / nt if places else None,
                     "cash_rate": min(1.0, places / nt) if places else None})

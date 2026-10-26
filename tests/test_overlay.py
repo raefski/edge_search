@@ -84,7 +84,7 @@ def test_a_qualifying_contest_alerts_with_both_numbers():
     out = overlay.alerts_for(rows, {}, T0)
     assert len(out) == 1 and "11/23" in out[0]["body"]
     # sport · lobby tab · fee in the title; contest name then the M-cap lead the body
-    assert out[0]["title"].endswith("NFL · Tournaments · $1")
+    assert out[0]["title"].endswith("NFL Main · Tournaments · $1")
     assert out[0]["body"].split("\n")[1] == "M1" and "draftkings.com" not in out[0]["body"]
     assert out[0]["priority"] == "high"        # +67% at lock: an edge this size is worth a loud push
     assert out[0]["final"] is False and out[0]["title"].startswith("15 MIN WARNING")

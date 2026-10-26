@@ -389,7 +389,7 @@ def assess(found: list[dict], tables: dict, history: dict, now: datetime, hours:
         ok = (not full and not ticket and lock_e["roi"] >= min_roi
               and (include_resizable or pt["resizable"] is not True))
         out.append({"id": cid, "sport": r["sport"], "name": r["name"], "fee": r["fee"],
-                    "ctype": r.get("ctype", "Tournaments"), "mec": r.get("mec", 1),
+                    "ctype": r.get("ctype", "Tournaments"), "slate": r.get("slate", "Main"), "mec": r.get("mec", 1),
                     "entries": r["nt"], "cap": r["m"], "lock": r["lock"], "minutes": round(mins), "mins": mins,
                     "resizable": pt["resizable"], "places": lock_e["places"], "now": now_e,
                     "ticket": ticket,
@@ -427,7 +427,7 @@ def alerts_for(rows: list[dict], state: dict, now: datetime) -> list[dict]:
         n_now, e_now = r["entries"], r["now"]
         e_lock, p = r["at_lock"], r["projected"]
         rz = {True: "yes", False: "no", None: "not priced"}[r["resizable"]]
-        head = ("FINAL CALL — " if final else "15 MIN WARNING — ") + f"{r['sport']} · {r.get('ctype', 'Tournaments')} · ${r['fee']:g}"
+        head = ("FINAL CALL — " if final else "15 MIN WARNING — ") + f"{r['sport']} {r.get('slate', 'Main')} · {r.get('ctype', 'Tournaments')} · ${r['fee']:g}"
         if r.get("modelled"):
             expect = (f"Expect ~{r['n_lock']}/{r['cap']} at lock (how {r['fill_basis']} contests "
                       f"this empty fill late): cash {e_lock['cash']:.0%}, returns ${e_lock['return']:.2f} per $1 "
