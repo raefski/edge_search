@@ -19,7 +19,7 @@ from scripts import dfs_overlay as O  # noqa: E402
 st.set_page_config(page_title="Overlay finder", page_icon="💸", layout="centered")
 st.title("💸 Overlay finder")
 st.caption("Guaranteed contests pay their prize table even if they don't fill — but only to "
-           "places that have an entrant. **$ back** is what an average entry gets back per $1 "
+           "places that have an entrant. **\\$ back** is what an average entry gets back per $1 "
            "if the contest locked right now; above 1.00, DraftKings is adding money. Most "
            "contests fill in the last hour, so check close to lock.")
 
@@ -31,7 +31,7 @@ min_fee, max_fee = c2.select_slider("Entry fee ($)", options=[0.1, 0.25, 1, 2, 3
                                     value=(0.1, 5))
 hours = c3.select_slider("Locks within (h)", options=[0.5, 1, 2, 3, 6, 12, 24], value=3)
 only_dbl = st.toggle("Double-ups only", value=False)
-min_ret = st.select_slider("Min $ back per $1", options=[0.0, 1.0, 1.2, 1.5, 2.0], value=1.0)
+min_ret = st.select_slider("Min \\$ back per \\$1", options=[0.0, 1.0, 1.2, 1.5, 2.0], value=1.0)
 
 
 @st.cache_data(ttl=120, show_spinner=False)
@@ -62,11 +62,24 @@ st.markdown(f"**{len(rows)}** contests · lobby read {now.astimezone(et):%-I:%M 
 if unpriced:
     st.caption(f"{unpriced} non-double-up contests have no payout table here (DraftKings "
                "blocks that lookup from the cloud); the desktop scanner prices them.")
+
+def _esc(t: str) -> str:
+    # a bare $ pair is read as LaTeX by st.markdown (it garbled every card on 10/26)
+    return t.replace("$", "\\$")
+
+
+# Each card reads like the ntfy push (harness/overlay.py): sport + slate · lobby tab ·
+# fee, then the contest name and M-cap -- what Adam scans the DK lobby for -- then the numbers.
 for r in rows[:60]:
     mins = (r["lock"] - now).total_seconds() / 60
-    cr = f" · cashes **{r['cash_rate']:.0%}**" if r["cash_rate"] is not None else ""
-    rz = " · ⚠️ resizable" if r["resizable"] else ""
-    st.markdown(f"**{r['return']:.2f}×** · {r['sport']} · ${r['fee']:g} · "
-                f"{r['nt']}/{r['m']} entries{cr} · locks in {mins:.0f} min{rz}  \n"
-                f"<span style='color:#999;font-size:13px'>{r['name']} · #{r['id']}</span>",
-                unsafe_allow_html=True)
+    lock_et = r["lock"].astimezone(et).strftime("%-I:%M %p ET")
+    cr = f"cash {r['cash_rate']:.0%}, " if r["cash_rate"] is not None else ""
+    rz = {True: "yes ⚠️", False: "no", None: "not priced"}[r["resizable"]]
+    with st.container(border=True):
+        st.markdown(_esc(f"**{r['sport']} {r.get('slate', 'Main')} · {r['ctype']} · ${r['fee']:g}**  \n"
+                         f"{r['name']}  \n"
+                         f"M{r['mec']}  \n"
+                         f"{mins:.0f} min to lock ({lock_et}), {r['nt']}/{r['m']} entered. "
+                         f"If it locked now: {cr}returns **${r['return']:.2f}** per $1 "
+                         f"({r['return'] - 1:+.0%}). Resizable: {rz}.  \n")
+                    + f"[Open contest](https://www.draftkings.com/draft/contest/{r['id']})")
