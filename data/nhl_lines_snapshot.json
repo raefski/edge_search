@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-26T15:29:08+00:00",
+"generated_at": "2026-10-26T15:59:16+00:00",
 "goalies": {
 "2026-10-26": {
 "CGY": {
@@ -20,7 +20,7 @@
 },
 "NYR": {
 "goalie": "James Reimer",
-"status": "Likely"
+"status": "Confirmed"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
@@ -2413,7 +2413,7 @@
 "toiMinutes": 66,
 "toiSeconds": 58
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -2449,7 +2449,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Juuso Valimaki": {
@@ -2484,7 +2484,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "K'Andre Miller": {
 "gtd": false,
@@ -2553,40 +2553,6 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
-},
-"Nicolas Deslauriers": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 86,
-"toiSeconds": 14
-},
-"last5": {
-"assists": 1,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 48,
-"toiSeconds": 42
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Nikolaj Ehlers": {
 "gtd": false,
@@ -2757,7 +2723,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
 },
 "Shayne Gostisbehere": {
@@ -2825,8 +2791,42 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": null
+},
+"Taylor Hall": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 7,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 21,
+"toiMinutes": 131,
+"toiSeconds": 17
+},
+"last5": {
+"assists": 2,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 3,
+"points": 5,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 13,
+"toiMinutes": 60,
+"toiSeconds": 37
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": "PP2"
 },
 "William Carrier": {
 "gtd": false,
@@ -11985,7 +11985,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Gabriel Perreault": {
@@ -12361,7 +12361,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Tye Kartye": {
