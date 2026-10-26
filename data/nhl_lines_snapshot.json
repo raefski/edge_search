@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-26T14:29:43+00:00",
+"generated_at": "2026-10-26T14:59:32+00:00",
 "goalies": {
 "2026-10-26": {
 "CGY": {
@@ -19,8 +19,8 @@
 "status": null
 },
 "NYR": {
-"goalie": "Dylan Garand",
-"status": null
+"goalie": "James Reimer",
+"status": "Likely"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
@@ -11949,7 +11949,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12055,6 +12055,42 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
+},
+"James Reimer": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 20,
+"goalieGoalsAgainstAvg": "2.06",
+"goalieLosses": 2,
+"goalieMinutes": 582,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.892",
+"goalieSaves": 166,
+"goalieSeconds": 48,
+"goalieShotsAgainst": 186,
+"goalieShutouts": 1,
+"goalieWins": 6
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 11,
+"goalieGoalsAgainstAvg": "2.32",
+"goalieLosses": 1,
+"goalieMinutes": 283,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.889",
+"goalieSaves": 88,
+"goalieSeconds": 23,
+"goalieShotsAgainst": 99,
+"goalieShutouts": 0,
+"goalieWins": 2
+},
+"line": "G1",
+"pk": null,
+"pos": "g",
+"pp": null
 },
 "Luke Glendening": {
 "gtd": false,
@@ -12293,42 +12329,6 @@
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
-},
-"Spencer Martin": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 30,
-"goalieGoalsAgainstAvg": "4.56",
-"goalieLosses": 5,
-"goalieMinutes": 394,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.85",
-"goalieSaves": 170,
-"goalieSeconds": 58,
-"goalieShotsAgainst": 200,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 17,
-"goalieGoalsAgainstAvg": "4.47",
-"goalieLosses": 4,
-"goalieMinutes": 227,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.856",
-"goalieSaves": 101,
-"goalieSeconds": 44,
-"goalieShotsAgainst": 118,
-"goalieShutouts": 0,
-"goalieWins": 0
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
 },
 "Taylor Raddysh": {
 "gtd": false,
