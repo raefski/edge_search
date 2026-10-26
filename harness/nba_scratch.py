@@ -118,14 +118,19 @@ def dk_players(state: dict, now: datetime, day: date) -> dict:
     if not lobby or now - datetime.fromisoformat(lobby) >= DK_LOBBY_EVERY:
         groups = [g for g in dfs.draft_groups("NBA") if g.get("GameTypeId") == CLASSIC
                   and (g.get("StartDateEst") or "")[:10] == day.isoformat()]
-        dk["groups"] = [g["DraftGroupId"] for g in sorted(groups, key=lambda g: -(g.get("GameCount") or 0))]
+        # Keep the day's groups once seen: DK drops a slate from the lobby when it locks,
+        # and its games' players then went "no DK salary" in every push (10/26, after
+        # the 7 PM main left only the 2-game Night slate).
+        new = [g["DraftGroupId"] for g in sorted(groups, key=lambda g: -(g.get("GameCount") or 0))]
+        dk["groups"] = dk.get("groups", []) + [g for g in new if g not in dk.get("groups", [])]
         dk["lobby_at"] = now.isoformat()
     players: dict = {}
     for gid in dk.get("groups", []):
         for info in dfs.fetch_draftables(gid).values():
             key = f"{norm(info['name'])}|{nba.team(info['team'])}"
             players.setdefault(key, {"salary": info["salary"], "status": info.get("dk_status")})
-        break                     # the biggest slate covers its games; statuses are shared
+        # every group, biggest first: a locked main still lists its players (draftables
+        # stay readable after lock), the later slates add their games
     dk["players"], dk["fetched"] = players, now.isoformat()
     return {tuple(k.split("|")): v for k, v in players.items()}
 
