@@ -281,3 +281,78 @@ def likely_at_lock(model: dict | None, entries: int, cap: int, minutes: float,
     tail = share * min(1.0, max(0.0, minutes) / LAST_SNAPSHOT_TYPICAL_MIN)
     e += tail * (cap - e)
     return min(cap, round(e))
+
+
+# --------------------------------------------------------------------------
+# pace + expected-value final call (OVERLAY_CRITIQUE_LOG.md cycle 2, shipped 10/26)
+# Fitted on Classic locks < 10/22 (6,445 contests), held out on 5 lock days
+# 10/22-10/26 (n=1,355): err/cap MAE 0.084 -> 0.070, $ of the calls +935 -> +1,073,
+# ahead of the shipped forecast on $ every one of the 5 days. Fitted on calls made
+# 4.5-9.5 min before lock, so live uses it for the final call only.
+# --------------------------------------------------------------------------
+def call_point(c, first: float, last: float):
+    """The snapshot the final call would use: the latest one in [last, first] min."""
+    ms = [m for m in c["points"] if last <= m <= first]
+    return min(ms) if ms else None
+
+
+PACE_LO, PACE_HI = 12.0, 25.0   # earlier snapshot this far before the call sets the pace
+
+
+def pace_v(c, m_call):
+    """Straight-line share of the empty room the recent pace would fill by lock."""
+    e, cap = c["points"][m_call], c["cap"]
+    older = [m for m in c["points"] if m_call + PACE_LO <= m <= m_call + PACE_HI]
+    if not older or cap <= e:
+        return None
+    m0 = min(older)
+    rate = max(0.0, (e - c["points"][m0]) / (m0 - m_call))
+    return rate * m_call / (cap - e)
+
+
+def fit_pace(train, finals, first, last, k=5):
+    """Quintile edges of pace v and the median realised call->final share in each."""
+    xs, every = [], []
+    for cid, c in train.items():
+        if cid not in finals or c["cap"] < 10:
+            continue
+        m = call_point(c, first, last)
+        if m is None or c["points"][m] >= c["cap"]:
+            continue
+        e = c["points"][m]
+        share = max(0.0, (min(finals[cid], c["cap"]) - e) / (c["cap"] - e))
+        every.append(share)
+        v = pace_v(c, m)
+        if v is not None:
+            xs.append((v, share))
+    xs.sort()
+    n = len(xs)
+    cuts = [xs[n * i // k][0] for i in range(1, k)]
+    bins = [[s for v, s in xs if (i == 0 or v >= cuts[i - 1]) and (i == k - 1 or v < cuts[i])]
+            for i in range(k)]
+    # The whole spread per bin is kept for the EV call; contests with no pace
+    # snapshot draw from every train share.
+    return {"cuts": cuts, "share": [_median(b) for b in bins], "spread": bins,
+            "all": every, "n": n}
+
+
+def entry_value(c, field: float, tiers=None) -> float:
+    """$ one more entry is worth when `field` others are in: the contest's real
+    payout tiers as the live alert prices it (entry_edge), else the flat
+    approximation pool/(field+1) - fee."""
+    if tiers:
+        return entry_edge(tiers, round(field), c["fee"])["roi"] * c["fee"]
+    return c["prize_pool"] / (field + 1) - c["fee"]
+
+
+def entry_ev(c, m_call, pace, tiers=None) -> tuple[float, float]:
+    """(expected value of one entry, P(overlay at lock)) over the train spread of
+    call->final shares in this contest's pace bin."""
+    e, cap, pp, fee = c["points"][m_call], c["cap"], c["prize_pool"], c["fee"]
+    v = pace_v(c, m_call)
+    ss = pace["all"] if v is None else pace["spread"][sum(v >= x for x in pace["cuts"])]
+    fields = [e + min(1.0, x) * (cap - e) for x in ss]
+    return (sum(entry_value(c, f, tiers) for f in fields) / len(fields),
+            sum(pp > fee * f for f in fields) / len(fields))
+
+

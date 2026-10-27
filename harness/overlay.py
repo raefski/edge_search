@@ -49,7 +49,8 @@ from harness.registry import ROOT
 from harness.runner import STATE
 
 sys.path.insert(0, str(ROOT))
-from edge.dfs_entry_edge import (entry_edge, fill_basis, fit_late_fill,  # noqa: E402
+from edge.dfs_entry_edge import (_median, entry_ev, fit_pace, pace_v,  # noqa: E402
+                                 entry_edge, fill_basis, fit_late_fill,  # noqa: E402
                                   likely_at_lock, projected_fill, weekday)
 from scripts import dfs_overlay as O  # noqa: E402
 
@@ -187,6 +188,15 @@ def load_log() -> tuple[dict, dict]:
             c["points"][mins] = e
     mark_vanished(contests)
     return {cid: sorted(pts.items()) for cid, pts in hist.items()}, contests
+
+
+def classic_ids() -> set:
+    """Contest ids logged as Classic (load_log drops game_type)."""
+    out, other = set(), set()
+    with O.FILL_LOG.open(newline="") as fh:
+        for r in csv.DictReader(fh):
+            (out if r.get("game_type", "Classic") == "Classic" else other).add(r["contest_id"])
+    return out - other
 
 
 def mark_vanished(contests: dict) -> None:
@@ -360,7 +370,8 @@ def price(found: list[dict]) -> dict:
 
 def assess(found: list[dict], tables: dict, history: dict, now: datetime, hours: float,
            max_fee: float, min_roi: float, include_resizable: bool,
-           model: dict | None = None) -> list[dict]:
+           model: dict | None = None, pace: dict | None = None,
+           logged: dict | None = None) -> list[dict]:
     """One row per contest with its marginal entry value now and at lock.
 
     The at-lock field is the late-fill model's expectation (`model`, from
@@ -384,6 +395,20 @@ def assess(found: list[dict], tables: dict, history: dict, now: datetime, hours:
         n_lock = max(n_floor, n_likely)
         now_e = entry_edge(pt["tiers"], r["nt"], r["fee"])
         lock_e = entry_edge(pt["tiers"], n_lock, r["fee"])
+        # The final call (inside FINAL_MIN, the window `pace` was fitted on) is made on
+        # expected value: one entry's mean value over the train spread of how contests
+        # at this recent pace actually finished (cycle 2, OVERLAY_CRITIQUE_LOG.md).
+        c = (logged or {}).get(cid)
+        if pace and c and c.get("points") and mins <= FINAL_MIN and r["nt"] < r["m"]:
+            cc = {**c, "cap": r["m"], "fee": r["fee"], "prize_pool": r["po"],
+                  "points": {**c["points"], mins: r["nt"]}}
+            v = pace_v(cc, mins)
+            share = pace["share"][sum(v >= x for x in pace["cuts"])] if v is not None else _median(pace["all"])
+            n_lock = min(r["m"], round(r["nt"] + min(1.0, share) * (r["m"] - r["nt"])))
+            ev, _ = entry_ev(cc, mins, pace, pt["tiers"])
+            lock_e = {**entry_edge(pt["tiers"], n_lock, r["fee"]), "roi": ev / r["fee"]}
+            lock_e["return"] = 1 + lock_e["roi"]
+            basis = "same-pace"
         full = n_lock >= r["m"]
         ticket = bool(TICKET.search(r["name"] or ""))      # prize is a seat, not cash
         ok = (not full and not ticket and lock_e["roi"] >= min_roi
@@ -501,7 +526,10 @@ def run(do_push: bool = False, hours: float = 2.5, min_roi: float = 0.10, max_fe
         print(f"late-fill model: {model['n']} contests ({', '.join(levels)}), "
               f"last-minutes share {model['tail']:.2f} "
               f"({'fitted on ' + str(model['tail_n']) + ' finals' if model['tail_n'] >= 5 else 'default, n=1'})")
-    rows = assess(found, tables, history, now, hours, max_fee, min_roi, include_resizable, model)
+    keep = classic_ids()
+    pace = fit_pace({k: v for k, v in logged.items() if k in keep}, finals, FINAL_MIN, FINAL_FLOOR)
+    rows = assess(found, tables, history, now, hours, max_fee, min_roi, include_resizable, model,
+                  pace if pace["n"] >= 100 else None, logged)
     new = alerts_for(rows, state, now)
     print(f"polled {', '.join(polled) or 'nothing (no sport due)'} · {len(found)} guaranteed "
           f"contests in window · {sum(1 for r in rows if r['alert'])} qualify · {len(new)} to push")

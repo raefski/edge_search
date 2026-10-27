@@ -402,3 +402,24 @@ def test_a_contest_that_leaves_the_lobby_nearly_full_counts_as_filled(tmp_path, 
     overlay.collect_finals(cs, {}, lock + timedelta(minutes=30),
                            lookup=lambda cid: asked.append(cid) or {"field": 100})
     assert "full" not in asked
+
+
+def test_the_final_call_uses_the_lab_pace_and_ev():
+    """Inside FINAL_MIN with a pace fit, assess() = the lab: share from the contest's
+    pace bin, call made on mean entry value over that bin's spread (cycle 2)."""
+    from edge.dfs_entry_edge import entry_ev
+    pace = {"cuts": [0.05], "share": [0.2, 0.9], "spread": [[0.1, 0.3], [0.8, 1.0]],
+            "all": [0.1, 0.3, 0.8, 1.0], "n": 200}
+    # 30 entries 20 min before the call, 40 at it (8 min out): v = 0.5/min x 8 / 60 = 0.067, bin 1
+    logged = {"1": {"points": {28.0: 30}, "cap": 100, "lock": T0 + timedelta(minutes=8)}}
+    f = {**_found("1", 40, 100, 1.0, 8), "po": 90.0}
+    tiers = {"1": {"tiers": [[1, 30, 3.0]], "resizable": False}}
+    r = overlay.assess([f], tiers, {}, T0, 2.5, 25, 0.10, False, None, pace, logged)[0]
+    assert r["n_lock"] == 94 and r["fill_basis"] == "same-pace"
+    c = {**logged["1"], "fee": 1.0, "prize_pool": 90.0, "points": {28.0: 30, 8.0: 40}}
+    assert r["at_lock"]["roi"] == pytest.approx(entry_ev(c, 8.0, pace, [[1, 30, 3.0]])[0])
+    assert not r["alert"]                       # a near-full field: no overlay left
+    # the 15-minute warning keeps the late-fill forecast
+    early = overlay.assess([{**f, "lock": T0 + timedelta(minutes=14)}], tiers, {}, T0, 2.5, 25,
+                           0.10, False, None, pace, logged)[0]
+    assert early["fill_basis"] != "same-pace"

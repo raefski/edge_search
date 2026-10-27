@@ -38,91 +38,20 @@ sys.path.insert(0, str(ROOT))
 from harness import overlay as H  # noqa: E402
 from edge import dfs_entry_edge as E  # noqa: E402
 from scripts import dfs_overlay as O  # noqa: E402
-
-
-def classic_ids() -> set:
-    """Contest ids logged as Classic (load_log drops game_type)."""
-    out, other = set(), set()
-    with O.FILL_LOG.open(newline="") as fh:
-        for r in csv.DictReader(fh):
-            (out if r.get("game_type", "Classic") == "Classic" else other).add(r["contest_id"])
-    return out - other
+# The pace + EV call shipped in cycle 2 (2026-10-26); lab and live share the code.
+from edge.dfs_entry_edge import (call_point, entry_ev, entry_value, fit_pace,  # noqa: E402,F401
+                                 pace_v)
+classic_ids = H.classic_ids
 
 
 def lock_day(c) -> date:
     return c["lock"].astimezone(E.ET).date()
 
 
-def call_point(c, first: float, last: float):
-    """The snapshot the final call would use: the latest one in [last, first] min."""
-    ms = [m for m in c["points"] if last <= m <= first]
-    return min(ms) if ms else None
-
-
-PACE_LO, PACE_HI = 12.0, 25.0   # earlier snapshot this far before the call sets the pace
-
-
-def pace_v(c, m_call):
-    """Straight-line share of the empty room the recent pace would fill by lock."""
-    e, cap = c["points"][m_call], c["cap"]
-    older = [m for m in c["points"] if m_call + PACE_LO <= m <= m_call + PACE_HI]
-    if not older or cap <= e:
-        return None
-    m0 = min(older)
-    rate = max(0.0, (e - c["points"][m0]) / (m0 - m_call))
-    return rate * m_call / (cap - e)
-
-
-def fit_pace(train, finals, first, last, k=5):
-    """Quintile edges of pace v and the median realised call->final share in each."""
-    xs, every = [], []
-    for cid, c in train.items():
-        if cid not in finals or c["cap"] < 10:
-            continue
-        m = call_point(c, first, last)
-        if m is None or c["points"][m] >= c["cap"]:
-            continue
-        e = c["points"][m]
-        share = max(0.0, (min(finals[cid], c["cap"]) - e) / (c["cap"] - e))
-        every.append(share)
-        v = pace_v(c, m)
-        if v is not None:
-            xs.append((v, share))
-    xs.sort()
-    n = len(xs)
-    cuts = [xs[n * i // k][0] for i in range(1, k)]
-    bins = [[s for v, s in xs if (i == 0 or v >= cuts[i - 1]) and (i == k - 1 or v < cuts[i])]
-            for i in range(k)]
-    # The whole spread per bin is kept for the EV call; contests with no pace
-    # snapshot draw from every train share.
-    return {"cuts": cuts, "share": [E._median(b) for b in bins], "spread": bins,
-            "all": every, "n": n}
-
-
 def tables() -> dict:
     """Payout tiers per contest id (data/cache/contest_payouts.json: the live alert's
     pricing cache plus the tables collect_finals keeps from its finals lookups)."""
     return json.loads(O.PAYOUTS.read_text()) if O.PAYOUTS.exists() else {}
-
-
-def entry_value(c, field: float, tiers=None) -> float:
-    """$ one more entry is worth when `field` others are in: the contest's real
-    payout tiers as the live alert prices it (entry_edge), else the flat
-    approximation pool/(field+1) - fee."""
-    if tiers:
-        return E.entry_edge(tiers, round(field), c["fee"])["roi"] * c["fee"]
-    return c["prize_pool"] / (field + 1) - c["fee"]
-
-
-def entry_ev(c, m_call, pace, tiers=None) -> tuple[float, float]:
-    """(expected value of one entry, P(overlay at lock)) over the train spread of
-    call->final shares in this contest's pace bin."""
-    e, cap, pp, fee = c["points"][m_call], c["cap"], c["prize_pool"], c["fee"]
-    v = pace_v(c, m_call)
-    ss = pace["all"] if v is None else pace["spread"][sum(v >= x for x in pace["cuts"])]
-    fields = [e + min(1.0, x) * (cap - e) for x in ss]
-    return (sum(entry_value(c, f, tiers) for f in fields) / len(fields),
-            sum(pp > fee * f for f in fields) / len(fields))
 
 
 def forecast(c, cid, hist, model, m_call, pace=None):
@@ -164,7 +93,7 @@ def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None,
         tiers = (tabs.get(cid) or {}).get("tiers")
         if ev and pred is not None:
             pred = entry_ev(c, m, pace, tiers)[0] > 0
-        rows.append({"cid": cid, "sport": c.get("sport"), "cap": c["cap"],
+        rows.append({"cid": cid, "sport": c.get("sport"), "cap": c["cap"], "day": lock_day(c),
                      "band": E._band(c["points"][m] / c["cap"]), "err": (f - final) / c["cap"],
                      "ov_true": None if pp is None or fee is None else pp > fee * final,
                      "ov_pred": pred,
@@ -208,6 +137,9 @@ def report(cutoff: date, first: float, last: float, pace=False, ev=False) -> lis
         out.append(fmt(f"  {sp}", summarize([r for r in rows if r["sport"] == sp])))
     for b, (lo, hi) in enumerate(E.FILL_BANDS):
         out.append(fmt(f"  fill {lo:.2f}-{hi:.2f}", summarize([r for r in rows if r["band"] == b])))
+    # by lock day: the unit a test result has to hold on (cycle 2: one day carried the $)
+    for d in sorted({r["day"] for r in rows}):
+        out.append(fmt(f"  day {d:%m/%d}", summarize([r for r in rows if r["day"] == d])))
     return out
 
 

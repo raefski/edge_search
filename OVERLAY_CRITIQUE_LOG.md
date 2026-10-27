@@ -134,3 +134,36 @@ test contests missing tables after 2 lookups, and dropped a collector change tha
 would have kept tables from the finals lookups.
 What would still decide cycle 2: 2+ more weeks of test days (the 5 contests worth
 $232 dominate today).
+
+## Cycle 2 decided -- pace + EV final call SHIPPED (2026-10-26)
+
+Cycle 2 asked for more test days. Re-run with train = locks < 10/22 (6,445 contests,
+tail fit on 1,194 finals), test = 5 lock days 10/22-10/26. Days 10/23-10/26 were not
+seen by cycle 2. Classic only, call 4.5-9.5 min out. The lab now prints a by-day slice.
+
+| model | n | MAE | RMSE | bias | missed | false | $ (1 entry each call) |
+|---|---|---|---|---|---|---|---|
+| shipped (late-fill) | 1355 | 0.084 | 0.116 | +0.014 | 193 | 176 | +935 |
+| pace point | 1355 | 0.070 | 0.099 | -0.014 | 119 | 186 | +940 |
+| **pace + EV** | 1355 | **0.070** | **0.099** | -0.014 | 165 | 165 | **+1,073** |
+
+$ by lock day, shipped / pace / pace+EV: 10/22 +384/+399/+391; 10/23 +168/+112/+169;
+10/24 +209/+227/+284; 10/25 +152/+173/+197; 10/26 +22/+30/+32 (n=35, partial day).
+Pace+EV is at or above shipped on $ on all 5 days. MAE is lower on all 5 days and in all
+6 sports. Pace point alone lost 10/23 by $56. $ by sport for pace+EV vs shipped:
+CFB +299/+277, MMA +16/+14, NAS +120/+87, NBA +483/+440, NFL +70/+34, NHL +86/+82.
+
+**Shipped:** in harness/overlay.py assess(), for the final call only (inside FINAL_MIN,
+the window pace was fitted on; the 15-minute warning keeps the late-fill forecast):
+- n_lock = the median share for the contest's pace bin;
+- the call is the entry's mean value over that bin's spread, priced on its tiers,
+  against --min-roi.
+- pace is refitted every run on all Classic contests with finals (needs n >= 100).
+- The pace/EV code moved from the lab into edge/dfs_entry_edge.py (fit_pace,
+  pace_v, entry_ev, entry_value), and the lab imports it. Lab numbers reproduced
+  after the move. tests/test_overlay.py checks live == lab.
+
+No critic this cycle: the open candidate was decided first. The next cycle spawns the critic
+on the new model. Leads from earlier cycles: the tail share is pooled across sports
+and drifts; fast fillers are under-represented in finals; the warning still uses
+the old forecast.
