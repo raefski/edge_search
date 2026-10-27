@@ -622,3 +622,62 @@ and from scoring, but not from the role history.
   chance of not playing might help; the gain is likely small.
 - **No five:** actual starters run −2.3 while bench players run +0.66, but most of
   that is conditioning on who turned out to start. Likely under 0.05.
+
+---
+
+# Target: promoted starters / vacated production -- DK points (from 2026-10-27)
+
+Adam (10/26): a starter out -> a cheap promoted player is a "free square" the field
+piles on. 10/26 OKC lost Jalen Williams, Holmgren, Wallace; Ajay Mitchell ($4,600)
+scored 42 on our 26.6 projection, 77% owned in the field. Harness:
+`python3 scripts/nba_projection_backtest.py` (DK points = minutes x rate, leak-free,
+fit 2024-25, test 2025-26), now sliced by **vacated production**: last-10 mean DK
+points of teammates inactive tonight who played the team's previous game.
+
+## Cycle P0 -- baseline, shipped model (2026-10-27), test 2025-26
+
+| slice | role | n | MAE | RMSE | bias | rate x ACTUAL min: MAE | bias |
+|---|---|---|---|---|---|---|---|
+| a. none new out | all | 16194 | 6.771 | 9.152 | -0.02 | 4.451 | +0.04 |
+| a. none new out | starter | 6189 | 8.383 | 10.714 | -0.05 | 6.712 | -0.17 |
+| b. new out <20 | all | 5875 | 6.958 | 9.242 | -0.08 | 4.506 | -0.02 |
+| c. new out 20+ | all | 7242 | 7.532 | 9.863 | -0.37 | 4.745 | -0.40 |
+| c. new out 20+ | bench | 4308 | 6.975 | 9.232 | -0.37 | 3.419 | -0.09 |
+| c. new out 20+ | starter | 2934 | 8.350 | 10.723 | -0.36 | 6.693 | -0.87 |
+
+Overall: MAE 6.997, corr 0.8057, bias -0.11 (n 29,311).
+
+## Cycle P1 -- the harness ignored the injury report the live build reads (2026-10-27) -- HARNESS FIX, no production change
+
+**Hole (critic):** nba_projection_backtest.py did not apply the official report
+(`nba_injury_report.out_at_tip`): 840-1,060 player-games a season are listed Out
+but NBA.com-"active" at 0 minutes, and the harness gave them minutes their
+teammates should have had -- under-projecting exactly the vacated-production
+slice. Production (build_board) already applies the report, so P0 measured a
+less-informed model than the one shipped. Ported the live rule (non-starter
+listed Out = inactive; his 0-min games out of history). No parameters.
+
+| 2025-26, like-for-like rows (critic) | n | MAE before -> after (paired se) | bias |
+|---|---|---|---|
+| c. new out 20+ | 8720 | 7.529 -> 7.463 (-0.066, 0.018) | -0.88 -> -0.40 |
+| c, bench | 4998 | 6.873 -> 6.770 (-0.103, 0.031) | -1.08 -> -0.45 |
+| c, starter | 3722 | 8.410 -> 8.394 (-0.016, 0.013) | -0.61 -> -0.34 |
+| overall | 28283 | 6.994 -> 6.946 (-0.047, 0.007) | -0.34 -> -0.13 |
+
+2024-25 (unfitted) agrees: slice c -0.073 (0.025). New baseline (harness output):
+overall MAE 6.958, corr 0.8067; slice c starter MAE 8.397, bias -0.33, at ACTUAL
+minutes -0.85.
+
+**The usage bump (the hypothesis) is small once measured faithfully:** actual/
+predicted points per minute on slice c = 1.03 both seasons; a fitted
+1 + k*vacated-share rate multiplier (k 0.20 starters) gains -0.002 MAE with
+projected minutes, -0.04 with actual minutes. Not shipped. Minutes on slice c are
+calibrated on average (slope ~1.02). So 10/26 Ajay Mitchell (26.6 -> 42) was not
+a systematic rate miss the history can see; ownership (77% vs our 4.4%) is the
+bigger lever for him.
+
+**Runner-ups:** (1) the rate bump above, -0.04 at actual minutes; (2) slice-c bench
+projections too spread (-1.0 below 8 min, +1.2 above 24) -- shrink toward role
+mean, 0.02-0.04; (3) bench who dress and play 0 min, ~22% of slice-c bench error.
+Fidelity still open: build() lacks since_return, cur_n, cross-season priors and
+nba_availability -- rebuild the harness on nba_minutes_lab.load() + points.
