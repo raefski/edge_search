@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-27T14:29:14+00:00",
+"generated_at": "2026-10-27T14:59:26+00:00",
 "goalies": {
 "2026-10-27": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
-"status": null
+"status": "Likely"
 },
 "CBJ": {
 "goalie": "Jet Greaves",
@@ -64,7 +64,7 @@
 },
 "PHI": {
 "goalie": "Dan Vladar",
-"status": null
+"status": "Confirmed"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -2457,7 +2457,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Juuso Valimaki": {
@@ -2561,6 +2561,40 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
+},
+"Nicolas Deslauriers": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 86,
+"toiSeconds": 14
+},
+"last5": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 48,
+"toiSeconds": 42
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Nikolaj Ehlers": {
 "gtd": false,
@@ -2731,7 +2765,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Shayne Gostisbehere": {
@@ -2767,40 +2801,6 @@
 "pk": null,
 "pos": "ld",
 "pp": "PP1"
-},
-"Skyler Brind'Amour": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 20,
-"toiMinutes": 149,
-"toiSeconds": 1
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 69,
-"toiSeconds": 49
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Taylor Hall": {
 "gtd": true,
@@ -6400,7 +6400,7 @@
 "toiSeconds": 19
 },
 "line": "F1",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": "PP1"
 },
@@ -6536,7 +6536,7 @@
 "toiSeconds": 32
 },
 "line": "D3",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -6638,7 +6638,7 @@
 "toiSeconds": 0
 },
 "line": "F3",
-"pk": "PK1",
+"pk": null,
 "pos": "rw",
 "pp": null
 },
@@ -6776,7 +6776,7 @@
 "toiSeconds": 22
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": "PP2"
 },
