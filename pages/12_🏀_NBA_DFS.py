@@ -292,22 +292,39 @@ with t_board:
     only = st.toggle("Promoted / changed only", value=default_only, key="nba_promo_only",
                      help="Players whose projection moved with tonight's news: promoted "
                           "starters first, then the teammates who absorb scratched minutes.")
-    rows = sorted(pool, key=lambda d: -(d.get("proj") or 0))
+    gview = st.radio("Columns", ["Projection", "GPP"], horizontal=True, key="nba_board_view",
+                     help="GPP: Opt = % of simulated nights he is in that night's best legal lineup; "
+                          "Lev = Opt − Own (positive = the field is under him); Boom = chance of 6x salary.")
+    rows = sorted(pool, key=lambda d: -((d.get("optimal") or 0) if gview == "GPP" else (d.get("proj") or 0)))
     if only:
         rows = sorted((d for d in pool if d.get("promoted") or d.get("gain", 0) >= 2.0),
                       key=lambda d: (not d.get("promoted"), -d.get("gain", 0) * 1000 / d["salary"]))
         if not rows:
             st.caption("Nothing has changed yet: no promoted starters, nobody gaining 2+ points.")
-    body = "".join(
+    if gview == "GPP":
+        body = "".join(
+            f"<tr class='{'promo' if d.get('promoted') else ''}'>{_who(d)}"
+            f"<td class='num'>{_k(d['salary'])}</td><td class='num'>{d['proj']:.1f}</td>"
+            f"<td class='num'>{d.get('own', 0):.0f}%</td><td class='num'>{d.get('optimal', 0):.0f}%</td>"
+            f"<td class='num'>{d.get('opt_leverage', 0):+.0f}</td><td class='num'>{d.get('boom', 0):.0f}%</td></tr>"
+            for d in rows)
+        st.markdown("<div class='lu-wrap'><table class='lu'><tr><th>Player</th><th>$</th><th>Pts</th>"
+                    "<th>Own</th><th>Opt</th><th>Lev</th><th>Boom</th></tr>"
+                    + body + "</table></div>", unsafe_allow_html=True)
+        st.caption(f"Opt from {(res.get('stats') or {}).get('optimal_nights', 0)} simulated nights, each "
+                   "solved for its best legal lineup (\$50k, positions, 2+ games). Lev = Opt − Own: "
+                   "only as good as the ownership projection. Boom = P(≥ 6× salary/1k).")
+    body = "" if gview == "GPP" else "".join(
         f"<tr class='{'promo' if d.get('promoted') else ''}'>{_who(d)}"
         f"<td class='num'>{_k(d['salary'])}</td><td class='num'>{d.get('minutes', 0):.0f}</td>"
         f"<td class='num'>{d['proj']:.1f}</td>"
         f"<td class='num'>{'+' if d.get('gain', 0) > 0 else ''}{d.get('gain', 0):.1f}</td>"
         f"<td class='num'>{d['value']:.1f}</td><td class='num'>{d.get('own', 0):.0f}%</td></tr>"
         for d in rows)
-    st.markdown("<div class='lu-wrap'><table class='lu'><tr><th>Player</th><th>$</th><th>Min</th>"
-                "<th>Pts</th><th>Δ</th><th>Val</th><th>Own</th></tr>"
-                + body + "</table></div>", unsafe_allow_html=True)
+    if gview != "GPP":
+        st.markdown("<div class='lu-wrap'><table class='lu'><tr><th>Player</th><th>$</th><th>Min</th>"
+                    "<th>Pts</th><th>Δ</th><th>Val</th><th>Own</th></tr>"
+                    + body + "</table></div>", unsafe_allow_html=True)
     st.caption("“starts” = in tonight's starting five. Δ = points vs his usual role (minutes the news "
                "added or took away). Val = points per \\$1,000. * = no NBA history: projected "
                f"from his price ({R.IMPUTED_PER_K} pts per \\$1k). Questionable / Doubtful / Probable = the NBA's "
