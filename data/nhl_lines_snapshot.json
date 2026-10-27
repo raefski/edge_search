@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-27T15:29:32+00:00",
+"generated_at": "2026-10-27T15:59:11+00:00",
 "goalies": {
 "2026-10-27": {
 "ANA": {
@@ -8,7 +8,7 @@
 },
 "BOS": {
 "goalie": "Jeremy Swayman",
-"status": null
+"status": "Confirmed"
 },
 "BUF": {
 "goalie": "Colten Ellis",
@@ -27,8 +27,8 @@
 "status": "Confirmed"
 },
 "DAL": {
-"goalie": "Jake Oettinger",
-"status": null
+"goalie": "Casey DeSmith",
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Akira Schmid",
@@ -52,7 +52,7 @@
 },
 "NSH": {
 "goalie": "Juuse Saros",
-"status": null
+"status": "Likely"
 },
 "NYI": {
 "goalie": "Semyon Varlamov",
@@ -71,8 +71,8 @@
 "status": null
 },
 "STL": {
-"goalie": "Joel Hofer",
-"status": null
+"goalie": "Jordan Binnington",
+"status": "Likely"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -88,7 +88,7 @@
 },
 "WPG": {
 "goalie": "Clay Stevenson",
-"status": "Likely"
+"status": "Confirmed"
 }
 },
 "2026-10-28": {
