@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-27T19:29:23+00:00",
+"generated_at": "2026-10-27T19:30:12+00:00",
 "goalies": {
 "2026-10-27": {
 "ANA": {
@@ -2287,7 +2287,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Jaccob Slavin": {
@@ -2424,7 +2424,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Jordan Martinook": {
 "gtd": false,
@@ -2457,7 +2457,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Juuso Valimaki": {
@@ -2562,39 +2562,39 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Nicolas Deslauriers": {
-"gtd": false,
+"Mark Jankowski": {
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 1,
 "blocks": 5,
 "gamesPlayed": 10,
-"goals": 2,
-"points": 3,
+"goals": 7,
+"points": 8,
 "powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 86,
-"toiSeconds": 14
+"powerplayGoals": 2,
+"powerplayPoints": 2,
+"shots": 18,
+"toiMinutes": 140,
+"toiSeconds": 20
 },
 "last5": {
-"assists": 1,
-"blocks": 4,
+"assists": 0,
+"blocks": 2,
 "gamesPlayed": 5,
-"goals": 2,
-"points": 3,
+"goals": 5,
+"points": 5,
 "powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 48,
-"toiSeconds": 42
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 13,
+"toiMinutes": 73,
+"toiSeconds": 31
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "rw",
-"pp": null
+"pos": "c",
+"pp": "PP2"
 },
 "Nikolaj Ehlers": {
 "gtd": false,
@@ -2831,7 +2831,7 @@
 "toiMinutes": 60,
 "toiSeconds": 37
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
