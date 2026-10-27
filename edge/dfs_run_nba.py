@@ -423,6 +423,24 @@ PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp", "dk_pos", "salary", "mi
                  "sd", "floor", "ceil", "own", "promoted", "lineup", "imputed", "source")
 
 
+def optimal_columns(pool: list, sim, nights: int | None = None) -> dict:
+    """{name: {optimal, opt_leverage, boom, bust}} (edge/dfs_optimal.py, Stokastic's
+    columns, 2026-10-27). Not part of build_slate: it is ~130 ms of MILP per night,
+    so the page runs it only when the GPP view is open -- inside every build it
+    helped get the Cloud app CPU-throttled (10/27). 500 nights on the desktop
+    (~13 s on 8 cores), 150 single-process on Cloud's ~2 cores."""
+    import copy
+    import os
+    from edge import dfs_optimal
+    many = (os.cpu_count() or 1) >= 8
+    nights = nights or (500 if many else 150)
+    rows = copy.deepcopy(pool)
+    dfs_optimal.annotate(rows, sim, dfs_opt_nba.SLOTS, dfs_opt_nba.SLOT_OK, dfs_opt_nba.SALARY_CAP,
+                         n=nights, workers=None if many else 1)
+    return {"nights": nights, "rows": {r["name"]: {k: r[k] for k in ("optimal", "opt_leverage", "boom", "bust")}
+                                       for r in rows}}
+
+
 def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> dict:
     """Persist a build so a contest export has something to be joined to --
     edge/dfs_forward_log.py's rules (past dates never, this draft group only)."""
@@ -474,19 +492,6 @@ def build_slate(draft_group=None, client=None, n_sims: int = 3000, iters: int = 
         log.warning("nba: no buzz (%s)", exc)
         info["buzz_rows"] = 0
     theory.add_ownership(pool)
-    # Optimal % / leverage / boom / bust (edge/dfs_optimal.py, Stokastic's columns,
-    # 2026-10-27): 500 exactly-solved nights on the desktop (~13 s on 8 cores),
-    # 150 on Streamlit Cloud's ~2 cores (~10 s); the count is shown on the page.
-    try:
-        import os
-        from edge import dfs_optimal
-        nights = 500 if (os.cpu_count() or 1) >= 8 else 150
-        dfs_optimal.annotate(pool, sim, dfs_opt_nba.SLOTS, dfs_opt_nba.SLOT_OK,
-                             dfs_opt_nba.SALARY_CAP, n=nights)
-        info["optimal_nights"] = nights
-    except Exception as exc:                                # noqa: BLE001 -- a column, not the build
-        log.warning("nba: no optimal %% (%s)", exc)
-        info["optimal_nights"] = 0
     cash = dfs_opt_nba.optimize(pool, sim, mode="cash", iters=iters, seed=seed)
     gpp = dfs_opt_nba.optimize(pool, sim, mode="gpp", iters=iters, seed=seed, own_weight=own_weight)
     log_result = None

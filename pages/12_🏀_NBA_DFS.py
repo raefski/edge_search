@@ -77,12 +77,15 @@ def _nba_slates(_nonce: int):
     return R.classic_groups(dfs.draft_groups(R.DK_SPORT))
 
 
-@st.cache_data(ttl=180, show_spinner=False)
+# 15 minutes, not 3: every expiry re-ran the whole simulation + optimiser, and the
+# leverage map and Optimal % below rebuilt on top -- Cloud throttled the app's CPU
+# on 10/27. News is what makes a build stale, and 🔄 Refresh clears these.
+@st.cache_data(ttl=900, show_spinner=False)
 def _nba_build(gid, sims: int, iters: int, own_weight: float, _nonce: int):
     return R.build_slate(draft_group=gid, n_sims=sims, iters=iters, own_weight=own_weight)
 
 
-@st.cache_data(ttl=600, show_spinner=False)
+@st.cache_data(ttl=900, show_spinner=False)
 def _nba_leverage(gid, sims: int, iters: int, own_weight: float, _nonce: int):
     """GPP lineups from chalk to contrarian plus a simulated field
     (edge/dfs_leverage_sports.hoops); built once per slate build."""
@@ -90,7 +93,14 @@ def _nba_leverage(gid, sims: int, iters: int, own_weight: float, _nonce: int):
     return LS.hoops(_nba_build(gid, sims, iters, own_weight, _nonce), None, iters=max(20, iters // 3))
 
 
-@st.cache_data(ttl=600, show_spinner=False)
+@st.cache_data(ttl=900, show_spinner=False)
+def _nba_optimal(gid, sims: int, iters: int, own_weight: float, _nonce: int):
+    """Optimal % / leverage / boom / bust, only when the GPP view asks (R.optimal_columns)."""
+    b = _nba_build(gid, sims, iters, own_weight, _nonce)
+    return R.optimal_columns(b["pool"], b["sim"])
+
+
+@st.cache_data(ttl=900, show_spinner=False)
 def _nba_leverage_for(gid, sims: int, iters: int, own_weight: float, _nonce: int, contest: dict):
     """The same lineups ranked by expected payout in one contest."""
     from edge import dfs_leverage as lev
@@ -295,6 +305,12 @@ with t_board:
     gview = st.radio("Columns", ["Projection", "GPP"], horizontal=True, key="nba_board_view",
                      help="GPP: Opt = % of simulated nights he is in that night's best legal lineup; "
                           "Lev = Opt − Own (positive = the field is under him); Boom = chance of 6x salary.")
+    opt_nights = 0
+    if gview == "GPP":
+        with st.spinner("Solving the best lineup on each simulated night…"):
+            oc = _nba_optimal(gid, sims, iters, own_weight, st.session_state.nba_nonce)
+        opt_nights = oc["nights"]
+        pool = [{**d, **oc["rows"].get(d["name"], {})} for d in pool]
     rows = sorted(pool, key=lambda d: -((d.get("optimal") or 0) if gview == "GPP" else (d.get("proj") or 0)))
     if only:
         rows = sorted((d for d in pool if d.get("promoted") or d.get("gain", 0) >= 2.0),
@@ -311,7 +327,7 @@ with t_board:
         st.markdown("<div class='lu-wrap'><table class='lu'><tr><th>Player</th><th>$</th><th>Pts</th>"
                     "<th>Own</th><th>Opt</th><th>Lev</th><th>Boom</th></tr>"
                     + body + "</table></div>", unsafe_allow_html=True)
-        st.caption(f"Opt from {(res.get('stats') or {}).get('optimal_nights', 0)} simulated nights, each "
+        st.caption(f"Opt from {opt_nights} simulated nights, each "
                    "solved for its best legal lineup (\$50k, positions, 2+ games). Lev = Opt − Own: "
                    "only as good as the ownership projection. Boom = P(≥ 6× salary/1k).")
     body = "" if gview == "GPP" else "".join(
