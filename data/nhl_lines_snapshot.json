@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-27T18:29:26+00:00",
+"generated_at": "2026-10-27T18:59:28+00:00",
 "goalies": {
 "2026-10-27": {
 "ANA": {
@@ -84,7 +84,7 @@
 },
 "VGK": {
 "goalie": "Adin Hill",
-"status": null
+"status": "Confirmed"
 },
 "WPG": {
 "goalie": "Clay Stevenson",
@@ -17417,7 +17417,7 @@
 "pp": null
 },
 "Carter Hart": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
