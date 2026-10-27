@@ -433,6 +433,16 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
     toi_rows = current_toi(date)
     toi_now = group_toi(toi_rows) if toi_rows is not None else None
     aliases = name_aliases(toi_rows or [], rates)
+    # An alias may only serve a DK name whose (team, initial, last) is unique on
+    # DK's board too: NBA 2026-10-26 lost Jaylin Williams to his teammate Jalen's
+    # Out flag through the same kind of key; here a debuting DK skater would
+    # inherit his teammate's rates.
+    dk_keys: dict = {}
+    for v in salaries.values():
+        if v.get("salary"):
+            k = _initial_last(nhl.team(v.get("team")), v["name"])
+            dk_keys[k] = dk_keys.get(k, 0) + 1
+    aliases = {k: v for k, v in aliases.items() if dk_keys.get(k, 0) <= 1}
     produced = current_production(date)
     seven_d = seven_d_teams(lines)
 

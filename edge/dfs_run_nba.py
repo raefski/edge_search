@@ -22,6 +22,8 @@ Held out on 2025-26: 7.65 DK points mean |error|, 0.765 correlation, against
 """
 from __future__ import annotations
 
+import collections
+
 import csv
 import json
 import logging
@@ -188,10 +190,10 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
                 official_sig.setdefault(_sig(full), []).append(st_)
         info["injuries_source"] = f"{nba_injury_report.LAST_SOURCE} + {info['injuries_source']}"
 
-    def report_status(name):
+    def report_status(name, sig_ok=True):
         if norm(name) in official:
             return official[norm(name)]
-        alt = official_sig.get(_sig(name), [])
+        alt = official_sig.get(_sig(name), []) if sig_ok else []
         return alt[0] if len(alt) == 1 else None
     implied = game_lines(client, games) if client is not None else {}
     league_pm = hist.get("league_pm")
@@ -223,12 +225,23 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         alt = [i for i, hp in hist["players"].items() if hp.get("team") == t and _sig(hp.get("name") or "") == sig]
         return alt[0] if len(alt) == 1 else None
 
-    def status_of(key, t, name):
+    def status_of(key, t, name, sig_ok=True):
         if (key, t) in status:
             return status[(key, t)]
+        if not sig_ok:
+            return {}
         sig = _sig(name)
         alt = [v for (k2, t2), v in status.items() if t2 == t and v.get("sig") == sig]
         return alt[0] if len(alt) == 1 else {}
+
+    # The (last name, first initial) fallbacks below may only name a DK player
+    # whose signature is unique on his DK team. 2026-10-26 OKC had Jalen
+    # Williams (Out) and Jaylin Williams (active, 48.7% owned in the GPP that
+    # paid 2nd $1,500): ESPN's "Jalen Williams" Out matched ("williams", "j",
+    # OKC) and took Jaylin off our board too. The official-report fallback
+    # had the same hole -- it only checked uniqueness on the report's side.
+    dk_sigs = collections.Counter((_sig(v["name"]), team(v.get("team")))
+                                  for v in salaries.values() if v.get("salary"))
 
     rows = []
     for sal in salaries.values():
@@ -236,13 +249,14 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
             continue
         t = team(sal.get("team"))
         key = norm(sal["name"])
-        st = status_of(key, t, sal["name"])
+        sig_ok = dk_sigs[(_sig(sal["name"]), t)] == 1
+        st = status_of(key, t, sal["name"], sig_ok)
         pid = st.get("id") or history_id(key, t, sal["name"])
         h = hist["players"].get(pid, {}) if pid else {}
         opp = next((team(g["away"]) if team(g["home"]) == t else team(g["home"])
                     for g in games.values() if t in (team(g["home"]), team(g["away"]))), None)
-        espn = (key, t) in espn_out or (_sig(sal["name"]), t) in espn_sig
-        injury = report_status(sal["name"])
+        espn = (key, t) in espn_out or (sig_ok and (_sig(sal["name"]), t) in espn_sig)
+        injury = report_status(sal["name"], sig_ok)
         out = bool(st.get("inactive")) or sal.get("dk_status") in ("OUT", "O") or espn or injury == "Out"
         # `start` lets the optimiser put the LATEST tips in G / F / UTIL (DK's
         # late-swap convention, edge/dfs_opt_climb.assign_slots). Missing until
