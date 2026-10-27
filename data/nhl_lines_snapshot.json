@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-27T18:59:28+00:00",
+"generated_at": "2026-10-27T19:29:23+00:00",
 "goalies": {
 "2026-10-27": {
 "ANA": {
@@ -56,7 +56,7 @@
 },
 "NYI": {
 "goalie": "Semyon Varlamov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Jonas Johansson",
@@ -1805,7 +1805,7 @@
 },
 "line": "D1",
 "pk": "PK1",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Noah Ostlund": {
@@ -1975,7 +1975,7 @@
 },
 "line": "D1",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP1"
 },
 "Ryan McLeod": {
@@ -6365,9 +6365,9 @@
 "toiMinutes": 68,
 "toiSeconds": 22
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Connor McDavid": {
@@ -6506,38 +6506,38 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Jake Walman": {
-"gtd": false,
+"Jason Dickinson": {
+"gtd": true,
 "injury": null,
 "last10": {
-"assists": 1,
-"blocks": 17,
+"assists": 3,
+"blocks": 8,
 "gamesPlayed": 10,
-"goals": 0,
-"points": 1,
+"goals": 2,
+"points": 5,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 152,
-"toiSeconds": 29
+"shots": 10,
+"toiMinutes": 126,
+"toiSeconds": 59
 },
 "last5": {
 "assists": 1,
-"blocks": 7,
+"blocks": 4,
 "gamesPlayed": 5,
 "goals": 0,
 "points": 1,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 73,
-"toiSeconds": 32
+"shots": 3,
+"toiMinutes": 58,
+"toiSeconds": 4
 },
-"line": "D3",
+"line": "F4",
 "pk": "PK1",
-"pos": "ld",
+"pos": "c",
 "pp": null
 },
 "Kasperi Kapanen": {
@@ -6571,7 +6571,7 @@
 },
 "line": "F2",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Leon Draisaitl": {
@@ -6637,9 +6637,9 @@
 "toiMinutes": 61,
 "toiSeconds": 0
 },
-"line": "F3",
-"pk": "PK1",
-"pos": "rw",
+"line": "F4",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Matt Tomkins": {
@@ -6677,6 +6677,40 @@
 "pk": null,
 "pos": "g",
 "pp": null
+},
+"Mattias Ekholm": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 210,
+"toiSeconds": 31
+},
+"last5": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 101,
+"toiSeconds": 30
+},
+"line": "D1",
+"pk": "PK1",
+"pos": "ld",
+"pp": "PP2"
 },
 "Owen Michaels": {
 "gtd": false,
@@ -6809,7 +6843,7 @@
 "toiMinutes": 71,
 "toiSeconds": 35
 },
-"line": "D1",
+"line": "D3",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -6843,9 +6877,9 @@
 "toiMinutes": 46,
 "toiSeconds": 25
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Tristan Jarry": {
@@ -6950,40 +6984,6 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
-},
-"Zach Hyman": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 2,
-"powerplayPoints": 2,
-"shots": 20,
-"toiMinutes": 180,
-"toiSeconds": 56
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 9,
-"toiMinutes": 87,
-"toiSeconds": 3
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
 "pp": "PP1"
 }
 },
@@ -17549,7 +17549,7 @@
 "toiMinutes": 93,
 "toiSeconds": 22
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -17753,7 +17753,7 @@
 "toiMinutes": 98,
 "toiSeconds": 38
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -17787,7 +17787,7 @@
 "toiMinutes": 99,
 "toiSeconds": 29
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -17923,7 +17923,7 @@
 "toiMinutes": 82,
 "toiSeconds": 0
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "ld",
 "pp": null
