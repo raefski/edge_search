@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-27T15:00:15+00:00",
+"generated_at": "2026-10-27T15:29:32+00:00",
 "goalies": {
 "2026-10-27": {
 "ANA": {
@@ -24,7 +24,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": null
+"status": "Confirmed"
 },
 "DAL": {
 "goalie": "Jake Oettinger",
@@ -87,8 +87,8 @@
 "status": null
 },
 "WPG": {
-"goalie": "Stuart Skinner",
-"status": null
+"goalie": "Clay Stevenson",
+"status": "Likely"
 }
 },
 "2026-10-28": {
@@ -5717,7 +5717,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Dylan Hryckowian": {
@@ -5749,9 +5749,9 @@
 "toiMinutes": 56,
 "toiSeconds": 5
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Jake Oettinger": {
@@ -5821,7 +5821,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Jason Robertson": {
@@ -5921,9 +5921,9 @@
 "toiMinutes": 76,
 "toiSeconds": 22
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Kyle Capobianco": {
