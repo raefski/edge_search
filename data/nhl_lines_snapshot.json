@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-27T14:59:26+00:00",
+"generated_at": "2026-10-27T15:00:15+00:00",
 "goalies": {
 "2026-10-27": {
 "ANA": {
@@ -6400,7 +6400,7 @@
 "toiSeconds": 19
 },
 "line": "F1",
-"pk": "PK1",
+"pk": null,
 "pos": "c",
 "pp": "PP1"
 },
@@ -6536,7 +6536,7 @@
 "toiSeconds": 32
 },
 "line": "D3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -6638,7 +6638,7 @@
 "toiSeconds": 0
 },
 "line": "F3",
-"pk": null,
+"pk": "PK1",
 "pos": "rw",
 "pp": null
 },
@@ -6776,7 +6776,7 @@
 "toiSeconds": 22
 },
 "line": "D2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
 },
