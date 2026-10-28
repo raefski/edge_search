@@ -896,3 +896,32 @@ cycle is ~10 s, not ~5.5 min.
 
 **Automate:** after any change to the roles, run `nba_minutes_lab.py refit-gap` (it prints
 both states and the live replay) -- the stale cells went unnoticed for 8 cycles.
+
+## Cycle 15 -- the lab scored ~1,000 "phantoms" a season as actives; rank-gap refit on the clean protocol (2026-10-28) -- SHIPPED
+
+**Hole (critic):** production has dropped a NON-starter listed Out on the official report 60
+min before tip since cycle 7, but the lab's `run()` / `fit_gap()` still scored those rows as
+actives (NBA.com flags them active; 1,178 in 2024-25, 1,006 in 2025-26; 5 played). On the
+shipped model they were RMSE 21.7 / bias +19.8 with no five and 24.7% of 2025-26's no-five
+squared error (29.5% in 2024-25); their teammates ran -0.83. The rank-gap cells were fitted
+on that mix, which is why cycle 14's refit lost MAE.
+
+**Fix:** (1) protocol: `load_fresh()` marks them inactive (D["phantoms_out"]) -- the
+production rule. New baseline (shipped cells): 2025-26 confirmed 6.279 / 4.705, no five
+6.612 / 4.918. Every earlier "not shipped" verdict (cycles 9, 10, 12) was scored with phantoms
+in -- re-score before treating them as settled. (2) `refit-gap --write` on 2024-25.
+
+| RMSE / MAE | train 2024-25 | **test 2025-26** | 2026-27 (n 1,538) |
+|---|---|---|---|
+| confirmed | 6.056/4.516 -> 6.048/4.516 | **6.279/4.705 -> 6.273/4.703** | 6.446/4.946 -> 6.446/4.934 |
+| no five | 6.390/4.747 -> 6.333/4.670 | **6.612/4.918 -> 6.579/4.870** | 6.952/5.132 -> 6.972/5.122 |
+| live replay (role10 Out, cut 15) confirmed / no five | | 6.341 -> 6.336 / 6.644 -> 6.634 | |
+
+Promoted starters, no five: MAE 7.00 -> 6.86, bias -5.14 -> -4.92. 2026-27 no-five RMSE +0.020
+is not like-for-like (no report archive for 2026-27 yet: its phantoms are still in).
+Parity: shipped module reproduces the refit exactly (6.2733 / 6.5788).
+
+**Runner-ups:** (1) Questionable / Doubtful bench players who DO dress run high (2025-26 no
+five n 270, bias +10.0; confirmed +4.4) -- they're on a minutes cap; test a role multiplier
+by status. (2) "Available" (back from injury) run low (n 1,821, bias -0.56 / -0.82) -- the
+return ramp may cut too much for players cleared to play.

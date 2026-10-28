@@ -75,7 +75,7 @@ def _inputs_key(phantom: bool, report_skip: bool) -> str:
     from edge import nba_injury_report as IR
     from edge import nba_lineups as NL
     h = hashlib.sha1(f"{phantom}|{report_skip}".encode())
-    for f in (Path(__file__), Path(NM.__file__), Path(NM.__file__).with_name("nba_minutes_gap.py")):
+    for f in (Path(__file__), Path(NM.__file__)):   # not nba_minutes_gap.py: D does not read it
         h.update(f.read_bytes())
     for d in (GT, NL.CACHE, IR.CACHE):
         for f in sorted(d.glob("*")) if d.exists() else []:
@@ -275,7 +275,20 @@ def load_fresh(verbose: bool = True, phantom: bool = False, report_skip: bool = 
         for s in EVAL:
             gs = [g for g in games if g["season"] == s]
             print(f"  {s}: {len(gs):,} team-games, {sum(len(g['idx']) for g in gs):,} player rows", file=sys.stderr)
-    return {"rows": rows, "games": games, "M": M, "S": S, "CUR": CUR, "SAME": SAME}
+    D = {"rows": rows, "games": games, "M": M, "S": S, "CUR": CUR, "SAME": SAME, "phantoms_out": 0}
+    if report_skip and not phantom:
+        # Critique cycle 15 (2026-10-28): the production rule since cycle 7 -- a NON-starter
+        # listed Out on the official report 60 min before tip is not on the board -- applied
+        # to TONIGHT's rows too, not only to histories. NBA.com flags ~1,000 of them a season
+        # active (1,178 in 2024-25, 1,006 in 2025-26; 5 played): scored as actives they were
+        # 25-30% of the no-five squared error, and the rank-gap cells were fitted on them.
+        st = report_status(D)
+        for i, s_ in st.items():
+            r = rows[i]
+            if s_ == "Out" and not r["inactive"] and not r["starter"]:
+                r["inactive"] = True
+                D["phantoms_out"] += 1
+    return D
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -1519,8 +1532,8 @@ def main() -> int:
                   f"{live_replay(D, D, F, '2025-26', 'role10', 15, mode=m)['rmse']:.3f} "
                   f"refit {live_replay(D, D, P, '2025-26', 'role10', 15, mode=m)['rmse']:.3f}")
         if a.write:
-            write_gap_module(D, P["gap_coef"], P, cycle=14, cmd="refit-gap",
-                             extra="all shipped roles through cycle 13 (refit, no new term)")
+            write_gap_module(D, P["gap_coef"], P, cycle=15, cmd="refit-gap",
+                             extra="all shipped roles through cycle 13; tonight's official-report phantoms inactive (cycle 15)")
         return 0
     if a.cmd == "cycle4":
         # the Expected five: blend w x project(Expected five) + (1 - w) x project(no five).
