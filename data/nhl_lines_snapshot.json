@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-28T17:29:27+00:00",
+"generated_at": "2026-10-28T17:59:36+00:00",
 "goalies": {
 "2026-10-28": {
 "CGY": {
@@ -3761,7 +3761,7 @@
 "toiMinutes": 92,
 "toiSeconds": 0
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -4135,7 +4135,7 @@
 "toiMinutes": 78,
 "toiSeconds": 47
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -4203,7 +4203,7 @@
 "toiMinutes": 99,
 "toiSeconds": 27
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -4237,7 +4237,7 @@
 "toiMinutes": 85,
 "toiSeconds": 42
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -9109,7 +9109,7 @@
 "toiMinutes": 80,
 "toiSeconds": 42
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -9281,7 +9281,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Jacob Fowler": {
@@ -9523,7 +9523,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Lane Hutson": {
@@ -9657,7 +9657,7 @@
 "toiMinutes": 67,
 "toiSeconds": 28
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -15453,9 +15453,9 @@
 "toiMinutes": 78,
 "toiSeconds": 42
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Dalibor Dvorsky": {
@@ -15521,7 +15521,7 @@
 "toiMinutes": 91,
 "toiSeconds": 7
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -15555,7 +15555,7 @@
 "toiMinutes": 80,
 "toiSeconds": 47
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP1"
@@ -15797,9 +15797,9 @@
 "toiMinutes": 92,
 "toiSeconds": 45
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Philip Broberg": {
@@ -15977,7 +15977,7 @@
 "pp": "PP2"
 },
 "Brandon Hagel": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 6,
@@ -16109,7 +16109,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Dennis Hildeby": {
@@ -16148,6 +16148,40 @@
 "pos": "g",
 "pp": null
 },
+"Dominic James": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 14,
+"toiMinutes": 123,
+"toiSeconds": 10
+},
+"last5": {
+"assists": 2,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 9,
+"toiMinutes": 65,
+"toiSeconds": 28
+},
+"line": "F3",
+"pk": "PK2",
+"pos": "c",
+"pp": null
+},
 "Emil Lilleberg": {
 "gtd": false,
 "injury": null,
@@ -16178,7 +16212,7 @@
 "toiSeconds": 15
 },
 "line": "D3",
-"pk": "PK2",
+"pk": null,
 "pos": "rd",
 "pp": null
 },
@@ -16383,7 +16417,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "John Carlson": {
@@ -16522,72 +16556,38 @@
 "pos": "ld",
 "pp": null
 },
-"Scott Sabourin": {
-"gtd": false,
+"Victor Hedman": {
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
-"blocks": 3,
+"blocks": 13,
 "gamesPlayed": 10,
-"goals": 0,
-"points": 2,
+"goals": 2,
+"points": 4,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 87,
-"toiSeconds": 43
+"shots": 13,
+"toiMinutes": 135,
+"toiSeconds": 51
 },
 "last5": {
 "assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 43,
-"toiSeconds": 29
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
-"pp": null
-},
-"Zemgus Girgensons": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 14,
-"toiMinutes": 141,
-"toiSeconds": 26
-},
-"last5": {
-"assists": 0,
 "blocks": 4,
 "gamesPlayed": 5,
-"goals": 0,
-"points": 0,
+"goals": 2,
+"points": 3,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 67,
-"toiSeconds": 54
+"shots": 9,
+"toiMinutes": 65,
+"toiSeconds": 53
 },
-"line": "F3",
+"line": "D4",
 "pk": "PK2",
-"pos": "c",
+"pos": "ld",
 "pp": null
 }
 },
