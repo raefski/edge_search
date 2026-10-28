@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-28T16:59:24+00:00",
+"generated_at": "2026-10-28T17:29:27+00:00",
 "goalies": {
 "2026-10-28": {
 "CGY": {
@@ -8,7 +8,7 @@
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
-"status": "Likely"
+"status": "Confirmed"
 },
 "EDM": {
 "goalie": "Tristan Jarry",
@@ -24,7 +24,7 @@
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
-"status": null
+"status": "Likely"
 },
 "TOR": {
 "goalie": "Anthony Stolarz",
@@ -5443,7 +5443,7 @@
 "pp": "PP1"
 },
 "Nicolas Roy": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
