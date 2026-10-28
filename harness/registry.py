@@ -174,7 +174,7 @@ RULES: list[tuple[str, str]] = [
     (r"(overlay|agent|blocked|live|alert|monitor|watchlist|scan)", "monitor"),
     (r"(lab|idea|discovery|endorsement|scout|correlation|pilot|rounds|season_sim|"
      r"situational|threes|variance|sigma|td_|skill|nfl_matchup|dupe|slate_size|stack_shape|"
-     r"^mans_)",
+     r"^mans_|^pickem_handicap|^pickem_sentiment|^public_bettors)",
      "research"),
 ]
 
