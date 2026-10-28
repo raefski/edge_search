@@ -462,3 +462,36 @@ this whole area at about -0.01 RMSE: confirmed lines are not where the skater er
 - DFO carries confirmation for goalies only, not for line combinations. Logging each
   team's update time would make "stale morning lines" measurable. The early-only and
   lock-only board rows (66 / 62) are never scored in the other state.
+
+## Cycle 7 (target: goalies -- DK points MAE + within-slate rank corr) -- nothing shipped
+
+Harness: `python3 scripts/nhl_skater_lab.py goalies --seeds 4` (new): starters in the box,
+same rebuilt slates and TRAIN/TEST split, vs a train-mean constant; rank corr within slate.
+
+| state | split | slates | goalie-games | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|---|---|---|
+| lock | train | 11 | 123 | 8.071 | 10.033 | +0.853 | +0.075 |
+| lock | test | 13 | 168 | 7.761 | 9.615 | +0.242 | -0.060 |
+| lock | constant 9.76, test | 13 | 168 | 7.679 | 9.544 | -0.397 | -- |
+| early | train | 11 | 116 | 8.242 | 10.232 | +1.162 | +0.021 |
+| early | test | 13 | 165 | 7.633 | 9.485 | +0.036 | -0.006 |
+| early | constant 9.39, test | 13 | 165 | 7.653 | 9.514 | -0.970 | -- |
+
+**Critic #7: no fixable hole at this n.** Each input predicts its component on both splits
+(goal edge vs win +0.32 train / +0.16 test; opp xG vs GA +0.26/+0.22; saves prop vs saves
++0.40/+0.30), but they cancel in DK points (saves prop vs goal edge -0.78): projection vs
+win +0.04; saves prop vs points +0.07 train / +0.24 test (sign unstable). Projection sd 1.1
+vs actual 9.8 caps the attainable rho at ~0.11; slate-averaged rho se ~0.08 with ~13
+starters a slate. Train least-squares refits (saves prop, projection, both): test MAE
+7.69-7.76, rho -0.05 to -0.09. Shipped minus train median, test MAE, slate bootstrap 90%:
+lock +0.092 [-0.04, +0.22], early +0.013 [-0.13, +0.16].
+
+Variant checked: shrink to train median, proj' = o + k(proj - mean), grid on train (lock
+o 10.2 k 0.8, early o 9.7 k 0.7): test MAE lock 7.761 -> 7.732, early 7.633 -> 7.657.
+A wash: NOT shipped. Lineups use the simulated distribution (win/shutout tail, calibrated
+per NHL_STATUS 6e), not the mean. Re-run at ~40 slates.
+
+Runner-ups: (1) opponent xG 3.16-3.20 vs actual GA 2.94-2.99 on both splits/states, ~0.7
+pts a goalie -- check whether empty-netters sit in the goalie's goals against (calibration,
+not ranking); (2) saves-prop bias +1.0 train / +0.07 test, too unstable to offset;
+(3) starters with no saves prop: 21 in test, rho +0.68, MAE 6.16 -- too few.

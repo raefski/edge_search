@@ -348,6 +348,45 @@ def report(names: list[str], states=("lock", "early"), prm: dict | None = None, 
     return "\n".join(out)
 
 
+def goalie_stats(x: pd.DataFrame, col: str = "proj") -> dict:
+    """Goalie DK points: error, and rank corr WITHIN each slate (slates with >= 2 starters)."""
+    e = x[col] - x.actual
+    rho = [spearman(g[col], g.actual) for _, g in x.groupby("date") if len(g) >= 2]
+    rho = [r for r in rho if r is not None]
+    return {"n": len(x), "slates": x.date.nunique(), "mae": e.abs().mean(),
+            "rmse": float(np.sqrt((e ** 2).mean())), "bias": e.mean(),
+            "rho": float(np.mean(rho)) if rho else float("nan"), "n_rho": len(rho)}
+
+
+def goalie_report(names: list[str], states=("lock", "early"), seeds: int = 1) -> str:
+    """Goalies (starters only), held out. Constant = the TRAIN mean DK points (the bar
+    a projection must beat). Rank corr is within slate, averaged over slates."""
+    box = box_by_date()
+    out = ["# NHL goalies: DK points vs pre-lock projection, held out\n",
+           f"TRAIN nights < {TEST_FROM} <= TEST. Starters in the box score only. Seeds: {seeds}.\n"]
+    for state in states:
+        slates = load(state)
+        if not slates:
+            out.append(f"_{state}: no cache -- run `cache`_\n")
+            continue
+        out += [f"### {state}\n", "| variant | split | slates | goalie-games | MAE | RMSE | bias | rank corr (slates) |",
+                "|---|---|---|---|---|---|---|---|"]
+        goalies = {}
+        for n in names:
+            goalies[n] = grade(project(slates, n, None, seeds=seeds), box)[1]["goalies"]
+            for sp, y in split(goalies[n]).items():
+                m = goalie_stats(y)
+                out.append(f"| {n} | {sp} | {m['slates']} | {m['n']} | {m['mae']:.3f} | {m['rmse']:.3f} | "
+                           f"{m['bias']:+.3f} | {m['rho']:+.3f} ({m['n_rho']}) |")
+        const = split(goalies[names[0]])["train"].actual.mean()
+        t = split(goalies[names[0]])["test"]
+        out.append(f"| constant (train mean {const:.2f}) | test | {t.date.nunique()} | {len(t)} | "
+                   f"{(const - t.actual).abs().mean():.3f} | {np.sqrt(((const - t.actual) ** 2).mean()):.3f} | "
+                   f"{const - t.actual.mean():+.3f} | -- |")
+        out.append("")
+    return "\n".join(out)
+
+
 def parity(state: str = "lock") -> str:
     """The lab's re-simulated shipped projection vs the board build_board produced
     (same seed, same pool order): any difference means the lab is not the model."""
@@ -367,6 +406,10 @@ def main() -> int:
     r.add_argument("--state", choices=list(STATES))
     r.add_argument("--seeds", type=int, default=1, help="average seeds 0..n-1 (decisions: 4)")
     r.add_argument("--lab", help="another cache directory (e.g. a copy taken before a ship)")
+    g = sub.add_parser("goalies", help="starting goalies' DK points vs projection (held out)")
+    g.add_argument("--variant", action="append", default=[])
+    g.add_argument("--state", choices=list(STATES))
+    g.add_argument("--seeds", type=int, default=1, help="average seeds 0..n-1 (decisions: 4)")
     sub.add_parser("parity")
     a = ap.parse_args()
     if a.cmd == "cache":
@@ -378,6 +421,9 @@ def main() -> int:
             global LAB
             LAB = Path(a.lab)
         print(report(names, (a.state,) if a.state else ("lock", "early"), seeds=a.seeds))
+    elif a.cmd == "goalies":
+        names = ["shipped"] + [v for v in a.variant if v != "shipped"]
+        print(goalie_report(names, (a.state,) if a.state else ("lock", "early"), seeds=a.seeds))
     else:
         print(parity("lock"))
         print(parity("early"))
