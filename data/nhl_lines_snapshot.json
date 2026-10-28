@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-27T23:59:37+00:00",
+"generated_at": "2026-10-28T00:29:19+00:00",
 "goalies": {
 "2026-10-27": {
 "ANA": {
@@ -17343,7 +17343,7 @@
 "toiMinutes": 76,
 "toiSeconds": 22
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -17416,37 +17416,11 @@
 "pos": "lw",
 "pp": null
 },
-"Carter Hart": {
-"gtd": true,
+"Cameron Whitehead": {
+"gtd": false,
 "injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 27,
-"goalieGoalsAgainstAvg": "2.69",
-"goalieLosses": 4,
-"goalieMinutes": 601,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.889",
-"goalieSaves": 216,
-"goalieSeconds": 36,
-"goalieShotsAgainst": 243,
-"goalieShutouts": 0,
-"goalieWins": 5
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 14,
-"goalieGoalsAgainstAvg": "2.78",
-"goalieLosses": 2,
-"goalieMinutes": 301,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.888",
-"goalieSaves": 111,
-"goalieSeconds": 15,
-"goalieShotsAgainst": 125,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
+"last10": {},
+"last5": {},
 "line": "G2",
 "pk": null,
 "pos": "g",
@@ -17554,40 +17528,6 @@
 "pos": "ld",
 "pp": null
 },
-"Jonas Rondbjerg": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 14,
-"toiMinutes": 127,
-"toiSeconds": 24
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 63,
-"toiSeconds": 6
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Marc Gatcomb": {
 "gtd": false,
 "injury": null,
@@ -17619,7 +17559,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Mark Stone": {
@@ -17756,6 +17696,40 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
+"pp": null
+},
+"Raphael Lavoie": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 0,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 108,
+"toiSeconds": 26
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 58,
+"toiSeconds": 12
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Rasmus Andersson": {
