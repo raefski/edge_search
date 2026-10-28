@@ -411,3 +411,54 @@ resolution (±0.02), and I say so.
   drift term is worth about 0.01 pts².
 - **Test bias for PP1 (+0.50) and $3.5-6.5k (+0.5-0.6):** worth 0.07 pts² or less
   (cycle 3).
+
+## Cycle 6 (target: confirmed lines + PP units, late scratches/promotions) -- nothing shipped
+
+Run 2026-10-27. Lab re-cached through 10/27 and 2026-27 box scores fetched through
+10/26, so TEST is now 13 nights (10/13-10/26). Metric: skater DK points vs the pre-lock
+mean, both states. The targeted slices are skaters whose line or PP unit changed,
+teammates of late scratches, and promotions.
+
+**Baseline** (shipped, 4 seeds):
+
+| state | split | nights | skater-games | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|---|---|---|
+| lock | train | 11 | 2,196 | 4.568 | 6.076 | +0.172 | +0.367 |
+| lock | test | 13 | 2,962 | 4.478 | 5.970 | +0.173 | +0.404 |
+| early | train | 11 | 2,176 | 4.577 | 6.094 | +0.158 | +0.371 |
+| early | test | 13 | 2,923 | 4.490 | 5.995 | +0.164 | +0.397 |
+
+Scratched board skaters, not graded: 82 at lock, 133 early. PP1 test bias at lock is +0.38.
+
+**The critic's finding.** Tonight's DailyFaceoff line and PP unit reach the simulation
+only through `LINE_AFFINITY` / `PP_AFFINITY` in `_assist_matrix`, which is renormalised
+to each skater's targets. So a slot change before lock barely moves the means: early to
+lock moves them by -0.09 to +0.09 pts. The data shows:
+
+- **Teammates of late scratches** are not under-projected (bias +0.14 to +0.42 with 0-2
+  scratches on the team, no trend that could be fitted).
+- **Line promotions between early and lock** are under-projected: -3.2 on train (n=23)
+  and -1.4 on test (n=36). Not enough data, and demotions flip sign between the halves.
+- **Skaters dropped a PP unit since their last board** run hot: actual/projected was
+  0.945 on train (n=40) and 0.775 on test (n=120). The no-prop PP2->none subset fits the
+  wrong sign on train (1.10), and fitting it makes test worse (5.970 -> 5.975).
+- **Line x PP x props multipliers fitted on train** overfit: lock test RMSE 6.045
+  unshrunk, 5.973 with shrinkage.
+
+**Variant tried: `pp_demote`.** It multiplies goals, assists and shots by 0.945 (fitted
+on train lock as sum(actual)/sum(proj), n=40) and was applied post hoc without
+re-simulating. Lock test RMSE went 5.9699 -> 5.9669 and early 5.9945 -> 5.9918, better
+on 9 of 12 nights. Train was flat.
+
+**Decision: NOT shipped.** The gain is a seventh of the 13-night resolution (about ±0.02).
+The fit rests on 40 games and a subset flips sign. Even a fit on the test nights caps
+this whole area at about -0.01 RMSE: confirmed lines are not where the skater error is.
+
+**Runner-ups:**
+- Recheck `pp_demote` at about 40 nights. A parameter-free form subtracts DFO
+  `last10.powerplayPoints / gamesPlayed` when tonight's `pp` is None.
+- Book props on promoted skaters (6i: -1.66, books over-price promotions) against
+  early->lock promotions here (-1.4 under). Retest the two together.
+- DFO carries confirmation for goalies only, not for line combinations. Logging each
+  team's update time would make "stale morning lines" measurable. The early-only and
+  lock-only board rows (66 / 62) are never scored in the other state.
