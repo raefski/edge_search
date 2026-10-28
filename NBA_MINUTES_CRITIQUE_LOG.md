@@ -1033,3 +1033,20 @@ boards.
 2. **April:** RMSE ~7 against ~6.2 the rest of the season. An April dummy adds
    nothing after recency; a tank/clinch flag is untested.
 3. **30+ minute projections drifted high in 2025-26** (+0.39): watch it in 2026-27.
+
+**Cycle 18 follow-up: trades and season boundaries (Adam, 2026-10-28)**
+- **Season boundaries already hold.** The last-3 window is keyed on the NBA season,
+  not the calendar year: the lab uses `season`, production `cur_n`. October games
+  never reach back to the previous spring.
+- **Trades.** Restricting the last 3 to games with his current team changes 272–290
+  rows a season (the first games after a trade). Results, RMSE/MAE, any team → same
+  team only:
+
+  | | 2024-25 (train) | 2025-26 (held out) |
+  |---|---|---|
+  | confirmed | 6.0091/4.4942 → 6.0091/4.4936 | 6.2142/4.6673 → 6.2145/4.6666 |
+  | no five | 6.3339/4.6863 → 6.3331/4.6856 | 6.5599/4.8916 → 6.5593/4.8911 |
+
+  Not shipped: held-out confirmed RMSE is 0.0003 worse, and every move is at
+  resolution. A traded player's new role is handled by the existing new-team
+  handling (`nba_minutes.py`, "new team, first 5 games").
