@@ -385,3 +385,18 @@ def test_a_cheap_announced_starter_draws_more_ownership_than_the_same_player_on_
     T.add_ownership(pool)
     bench = next(p for p in pool if p["salary"] == 4900 and not p.get("starter"))
     assert pool[10]["own"] > bench["own"]
+
+
+def test_a_starter_listed_twice_once_on_the_roster_keeps_his_starting_row():
+    # 2026-10-27 DET ~1 h before tip: starter row then roster row (no position)
+    from edge import nba_lineups
+    row = {"personId": 1, "playerName": "Paul Reed", "rosterStatus": "Active"}
+    raw = {"games": [{"gameId": "g", "homeTeam": {"teamAbbreviation": "DET", "players": [
+        {**row, "position": "C", "lineupStatus": "Expected"},
+        {**row, "position": "", "lineupStatus": "Confirmed"},
+        {"personId": 2, "playerName": "Jalen Duren", "position": "", "rosterStatus": "Inactive"}]},
+        "awayTeam": {"teamAbbreviation": "NYK", "players": []}}]}
+    ps = nba_lineups.parse(raw)[0]["players"]
+    assert len(ps) == 2
+    reed = ps[0]
+    assert reed["starter"] and reed["position"] == "C" and not reed["confirmed"]

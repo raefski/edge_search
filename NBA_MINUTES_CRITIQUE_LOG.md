@@ -842,3 +842,32 @@ Expected five, beat reports). The data branch's `data/nba_lineups_snapshot.json`
 history IS a pre-lock log of Expected fives since the 2026-27 opener -- the next harness
 should replay it (as nba_ownership_lab.py does). Runner-up: starters overall -1.95 in
 inactives; recheck on pre-five slices.
+
+## Cycle 13 (target: the Expected five, replayed) -- a parse bug wiped posted fives (2026-10-28) -- SHIPPED (bug fix); EXPECTED_W unchanged
+
+New harness `scripts/nba_expected_five_lab.py`: replays every commit of
+`data/nba_lineups_snapshot.json` on the data branch (the five as it stood at any moment)
+against the day's final file, by hours before tip. Regular season 10/20-10/27, train
+before 10/25 (72 team-games) / test (64):
+
+| hours before tip | five exactly right train / test | wrong starters per 5, train / test |
+|---|---|---|
+| 6h+ | 78% / 89% | 5.3% / 2.8% |
+| 3-6h | 76% / 81% | 5.2% / 4.4% |
+| 1.5-3h | 73% / 82% | 5.9% / 4.1% |
+| 45-90m | 81% / 82% | 4.0% / 4.0% |
+| <45m | 99% / 100% (confirmed) | 0.3% / 0.0% |
+
+A five misses a starter on ~11-24% of team-games at any lead -- inside the 10-30% range
+EXPECTED_W = 0.70 was chosen over by minimax regret (cycle 4): **no change**. Early
+listings are as good as late ones (Paul Reed was Expected 14.0 h before tip on 10/27; Ajay
+Mitchell was not listed until confirmed 0.5 h before, 10/26).
+
+**Bug found:** ~1 h before tip NBA.com adds the active roster and each starter appears
+TWICE (starter row with position; roster row without). `nba_lineups.parse` kept both and
+`tonight_status` kept the LAST, so the five vanished in the final hour: **39 of 154
+team-boards (25%) on logged builds since 10/20 had a posted five but projected as if none**
+(10/27 Main: DET, NYK, SAS, SAC). Fixed: one row per player, the starter row wins, inactive
+if either says so. Day files used by the backtests have no duplicates (0 of 497), so no
+held-out number moves. Replay of the 10/27 Main board (7:07 PM snapshot): Paul Reed 20.6 ->
+24.7 min, 24.5 -> 31.6 pts, own 13 -> 75% (field 60-83%, actual 43.2).

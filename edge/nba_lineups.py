@@ -79,15 +79,33 @@ def parse(raw: dict) -> list[dict]:
         players = []
         for side in ("homeTeam", "awayTeam"):
             t = g.get(side) or {}
+            # ~1 h before tip NBA.com adds the active roster and each starter is then
+            # listed TWICE: his starter row (position, Expected/Confirmed) and a roster
+            # row (no position, lineupStatus "Confirmed" = on the roster, not the five).
+            # Keeping the last row wiped the five: 2026-10-27 DET and NYK went
+            # "no five" from 7:04 PM, the 7:16 Main build projected Paul Reed (Expected
+            # starter for 14 h, 43.2 pts, 60-83% owned) as a 20.6-min backup. One row
+            # per player: the starter row wins, inactive if either row says so.
+            seen: dict = {}
             for p in t.get("players") or []:
-                players.append({
+                pid = p.get("personId")
+                if pid in seen:
+                    prev = seen[pid]
+                    if p.get("rosterStatus") == "Inactive":
+                        prev["inactive"] = True
+                    if p.get("position") and not prev["starter"]:
+                        prev.update(starter=True, position=p["position"],
+                                    confirmed=p.get("lineupStatus") == "Confirmed", at=p.get("timestamp"))
+                    continue
+                seen[pid] = {
                     "id": p.get("personId"), "name": p.get("playerName"),
                     "team": t.get("teamAbbreviation"),
                     "starter": bool(p.get("position")), "position": p.get("position") or "",
                     "confirmed": p.get("lineupStatus") == "Confirmed",
                     "inactive": p.get("rosterStatus") == "Inactive",
                     "at": p.get("timestamp"),
-                })
+                }
+                players.append(seen[pid])
         out.append({"game_id": g.get("gameId"), "status": g.get("gameStatusText"),
                     "home": (g.get("homeTeam") or {}).get("teamAbbreviation"),
                     "away": (g.get("awayTeam") or {}).get("teamAbbreviation"),
