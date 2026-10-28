@@ -51,11 +51,11 @@ h1 {font-size: 1.55rem !important; margin-bottom: .1rem;}
 .lu-wrap {overflow-x:auto;}
 table.lu {width:100%; border-collapse:collapse; font-size:14px;}
 table.lu th {text-align:left; color:#7f8a9c; font-weight:600; font-size:11px;
-             text-transform:uppercase; padding:2px 6px;
+             text-transform:uppercase; padding:2px 4px;
              border-bottom:1px solid rgba(255,255,255,.16);}
-table.lu td {padding:5px 6px; border-bottom:1px solid rgba(255,255,255,.07);}
-table.lu td.pos {color:#3fb079; font-weight:700; width:44px;}
-table.lu td.nm {white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:128px;}
+table.lu td {padding:5px 4px; border-bottom:1px solid rgba(255,255,255,.07);}
+table.lu td.pos {color:#3fb079; font-weight:700; width:30px;}
+table.lu td.nm {white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:104px;}
 table.lu td.nm small {display:block; color:#7f8a9c; font-size:11px; font-weight:400;}
 table.lu td.num {text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
 table.lu tr.promo td {background:rgba(31,122,77,.28);}
@@ -239,13 +239,19 @@ def _row(slot, p, cls="") -> str:
     return (f"<tr class='{cls}'><td class='pos'>{slot}</td>{_who(p)}"
             f"<td class='num'>{_k(p['salary'])}</td>"
             f"<td class='num'>{p.get('minutes', 0):.0f}</td><td class='num'>{p['proj']:.1f}</td>"
+            f"<td class='num'>{_val(p)}</td>"
             f"<td class='num'>{p.get('own', 0):.0f}%</td></tr>")
+
+
+def _val(p) -> str:
+    """Value: projected DK points per $1,000 of salary (Adam, 10/28)."""
+    return f"{p['proj'] * 1000 / p['salary']:.1f}" if p.get("salary") else "-"
 
 
 # Per-player floor and ceiling pushed Own off a 390px screen; the lineup's floor and
 # ceiling are in the line above the table.
 HEAD = ("<div class='lu-wrap'><table class='lu'><tr><th>Pos</th><th>Player</th>"
-        "<th>$</th><th>Min</th><th>Pts</th><th>Own</th></tr>")
+        "<th>$</th><th>Min</th><th>Pts</th><th>Val</th><th>Own</th></tr>")
 
 
 def render(result, mode: str) -> None:
