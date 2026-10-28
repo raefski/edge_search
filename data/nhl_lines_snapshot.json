@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-28T12:59:15+00:00",
+"generated_at": "2026-10-28T14:29:32+00:00",
 "goalies": {
 "2026-10-28": {
 "CGY": {
@@ -69,7 +69,7 @@
 "status": null
 },
 "LAK": {
-"goalie": "Anton Forsberg",
+"goalie": "Darcy Kuemper",
 "status": null
 },
 "MIN": {
@@ -2492,7 +2492,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "K'Andre Miller": {
 "gtd": false,
@@ -2526,7 +2526,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Logan Stankoven": {
 "gtd": false,
@@ -3079,7 +3079,7 @@
 "pp": "PP1"
 },
 "Dante Fabbro": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -3144,7 +3144,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Dmitri Voronkov": {
 "gtd": false,
@@ -3554,7 +3554,7 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP1"
+"pp": "PP2"
 }
 },
 "CGY": {
@@ -7774,7 +7774,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Anton Forsberg": {
 "gtd": false,
@@ -7807,7 +7807,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7844,7 +7844,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Brandt Clarke": {
 "gtd": false,
@@ -7979,7 +7979,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12542,7 +12542,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Christian Dvorak": {
 "gtd": false,
@@ -12745,7 +12745,7 @@
 "toiMinutes": 120,
 "toiSeconds": 10
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP1"
@@ -12883,7 +12883,7 @@
 "toiMinutes": 95,
 "toiSeconds": 58
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -12985,7 +12985,7 @@
 "toiMinutes": 97,
 "toiSeconds": 33
 },
-"line": "D1",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -13090,7 +13090,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Trevor Zegras": {
 "gtd": false,
