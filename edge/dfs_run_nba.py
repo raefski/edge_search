@@ -437,7 +437,7 @@ def late_swap(pool: list, sim, entered: list[str], priced: dict, mode: str = "gp
 
 
 PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp", "dk_pos", "salary", "minutes", "proj",
-                 "sd", "floor", "ceil", "own", "promoted", "lineup", "imputed", "source")
+                 "sd", "floor", "ceil", "own", "promoted", "lineup", "imputed", "source", "starter", "recent")
 
 
 def optimal_columns(pool: list, sim, nights: int | None = None) -> dict:
@@ -467,7 +467,10 @@ def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> di
              "proj": p["proj"], "sd": p.get("sd"), "floor": p.get("floor"), "ceil": p.get("ceil"),
              "own": p.get("own", ""), "promoted": int(bool(p.get("promoted"))),
              "lineup": p.get("lineup", ""), "imputed": "|".join(p.get("imputed", [])),
-             "source": "live"} for p in pool]
+             "source": "live",
+             # ownership inputs (SLATE_OWN, CHEAP_STARTER) so the lab replays them
+             "starter": int(bool(p.get("starter"))),
+             "recent": "" if p.get("recent") is None else round(p["recent"], 2)} for p in pool]
     lineups = [{"mode": mode, "slot": slot, "player": p["name"], "team": p["team"],
                 "salary": p["salary"], "proj": p["proj"], "own": p.get("own")}
                for mode, res in (("cash", cash), ("gpp", gpp))

@@ -373,3 +373,15 @@ def test_slate_ownership_sums_to_eight_slots_and_cheap_recent_value_draws_more()
     T.add_ownership(pool)
     assert abs(sum(p["own"] for p in pool) - 800) < 1
     assert pool[30]["own"] > pool[29]["own"] and pool[30]["own"] > pool[31]["own"]
+
+
+def test_a_cheap_announced_starter_draws_more_ownership_than_the_same_player_on_the_bench():
+    from edge import dfs_nba_theory as T
+    pool = [{"name": f"p{i}", "pos": "SF", "proj": 22.0, "salary": 4000 + 100 * i, "recent": 22.0}
+            for i in range(60)]
+    pool[10]["starter"] = pool[11]["starter"] = True
+    pool[11]["salary"] = pool[10]["salary"] = 4900
+    pool[11]["salary"] = 9000          # an expensive starter gets no bonus
+    T.add_ownership(pool)
+    bench = next(p for p in pool if p["salary"] == 4900 and not p.get("starter"))
+    assert pool[10]["own"] > bench["own"]

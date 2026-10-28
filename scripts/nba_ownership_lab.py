@@ -72,6 +72,29 @@ def _recent(name: str, date: str) -> float | None:
     return T.recent_dk([(1, 0, x[1]) for x in g], cur_n)
 
 
+def _prelock_starters(date: str, at: str) -> set | None:
+    """(norm name, team) NBA.com listed as starting in the newest
+    data/nba_lineups_snapshot.json committed to the `data` branch at or before
+    the board's logged_at, for that date -- what build_board read (`starter`).
+    None when no snapshot of that date existed yet (the term is then 0)."""
+    import subprocess
+    from datetime import datetime
+    from edge import nba_lineups
+    git = ["git", "-C", str(ROOT)]
+    log = subprocess.run(git + ["log", "--format=%H %cI", "origin/data", "--",
+                                "data/nba_lineups_snapshot.json"], capture_output=True, text=True).stdout
+    cut = datetime.fromisoformat(at)
+    for line in log.splitlines():                  # newest first
+        h, t = line.split()
+        if datetime.fromisoformat(t) > cut:
+            continue
+        body = json.loads(subprocess.run(git + ["show", f"{h}:data/nba_lineups_snapshot.json"],
+                                         capture_output=True, text=True).stdout or "{}")
+        if body.get("date", "").replace("-", "") == date.replace("-", ""):
+            return {(norm(p["name"]), p["team"]) for g in nba_lineups.parse(body) for p in g["players"] if p["starter"]}
+    return None
+
+
 def slates(conn) -> list[dict]:
     """[{date, gid, pool, field}] for every NBA GPP draft group with a logged board."""
     out = []
@@ -94,8 +117,10 @@ def slates(conn) -> list[dict]:
                          "minutes": float(x.get("minutes") or 0), "promoted": x.get("promoted") == "1",
                          "lineup": x.get("lineup", "")})
         starters = _starters(date)
+        pre = _prelock_starters(date, last) or set()
         for p in pool:
-            p["starter"] = (norm(p["name"]), p["team"]) in starters
+            p["starter_final"] = (norm(p["name"]), p["team"]) in starters   # slicing only
+            p["starter"] = (norm(p["name"]), p["team"]) in pre               # model input, pre-lock
             p["recent"] = _recent(p["name"], date)
         field = defaultdict(list)
         ids = [int(c) for c in cids.split(",")]
@@ -122,7 +147,7 @@ def score(sl, own_fn=None) -> list[dict]:
         (own_fn or T.add_ownership)(pool)
         for p in pool:
             rows.append({"slate": (s["date"], s["gid"]), "own": p["own"], "field": s["field"].get(norm(p["name"]), 0.0),
-                         "salary": p["salary"], "starter": p["starter"], "promoted": p["promoted"],
+                         "salary": p["salary"], "starter": p["starter_final"], "promoted": p["promoted"],
                          "proj": p["proj"], "name": p["name"], "logged": p["own_logged"]})
     return rows
 

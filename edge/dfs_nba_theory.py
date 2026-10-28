@@ -199,6 +199,14 @@ BUZZ_BETA = 0.2
 #: 4.950 -> ~3.96, better on 5/5 slates. Per-position buckets trapped
 #: multi-eligible cheap players. Thin: 9 slates -- refit weekly.
 SLATE_OWN = (3.77, 1.42, 0.58, 0.19, 1.65)
+#: Cheap STARTER bonus (ownership critique cycle 2, 2026-10-28): + G when NBA.com
+#: lists him starting before lock and his salary <= $6,000 -- the field drafts the
+#: "starting" label on cheap players far past what minutes and value imply. Fitted on
+#: the same 4 train slates with SLATE_OWN fixed (grid 0.3: 3.135, 0.5: 3.129, 0.7:
+#: 3.158). Held out 5 slates: MAE 3.962 -> see NBA_OWNERSHIP_CRITIQUE_LOG.md. A
+#: teammate-Out / minutes-gain term was tried and did not help (the field FADES our
+#: minutes-boosted bench players).
+CHEAP_STARTER = (0.48, 6000)
 
 
 def recent_dk(history, cur_n, n_pre: int = 0) -> float | None:
@@ -255,7 +263,8 @@ def _slate_ownership(pool: list, k: tuple) -> list:
     has_buzz = any(p.get("buzz") is not None for p in pool)
     zb = _z([math.log1p(float(p.get("buzz") or 0.0)) for p in pool]) if has_buzz else [0.0] * len(pool)
     w = [math.exp(a * math.log(x / vmax) + b * math.log(max(float(p.get("salary") or 5000), 1) / 5000.0)
-                  + (c if p.get("promoted") else 0.0) + d * z + e * math.log(r / vmax))
+                  + (c if p.get("promoted") else 0.0) + d * z + e * math.log(r / vmax)
+                  + (CHEAP_STARTER[0] if p.get("starter") and float(p.get("salary") or 0) <= CHEAP_STARTER[1] else 0.0))
          for p, x, r, z in zip(pool, v, rv, zb)]
     for p, own in zip(pool, _normalise(w, 800.0, MAX_OWN)):
         p["own"] = round(own, 1)

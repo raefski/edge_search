@@ -145,7 +145,8 @@ pick / since_return (republish it with the code). Not fixed: 2026-27 opening-wee
   over the slate (not per position) on our value, salary, promoted, buzz AND each player's RECENT DK points
   per $1K (`dfs_nba_theory.SLATE_OWN`, `recent_dk`). Live replay harness `scripts/nba_ownership_lab.py`:
   held out 10/25-10/27 (5 slates / 10 GPPs) MAE 4.95 -> 3.96, better 5/5 slates; cheap chalk still
-  -19 pts low (news-driven role chalk: Reed, Ajay). The paragraph below is the 2025-26 history.
+  -19 pts low. Cycle 2 (same day): + cheap pre-lock STARTER bonus (`CHEAP_STARTER`): test MAE 3.96 -> 3.65,
+  cheap chalk -19 -> -14 (Reed, Ajay remain: the field knows the five before NBA.com posts it). The paragraph below is the 2025-26 history.
 - **Ownership (2025-26 history): the prior was tested against real fields on 2026-10-20 and stands.** `scripts/nba_ownership_fit.py`
   rebuilds each 2025-26 GPP night as it stood: DK salaries for the contest's own draft group, history before
   that date (`nba_history_publish.build(before=)`), and that day's NBA.com lineups (the day's final file, so
