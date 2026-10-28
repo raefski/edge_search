@@ -1050,3 +1050,39 @@ boards.
   Not shipped: held-out confirmed RMSE is 0.0003 worse, and every move is at
   resolution. A traded player's new role is handled by the existing new-team
   handling (`nba_minutes.py`, "new team, first 5 games").
+
+## Cycle 19 (2026-10-28, target: DK points when a star sits) — NOT SHIPPED
+
+**Question (Adam).** When a superstar is a fresh scratch (Dončić, Wembanyama), the
+minutes model re-shares his minutes at the teammates' own DK points per minute. Is
+part of his excess production (his rate over theirs) made up on top of that?
+
+**Test.** `scripts/critic/nba_star_out.py`, one pooled parameter:
+- E = Σ over fresh outs (played the team's previous game) whose last-10 mean DK
+  points ≥ T of m_s × max(0, rate_s − tonight's team rate).
+- Bump: α × E × share of base points, given to all actives or to starters only.
+- α by least squares; T and the recipients chosen by MAE on 2024-25.
+- Test season 2025-26; dates are the bootstrap unit.
+
+**Results**
+- **Train (2024-25):** best fit T = 45 pts, starters only, α = +0.551. MAE
+  6.8530 → 6.8504; every T fits α at +0.42 to +0.65.
+- **Held out (2025-26), n 28,317 player-games / 155 dates:**
+
+  | | n | MAE before → after | bias before → after |
+  |---|---|---|---|
+  | all rows | 28,317 | 6.9605 → 6.9606 (CI −0.003…+0.003) | |
+  | star-out rows | 415 | 9.066 → 9.068 (CI ±0.21) | −0.86 → **+1.40** |
+
+**Verdict: the effect is real, but its size can't be pinned down yet. Not shipped.**
+- Starters are under-projected by 0.86 pts when a 45+ star sits.
+- 2025-26's own α is about +0.30 at every T, roughly half of the 2024-25 fit, so the
+  trained value overshoots (bias +1.40).
+- Only 415 star-out starter rows a season (about 80 team-games), and MAE doesn't
+  move.
+- Choosing a smaller α by looking at 2025-26 would be fitting on the test season.
+
+**Next.**
+- Refit pooled on 2024-25 + 2025-26 and judge on 2026-27 star-outs once about
+  30 team-games exist.
+- Use the on/off table's per-star shrinkage as a prior for α.
