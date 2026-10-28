@@ -536,3 +536,34 @@ mean +0.04) -- add both; refit the scale after; (2) the over-wide 5+ shot / 3+ b
 refit SHOT_K/BLOCK_K in the season lab (H1) rather than a scale; (3) report a
 "scratches = 0" RMSE beside the current one (82 at lock, 133 early are excluded).
 The $6.5k+ slice flips sign between splits (train -0.68, test +0.55): don't fit tiers.
+
+## Cycle 9: no-prop skaters' means spread too wide -- not shipped
+
+Baseline (4 seeds, cycle 8 shipped): lock test 13 nights / 2,962 MAE 4.445 RMSE 5.965 bias
++0.007 rho +0.404 (train 4.530 / 6.074); early test 2,923 MAE 4.456 RMSE 5.989 bias -0.002
+rho +0.397 (train 4.538 / 6.091).
+
+**Critic #9: no hole 13 nights resolve; the most consistent is spread.** Slope of actual
+on projection, no-prop skaters (57% of graded games, rates-only path): lock train 0.81
+(n 1,246) / test 0.71 (n 1,685), early 0.80 / 0.66. Prop skaters flip (1.18 / 0.95): don't
+fit. Fitting both groups: test RMSE 5.965 -> 5.972, better on 4/13 nights.
+
+**Variant** `noprop_shrink(k)`: no-prop means shrunk toward their slate x position (C/W/D)
+mean, mu + k(m - mu), k = train slope.
+
+| check | k (fit on) | RMSE | MAE | rho |
+|---|---|---|---|---|
+| lock test, 13 nights | 0.811 (train) | 5.9648 -> 5.9568 | 4.4452 -> 4.4493 | +0.404 -> +0.405 |
+| early test, 13 nights | 0.802 (train) | 5.9894 -> 5.9780 | 4.4560 -> 4.4584 | +0.397 -> +0.398 |
+| season lab H2, 86 dates / 24,515 (1 seed) | 0.870 (H1) | 6.1158 -> 6.1102 | 4.4745 -> 4.4987 | -- |
+
+Season-lab slopes 0.870 H1 / 0.907 H2: the over-spread is real but smaller than the 13
+nights say, and k drifts (0.81 train, 0.71 test, 0.87-0.91 season). Per-night squared error
+-0.20 (se 0.09) lock. **Not shipped:** RMSE improves everywhere, MAE worsens everywhere
+(+0.002-0.004 test, +0.024 season); the target does not improve on both, and k is unstable.
+Revisit with ~40 nights or with the mechanism (blend_season / small-sample rates
+under-regressed) fixed in the season lab rather than a post-hoc shrink.
+
+Runner-ups: prop skaters' slope flips (recheck ~40 nights); D2/D3/F4 slot biases swing by
+split (noise, as cycle 6); cycle 8's open items (shorthanded/shootout bonuses; a
+"scratches = 0" RMSE line).
