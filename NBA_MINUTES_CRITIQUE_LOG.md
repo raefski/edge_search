@@ -816,3 +816,29 @@ Scripts are in the session scratchpad (critic-nba-11, not kept).
   outcomes for GPP (top 5 −3 min / deep bench +3 min in 21+ point games), not the mean.
 
 **Revisit:** with logged 2026-27 spreads once they cover about 500 games.
+
+## Cycle 12 (target: promoted starters, no five posted) -- the slice is selection, not model (2026-10-28) -- NOT SHIPPED
+
+Baseline (`report`, inactives): promoted starter MAE 8.25 / bias -7.0 (2024-25), 7.93 / -6.6
+(2025-26), 9.41 / -8.4 (2026-27, n 55); overall RMSE 7.746 / 7.753 / 6.952. Confirmed: +0.3.
+
+**Critic:** the slice is chosen by the OUTCOME (he started, start rate < 0.5). A perfectly
+calibrated P(start) from pre-five information still shows -6.98 (2024-25) / -6.62 (2025-26)
+on it, vs shipped -6.80 / -6.30 on the same rows: the bias is the floor, not a hole. Sliced by
+what is known before the five the model is near unbiased (start rate < 0.5 and started last
+game: n 1,514, 49% start again, bias -0.75; P >= 0.5: n 909, bias -0.23). 60% of the slice did
+not start his last game (bias -7.76, mean P 0.18): surprise starts history can't see.
+A hard predicted five (top 5 by P, then confirmed mode): five right 88%, but 2025-26 RMSE
+7.753 -> 8.067, promoted MAE 7.93 -> 8.41.
+
+**Fix tried:** replacement memory (`mem` = share of earlier team games with the same regular
+starter out in which he started) into a calibrated P, pred += 0.309 (P - start rate)(ms - mb),
+zero-sum to 240; fitted on 2024-25. Held out 2025-26: RMSE 7.753 -> 7.748, MAE 5.530 -> 5.522,
+promoted MAE 7.93 -> 7.80; 2026-27 RMSE 6.952 -> 6.974 (worse). Below resolution (production
+weights the no-five state 0.3) -> **not shipped.**
+
+**What would move it:** news between the injury report and the posted five (NBA.com's
+Expected five, beat reports). The data branch's `data/nba_lineups_snapshot.json` commit
+history IS a pre-lock log of Expected fives since the 2026-27 opener -- the next harness
+should replay it (as nba_ownership_lab.py does). Runner-up: starters overall -1.95 in
+inactives; recheck on pre-five slices.
