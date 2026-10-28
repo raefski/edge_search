@@ -376,9 +376,10 @@ def _rank_gap(team: list, base: list, coef: dict) -> dict:
     G = NM.TEAM_MIN - sum(b for _, b in act)
     order = sorted(act, key=lambda x: -x[1])
     d, slope = {}, {}
+    u = {pl["id"]: pl.get("u", 0.0) for pl in team}
     for rk, (i, b) in enumerate(order):
-        a0, a1 = coef[(min(rk, GAP_RANKS), G > 0)]
-        d[i], slope[i] = a0 + a1 * G, max(a1, 1e-3)
+        a0, a1, *a2 = coef[(min(rk, GAP_RANKS), G > 0)]
+        d[i], slope[i] = a0 + a1 * G + (a2[0] * u[i] if a2 else 0.0), max(a1, 1e-3)
     role = dict(act)
     out = {i: role[i] + d[i] for i in role}
     for _ in range(5):                          # close to 240 by the slopes; nobody outside 0-48
@@ -405,10 +406,11 @@ def gap_rows(D: dict, prm: dict, season: str, mode: str) -> list:
         if len(act) < prm["full_roster"]:
             continue
         G = NM.TEAM_MIN - sum(b for _, b in act)
+        u = {pl["id"]: pl.get("u", 0.0) for pl in team}
         for rk, (i, b) in enumerate(sorted(act, key=lambda x: -x[1])):
             a = D["rows"][i]["actual"]
             if a is not None:
-                out.append((min(rk, GAP_RANKS), G > 0, G, a - b))
+                out.append((min(rk, GAP_RANKS), G > 0, G, a - b, u[i]))
     return out
 
 
@@ -417,12 +419,14 @@ def fit_gap(D: dict, prm: dict, season: str = "2024-25") -> dict:
     coef = {}
     for mode in ("confirmed", "inactives"):
         cells = defaultdict(list)
-        for k, pos_, G, y in gap_rows(D, prm, season, mode):
-            cells[(k, pos_)].append((G, y))
+        for k, pos_, G, y, u in gap_rows(D, prm, season, mode):
+            cells[(k, pos_)].append((G, y, u))
         c = {}
+        withu = mode == "inactives" and prm.get("pstart_w") is not None
         for key, v in cells.items():
             v = np.array(v)
-            c[key] = tuple(float(x) for x in np.linalg.lstsq(np.c_[np.ones(len(v)), v[:, 0]], v[:, 1], rcond=None)[0])
+            X = np.c_[np.ones(len(v)), v[:, 0], v[:, 2]] if withu and np.any(v[:, 2]) else np.c_[np.ones(len(v)), v[:, 0]]
+            c[key] = tuple(float(x) for x in np.linalg.lstsq(X, v[:, 1], rcond=None)[0])
         coef[mode] = c
     return coef
 
@@ -505,7 +509,74 @@ def game_roles(D: dict, g: dict, R: dict, prm: dict, mode: str):
              "starter": r["starter"] if known_starters else None,
              "starting": (1.0 if r["starter"] else 0.0) if known_starters else s_}
             for i, r, s_ in zip(idx, ps, srate)]
+    if not known_starters and prm.get("pstart_w") is not None:
+        for pl, (i, p, u) in zip(team, pstart_game(D, g, R, prm)):
+            pl["u"] = u
     return team, base, srate
+
+
+def pstart_feats(D: dict, g: dict, R: dict) -> dict:
+    """Critique cycle 10 (target: substitutions): with no five, who inherits a scratched
+    starter's start? Features per ACTIVE player of tonight's team (reads the current
+    inactive flags, so the official-report replay moves them): [1, start rate, started
+    last game, vac x (1 - s), open x (1 - s), role / 36], vac = the start-rate total of the
+    out players sharing one of his position groups (cap 1), open = max(0, 5 - sum of the
+    active players' start rates)."""
+    rows, M, S = D["rows"], D["M"], D["S"]
+    lost: dict = defaultdict(float)
+    for j in g["idx"]:
+        if rows[j]["inactive"]:
+            for gr in _groups(rows[j]["pos"]):
+                lost[gr] += float(R["srate"][j])
+    act = [i for i in g["idx"] if not rows[i]["inactive"]]
+    open_ = max(0.0, 5 - sum(float(R["srate"][i]) for i in act))
+    out = {}
+    for i in act:
+        sr = float(R["srate"][i])
+        last = 0.0 if np.isnan(M[i, -1]) else float(S[i, -1])
+        vac = min(1.0, max([lost.get(gr, 0.0) for gr in _groups(rows[i]["pos"])] + [0.0]))
+        out[i] = [1.0, sr, last, vac * (1 - sr), open_ * (1 - sr), float(R["base"][i]) / 36]
+    return out
+
+
+def pstart_game(D: dict, g: dict, R: dict, prm: dict) -> list:
+    """(id, P(start), u) per team member; u = (P - start rate) x (starting role - bench role),
+    the minutes the start-probability uplift is worth, for the rank-gap step's third
+    coefficient. 0 for the inactive, preseason-role, < 5 NBA games and back-from-absence
+    players (their roles are not the start/bench split)."""
+    rows, w = D["rows"], np.asarray(prm["pstart_w"])
+    X = pstart_feats(D, g, R)
+    out = []
+    for i in g["idx"]:
+        r = rows[i]
+        if (i not in X or (R["ns"][i] + R["nb"][i]) <= 0 or r["nba_games"] < 5 or r["since_return"] is not None
+                or (r["real_pos_games"] < prm["pre_if"] and r["pre"])):
+            out.append((i, None, 0.0))
+            continue
+        p = float(1 / (1 + np.exp(-np.dot(X[i], w))))
+        out.append((i, p, (p - float(R["srate"][i])) * (float(R["ms"][i]) - float(R["mb"][i]))))
+    return out
+
+
+def fit_pstart(D: dict, prm: dict, season: str = "2024-25") -> list:
+    """Logistic P(start) on pstart_feats, Newton, fitted on one season's active rows."""
+    R = roles(D, prm)
+    Xs, ys = [], []
+    for g in D["games"]:
+        if g["season"] != season:
+            continue
+        for i, x in pstart_feats(D, g, R).items():
+            Xs.append(x)
+            ys.append(1.0 if D["rows"][i]["starter"] else 0.0)
+    X, y = np.array(Xs), np.array(ys)
+    w = np.zeros(X.shape[1])
+    for _ in range(30):
+        p = 1 / (1 + np.exp(-X @ w))
+        w += np.linalg.solve((X * (p * (1 - p))[:, None]).T @ X + 1e-6 * np.eye(len(w)), X.T @ (y - p))
+    p = 1 / (1 + np.exp(-X @ w))
+    print(f"  P(start) on {season} (n {len(y):,}): w {np.round(w, 3).tolist()}, log loss "
+          f"{float(-(y * np.log(p) + (1 - y) * np.log(1 - p)).mean()):.4f}", file=sys.stderr, flush=True)
+    return [float(x) for x in w]
 
 
 def _groups(position):
@@ -1240,7 +1311,7 @@ def report_fit(P: dict) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("cmd", choices=["diagnose", "ablate", "fit", "salary", "report", "cycle1", "cycle2", "live",
-                                    "cycles", "cycle4", "cycle5", "cycle6", "cycle7"])
+                                    "cycles", "cycle4", "cycle5", "cycle6", "cycle7", "cycle10"])
     ap.add_argument("--mode", default="confirmed", choices=["confirmed", "inactives"])
     ap.add_argument("--write", action="store_true", help="cycle1 / cycle5: write edge/nba_minutes_gap.py")
     a = ap.parse_args()
@@ -1280,6 +1351,30 @@ def main() -> int:
         print(report(D, P, legacy=False))
         if a.write:
             write_gap_module(D, P["gap_coef"], P, cycle=2, extra=f"recency_lam {lam}, drop_q {q}")
+        return 0
+    if a.cmd == "cycle10":
+        # target substitutions: P(start) knowing who is out, read by the rank-gap step as a
+        # per-cell term on u (inactives state). Everything fitted on 2024-25.
+        F = final_params()
+        P = {**F, "pstart_w": fit_pstart(D, F)}
+        P["gap_coef"] = {**F["gap_coef"], "inactives": fit_gap(D, P)["inactives"]}
+        Fr = {**F, "gap_coef": {**F["gap_coef"], "inactives": fit_gap(D, F)["inactives"]}}
+        print(report(D, F, legacy=False))
+        print("\n(shipped roles, gap refit on 2024-25 -- isolates the refit)")
+        print(report(D, Fr, legacy=False))
+        print("\n(P(start) term)")
+        print(report(D, P, legacy=False))
+        status = report_status(D)
+        for m in ("confirmed", "inactives"):
+            tr = report_preds(D, F, "2024-25", m, status)
+            p, _ = report_fit(tr)
+            for s_ in ("2025-26",):
+                h = report_score(report_preds(D, F, s_, m, status), p)
+                z = report_score(report_preds(D, P, s_, m, status), p)
+                print(f"official report, {m}, {s_}: board {h['fixed']:.3f} -> {z['fixed']:.3f}, active "
+                      f"{h['active']:.3f} -> {z['active']:.3f} (n {z['n_active']:,})", flush=True)
+        print(f"PSTART_W = {P['pstart_w']}")
+        print(f"GAP_INACTIVES = {P['gap_coef']['inactives']}")
         return 0
     if a.cmd == "cycle7":
         # the official injury report as the Out list, P(dress) by status fitted on 2024-25.

@@ -728,3 +728,47 @@ states plus `report_preds`.
 - Bench ranks 7-11 under-projected by 0.3-1.1 in both states, about 30% of the
   slice's squared error (estimated 0.02-0.04 RMSE).
 - Top-3 roles over by 0.4-0.7 when a teammate is out (about 0.01).
+
+## Cycle 10 (target: substitutions) -- P(start) inside the 240 step (2026-10-27) -- NOT SHIPPED
+
+Follows up cycle 9. When there is no announced five, the rank-gap step gains a
+per-cell third coefficient on u = (P(start) - start rate) x (starting role - bench
+role). P(start) is cycle 9's logistic, computed from tonight's inactive list. The
+official-report replay changes who is out, so u moves with it. Everything is fitted
+on 2024-25:
+- P(start) w = [-5.54, 4.04, 1.77, 1.19, 1.18, 2.94], log loss 0.239;
+- the coefficients on u come out at about 0.3-0.7 in most cells.
+
+Code: `python3 scripts/nba_minutes_lab.py cycle10` (`pstart_feats`, `pstart_game`,
+`fit_pstart`, prm `pstart_w`; off unless set). A control refits the inactives gap on
+2024-25 with shipped roles, to separate the refit from the new term.
+
+| 2025-26 held out | shipped | gap refit only | + P(start) term |
+|---|---|---|---|
+| five known: RMSE all / MAE | 6.707 / 4.97 | = | = (by construction) |
+| no five: RMSE all | 7.753 | 7.719 | 7.709 |
+| no five: MAE all | 5.53 | 5.60 | 5.59 |
+| no five: teammates of a scratch MAE (bias) | 5.64 (-0.1) | 5.70 (-0.1) | 5.69 (-0.1) |
+| no five: promoted starters MAE (bias) | 7.93 (-6.6) | 7.92 (-6.6) | 7.80 (-6.3) |
+| official report, no five: active RMSE (board) | 6.568 (6.953) | not run | **6.615 (7.002)** |
+| official report, five known | 6.214 (6.383) | -- | = |
+
+**Decision: not shipped.**
+- The new term buys only 0.010 RMSE over the plain refit, and MAE is worse than the
+  shipped model.
+- In the official-report state, the one production runs, it is worse by 0.047.
+- The promoted-starter shortfall barely moves (-6.6 -> -6.3).
+
+The rank step cannot express "this bench player is starting tonight": the fitted
+coefficient is about 0.5 of the uplift, and the variance it adds costs more than the
+mean shift recovers.
+
+**What is left:**
+- The −6 bias on promoted starters before the five is announced is a classification
+  problem: who starts. It isn't an allocation problem.
+- Production already blends in NBA.com's Expected five at weight 0.7, and the Expected
+  five is right about 75% of the time. That is a better signal than this logistic.
+- So the lever is the Expected-five weight when a regular starter is out (a promoted
+  name in the Expected five), not the no-five model.
+- Separately, the stale shipped inactives gap coefficients: a plain refit gives RMSE
+  -0.034 but MAE +0.07. That is the same trade-off, and also not shipped.
