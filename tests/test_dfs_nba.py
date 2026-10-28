@@ -339,14 +339,14 @@ def test_injury_report_statuses_give_expected_minutes_by_their_chance_to_dress()
     assert p == {"1": P[("Questionable", True)], "10": P[("stale", False)]}
     a = NM.project(team)
     b = {k: NM.project([{**x, "inactive": x["id"] == k} for x in team]) for k in ("1", "10")}
-    assert out["1"]["minutes"] == pytest.approx(      # x the cycle 16 limit K
-        NM.REPORT_K["inactives"]["Questionable"] * p["1"] * (a["1"]["minutes"] + (1 - p["10"]) * (b["10"]["1"]["minutes"] - a["1"]["minutes"])), abs=0.06)
-    m7 = a["7"]["minutes"] + sum((1 - p[k]) * (b[k]["7"]["minutes"] - a["7"]["minutes"]) for k in b)
+    K = NM.REPORT_K["inactives"]["Questionable"]   # cycles 16-17: on his limit, the rest re-shared
+    lim = NM.project([{**x, "role_scale": K} if x["id"] == "1" else x for x in team])
+    assert out["1"]["minutes"] == pytest.approx(
+        p["1"] * (lim["1"]["minutes"] + (1 - p["10"]) * (b["10"]["1"]["minutes"] - a["1"]["minutes"])), abs=0.06)
+    m7 = (a["7"]["minutes"] + sum((1 - p[k]) * (b[k]["7"]["minutes"] - a["7"]["minutes"]) for k in b)
+          + p["1"] * (lim["7"]["minutes"] - a["7"]["minutes"]))
     assert out["7"]["minutes"] == pytest.approx(m7, abs=0.06) and out["7"]["minutes"] > a["7"]["minutes"]
-    # expected minutes ~240 less what the limited Questionable player gives up (cycle 16
-    # does not re-share it, as the lab's report_score does not)
-    gone = (1 - NM.REPORT_K["inactives"]["Questionable"]) * out["1"]["minutes"] / NM.REPORT_K["inactives"]["Questionable"]
-    assert sum(v["minutes"] for v in out.values()) == pytest.approx(240 - gone, abs=1.5)
+    assert sum(v["minutes"] for v in out.values()) == pytest.approx(240, abs=2.0)   # re-shared: still ~240
 
 
 def test_an_injured_namesake_on_another_team_does_not_take_a_player_off_the_board():
@@ -406,11 +406,11 @@ def test_a_starter_listed_twice_once_on_the_roster_keeps_his_starting_row():
 
 
 def test_a_questionable_player_who_dresses_is_on_a_minutes_limit():
-    # cycle 16: P(dress) x K x minutes for Doubtful / Questionable
+    # cycles 16-17: on his limit (role x K) and his teammates absorb what he gives up
     from edge import nba_minutes as NM
     team = [{"id": f"p{i}", "position": "G", "inactive": False, "starter": None,
              "history": [(30.0 - 2 * i, i < 5)] * 20} for i in range(10)]
     a, _ = NM.project_uncertain(team, {}, "inactives")
     b, p = NM.project_uncertain(team, {"p6": "Questionable"}, "inactives")
     assert b["p6"]["minutes"] < a["p6"]["minutes"] * p["p6"]
-    assert abs(b["p6"]["minutes"] - a["p6"]["minutes"] * p["p6"] * NM.REPORT_K["inactives"]["Questionable"]) < 0.5
+    assert sum(b[i]["minutes"] for i in b if i != "p6") > sum(a[i]["minutes"] for i in a if i != "p6")

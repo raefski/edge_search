@@ -963,3 +963,25 @@ Train 2024-25: confirmed 6.063 -> 6.052, no five 6.369 -> 6.346. Production == l
 (`project_uncertain` x REPORT_K; parity 6.2713 / 6.5748). Doubtful K rests on n 8-9 train
 (39 held out agree); minutes K removes are not re-shared to teammates (as in the lab).
 Next: re-share them through the 240 step and test.
+
+## Cycle 17 -- re-share a limited player's minutes through the 240 step (2026-10-28) -- SHIPPED
+
+Cycle 16 multiplied a dressed Doubtful / Questionable player's minutes by K and let the rest
+vanish (team below 240, bias -0.24 / -0.34 held out). Now a third scenario per such player:
+L_k = he dresses with role x K, and the rank-gap step re-shares the rest. Expected minutes
+m_i = A_i + sum_k (1-p_k)(B_k,i - A_i) + sum_{k limited} p_k (L_k,i - A_i); his own:
+p_k (L_k,k + sits terms). Production: `project(..)` honours a row's `role_scale`;
+`project_uncertain` builds L_k. Script: scripts/critic/nba_reshare_fix.py.
+K refit under re-share on 2024-25 (Questionable x0.8-1.2): confirmed x1.1 -> 0.757
+(6.0524 best), no five x1.0 (0.766). Doubtful kept.
+
+| 2025-26 held out, official-report replay | cycle 16 | cycle 17 |
+|---|---|---|
+| confirmed active RMSE / MAE | 6.2713 / 4.7070 | **6.2704 / 4.7068** |
+| confirmed board / bias | 6.2685 / -0.235 | 6.2670 / -0.196 |
+| no five active RMSE / MAE | 6.5748 / 4.9089 | **6.5672 / 4.9033** |
+| no five board / bias | 6.7948 / -0.337 | 6.7860 / -0.254 |
+
+Judgment call: train confirmed is 0.0008 worse than cycle 16 (6.0516 -> 6.0524); held out both
+states improve on RMSE and MAE, and the change removes a structural loss (minutes leaving the
+team), so it shipped. The confirmed gain is at resolution; the no-five gain is ~0.008.

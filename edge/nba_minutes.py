@@ -381,7 +381,9 @@ def project(team: list, params: dict | None = None) -> dict:
         sr = pl.get("since_return")
         if sr is not None and 0 <= sr < len(p["RAMP"]):
             b *= p["RAMP"][sr]
-        roles_[pl["id"]] = max(0.0, b)
+        # cycle 17: a limited Doubtful / Questionable player's role x K (project_uncertain);
+        # the 240 step then re-shares what he gives up
+        roles_[pl["id"]] = max(0.0, b) * float(pl.get("role_scale", 1.0))
         start_[pl["id"]] = (1.0 if pl["starter"] else 0.0) if pl.get("starter") is not None else s
         promoted[pl["id"]] = bool(pl.get("starter")) and r["start_rate"] < 0.5
     active = [pl for pl in team if not pl["inactive"]]
@@ -449,7 +451,8 @@ def project_uncertain(team: list, unc: dict, mode: str, keeps: dict | None = Non
     (the roster cut re-run; None = everyone not inactive). With A = all dress and B_k =
     k sits, and P(dress) p by (category, role >= REPORT_ROLE):
         m_i = A_i + sum over uncertain k != i of (1 - p_k) (B_k,i - A_i),   x p_i if i is uncertain
-    x REPORT_K[mode][category] for a Doubtful / Questionable player (cycle 16).
+    on his limit for a Doubtful / Questionable player: role x REPORT_K, the rest re-shared
+    by the 240 step (cycles 16-17).
     Mirrors scripts/nba_minutes_lab.report_score. Returns (minutes as project(), {id: p})."""
     a = project(team, params)
     if not unc:
@@ -466,12 +469,20 @@ def project_uncertain(team: list, unc: dict, mode: str, keeps: dict | None = Non
         kept = None if keeps is None else keeps.get(k)
         B[k] = project([{**pl, "inactive": pl["id"] == k or (pl["inactive"] if kept is None else pl["id"] not in kept)}
                         for pl in team], params)
+    # cycle 17: L_k = k dresses on his limit (role x REPORT_K), the 240 step re-sharing the rest
+    kq = REPORT_K.get(mode, {})
+    Lk = {k: project([{**pl, "role_scale": kq[c]} if pl["id"] == k else pl for pl in team], params)
+          for k, c in unc.items() if c in kq}
     out = {}
     for i in set(a) | {i for b in B.values() for i in b}:
         ai = a.get(i, {}).get("minutes", 0.0)
-        m = ai + sum((1 - p[k]) * (B[k].get(i, {}).get("minutes", 0.0) - ai) for k in unc if k != i)
-        if i in unc:
-            m *= p[i] * REPORT_K.get(mode, {}).get(unc[i], 1.0)
+        sits = sum((1 - p[k]) * (B[k].get(i, {}).get("minutes", 0.0) - ai) for k in unc if k != i)
+        if i in Lk:                  # his own minutes: on his limit, as re-shared
+            m = (Lk[i].get(i, {}).get("minutes", 0.0) + sits) * p[i]
+        else:
+            m = ai + sits + sum(p[k] * (Lk[k].get(i, {}).get("minutes", 0.0) - ai) for k in Lk if k != i)
+            if i in unc:
+                m *= p[i]
         base = a.get(i) or next(B[k][i] for k in unc if i in B[k])
         out[i] = {**base, "minutes": round(max(0.0, m), 1)}
     return out, p
@@ -484,7 +495,12 @@ def project_uncertain(team: list, unc: dict, mode: str, keeps: dict | None = Non
 #: confirmed 6.301/4.724 -> 6.271/4.707, no five 6.641/4.919 -> 6.575/4.909 (board 6.291 ->
 #: 6.269, 6.844 -> 6.795); held-out Doubtful dressers n 39: bias +21.0 -> +4.3 (no five),
 #: Questionable n 378 +4.2 -> -1.6. Probable / stale fit ~1.0 and did not help: left at 1.
-REPORT_K = {"confirmed": {"Doubtful": 0.0, "Questionable": 0.688},
+#: Cycle 17 (same day): those minutes are RE-SHARED through the 240 step (L_k in
+#: project_uncertain) and confirmed Questionable K refit under it on 2024-25 (grid x0.8-1.2:
+#: x1.1 -> 0.757; no five kept x1.0). Held out 2025-26 vs cycle 16, active RMSE / MAE:
+#: confirmed 6.2713/4.7070 -> 6.2704/4.7068, no five 6.5748/4.9089 -> 6.5672/4.9033, board
+#: 6.795 -> 6.786, no-five bias -0.34 -> -0.25 (train confirmed 6.0516 -> 6.0524).
+REPORT_K = {"confirmed": {"Doubtful": 0.0, "Questionable": 0.757},
             "inactives": {"Doubtful": 0.202, "Questionable": 0.766}}
 
 
