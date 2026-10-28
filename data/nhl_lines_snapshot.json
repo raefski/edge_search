@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-28T18:29:19+00:00",
+"generated_at": "2026-10-28T18:59:27+00:00",
 "goalies": {
 "2026-10-28": {
 "CGY": {
@@ -12,7 +12,7 @@
 },
 "EDM": {
 "goalie": "Tristan Jarry",
-"status": null
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Jake Allen",
@@ -27,7 +27,7 @@
 "status": "Likely"
 },
 "TOR": {
-"goalie": "Anthony Stolarz",
+"goalie": "Sergei Bobrovsky",
 "status": null
 },
 "WSH": {
@@ -16623,7 +16623,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -16661,6 +16661,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
+},
+"Bo Groulx": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 108,
+"toiSeconds": 26
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 40,
+"toiSeconds": 7
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Brandon Duhaime": {
 "gtd": false,
@@ -16728,7 +16762,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Dakota Mermis": {
 "gtd": false,
@@ -16827,7 +16861,7 @@
 "toiMinutes": 76,
 "toiSeconds": 35
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
@@ -16861,7 +16895,7 @@
 "toiMinutes": 61,
 "toiSeconds": 31
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -16898,7 +16932,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Jake McCabe": {
 "gtd": false,
@@ -16933,40 +16967,6 @@
 "pk": "PK1",
 "pos": "ld",
 "pp": null
-},
-"Kirill Marchenko": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 6,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 5,
-"points": 11,
-"powerplayAssists": 3,
-"powerplayGoals": 3,
-"powerplayPoints": 6,
-"shots": 23,
-"toiMinutes": 167,
-"toiSeconds": 8
-},
-"last5": {
-"assists": 3,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 5,
-"powerplayAssists": 2,
-"powerplayGoals": 2,
-"powerplayPoints": 4,
-"shots": 10,
-"toiMinutes": 77,
-"toiSeconds": 53
-},
-"line": "F2",
-"pk": null,
-"pos": "lw",
-"pp": "PP1"
 },
 "Morgan Rielly": {
 "gtd": false,
@@ -17101,7 +17101,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
