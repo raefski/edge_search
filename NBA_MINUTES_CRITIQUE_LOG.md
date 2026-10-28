@@ -925,3 +925,41 @@ Parity: shipped module reproduces the refit exactly (6.2733 / 6.5788).
 five n 270, bias +10.0; confirmed +4.4) -- they're on a minutes cap; test a role multiplier
 by status. (2) "Available" (back from injury) run low (n 1,821, bias -0.56 / -0.82) -- the
 return ramp may cut too much for players cleared to play.
+
+## Re-scored on the clean protocol (cycle 15's phantoms-out), 2026-10-28
+
+2025-26 held out, no five, RMSE / MAE (shipped = cycle 15: 6.579 / 4.870):
+- **Cycle 9** (P(start) role mix + gap refit): 6.584 / 4.869, promoted MAE 6.86 -> 6.81 -- worse RMSE; stands.
+- **Cycle 10** (P(start) term in the 240 step): lab 6.572 / 4.86; official-report active
+  6.641 -> 6.638, board 7.050 -> 7.048; 2026-27 6.972 -> 7.001 -- noise-level; stands.
+- **Cycle 12** (replacement memory, zero-sum; c refit 0.285): 6.575 / 4.859, promoted MAE
+  6.86 -> 6.76 -- consistent but ~half the MSE se (~0.1); stands.
+The phantoms did not flip any verdict.
+
+## Cycle 16 -- Doubtful / Questionable players who dress are on a minutes limit (2026-10-28) -- SHIPPED
+
+From cycle 15's runner-up. Cycle 7 prices only WHETHER an uncertain player dresses
+(P(dress) x minutes); given he dresses the model gave full minutes. Official-report replay
+(`report_preds`, phantoms out), held out 2025-26 dressed players: no five Doubtful n 39 bias
++21.0, Questionable n 378 +4.2; confirmed +11.7 / +4.0.
+
+**Fix:** `NM.REPORT_K` -- minutes given he dresses x K[category], fitted on 2024-25 (OLS through
+0, dressed players, pooled over role size): confirmed Doubtful 0.0 (n 8), Questionable 0.688
+(n 116); no five Doubtful 0.202 (n 9), Questionable 0.766 (n 191). Probable / stale and an
+8-cell per-role version were also fitted: Probable / stale ~1.0 with no gain (cycle 15's runner-up
+"Available run low" -- not supported, -0.11 -> -0.75 on small-role Probables), the 8-cell
+version had cells on n 2-6; the pooled 4 shipped. Lab: `report_score(P, p, K)`.
+
+| 2025-26 held out, official-report replay | shipped | + REPORT_K |
+|---|---|---|
+| confirmed: active RMSE / MAE | 6.301 / 4.724 | **6.271 / 4.707** |
+| confirmed: board RMSE | 6.291 | 6.269 |
+| no five: active RMSE / MAE | 6.641 / 4.919 | **6.575 / 4.909** |
+| no five: board RMSE | 6.844 | 6.795 |
+| no five Doubtful dressers (n 39) bias / RMSE | +21.0 / 22.0 | +4.3 / 4.4 |
+| no five Questionable dressers (n 378) bias / RMSE | +4.2 / 13.1 | -1.6 / 12.1 |
+
+Train 2024-25: confirmed 6.063 -> 6.052, no five 6.369 -> 6.346. Production == lab
+(`project_uncertain` x REPORT_K; parity 6.2713 / 6.5748). Doubtful K rests on n 8-9 train
+(39 held out agree); minutes K removes are not re-shared to teammates (as in the lab).
+Next: re-share them through the 240 step and test.

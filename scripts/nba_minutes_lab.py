@@ -1336,12 +1336,14 @@ def report_preds(D: dict, prm: dict, season: str, mode: str, status: dict, cut: 
     return dict(out)
 
 
-def report_score(P: dict, p: dict | None) -> dict:
+def report_score(P: dict, p: dict | None, K: dict | None = None) -> dict:
     """Board / active RMSE for P(dress) p = {(category, big): prob}; None = no hedge
     (every kept player dresses: the report's Out list alone)."""
     pr = (lambda c: 1.0) if p is None else (lambda c: p[c])  # noqa: E731
     m = np.array([a + sum((1 - pr(c)) * d for c, d in t) for a, t in zip(P["a"], P["terms"])])
     own = np.array([pr(c) if c else 1.0 for c in P["own"]])
+    # cycle 16: a dressed Doubtful / Questionable player's minutes x K[category] (NM.REPORT_K)
+    m = m * np.array([K.get(c[0], 1.0) if (K and c) else 1.0 for c in P["own"]])
     mean = own * m
     y, dr = np.array(P["y"]), np.array(P["dressed"])
     eb, ea = mean - y, (m - y)[dr]

@@ -449,6 +449,7 @@ def project_uncertain(team: list, unc: dict, mode: str, keeps: dict | None = Non
     (the roster cut re-run; None = everyone not inactive). With A = all dress and B_k =
     k sits, and P(dress) p by (category, role >= REPORT_ROLE):
         m_i = A_i + sum over uncertain k != i of (1 - p_k) (B_k,i - A_i),   x p_i if i is uncertain
+    x REPORT_K[mode][category] for a Doubtful / Questionable player (cycle 16).
     Mirrors scripts/nba_minutes_lab.report_score. Returns (minutes as project(), {id: p})."""
     a = project(team, params)
     if not unc:
@@ -470,10 +471,22 @@ def project_uncertain(team: list, unc: dict, mode: str, keeps: dict | None = Non
         ai = a.get(i, {}).get("minutes", 0.0)
         m = ai + sum((1 - p[k]) * (B[k].get(i, {}).get("minutes", 0.0) - ai) for k in unc if k != i)
         if i in unc:
-            m *= p[i]
+            m *= p[i] * REPORT_K.get(mode, {}).get(unc[i], 1.0)
         base = a.get(i) or next(B[k][i] for k in unc if i in B[k])
         out[i] = {**base, "minutes": round(max(0.0, m), 1)}
     return out, p
+
+#: Critique cycle 16 (2026-10-28): a Doubtful / Questionable player who DOES dress plays on
+#: a limit -- the cycle 7 hedge only priced whether he dresses. His minutes given he dresses
+#: are K x the model's. Fitted on 2024-25 (OLS through 0 on dressed players, official-report
+#: replay, phantoms out): confirmed Doubtful 0.0 (n 8), Questionable 0.688 (n 116); no five
+#: Doubtful 0.202 (n 9), Questionable 0.766 (n 191). Held out 2025-26, active RMSE / MAE:
+#: confirmed 6.301/4.724 -> 6.271/4.707, no five 6.641/4.919 -> 6.575/4.909 (board 6.291 ->
+#: 6.269, 6.844 -> 6.795); held-out Doubtful dressers n 39: bias +21.0 -> +4.3 (no five),
+#: Questionable n 378 +4.2 -> -1.6. Probable / stale fit ~1.0 and did not help: left at 1.
+REPORT_K = {"confirmed": {"Doubtful": 0.0, "Questionable": 0.688},
+            "inactives": {"Doubtful": 0.202, "Questionable": 0.766}}
+
 
 #: Role ranks with their own allocation cell; rank 14 and below share the last one.
 GAP_RANKS = 13
