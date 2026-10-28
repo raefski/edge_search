@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-28T22:44:28+00:00",
+"generated_at": "2026-10-28T23:14:41+00:00",
 "goalies": {
 "2026-10-28": {
 "CGY": {
@@ -32,7 +32,7 @@
 },
 "WSH": {
 "goalie": "Logan Thompson",
-"status": null
+"status": "Confirmed"
 }
 },
 "2026-10-29": {
@@ -12677,9 +12677,9 @@
 "toiMinutes": 75,
 "toiSeconds": 16
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP1"
 },
 "Hunter McDonald": {
@@ -12714,6 +12714,40 @@
 "line": "D3",
 "pk": "PK1",
 "pos": "ld",
+"pp": null
+},
+"Jacob Gaucher": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 99,
+"toiSeconds": 57
+},
+"last5": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 51,
+"toiSeconds": 48
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
 "pp": null
 },
 "Jamie Drysdale": {
@@ -12819,40 +12853,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
-},
-"Michael Bunting": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 16,
-"toiMinutes": 113,
-"toiSeconds": 9
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 56,
-"toiSeconds": 25
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Nick Seeler": {
 "gtd": false,
@@ -13053,7 +13053,7 @@
 "toiMinutes": 82,
 "toiSeconds": 21
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -19781,7 +19781,7 @@
 "pp": null
 },
 "Logan Thompson": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
