@@ -128,7 +128,7 @@ def dk_players(state: dict, now: datetime, day: date) -> dict:
     for gid in dk.get("groups", []):
         for info in dfs.fetch_draftables(gid).values():
             key = f"{norm(info['name'])}|{nba.team(info['team'])}"
-            players.setdefault(key, {"salary": info["salary"], "status": info.get("dk_status")})
+            players.setdefault(key, {"salary": info["salary"], "status": info.get("dk_status"), "name": info["name"]})
         # every group, biggest first: a locked main still lists its players (draftables
         # stay readable after lock), the later slates add their games
     dk["players"], dk["fetched"] = players, now.isoformat()
@@ -138,7 +138,7 @@ def dk_players(state: dict, now: datetime, day: date) -> dict:
 def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
            prime: bool = False, windows: dict | None = None,
            extra: dict | None = None, espn_out: set | None = None,
-           official_out: set | None = None) -> tuple[list, dict]:
+           official_out: set | None = None, name_ids: dict | None = None) -> tuple[list, dict]:
     """(alerts, new `seen`) for tonight's games. `seen` = {player_id: {"out", "starter"}}
     from the previous run; an event fires on a change into OUT or into the starting five.
     `prime` = the day's first look: who is already out is old news (priced into DK's
@@ -150,7 +150,16 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
             teams.setdefault(p["team"], []).append(p)
         for team, ps in teams.items():
             rows, events = [], []
-            for p in ps:
+            # Before NBA.com posts the full roster it lists only the starting fives:
+            # projecting from those alone split 240 minutes over ~5 players (10/28: LAL
+            # Thybulle 18->46, Kessler and Reaves 48 min). The rest of the team comes
+            # from DK's draftables, as the app's board does; they fill the 240 step but
+            # never fire an event themselves (a long-term injury is not news).
+            listed = {norm(p["name"]) for p in ps}
+            fill = [{"id": (name_ids or {}).get(nm, nm), "name": d.get("name") or nm, "team": team,
+                     "starter": False, "inactive": False, "filler": True}
+                    for (nm, t), d in dk.items() if t == team and nm not in listed]
+            for p in ps + fill:
                 pid = str(p["id"])
                 d = dk.get((norm(p["name"]), team), {})
                 h = hist.get(pid, [])
@@ -159,11 +168,12 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
                 # NBA.com's lineups carry no inactive list in 2026-27: ESPN's Out list too
                 out = (p["inactive"] or d.get("status") == "OUT" or (norm(p["name"]), team) in (espn_out or set())
                        or norm(p["name"]) in (official_out or set()))
-                now_seen[pid] = {"out": out, "starter": p["starter"]}
+                if not p.get("filler"):
+                    now_seen[pid] = {"out": out, "starter": p["starter"]}
                 before = {"out": out, "starter": False} if prime else seen.get(pid, {})
-                if out and not before.get("out") and r["base"] >= NM.REGULAR_MIN:
+                if not p.get("filler") and out and not before.get("out") and r["base"] >= NM.REGULAR_MIN:
                     events.append(("out", p, d, r))
-                if (p["starter"] and not before.get("starter") and not out
+                if (not p.get("filler") and p["starter"] and not before.get("starter") and not out
                         and r["games"] >= 5 and r["start_rate"] < 0.5):
                     events.append(("promoted", p, d, r))
                 ex = (extra or {}).get(pid, {})
@@ -291,6 +301,7 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
         pos = json.loads(POSITIONS.read_text()) if POSITIONS.exists() else {}
         windows: dict = {}
         extra: dict = {}
+        name_ids: dict = {}
         espn_out: set = set()
         official_out: set = set()
     else:
@@ -304,6 +315,7 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
                    if p.get("season_games", 0) < 5}
         extra = {pid: {k: p.get(k) for k in ("cur_n", "n_pre", "pick", "since_return", "team")}
                  for pid, p in snap["players"].items()}
+        name_ids = {norm(p["name"]): pid for pid, p in snap["players"].items() if p.get("name")}
         from edge import nba_availability
         espn_out = {(norm(n), t) for n, t in nba_availability.tonight_out()}
         # critique cycle 7: the NBA's official report's Out list too (two-ways included);
@@ -322,7 +334,8 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
             state["log"] = _log_changes(games, dk, state.get("log", {}), now)
     alerts, seen = assess(games, hist, pos, dk, state.get("seen", {}),
                           prime=not replay and not state.get("seen"), windows=windows, extra=extra,
-                          espn_out=espn_out, official_out=official_out)
+                          espn_out=espn_out, official_out=official_out,
+                          name_ids=name_ids)
     new = [a for a in alerts if a["key"] not in state["sent"]]
     if any(a["preseason"] for a in new):
         new = sorted(new, key=lambda a: a["preseason"])[:PRESEASON_MAX_PUSH]
