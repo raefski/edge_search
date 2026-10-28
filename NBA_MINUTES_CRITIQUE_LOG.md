@@ -985,3 +985,51 @@ K refit under re-share on 2024-25 (Questionable x0.8-1.2): confirmed x1.1 -> 0.7
 Judgment call: train confirmed is 0.0008 worse than cycle 16 (6.0516 -> 6.0524); held out both
 states improve on RMSE and MAE, and the change removes a structural loss (minutes leaving the
 team), so it shipped. The confirmed gain is at resolution; the no-five gain is ~0.008.
+
+## Cycle 18 (2026-10-28): the role trails the last 3 games — SHIPPED
+
+**Critic's hole.** After the full shipped pipeline (report replay, rank-gap 240
+step, REPORT_K re-share), the remaining error still tracks how far a player's
+last 3 games this season sit from his projection (DNP zeros counted):
+- the slope of actual minus projection on that gap is 0.13 in both 2024-25 and
+  2025-26;
+- last-1, back-to-back and April add nothing beyond it.
+
+**What I changed from the critic's spec**
+- **Starter flag before the five posts.** The critic split by the actual start in
+  both states, which leaks in the no-five state. That state now uses the pre-lock
+  `start_rate ≥ 0.5`. Train-fit c moved 0.042/0.093 → 0.144/0.051.
+- **Zero-sum group.** The critic zero-summed over rows that were known to have
+  dressed. Production can't know that, so the shipped version zero-sums over every
+  kept player with m > 0, and an uncertain player is corrected on m/p.
+
+**Variants tried, all fitted on 2024-25**
+- **DNP zeros left out of the last-3:** confirmed train MAE got worse
+  (4.5228 → 4.5348). That's the reason for counting zeros; the decision was made
+  on train.
+- **Skipping uncertain players or capping |x| at 12:** smaller gains on train.
+
+**Coefficients shipped:** `RECENT_C` confirmed (0.080, 0.168), no five
+(0.144, 0.051), as (starter, bench), least squares through zero on 2024-25.
+
+**Results:** report replay, production-faithful
+(`scripts/critic/nba_recency_fix/score.py`), RMSE / MAE / bias.
+
+| | 2024-25 (fit) before → after | 2025-26 (held out) before → after |
+|---|---|---|
+| confirmed | 6.0524/4.5228/−0.148 → 6.0091/4.4942/−0.154 | 6.2704/4.7069/−0.196 → **6.2142/4.6673/−0.220** |
+| no five | 6.3433/4.6975/−0.135 → 6.3339/4.6863/−0.134 | 6.5672/4.9033/−0.254 → **6.5599/4.8916/−0.257** |
+
+- Both states improve on RMSE and MAE, train and test.
+- The confirmed gain (−0.056 RMSE) is larger than cycles 15–17 combined.
+
+**Parity.** Production `recency` is unit-tested on its formula. It reads the last 3
+from the board history plus `cur_n`, while the lab reads dressed rows this season.
+Both drop the report-Out phantoms, but they weren't compared row by row on real
+boards.
+
+**Runner-ups (critic)**
+1. **No-five starters run low** (−1.37): selection; test through P(start).
+2. **April:** RMSE ~7 against ~6.2 the rest of the season. An April dummy adds
+   nothing after recency; a tank/clinch flag is untested.
+3. **30+ minute projections drifted high in 2025-26** (+0.39): watch it in 2026-27.

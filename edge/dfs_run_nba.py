@@ -349,8 +349,9 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         # "Usual" = the same team with no news: everyone healthy who dresses, no
         # starting five announced. Δ = proj - usual is then what tonight's scratches
         # and lineup changes did, not the 240-minute sharing every team goes through.
-        calm = NM.project([{**x, "inactive": bool(next(r for r in ps if r["name"] == x["id"]).get("not_dressing")),
-                            "starter": None} for x in team_in])
+        calm_in = [{**x, "inactive": bool(next(r for r in ps if r["name"] == x["id"]).get("not_dressing")),
+                    "starter": None} for x in team_in]
+        calm = NM.recency(NM.project(calm_in), calm_in, "inactives")   # same recency term (cycle 18)
         allowed = hist["teams"].get(ps[0]["opp"]) if ps else None
         of = NP.opponent_factor(allowed[0] / allowed[1] if allowed and allowed[1] else None, league_pm)
         ef = NP.env_factor(implied.get(t))

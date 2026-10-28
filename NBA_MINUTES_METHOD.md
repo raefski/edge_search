@@ -308,6 +308,33 @@ It helped v2 (leave one night out, 11 nights: MAE 5.141 → 4.973) only because
 v2's 240 step squeezed stars. With the rank-gap allocation it adds nothing (MAE
 4.830 → 4.834), so `SALARY_NUDGE = None`.
 
+## Step 4b: lean toward the last 3 games (critique cycle 18, 2026-10-28)
+
+After everything else (the report hedge in `project_uncertain`, the 240 step,
+and the REPORT_K re-share), what's left of the error still tracks how far a
+player's last 3 dressed games this season sit from his projection. DNP zeros
+count. The role EWMA trails a role that's changing.
+
+`nba_minutes.recency`: `m += c × (last3 − m)`, then the team's corrections are
+made zero-sum, so the 240 total doesn't change.
+
+- **Coefficients** (`RECENT_C`, `(starter, bench)`):
+  - confirmed: 0.080 / 0.168;
+  - no five: 0.144 / 0.051.
+  - Fitted by least squares through zero on 2024-25 only.
+- **Who counts as a starter:** the posted five when it's posted, else
+  `start_rate ≥ 0.5`. The actual start can't be known before lock.
+- **Uncertain players** are corrected on their minutes if they dress (`m / p`),
+  then scaled back by `p`.
+- **The "usual" projection** gets the same term, so Δ still shows only the news.
+
+Held out on 2025-26 (report replay, n 31,218 dressed), RMSE / MAE:
+
+| state | before | after |
+|---|---|---|
+| confirmed | 6.2704 / 4.7069 | **6.2142 / 4.6673** |
+| no five | 6.5672 / 4.9033 | **6.5599 / 4.8916** |
+
 ## Step 5: "usual" minutes and the news delta
 
 Run steps 1–3 a second time, with no starting five announced and no inactive

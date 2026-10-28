@@ -456,7 +456,7 @@ def project_uncertain(team: list, unc: dict, mode: str, keeps: dict | None = Non
     Mirrors scripts/nba_minutes_lab.report_score. Returns (minutes as project(), {id: p})."""
     a = project(team, params)
     if not unc:
-        return a, {}
+        return recency(a, team, mode), {}
     probs = probs or REPORT_P[mode]
     by_id = {pl["id"]: pl for pl in team}
     p = {}
@@ -485,7 +485,57 @@ def project_uncertain(team: list, unc: dict, mode: str, keeps: dict | None = Non
                 m *= p[i]
         base = a.get(i) or next(B[k][i] for k in unc if i in B[k])
         out[i] = {**base, "minutes": round(max(0.0, m), 1)}
-    return out, p
+    return recency(out, team, mode, p), p
+
+#: Critique cycle 18 (2026-10-28): the role trails the last few games. What is left of the
+#: error after the whole pipeline (report replay, 240 step, REPORT_K re-share) still
+#: tracks how far a player's last 3 dressed games THIS season (DNP zeros counted) sit from
+#: his projection. Correction c x (last3 - m) by (state, starter), least squares through
+#: zero on 2024-25 only (n 31,388 dressed rows per state); then the team's corrections are
+#: made zero-sum, so the 240 total is untouched. "Starter" = the posted five when it is
+#: posted, else start_rate >= 0.5 (the actual start is not known before lock). Held out
+#: 2025-26, report replay, zero-sum over every kept player (who dresses is unknown
+#: pre-lock), n 31,218 dressed: confirmed RMSE/MAE 6.2704/4.7069 -> 6.2142/4.6673, no five
+#: 6.5672/4.9033 -> 6.5599/4.8916 (NBA_MINUTES_CRITIQUE_LOG.md cycle 18;
+#: scripts/critic/nba_recency_fix/).
+RECENT_C = {"confirmed": (0.080, 0.168), "inactives": (0.144, 0.051)}   # (starter, bench)
+RECENT_N = 3
+
+
+def recency(out: dict, team: list, mode: str, p: dict | None = None) -> dict:
+    """Critique cycle 18: shift each dressing player toward his last RECENT_N games this
+    season (RECENT_C), zero-sum within the team. An uncertain player is corrected on his
+    minutes IF he dresses (m / p), then scaled back by p. Scored by scripts/critic/nba_recency_fix/."""
+    cs, cb = RECENT_C.get(mode, (0.0, 0.0))
+    p = p or {}
+    by_id = {pl["id"]: pl for pl in team}
+    corr = {}
+    for i, o in out.items():
+        pl = by_id.get(i)
+        pi = p.get(i, 1.0)
+        if pl is None or pl.get("inactive") or pi <= 0 or o["minutes"] <= 0:
+            continue
+        n_pre = int(pl.get("n_pre") or 0)
+        real = list(pl["history"][: len(pl["history"]) - n_pre]) if n_pre else list(pl["history"])
+        cur = len(real) if pl.get("cur_n") is None else max(0, min(int(pl["cur_n"]), len(real)))
+        last = [m for m, _ in real[len(real) - cur:]][-RECENT_N:]
+        if not last:
+            corr[i] = 0.0
+            continue
+        if mode == "confirmed" and pl.get("starter") is not None:
+            st = bool(pl.get("starter"))
+        else:
+            st = role_v2(pl["history"], pl.get("cur_n"), n_pre)["start_rate"] >= 0.5
+        corr[i] = (cs if st else cb) * (sum(last) / len(last) - o["minutes"] / pi)
+    if not corr:
+        return out
+    mean = sum(corr.values()) / len(corr)
+    res = dict(out)
+    for i, c in corr.items():
+        pi = p.get(i, 1.0)
+        res[i] = {**out[i], "minutes": round(max(0.0, (out[i]["minutes"] / pi + c - mean) * pi), 1)}
+    return res
+
 
 #: Critique cycle 16 (2026-10-28): a Doubtful / Questionable player who DOES dress plays on
 #: a limit -- the cycle 7 hedge only priced whether he dresses. His minutes given he dresses

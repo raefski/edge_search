@@ -326,9 +326,11 @@ def test_a_player_who_sat_last_game_gets_expected_minutes_and_his_teammates_a_bl
     assert avail == {"11": NM.AVAIL_P["confirmed"][0]}                   # deep bench: role < AVAIL_ROLE
 
 
-def test_injury_report_statuses_give_expected_minutes_by_their_chance_to_dress():
+def test_injury_report_statuses_give_expected_minutes_by_their_chance_to_dress(monkeypatch):
     """Critique cycle 7: a Questionable / Doubtful / stale player gets P(dress) x his
-    minutes if he plays; each teammate gets A + sum (1 - p_k)(B_k - A) over them."""
+    minutes if he plays; each teammate gets A + sum (1 - p_k)(B_k - A) over them.
+    (The cycle-18 recency term is switched off: it has its own test.)"""
+    monkeypatch.setattr(NM, "RECENT_C", {})
     roles = [34, 32, 30, 28, 26, 22, 20, 16, 12, 10, 6, 4]
     team = [{"id": str(i), "position": "G", "inactive": False, "starter": None,
              "history": [(float(m), i < 5)] * 10, "cur_n": 10} for i, m in enumerate(roles)]
@@ -414,3 +416,18 @@ def test_a_questionable_player_who_dresses_is_on_a_minutes_limit():
     b, p = NM.project_uncertain(team, {"p6": "Questionable"}, "inactives")
     assert b["p6"]["minutes"] < a["p6"]["minutes"] * p["p6"]
     assert sum(b[i]["minutes"] for i in b if i != "p6") > sum(a[i]["minutes"] for i in a if i != "p6")
+
+
+def test_recency_term_moves_toward_last_three_zero_sum():
+    """Critique cycle 18: minutes shift toward the last 3 games this season, by
+    RECENT_C, and the team's corrections sum to zero (the 240 is untouched)."""
+    team = [{"id": f"p{j}", "inactive": False, "starter": j < 5, "cur_n": 10,
+             "history": [(30.0 if j < 5 else 18.0, j < 5)] * 10} for j in range(10)]
+    team[7]["history"] = [(18.0, False)] * 7 + [(30.0, False)] * 3
+    out = {pl["id"]: {"minutes": 30.0 if int(pl["id"][1:]) < 5 else 18.0} for pl in team}
+    res = NM.recency(out, team, "confirmed")
+    cs, cb = NM.RECENT_C["confirmed"]
+    raw = cb * 12.0
+    assert res["p7"]["minutes"] == pytest.approx(18.0 + raw - raw / 10, abs=0.1)
+    assert sum(r["minutes"] for r in res.values()) == pytest.approx(240.0, abs=0.6)
+    assert res["p0"]["minutes"] < 30.0
