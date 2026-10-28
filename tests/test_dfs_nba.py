@@ -59,8 +59,9 @@ def test_simulated_players_keep_their_mean_and_the_measured_spread():
 
 
 def test_ownership_fills_each_positions_share_of_the_slots():
+    # the old per-position prior (weights=) still fills its position's slots
     pool = [{"pos": "C", "proj": 20 + i, "salary": 4000 + 300 * i} for i in range(12)]
-    T.add_ownership(pool)
+    T.add_ownership(pool, weights=(T.VALUE_WEIGHT, T.SALARY_WEIGHT))
     assert sum(p["own"] for p in pool) == pytest.approx(100 * T.GROUP_SLOTS["C"], rel=0.01)
     assert all(0 <= p["own"] <= T.MAX_OWN for p in pool)
 
@@ -162,7 +163,7 @@ def test_a_scratched_player_whose_game_already_tipped_is_stuck_in_his_slot():
 
 # ── buzz ───────────────────────────────────────────────────────────────────
 def test_buzz_raises_a_named_players_ownership_and_none_means_the_prior():
-    pool = [_p(f"g{i}", "PG", "NYK", 4000 + 300 * i, 20 + i) for i in range(8)]
+    pool = [_p(f"g{i}", "PG", "NYK", 4000 + 300 * i, 20 + i) for i in range(60)]
     T.add_ownership(pool)
     prior = {p["name"]: p["own"] for p in pool}
     for p in pool:
@@ -354,3 +355,21 @@ def test_an_injured_namesake_on_another_team_does_not_take_a_player_off_the_boar
     assert official[norm("Justin Champagnie")] == "Out"
     assert _sig("Julian Champagnie") not in sig       # a real other player: exact name only
     assert sig[_sig("Alexandre Sarr")] == ["Out"]     # not a known name: initial fallback kept
+
+
+def test_recent_dk_skips_dnps_and_a_rookies_trailing_preseason_rows():
+    from edge.dfs_nba_theory import recent_dk
+    h = [(30, 1, 10.0), (30, 1, 20.0), (0, 0, 0.0), (30, 1, 30.0), (30, 1, 40.0), (20, 0, 99.0)]
+    assert recent_dk(h, 3, n_pre=1) == 35.0          # this season: 0-min, 30, 40 -> played 30, 40
+    assert recent_dk(h[:2], 0) == 15.0               # no games this season: last season's
+    assert recent_dk([], 0) is None
+
+
+def test_slate_ownership_sums_to_eight_slots_and_cheap_recent_value_draws_more():
+    from edge import dfs_nba_theory as T
+    pool = [{"name": f"p{i}", "pos": "PG", "proj": 25.0, "salary": 5000 + 500 * i, "recent": 25.0}
+            for i in range(60)]
+    pool[30]["recent"] = 45.0
+    T.add_ownership(pool)
+    assert abs(sum(p["own"] for p in pool) - 800) < 1
+    assert pool[30]["own"] > pool[29]["own"] and pool[30]["own"] > pool[31]["own"]

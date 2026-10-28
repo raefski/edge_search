@@ -367,6 +367,7 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
             r["base_min"] = calm.get(r["name"], {}).get("minutes", m.get("base", 0.0))
             r["promoted"] = bool(m.get("promoted"))
             r["rate"] = round(NP.rate(r["history"], r["nba_pos"]), 3)
+            r["recent"] = theory.recent_dk(r["history"], r["cur_n"] or 0, r["n_pre"] if r["preseason"] else 0)   # ownership (SLATE_OWN)
             r["imputed"] = []
             if r["history"]:
                 r["proj"] = round(r["minutes"] * r["rate"] * of * ef, 2)

@@ -187,11 +187,41 @@ def _normalise(weights, target, cap):
 BUZZ_BETA = 0.2
 
 
-def add_ownership(pool: list, weights: tuple | None = None, buzz_beta: float | None = None) -> list:
-    """Annotate `own` (percent) and `leverage` on every row, per primary position.
-    `weights` = (value, salary) overrides the prior -- scripts/nba_calibration.py's
-    --fit-ownership grid passes it; the build never does. `buzz_beta` overrides
-    BUZZ_BETA (scripts/buzz_fit_nba.py's grid)."""
+#: Whole-slate ownership (ownership critique cycle 1, 2026-10-28,
+#: NBA_OWNERSHIP_CRITIQUE_LOG.md). One softmax over the slate, not per position:
+#:   w = exp(A ln(v/v_max) + B ln(salary/5000) + C promoted + D z(log1p buzz) + E ln(rv/v_max))
+#: v = proj per $1K, rv = RECENT DK points per $1K (`recent`: his last 3 games this
+#: season, else his last 10 of last season; proj when he has none) -- the field
+#: prices what a player has been scoring, not only our projection. Normalised to
+#: 800% (8 slots), cap MAX_OWN. Fitted on the 4 live train slates 10/20-10/24
+#: (676 players, Powell on player MAE, scripts/nba_ownership_lab.py): train MAE
+#: 3.671 -> see log; held out 10/25-10/27 (5 slates / 10 GPPs / 549 players)
+#: 4.950 -> ~3.96, better on 5/5 slates. Per-position buckets trapped
+#: multi-eligible cheap players. Thin: 9 slates -- refit weekly.
+SLATE_OWN = (3.77, 1.42, 0.58, 0.19, 1.65)
+
+
+def recent_dk(history, cur_n, n_pre: int = 0) -> float | None:
+    """Mean DK points of his last 3 PLAYED games this season, else his last 10 played
+    (last season). `history` = the build's [(min, starter, pts)]: its newest cur_n
+    real entries are this season's (DNPs included); a rookie's preseason rows, n_pre
+    of them, are appended AFTER them (scripts/nba_history_publish.py) and are skipped."""
+    h = list(history or [])
+    if n_pre:
+        h = h[:-n_pre]
+    cur = [p for m, _, p in h[len(h) - min(cur_n, len(h)):] if m > 0] if cur_n else []
+    pts = cur[-3:] if cur else [p for m, _, p in h if m > 0][-10:]
+    return sum(pts) / len(pts) if pts else None
+
+
+def add_ownership(pool: list, weights: tuple | None = None, buzz_beta: float | None = None,
+                  slate: tuple | None = None) -> list:
+    """Annotate `own` (percent) and `leverage` on every row. Default: the whole-slate
+    model (SLATE_OWN; `slate` overrides it for the lab). `weights` = (value, salary)
+    runs the old per-position prior instead -- the 2025-26 fit scripts
+    (nba_ownership_fit.py, buzz_fit_nba.py) still pass it."""
+    if weights is None and buzz_beta is None:
+        return _slate_ownership(pool, slate or SLATE_OWN)
     vw, sw = weights or (VALUE_WEIGHT, SALARY_WEIGHT)
     bb = BUZZ_BETA if buzz_beta is None else buzz_beta
     has_buzz = bool(bb) and any(p.get("buzz") is not None for p in pool)
@@ -206,6 +236,33 @@ def add_ownership(pool: list, weights: tuple | None = None, buzz_beta: float | N
              for p, a, b, c in zip(players, zv, zs, zb)]
         for p, own in zip(players, _normalise(w, 100.0 * GROUP_SLOTS.get(pos, 1.6), MAX_OWN)):
             p["own"] = round(own, 1)
+        n = len(players)
+        pr = {id(p): i for i, p in enumerate(sorted(players, key=lambda q: q["proj"]))}
+        orr = {id(p): i for i, p in enumerate(sorted(players, key=lambda q: q["own"]))}
+        for p in players:
+            p["leverage"] = round(100.0 * (pr[id(p)] - orr[id(p)]) / max(1, n - 1), 1)
+    return pool
+
+
+def _slate_ownership(pool: list, k: tuple) -> list:
+    a, b, c, d, e = k
+    if not pool:
+        return pool
+    v = [max(p["proj"], 0.1) / (p["salary"] / 1000.0) if p.get("salary") else 0.1 for p in pool]
+    rv = [max(p.get("recent") if p.get("recent") is not None else p["proj"], 0.1) / (p["salary"] / 1000.0)
+          if p.get("salary") else 0.1 for p in pool]
+    vmax = max(v)
+    has_buzz = any(p.get("buzz") is not None for p in pool)
+    zb = _z([math.log1p(float(p.get("buzz") or 0.0)) for p in pool]) if has_buzz else [0.0] * len(pool)
+    w = [math.exp(a * math.log(x / vmax) + b * math.log(max(float(p.get("salary") or 5000), 1) / 5000.0)
+                  + (c if p.get("promoted") else 0.0) + d * z + e * math.log(r / vmax))
+         for p, x, r, z in zip(pool, v, rv, zb)]
+    for p, own in zip(pool, _normalise(w, 800.0, MAX_OWN)):
+        p["own"] = round(own, 1)
+    groups: dict = {}
+    for p in pool:
+        groups.setdefault(p["pos"], []).append(p)
+    for players in groups.values():
         n = len(players)
         pr = {id(p): i for i, p in enumerate(sorted(players, key=lambda q: q["proj"]))}
         orr = {id(p): i for i, p in enumerate(sorted(players, key=lambda q: q["own"]))}
