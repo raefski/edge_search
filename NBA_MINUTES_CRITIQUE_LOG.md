@@ -772,3 +772,47 @@ mean shift recovers.
   name in the Expected five), not the no-five model.
 - Separately, the stale shipped inactives gap coefficients: a plain refit gives RMSE
   -0.034 but MAE +0.07. That is the same trade-off, and also not shipped.
+
+## Cycle 11 (target: blowout potential) -- rank x |expected margin| correction (2026-10-27) -- NOT SHIPPED
+
+The metric was minutes RMSE, MAE and bias on 2025-26, held out. It was sliced by
+pre-game |expected margin| and by projected-minutes rank (top 5 / 6-9 / 10+), in both
+information states: 32,224 player-games, 1,230 games.
+
+**Hole (critic):** the model does mis-handle blowouts, but almost none of the error
+can be known before lock.
+- In games that end 21+ points apart, the top 5 run +3.2 min high and ranks 10+ run
+  −3.3 min low.
+- Bias by pre-game margin is small. In 9+ point expected games the top 5 run +1.1,
+  ranks 6-9 −0.4 and ranks 10+ −1.2 (five known); with no five, +1.2 / −0.6 / −1.1.
+  Within 3 points the same figures are +0.2 / −0.1 / −0.4.
+- The size of the expected margin tracks the size of the final margin at only
+  0.12-0.145. A perfect spread would reach about 0.20 (simulated).
+
+**Fix tested:** `pred += a_k + b_k·|exp_margin|` after the rank-gap step, with k = the
+projected rank (13+ pooled), least squares on 2024-25. The slopes come out at about
++0.09 for rank 1 down to −0.07 for rank 13+. It is scored against a rank-only control.
+Scripts are in the session scratchpad (critic-nba-11, not kept).
+
+| 2025-26 held out | shipped | rank-only control | + blowout term | final margin known (ceiling) |
+|---|---|---|---|---|
+| five known RMSE | 6.7075 | 6.6983 | 6.6945 (−0.0038, se 0.0019) | about −0.15 |
+| no five RMSE | 7.7527 | 7.7271 | 7.7239 (−0.0032, se 0.0020) | about −0.14 |
+| five known MAE | 4.97 | 5.003 | 4.996 | |
+
+**Decision: not shipped.**
+- The gain is about 0.004 RMSE, below resolution (the same bar cycle 6 used).
+- Even a perfect market spread caps it near −0.009.
+- `data/odds.db` has NBA spreads only from 2026-10-20 on, so a spread version cannot be
+  tested on 2025-26 yet.
+- This confirms the earlier "blowout adjustment not kept" with the reason: the pre-game
+  information is too weak; the model isn't missing a term.
+
+**Runner-ups:**
+- A rank-only bias correction: no five −0.026 RMSE, but MAE 5.53 → 5.60. That is the
+  same trade-off as cycles 9-10.
+- No `exp_margin` in each team's first ~5 games (about 2,100 player-games a season).
+- The mid-game blowout error (about 0.14 RMSE) belongs in the simulator's spread of
+  outcomes for GPP (top 5 −3 min / deep bench +3 min in 21+ point games), not the mean.
+
+**Revisit:** with logged 2026-27 spreads once they cover about 500 games.
