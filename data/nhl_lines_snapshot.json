@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-28T14:29:32+00:00",
+"generated_at": "2026-10-28T14:59:24+00:00",
 "goalies": {
 "2026-10-28": {
 "CGY": {
@@ -45,7 +45,7 @@
 "status": null
 },
 "BUF": {
-"goalie": "Colten Ellis",
+"goalie": "Ukko-Pekka Luukkonen",
 "status": null
 },
 "CAR": {
@@ -85,11 +85,11 @@
 "status": null
 },
 "NYI": {
-"goalie": "Semyon Varlamov",
+"goalie": "Ilya Sorokin",
 "status": null
 },
 "OTT": {
-"goalie": "Jonas Johansson",
+"goalie": "Samuel Ersson",
 "status": null
 },
 "PIT": {
@@ -101,7 +101,7 @@
 "status": null
 },
 "STL": {
-"goalie": "Jordan Binnington",
+"goalie": "Joel Hofer",
 "status": null
 },
 "TBL": {
@@ -117,7 +117,7 @@
 "status": null
 },
 "WPG": {
-"goalie": "Clay Stevenson",
+"goalie": "Stuart Skinner",
 "status": null
 },
 "WSH": {
@@ -263,6 +263,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Drew Helleson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 12,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 150,
+"toiSeconds": 52
+},
+"last5": {
+"assists": 0,
+"blocks": 9,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 93,
+"toiSeconds": 38
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
 },
 "Jackson Lacombe": {
 "gtd": false,
@@ -469,40 +503,6 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
-},
-"Nick Jensen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 15,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 177,
-"toiSeconds": 29
-},
-"last5": {
-"assists": 0,
-"blocks": 12,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 85,
-"toiSeconds": 30
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
 },
 "Nikita Nesterenko": {
 "gtd": false,
@@ -1565,7 +1565,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2111,7 +2111,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5717,7 +5717,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Dylan Hryckowian": {
@@ -5749,7 +5749,7 @@
 "toiMinutes": 64,
 "toiSeconds": 1
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -5921,9 +5921,9 @@
 "toiMinutes": 71,
 "toiSeconds": 41
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Kyle Capobianco": {
@@ -10719,7 +10719,7 @@
 "toiMinutes": 82,
 "toiSeconds": 29
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -10859,7 +10859,7 @@
 "toiMinutes": 73,
 "toiSeconds": 8
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -10964,7 +10964,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Roman Josi": {
 "gtd": false,
@@ -11032,7 +11032,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Ryan O'Reilly": {
 "gtd": false,
@@ -11339,7 +11339,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -11475,9 +11475,9 @@
 "toiMinutes": 63,
 "toiSeconds": 18
 },
-"line": "D3",
+"line": "D4",
 "pk": "PK1",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Matthew Schaefer": {
@@ -11645,9 +11645,9 @@
 "toiMinutes": 64,
 "toiSeconds": 30
 },
-"line": "D4",
+"line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Semyon Varlamov": {
@@ -11681,7 +11681,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12093,7 +12093,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12299,7 +12299,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15289,7 +15289,7 @@
 "pp": null
 },
 "Alexey Toropchenko": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -15625,7 +15625,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15695,7 +15695,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -18408,7 +18408,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Linus Karlsson": {
 "gtd": false,
@@ -18442,7 +18442,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Marco Rossi": {
 "gtd": false,
@@ -18544,7 +18544,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Tom Willander": {
 "gtd": false,
@@ -18578,7 +18578,7 @@
 "line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Victor Mancini": {
 "gtd": false,
@@ -18783,7 +18783,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -19261,7 +19261,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
