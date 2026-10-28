@@ -343,3 +343,14 @@ def test_injury_report_statuses_give_expected_minutes_by_their_chance_to_dress()
     m7 = a["7"]["minutes"] + sum((1 - p[k]) * (b[k]["7"]["minutes"] - a["7"]["minutes"]) for k in b)
     assert out["7"]["minutes"] == pytest.approx(m7, abs=0.06) and out["7"]["minutes"] > a["7"]["minutes"]
     assert sum(v["minutes"] for v in out.values()) == pytest.approx(240, abs=1.5)   # expected minutes still ~240
+
+
+def test_an_injured_namesake_on_another_team_does_not_take_a_player_off_the_board():
+    # 2026-10-27: Justin Champagnie (WAS) Out; Julian Champagnie (SAS) played 25 min
+    from edge.dfs_run_nba import official_index, _sig
+    from edge.names import norm
+    rows = [("Champagnie", "Justin", "Out", "foot"), ("Sarr", "Alex", "Out", "ankle")]
+    official, sig = official_index(rows, {norm("Justin Champagnie"), norm("Julian Champagnie")})
+    assert official[norm("Justin Champagnie")] == "Out"
+    assert _sig("Julian Champagnie") not in sig       # a real other player: exact name only
+    assert sig[_sig("Alexandre Sarr")] == ["Out"]     # not a known name: initial fallback kept

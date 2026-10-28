@@ -158,6 +158,24 @@ def tonight_status(date: str) -> dict:
     return out
 
 
+def official_index(rows, known: set) -> tuple[dict, dict]:
+    """({norm name: status}, {(last, first initial): [status]}) from the official
+    injury report's rows. The initial fallback exists for a name the report and DK
+    spell differently (Alex / Alexandre Sarr); the report carries no team, so a
+    report name that is itself a known NBA player is never offered to it.
+    2026-10-27: "Justin Champagnie" (WAS) Out matched ("champagnie", "j") and took
+    Julian Champagnie (SAS, 37.8 DK pts, in 34-40% of the Night GPPs' top lineups)
+    off our board -- unique on his DK team, so the 10/26 guard didn't catch it."""
+    from edge import nba_injury_report
+    official, official_sig = {}, {}
+    for last, first, st_, _why in rows:
+        full = nba_injury_report.full_name(last, first)
+        official[norm(full)] = st_
+        if norm(full) not in known:
+            official_sig.setdefault(_sig(full), []).append(st_)
+    return official, official_sig
+
+
 def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
     """(pool, info) for one DK NBA Classic slate: every playable player projected."""
     salaries = dfs.fetch_draftables(gid)
@@ -184,10 +202,8 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         from edge import nba_injury_report
         got = nba_injury_report.latest()
         if got:
-            for last, first, st_, _why in got[1]["rows"]:
-                full = nba_injury_report.full_name(last, first)
-                official[norm(full)] = st_
-                official_sig.setdefault(_sig(full), []).append(st_)
+            known = {norm(hp.get("name") or "") for hp in hist["players"].values()}
+            official, official_sig = official_index(got[1]["rows"], known)
         info["injuries_source"] = f"{nba_injury_report.LAST_SOURCE} + {info['injuries_source']}"
 
     def report_status(name, sig_ok=True):
