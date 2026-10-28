@@ -681,3 +681,50 @@ projections too spread (-1.0 below 8 min, +1.2 above 24) -- shrink toward role
 mean, 0.02-0.04; (3) bench who dress and play 0 min, ~22% of slice-c bench error.
 Fidelity still open: build() lacks since_return, cur_n, cross-season priors and
 nba_availability -- rebuild the harness on nba_minutes_lab.load() + points.
+
+---
+
+## Cycle 9 (target: substitutions) -- no-five roles ignore who is out (2026-10-27) -- NOT SHIPPED
+
+Metric: minutes for actives on teams with a scratched regular ("teammate of a
+scratch"), promoted starters secondary; fit 2024-25, test 2025-26, both states.
+
+**Baseline (shipped, `report`), 2025-26 MAE (bias):** confirmed: all 4.97 (-0.1),
+scratch-teammates 5.04 (-0.1), promoted starters 5.14 (+0.3); inactives: all 5.53,
+scratch-teammates 5.64 (-0.1), promoted starters 7.93 (**-6.6**). RMSE all 6.707 / 7.753,
+n 32,224.
+
+**Hole (critic):** without a five, a player's role blends starter/bench by season
+start rate alone, so whoever inherits a scratched starter's spot keeps his bench
+role. Promoted starters are 6% of the slice and 10% of its squared error; the
+five-known state shows no redistribution bias. 2024-25 shows the same thing (-6.83).
+
+**Fix tested:** logistic P(start | start rate, started last game, position-group vacated
+start rate x (1-s), open starts x (1-s), role/36), fit by Newton on 2024-25
+(w = [-5.54, 4.04, 1.77, 1.19, 1.18, 2.94]). The role is rescaled by a P-weighted
+starter/bench mix and `GAP_COEF["inactives"]` is refit. Script:
+scripts/critic/nba_subs_pstart_fix.py.
+
+| 2025-26, inactives | n | RMSE | MAE | bias |
+|---|---|---|---|---|
+| teammate of a scratch | 29,228 | 7.874 -> 7.829 (dMSE -0.72, se 0.18) | 5.637 -> 5.689 | = |
+| promoted starter | 1,857 | 9.98 -> 9.83 (dMSE -2.9, se 0.95) | 7.93 -> 7.74 | -6.58 -> -5.95 |
+| all | 32,224 | 7.753 -> 7.710 | 5.530 -> 5.589 | |
+
+**Decision: not shipped.**
+- RMSE improves significantly, but MAE gets worse: the probability blend pulls
+  everyone toward the middle.
+- It was not scored in the official-report state (`report_preds`), the path
+  production runs.
+- Production would see only about 30% of the gain, because the Expected-five blend
+  weights the no-five model at 0.3.
+- Most of the -6 bias is still there.
+
+**Next (the likely real fix):** carry the start probability into the 240-minute
+step (`_rank_gap`) as a per-cell starting term, refit on 2024-25, and score both
+states plus `report_preds`.
+
+**Runner-ups:**
+- Bench ranks 7-11 under-projected by 0.3-1.1 in both states, about 30% of the
+  slice's squared error (estimated 0.02-0.04 RMSE).
+- Top-3 roles over by 0.4-0.7 when a teammate is out (about 0.01).
