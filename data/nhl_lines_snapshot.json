@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-28T23:14:41+00:00",
+"generated_at": "2026-10-28T23:29:31+00:00",
 "goalies": {
 "2026-10-28": {
 "CGY": {
@@ -9864,8 +9864,8 @@
 "toiSeconds": 24
 },
 "line": "D3",
-"pk": null,
-"pos": "ld",
+"pk": "PK2",
+"pos": "rd",
 "pp": null
 },
 "Brett Pesce": {
@@ -9970,40 +9970,38 @@
 "pos": "rw",
 "pp": null
 },
-"Connor Hellebuyck": {
+"Declan Chisholm": {
 "gtd": false,
 "injury": null,
 "last10": {
+"assists": 1,
+"blocks": 9,
 "gamesPlayed": 10,
-"goalieGoalsAgainst": 28,
-"goalieGoalsAgainstAvg": "2.91",
-"goalieLosses": 4,
-"goalieMinutes": 577,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.882",
-"goalieSaves": 210,
-"goalieSeconds": 43,
-"goalieShotsAgainst": 238,
-"goalieShutouts": 0,
-"goalieWins": 6
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 147,
+"toiSeconds": 33
 },
 "last5": {
+"assists": 0,
+"blocks": 4,
 "gamesPlayed": 5,
-"goalieGoalsAgainst": 16,
-"goalieGoalsAgainstAvg": "3.43",
-"goalieLosses": 2,
-"goalieMinutes": 280,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.869",
-"goalieSaves": 106,
-"goalieSeconds": 0,
-"goalieShotsAgainst": 122,
-"goalieShutouts": 0,
-"goalieWins": 3
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 76,
+"toiSeconds": 6
 },
-"line": "G2",
+"line": "D3",
 "pk": null,
-"pos": "g",
+"pos": "ld",
 "pp": null
 },
 "Dougie Hamilton": {
@@ -10212,40 +10210,6 @@
 "pos": "rw",
 "pp": "PP1"
 },
-"Johnathan Kovacevic": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 166,
-"toiSeconds": 35
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 79,
-"toiSeconds": 30
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "rd",
-"pp": null
-},
 "Jonas Siegenthaler": {
 "gtd": false,
 "injury": null,
@@ -10381,6 +10345,42 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP1"
+},
+"Remi Poirier": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 3,
+"goalieGoalsAgainstAvg": "1.3",
+"goalieLosses": 1,
+"goalieMinutes": 137,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.942",
+"goalieSaves": 49,
+"goalieSeconds": 46,
+"goalieShotsAgainst": 52,
+"goalieShutouts": 1,
+"goalieWins": 2
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 3,
+"goalieGoalsAgainstAvg": "1.3",
+"goalieLosses": 1,
+"goalieMinutes": 137,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.942",
+"goalieSaves": 49,
+"goalieSeconds": 46,
+"goalieShotsAgainst": 52,
+"goalieShutouts": 1,
+"goalieWins": 2
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
 },
 "Timo Meier": {
 "gtd": false,
