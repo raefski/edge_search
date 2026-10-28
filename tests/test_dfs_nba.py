@@ -232,14 +232,14 @@ def test_the_role_weights_this_season_against_a_one_game_prior_of_last_season():
 def test_a_lottery_rookie_starts_from_his_draft_pick_and_a_late_pick_lower():
     def mins(pick):
         team = [{"id": "r", "position": "G", "inactive": False, "starter": None, "history": [], "pick": pick}]
-        return NM.project(team, {"SALARY_NUDGE": None})["r"]["minutes"]
+        return NM.project(team)["r"]["minutes"]
     assert mins(1) == pytest.approx(22.19, abs=0.1) and mins(30) < mins(10) < mins(1)
 
 
 def test_the_first_games_back_from_an_absence_are_ramped():
     team = [{"id": "x", "position": "G", "inactive": False, "starter": None, "history": [(30.0, True)] * 20,
              "since_return": 0}]
-    assert NM.project(team, {"SALARY_NUDGE": None})["x"]["minutes"] == pytest.approx(30 * NM.RAMP[0], abs=0.1)
+    assert NM.project(team)["x"]["minutes"] == pytest.approx(30 * NM.RAMP[0], abs=0.1)
 
 
 def test_a_short_handed_team_gives_the_extra_minutes_to_the_bench_end_not_the_star():
@@ -252,7 +252,7 @@ def test_a_short_handed_team_gives_the_extra_minutes_to_the_bench_end_not_the_st
     assert sum(p["minutes"] for p in out.values()) == pytest.approx(240, abs=0.6)
     gain = {i: out[str(i)]["minutes"] - roles[i] for i in range(12)}
     assert abs(gain[0]) < 1.0 and sum(gain[i] for i in range(7, 12)) > sum(gain[i] for i in range(5))
-    assert NM.SALARY_NUDGE is None                                      # cycle 1: salary adds nothing now
+    assert not hasattr(NM, "SALARY_NUDGE")                              # deleted 10/28: added nothing
 
 
 def test_a_regular_starter_left_out_of_the_five_is_cut_and_a_bench_role_reads_the_last_game():

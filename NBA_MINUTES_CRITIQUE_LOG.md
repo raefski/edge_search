@@ -871,3 +871,28 @@ team-boards (25%) on logged builds since 10/20 had a posted five but projected a
 if either says so. Day files used by the backtests have no duplicates (0 of 497), so no
 held-out number moves. Replay of the 10/27 Main board (7:07 PM snapshot): Paul Reed 20.6 ->
 24.7 min, 24.5 -> 31.6 pts, own 13 -> 75% (field 60-83%, actual 43.2).
+
+## Cycle 14 -- "Musk algorithm" review: question, delete, simplify, accelerate, automate (2026-10-28)
+
+**Delete** (each part switched back to v1, held out 2025-26, RMSE change confirmed / no five):
+start/bench split +0.55 / 0; EWMA role +0.37 / +0.21; last-season prior (kappa 0) +0.22 / +0.09;
+rank-gap 240 +0.15 / +0.05; drop cut +0.14 / 0; return ramp +0.07 / +0.13; recency boost
++0.07 / +0.07; start/bench means +0.03 / 0; rookie prior +0.005 / +0.01; **starter tilt and
+v2's power 240 share: 0.000 / 0.000 -- unreachable under rank-gap (a full team returns from
+it first). DELETED** with the OFF salary nudge and the ALLOC switch; production output
+identical on 3,000 team-games (1,500 real 2025-26 + short-handed variants). Redistribution
+(ROLE_POW_V2 / POS_W_V2) also scored 0.000 but is the only allocation for a team with < 8
+active, so it stays. project_v1 stays (the lab's v1 baseline, nba_minutes_backtest.py).
+
+**Simplify:** the rank-gap cells were last fitted at cycle 5. `refit-gap` (new) refits them on
+2024-25 against today's roles. Held out 2025-26: RMSE confirmed 6.708 -> 6.706, no five 7.753 ->
+7.719, but MAE 4.970 -> 4.998 / 5.530 -> 5.596 and the live replay confirmed 6.751 -> 6.756.
+**Not written** (both states must improve). Coarser cells (8 ranks, 36 vs 56) matched on test
+but lost on train (6.541 vs 6.532); 13 stays. prior_kappa: train keeps 1.0.
+
+**Accelerate:** `load()` now caches D in data/cache/nba_minutes_lab/ keyed on every input file
+(box scores, lineups, injury reports) and the lab + model source: 325 s -> 1 s, so a lab
+cycle is ~10 s, not ~5.5 min.
+
+**Automate:** after any change to the roles, run `nba_minutes_lab.py refit-gap` (it prints
+both states and the live replay) -- the stale cells went unnoticed for 8 cycles.

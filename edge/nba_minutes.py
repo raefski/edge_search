@@ -118,10 +118,9 @@ MS_KAPPA = 3.0
 #: Redistribution of missing minutes (refitted with the split).
 ROLE_POW_V2 = 0.25
 POS_W_V2 = 0.25
-#: The 240 share: m^ALLOC_POW x (1 + STARTER_TILT x starting) (starting = the
-#: announced flag, else the start rate).
-ALLOC_POW = 1.0
-STARTER_TILT = 0.05
+#: (Deleted 2026-10-28: ALLOC_POW / STARTER_TILT, v2's 240 share. Under the rank-gap step
+#: it was unreachable -- a full team returns from rank_gap first -- and removing it changed
+#: no output on 3,000 team-games. The lab keeps its own copy for the v2 ablation chain.)
 #: First, second, third game back from a 5+ team-game absence (fitted 0.75 / 0.85;
 #: 0.8 / 0.9 held out better on 2025-26: first game back bias +3.0 -> -0.6).
 RAMP = (0.8, 0.9, 1.0)
@@ -133,18 +132,17 @@ ROOKIE_PRIOR = (22.19, -4.28)
 ROOKIE_K = 0.5
 #: Undrafted / unknown pick.
 PICK_UNDRAFTED = 70
-#: DK salary on top of the model: minutes = a + b x model + c x salary ($k). It helped v2
-#: (leave one night out, 11 salary nights, 1,517 player-games: MAE 5.141 -> 4.973) only
-#: because v2's 240 step squeezed stars; after critique cycle 1's rank-gap allocation it
-#: adds nothing (4.830 -> 4.834), so it is OFF. (-2.22, 1.031, 0.365) was the v2 fit.
-SALARY_NUDGE = None
+#: (Deleted 2026-10-28: SALARY_NUDGE. DK salary on top of the model helped v2 only because
+#: v2's 240 step squeezed stars; after the rank-gap step it added nothing, 4.830 -> 4.834
+#: MAE, and had been OFF since. (-2.22, 1.031, 0.365) was the v2 fit.)
 #: Critique cycle 1 (NBA_MINUTES_CRITIQUE_LOG.md): the team's gap to 240 is closed by ROLE
 #: RANK. v2 added every inactive regular's minutes back (most of them already out for days,
 #: their absence already in teammates' roles) and then shared 240 in proportion to role, so
 #: stars moved as much as the bench. In the data stars barely move and ranks 8-12 absorb the
 #: gap. Held out 2025-26, starters confirmed: RMSE 6.810 -> 6.692, MAE 5.26 -> 5.03;
 #: inactives only 7.649 -> 7.474. Coefficients: edge/nba_minutes_gap.py (generated).
-ALLOC = "rank_gap"
+#: A full team (FULL_ROSTER+ active) always takes it; a short-handed one keeps the
+#: redistribution below (ROLE_POW_V2 / POS_W_V2).
 #: Critique cycle 2: is the coach playing him RIGHT NOW? A non-starter's role (bench role
 #: once the five is announced; start rate < 0.5 before) moves RECENCY_LAM of the way to his
 #: last game's minutes (a DNP counts 0), if his start rate < RECENCY_TAU; a regular starter
@@ -337,8 +335,8 @@ def project(team: list, params: dict | None = None) -> dict:
     Returns {id: {"minutes", "base", "promoted", "share"}} for active players."""
     import math
 
-    p = {"ROLE_POW": ROLE_POW_V2, "POS_W": POS_W_V2, "ALLOC_POW": ALLOC_POW, "STARTER_TILT": STARTER_TILT,
-         "RAMP": RAMP, "ROOKIE_PRIOR": ROOKIE_PRIOR, "ROOKIE_K": ROOKIE_K, "SALARY_NUDGE": SALARY_NUDGE,
+    p = {"ROLE_POW": ROLE_POW_V2, "POS_W": POS_W_V2,
+         "RAMP": RAMP, "ROOKIE_PRIOR": ROOKIE_PRIOR, "ROOKIE_K": ROOKIE_K,
          "RECENCY_LAM": RECENCY_LAM, "DROP_Q": DROP_Q, "EXPECTED_W": EXPECTED_W,
          **(params or {})}
     if p["EXPECTED_W"] is not None and any(pl.get("starter") and pl.get("confirmed") is False for pl in team):
@@ -387,7 +385,7 @@ def project(team: list, params: dict | None = None) -> dict:
         start_[pl["id"]] = (1.0 if pl["starter"] else 0.0) if pl.get("starter") is not None else s
         promoted[pl["id"]] = bool(pl.get("starter")) and r["start_rate"] < 0.5
     active = [pl for pl in team if not pl["inactive"]]
-    if p.get("ALLOC", ALLOC) == "rank_gap" and len(active) >= FULL_ROSTER:
+    if len(active) >= FULL_ROSTER:
         from edge.nba_minutes_gap import GAP_COEF
         mode = "confirmed" if any(pl.get("starter") is not None for pl in team) else "inactives"
         mins, slope = rank_gap({pl["id"]: roles_[pl["id"]] for pl in active}, GAP_COEF[mode])
@@ -407,25 +405,6 @@ def project(team: list, params: dict | None = None) -> dict:
         weights[pl["id"]] = max(roles_[pl["id"]], 1.0) ** p["ROLE_POW"] * (1 + p["POS_W"] * min(1.0, share))
     tw = sum(weights.values()) or 1.0
     mins = {pl["id"]: min(48.0, max(0.0, roles_[pl["id"]] + missing * weights[pl["id"]] / tw)) for pl in active}
-    if sum(mins.values()) > 0 and len(active) >= FULL_ROSTER:
-        w = {i: max(m, 0.0) ** p["ALLOC_POW"] * (1 + p["STARTER_TILT"] * start_[i]) for i, m in mins.items()}
-        free, fixed, trial = dict(w), {}, {}
-        for _ in range(5):                      # nobody past 48: cap and re-share the rest
-            room = TEAM_MIN - sum(fixed.values())
-            ws = sum(free.values()) or 1.0
-            trial = {i: room * x / ws for i, x in free.items()}
-            over = [i for i, m in trial.items() if m > 48.0]
-            if not over:
-                break
-            for i in over:
-                fixed[i] = 48.0
-                free.pop(i)
-        mins = {**trial, **fixed}
-    nudge = p["SALARY_NUDGE"]
-    if nudge and active and all(pl.get("salary") for pl in active):
-        a0, a1, a2 = nudge
-        mins = {pl["id"]: min(48.0, max(0.0, a0 + a1 * mins[pl["id"]] + a2 * pl["salary"] / 1000.0))
-                for pl in active}
     return {pl["id"]: {"minutes": round(mins[pl["id"]], 1), "base": round(roles_[pl["id"]], 1),
                        "promoted": promoted[pl["id"]], "share": round(weights[pl["id"]] / tw, 3)}
             for pl in active}
