@@ -185,15 +185,24 @@ if "unavailable" in (info.get("role_source"), info.get("season_source")):
                 "ice time and production.</div>", unsafe_allow_html=True)
 
 
+def _val(p) -> str:
+    """Value: projected DK points per $1,000 of salary (Adam, 10/28)."""
+    try:
+        return f"{float(p['proj']) * 1000 / p['salary']:.1f}" if p.get("salary") else "-"
+    except (TypeError, ValueError):
+        return "-"
+
+
 def _table(result) -> str:
     body = "".join(
         f"<tr><td class='pos'>{slot}</td><td class='nm'>{p['name']}</td>"
         f"<td>{p['team']}</td><td>{p.get('line') or ''} {p.get('pp') or ''}</td>"
         f"<td class='num'>{p['salary']:,}</td><td class='num'>{p['proj']:.1f}</td>"
+        f"<td class='num'>{_val(p)}</td>"
         f"<td class='num'>{p['floor']:.0f}</td><td class='num'>{p['ceil']:.0f}</td>"
         f"<td class='num'>{p.get('own', 0):.0f}%</td></tr>" for slot, p in result["slots"])
     return ("<div class='lu-wrap'><table class='lu'><tr><th>Pos</th><th>Player</th>"
-            "<th>Tm</th><th>Line</th><th>$</th><th>Pts</th><th>Flr</th><th>Ceil</th>"
+            "<th>Tm</th><th>Line</th><th>$</th><th>Pts</th><th>Val</th><th>Flr</th><th>Ceil</th>"
             "<th>Own</th></tr>" + body + "</table></div>")
 
 

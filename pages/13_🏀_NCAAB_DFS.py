@@ -61,6 +61,15 @@ def _cbb_leverage_for(gid, sims: int, iters: int, _nonce: int, contest: dict):
                             _cbb_build(gid, sims, iters, _nonce)["sim"], contest)
 
 
+def _val(p) -> str:
+    """Value: projected DK points per $1,000 of salary (Adam, 10/28)."""
+    try:
+        return f"{float(p['proj']) * 1000 / p['salary']:.1f}" if p.get("salary") else "-"
+    except (TypeError, ValueError):
+        return "-"
+
+
+
 def _portfolio(res, n, iters):
     return dfs_opt_ncaab.portfolio(res["pool"], res["sim"], n, iters=iters)
 
@@ -134,10 +143,11 @@ def table(result) -> str:
         f"<tr><td class='pos'>{slot}</td><td class='nm'><div>{_name(p)}</div></td>"
         f"<td>{p['team']}</td><td class='tip'>{_tip(p.get('start'))}</td>"
         f"<td class='num'>{p['salary']:,}</td><td class='num'>{p['proj']:.1f}</td>"
+        f"<td class='num'>{_val(p)}</td>"
         f"<td class='num'>{p['floor']:.0f}</td><td class='num'>{p['ceil']:.0f}</td>"
         f"<td class='num'>{p.get('own', 0):.0f}%</td></tr>" for slot, p in result["slots"])
     return ("<div class='lu-wrap'><table class='lu'><tr><th>Pos</th><th>Player</th>"
-            "<th>Tm</th><th>Tip</th><th>$</th><th>Pts</th><th>Flr</th><th>Ceil</th>"
+            "<th>Tm</th><th>Tip</th><th>$</th><th>Pts</th><th>Val</th><th>Flr</th><th>Ceil</th>"
             "<th>Own</th></tr>" + body + "</table></div>")
 
 

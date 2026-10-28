@@ -53,9 +53,9 @@ h1 {font-size: 1.55rem !important; margin-bottom: .1rem;}
 .lu-wrap {overflow-x:auto;}
 table.lu {width:100%; border-collapse:collapse; font-size:14px;}
 table.lu th {text-align:left; color:#7f8a9c; font-weight:600; font-size:11px;
-             text-transform:uppercase; padding:2px 5px;
+             text-transform:uppercase; padding:2px 4px;
              border-bottom:1px solid rgba(255,255,255,.16);}
-table.lu td {padding:5px 5px; border-bottom:1px solid rgba(255,255,255,.07);
+table.lu td {padding:5px 4px; border-bottom:1px solid rgba(255,255,255,.07);
              vertical-align:top;}
 table.lu td.nm {white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px;}
 table.lu td.nm small {display:block; color:#7f8a9c; font-size:11px;}
@@ -68,6 +68,14 @@ table.lu td.num {text-align:right; font-variant-numeric:tabular-nums; white-spac
        padding:7px 10px; font-size:12.5px; margin:2px 0 10px; line-height:1.5;}
 </style>
 """, unsafe_allow_html=True)
+
+
+def _val(p) -> str:
+    """Value: projected DK points per $1,000 of salary (Adam, 10/28)."""
+    try:
+        return f"{float(p['proj']) * 1000 / p['salary']:.1f}" if p.get("salary") else "-"
+    except (TypeError, ValueError):
+        return "-"
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -235,9 +243,10 @@ def render(result: dict, mode: str) -> None:
         f"<td class='num'>{r['salary']:,}</td>"
         f"<td class='num'>{_pct(r['p_win'])}</td>"
         f"<td class='num'>{r['proj']:.0f}</td>"
+        f"<td class='num'>{_val(r)}</td>"
         f"<td class='num'>{r['own']:.0f}%</td></tr>" for r in R.lineup_rows(result))
     st.markdown("<div class='lu-wrap'><table class='lu'>"
-                "<tr><th>Fighter</th><th>$</th><th>Win</th><th>Pts</th><th>Own</th></tr>"
+                "<tr><th>Fighter</th><th>$</th><th>Win</th><th>Pts</th><th>Val</th><th>Own</th></tr>"
                 f"{body}</table></div>", unsafe_allow_html=True)
     if result.get("captain"):
         st.caption("Captain Mode: the **CPT** scores 1.5× and costs 1.5× — "

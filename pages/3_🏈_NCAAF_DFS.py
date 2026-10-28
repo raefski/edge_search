@@ -84,6 +84,14 @@ table.lu td.num {text-align:right; font-variant-numeric:tabular-nums; white-spac
 
 
 # ── data ────────────────────────────────────────────────────────────────────
+def _val(p) -> str:
+    """Value: projected DK points per $1,000 of salary (Adam, 10/28)."""
+    try:
+        return f"{float(p['proj']) * 1000 / p['salary']:.1f}" if p.get("salary") else "-"
+    except (TypeError, ValueError):
+        return "-"
+
+
 @st.cache_data(ttl=300, show_spinner=False)
 def _cfb_slates(_nonce: int):
     from edge import dfs
@@ -328,10 +336,11 @@ def render(result, mode: str) -> None:
         f"<td class='team'>{r['team']} v {r['opp']}</td>"
         f"<td class='num'>{r['salary']:,}</td>"
         f"<td class='num'>{r['proj']}</td>"
+        f"<td class='num'>{_val(r)}</td>"
         f"<td class='num'>{r['own']:.0f}%</td></tr>" for r in rows)
     st.markdown("<div class='lu-wrap'><table class='lu'>"
                 "<tr><th>Slot</th><th>Player</th><th>Match</th><th>$</th>"
-                "<th>Pts</th><th>Own</th></tr>"
+                "<th>Pts</th><th>Val</th><th>Own</th></tr>"
                 f"{body}</table></div>", unsafe_allow_html=True)
     st.caption(
         f"Objective: mean {'−' if mode == 'cash' else '+'} "

@@ -52,6 +52,14 @@ CACHE_DIR = ROOT / "data/cache"
 LEDGER = ROOT / "data/odds_api_credits.json"
 
 
+def _val(p) -> str:
+    """Value: projected DK points per $1,000 of salary (Adam, 10/28)."""
+    try:
+        return f"{float(p['proj']) * 1000 / p['salary']:.1f}" if p.get("salary") else "-"
+    except (TypeError, ValueError):
+        return "-"
+
+
 # ── API key: env / .env / Streamlit secrets, overridable in the sidebar ──────
 def _bootstrap_key() -> None:
     if os.environ.get("ODDS_API_KEY"):
@@ -594,9 +602,9 @@ def render_app() -> None:
             f"<tr><td class='pos'>{r['slot']}</td>"
             f"<td class='nm'>{r['player']}{_PROJ_STAR if r.get('projected') else ''}</td>"
             f"<td class='team'>{r['team']}</td><td class='num'>{r['salary']:,}</td>"
-            f"<td class='num'>{r['proj']}</td></tr>" for r in rows)
+            f"<td class='num'>{r['proj']}</td><td class='num'>{_val(r)}</td></tr>" for r in rows)
         st.markdown("<div class='lu-wrap'><table class='lu'>"
-                    "<tr><th>Pos</th><th>Player</th><th>Tm</th><th>$</th><th>Pts</th></tr>"
+                    "<tr><th>Pos</th><th>Player</th><th>Tm</th><th>$</th><th>Pts</th><th>Val</th></tr>"
                     f"{body}</table></div>", unsafe_allow_html=True)
 
     def _rows_for(mode):

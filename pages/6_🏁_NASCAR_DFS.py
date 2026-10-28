@@ -101,6 +101,14 @@ table.lu td.num {text-align:right; font-variant-numeric:tabular-nums; white-spac
 """, unsafe_allow_html=True)
 
 
+def _val(p) -> str:
+    """Value: projected DK points per $1,000 of salary (Adam, 10/28)."""
+    try:
+        return f"{float(p['proj']) * 1000 / p['salary']:.1f}" if p.get("salary") else "-"
+    except (TypeError, ValueError):
+        return "-"
+
+
 @st.cache_data(ttl=300, show_spinner=False)
 def _nascar_slates(_nonce: int):
     from edge import dfs
@@ -264,11 +272,12 @@ def render(result, mode: str) -> None:
         f"<td class='nm'>{r['driver']}</td>"
         f"<td class='num'>{r['salary']:,}</td>"
         f"<td class='num'>{r['proj']}</td>"
+        f"<td class='num'>{_val(r)}</td>"
         f"<td class='num'>{r['floor']}</td>"
         f"<td class='num'>{r['ceil']}</td>"
         f"<td class='num'>{r['own']:.0f}%</td></tr>" for r in R.lineup_rows(result))
     st.markdown("<div class='lu-wrap'><table class='lu'>"
-                "<tr><th>Start</th><th>Driver</th><th>$</th><th>Pts</th>"
+                "<tr><th>Start</th><th>Driver</th><th>$</th><th>Pts</th><th>Val</th>"
                 "<th>Floor</th><th>Ceil</th><th>Own</th></tr>"
                 f"{body}</table></div>", unsafe_allow_html=True)
     st.caption(
