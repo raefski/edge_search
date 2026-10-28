@@ -72,6 +72,14 @@ P_OT_GOAL = 0.635
 SHOT_K = 19.4
 BLOCK_K = 11.4
 TEAM_SHOT_K = 70.0
+#: Skater draws run high as a whole: simulated means vs box-score DK points on
+#: the 11 TRAIN nights before 2026-10-13 (lab, 4 seeds, 2,196 skater-games) give
+#: sum(actual)/sum(proj) 0.975 at lock, 0.977 at lock-3h. The excess is spread
+#: over every component (blocks, bonuses, shots, assists; NHL_CRITIQUE_LOG cycle 8)
+#: and the per-player input means land on the box, so it is the simulator's.
+#: Held out (13 nights, 2,962): bias +0.173 -> +0.001, MAE 4.478 -> 4.444,
+#: RMSE 5.970 -> 5.965 at lock; early 4.490 -> 4.458. Ranking unchanged.
+SKATER_SCALE = 0.976
 
 
 # ---------------------------------------------------------------------------
@@ -297,6 +305,8 @@ def simulate(pool: list[dict], games: dict, n_sims: int = 2000, seed: int = 0) -
                     sa = sa * (target + ga_.mean()) / expected_sa
                 saves = np.maximum(np.rint(sa) - ga_, 0)
                 out[:, i] = nhl.goalie_points(saves, ga_, won[t], ot_loss[t], ga_ == 0)
+    skaters = [i for i, p in enumerate(pool) if p["pos"] != "G"]
+    out[:, skaters] *= SKATER_SCALE
     return out
 
 

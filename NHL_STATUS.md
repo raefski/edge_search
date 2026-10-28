@@ -60,6 +60,10 @@ Line stacks, PP stacks and goalie-vs-opposing-skater anti-correlation come out
 of the simulation; the tests check linemates correlate more than non-linemates
 and a goalie correlates negatively with the skaters he faces.
 
+Skater draws are then scaled by `SKATER_SCALE` 0.976 (2026-10-27, critique cycle 8):
+the simulator ran +0.17 pts a skater high on every component, fitted on the 11
+train nights, held out bias +0.17 -> 0.00, MAE 4.478 -> 4.445 at lock. Goalies untouched.
+
 **Fitted on 2025-26 (1,311 games):** goals per team-game 3.128; assists per goal
 1.689; 24.9% of games reach OT/SO (independent Poisson says 16.8% — so a
 one-goal game is pulled level 25% of the time) and 63.5% of those end on an OT

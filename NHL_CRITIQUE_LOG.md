@@ -495,3 +495,44 @@ Runner-ups: (1) opponent xG 3.16-3.20 vs actual GA 2.94-2.99 on both splits/stat
 pts a goalie -- check whether empty-netters sit in the goalie's goals against (calibration,
 not ranking); (2) saves-prop bias +1.0 train / +0.07 test, too unstable to offset;
 (3) starters with no saves prop: 21 in test, rho +0.68, MAE 6.16 -- too few.
+
+## Cycle 8: the simulator over-projects every skater by ~0.17 pts -- SHIPPED (scale 0.976)
+
+Baseline (4 seeds), as cycle 7's shipped model:
+
+| state | split | nights | skater-games | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|---|---|---|
+| lock | train | 11 | 2,196 | 4.568 | 6.076 | +0.172 | +0.367 |
+| lock | test | 13 | 2,962 | 4.478 | 5.970 | +0.173 | +0.404 |
+| early | train | 11 | 2,176 | 4.577 | 6.094 | +0.158 | +0.371 |
+| early | test | 13 | 2,923 | 4.490 | 5.995 | +0.164 | +0.397 |
+
+**Critic #8: no mean hole that ranks; a uniform +0.17 over-projection.** Night-level bias
+train +0.21 (se 0.12, 7/11 nights positive), test +0.30 (se 0.13, 10/13); early the same.
+The per-player input means land on the box (test linear points 6.404 vs 6.366), so the
+excess is the simulator's, spread over components per skater-game on test: blocks +0.04,
+bonuses +0.06 (5+ shots 4.6% simulated vs 4.1%), assists +0.03, goals/shots +0.02 each.
+Train-fit refits on salary/FPPG/TOI add nothing (best test RMSE 5.961, rho +0.406).
+The 2025-26 season lab shows the same sign out of season (H1 +0.187, H2 +0.300).
+
+**Fix.** `edge/nhl_sim.SKATER_SCALE` multiplies every skater's draws (goalies untouched,
+percentiles stay consistent). Fit on TRAIN as sum(actual)/sum(proj): 0.9751 lock, 0.9772
+early; shipped 0.976 for both. The lab calls the production simulator, so lab == production.
+
+| state | split | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|---|
+| lock | test, before | 4.478 | 5.970 | +0.173 | +0.404 |
+| lock | test, shipped | 4.445 | 5.965 | +0.007 | +0.404 |
+| early | test, before | 4.490 | 5.995 | +0.164 | +0.397 |
+| early | test, shipped | 4.456 | 5.989 | -0.003 | +0.397 |
+
+RMSE gain is below what 13 nights resolve; the bias removal is ~2.3 se. Shipped because
+held out improves in both states and the sign holds on both splits and both season halves.
+Cross-position effect: skaters now lose ~2.4% against goalies in the optimizer.
+
+Runner-ups: (1) DK's +2 shorthanded-point and +1.5 shootout-goal bonuses are missing from
+both grader and simulator (vs DK FPTS on 18 nights / 3,674 rows: 3.4% of rows differ,
+mean +0.04) -- add both; refit the scale after; (2) the over-wide 5+ shot / 3+ block tails:
+refit SHOT_K/BLOCK_K in the season lab (H1) rather than a scale; (3) report a
+"scratches = 0" RMSE beside the current one (82 at lock, 133 early are excluded).
+The $6.5k+ slice flips sign between splits (train -0.68, test +0.55): don't fit tiers.
