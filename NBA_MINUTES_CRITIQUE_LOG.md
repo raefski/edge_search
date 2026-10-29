@@ -1086,3 +1086,61 @@ part of his excess production (his rate over theirs) made up on top of that?
 - Refit pooled on 2024-25 + 2025-26 and judge on 2026-27 star-outs once about
   30 team-games exist.
 - Use the on/off table's per-star shrinkage as a prior for α.
+
+## Cycle 20 (2026-10-29, target: DK-points bias by salary tier) — NOT SHIPPED
+
+**Question.** scripts/pool_coverage.py (10/29) reported $8.5k+ under-projected by
+2.51 pts (n 52, 10 slates) and sub-$4k over by 2.07. Is there a tier bias to fix?
+
+**Harness.** `scripts/critic/nba_tier_bias.py`. In the lab (leak-free, train
+2024-25, held out 2025-26) the tier is the projection, because past seasons have no
+salaries. Live 2026-27 (last pre-lock row per draft group vs box score, 9 dates) is
+tiered by real DK salary. Bias = proj − actual.
+
+**Baseline**
+
+| tier | lab 2024-25 | lab 2025-26 | live 2026-27 (salary) |
+|---|---|---|---|
+| top (40+ / $8.5k+) | −0.78 (2,090) | −0.19 (1,694) | +0.26 (64) |
+| 30-40 / $6.5-8.5k | −0.19 | −0.10 | −0.48 (223) |
+| 20-30 / $5-6.5k | +0.33 | +0.31 | +0.81 (298) |
+| 15-20 / $4-5k | +0.12 | +0.31 | +0.47 (346) |
+| <15 / <$4k | −0.30 | −0.54 | −0.08 (505) |
+| all MAE | 6.8525 | 6.9605 | 7.4254 (1,436) |
+
+**The 2.5-pt finding was selection.** pool_coverage looked only at players in
+winning lineups, which conditions on the outcome. In the lab, 40+ projected players
+whose actual was at or above the median show bias −9.7 / −9.0 (train / held out),
+against −0.78 / −0.19 for all of them.
+
+**Critic's hole (small).** Projections are pulled too far from recent DK output:
+proj − L10 DK mean is −2.55 for L10 40+ and +1.10 for L10 <15. Held-out bias by L10
+tier: 40+ −0.39 (n 1,977), 30-40 −0.40 (3,776), <15 −0.16 (11,960). A linear
+recalibration of the projection (slope 0.996) makes MAE worse (+0.022 held out).
+
+**Fix tested.** proj' = proj + w·(L10_DK − proj), with w fitted on 2024-25 = 0.10
+(train MAE 6.8525 → 6.8478).
+
+| held out 2025-26 | before → after |
+|---|---|
+| MAE (n 28,317 / 155 dates) | 6.9605 → 6.9540, Δ −0.0065, CI −0.0127…+0.00002 |
+| bias, L10 40+ | −0.39 → −0.13 |
+| bias, L10 30-40 | −0.40 → −0.27 |
+| bias, L10 <15 | −0.16 → −0.27 |
+
+**Decision: not shipped.**
+- The CI touches zero.
+- RMSE was not checked.
+- Whether L10 includes zero-minute entries (injury returns) is unverified.
+- It patches over the shrinkage in `NP.rate` / `NM.project` instead of tuning that
+  shrinkage directly.
+
+Next: tune the rate shrink (`RATE_MIN_MINUTES`) on train, with both MAE and RMSE as
+guardrails; check on 2026-27 at around 30 dates.
+
+**Runner-ups.**
+1. Errors are right-skewed, so MAE penalises any upward shift. Use RMSE as a second
+   guardrail for bias fixes.
+2. <15 tier −0.54 held out: rare bench blowup minutes.
+3. Diagnostics of the "winners' players" kind should report bias over the whole
+   board by salary.
