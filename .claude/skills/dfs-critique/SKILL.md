@@ -1,6 +1,6 @@
 ---
 name: dfs-critique
-description: Run ONE cycle of the recursive self-improvement loop on a DFS sport's projection model -- a fresh, independent critic agent finds the single biggest hole, you fix it, re-measure held out, ship only if it improves, and log it. Use when Adam says "run a critique cycle", "/dfs-critique <sport>", or asks to improve a sport's model the critic way. Argument: the sport (nba, ncaab, nhl, nfl, ncaaf, mlb, nascar, mma) or a non-projection model (overlay), optionally followed by a target ("nhl goalies", "nascar dk points", "nba ownership").
+description: Run ONE cycle of the recursive self-improvement loop on a DFS sport's projection model -- a fresh, independent critic agent finds the single biggest hole, you fix it, re-measure held out, ship only if it improves, and log it. Use when Adam says "run a critique cycle", "/dfs-critique <sport>", or asks to improve a sport's model the critic way. Argument: the sport (nba, ncaab, nhl, nfl, ncaaf, mlb, nascar, mma) or a non-projection model (overlay), optionally followed by a target ("nhl goalies", "nascar dk points", "nba ownership", "nba availability" = who is out / starting).
 ---
 
 # One critique cycle on a DFS model
@@ -17,6 +17,16 @@ correlation vs projection, per slate; "ownership" -> GPP %Drafted MAE, cash neve
 pooled), say which metric you chose, give the critic THAT metric and only that, and
 log the cycle under the sport's log with the target in its heading. Ownership
 targets use contests.db exports (scripts/model_accuracy.py), held out by slate.
+
+**Availability target** (`/dfs-critique <sport> availability`): who the board had as
+out vs. playing and as starting / in the role at build time, vs. what happened. Metric
+per held-out slate: false active (projected, didn't play: count + projected points and
+our exposure), false out / missed role (zeroed or under-rolled, played: count + value
+per $1k left out), starter precision/recall, and lead time (public vs. our board vs.
+lock). Spawn `dfs-availability-critic` instead of `dfs-model-critic`. If the sport has
+no timestamped pre-lock state log to measure this against, building that log + a
+replay script (`scripts/availability_lab.py <sport> report --cutoff`) is the cycle's
+work. Log under the sport's log as "Cycle N (availability)".
 
 ## 1. The sport's target metric and where things are
 
@@ -47,7 +57,7 @@ with a header and "Cycle 0" holding that table.
 
 ## 3. Spawn the critic (fresh agent, knows nothing)
 
-Agent tool, `subagent_type: "dfs-model-critic"` (if not registered this session, use
+Agent tool, `subagent_type: "dfs-model-critic"` (`"dfs-availability-critic"` for the availability target) (if not registered this session, use
 `general-purpose` and paste `.claude/agents/dfs-model-critic.md`'s body as the prompt).
 Give it: sport, target metric, the files above, the log, the data locations, the
 held-out split, a scratch dir (`<scratchpad>/critic-<sport>-<n>`), and the deliverable
