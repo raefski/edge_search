@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-29T15:59:12+00:00",
+"generated_at": "2026-10-29T16:29:26+00:00",
 "goalies": {
 "2026-10-29": {
 "ANA": {
@@ -20,7 +20,7 @@
 },
 "CBJ": {
 "goalie": "Jet Greaves",
-"status": null
+"status": "Confirmed"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -52,7 +52,7 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": null
+"status": "Likely"
 },
 "OTT": {
 "goalie": "Jonas Johansson",
@@ -68,7 +68,7 @@
 },
 "STL": {
 "goalie": "Joel Hofer",
-"status": null
+"status": "Likely"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -3104,6 +3104,40 @@
 "pos": "ld",
 "pp": null
 },
+"Danton Heinen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 114,
+"toiSeconds": 45
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 52,
+"toiSeconds": 12
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Denton Mateychuk": {
 "gtd": false,
 "injury": null,
@@ -3136,41 +3170,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "rd",
-"pp": null
-},
-"Dmitri Voronkov": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 5,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 5,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 10,
-"toiMinutes": 115,
-"toiSeconds": 32
-},
-"last5": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 48,
-"toiSeconds": 33
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Erik Gudbranson": {
 "gtd": false,
@@ -3546,7 +3546,7 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP2"
+"pp": "PP1"
 }
 },
 "CGY": {
@@ -5705,7 +5705,7 @@
 "toiMinutes": 68,
 "toiSeconds": 47
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -5740,6 +5740,40 @@
 "toiSeconds": 16
 },
 "line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
+"Axel Sandin-Pellikka": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 11,
+"toiMinutes": 131,
+"toiSeconds": 34
+},
+"last5": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 42,
+"toiSeconds": 16
+},
+"line": "D4",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -5812,39 +5846,41 @@
 "pos": "lw",
 "pp": null
 },
-"Dylan Larkin": {
+"Daniil Tarasov": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 2,
-"blocks": 5,
 "gamesPlayed": 10,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 3,
-"powerplayGoals": 0,
-"powerplayPoints": 3,
-"shots": 26,
-"toiMinutes": 193,
-"toiSeconds": 51
+"goalieGoalsAgainst": 12,
+"goalieGoalsAgainstAvg": "1.45",
+"goalieLosses": 0,
+"goalieMinutes": 496,
+"goalieOvertimeLosses": 2,
+"goalieSavePercentage": "0.938",
+"goalieSaves": 181,
+"goalieSeconds": 19,
+"goalieShotsAgainst": 193,
+"goalieShutouts": 2,
+"goalieWins": 5
 },
 "last5": {
-"assists": 0,
-"blocks": 0,
 "gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 2,
-"powerplayGoals": 0,
-"powerplayPoints": 2,
-"shots": 13,
-"toiMinutes": 87,
-"toiSeconds": 38
+"goalieGoalsAgainst": 4,
+"goalieGoalsAgainstAvg": "1.13",
+"goalieLosses": 0,
+"goalieMinutes": 211,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.947",
+"goalieSaves": 72,
+"goalieSeconds": 19,
+"goalieShotsAgainst": 76,
+"goalieShutouts": 2,
+"goalieWins": 2
 },
-"line": "F2",
+"line": "G2",
 "pk": null,
-"pos": "c",
-"pp": "PP1"
+"pos": "g",
+"pp": null
 },
 "Emmitt Finnie": {
 "gtd": false,
@@ -5878,7 +5914,7 @@
 "line": "F1",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "J.T. Compher": {
 "gtd": false,
@@ -5911,7 +5947,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "John Gibson": {
@@ -6120,42 +6156,6 @@
 "pos": "lw",
 "pp": "PP2"
 },
-"Michal Postava": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 3,
-"goalieGoalsAgainst": 4,
-"goalieGoalsAgainstAvg": "2.2",
-"goalieLosses": 0,
-"goalieMinutes": 108,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.913",
-"goalieSaves": 42,
-"goalieSeconds": 1,
-"goalieShotsAgainst": 46,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"last5": {
-"gamesPlayed": 3,
-"goalieGoalsAgainst": 4,
-"goalieGoalsAgainstAvg": "2.2",
-"goalieLosses": 0,
-"goalieMinutes": 108,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.913",
-"goalieSaves": 42,
-"goalieSeconds": 1,
-"goalieShotsAgainst": 46,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
-},
 "Moritz Seider": {
 "gtd": false,
 "injury": null,
@@ -6219,10 +6219,10 @@
 "toiMinutes": 56,
 "toiSeconds": 57
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "c",
-"pp": null
+"pos": "rw",
+"pp": "PP2"
 },
 "Viktor Arvidsson": {
 "gtd": false,
