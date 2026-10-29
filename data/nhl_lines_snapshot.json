@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-29T16:59:24+00:00",
+"generated_at": "2026-10-29T17:29:41+00:00",
 "goalies": {
 "2026-10-29": {
 "ANA": {
@@ -52,7 +52,7 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": "Likely"
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Jonas Johansson",
@@ -68,7 +68,7 @@
 },
 "STL": {
 "goalie": "Joel Hofer",
-"status": "Likely"
+"status": "Confirmed"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -874,6 +874,40 @@
 "pos": "rd",
 "pp": "PP1"
 },
+"Connor Clifton": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 189,
+"toiSeconds": 10
+},
+"last5": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 100,
+"toiSeconds": 23
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "David Pastrnak": {
 "gtd": false,
 "injury": null,
@@ -975,40 +1009,6 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
-},
-"Frederic Brunet": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 15,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 4,
-"powerplayAssists": 1,
-"powerplayGoals": 1,
-"powerplayPoints": 2,
-"shots": 8,
-"toiMinutes": 163,
-"toiSeconds": 58
-},
-"last5": {
-"assists": 2,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 78,
-"toiSeconds": 43
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
 },
 "Hampus Lindholm": {
 "gtd": false,
@@ -1247,7 +1247,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": "PP2"
 },
 "Matthew Poitras": {
@@ -17584,7 +17584,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Gabriel Vilardi": {
 "gtd": false,
@@ -17856,7 +17856,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Stuart Skinner": {
 "gtd": false,
