@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-29T17:29:41+00:00",
+"generated_at": "2026-10-29T17:59:40+00:00",
 "goalies": {
 "2026-10-29": {
 "ANA": {
@@ -64,7 +64,7 @@
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
-"status": null
+"status": "Confirmed"
 },
 "STL": {
 "goalie": "Joel Hofer",
@@ -7358,40 +7358,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Jared Wright": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 107,
-"toiSeconds": 22
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 48,
-"toiSeconds": 26
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Joel Armia": {
 "gtd": false,
 "injury": null,
@@ -7458,6 +7424,40 @@
 "line": "D3",
 "pk": "PK1",
 "pos": "ld",
+"pp": null
+},
+"Martin Chromiak": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 65,
+"toiSeconds": 45
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 36,
+"toiSeconds": 11
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Mikey Anderson": {
@@ -10684,6 +10684,40 @@
 "pos": "c",
 "pp": null
 },
+"Kyle MacLean": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 111,
+"toiSeconds": 52
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 58,
+"toiSeconds": 20
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Kyle Palmieri": {
 "gtd": false,
 "injury": null,
@@ -10750,40 +10784,6 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
-},
-"Matthew Kessel": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 139,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 63,
-"toiSeconds": 18
-},
-"line": "D4",
-"pk": "PK1",
-"pos": "rd",
 "pp": null
 },
 "Matthew Schaefer": {
@@ -10918,7 +10918,7 @@
 "toiSeconds": 57
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 },
@@ -10952,8 +10952,8 @@
 "toiSeconds": 30
 },
 "line": "D3",
-"pk": null,
-"pos": "ld",
+"pk": "PK2",
+"pos": "rd",
 "pp": null
 },
 "Semyon Varlamov": {
@@ -11057,7 +11057,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": "PP2"
 },
 "Victor Eklund": {
@@ -11196,7 +11196,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Claude Giroux": {
 "gtd": false,
@@ -11506,40 +11506,6 @@
 "pos": "lw",
 "pp": null
 },
-"Nikolas Matinpalo": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 147,
-"toiSeconds": 43
-},
-"last5": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 75,
-"toiSeconds": 27
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
-"pp": null
-},
 "Ridly Greig": {
 "gtd": false,
 "injury": null,
@@ -11678,6 +11644,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Thomas Chabot": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 4,
+"blocks": 25,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 5,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 21,
+"toiMinutes": 253,
+"toiSeconds": 5
+},
+"last5": {
+"assists": 2,
+"blocks": 9,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 7,
+"toiMinutes": 121,
+"toiSeconds": 5
+},
+"line": "D2",
+"pk": "PK2",
+"pos": "ld",
+"pp": "PP2"
+},
 "Tim St\u00fctzle": {
 "gtd": false,
 "injury": null,
@@ -11741,7 +11741,7 @@
 "toiMinutes": 103,
 "toiSeconds": 52
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -15280,6 +15280,40 @@
 "pos": "rd",
 "pp": null
 },
+"Artem Duda": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 65,
+"toiSeconds": 7
+},
+"last5": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 65,
+"toiSeconds": 7
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Barrett Hayton": {
 "gtd": false,
 "injury": null,
@@ -15379,7 +15413,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Dylan Guenther": {
@@ -15756,40 +15790,6 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
-},
-"Nick DeSimone": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 145,
-"toiSeconds": 29
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 72,
-"toiSeconds": 36
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
 "pp": null
 },
 "Nick Schmaltz": {
