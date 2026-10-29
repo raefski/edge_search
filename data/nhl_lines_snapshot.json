@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-29T13:59:21+00:00",
+"generated_at": "2026-10-29T14:29:19+00:00",
 "goalies": {
 "2026-10-29": {
 "ANA": {
@@ -12532,7 +12532,7 @@
 "toiSeconds": 58
 },
 "line": "F4",
-"pk": null,
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 },
@@ -12703,7 +12703,7 @@
 },
 "line": "F2",
 "pk": "PK2",
-"pos": "c",
+"pos": "lw",
 "pp": "PP1"
 },
 "Frederick Gaudreau": {
@@ -12735,7 +12735,7 @@
 "toiMinutes": 77,
 "toiSeconds": 26
 },
-"line": "F4",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -12769,9 +12769,9 @@
 "toiMinutes": 63,
 "toiSeconds": 50
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Joey Daccord": {
@@ -12976,7 +12976,7 @@
 "toiSeconds": 35
 },
 "line": "F1",
-"pk": "PK2",
+"pk": null,
 "pos": "c",
 "pp": "PP1"
 },
@@ -13046,8 +13046,8 @@
 "toiSeconds": 17
 },
 "line": "F4",
-"pk": "PK1",
-"pos": "rw",
+"pk": "PK2",
+"pos": "c",
 "pp": null
 },
 "Ryker Evans": {
