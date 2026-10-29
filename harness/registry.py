@@ -169,7 +169,7 @@ RULES: list[tuple[str, str]] = [
     (r"(publish|mirror_app)", "publish"),
     (r"(calibration|backtest|_fit\b|_fit_|fit$|grade|_eval|validate|replay|measure|"
      r"compare|parity|sweep|accuracy|trust|meta|contest_db|contest_stats|transferability|plot|"
-     r"clv_|cash_field)", "evaluate"),
+     r"clv_|cash_field|pool_coverage)", "evaluate"),
     (r"(lineups|_build$|^dfs_build|swap|portfolio|^parlay|^dfs_board|^arb_|rebuild)", "optimize"),
     (r"(overlay|agent|blocked|live|alert|monitor|watchlist|scan)", "monitor"),
     (r"(lab|idea|discovery|endorsement|scout|correlation|pilot|rounds|season_sim|"
