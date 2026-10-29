@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-29T22:29:20+00:00",
+"generated_at": "2026-10-29T22:44:16+00:00",
 "goalies": {
 "2026-10-29": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CBJ": {
 "goalie": "Jet Greaves",
@@ -75,8 +75,8 @@
 "status": "Confirmed"
 },
 "UTA": {
-"goalie": "Karel Vejmelka",
-"status": null
+"goalie": "Sebastian Cossa",
+"status": "Confirmed"
 },
 "VAN": {
 "goalie": "Leevi Merilainen",
@@ -11853,7 +11853,7 @@
 "pp": null
 },
 "Ben Kindel": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -11989,7 +11989,7 @@
 "pp": null
 },
 "Egor Chinakhov": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -12057,7 +12057,7 @@
 "pp": "PP1"
 },
 "Evgeni Malkin": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 3,
@@ -12261,7 +12261,7 @@
 "pp": "PP1"
 },
 "Samuel Girard": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 6,
@@ -14693,7 +14693,7 @@
 "toiMinutes": 85,
 "toiSeconds": 0
 },
-"line": "D3",
+"line": "D4",
 "pk": null,
 "pos": "ld",
 "pp": "PP1"
@@ -14899,9 +14899,9 @@
 "toiMinutes": 82,
 "toiSeconds": 58
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Ilya Mikheyev": {
@@ -15001,9 +15001,9 @@
 "toiMinutes": 98,
 "toiSeconds": 30
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Jeffrey Viel": {
@@ -15137,7 +15137,7 @@
 "toiMinutes": 67,
 "toiSeconds": 54
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -15205,7 +15205,7 @@
 "toiMinutes": 65,
 "toiSeconds": 53
 },
-"line": "D4",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -15311,7 +15311,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Barrett Hayton": {
@@ -15382,6 +15382,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Daniil But": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 104,
+"toiSeconds": 17
+},
+"last5": {
+"assists": 2,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 52,
+"toiSeconds": 25
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Dmitri Simashev": {
 "gtd": false,
 "injury": null,
@@ -15413,7 +15447,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Dylan Guenther": {
@@ -15445,7 +15479,7 @@
 "toiMinutes": 92,
 "toiSeconds": 53
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -15549,7 +15583,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15617,42 +15651,8 @@
 "toiMinutes": 66,
 "toiSeconds": 51
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK1",
-"pos": "rw",
-"pp": null
-},
-"Liam O'Brien": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 97,
-"toiSeconds": 25
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 50,
-"toiSeconds": 23
-},
-"line": "F4",
-"pk": null,
 "pos": "rw",
 "pp": null
 },
@@ -15857,7 +15857,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -17273,7 +17273,7 @@
 "toiMinutes": 73,
 "toiSeconds": 57
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": null
@@ -17309,7 +17309,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Brad Lambert": {
@@ -17447,7 +17447,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Dawson Mercer": {
@@ -17479,7 +17479,7 @@
 "toiMinutes": 79,
 "toiSeconds": 10
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -17615,7 +17615,7 @@
 "toiMinutes": 89,
 "toiSeconds": 2
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -17683,7 +17683,7 @@
 "toiMinutes": 71,
 "toiSeconds": 37
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -17717,7 +17717,7 @@
 "toiMinutes": 110,
 "toiSeconds": 54
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP1"
@@ -17923,7 +17923,7 @@
 "toiMinutes": 67,
 "toiSeconds": 20
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
