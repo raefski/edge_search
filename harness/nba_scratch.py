@@ -138,7 +138,8 @@ def dk_players(state: dict, now: datetime, day: date) -> dict:
 def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
            prime: bool = False, windows: dict | None = None,
            extra: dict | None = None, espn_out: set | None = None,
-           official_out: set | None = None, name_ids: dict | None = None) -> tuple[list, dict]:
+           official_out: set | None = None, name_ids: dict | None = None,
+           official_doubtful: set | None = None) -> tuple[list, dict]:
     """(alerts, new `seen`) for tonight's games. `seen` = {player_id: {"out", "starter"}}
     from the previous run; an event fires on a change into OUT or into the starting five.
     `prime` = the day's first look: who is already out is old news (priced into DK's
@@ -154,7 +155,11 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
             # projecting from those alone split 240 minutes over ~5 players (10/28: LAL
             # Thybulle 18->46, Kessler and Reaves 48 min). The rest of the team comes
             # from DK's draftables, as the app's board does; they fill the 240 step but
-            # never fire an event themselves (a long-term injury is not news).
+            # never fire a promotion (a filler is never in the five). They DO fire an
+            # OUT from DK or the official report: 10/29 Poole was Out on the 6:15 PM
+            # report but, absent from NBA.com's list, only fired at 7:51 when the
+            # inactive list posted. A long-term injury is still no news: it is out at
+            # the day's first look (`prime`), which never fires.
             listed = {norm(p["name"]) for p in ps}
             fill = [{"id": (name_ids or {}).get(nm, nm), "name": d.get("name") or nm, "team": team,
                      "starter": False, "inactive": False, "filler": True}
@@ -166,13 +171,20 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
                 win = (windows or {}).get(pid)
                 r = NM.role([(m, s) for m, s, _ in h], win)
                 # NBA.com's lineups carry no inactive list in 2026-27: ESPN's Out list too
+                official = norm(p["name"]) in (official_out or set())
                 out = (p["inactive"] or d.get("status") == "OUT" or (norm(p["name"]), team) in (espn_out or set())
-                       or norm(p["name"]) in (official_out or set()))
-                if not p.get("filler"):
-                    now_seen[pid] = {"out": out, "starter": p["starter"]}
-                before = {"out": out, "starter": False} if prime else seen.get(pid, {})
-                if not p.get("filler") and out and not before.get("out") and r["base"] >= NM.REGULAR_MIN:
+                       or official)
+                # Doubtful on the official report (Poole 10/29: Doubtful 3:45 PM, Out
+                # 6:15 PM) -- pushed as its own event, projected as if he sits.
+                doubtful = not out and norm(p["name"]) in (official_doubtful or set())
+                p = dict(p, official=official)
+                now_seen[pid] = {"out": out, "starter": p["starter"], "doubtful": doubtful}
+                before = {"out": out, "starter": False, "doubtful": doubtful} if prime else seen.get(pid, {})
+                if out and not before.get("out") and r["base"] >= NM.REGULAR_MIN:
                     events.append(("out", p, d, r))
+                elif doubtful and not before.get("doubtful") and r["base"] >= NM.REGULAR_MIN:
+                    events.append(("doubtful", p, d, r))
+                out = out or doubtful
                 if (not p.get("filler") and p["starter"] and not before.get("starter") and not out
                         and r["games"] >= 5 and r["start_rate"] < 0.5):
                     events.append(("promoted", p, d, r))
@@ -222,8 +234,11 @@ def _alert(game: dict, team: str, events: list, gains: list) -> dict:
     for kind, p, d, _ in events:
         last = _surname(p["name"])
         if kind == "out":
-            why = "inactive list" if p["inactive"] else "DK: OUT"
+            why = ("inactive list" if p["inactive"] else "DK: OUT" if d.get("status") == "OUT"
+                   else "official report" if p.get("official") else "ESPN")
             heads.append(f"🔴 {last} OUT ({why})")
+        elif kind == "doubtful":
+            heads.append(f"🟠 {last} DOUBTFUL (official report; projected as out)")
         else:
             heads.append(f"🟢 {last} STARTS ({'confirmed' if p['confirmed'] else 'expected'})")
     lines = []
@@ -240,6 +255,7 @@ def _alert(game: dict, team: str, events: list, gains: list) -> dict:
     key = "|".join(sorted(f"{k}:{p['id']}" for k, p, _, _ in events))
     kinds = {k for k, *_ in events}
     tags = ",".join((["rotating_light"] if urgent else []) + (["red_circle"] if "out" in kinds else [])
+                    + (["orange_circle"] if "doubtful" in kinds else [])
                     + (["green_circle"] if "promoted" in kinds else []) + ["basketball"])
     preseason = str(game["game_id"]).startswith("001")
     if preseason:
@@ -304,6 +320,7 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
         name_ids: dict = {}
         espn_out: set = set()
         official_out: set = set()
+        official_doubtful: set = set()
     else:
         # The same history the app projects from (data/nba_player_history.json), so
         # an alert and the page it opens cannot disagree about a player's role.
@@ -324,6 +341,8 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
         got = nba_injury_report.latest()
         official_out = {norm(nba_injury_report.full_name(a, b)) for a, b, st_, _ in (got[1]["rows"] if got else [])
                         if st_ == "Out"}
+        official_doubtful = {norm(nba_injury_report.full_name(a, b))
+                             for a, b, st_, _ in (got[1]["rows"] if got else []) if st_ == "Doubtful"}
     dk = {}
     if not replay:
         try:
@@ -335,7 +354,7 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
     alerts, seen = assess(games, hist, pos, dk, state.get("seen", {}),
                           prime=not replay and not state.get("seen"), windows=windows, extra=extra,
                           espn_out=espn_out, official_out=official_out,
-                          name_ids=name_ids)
+                          name_ids=name_ids, official_doubtful=official_doubtful)
     new = [a for a in alerts if a["key"] not in state["sent"]]
     if any(a["preseason"] for a in new):
         new = sorted(new, key=lambda a: a["preseason"])[:PRESEASON_MAX_PUSH]

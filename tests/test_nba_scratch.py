@@ -70,7 +70,7 @@ def _night(game_id="0022600001", out_star=False, promoted=False):
 _BENCH = {7: 14, 8: 12, 9: 10, 10: 8, 11: 6, 12: 4, 13: 3}
 HIST = {"1": _hist(36, True, 1.2), "2": _hist(20, False, 1.0),
         **{str(i): _hist(30 if i < 7 else _BENCH[i], i < 7, 0.9) for i in range(3, 14)}}
-DK = {("milesmcbride", "NYK"): {"salary": 3900, "status": None},
+DK = {("milesmcbride", "NYK"): {"salary": 3900, "status": None, "name": "Miles McBride"},
       ("jalenbrunson", "NYK"): {"salary": 9800, "status": None},
       **{(f"player{i}", "NYK"): {"salary": 3000, "status": None} for i in range(7, 14)}}
 
@@ -95,6 +95,33 @@ def test_a_bench_player_starting_is_news_and_a_cheap_value_jump_is_urgent():
     a = next(a for a in alerts if "McBride" in a["body"])
     assert "🟢 McBride STARTS (confirmed)" in a["title"]
     assert a["priority"] == "urgent" and "rotating_light" in a["tags"]   # $3.9k at 6x+
+
+
+def _starters_only():
+    """NBA.com before rosters post: only the fives; the bench comes from DK (fillers)."""
+    g = _night()
+    g[0]["players"] = [x for x in g[0]["players"] if x["starter"]]
+    return g
+
+
+# Poole 10/29: off NBA.com's list, Out on the 6:15 PM official report, pushed only at
+# 7:51 when the inactive list posted. A DK-filled bench regular now fires on the report.
+def test_a_bench_regular_not_on_nba_coms_list_fires_on_the_official_report():
+    ids = {"milesmcbride": "2"}
+    _, seen = S.assess(_starters_only(), HIST, {}, DK, {}, prime=True, name_ids=ids)
+    alerts, _ = S.assess(_starters_only(), HIST, {}, DK, seen, name_ids=ids,
+                         official_out={"milesmcbride"})
+    assert any("🔴 McBride OUT (official report)" in a["title"] for a in alerts)
+
+
+def test_doubtful_on_the_official_report_fires_once_then_out_fires_again():
+    _, seen = S.assess(_night(), HIST, {}, DK, {}, prime=True)
+    alerts, seen = S.assess(_night(), HIST, {}, DK, seen, official_doubtful={"jalenbrunson"})
+    assert "🟠 Brunson DOUBTFUL" in alerts[0]["title"] and "orange_circle" in alerts[0]["tags"]
+    again, seen = S.assess(_night(), HIST, {}, DK, seen, official_doubtful={"jalenbrunson"})
+    assert not again
+    out, _ = S.assess(_night(), HIST, {}, DK, seen, official_out={"jalenbrunson"})
+    assert "🔴 Brunson OUT (official report)" in out[0]["title"]
 
 
 def test_preseason_is_labelled_a_test_and_never_urgent():
