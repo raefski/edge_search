@@ -1,9 +1,9 @@
 {
-"generated_at": "2026-10-29T22:44:16+00:00",
+"generated_at": "2026-10-29T22:59:28+00:00",
 "goalies": {
 "2026-10-29": {
 "ANA": {
-"goalie": "Ville Husso",
+"goalie": "Lukas Dostal",
 "status": null
 },
 "BOS": {
@@ -88,7 +88,7 @@
 },
 "WSH": {
 "goalie": "Charlie Lindgren",
-"status": null
+"status": "Confirmed"
 }
 },
 "2026-10-30": {
@@ -457,7 +457,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -799,7 +799,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
