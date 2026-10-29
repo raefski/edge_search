@@ -55,6 +55,10 @@ STATE_FILE = STATE / "nba_scratch_state.json"
 LOG = ROOT / "data" / "nba_lineup_log.csv"
 LOG_COLS = ("seen_at", "game_id", "team", "player_id", "player", "starter", "confirmed",
             "inactive", "dk_status")
+#: Every Out / Doubtful / GTD status each news source shows, logged on change, to learn
+#: which source reports a scratch first (Adam 10/29; scripts/nba_news_lead.py reads it).
+NEWS_LOG = ROOT / "data" / "nba_news_lead_log.csv"
+NEWS_COLS = ("seen_at", "source", "team", "player", "status")
 POSITIONS = ROOT / "data" / "nba_ground_truth" / "positions.json"
 #: Poll from this long before the first tip until shortly after the last.
 LEAD = timedelta(hours=4)
@@ -290,6 +294,35 @@ def _log_changes(games: list[dict], dk: dict, prev: dict, now: datetime) -> dict
     return cur
 
 
+def _log_news(prev: dict, now: datetime, sources: dict) -> dict:
+    """sources = {"rotowire": [(team, name, status)], "official": [...]}: append each
+    (source, player) whose status changed -- including back to "" (cleared) -- and
+    return the new map. A source that failed this run (None) keeps its old map, so an
+    outage never reads as everyone clearing."""
+    cur, rows = {}, []
+    for src, got in sources.items():
+        if got is None:
+            cur.update({k: v for k, v in prev.items() if k.startswith(src + "|")})
+            continue
+        now_src = {f"{src}|{t}|{norm(n)}": (t, n, st) for t, n, st in got}
+        for k, (t, n, st) in now_src.items():
+            cur[k] = st
+            if prev.get(k) != st:
+                rows.append({"seen_at": now.isoformat(), "source": src, "team": t, "player": n, "status": st})
+        for k, st in prev.items():
+            if k.startswith(src + "|") and k not in now_src and st:
+                _, t, n = k.split("|", 2)
+                rows.append({"seen_at": now.isoformat(), "source": src, "team": t, "player": n, "status": ""})
+    if rows:
+        new = not NEWS_LOG.exists()
+        with NEWS_LOG.open("a", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=NEWS_COLS)
+            if new:
+                w.writeheader()
+            w.writerows(rows)
+    return cur
+
+
 def run(do_push: bool = False, day: str | None = None) -> list[dict]:
     now = _now()
     replay = day is not None
@@ -343,6 +376,17 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
                         if st_ == "Out"}
         official_doubtful = {norm(nba_injury_report.full_name(a, b))
                              for a, b, st_, _ in (got[1]["rows"] if got else []) if st_ == "Doubtful"}
+        if do_push:
+            from edge import nba_rotowire
+            try:
+                rw = [(x["team"], x["name"], x["status"]) for x in nba_rotowire.parse(nba_rotowire.fetch())]
+            except Exception as exc:                        # noqa: BLE001
+                print(f"RotoWire unavailable ({exc})")
+                rw = None
+            # the official report names no team: "" keeps the key unique per name
+            off = ([("", nba_injury_report.full_name(a, b), st_) for a, b, st_, _ in got[1]["rows"]]
+                   if got else None)
+            state["news"] = _log_news(state.get("news", {}), now, {"rotowire": rw, "official": off})
     dk = {}
     if not replay:
         try:

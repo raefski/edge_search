@@ -169,7 +169,7 @@ RULES: list[tuple[str, str]] = [
     (r"(publish|mirror_app)", "publish"),
     (r"(calibration|backtest|_fit\b|_fit_|fit$|grade|_eval|validate|replay|measure|"
      r"compare|parity|sweep|accuracy|trust|meta|contest_db|contest_stats|transferability|plot|"
-     r"clv_|cash_field|pool_coverage)", "evaluate"),
+     r"clv_|cash_field|pool_coverage|nba_news_lead)", "evaluate"),
     (r"(lineups|_build$|^dfs_build|swap|portfolio|^parlay|^dfs_board|^arb_|rebuild)", "optimize"),
     (r"(overlay|agent|blocked|live|alert|monitor|watchlist|scan)", "monitor"),
     (r"(lab|idea|discovery|endorsement|scout|correlation|pilot|rounds|season_sim|"
@@ -189,7 +189,7 @@ EDGE_RULES: list[tuple[str, str]] = [
     (r"^dfs_forward_log$", "evaluate"),
     (r"^(dfs_run|dfs_slate|dfs_sport|repo_files|names|scanner)", "optimize"),
     (r"^(client|dfs$|nfl$|nfl_intel$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
-     r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups|nba_availability|nba_injury_report)", "ingest"),
+     r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups|nba_availability|nba_injury_report|nba_rotowire)", "ingest"),
 ]
 
 

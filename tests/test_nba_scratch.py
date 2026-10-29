@@ -129,3 +129,30 @@ def test_preseason_is_labelled_a_test_and_never_urgent():
                          DK, {}, prime=True)
     assert alerts and all(a["title"].startswith("PRESEASON TEST") and a["priority"] == "low"
                           for a in alerts)
+
+
+# ── who reports a scratch first (10/29) ───────────────────────────────────
+def test_rotowire_page_parses_team_name_and_status():
+    from edge import nba_rotowire as R
+    html = ('<button data-team="NOP">x</button>'
+            '<li class="lineup__player is-pct-play-0 has-injury-status" title="Very Unlikely To Play">'
+            '<div class="lineup__pos">G</div><a title="Dejounte Murray" href="/x">D. Murray</a>'
+            '<span class="lineup__inj">Out</span></li>'
+            '<li class="lineup__player is-pct-play-100" title="Very Likely To Play">'
+            '<a title="Zion Williamson" href="/y">Z. Williamson</a></li>'
+            '<button data-team="POR">x</button>'
+            '<li class="lineup__player is-pct-play-25 has-injury-status" title="Unlikely To Play">'
+            '<a title="Robert Williams" href="/z">R. Williams</a><span class="lineup__inj">Doubt</span></li>')
+    assert R.parse(html) == [
+        {"team": "NOP", "name": "Dejounte Murray", "status": "Out", "likely": "Very Unlikely To Play"},
+        {"team": "POR", "name": "Robert Williams", "status": "Doubtful", "likely": "Unlikely To Play"}]
+
+
+def test_news_log_records_changes_and_a_failed_source_keeps_its_state(tmp_path, monkeypatch):
+    monkeypatch.setattr(S, "NEWS_LOG", tmp_path / "news.csv")
+    t = datetime(2026, 10, 29, 22, 0, tzinfo=timezone.utc)
+    st = S._log_news({}, t, {"rotowire": [("NOP", "Jordan Poole", "Doubtful")], "official": []})
+    st = S._log_news(st, t, {"rotowire": None, "official": []})          # RotoWire down: no rows
+    st = S._log_news(st, t, {"rotowire": [("NOP", "Jordan Poole", "Out")], "official": []})
+    rows = (tmp_path / "news.csv").read_text().splitlines()
+    assert [r.split(",")[-1] for r in rows[1:]] == ["Doubtful", "Out"]
