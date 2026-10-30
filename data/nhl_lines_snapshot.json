@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-30T12:59:14+00:00",
+"generated_at": "2026-10-30T13:59:04+00:00",
 "goalies": {
 "2026-10-30": {
 "CGY": {
@@ -1516,7 +1516,7 @@
 "line": "F1",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Cam Talbot": {
 "gtd": false,
@@ -1688,7 +1688,7 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Dante Fabbro": {
 "gtd": false,
@@ -2030,7 +2030,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Ryan Lomberg": {
 "gtd": false,
@@ -2132,7 +2132,7 @@
 "line": "F1",
 "pk": "PK1",
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Zach Werenski": {
 "gtd": false,
@@ -2857,7 +2857,7 @@
 },
 "CHI": {
 "Alex Vlasic": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 0,
@@ -3230,7 +3230,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Patrick Kane": {
 "gtd": false,
@@ -3366,7 +3366,7 @@
 "line": "F4",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Sam Rinzel": {
 "gtd": false,
@@ -13999,9 +13999,9 @@
 "toiMinutes": 90,
 "toiSeconds": 17
 },
-"line": "D4",
+"line": "D2",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP1"
 },
 "Conor Geekie": {
@@ -14137,9 +14137,9 @@
 "toiMinutes": 65,
 "toiSeconds": 43
 },
-"line": "D3",
+"line": "D4",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Erik Cernak": {
@@ -14171,7 +14171,7 @@
 "toiMinutes": 98,
 "toiSeconds": 48
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -14375,9 +14375,9 @@
 "toiMinutes": 89,
 "toiSeconds": 17
 },
-"line": "D1",
+"line": "D2",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": "PP2"
 },
 "Nikita Kucherov": {
@@ -14477,9 +14477,9 @@
 "toiMinutes": 85,
 "toiSeconds": 26
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Victor Hedman": {
