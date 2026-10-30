@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-30T18:29:30+00:00",
+"generated_at": "2026-10-30T19:59:34+00:00",
 "goalies": {
 "2026-10-30": {
 "CGY": {
@@ -14588,40 +14588,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Bo Groulx": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 99,
-"toiSeconds": 1
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 39,
-"toiSeconds": 8
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Brandon Duhaime": {
 "gtd": false,
 "injury": null,
@@ -14654,6 +14620,40 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
+"pp": null
+},
+"Chris Tanev": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 22,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 181,
+"toiSeconds": 1
+},
+"last5": {
+"assists": 1,
+"blocks": 11,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 0,
+"toiMinutes": 82,
+"toiSeconds": 24
+},
+"line": "D2",
+"pk": "PK1",
+"pos": "rd",
 "pp": null
 },
 "Colton Sissons": {
@@ -14690,38 +14690,38 @@
 "pos": "c",
 "pp": null
 },
-"Dakota Mermis": {
-"gtd": false,
+"Dakota Joshua": {
+"gtd": true,
 "injury": null,
 "last10": {
-"assists": 0,
-"blocks": 11,
+"assists": 3,
+"blocks": 1,
 "gamesPlayed": 10,
-"goals": 1,
-"points": 1,
+"goals": 2,
+"points": 5,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 137,
-"toiSeconds": 35
+"shots": 12,
+"toiMinutes": 124,
+"toiSeconds": 7
 },
 "last5": {
-"assists": 0,
-"blocks": 4,
+"assists": 2,
+"blocks": 0,
 "gamesPlayed": 5,
 "goals": 0,
-"points": 0,
+"points": 2,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 69,
-"toiSeconds": 29
+"shots": 4,
+"toiMinutes": 63,
+"toiSeconds": 0
 },
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
+"line": "F3",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Darren Raddysh": {
@@ -14993,7 +14993,7 @@
 },
 "line": "D3",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": "PP2"
 },
 "Sergei Bobrovsky": {
@@ -15095,8 +15095,8 @@
 "toiMinutes": 114,
 "toiSeconds": 55
 },
-"line": "D2",
-"pk": "PK1",
+"line": "D3",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -15375,7 +15375,7 @@
 "pp": "PP1"
 },
 "Filip Chytil": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
