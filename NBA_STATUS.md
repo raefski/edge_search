@@ -224,3 +224,16 @@ ownership constant is a PRIOR.
 4. After the first contest: `harness run import-contests`, then
    `harness run calibrate-nba -- data/contest-standings-N.csv --sport ncaab`
    (per source; `--fit-ownership` reads, never ships, below ~5 slates).
+
+## CourtIQ: position shuffle when a player sits (2026-10-29)
+
+`pages/14_🔀_NBA_CourtIQ.py` + `edge/nba_courtiq.py`: pick a team, mark up to three players
+OUT, and see what the team did in the games they all missed -- who started at each NBA.com
+slot (PG/SG/SF/PF/C: did the backup C start, or did the PF slide to C and a wing start at
+PF?) and every teammate's minutes, DK points, DK/min, start rate and usual slot, with vs.
+without, with n (under 3 games flagged). Game level, not on-court stints. Built from the
+lineup cache (starters with slots, 2,602 team-games over 2025-26 + 2026-27) and the box
+scores by scripts/nba_history_publish.py (06:00 / 14:00), published as data/nba_courtiq.json
+on the data branch. `?team=HOU&out=<nba id>` opens a split directly. Research view only:
+a same-position transfer on top of the minutes model lost held out (cycle 21), so nothing
+here feeds projections yet; a per-team with/without minutes transfer is the open test.

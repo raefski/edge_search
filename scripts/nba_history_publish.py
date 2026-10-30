@@ -200,9 +200,15 @@ def main() -> int:
     OUT.write_text(text)
     print(f"{OUT.relative_to(ROOT)}: {len(snap['players'])} players, {len(text) // 1024} KB, "
           f"{sum(p['preseason'] for p in snap['players'].values())} on preseason games")
+    # the CourtIQ page's table (pages/14): starters by slot + box scores, same sources
+    from edge import nba_courtiq
+    ciq = nba_courtiq.save(nba_courtiq.build())
+    print(f"{nba_courtiq.OUT.relative_to(ROOT)}: {len(ciq) // 1024} KB")
     if a.push:
         from edge.data_branch import publish_one
-        return 0 if publish_one(OUT, "nba player history") else 1
+        ok = publish_one(OUT, "nba player history")
+        ok = publish_one(nba_courtiq.OUT, "nba courtiq") and ok
+        return 0 if ok else 1
     return 0
 
 

@@ -57,6 +57,7 @@ FEEDS: tuple[str, ...] = (
     "data/nhl_lines_snapshot.json",       # scripts/nhl_lines_publish.py
     "data/nba_lineups_snapshot.json",     # harness/nba_scratch.py
     "data/nba_player_history.json",       # scripts/nba_history_publish.py
+    "data/nba_courtiq.json",              # scripts/nba_history_publish.py (pages/14 CourtIQ)
     "data/buzz_*.csv",                    # scripts/buzz_{nfl,nhl,ncaaf}.py
     "data/pickem_current_week.csv",       # scripts/pickem_pool_fetch.py
     "data/pickem_line_log.csv",           # scripts/pickem_capture.py
