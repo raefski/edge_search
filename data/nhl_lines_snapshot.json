@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-30T19:59:34+00:00",
+"generated_at": "2026-10-30T20:14:05+00:00",
 "goalies": {
 "2026-10-30": {
 "CGY": {
@@ -12,7 +12,7 @@
 },
 "NJD": {
 "goalie": "Connor Hellebuyck",
-"status": null
+"status": "Confirmed"
 },
 "SEA": {
 "goalie": "Joey Daccord",
@@ -101,8 +101,8 @@
 "status": null
 },
 "TOR": {
-"goalie": "Sergei Bobrovsky",
-"status": null
+"goalie": "Anthony Stolarz",
+"status": "Confirmed"
 },
 "VAN": {
 "goalie": "Leevi Merilainen",
@@ -8344,40 +8344,6 @@
 }
 },
 "NJD": {
-"Amadeus Lombardi": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 21,
-"toiMinutes": 115,
-"toiSeconds": 11
-},
-"last5": {
-"assists": 3,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 60,
-"toiSeconds": 26
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Anthony Mantha": {
 "gtd": false,
 "injury": null,
@@ -8647,9 +8613,9 @@
 "toiMinutes": 77,
 "toiSeconds": 44
 },
-"line": "D3",
+"line": "D4",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Dougie Hamilton": {
@@ -8858,6 +8824,40 @@
 "pos": "rw",
 "pp": "PP1"
 },
+"Johnathan Kovacevic": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 166,
+"toiSeconds": 35
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 79,
+"toiSeconds": 30
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "rd",
+"pp": null
+},
 "Jonas Siegenthaler": {
 "gtd": false,
 "injury": null,
@@ -8956,7 +8956,7 @@
 "toiSeconds": 28
 },
 "line": "D1",
-"pk": "PK2",
+"pk": null,
 "pos": "ld",
 "pp": "PP1"
 },
@@ -16166,6 +16166,40 @@
 "pos": "ld",
 "pp": null
 },
+"Jonas Rondbjerg": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 127,
+"toiSeconds": 24
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 63,
+"toiSeconds": 6
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Marc Gatcomb": {
 "gtd": false,
 "injury": null,
@@ -16334,40 +16368,6 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
-},
-"Raphael Lavoie": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 0,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 108,
-"toiSeconds": 12
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 55,
-"toiSeconds": 54
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
 "pp": null
 },
 "Rasmus Andersson": {
