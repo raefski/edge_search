@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-30T13:59:49+00:00",
+"generated_at": "2026-10-30T14:29:23+00:00",
 "goalies": {
 "2026-10-30": {
 "CGY": {
@@ -33,7 +33,7 @@
 "status": null
 },
 "BUF": {
-"goalie": "Colten Ellis",
+"goalie": "Ukko-Pekka Luukkonen",
 "status": null
 },
 "CBJ": {
@@ -863,7 +863,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -1443,7 +1443,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7072,7 +7072,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Anton Forsberg": {
 "gtd": false,
@@ -7244,7 +7244,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Darcy Kuemper": {
 "gtd": false,
@@ -7314,7 +7314,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Erik Gustafsson": {
 "gtd": false,
@@ -7620,7 +7620,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Trevor Moore": {
 "gtd": false,
@@ -9127,9 +9127,9 @@
 "toiMinutes": 80,
 "toiSeconds": 45
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Brady Skjei": {
@@ -9333,7 +9333,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP1"
 },
 "Justus Annunen": {
@@ -9437,7 +9437,7 @@
 "toiMinutes": 61,
 "toiSeconds": 19
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -9471,7 +9471,7 @@
 "toiMinutes": 82,
 "toiSeconds": 1
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -9573,10 +9573,10 @@
 "toiMinutes": 49,
 "toiSeconds": 3
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "lw",
-"pp": null
+"pos": "rw",
+"pp": "PP2"
 },
 "Roman Josi": {
 "gtd": false,
@@ -9644,7 +9644,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Ryan O'Reilly": {
 "gtd": false,
@@ -10195,7 +10195,7 @@
 "pp": "PP2"
 },
 "Ryan Pulock": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -12899,7 +12899,7 @@
 "toiMinutes": 89,
 "toiSeconds": 7
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -12967,7 +12967,7 @@
 "toiMinutes": 74,
 "toiSeconds": 44
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": null
