@@ -1144,3 +1144,51 @@ guardrails; check on 2026-27 at around 30 dates.
 2. <15 tier −0.54 held out: rare bench blowup minutes.
 3. Diagnostics of the "winners' players" kind should report bias over the whole
    board by salary.
+
+## Cycle 21 (2026-10-29, target: AVAILABILITY -- out vs playing, starter/role at build) — FIX NOT SHIPPED, LOGGING SHIPPED
+
+First cycle of the availability critic (.claude/agents/dfs-availability-critic.md).
+
+**Cycle 0 availability baseline** (shipped board, data/dfs_proj_log_nba.csv vs NBA.com gamelog;
+10-15/16 preseason excluded):
+
+| | TRAIN 10-20..24 (5 slates / 936 players) | TEST 10-25..28 (4 / 842) |
+|---|---|---|
+| false active, all (proj > 0, 0 min) | 188 / 1,193 proj pts / 7 lineup slots | 153 / 562 pts / 0 slots |
+| false active, proj 15+ min | 26 (24 on 10-21: deep-bench DNP-CD, e.g. Reese 22 min "Confirmed", 4 slots) | **0** |
+| false active already inactive in our lineup log | 5 | 10 |
+| missed role (10+ min over proj, 5x+ value, 10+ pts over) | 23 / 415 pts | 19 / 381 pts (15 at <= $4k: 7.8x realised vs 2.2x projected) |
+| ...from a teammate scratch known before lock | -- | ~7 / ~120 pts (~30 per slate); the rest in-game injuries / blowouts / OT |
+| starter flag vs last confirmed five | not logged | P 0.97, R 0.98 (107 TP / 3 FP / 2 FN) |
+| lead time | not enough data (news-lead log from 10-29; lineup log stopped ~7:12 PM ET on 10-21) | |
+
+**Critic's hole:** a known scratch's minutes don't go to the same-position BENCH backup
+(`promoted` only fires for announced starters); 10-28 Capela 10.6 proj -> 22 min with Sengun +
+Adams out, Coulibaly 9.8 -> 27, Jackson-Davis 6.3 -> 20, Clarkson 4.7 -> 17.
+
+**Test (scripts/nba_availability_pos_test.py):** on top of rank_gap, bench players (outside the top
+5 roles) whose position overlaps a scratched regular get k x his minutes (shared by role among
+equals), taken back from the others by minutes. k fitted on 2024-25 ONLY -> **k = 0**; every k > 0
+is worse in both information states and every season (RMSE, all active player-games):
+
+| k | confirmed 24-25 / 25-26 / 26-27 | inactives 24-25 / 25-26 / 26-27 |
+|---|---|---|
+| 0 (shipped) | 6.048 / 6.273 / 6.382 | 6.333 / 6.579 / 6.903 |
+| 0.05 | 6.081 / 6.291 / 6.374 | 6.446 / 6.652 / 6.908 |
+| 0.1 | 6.195 / 6.397 / 6.413 | 6.845 / 6.989 / 7.018 |
+| 0.2 | 6.650 / 6.851 / 6.625 | 8.226 / 8.253 / 7.518 |
+
+Teammates of a scratch already run slightly OVER (bias -0.10, n ~28k/season): rank_gap's bench
+slopes absorb the minutes on average, and the 10-28 cases are the nights the backup was the
+one who got them (selection on outcome, 4 slates / ~7 events vs 56k player-games). Not shipped.
+A per-team "who backs up whom" (minutes in prior games with that starter out) is the untested
+refinement; it needs the with/without history, not a position match.
+
+**Shipped (the critic's logging hole):** the board log kept only a draft group's latest build and a
+rebuild after lock could replace it, so the at-lock state and lead time were unrecoverable.
+edge/dfs_forward_log.write now also appends every build, stamped `built_at` (UTC), to
+data/dfs_proj_history_<sport>.csv (every sport; published on the data branch). Next availability
+cycle: grade the last build before lock and measure lead time against nba_news_lead_log.csv.
+
+Runner-ups: deep-bench / two-way players projected 15-22 min as "Confirmed" (10-21 only, 4 lineup
+slots; cap for < 2 games played); lineup-log gaps (poll every 2-5 min until the last lock).

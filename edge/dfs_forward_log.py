@@ -17,7 +17,14 @@ now live here and each sport supplies only its columns:
   3. `frozen=True` keeps an existing log for this draft group untouched (MMA
      after the first bout: the book drops its market and a rebuild would price
      that bout from salaries -- found 2026-09-26).
-  4. The day's lineups file `dfs_lineups_<sport>_<date>.csv` leads with `gid`
+  4. Every logged build is ALSO appended, stamped `built_at` (UTC ISO), to
+     `dfs_proj_history_<sport>.csv`. The log above keeps only a draft group's
+     latest build, and nothing stopped a rebuild after lock from replacing it,
+     so who the board had out / starting AT LOCK -- and when it first knew a
+     scratch -- was unrecoverable (availability critic, 2026-10-29: NBA board
+     log not provably pre-lock, lead time unmeasurable). Graders take the last
+     row per (gid, player) with built_at before lock.
+  5. The day's lineups file `dfs_lineups_<sport>_<date>.csv` leads with `gid`
      and keeps every OTHER draft group's rows. A pre-2026-10-16 file without a
      gid column is replaced, as it always was.
 
@@ -28,7 +35,7 @@ those names.
 from __future__ import annotations
 
 import csv
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -77,6 +84,22 @@ def write(sport: str, date: str | None, gid, cols: tuple, rows: list[dict],
         for r in keep + list(rows):
             w.writerow([r.get(c, "") for c in cols])
     result.update({"logged": True, "n": len(rows)})
+
+    hist = root / "data" / f"dfs_proj_history_{sport}.csv"
+    hcols = ("built_at", *cols)
+    header, _ = _read(hist) if hist.exists() else ([], [])
+    if header and header != list(hcols):
+        # the sport's columns changed: start a new file rather than misalign rows
+        hist.rename(hist.with_name(f"{hist.stem}_{datetime.now(timezone.utc):%Y%m%dT%H%M%S}.csv"))
+        header = []
+    stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    with hist.open("a", newline="") as fh:
+        w = csv.writer(fh)
+        if not header:
+            w.writerow(list(hcols))
+        for r in rows:
+            w.writerow([stamp] + [r.get(c, "") for c in cols])
+    result["history"] = str(hist.relative_to(root))
 
     if lineups is not None and lineup_cols:
         lpath = root / "data" / f"dfs_lineups_{sport}_{date}.csv"

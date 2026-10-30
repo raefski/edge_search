@@ -59,3 +59,11 @@ def test_an_old_lineups_file_without_gid_is_replaced(tmp_path):
     F.write("x", DAY, 5, COLS, rows(5, "p"), LCOLS, [{"mode": "cash", "player": "new"}],
             root=tmp_path)
     assert [r["player"] for r in read(tmp_path / "data" / f"dfs_lineups_x_{DAY}.csv")] == ["new"]
+
+
+def test_every_build_is_kept_in_the_history_with_its_time(tmp_path):
+    F.write("x", DAY, 1, COLS, rows(1, "a", "b"), root=tmp_path)
+    F.write("x", DAY, 1, COLS, rows(1, "a2"), root=tmp_path)
+    got = read(tmp_path / "data" / "dfs_proj_history_x.csv")
+    assert [r["player"] for r in got] == ["a", "b", "a2"]
+    assert all(r["built_at"].endswith("+00:00") for r in got)
