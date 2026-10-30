@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-30T20:14:05+00:00",
+"generated_at": "2026-10-30T21:45:39+00:00",
 "goalies": {
 "2026-10-30": {
 "CGY": {
@@ -20,7 +20,7 @@
 },
 "VGK": {
 "goalie": "Adin Hill",
-"status": null
+"status": "Confirmed"
 },
 "WPG": {
 "goalie": "Nico Daws",
@@ -8344,6 +8344,40 @@
 }
 },
 "NJD": {
+"Amadeus Lombardi": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 4,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 21,
+"toiMinutes": 115,
+"toiSeconds": 11
+},
+"last5": {
+"assists": 3,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 60,
+"toiSeconds": 26
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Anthony Mantha": {
 "gtd": false,
 "injury": null,
@@ -8411,40 +8445,6 @@
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
-},
-"Brenden Dillon": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 13,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 156,
-"toiSeconds": 33
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 79,
-"toiSeconds": 26
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
 },
 "Brett Pesce": {
 "gtd": false,
@@ -8613,7 +8613,7 @@
 "toiMinutes": 77,
 "toiSeconds": 44
 },
-"line": "D4",
+"line": "D3",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -16029,7 +16029,7 @@
 "pp": null
 },
 "Carter Hart": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
