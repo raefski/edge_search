@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-30T23:45:50+00:00",
+"generated_at": "2026-10-30T23:59:32+00:00",
 "goalies": {
 "2026-10-30": {
 "CGY": {
@@ -11839,7 +11839,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Berkly Catton": {
@@ -12012,6 +12012,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Curtis Douglas": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 77,
+"toiSeconds": 52
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 32,
+"toiSeconds": 39
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Frederick Gaudreau": {
 "gtd": false,
 "injury": null,
@@ -12044,40 +12078,6 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "c",
-"pp": null
-},
-"Jani Nyman": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 4,
-"powerplayAssists": 1,
-"powerplayGoals": 1,
-"powerplayPoints": 2,
-"shots": 9,
-"toiMinutes": 112,
-"toiSeconds": 27
-},
-"last5": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 63,
-"toiSeconds": 50
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
 "pp": null
 },
 "Joey Daccord": {
@@ -12353,7 +12353,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Ryker Evans": {
