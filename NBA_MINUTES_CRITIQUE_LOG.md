@@ -1238,3 +1238,29 @@ exist for only a few nights and the only opening night among them is 10-21 itsel
 **Lineup-log "gap" (cycle 21 runner-up 2) was a misread.** data/nba_lineup_log.csv runs to 10:28 PM
 ET on 10-21 (2,834 rows) and 10:29 PM on 10-28; it logs on CHANGE, and the scratch timer already
 polls every 2 min from 4 h before the first tip to 10 min after the last. No change needed.
+
+## Cycle 23 (2026-10-29, target: CourtIQ as a projection input) — NOT SHIPPED
+
+Metric: minutes RMSE, teammates of a scratched regular (+ all active), both states; fit 2024-25.
+**Critic's hole:** CourtIQ was used as a minutes shift; what the no-five state lacks is WHO TAKES
+THE START. 2025-26 inactives, teammates of a scratch: actual starters bias -1.27 (n 11,435), bench
++0.67 (n 17,260), vs +0.24 / -0.33 confirmed; error is within-team (6.64), not team-level (0.53).
+**Fix tested (scripts/nba_courtiq_pstart_test.py):** cycle 10's P(start) logistic + feature
+ciq = sum over scratched starters X of n_wo/(n_wo+K) x (Y's start rate without X - with X), this
+team's earlier games only; logistic, K and inactives gap coefficients fitted on 2024-25 (K 3,
+ciq weight 0.73). Inactives state:
+
+| | 2024-25 all / slice | 2025-26 held out all / slice | 2026-27 all / slice | 2025-26 starter / bench bias |
+|---|---|---|---|---|
+| shipped | 6.3325 / 6.4091 | 6.5788 / 6.6628 | 6.9030 / 6.8769 | -1.27 / +0.67 |
+| cycle 10 P(start) | 6.3034 / 6.3789 | 6.5721 / 6.6549 | 6.9267 / 6.8991 | -1.20 / +0.63 |
+| + CourtIQ start feature | 6.3011 / 6.3763 | **6.5705 / 6.6532** | 6.9253 / 6.8982 | -1.20 / +0.62 |
+
+Official-report replay 2025-26 (production's state): board 7.050 / 7.048 / 7.047, active 6.641 /
+6.638 / 6.637 (n 31,218) -- noise. 2026-27 replay not available (no report archive this season).
+CourtIQ adds 0.0016 over cycle 10 (itself not shipped), and both are worse than shipped on 2026-27.
+The confirmed five settles who starts ~30 min before tip; before that the team's slot history
+carries ~nothing the position/start-rate features don't. **Verdict across cycles 21-23: CourtIQ is
+a research view; no form of it (position transfer, minutes delta, residual delta, P(start)) earns
+a place in the projection.** Runner-ups (untested): 28+ min scratch under-shared (slice 6.98);
+a narrower slice for CourtIQ-relevant rows; multi-scratch double counting in the cycle-22 delta.
