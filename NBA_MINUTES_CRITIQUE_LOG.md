@@ -1219,3 +1219,22 @@ already says who slid where) and -0.016 RMSE (0.25%) before they are, flat on 20
 Not shipped: production would need a nightly table of the model's own past errors per
 (team, X, Y) for a 0.25% gain that only applies until the five is confirmed (~30 min before
 tip). CourtIQ stays a research view: for a lineup decision, the confirmed five is the signal.
+
+## Cycle 21-22 follow-ups (2026-10-29) — NOTHING SHIPPED
+
+**Opening-night deep bench (cycle 21 runner-up).** 10-21's 15-22 min false actives (Reese 22.4,
+Slawson 19.8, Small 16.8; 4 lineup slots) were not two-way flukes: their roles came from LAST
+season's final games (Reese 24-39 min over his last 8 -- the April shutdown stretch) while this
+preseason he played 9 / 6 / 3; preseason only counts for a player with < 5 NBA games.
+scripts/nba_preseason_blend_test.py: while season_games < N, role = (1-W) role + W x preseason
+minutes x 0.66, for players with 2+ preseason games. Fitted on 2024-25 -> **W = 0**: worse at every
+(W, N) in both states, including the season-games-0 slice it targets (confirmed, shipped -> best
+W 0.25 N 1: 2024-25 6.750 -> 6.947 (n 576), held out 2025-26 8.165 -> 8.404 (n 589), 2026-27
+7.233 -> 7.293 (n 448)). Last season's minutes beat preseason on average; Reese is the exception.
+A min-salary rule (DK priced all three at ~$3,000) cannot be fitted held out: cached DK salaries
+exist for only a few nights and the only opening night among them is 10-21 itself. Revisit at the
+2027-28 opener with this season's logged salaries (dfs_proj_history_nba.csv now keeps them).
+
+**Lineup-log "gap" (cycle 21 runner-up 2) was a misread.** data/nba_lineup_log.csv runs to 10:28 PM
+ET on 10-21 (2,834 rows) and 10:29 PM on 10-28; it logs on CHANGE, and the scratch timer already
+polls every 2 min from 4 h before the first tip to 10 min after the last. No change needed.
