@@ -1192,3 +1192,30 @@ cycle: grade the last build before lock and measure lead time against nba_news_l
 
 Runner-ups: deep-bench / two-way players projected 15-22 min as "Confirmed" (10-21 only, 4 lineup
 slots; cap for < 2 games played); lineup-log gaps (poll every 2-5 min until the last lock).
+
+## Cycle 22 (2026-10-29, Adam: use CourtIQ for projections) — NOT SHIPPED
+
+Adam's point: when a C sits, the backup C may not get his place -- the PF slides over or a
+PF-type takes the minutes -- so use what THIS team did (pages/14 CourtIQ), not position labels.
+scripts/nba_courtiq_backtest.py: for each teammate Y of a regular X out tonight, from this team's
+earlier games only (no leak; a day enters history after the whole day), delta = Y's mean
+without X - with X, shrunk n_wo / (n_wo + K), summed over tonight's scratches; projection =
+shipped + alpha x delta, team put back to its shipped total. 50,421 teammate rows have a history.
+Fitted on 2024-25 only; RMSE all active player-games (teammates of a scratch in brackets).
+
+| variant | state | train pick | 2024-25 (fit) | 2025-26 held out | 2026-27 (n 1,658) |
+|---|---|---|---|---|---|
+| shipped | confirmed | -- | 6.048 (6.086) | 6.273 (6.327) | 6.382 (6.407) |
+| raw minutes delta | confirmed | alpha 0 (0.25/K10: 6.112) | worse at every alpha | 6.345 at 0.25/K10 | 6.418 |
+| residual delta (Y's past model error without X - with X) | confirmed | alpha 0 (0.25/K10: 6.055) | worse at every alpha | 6.274 | 6.388 |
+| shipped | inactives | -- | 6.333 (6.409) | 6.579 (6.663) | 6.903 (6.877) |
+| raw minutes delta | inactives | alpha 0 (0.25/K10: 6.369) | worse | 6.615 | 6.912 |
+| residual delta | inactives | **alpha 0.15, K 10** | 6.320 (6.395) | **6.563 (6.645)** | 6.903 (6.877) |
+
+Raw with/without minutes double count what the role-rank re-share already moves (the model
+already gives a scratch's minutes away). Using the model's own past errors fixes that, and
+then the team-specific pattern adds ~nothing once starters are confirmed (the announced five
+already says who slid where) and -0.016 RMSE (0.25%) before they are, flat on 2026-27.
+Not shipped: production would need a nightly table of the model's own past errors per
+(team, X, Y) for a 0.25% gain that only applies until the five is confirmed (~30 min before
+tip). CourtIQ stays a research view: for a lineup decision, the confirmed five is the signal.
