@@ -44,6 +44,8 @@ import math
 
 import numpy as np
 
+from edge import nba_ceiling_quantiles as CQ
+
 CASH_PCT = 30.0
 GPP_PCT = 90.0
 SD_A, SD_B = 5.91, 0.202
@@ -56,6 +58,10 @@ Z_CLIP = 2.5
 MAX_OWN = 75.0
 #: Lineups' worth of ownership per primary position (8 slots: 5 + G, F, UTIL).
 GROUP_SLOTS = {"PG": 1.7, "SG": 1.5, "SF": 1.5, "PF": 1.6, "C": 1.7}
+
+
+#: Player marginals from the empirical error quantiles (True) or the gamma (False).
+EMPIRICAL_TAILS = True
 
 
 def sd_for(proj: float) -> float:
@@ -120,7 +126,14 @@ def simulate(pool: list, n_sims: int = 3000, seed: int = 0) -> np.ndarray:
         for col, j in enumerate(js):
             mu = max(0.1, float(pool[j]["proj"]))
             sd = sd_for(mu)
-            out[:, j] = gamma_dist.ppf(u[:, col], (mu / sd) ** 2, scale=sd * sd / mu)
+            if EMPIRICAL_TAILS:
+                # the projection bucket's real error quantiles (edge/nba_ceiling_quantiles.py):
+                # a gamma gave every tier one tail shape -- stars' 90th ran ~4.5 pts high,
+                # bench ceilings low (held out 2025-26)
+                b = max(0, min(len(CQ.BINS) - 2, int(np.searchsorted(CQ.BINS, mu, side="right")) - 1))
+                out[:, j] = np.maximum(0.0, mu + np.interp(u[:, col], CQ.QGRID, CQ.ZQ[b]) * sd)
+            else:
+                out[:, j] = gamma_dist.ppf(u[:, col], (mu / sd) ** 2, scale=sd * sd / mu)
     return out
 
 

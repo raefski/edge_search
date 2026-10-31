@@ -54,8 +54,22 @@ def test_simulated_players_keep_their_mean_and_the_measured_spread():
     pool = [{"proj": 40.0}, {"proj": 8.0}]
     sim = T.simulate(pool, n_sims=40000, seed=0)
     assert sim[:, 0].mean() == pytest.approx(40.0, rel=0.02)
-    assert sim[:, 0].std() == pytest.approx(T.sd_for(40.0), rel=0.03)
     assert (sim >= 0).all()
+    # the 90th is the projection bucket's measured error quantile (edge/nba_ceiling_quantiles.py)
+    from edge import nba_ceiling_quantiles as CQ
+    z90 = np.interp(0.9, CQ.QGRID, CQ.ZQ[3])                    # bucket 30-45
+    assert np.percentile(sim[:, 0], 90) == pytest.approx(40.0 + z90 * T.sd_for(40.0), rel=0.02)
+
+
+def test_a_stars_ceiling_is_lower_than_the_old_gamma_gave():
+    pool = [{"proj": 50.0}]
+    new = np.percentile(T.simulate(pool, n_sims=20000, seed=0)[:, 0], 90)
+    T.EMPIRICAL_TAILS = False
+    try:
+        old = np.percentile(T.simulate(pool, n_sims=20000, seed=0)[:, 0], 90)
+    finally:
+        T.EMPIRICAL_TAILS = True
+    assert new < old - 3                                          # ~65 vs ~70.5
 
 
 def test_ownership_fills_each_positions_share_of_the_slots():

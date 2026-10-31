@@ -237,3 +237,15 @@ scores by scripts/nba_history_publish.py (06:00 / 14:00), published as data/nba_
 on the data branch. `?team=HOU&out=<nba id>` opens a split directly. Research view only:
 a same-position transfer on top of the minutes model lost held out (cycle 21), so nothing
 here feeds projections yet; a per-team with/without minutes transfer is the open test.
+
+## Ceilings: empirical tails (2026-10-30, overnight review) — SHIPPED
+
+`edge/dfs_nba_theory.simulate` draws each player from his projection bucket's measured error
+quantiles (`edge/nba_ceiling_quantiles.py`, z = (actual - proj) / sd_for(proj), fitted on 2024-25,
+27,407 player-games, de-meaned so the mean stays the projection) instead of one gamma shape for
+every tier. Held out 2025-26 (27,575): 90th coverage proj<10 0.829 -> 0.891, 30-45 0.938 -> 0.906,
+45+ 0.957 -> 0.916 (target 0.90); random 8-man lineups P(actual > 90th) 0.067 -> 0.094, pinball
+5.480 -> 5.367. A 50-pt star's 90th 70.5 -> 65.2, a 5-pt player's 13.5 -> 14.1: GPP builds stop
+overpaying for star ceilings (155966 on 10/31: GPP dropped Mitchell $8.7k; cash unchanged).
+Fitted teammate/opponent correlations matched ROLE_CORR within noise (lineup 90th moves 0.4 pt):
+unchanged. `EMPIRICAL_TAILS = False` restores the gamma. College (ncaab_sim) is untouched.
