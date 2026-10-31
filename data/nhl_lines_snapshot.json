@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-31T16:00:06+00:00",
+"generated_at": "2026-10-31T16:29:14+00:00",
 "goalies": {
 "2026-10-31": {
 "BOS": {
@@ -60,7 +60,7 @@
 },
 "PIT": {
 "goalie": "Sergei Murashov",
-"status": null
+"status": "Confirmed"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -68,7 +68,7 @@
 },
 "STL": {
 "goalie": "Joel Hofer",
-"status": null
+"status": "Likely"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -11207,7 +11207,7 @@
 "pp": "PP1"
 },
 "Braden Schneider": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -11619,7 +11619,7 @@
 "pp": "PP1"
 },
 "Sean Durzi": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 3,
@@ -12505,10 +12505,10 @@
 "toiMinutes": 68,
 "toiSeconds": 17
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Cam York": {
 "gtd": false,
@@ -12578,40 +12578,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Cole Knuble": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 7,
-"goals": 3,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 14,
-"toiMinutes": 89,
-"toiSeconds": 53
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 62,
-"toiSeconds": 44
-},
-"line": "F1",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Dan Vladar": {
 "gtd": false,
 "injury": null,
@@ -12677,44 +12643,10 @@
 "toiMinutes": 74,
 "toiSeconds": 19
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
-},
-"Hunter McDonald": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 13,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 145,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 63,
-"toiSeconds": 8
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
 },
 "Jamie Drysdale": {
 "gtd": false,
@@ -12851,7 +12783,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Nick Seeler": {
@@ -12954,7 +12886,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Owen Tippett": {
 "gtd": true,
@@ -12985,7 +12917,7 @@
 "toiMinutes": 85,
 "toiSeconds": 57
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -13053,10 +12985,78 @@
 "toiMinutes": 82,
 "toiSeconds": 38
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "c",
 "pp": null
+},
+"Simon Benoit": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 143,
+"toiSeconds": 33
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 72,
+"toiSeconds": 10
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
+"Travis Konecny": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 5,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 5,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 14,
+"toiMinutes": 170,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 3,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 8,
+"toiMinutes": 84,
+"toiSeconds": 3
+},
+"line": "F1",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
 },
 "Travis Sanheim": {
 "gtd": false,
@@ -13090,7 +13090,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Trevor Zegras": {
 "gtd": false,
@@ -13157,7 +13157,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 }
 },
