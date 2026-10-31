@@ -1306,3 +1306,22 @@ season has ~6 weeks, holding out 2026-27).
 - Phone vs desktop: pool order drove different near-tied lineups -- fixed (sorted pool); the
   10/30 LeBron -> Isaac Jones entry NOT reproducible from any Cloud input.
 - Code review: late swap could silently drop a held player -- fixed.
+
+## Cycle 24 (2026-10-31, overnight round 2: the ML-corrected minutes model) — NOT SHIPPED (queued)
+
+Critic's hole: the GBM correction uses none of the pre-tip game / roster context the lab has
+(b2b, expected margin from earlier games, |margin|, new team, games with team, team game no.).
+Same hyperparameters, fit 2024-25, study feature table (levels ~0.02 above shipped; read deltas):
+five known 2025-26 6.126 -> 6.100, 2026-27 6.264 -> 6.241; no five 6.509 -> 6.489, 6.781 -> 6.741
+(MAE 2026-27 no five +0.01). b2b slice (n 5,534) 6.361 -> 6.347. No leakage (margin from earlier
+games; b2b from the schedule). Team rescale to the hand total confirmed right (raw GBM team sums
+worse; < 0.005 RMSE at stake).
+Not shipped tonight: -0.02 RMSE for four new live inputs (each a train/live parity risk -- the
+margin must be the same earlier-games proxy, not the betting spread, unless refitted on it) and
+the 2026-27 high-role slice gets worse (bias +0.13 -> +0.45, n 491). Do it with the 6-week refit
+(2024-25 + 2025-26 train, 2026-27 held out) when 2026-27 has enough rows to judge that slice.
+Watch: ML over-projects high-role (base 28+) starters in 2026-27 by +0.6-1.0 (n 491) -- the one
+slice the correction hurts; check weekly (scripts/nba_minutes_ml_fit.py prints by season; add the
+slice) and cap the correction for base >= 28 if it persists past ~1,500 rows.
+Open: the official-report replay (report_preds) runs the lab's own projection, not NM.project, so
+it cannot score the ML correction yet -- port it to NM.project before the next cycle.
