@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-31T22:59:30+00:00",
+"generated_at": "2026-10-31T23:44:09+00:00",
 "goalies": {
 "2026-10-31": {
 "BOS": {
@@ -5721,7 +5721,7 @@
 "pp": null
 },
 "David Perron": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 0,
@@ -5749,7 +5749,7 @@
 "toiMinutes": 75,
 "toiSeconds": 34
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -5921,7 +5921,7 @@
 "toiMinutes": 60,
 "toiSeconds": 28
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -14067,8 +14067,8 @@
 "powerplayGoals": 2,
 "powerplayPoints": 6,
 "shots": 15,
-"toiMinutes": 156,
-"toiSeconds": 59
+"toiMinutes": 161,
+"toiSeconds": 21
 },
 "last5": {
 "assists": 1,
@@ -14080,8 +14080,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 1,
 "shots": 5,
-"toiMinutes": 76,
-"toiSeconds": 28
+"toiMinutes": 80,
+"toiSeconds": 50
 },
 "line": "F3",
 "pk": null,
