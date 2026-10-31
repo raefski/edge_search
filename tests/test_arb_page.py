@@ -1271,3 +1271,18 @@ def test_an_old_snapshot_says_the_displaced_positions_are_missing(tmp_path):
     shown = _shown(st)
     assert "FanFD A" not in shown and "Plain A" in shown
     assert "predates the DraftKings + FanDuel pass" in shown
+
+
+def test_a_scan_with_no_draftkings_prices_never_reads_as_a_quiet_board(tmp_path):
+    """2026-10-31: a Scan live on Streamlit Cloud returned DraftKings 0 and the
+    page said "days with no arbitrage are normal" with a 50% DraftKings boost
+    entered; the desktop found 428 boosted arbitrages on the same games."""
+    snap = _three_book_snapshot()
+    snap["opportunities"], snap["dk_fd_opportunities"] = [], []
+    snap["stats"] = dict(snap["stats"], draftkings=0, fanatics=0)
+    st = run_page(snap, tmp_path=tmp_path, answers={"Boost 1 %": 50})
+    errors = [str(a) for k, a in st.drawn if k == "error"]
+    assert any("DraftKings returned no prices" in e for e in errors)
+    warnings = " ".join(str(a) for k, a in st.drawn if k == "warning")
+    assert "days with no arbitrage are normal" not in warnings
+    assert "request a desktop scan" in warnings

@@ -1008,6 +1008,21 @@ if _skipped:
 st.caption(f"Snapshot {age_str(snap.get('generated_at', ''))} · "
            f"FanDuel {stats.get('fanduel', 0):,} · DraftKings {stats.get('draftkings', 0):,} · "
            f"Fanatics {stats.get('fanatics', 0):,} · anchor {stats.get('anchor', 0):,}")
+# A book that returned NO prices makes every "nothing found" below untrue.
+# 2026-10-31: a Scan live pressed on Streamlit Cloud came back with FanDuel
+# 2,086 and DraftKings 0 (api.draftkings.com refuses cloud IPs), and the page
+# said "No market clears ... with 50% boost on DraftKings" and "days with no
+# arbitrage are normal" -- while the desktop's scan of the same seven NBA
+# games had 428 boosted arbitrages. Only a key that is present and zero
+# counts: a stats block without the key says nothing either way.
+_dead_books = [b for b in DK_FD_BOOKS if b in stats and not stats[b]]
+_dead_names = " and ".join(BOOK_NAMES[b] for b in _dead_books)
+if _dead_books:
+    st.error(f"⛔ **{_dead_names} returned no prices in this scan**, so nothing "
+             f"involving {'it' if len(_dead_books) == 1 else 'them'} can be found "
+             "— an empty board below does NOT mean there is no arbitrage. A "
+             "**Scan live** from Streamlit Cloud does this (DraftKings refuses "
+             "cloud servers): tap **📡 Request a desktop scan** instead.")
 if _dk_fd_only:
     st.caption("Legs at DraftKings and FanDuel only"
                + (" (Casino mode)" if casino_mode else
@@ -1140,7 +1155,9 @@ if boosts:
             if not boost_rows and not mid_boost_rows:
                 st.warning(f"No market clears {min_profit:.2f}% with {_boost_summary} "
                            f"· {len(cands)} two- or three-way and {len(mid_cands)} middle "
-                           "candidates checked.")
+                           "candidates checked."
+                           + (f" This scan has no {_dead_names} prices, so that "
+                              "proves nothing — see the error above." if _dead_books else ""))
             else:
                 # -------------------------------------- highest floor/ceiling
                 # What the sidebar's two boosts are FOR: across every boosted
@@ -1316,6 +1333,9 @@ def _empty_reason() -> str:
     session, so the reassurance is now only printed when it is actually true:
     the scan genuinely found nothing that matches.
     """
+    if _dead_books:
+        return (f"Nothing to show, but this scan has no {_dead_names} prices — "
+                "request a desktop scan before concluding there is no arbitrage.")
     if _lost_to_live and not _before_live - _lost_to_live:
         # Scoped to the picked game when there is one. "All N opportunities
         # in this scan have already kicked off" is a claim about the WHOLE
