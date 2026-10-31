@@ -431,3 +431,20 @@ def test_recency_term_moves_toward_last_three_zero_sum():
     assert res["p7"]["minutes"] == pytest.approx(18.0 + raw - raw / 10, abs=0.1)
     assert sum(r["minutes"] for r in res.values()) == pytest.approx(240.0, abs=0.6)
     assert res["p0"]["minutes"] < 30.0
+
+
+def test_late_swap_refuses_when_a_stuck_player_cannot_be_held():
+    pool, sim, priced, entered, now = _swap_slate()
+    early = next(n for n in entered if priced[n]["game"] == "g1")
+    board = [p for p in pool if p["name"] != early]
+    sim_b = np.delete(sim, [i for i, p in enumerate(pool) if p["name"] == early], axis=1)
+    priced = {**priced, early: {**priced[early], "salary": None}}   # DK row lost his salary
+    sw = R.late_swap(board, sim_b, entered, priced, mode="gpp", now=now, iters=15, improve=True)
+    assert sw["error"] and early in sw["error"]
+
+
+def test_late_swap_matches_the_entered_spelling_to_the_board():
+    pool, sim, priced, entered, now = _swap_slate()
+    shout = [n.upper() for n in entered]                            # "G1" for "g1"
+    sw = R.late_swap(pool, sim, shout, priced, mode="gpp", now=now, iters=15)
+    assert sw["error"] is None and not sw["swaps"]

@@ -407,6 +407,10 @@ def late_swap(pool: list, sim, entered: list[str], priced: dict, mode: str = "gp
     import numpy as np
     now = now or datetime.now(ET)
     board = {p["name"]: p for p in pool}
+    # the entered lineup's spelling -> the board's / DK's (Jr., accents: edge.names.norm)
+    from edge.names import norm
+    canon = {norm(n): n for n in (*board, *priced)}
+    entered = [canon.get(norm(n), n) for n in entered]
 
     def started(name: str) -> bool:
         st = _parse_time((board.get(name) or priced.get(name) or {}).get("start"))
@@ -431,6 +435,14 @@ def late_swap(pool: list, sim, entered: list[str], priced: dict, mode: str = "gp
         out["error"] = "No legal lineup keeps the locked players (cap, positions or 2-game rule)."
         return out
     final = [p["name"] for _, p in res["slots"]]
+    # A held player the search could not place (a stuck player with no DK salary, a name
+    # that differs between the entered lineup and the board) would be silently swapped
+    # out -- a swap DK will refuse, or a locked player "replaced" on paper (code review
+    # 2026-10-30). Refuse instead.
+    lost = [n for n in (*locked, *stuck, *keep) if n not in final]
+    if lost:
+        out["error"] = f"Could not hold {', '.join(lost)} in the lineup (no DK salary or name mismatch) -- swap by hand."
+        return out
     gone = [n for n in entered if n not in final]
     new = [n for n in final if n not in entered]
     out["swaps"] = list(zip(gone, new))
