@@ -173,7 +173,7 @@ imp = info.get("implied") or {}
 src = info.get("lineups_source") or "none"
 st.markdown(
     f"<div class='summary'><b>{meta.get('label')}</b> · {info.get('games')} games · "
-    f"{_et(meta.get('start'))} · draft group {res['gid']}<br>{info.get('pool')} players "
+    f"{_et(meta.get('start'))} · draft group {res['gid']} · built {info.get('built_at', '?')}<br>{info.get('pool')} players "
     f"projected of {info.get('priced')} priced · {len(info.get('imputed') or [])} with no NBA "
     f"history (*) · history through {info.get('history_date')}<br>"
     f"salaries: {info.get('draftables_source')} · NBA.com lineups: {src} · "

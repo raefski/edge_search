@@ -517,6 +517,13 @@ def build_slate(draft_group=None, client=None, n_sims: int = 3000, iters: int = 
     if not pool:
         return {"error": "No NBA players could be projected for this slate.", "gid": gid,
                 "meta": meta, "slates": slates, "stats": info}
+    # The simulation and the climb draw random numbers in POOL order, and the pool comes in
+    # DK's draftables row order -- live on the desktop, the published snapshot on Cloud -- so
+    # the phone and the desktop picked different near-tied GPP lineups from identical numbers
+    # (2026-10-30, 155928: Jokic vs Luka). A fixed order makes the same board give the same
+    # lineup everywhere.
+    pool.sort(key=lambda p: (str(p.get("game") or ""), str(p.get("team") or ""), p["name"]))
+    info["built_at"] = datetime.now(ET).strftime("%-I:%M %p ET")   # the page shows it: a cached build is visible
     sim = theory.simulate(pool, n_sims=n_sims, seed=seed)
     theory.summarise(sim, pool)
     try:
