@@ -53,6 +53,85 @@ time and has an in-climb ownership penalty). Two things are new:
 - **Don't pay up at TE** unless the projection insists. Our optimizer already follows the
   projection, so this is a check on the projection's TE pricing, not a new rule.
 
+## His rules as a layer on our optimizer (ep 326, 2026-10-31)
+
+Adam, 10/31: use Jeff's thinking "as the neocortex of lineup construction", applied
+*after* our projections, ownership and stacks. Ep 326 "What A Day" (10/28, 16:35-32:00)
+walks through his week-7 process:
+- **Cash: eat the chalk core.** "Our core four was Jordan Love, Jahmyr Gibbs, Matthew
+  Golden and George Kittle ... all massively owned, 75% or more." The edge comes from the
+  other five.
+- **A salary saver to fit a second stud.** "Jacobi Lane allowed us to use Bijan with
+  Gibbs." Lane was a punt nobody played.
+- **GPP: keep the core, pivot off the 90%-owned player to his teammate.** He played
+  Amon-Ra (10%) instead of Gibbs (~90%, "the group think is insane"), and McCaffrey
+  instead of Kittle ("if Kittle sucked it's because McCaffrey took his touchdown").
+- The field loves the late games; early shootouts go under-owned.
+- Play single-entry high stakes (the $555/$888 fields are "as easy as it gets"); lineup
+  trains (mass-entered duplicate lineups) are what he is leveraging against.
+
+Our ownership model picked **his exact 10/25 cash core four** (the top-owned QB, RB, WR
+and TE on our board), so we have what the rules need as input.
+
+**The test** (`scripts/mans_layer_backtest.py`). We replayed each 2026 main slate from the
+pool the app logged ~10 minutes before lock (9/13-10/25: 7 main slates, plus 3
+Early/Afternoon boards, shown but not counted because they reuse the same games).
+For each slate we built the shipped cash and GPP lineups, then rebuilt them with each
+rule forced in, using the same search. Every lineup was scored with real DK points
+against that board's real Double Up and single-entry Daily Dollar (11,880-17,835
+entries). Each variant is one lineup with one outcome per slate. Main slates only, 300
+iterations:
+
+| variant | Δ proj | Δ actual | better | Double Up cash | GPP cash |
+|---|---|---|---|---|---|
+| shipped cash | | 142.0 pts | | 4/7 | 4/7 |
+| cash core four (lock top-owned QB/RB/WR/TE) | +0.1 | +1.8 | 4/7 | **6/7** | 4/7 |
+| cash salary saver (force best ≤$4k, ≤10%-owned punt) | -1.4 | -5.4 | 2/7 | 4/7 | 3/7 |
+| cash core four + saver | -1.1 | +1.3 | 5/7 | 5/7 | 5/7 |
+| cash QB+1 stack | +0.5 | -6.9 | 4/7 | 4/7 | 3/7 |
+| shipped GPP | | 142.2 pts | | 4/7 | 4/7 |
+| GPP fade the top-owned player | -1.7 | +10.8 | 3/7 (3 worse, 1 tie) | 5/7 | 5/7 |
+| GPP pivot (fade him, force his best teammate) | -3.1 | +4.4 | 4/7 | 6/7 | **6/7** |
+| GPP salary saver | -1.2 | -2.9 | 3/7 | 4/7 | 3/7 |
+| GPP pivot + saver | -4.5 | -9.8 | 1/7 | 2/7 | 3/7 |
+| GPP own_weight 30 (existing systematic fade) | -11.5 | +0.1 | 3/7 | 5/7 | 5/7 |
+
+No variant reached the top 1% on any slate, so "does it win GPPs" has no answer yet.
+
+**Placebo for the chalk fade.** We rebuilt the GPP lineup with the k-th most-owned player
+removed, for k = 1-8. Mean Δ actual by k: **+10.8**, +6.4, -10.2, -3.7, -5.1, +1.1,
++2.1, +5.9. Removing any one of them moves a lineup by ±15-47 points on a single slate.
+k=1 ranks best of the eight, which happens 1 time in 8 by chance, and its sign split
+is 3-3. The mechanism is there but thin. Our single most-owned player scored below our
+projection on 6 of 7 main slates (10/18 early and 10/18 late too; McCaffrey on 10/25
+early did not). The top five owned as a group did not (16/35 beat projection, +0.5).
+Our shipped GPP lineup had that top player in 6 of 7 slates.
+
+**Salary saver: no.** It loses in cash and GPP, and loses worst when combined with the
+pivot. The optimizer already takes a punt when its projection per dollar earns one.
+Forcing one only helps if the projection under-rates cheap players or over-rates
+studs, and it does neither. Actual minus projected for skill players projected 4+:
+≤$4k +1.3 (6/7 slates), $4-6k +0.7 (4/7), $6-8k +1.5 (6/7), $8k+ +2.4 (3/6, about 4
+players a slate). No tier is consistently mispriced.
+
+**Late games are not under-predicted.** Actual minus predicted GPP ownership by kickoff
+window, per player: early -0.81 to +0.01, late -0.47 to +1.25. Late came out above
+early on only 4 of 7 slates. Whatever late-game preference the field has, our ownership
+model already prices it.
+
+**Verdict, 7 main slates.** Nothing ships. Two leads, for different reasons:
+1. **GPP: fade the single most-owned player, ideally to his teammate.** It agrees with
+   the field test above (G1: lineups holding the top-owned player did worse at top 1%
+   on 4/5 slates at fixed projection) and with "top chalk under its projection 6/7".
+   It costs only 1.7-3.1 projected points, against 11.5 for the blanket own_weight
+   fade. But its 7 build outcomes split 3-3, so it is not proven.
+2. **Cash: the chalk core four** cashed the Double Up 6/7 against 4/7, but that is two
+   cashes on +1.8 points, which is noise.
+Re-run `python3 scripts/mans_layer_backtest.py` (and `--placebo`) after each week's
+import; the pre-lock pool is already logged, so this needs no new forward log. Decide
+at ~12 main slates (around 12/6). The bar is: better on ≥8/12, and k=1 still on top in
+the placebo.
+
 ## The broader philosophy (eps 319-323)
 
 1. **Opportunity before production.** "Being on the field is the only way to score."
