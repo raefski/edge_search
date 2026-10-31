@@ -1323,5 +1323,7 @@ the 2026-27 high-role slice gets worse (bias +0.13 -> +0.45, n 491). Do it with 
 Watch: ML over-projects high-role (base 28+) starters in 2026-27 by +0.6-1.0 (n 491) -- the one
 slice the correction hurts; check weekly (scripts/nba_minutes_ml_fit.py prints by season; add the
 slice) and cap the correction for base >= 28 if it persists past ~1,500 rows.
-Open: the official-report replay (report_preds) runs the lab's own projection, not NM.project, so
-it cannot score the ML correction yet -- port it to NM.project before the next cycle.
+Official-report replay (production's information state) through the PRODUCTION project(),
+scripts/nba_minutes_ml_replay.py, P(dress) fitted 2024-25, held out 2025-26 (n 31,218), ML off -> on:
+five known board 6.479 -> 6.336, active 6.302 -> 6.133; no five board 7.049 -> 6.985, active
+6.641 -> 6.562. The shipped correction holds in the state production runs.
