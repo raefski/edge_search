@@ -115,6 +115,9 @@ BOOST_ROWS_SHOWN = 50
 OPP_ROWS_SHOWN = 100
 
 st.set_page_config(page_title="Arbitrage", page_icon="⚖️", layout="wide")
+from edge.scrollrail import scroll_rail             # noqa: E402
+
+scroll_rail()   # a 20,000px board needs a scrollbar a thumb can find (edge/scrollrail.py)
 _title = st.empty()
 # DraftKings + FanDuel by default, Fanatics one tap away (2026-10-31). On the
 # page rather than in the sidebar so it IS one tap on a phone, and seeded
