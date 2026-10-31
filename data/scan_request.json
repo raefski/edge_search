@@ -1,12 +1,10 @@
 {
- "requested_at": "2026-10-28T15:32:46.454060+00:00",
- "request_id": "20261028T153246454060",
- "sports": [
-  "basketball_nba"
- ],
+ "requested_at": "2026-10-31T15:48:52.415175+00:00",
+ "request_id": "20261031T154852415175",
+ "sports": [],
  "note": "requested from the Streamlit app",
- "date_from": "2026-10-28",
- "date_to": "2026-10-28",
+ "date_from": null,
+ "date_to": null,
  "skip_live": true,
  "state": "CT"
 }
