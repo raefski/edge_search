@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-10-31T14:59:13+00:00",
+"generated_at": "2026-10-31T15:59:20+00:00",
 "goalies": {
 "2026-10-31": {
 "BOS": {
-"goalie": "Jeremy Swayman",
-"status": null
+"goalie": "Michael DiPietro",
+"status": "Confirmed"
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
@@ -28,7 +28,7 @@
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": null
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "John Gibson",
@@ -39,7 +39,7 @@
 "status": "Confirmed"
 },
 "LAK": {
-"goalie": "Anton Forsberg",
+"goalie": "Darcy Kuemper",
 "status": null
 },
 "MTL": {
@@ -98,7 +98,7 @@
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
-"status": null
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -121,7 +121,7 @@
 "status": null
 },
 "WSH": {
-"goalie": "Charlie Lindgren",
+"goalie": "Logan Thompson",
 "status": null
 }
 }
@@ -7807,7 +7807,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7847,7 +7847,7 @@
 "pp": "PP1"
 },
 "Brandt Clarke": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 4,
@@ -7979,7 +7979,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -8769,7 +8769,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Michael McCarron": {
@@ -9007,7 +9007,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Zach Bogosian": {
@@ -16011,7 +16011,7 @@
 "pp": null
 },
 "Chris Tanev": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -18851,7 +18851,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -19125,7 +19125,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
