@@ -430,10 +430,12 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
     date = (start.astimezone(ZoneInfo("America/New_York")).date().isoformat()
             if start else datetime.now(ZoneInfo("America/New_York")).date().isoformat())
     lines: dict = {}
+    dfo_keys: dict = {}                     # (team, initial, last) -> [(team, norm(name), name)]
     for t in teams:
         try:
             for name, row in nhl.team_lines(t).items():
                 lines[(t, norm(name))] = row
+                dfo_keys.setdefault(_initial_last(t, name), []).append((t, norm(name), name))
         except Exception as exc:                            # noqa: BLE001
             log.warning("nhl: no DailyFaceoff lines for %s (%s)", t, exc)
     try:
@@ -455,13 +457,22 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
             k = _initial_last(nhl.team(v.get("team")), v["name"])
             dk_keys[k] = dk_keys.get(k, 0) + 1
     aliases = {k: v for k, v in aliases.items() if dk_keys.get(k, 0) <= 1}
+    # DailyFaceoff spells names its own way too: DK's Frederick Gaudreau / Nicholas
+    # Robertson / Jacob Middleton / Maxwell Crozier are DFO's Freddy / Nick / Jake /
+    # Max, and the exact join left them with no line -- a no-prop skater with no line
+    # is dropped, so they were off the board every night (availability critic
+    # 2026-10-31: 41 train / 60 test player-games that played, 235 / 297 DK pts, 22
+    # nights). Fall back to (team, initial, last) when that key is unique on both
+    # DFO's team list and DK's board (dk_keys); every use is listed in
+    # info["line_alias"] and shown on the page.
+    line_alias = {k: v[0] for k, v in dfo_keys.items() if len(v) == 1 and dk_keys.get(k, 0) <= 1}
     produced = current_production(date)
     seven_d = seven_d_teams(lines)
 
     info = {"games": len(games), "priced": len(salaries), "implied": implied,
             "seven_d": sorted(seven_d & teams),
             "missing_lines": sorted(teams - set(implied)), "date": date,
-            "starters": starters, "no_lineup": [], "imputed": 0,
+            "starters": starters, "no_lineup": [], "imputed": 0, "line_alias": [],
             "wrong_game": wrong_game,
             "role_source": "this season's ice time" if toi_now is not None else "unavailable",
             "season_source": "this season's production" if produced is not None else "unavailable"}
@@ -474,7 +485,12 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
         if not slots or t not in implied or sal.get("dk_status") in ("OUT", "IR", "O"):
             continue
         key = norm(sal["name"])
-        ln = lines.get((t, key), {})
+        ln = lines.get((t, key))
+        if ln is None:
+            lk = line_alias.get(_initial_last(t, sal["name"]))
+            ln = lines[lk[:2]] if lk else {}
+            if lk:
+                info["line_alias"].append(f"{sal['name']} = {lk[2]}")
         opp = next((nhl.team(g["away"] if nhl.team(g["home"]) == t else g["home"])
                     for g in games.values() if t in (nhl.team(g["home"]), nhl.team(g["away"]))), None)
         pos = "G" if "G" in slots else ("D" if "D" in slots else ("C" if "C" in slots else "W"))
@@ -484,8 +500,14 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
                "injury": ln.get("injury"), "dk_fppg": sal.get("dk_fppg"), "imputed": []}
         if pos == "G":
             st = starters.get(t) or {}
-            if norm(st.get("goalie") or "") != key:
-                continue
+            g_name = st.get("goalie") or ""
+            if norm(g_name) != key:
+                # the same nickname join as skaters' lines (Sam / Samuel), only
+                # when DK has one goalie on the team with that initial + last name
+                ik = _initial_last(t, sal["name"])
+                if not g_name or _initial_last(t, g_name) != ik or dk_keys.get(ik, 0) > 1:
+                    continue
+                info["line_alias"].append(f"{sal['name']} = {g_name}")
             row["starter_status"] = st.get("status") or "Projected"
             saves = nhl_sim.market_mean((props.get(skey) or {}).get("player_total_saves"))
             row["means"] = {"saves": saves} if saves else {}
