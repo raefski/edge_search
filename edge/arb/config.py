@@ -18,10 +18,16 @@ class Books:
     commission: dict[str, float] = field(default_factory=dict)
     max_stake: dict[str, float] = field(default_factory=lambda: {
         "draftkings": 1000.0, "fanduel": 1000.0, "fanatics": 500.0})
+    # Legal books not to place a leg at. Their prices still go into every
+    # fair-value read (the +EV consensus, the middle-window ladders): leaving a
+    # book out of the BET is no reason to know less about the price. Set to
+    # ["fanatics"] for the DraftKings + FanDuel board the app opens on
+    # (run.dk_fd_extras) -- added 2026-10-31.
+    exclude: list[str] = field(default_factory=list)
 
     @property
     def bettable(self) -> list[str]:
-        return list(self.legal)
+        return [b for b in self.legal if b not in self.exclude]
 
     @property
     def feed(self) -> list[str]:

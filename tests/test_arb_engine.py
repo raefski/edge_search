@@ -2123,3 +2123,71 @@ def test_boosted_ev_prices_a_three_way_moneyline():
     (row,) = rows
     assert (row["book"], row["side"], row["raw_decimal"]) == ("draftkings", "draw", 3.55)
     assert 0.2 < row["fair_prob"] < 0.3 and row["ev_pct"] > 0
+
+
+# --- the DraftKings + FanDuel board (2026-10-31) ------------------------------
+# The engine takes the best price per side across every bettable book, so a
+# Fanatics over one tick better than DraftKings' REPLACES the DraftKings leg:
+# hiding Fanatics rows on the page could never show the DK/FD position.
+def _fanatics_displaces_draftkings() -> Board:
+    b, _ = board_with(("totals", None, 8.5, "over", "fanatics", 2.12),
+                      ("totals", None, 8.5, "over", "draftkings", 2.10),
+                      ("totals", None, 8.5, "under", "fanduel", 2.05))
+    return b
+
+
+def test_the_three_book_pass_never_writes_the_dk_fd_arbitrage():
+    (o,) = find_arbitrages(_fanatics_displaces_draftkings(), cfg())
+    assert {l.book for l in o.legs} == {"fanatics", "fanduel"}
+
+
+def test_excluding_fanatics_re_legs_the_arbitrage_at_draftkings():
+    c = cfg()
+    c.books.exclude = ["fanatics"]
+    (o,) = find_arbitrages(_fanatics_displaces_draftkings(), c)
+    assert {l.book for l in o.legs} == {"draftkings", "fanduel"}
+    assert "fanatics" in c.books.legal, "excluded from legs, not from pricing"
+
+
+def test_dk_fd_extras_holds_only_what_the_three_book_pass_missed():
+    from edge.arb.engine import dk_fd_view, scan
+    from edge.arb.run import dk_fd_extras
+    b = _fanatics_displaces_draftkings()
+    # a second, all DK/FD market both passes find -- must not be duplicated
+    ev = b.events["e1"]
+    now = datetime.now(timezone.utc)
+    for side, book, dec in (("home", "draftkings", 2.10), ("away", "fanduel", 2.05)):
+        b.group(GroupKey("e1", "h2h", None, None), ev).add(
+            Quote(book=book, side=side, decimal=dec, point=None, last_update=now))
+    c = cfg()
+    opps = scan(b, c)
+    extras = dk_fd_extras(b, c, opps, [])
+    assert [{l.book for l in o.legs} for o in opps if o.kind == "arb"].count(
+        {"draftkings", "fanduel"}) == 1
+    (extra,) = [o for o in extras["dk_fd_opportunities"] if o["kind"] == "arb"]
+    assert extra["market"] == "totals"
+    assert {l["book"] for l in extra["legs"]} == {"draftkings", "fanduel"}
+
+    snap = {"opportunities": [o.to_dict() for o in opps], **extras}
+    arbs = [o for o in dk_fd_view(snap)["opportunities"] if o["kind"] == "arb"]
+    assert sorted(o["market"] for o in arbs) == ["h2h", "totals"]
+    assert all(l["book"] != "fanatics" for o in arbs for l in o["legs"])
+    assert dk_fd_view(snap)["complete"]
+    assert not dk_fd_view({"opportunities": snap["opportunities"]})["complete"]
+
+
+def test_restrict_candidates_moves_each_leg_to_the_best_remaining_book():
+    from edge.arb.engine import restrict_candidates
+    from edge.arb.run import candidates
+    b = _fanatics_displaces_draftkings()
+    (cand,) = candidates(b, cfg())
+    assert {l["book"] for l in cand["legs"]} == {"fanatics", "fanduel"}
+    (row,) = restrict_candidates([cand], {"draftkings", "fanduel"})
+    assert {l["side"]: (l["book"], l["decimal"]) for l in row["legs"]} == {
+        "over": ("draftkings", 2.10), "under": ("fanduel", 2.05)}
+    assert "fanatics" not in row["prices"]["over"]
+    assert row["arb_sum"] == pytest.approx(om.arb_sum([2.10, 2.05]), abs=1e-5)
+    # a side only Fanatics prices leaves nothing to bet
+    lone, _ = board_with(("totals", None, 8.5, "over", "fanatics", 2.12),
+                         ("totals", None, 8.5, "under", "fanduel", 2.05))
+    assert restrict_candidates(candidates(lone, cfg()), {"draftkings", "fanduel"}) == []

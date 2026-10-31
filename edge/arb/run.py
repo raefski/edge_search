@@ -6,6 +6,8 @@ on the board is dropped rather than guessed at.
 """
 from __future__ import annotations
 
+import copy
+import dataclasses
 import logging
 import time
 from datetime import datetime, timezone
@@ -29,6 +31,7 @@ from .oddschecker_free import fetch_fanatics_league
 log = logging.getLogger("edge.arb")
 
 THREE_WAY_SIDES = {"home", "draw", "away"}
+DK_FD_BOOKS = engine.DK_FD_BOOKS
 
 
 def _wanted(cfg: ArbConfig) -> set[str] | None:
@@ -701,14 +704,52 @@ def middle_candidates(board: Board, cfg: ArbConfig, max_cost_pct: float = 20.0) 
     return out
 
 
+def _middle_key(c: dict) -> tuple:
+    return (c["event_id"], c["market"], c["subject"], tuple(c["window"]),
+            tuple((l["book"], l["side"], l["line"]) for l in c["legs"]))
+
+
+def dk_fd_extras(board: Board, cfg: ArbConfig, opps: list, middles: list[dict]) -> dict:
+    """What the DraftKings + FanDuel board has that the three-book one does not.
+
+    The engine takes the best price per side across every bettable book, so
+    a Fanatics price one tick better than DraftKings' REPLACES the DraftKings
+    leg: the snapshot of 2026-10-31 15:56 had 7 Fanatics/FanDuel middles and
+    8 gaps, and the DraftKings/FanDuel version of each was never written.
+    Hiding the Fanatics rows on the page cannot bring those back -- the
+    board has to be re-detected with Fanatics out of the legs.
+
+    Only the rows the three-book pass did not already produce are returned
+    (same fingerprint = same legs at the same prices), so the snapshot grows
+    by the displaced positions alone, and a page that predates this key
+    reads `opportunities` exactly as before. The page's DK + FD view is
+    `opportunities` without a Fanatics leg, plus these.
+
+    Fanatics' prices still price the fair value either way (Books.exclude).
+    """
+    sub = copy.copy(cfg)
+    sub.books = dataclasses.replace(
+        cfg.books, exclude=[b for b in cfg.books.legal if b not in DK_FD_BOOKS])
+    seen = {o.fingerprint for o in opps}
+    have = {_middle_key(c) for c in middles}
+    return {
+        "dk_fd_opportunities": [o.to_dict() for o in engine.scan(board, sub)
+                                if o.fingerprint not in seen],
+        "dk_fd_middle_candidates": [c for c in middle_candidates(board, sub)
+                                    if _middle_key(c) not in have],
+    }
+
+
 def snapshot(cfg: ArbConfig | None = None, progress=None) -> dict:
     """A JSON-safe scan result, for writing to disk and reading in the app."""
     cfg = cfg or ArbConfig()
     opps, stats, board = scan(cfg, progress=progress, return_board=True)
+    middles = middle_candidates(board, cfg)
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "stats": stats,
         "opportunities": [o.to_dict() for o in opps],
         "candidates": candidates(board, cfg),
-        "middle_candidates": middle_candidates(board, cfg),
+        "middle_candidates": middles,
+        **dk_fd_extras(board, cfg, opps, middles),
     }

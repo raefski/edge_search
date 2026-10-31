@@ -29,6 +29,11 @@ ET = ZoneInfo("America/New_York")
 STALE_VIG_MARGIN = 0.005
 
 
+# The two books the arbitrage page bets by default (Fanatics is a toggle):
+# Adam's casino-window pair and the two he holds boosts on. 2026-10-31.
+DK_FD_BOOKS = ("draftkings", "fanduel")
+
+
 @dataclass
 class Leg:
     book: str
@@ -951,7 +956,10 @@ def find_middles(board: Board, cfg, now: datetime | None = None) -> list[Opportu
         return []
     books = set(cfg.books.bettable)
     out: list[Opportunity] = []
-    cdfs = ladder_cdfs(board, books)
+    # Every legal book's ladder, not only the ones being bet: the chance the
+    # window lands is a fact about the game, and a book left out of the legs
+    # (Books.exclude) still knows something about it.
+    cdfs = ladder_cdfs(board, set(cfg.books.legal))
     stale_mains = stale_alt_ladders(board, d.alt_line_max_drift, d.alt_line_max_vig)
 
     for (event_id, market, subject), groups in _middle_families(board).items():
@@ -1624,6 +1632,64 @@ def price_boosted_ev(cands: list[dict], boosts: list[Boost], cfg,
                 })
     out.sort(key=lambda r: r["ev_pct"], reverse=True)
     return out
+
+
+def restrict_candidates(cands: list[dict], books) -> list[dict]:
+    """`run.candidates` rows as if only `books` took bets.
+
+    A candidate stores every bettable book's price per side, so dropping a
+    book needs no second scan: each leg moves to the best of what is left,
+    and a market a dropped book alone priced on some side is gone. A row
+    from a snapshot old enough to have no `prices` is kept only if its legs
+    already sit at `books`.
+    """
+    books = set(books)
+    out = []
+    for c in cands:
+        if not c.get("prices"):
+            if all(l.get("book") in books for l in c.get("legs", [])):
+                out.append(c)
+            continue
+        prices = {s: {b: d for b, d in per.items() if b in books}
+                  for s, per in c["prices"].items()}
+        legs = []
+        for leg in c["legs"]:
+            per = prices.get(leg.get("side")) or {}
+            if not per:
+                break
+            b = max(per, key=per.get)
+            legs.append(leg if b == leg["book"] else {**leg, "book": b, "decimal": per[b]})
+        else:
+            out.append({**c, "prices": prices, "legs": legs,
+                        "single_book": len({l["book"] for l in legs}) < 2,
+                        "arb_sum": round(om.arb_sum([l["decimal"] for l in legs]), 5)})
+    return out
+
+
+def dk_fd_view(snap: dict) -> dict:
+    """The snapshot as the DraftKings + FanDuel board the app opens on.
+
+    `opportunities` / `middle_candidates` with no Fanatics leg, plus the
+    positions only a DK + FD scan finds (`run.dk_fd_extras`: the ones a
+    better Fanatics price had displaced), and `candidates` re-legged without
+    Fanatics. `complete` is False for a snapshot written before 2026-10-31,
+    which has no extras: the displaced positions are simply missing from it
+    until the next scan, and the page says so rather than pass it off as the
+    whole board.
+    """
+    books = set(DK_FD_BOOKS)
+
+    def ok(row):
+        return all(l.get("book") in books for l in row.get("legs", []))
+
+    return {
+        "opportunities": [o for o in snap.get("opportunities") or [] if ok(o)]
+                         + list(snap.get("dk_fd_opportunities") or []),
+        "candidates": restrict_candidates(snap.get("candidates") or [], books),
+        "middle_candidates": [c for c in snap.get("middle_candidates") or [] if ok(c)]
+                             + list(snap.get("dk_fd_middle_candidates") or []),
+        "complete": "dk_fd_opportunities" in snap,
+    }
 
 
 def top_rows_per_sport(rows: list[dict], n: int = 3) -> list[dict]:

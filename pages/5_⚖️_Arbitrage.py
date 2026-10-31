@@ -115,7 +115,22 @@ BOOST_ROWS_SHOWN = 50
 OPP_ROWS_SHOWN = 100
 
 st.set_page_config(page_title="Arbitrage", page_icon="⚖️", layout="wide")
-st.title("⚖️ Arbitrage · DraftKings / FanDuel / Fanatics")
+_title = st.empty()
+# DraftKings + FanDuel by default, Fanatics one tap away (2026-10-31). On the
+# page rather than in the sidebar so it IS one tap on a phone, and seeded
+# from the URL like the boost fields so a lost session keeps the choice --
+# written back through `_qp_want` at the end of the sidebar, never directly
+# (see the pushState note there). Fanatics' prices price the fair value
+# either way; this only decides whether a leg can be placed there.
+include_fanatics = st.toggle(
+    "Include Fanatics", value=st.query_params.get("arb_fanatics") == "1",
+    help="Off: only positions with every leg at DraftKings or FanDuel -- "
+         "including the ones a better Fanatics price would otherwise have "
+         "taken over. On: Fanatics legs too. Fanatics' prices (and Fanatics "
+         "Markets, the vig-free anchor) feed the fair-value and +EV numbers "
+         "either way.")
+_title.title("⚖️ Arbitrage · DraftKings / FanDuel"
+             + (" / Fanatics" if include_fanatics else ""))
 
 
 def _secret(name: str) -> str:
@@ -827,6 +842,7 @@ with st.sidebar:
     # and the two would then seed each other with ids neither understands.
     # (`b1_*`/`b2_*` above get away with it by being distinctive by accident.)
     _qp_want["arb_games"] = ",".join(game_filter)
+    _qp_want["arb_fanatics"] = "1" if include_fanatics else ""
 
     show_stale_alt_lines = st.checkbox(
         "Show alt lines far from the book's main line", value=False,
@@ -963,11 +979,21 @@ if _STALE:
         "**Reboot the app** at share.streamlit.io (⋮ → Reboot); the sidebar "
         "is running on fallbacks until you do.", icon="♻️")
 
+# The board being bet. Casino mode is DraftKings + FanDuel by definition, so
+# it gets this board whatever the toggle says.
+from edge.arb.engine import DK_FD_BOOKS, dk_fd_view    # noqa: E402
+
+_dk_fd_only = casino_mode or not include_fanatics
+_view = dk_fd_view(snap) if _dk_fd_only else {
+    "opportunities": snap.get("opportunities") or [],
+    "candidates": snap.get("candidates") or [],
+    "middle_candidates": snap.get("middle_candidates") or [], "complete": True}
+
 stats = snap.get("stats", {})
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Quotes", f"{stats.get('quotes', 0):,}")
 c2.metric("Events", stats.get("events", 0))
-c3.metric("Found", len(snap.get("opportunities", [])))
+c3.metric("Found", len(_view["opportunities"]))
 c4.metric("Credits", "0")
 _skipped = stats.get("skipped_events") or {}
 if _skipped:
@@ -979,6 +1005,16 @@ if _skipped:
 st.caption(f"Snapshot {age_str(snap.get('generated_at', ''))} · "
            f"FanDuel {stats.get('fanduel', 0):,} · DraftKings {stats.get('draftkings', 0):,} · "
            f"Fanatics {stats.get('fanatics', 0):,} · anchor {stats.get('anchor', 0):,}")
+if _dk_fd_only:
+    st.caption("Legs at DraftKings and FanDuel only"
+               + (" (Casino mode)" if casino_mode else
+                  " — toggle *Include Fanatics* to add Fanatics legs")
+               + ". Fanatics prices still set the fair value.")
+    if not _view["complete"]:
+        st.caption("⚠️ This snapshot predates the DraftKings + FanDuel pass, so "
+                   "a position where Fanatics had the better price on one side "
+                   "is missing here rather than re-paired at DraftKings — "
+                   "request a fresh scan to get them.")
 if _remote_problem:
     st.caption(f"⚠️ Could not read the latest snapshot from GitHub "
                f"({_remote_problem}), so this is the copy deployed with the "
@@ -1008,8 +1044,18 @@ if boosts:
             rows = [c for c in rows if in_date_range(c.get("commence_time", ""), date_range)]
         return rows
 
-    cands = snap.get("candidates") or []
-    mid_cands = snap.get("middle_candidates") or []
+    # A token issued ON Fanatics is a request for Fanatics whatever the
+    # toggle says -- off, its own leg would be the one thing dropped.
+    _boost_board = _view
+    if _dk_fd_only and any(b.book not in DK_FD_BOOKS for b in boosts):
+        _boost_board = {k: snap.get(k) or [] for k in ("candidates", "middle_candidates")}
+        st.caption("A boost is on Fanatics, so the boost panels below include "
+                   "Fanatics legs.")
+    cands = _boost_board["candidates"]
+    mid_cands = _boost_board["middle_candidates"]
+    # The unhedged +EV view devigs each market off its best price per side,
+    # and that read should keep Fanatics in it: only the boosted leg is bet.
+    ev_cands = snap.get("candidates") or []
     if not cands and not mid_cands:
         st.warning("This snapshot predates the boost feature — it has no "
                    "`candidates` section. Press **Scan live** (or re-run "
@@ -1017,6 +1063,7 @@ if boosts:
     else:
         cands = _live_and_date_filtered(cands)
         mid_cands = _live_and_date_filtered(mid_cands)
+        ev_cands = _live_and_date_filtered(ev_cands)
         if not cands and not mid_cands:
             st.warning(
                 "Nothing remains after the "
@@ -1033,8 +1080,8 @@ if boosts:
 
             if boost_mode.startswith("Best +EV"):
                 from edge.arb.engine import price_boosted_ev
-                ev_rows = (price_boosted_ev(cands, boosts, bcfg, min_ev_pct=float(min_profit))
-                          if cands else [])
+                ev_rows = (price_boosted_ev(ev_cands, boosts, bcfg, min_ev_pct=float(min_profit))
+                          if ev_cands else [])
                 if all(b.requires_parlay for b in boosts):
                     st.info("Every configured boost is parlay-only, which cannot "
                             "be priced as a single bet.")
@@ -1215,7 +1262,7 @@ if boosts:
 # picker above -- that is the whole point of turning it on -- so it is added
 # to whatever kinds are already checked rather than requiring a second click.
 _effective_kinds = set(kinds) | ({"gap"} if casino_mode else set())
-_all_opps = snap.get("opportunities", [])
+_all_opps = _view["opportunities"]
 opps = [o for o in _all_opps
         if o.get("kind") in _effective_kinds and o.get("profit_pct", 0) >= min_profit]
 if sport_filter:

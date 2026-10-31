@@ -88,6 +88,10 @@ class FakeStreamlit(types.ModuleType):
     def checkbox(self, label, value=False, *_a, **_k):
         return self._answer(label, value)
 
+    # Without this the catch-all below would return a truthy _Ctx, and every
+    # test would silently run with the toggle ON.
+    toggle = checkbox
+
     def multiselect(self, label, options=(), default=None, *_a, **_k):
         return self._answer(label, list(default) if default is not None else [])
 
@@ -1086,7 +1090,10 @@ def _snapshot_with_a_soccer_moneyline() -> dict:
 def test_a_soccer_token_prices_the_three_way_moneyline(tmp_path):
     """A soccer token is issued for the whole sport, and is mostly spent on the
     moneyline -- which has a third leg, the Draw."""
-    st = FakeStreamlit({"Boost 1 %": 50, "Boost 1 sport": "soccer"})
+    # Fanatics on: the fixture's three-way only clears the default token
+    # cap's stake rounding with Fanatics' home price in it (4.1% vs 2.7%).
+    st = FakeStreamlit({"Boost 1 %": 50, "Boost 1 sport": "soccer",
+                        "Include Fanatics": True})
     offered: dict = {}
     original = st.selectbox
 
@@ -1195,3 +1202,72 @@ def test_no_credentials_never_asks_github(tmp_path, monkeypatch):
     st = run_page(_generated(39, fanduel=1111), tmp_path=tmp_path)
     assert asked == []
     assert "FanDuel 1,111" in " ".join(_captions(st))
+
+
+# --- DraftKings + FanDuel by default, Fanatics on a toggle (2026-10-31) -------
+def _three_book_snapshot(with_extras: bool = True) -> dict:
+    """A Fanatics/FanDuel arb, the DK/FD arb it displaced (in the extras), and
+    an ordinary DK/FD arb both passes found."""
+    soon = (datetime.now(timezone.utc) + timedelta(hours=6)).isoformat()
+
+    def leg(book, side, dec):
+        return {"book": book, "side": side, "label": side.title(), "decimal": dec,
+                "american": "+100", "point": None, "stake": 500.0, "payout": 1010.0,
+                "boost_pct": 0.0, "raw_decimal": dec, "age_seconds": 1.0,
+                "link": None, "limit": None}
+
+    def arb(tag, books, pct):
+        return {"kind": "arb", "fingerprint": tag, "sport_key": "baseball_mlb",
+                "sport_title": "MLB", "event_id": tag, "matchup": f"{tag} A @ {tag} B",
+                "commence_time": soon, "market": "h2h", "subject": None,
+                "description": "h2h", "profit_pct": pct, "expected_pct": pct,
+                "risk_pct": 0.0, "stake_total": 1000.0, "profit_abs": 10.0,
+                "max_loss_pct": 0.0, "breakeven_hit_pct": 0.0, "hit_values": [],
+                "push_values": [], "pushes": False, "middle_window": None,
+                "fair_prob": None, "free_middle": False, "kelly_stake": None,
+                "anchor_book": None, "boost": None, "max_age_seconds": 2.0,
+                "warnings": [], "found_at": soon,
+                "legs": [leg(books[0], "home", 2.05), leg(books[1], "away", 2.05)]}
+
+    snap = {"generated_at": soon,
+            "stats": {"bankroll": 1000, "events": 2, "groups": 2, "quotes": 6,
+                      "fanduel": 2, "draftkings": 2, "fanatics": 2, "anchor": 0,
+                      "skipped_events": {}},
+            "opportunities": [arb("FanFD", ("fanatics", "fanduel"), 2.0),
+                              arb("Plain", ("draftkings", "fanduel"), 1.0)],
+            "candidates": []}
+    if with_extras:
+        snap["dk_fd_opportunities"] = [arb("Displaced", ("draftkings", "fanduel"), 1.5)]
+        snap["dk_fd_middle_candidates"] = []
+    return snap
+
+
+def _shown(st) -> str:
+    return " ".join(str(a) for k, a in st.drawn if k in ("markdown", "caption"))
+
+
+def test_the_board_opens_on_draftkings_and_fanduel_only(tmp_path):
+    st = run_page(_three_book_snapshot(), tmp_path=tmp_path)
+    shown = _shown(st)
+    assert "FanFD A" not in shown, "a Fanatics leg must be off by default"
+    assert "Displaced A" in shown, "the DK/FD position Fanatics displaced must appear"
+    assert "Plain A" in shown
+    assert ("title", "⚖️ Arbitrage · DraftKings / FanDuel") not in st.drawn  # via st.empty
+    assert st.query_params.get("arb_fanatics", "") == ""
+
+
+def test_include_fanatics_shows_the_three_book_board(tmp_path):
+    st = run_page(_three_book_snapshot(), tmp_path=tmp_path,
+                  answers={"Include Fanatics": True})
+    shown = _shown(st)
+    assert "FanFD A" in shown and "Plain A" in shown
+    assert "Displaced A" not in shown, \
+        "with Fanatics on, the better Fanatics leg replaces the displaced DK/FD one"
+    assert st.query_params.get("arb_fanatics") == "1", "the choice survives a lost session"
+
+
+def test_an_old_snapshot_says_the_displaced_positions_are_missing(tmp_path):
+    st = run_page(_three_book_snapshot(with_extras=False), tmp_path=tmp_path)
+    shown = _shown(st)
+    assert "FanFD A" not in shown and "Plain A" in shown
+    assert "predates the DraftKings + FanDuel pass" in shown
