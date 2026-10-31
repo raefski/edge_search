@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-31T13:29:30+00:00",
+"generated_at": "2026-10-31T14:59:13+00:00",
 "goalies": {
 "2026-10-31": {
 "BOS": {
@@ -44,7 +44,7 @@
 },
 "MTL": {
 "goalie": "Jacob Fowler",
-"status": null
+"status": "Confirmed"
 },
 "NSH": {
 "goalie": "Justus Annunen",
@@ -4995,7 +4995,7 @@
 },
 "line": "D3",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Brett Kulak": {
@@ -5236,40 +5236,6 @@
 "pos": "lw",
 "pp": "PP2"
 },
-"Josh Manson": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 15,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 146,
-"toiSeconds": 38
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 64,
-"toiSeconds": 2
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
-},
 "Logan O'Connor": {
 "gtd": false,
 "injury": null,
@@ -5474,6 +5440,40 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "rw",
+"pp": null
+},
+"Noah Juulsen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 13,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 118,
+"toiSeconds": 35
+},
+"last5": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 46,
+"toiSeconds": 15
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
 "pp": null
 },
 "Parker Kelly": {
