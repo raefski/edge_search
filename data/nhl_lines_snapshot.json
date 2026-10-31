@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-10-31T15:59:20+00:00",
+"generated_at": "2026-10-31T16:00:06+00:00",
 "goalies": {
 "2026-10-31": {
 "BOS": {
@@ -14563,7 +14563,7 @@
 "toiMinutes": 79,
 "toiSeconds": 8
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -14666,7 +14666,7 @@
 "toiSeconds": 11
 },
 "line": "D1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 },
@@ -14703,40 +14703,6 @@
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
-},
-"Colton Parayko": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 18,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 209,
-"toiSeconds": 10
-},
-"last5": {
-"assists": 0,
-"blocks": 8,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 99,
-"toiSeconds": 47
-},
-"line": "D2",
-"pk": "PK1",
-"pos": "rd",
-"pp": null
 },
 "Connor McMichael": {
 "gtd": false,
@@ -15045,7 +15011,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Mason McTavish": {
@@ -15217,6 +15183,40 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
+},
+"Theo Lindstein": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 169,
+"toiSeconds": 2
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 74,
+"toiSeconds": 37
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "ld",
+"pp": null
 }
 },
 "TBL": {
