@@ -141,6 +141,8 @@ def main() -> int:
     print(f"pool: {stats['projected']} projected of {stats['slate_players']} "
           f"on the slate ({stats['priced_players']} players carry a ladder "
           f"somewhere, {stats['not_on_slate']} of them in another game)")
+    if stats.get("name_alias"):
+        print(f"  matched by team + last name: {', '.join(stats['name_alias'])}")
     if stats.get("one_rung"):
         print(f"  WARNING: {stats['one_rung']} players had ONE rung per market. "
               f"That is the signature of a client built with main_line_only "

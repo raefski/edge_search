@@ -119,3 +119,80 @@ Correlation with the residual: train +0.035 (n=38, 2 slates), test −0.301
 the yards ladder hasn't already priced. This also weakens the critic's guess
 that TDs-per-yard is the cause of the compression: if volume beyond yards
 predicted TDs, extra carries would show up here.
+
+## Cycle 2 (player name matching) — 2026-10-31: nicknames and slate-wide namesakes — SHIPPED
+
+**Target:** the join from DK sportsbook ladder subjects ("Braylon McReynolds
+(UAB)") to DK draftables, i.e. who the board can see at all. There was no
+harness for this, so building it was part of the cycle:
+`scripts/ncaaf_names_lab.py report [--cutoff] [--arch] [-v]`. It replays every
+NCAAF draft group through production `join_ladders`, using the draftables as
+of the last data-branch commit before lock and the last ok `dfs_ncaaf` scan
+before lock (local copies of the F: archive for the older scans). The metric
+per slate is join recall (joined / ladder subjects in slate-game events), the
+misses by reason with projected points lost, and wrong joins (book team
+suffix ≠ DK team). Split: train before 2026-10-11 (6 slates), test from then
+on (19 slates; 155652 had not locked yet).
+
+Two other joins were checked and are clean. Projection log → contest export:
+every logged player missing from an export was undrafted, with no near-name
+in the export. cfbfastR names feed grading and fitting only, not the board.
+
+**Hole (critic):** the exact join keys on the normalised name across the
+whole slate.
+- **Nickname or full surname on DK's salary list:** the join misses
+  (`no_key`). Cases: Bam / Braylon McReynolds, Rod Robinson II / Roderick,
+  Ty Mims / Tiaquelin (UAB's backfield on 10/15, 10–16% owned), Makhilyn /
+  MK Young, and Dominic Lee-Knicely / "Dominic Knicely". Lee-Knicely was a
+  $6.8k RB projected 18.8 and 38.6% owned in the 10/16 GPP.
+- **Namesake anywhere on the slate:** both players are dropped (Fredrick
+  Moore of MSU and Alabama, ×3).
+
+These two causes were 100% of the misses in both periods. Unpriced games
+(13 game-slots across slates, 10 distinct games) have no DK ladders at all;
+that is coverage, not names.
+
+**Fix:** `dfs_run_ncaaf.alias_joins`, called by the new `join_ladders` that
+`build_pool` and the lab share. It runs only on what the exact join left
+out, and only inside the event's own game:
+1. The book's team suffix is mapped to a DK team by vote of the exact joins.
+   If one suffix and one DK team are both still unmatched, they are paired.
+2. Last names must agree (a hyphen part counts).
+3. Tier A: one first name is a prefix of the other (2+ letters). Tier B: same
+   first initial, with one first name of ≤ `ALIAS_SHORT_FIRST` = 3 letters.
+   Exactly one player on that team may pass.
+4. A DK player who already joined exactly is never taken.
+5. A passing-yards ladder must belong to a QB.
+6. The aliases are listed on the page and in the CLI.
+
+**Threshold decided on train (judgment call recorded):** the critic chose ≤ 3
+after seeing the placebo on both periods. Redone on train only, the sole
+initial-only true alias was MK (2 letters), and all 4 placebo false joins
+had first names of 4+ letters (King/Kayne, Jeremy/James, Dakorien/Dante,
+Dylan/Dayton). So 2 or 3 both pass train; 3 is the midpoint. On test, 2
+would have lost Bam.
+
+| | train (6 slates) | test (19 slates) |
+|---|---|---|
+| subjects | 489 | 931 |
+| recall, shipped → fix | 0.9959 → **1.000** | 0.9925 → **1.000** |
+| missed (no_key / ambiguous) | 2 (1 / 1) → 0 | 7 (5 / 2) → 0 |
+| projected pts lost | 13.1 → 0 | 67.2 → 0 |
+| wrong joins | 0 → 0 | 0 → 0 |
+| placebo false joins (production code) | 0 / 462 | 0 / 949 |
+
+Placebo = remove each exactly joined player's DK row and check whether the
+alias step hands his ladder to someone else.
+
+Exact joins are unchanged on every slate: the baseline join count plus the
+aliases equals the new join count. The test misses fell on 5 of 19 slates.
+Only 9 aliases exist in all, so that is the n.
+
+**Runners-up:**
+- The 50% rule in `event_games` counts only exact joins. An event with 2 or
+  more aliases could fall below 50% and lose its whole game. Not observed
+  (worst: UAB 3 of 16).
+- Before this cycle, the lab's "nearest DK name" for a miss ignored the team.
+  It now restricts to the suffix's team.
+- The 13 unpriced game-slots: the only coverage lever is a second book
+  (FanDuel's two-sided props, STATUS §10).

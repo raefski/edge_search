@@ -357,3 +357,80 @@ def test_a_namesake_in_another_game_does_not_take_his_ladder():
     event_players["mizz-event"].discard("austinsimmons")
     ok, rejected = on_slate_keys(event_players, by_key)
     assert "austinsimmons" in ok and rejected == []
+
+
+# ---------------------------------------------------------------------------
+# alias join: DK's salary list and DK's sportsbook spell players differently
+# ---------------------------------------------------------------------------
+def _alias_slate(dk_names, book_subjects, extra=()):
+    """One UAB @ CCAR game: DK draftables + one odds event whose subjects are
+    `book_subjects` (spelled the book's way) plus enough exact names to map
+    the suffixes. `extra` = draftables in another game."""
+    from edge import dfs
+    from edge.dfs_run_ncaaf import subject_key
+    salaries = {}
+    for name, team, pos in [*dk_names, ("UAB QB", "UAB", "QB"), ("UAB WR", "UAB", "WR"),
+                            ("CC QB", "C-C", "QB"), ("CC WR", "C-C", "WR")]:
+        salaries[dfs.norm(name) + "|" + team] = {
+            "name": name, "team": team, "position": pos, "salary": 5000,
+            "game": "g1", "matchup": "UAB @ C-C", "start": "2026-10-15T23:00:00Z"}
+    for name, team, pos in extra:
+        salaries[dfs.norm(name) + "|" + team] = {
+            "name": name, "team": team, "position": pos, "salary": 5000,
+            "game": "g2", "matchup": "MSU @ BAMA", "start": "2026-10-15T23:00:00Z"}
+    rungs = {"player_rush_yds": [(10, 0.8), (40, 0.4)]}
+    subs = [*book_subjects, "UAB QB (UAB)", "UAB WR (UAB)", "CC QB (CCAR)", "CC WR (CCAR)"]
+    by_event = {"ev1": {subject_key(s): dict(rungs) for s in subs}}
+    spelled = {"ev1": {subject_key(s): s for s in subs}}
+    return salaries, by_event, spelled
+
+
+def _aliases(salaries, by_event, spelled):
+    from edge.dfs_run_ncaaf import join_ladders
+    stats: dict = {}
+    joins = join_ladders(by_event, {"ev1": "2026-10-15T23:00:00Z"}, salaries, spelled, stats)
+    return {info["name"] for _, info in joins}, stats["name_alias"]
+
+
+def test_a_nickname_on_dks_salary_list_still_joins_his_ladder():
+    """10/15: UAB's backfield was Bam McReynolds / Rod Robinson II / Ty Mims on
+    DK's salary list and Braylon / Roderick / Tiaquelin on its sportsbook; 10/16
+    Dominic Lee-Knicely (38% owned in the GPP) was "Dominic Knicely (CCAR)".
+    The exact join left all four off the board (critique cycle 2)."""
+    sal, ev, sp = _alias_slate(
+        [("Bam McReynolds", "UAB", "RB"), ("Rod Robinson II", "UAB", "RB"),
+         ("Ty Mims", "UAB", "RB"), ("Dominic Lee-Knicely", "C-C", "RB")],
+        ["Braylon McReynolds (UAB)", "Roderick Robinson (UAB)",
+         "Tiaquelin Mims (UAB)", "Dominic Knicely (CCAR)"])
+    names, alias = _aliases(sal, ev, sp)
+    assert {"Bam McReynolds", "Rod Robinson II", "Ty Mims", "Dominic Lee-Knicely"} <= names
+    assert "Dominic Lee-Knicely = Dominic Knicely" in alias and len(alias) == 4
+
+
+def test_brothers_on_one_roster_are_not_aliased_onto_each_other():
+    """With Dylan Raiola's own row missing, "Dylan Raiola" must not take
+    Dayton's -- two long first names sharing an initial are different people
+    (the placebo the cycle-2 threshold was chosen on: King/Kayne Miller,
+    Jeremy/James Scott)."""
+    sal, ev, sp = _alias_slate([("Dayton Raiola", "UAB", "QB")], ["Dylan Raiola (UAB)"])
+    names, alias = _aliases(sal, ev, sp)
+    assert "Dayton Raiola" not in names and alias == []
+
+
+def test_a_namesake_elsewhere_on_the_slate_no_longer_drops_both():
+    """10/3 and 10/24: Fredrick Moore of MSU and of Alabama were both on the
+    board, so salary_index dropped the key and MSU's WR lost his ladder. Inside
+    his own game's event only one of them exists."""
+    sal, ev, sp = _alias_slate([("Fredrick Moore", "UAB", "WR")], ["Fredrick Moore (UAB)"],
+                               extra=[("Fredrick Moore", "BAMA", "RB")])
+    names, alias = _aliases(sal, ev, sp)
+    joined = [info for info in sal.values() if info["name"] == "Fredrick Moore"
+              and info["team"] == "UAB"]
+    assert "Fredrick Moore" in names and len(alias) == 1 and joined
+
+
+def test_an_alias_never_takes_a_player_the_exact_join_already_has():
+    sal, ev, sp = _alias_slate([("Bam McReynolds", "UAB", "RB")],
+                               ["Bam McReynolds (UAB)", "Braylon McReynolds (UAB)"])
+    names, alias = _aliases(sal, ev, sp)
+    assert "Bam McReynolds" in names and alias == []

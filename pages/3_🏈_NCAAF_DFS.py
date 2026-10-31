@@ -253,6 +253,11 @@ st.markdown(
     f"pool: <b>{stats['projected']}</b> players carry a DraftKings ladder, of "
     f"{stats['slate_players']} on the slate</div>", unsafe_allow_html=True)
 
+if stats.get("name_alias"):
+    st.markdown("<div class='summary'><b>Matched by team + last name</b> (DK's salary "
+                "list and its sportsbook spell them differently): "
+                + ", ".join(stats["name_alias"]) + "</div>", unsafe_allow_html=True)
+
 # THE POOL IS A SMALL SLICE OF THE SLATE, AND THAT IS STRUCTURAL.
 # DraftKings prices ~110 of a 12-game slate's ~860 players with any prop at
 # all. Everyone else is unprojectable here -- not badly projected, absent. A

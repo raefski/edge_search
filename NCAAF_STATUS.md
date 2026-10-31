@@ -392,3 +392,33 @@ cheap receivers. FanDuel posts two-sided college props DK sometimes lacks, but
 only 24–48 h out and it is never stored (`scripts/ncaaf_overround_fit.py`
 fetches it ad hoc). Adding it as a second projection source for unladdered
 players is the next coverage lever and is not measured yet.
+
+## 11. The name join: DK's salary list vs DK's sportsbook (2026-10-31)
+
+Both sides are DraftKings, but they do not spell players alike. The exact join
+(`subject_key` vs `salary_index`) missed **2 of 489** ladder subjects on the
+6 train slates and **7 of 931** on the 19 test slates
+(`scripts/ncaaf_names_lab.py report`, replayed through production at lock).
+Every miss was one of two kinds:
+
+* **a nickname or full surname on the salary list**: Bam / Braylon
+  McReynolds, Rod Robinson II / Roderick, Ty Mims / Tiaquelin (UAB's whole
+  backfield on 10/15), Makhilyn / MK Young, and Dominic Lee-Knicely /
+  "Dominic Knicely (CCAR)". Lee-Knicely was a $6.8k RB, 38% owned in the
+  10/16 GPP, and invisible to our board.
+* **a namesake anywhere on the slate**: Fredrick Moore of MSU and of
+  Alabama made `salary_index` drop both, three times.
+
+`alias_joins` (critique cycle 2) now matches what the exact join leaves out,
+inside the event's own game only. The book's team suffix is mapped to a DK
+team by the event's exact joins. Last names must agree (a hyphen part
+counts). The first names must then be prefixes of each other, or share an
+initial when one of them is 3 letters or fewer, with exactly one such player
+on that team. A DK player already joined is never taken, and a passing-yards
+ladder must belong to a QB. Every alias is listed on the page and in the CLI
+(`stats["name_alias"]`).
+
+Result: recall is 1.000 on train and test, with 0 wrong joins. Brothers on
+one roster (Dylan / Dayton Raiola, Quinten / Quintaelyn Joyner) are what the
+short-name rule exists for. Unpriced games (FSU @ MIA, AF @ WYO, ...) are
+coverage, not names: DK posted no ladders for them.

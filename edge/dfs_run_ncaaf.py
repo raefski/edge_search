@@ -77,6 +77,7 @@ LADDER_MARKETS = ("player_pass_yds", "player_pass_tds", "player_pass_attempts",
 #: as "Jeremiah Smith". Both are DraftKings, so the join is exact once the
 #: team suffix is off -- no fuzzy matching, unlike the NFL's team-name aliasing.
 _TEAM_SUFFIX = re.compile(r"\s*\([^)]*\)\s*$")
+_TEAM_SUFFIX_CAP = re.compile(r"\(([^)]*)\)\s*$")
 
 
 def subject_key(subject: str) -> str:
@@ -186,7 +187,8 @@ def collect_ladders(client, markets=LADDER_MARKETS,
 
 
 def collect_ladders_by_event(client, markets=LADDER_MARKETS,
-                             book: str = "draftkings") -> tuple[dict, dict]:
+                             book: str = "draftkings",
+                             subjects: dict | None = None) -> tuple[dict, dict]:
     """({event id: {player key: {market: rungs}}}, {event id: commence time}).
 
     Kept PER EVENT so a ladder can be joined to a draftable only through the
@@ -194,6 +196,9 @@ def collect_ladders_by_event(client, markets=LADDER_MARKETS,
     name alone joined Missouri's QB to Washington's $3,000 namesake on 10/16.
     A subject the book names with no usable rungs still counts as one of the
     event's subjects -- it is evidence of whose game the event is.
+
+    `subjects`, when given, is filled with {event id: {player key: the book's
+    own spelling}} ("Braylon McReynolds (UAB)"), which alias_joins reads.
     """
     by_event: dict = {}
     kickoffs: dict = {}
@@ -216,6 +221,8 @@ def collect_ladders_by_event(client, markets=LADDER_MARKETS,
                     by_player.setdefault(subject, []).append(o)
                 for subject, outcomes in by_player.items():
                     slot = players.setdefault(subject_key(subject), {})
+                    if subjects is not None:
+                        subjects.setdefault(ev["id"], {})[subject_key(subject)] = subject
                     rungs = dfs_ladder.rungs_from_outcomes(outcomes, subject)
                     if rungs:
                         slot[key] = rungs
@@ -358,40 +365,155 @@ def on_slate_keys(event_players: dict, by_key: dict, kickoffs: dict | None = Non
     return set(owner), refused
 
 
+#: alias_joins' Tier B (same first initial) is allowed only when one of the two
+#: first names is this short -- a nickname or initials ("MK", "Bam", "Ty").
+#: Chosen on the train slates (before 2026-10-11) of scripts/ncaaf_names_lab.py:
+#: the one true initial-only alias there was MK = Makhilyn (2 letters), and every
+#: wrong pairing the rule would have made with the true player removed had two
+#: first names of 4+ letters (King/Kayne Miller, Jeremy/James Scott, Dakorien/
+#: Dante Moore, Dylan/Dayton Raiola: 4 placebo false joins of 487). 3 sits
+#: between; 2 would also have passed train (judgment call, 2026-10-31).
+ALIAS_SHORT_FIRST = 3
+_NAME_SUFFIXES = {"jr", "sr", "ii", "iii", "iv", "v"}
+
+
+def _first_last(name: str) -> tuple[str, set]:
+    """(normalised first name, {normalised last name and each hyphen part})."""
+    toks = [t for t in _TEAM_SUFFIX.sub("", name or "").replace(".", " ").split()]
+    while len(toks) > 1 and ncaaf.norm(toks[-1]) in _NAME_SUFFIXES | {""}:
+        toks.pop()
+    if not toks:
+        return "", set()
+    last = toks[-1]
+    return (ncaaf.norm(toks[0]),
+            {ncaaf.norm(last)} | {ncaaf.norm(p) for p in last.split("-") if p})
+
+
+def alias_joins(by_event: dict, subjects: dict, owner: dict, ev_game: dict,
+                salaries: dict) -> dict:
+    """{(event id, player key): DK salary entry} for ladder subjects the exact
+    name join left out, matched inside the event's own game only.
+
+    Both sides are DraftKings but they do not spell players alike: the salary
+    list carries nicknames and full surnames the sportsbook does not ("Bam
+    McReynolds" / "Braylon McReynolds (UAB)", "Rod Robinson II" / "Roderick",
+    "Ty Mims" / "Tiaquelin", "Makhilyn Young" / "MK Young", "Dominic
+    Lee-Knicely" / "Dominic Knicely" -- a $6,800 RB 38% owned in the 10/16
+    GPP that our board could not see), and a namesake ANYWHERE on the slate
+    (Fredrick Moore of MSU and of Alabama) dropped both from salary_index. In
+    the names lab (critique cycle 2) those were every missed subject: 2 of 489
+    train, 7 of 931 test, 67 projected points.
+
+    `subjects` = {event id: {player key: the book's spelling}}
+    (collect_ladders_by_event). A subject joins a DK player only when all hold:
+      * the book's team suffix maps to a DK team in that game -- by the vote
+        of the event's exactly joined subjects, or as the one suffix and the
+        one DK team both left unmatched;
+      * the last names agree (a hyphen part counts: Knicely ~ Lee-Knicely);
+      * Tier A -- one first name is a prefix of the other (2+ letters; an
+        identical name settles a slate-wide namesake), or else Tier B -- same
+        first initial with one first name ALIAS_SHORT_FIRST letters or fewer;
+        and exactly ONE player on that DK team passes the tier;
+      * that DK player was not exactly joined, nor claimed by another alias;
+      * a subject with a passing-yards ladder is a DK QB.
+    Brothers on one roster (Dylan / Dayton Raiola) are what the uniqueness
+    and short-name rules are for; every alias is listed (stats["name_alias"]).
+    """
+    roster: dict = {}
+    for info in salaries.values():
+        roster.setdefault(info.get("game"), []).append(info)
+    by_key, _ = salary_index(salaries)
+    taken = {id(by_key[k]) for k in owner if k in by_key}
+    out: dict = {}
+    for ev, game in ev_game.items():
+        spelled = subjects.get(ev, {})
+        sfx = {k: m.group(1) for k, s in spelled.items()
+               if (m := _TEAM_SUFFIX_CAP.search(s))}
+        votes: dict = {}
+        for key in by_event.get(ev, {}):
+            if owner.get(key) == ev and key in sfx:
+                team = by_key[key].get("team")
+                votes.setdefault(sfx[key], {}).setdefault(team, 0)
+                votes[sfx[key]][team] += 1
+        tmap = {s: max(v.items(), key=lambda kv: kv[1])[0] for s, v in votes.items()}
+        open_s = set(sfx.values()) - set(tmap)
+        open_t = {i.get("team") for i in roster.get(game, [])} - set(tmap.values())
+        if len(open_s) == 1 and len(open_t) == 1:
+            tmap[open_s.pop()] = open_t.pop()
+        for key, by_market in by_event.get(ev, {}).items():
+            team = tmap.get(sfx.get(key))
+            if owner.get(key) == ev or not by_market or team is None:
+                continue
+            first, lasts = _first_last(spelled[key])
+            if not first or not lasts:
+                continue
+            same = [(i, _first_last(i.get("name") or "")[0]) for i in roster.get(game, [])
+                    if i.get("team") == team and _first_last(i.get("name") or "")[1] & lasts]
+            tier_a = [i for i, f in same if min(len(f), len(first)) >= 2
+                      and (f.startswith(first) or first.startswith(f))]
+            tier_b = [i for i, f in same if f[:1] == first[:1]
+                      and min(len(f), len(first)) <= ALIAS_SHORT_FIRST]
+            pick = tier_a if tier_a else tier_b
+            if len(pick) != 1:
+                continue
+            info = pick[0]
+            if id(info) in taken or not info.get("salary"):
+                continue
+            if "player_pass_yds" in by_market and "QB" not in (info.get("position") or ""):
+                continue
+            taken.add(id(info))
+            out[(ev, key)] = info
+    return out
+
+
+def join_ladders(by_event: dict, kickoffs: dict, salaries: dict, subjects: dict,
+                 stats: dict) -> list[tuple[dict, dict]]:
+    """[(one player's rungs, his DK salary entry)] -- the whole name join, which
+    scripts/ncaaf_names_lab.py replays. Fills stats: priced_players,
+    not_on_slate, ambiguous_names, wrong_game, name_alias."""
+    games = slate_games(salaries)
+    event_players = {ev: set(players) for ev, players in by_event.items()}
+    by_key, ambiguous = salary_index(salaries)
+    owner, wrong_game = dfs_slate.subject_events(event_players, by_key.get, kickoffs,
+                                                 games, MATCH_TOLERANCE)
+    ev_game = dfs_slate.event_games(event_players, by_key.get, kickoffs, games,
+                                    MATCH_TOLERANCE)
+    alias = alias_joins(by_event, subjects, owner, ev_game, salaries)
+    # Each player's rungs from his own game's event only (exactly, or through
+    # an alias in that game); everyone else counted not_on_slate.
+    joins: list = []
+    stray: set = set()
+    for ev, players in by_event.items():
+        for key, by_market in players.items():
+            if not by_market:
+                continue
+            if owner.get(key) == ev:
+                joins.append((by_market, by_key[key]))
+            elif (ev, key) in alias:
+                joins.append((by_market, alias[(ev, key)]))
+            elif key not in owner:
+                stray.add(key)
+    stray -= {k for _, k in alias}
+    stats.update({"priced_players": len(joins) + len(stray), "not_on_slate": len(stray),
+                  "ambiguous_names": ambiguous, "wrong_game": wrong_game,
+                  "name_alias": sorted(f"{info['name']} = {_TEAM_SUFFIX.sub('', subjects[ev][k])}"
+                                       for (ev, k), info in alias.items())})
+    return joins
+
+
 def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, dict]:
     """The projected player pool for one slate."""
     sport = dfs_sport.get(SPORT)
     games = slate_games(salaries)
     opponents = team_opponents(games)
-    by_event, kickoffs = collect_ladders_by_event(client, book=book)
-    event_players = {ev: set(players) for ev, players in by_event.items()}
-    by_key, ambiguous = salary_index(salaries)
-    owner, wrong_game = dfs_slate.subject_events(event_players, by_key.get, kickoffs,
-                                                 games, MATCH_TOLERANCE)
-    # Each player's rungs from his own game's event only; everyone else as
-    # before (counted not_on_slate below).
-    ladders: dict = {}
-    for ev, players in by_event.items():
-        for key, by_market in players.items():
-            if not by_market:
-                continue
-            if key in owner:
-                if owner[key] == ev:
-                    ladders[key] = by_market
-            else:
-                ladders.setdefault(key, by_market)
+    subjects: dict = {}
+    by_event, kickoffs = collect_ladders_by_event(client, book=book, subjects=subjects)
+    stats = {"projected": 0, "no_proj": 0, "no_salary": 0, "not_on_slate": 0,
+             "one_rung": 0, "slate_players": len(salaries)}
+    joins = join_ladders(by_event, kickoffs, salaries, subjects, stats)
 
     pool: list[dict] = []
-    stats = {"projected": 0, "no_proj": 0, "no_salary": 0, "not_on_slate": 0,
-             "one_rung": 0, "priced_players": len(ladders),
-             "slate_players": len(salaries), "ambiguous_names": ambiguous,
-             "wrong_game": wrong_game}
-
-    for key, by_market in ladders.items():
-        info = by_key.get(key)
-        if not info or key not in owner:
-            stats["not_on_slate"] += 1
-            continue
+    for by_market, info in joins:
         if not info.get("salary"):
             stats["no_salary"] += 1
             continue
@@ -418,7 +540,8 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
         })
         stats["projected"] += 1
 
-    lines, line_report = game_lines(client, games, event_players, by_key)
+    event_players = {ev: set(players) for ev, players in by_event.items()}
+    lines, line_report = game_lines(client, games, event_players, salary_index(salaries)[0])
     for p in pool:
         line = lines.get(p.get("game"))
         if line:
