@@ -71,6 +71,16 @@ SEVEN_D_SCALE = {"blocks": 0.855, "shots": 0.933, "goals": 0.92, "assists": 0.97
 #: NHL_CRITIQUE_LOG.md, runner-ups.
 POINTS_REF = 0.556
 POINTS_STRETCH = 1.1
+#: ... and still too flat at the very top: $8.5k+ skaters ran -4.3 (train, 15
+#: skater-games) / -1.8 (test, 37) under projection, all of it goals + assists;
+#: a steeper exponent for everyone (1.3) over-fed $7.5-8.5k and worsened test RMSE.
+#: Above POINTS_KNOT the curve steepens to POINTS_TOP_STRETCH. FITTED 2026-10-31
+#: on TRAIN (11 nights, lock + early summed RMSE, grid knot 0.9/1.1/1.3 x
+#: 1.4/1.7/2.0, 2 seeds); test, 13 nights, 4 seeds: lock MAE 4.4452 -> 4.4443,
+#: RMSE 5.9648 -> 5.9623; early 4.4560 -> 4.4520, 5.9894 -> 5.9833; $8.5k+ bias
+#: -1.8 -> -0.5. NHL_CRITIQUE_LOG.md cycle 10.
+POINTS_KNOT = 1.1
+POINTS_TOP_STRETCH = 1.7
 CURRENT_SEASON = "20262027"
 #: THIS SEASON'S PRODUCTION (NHL_CRITIQUE_LOG.md cycle 4). Beyond the ice-time
 #: scaling, a mean no market sets is blended with the skater's own per-game rate
@@ -390,6 +400,8 @@ def skater_means(base: dict, pos: str, scale: float, shots: float | None = None,
         a_ = assists
         g_ = max(points - assists, 0.02)
         k = POINTS_REF * (points / POINTS_REF) ** POINTS_STRETCH / (g_ + a_)
+        if points > POINTS_KNOT:
+            k *= (points / POINTS_KNOT) ** (POINTS_TOP_STRETCH - POINTS_STRETCH)
         g_, a_ = g_ * k, a_ * k
     means = {"shots": max(shots, g_ + 0.05), "goals": g_, "assists": a_,
              "blocks": base.get("blocks", DEFAULT_BLOCKS[pos])}

@@ -498,6 +498,8 @@ Shipped:
 - **Points-prop stretch** (`POINTS_REF` 0.556, `POINTS_STRETCH` 1.1 in
   edge/dfs_run_nhl.py): actual points rise ~1.3x as fast as the market's points mean.
   Alone the stretch fit 1.3 on TRAIN; refitted with the exact draw it is 1.1.
+  Above a points mean of `POINTS_KNOT` 1.1 it steepens to `POINTS_TOP_STRETCH` 1.7
+  (2026-10-31, cycle 10): $8.5k+ skaters ran -4.3 train / -1.8 test, now -0.5 test.
 - **Nickname joins** (`name_aliases`): DK's Nicholas Robertson, Zack Bolduc, Will
   Borgen, Joe Veleno and Jeffrey Viel matched to last season's stats through this
   season's games (unique team + initial + last name; brothers never matched).

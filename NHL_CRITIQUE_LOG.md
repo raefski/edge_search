@@ -567,3 +567,54 @@ under-regressed) fixed in the season lab rather than a post-hoc shrink.
 Runner-ups: prop skaters' slope flips (recheck ~40 nights); D2/D3/F4 slot biases swing by
 split (noise, as cycle 6); cycle 8's open items (shorthanded/shootout bonuses; a
 "scratches = 0" RMSE line).
+
+## Cycle 10 (target: salary-tier bias) -- SHIPPED (points knot 1.1, top stretch 1.7)
+
+Metric: skater DK-points bias + MAE by salary tier, held out, both states; overall MAE /
+RMSE as guardrail. Lab cache as of 10/29 (today's refresh timed out): 11 train / 13 test
+nights, 2,196 / 2,962 skater-games at lock, 2,176 / 2,923 early.
+
+**Critic #10: $8.5k+ skaters under-projected, all of it goals + assists.** The only tier
+whose sign holds on both splits and states (bias = proj - actual, lock, night-clustered se):
+
+| tier | train n / bias | test n / bias |
+|---|---|---|
+| <3.5k | 1227 / -0.09 +- 0.18 | 1875 / -0.08 +- 0.11 |
+| 3.5-5k | 479 / +0.15 +- 0.23 | 480 / +0.47 +- 0.14 |
+| 5-6.5k | 317 / +0.73 +- 0.31 | 349 / -0.32 +- 0.46 |
+| 6.5-7.5k | 104 / -0.94 +- 1.09 | 141 / +0.42 +- 0.88 |
+| 7.5-8.5k | 54 / -0.16 +- 1.26 | 80 / +0.86 +- 0.88 |
+| 8.5k+ | 15 / -4.33 +- 2.19 | 37 / -1.77 +- 1.95 |
+
+$8.5k+ components (lock, train / test): goals -1.36 / -0.53, assists -2.07 / -1.11, shots
++0.19 / +0.02, blocks -0.15 / -0.01, bonuses -0.94 / -0.15. A negative-binomial inversion of
+the points market (K 8/4/2) barely moves it (-4.9 -> -4.6 train): the curve's steepness, not
+the distribution's shape. The critic's fix, POINTS_STRETCH 1.1 -> 1.3 for everyone: test RMSE
+5.966 -> 5.971 lock, 5.990 -> 5.996 early (guardrail fails), and 7.5-8.5k over-fed on train too
+(-0.16 -> +0.61).
+
+**Fix.** Steepen only above a knot: points mean m > POINTS_KNOT gets an extra factor
+(m / knot) ** (POINTS_TOP_STRETCH - POINTS_STRETCH) on goals + assists. Grid knot 0.9 / 1.1
+/ 1.3 x top 1.4 / 1.7 / 2.0, chosen by TRAIN RMSE summed over lock + early (2 seeds):
+1.1 / 1.7 (12.1523; next 0.9 / 1.4 at 12.1544). Confirmed at 4 seeds:
+
+| state | split | MAE | RMSE | 8.5k+ bias | 7.5-8.5k bias |
+|---|---|---|---|---|---|
+| lock | train | 4.5317 -> 4.5242 | 6.0745 -> 6.0688 | -4.30 -> -2.65 | -0.16 -> +0.08 |
+| lock | test | 4.4452 -> 4.4443 | 5.9648 -> 5.9623 | -1.77 -> -0.51 | +0.86 -> +1.07 |
+| early | train | 4.5379 -> 4.5293 | 6.0913 -> 6.0845 | -4.24 -> -2.68 | -0.33 -> -0.16 |
+| early | test | 4.4560 -> 4.4520 | 5.9894 -> 5.9833 | -1.83 -> -0.60 | +0.90 -> +1.09 |
+
+(tier biases from the 2-seed grid). Small gains, 52 top-tier rows: sign stable, size not
+resolved; recheck at ~40 nights. Parity: one slate (154332, 461 skaters) rebuilt through
+build_board == the lab variant to 2e-16.
+
+Runner-ups: (1) bonuses (5+ shots, 3+ blocks) over-simulated below $7.5k on both splits
+(+0.07 to +0.35 / skater-game; 3.5-5k 5+ shot rate 0.051 sim vs 0.027 test); (2) 3.5-5k
+over-projected both splits (+0.15 / +0.47), slope unstable (0.98 / 0.69) -- no tier fit.
+
+Gap map (same cache, train-fit linear recalibration per slice, test SSE saved per night,
+lock / early): no-prop skaters 22 / 32 (slope 0.81 / 0.71 lock); no-PP 18 / 20; F4 9 / 0;
+3.5-5k 6 / 5; every PP / line / mid-salary slice NEGATIVE (sign flips = noise). Board
+players who did not play: 82 at lock (359 proj pts), 133 early (567). Goalies MAE 7.90 vs
+constant 7.85 (n 291).
