@@ -188,6 +188,82 @@ def toi_role(s, prm):
     return s
 
 
+def _inputs(date: str) -> dict:
+    """What build_board read for a slate on `date` besides the cached board: this
+    season's ice time (fresh, not TOI_FILE, which stops where it was fetched) and
+    production before the date (edge/dfs_run_nhl.current_production), memoised."""
+    if "toi_all" not in _memo:
+        _memo["toi_all"] = nhl.skater_game_toi(R.CURRENT_SEASON,
+                                               (datetime.now() + timedelta(days=1)).date().isoformat())
+        raw = {}
+        for r in nhl.season_skater_stats(R.LAST_SEASON).values():
+            row = R.rate_row(r)
+            if row is not None:
+                raw[norm(r["skaterFullName"])] = row
+        _memo["raw_rates"] = raw
+    key = ("prod", date)
+    if key not in _memo:
+        rows = [r for r in _memo["toi_all"] if r["date"] < date]
+        _memo[key] = {"toi": R.group_toi(rows), "rows": rows, "prod": R.current_production(date) or {}}
+    return _memo[key]
+
+
+def _recompute(s: dict, rates: dict) -> dict:
+    """Every skater's means rebuilt through production's skater_means from the
+    cached props and `rates` (keyed as R._season_rates, aliases as build_board)."""
+    inp = _inputs(s["date"])
+    aliases = R.name_aliases(inp["rows"], rates)
+    dk_keys: dict = {}
+    for p in s["pool"]:
+        k = R._initial_last(p["team"], p["name"])
+        dk_keys[k] = dk_keys.get(k, 0) + 1
+    aliases = {k: v for k, v in aliases.items() if dk_keys.get(k, 0) <= 1}
+    implied, seven = s["implied"], set(s["seven_d"])
+    for p in s["pool"]:
+        if p["pos"] == "G":
+            continue
+        key, t, pos = norm(p["name"]), p["team"], p["pos"]
+        rkey = key if key in rates else aliases.get(R._initial_last(t, p["name"]), key)
+        pm = p.get("raw_props") or {}
+        fd = "D" if pos == "D" else "F"
+        means, imputed, r = R.skater_means(
+            rates.get(rkey) or {}, pos, implied[t] / R.LEAGUE_TEAM_GOALS,
+            nhl_sim.market_mean(pm.get("player_shots_on_goal")),
+            nhl_sim.market_mean(pm.get("player_points")), nhl_sim.market_mean(pm.get("player_assists")),
+            inp["toi"].get((rkey, fd)), pos == "D" and t in seven, inp["prod"].get((rkey, fd)))
+        p["means"], p["imputed"] = means, imputed
+    return s
+
+
+@variant("recompute")
+def recompute(s, prm):
+    """The cached means rebuilt from raw inputs with last season's raw rates: must
+    equal `shipped` on a cache built before RATE_K (checks _recompute itself)."""
+    _inputs(s["date"])
+    return _recompute(s, _memo["raw_rates"])
+
+
+@variant("regressed_rates")
+def regressed_rates(s, prm):
+    """Last season's rates regressed toward ice time x position (RATE_K, or prm K),
+    on a cache built with raw rates. Applied as a DELTA on the cached means --
+    rebuilt(regressed) - rebuilt(raw) -- because older boards in the cache predate
+    later ships (the first lock nights lack cycle 4's season blend, every board
+    cycle 10's top stretch): the variant moves only what the rates move. On a
+    cache built from the current code (early state: all no-prop means rebuild to
+    1e-9) the delta is the production change exactly."""
+    _inputs(s["date"])
+    k = prm.get("K", R.RATE_K)
+    if ("reg", k) not in _memo:
+        _memo[("reg", k)] = R.regress_rates(_memo["raw_rates"], k)
+    new = _recompute(copy.deepcopy(s), _memo[("reg", k)])
+    old = _recompute(copy.deepcopy(s), _memo["raw_rates"])
+    for p, a, b in zip(s["pool"], new["pool"], old["pool"]):
+        if p["pos"] != "G":
+            p["means"] = {c: v + a["means"][c] - b["means"][c] for c, v in p["means"].items()}
+    return s
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # grading
 # ──────────────────────────────────────────────────────────────────────────────

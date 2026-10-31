@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import csv
 import logging
+import math
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -108,6 +109,26 @@ SEASON_K = {"points": 30.0, "shots": 7.0, "blocks": 20.0}
 #: 6.093-6.100), so the powers are loosely determined; > 1 says ice time moves
 #: with role quality (PP / PK time), not just minutes. TEST (10/13-10/21, 8
 #: nights): RMSE 5.991 -> 5.96, both states -- NHL_CRITIQUE_LOG.md cycle 1.
+#: LAST SEASON'S RATES, REGRESSED (regress_rates). A no-prop skater's goals,
+#: assists and shots, and every skater's blocks, start from last season's raw
+#: per-game rates -- a 12-game call-up's 3 goals read as a 0.25-a-game scorer.
+#: Those means ran too wide: slope of actual on projection 0.81 train / 0.71
+#: test at lock on the no-prop skaters (NHL_CRITIQUE_LOG.md cycle 9), and in
+#: the 2025-26 replay 0.54 for skaters with 5-20 games of rates vs 0.85 for
+#: 60+. Each rate is shrunk toward a * toi ** b, fitted per position (D / F) and
+#: component on the rates table itself (F goals b 2.35, assists 2.7, shots 1.6,
+#: blocks 0.4; D 3.0 / 2.6 / 1.85 / 0.9), with RATE_K games of prior weight:
+#: (gp * rate + RATE_K * prior) / (gp + RATE_K). A prior LINEAR in ice time
+#: lifted depth players (F4 bias +0.02 -> +0.27) and repeated cycle 9's MAE loss.
+#: FITTED 2026-10-31 on scripts/nhl_season_lab.py H1 (81 dates, 22,716
+#: skater-games; K 15 / 30 / 60, best MAE and RMSE at 30): H1 MAE 4.4471 ->
+#: 4.4417, RMSE 6.0234 -> 6.0130. H2 (86 dates, 24,515): RMSE 6.1134 -> 6.1095
+#: (paired dSE -0.047 [-0.080, -0.014]) but MAE 4.4728 -> 4.4740. Skater lab test
+#: (13 nights, 4 seeds): lock MAE 4.4452 -> 4.4411, RMSE 5.9648 -> 5.9572; early
+#: 4.4560 -> 4.4532, 5.9894 -> 5.9820; no-prop slope 0.71 -> 0.76 / 0.66 -> 0.70.
+#: Shipped on the target (this season, both states) despite the H2 MAE
+#: +0.0012 -- a judgment call, NHL_CRITIQUE_LOG.md cycle 11.
+RATE_K = 30.0
 ROLE_K = 5.0
 ROLE_LAST = 5
 ROLE_POWER = {"goals": 2.0, "assists": 2.0, "shots": 2.0, "blocks": 2.5}
@@ -211,7 +232,7 @@ def _season_rates() -> dict:
         row = rate_row(r)
         if row is not None:
             out[norm(r["skaterFullName"])] = row
-    return out
+    return regress_rates(out)
 
 
 def rate_row(r: dict) -> dict | None:
@@ -224,8 +245,55 @@ def rate_row(r: dict) -> dict | None:
     row = {k: (r.get(src) or 0) / gp for k, src in
            (("goals", "goals"), ("assists", "assists"), ("shots", "shots"),
             ("blocks", "blockedShots")) if src in r}
-    row.update({"toi": (r.get("timeOnIcePerGame") or 0) / 60.0 or None, "gp": gp})
+    row.update({"toi": (r.get("timeOnIcePerGame") or 0) / 60.0 or None, "gp": gp,
+                "pos": "D" if r.get("positionCode") == "D" else "F"})
     return row
+
+
+def toi_prior(rows: list[dict], c: str) -> tuple[float, float] | None:
+    """(a, b) of the per-game rate a * toi ** b for component `c`, the Poisson
+    maximum likelihood over `rows` (games gp, ice time toi): b on a 0.05 grid in
+    [0, 4], a closed form given b. None without data."""
+    rows = [r for r in rows if c in r and r.get("toi") and r.get("gp")]
+    events = sum(r[c] * r["gp"] for r in rows)
+    if not rows or events <= 0:
+        return None
+    best = None
+    for i in range(81):
+        b = i * 0.05
+        tb = [r["toi"] ** b for r in rows]
+        a = events / sum(r["gp"] * t for r, t in zip(rows, tb))
+        ll = sum(r[c] * r["gp"] * math.log(a * t) - r["gp"] * a * t for r, t in zip(rows, tb))
+        if best is None or ll > best[0]:
+            best = (ll, a, b)
+    return best[1], best[2]
+
+
+def regress_rates(rates: dict, k: float | None = None) -> dict:
+    """Each row's per-game rates shrunk toward what his ice time predicts for
+    his position (D / F), with RATE_K games of prior weight:
+    (gp * rate + K * a * toi ** b) / (gp + K). a, b per position x component
+    (toi_prior) come from `rates` itself, so no second table goes stale. A
+    component the row lacks stays missing; a row without ice time is left."""
+    k = RATE_K if k is None else k
+    if not k:
+        return rates
+    prior: dict = {}
+    for f in ("D", "F"):
+        rows = [r for r in rates.values() if r.get("pos", "F") == f]
+        for c in ("goals", "assists", "shots", "blocks"):
+            ab = toi_prior(rows, c)
+            if ab:
+                prior.setdefault(f, {})[c] = ab
+    out = {}
+    for key, r in rates.items():
+        p = prior.get(r.get("pos", "F"))
+        if not p or not r.get("toi"):
+            out[key] = r
+            continue
+        out[key] = {**r, **{c: (r["gp"] * r[c] + k * a * r["toi"] ** b) / (r["gp"] + k)
+                            for c, (a, b) in p.items() if c in r}}
+    return out
 
 
 def group_toi(rows: list[dict]) -> dict:

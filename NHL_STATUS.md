@@ -500,6 +500,11 @@ Shipped:
   Alone the stretch fit 1.3 on TRAIN; refitted with the exact draw it is 1.1.
   Above a points mean of `POINTS_KNOT` 1.1 it steepens to `POINTS_TOP_STRETCH` 1.7
   (2026-10-31, cycle 10): $8.5k+ skaters ran -4.3 train / -1.8 test, now -0.5 test.
+- **Last season's rates regressed** (`RATE_K` 30 games, `regress_rates` / `toi_prior` in
+  edge/dfs_run_nhl.py, 2026-10-31, cycle 11): each per-game rate shrinks toward a
+  per-position power of ice time before it is used; no-prop slope 0.71 -> 0.76 (lock test).
+- **DK <-> DailyFaceoff name join** (2026-10-31): falls back to (team, initial, last)
+  when unique on both sides (Freddy / Frederick Gaudreau were dropped every night).
 - **Nickname joins** (`name_aliases`): DK's Nicholas Robertson, Zack Bolduc, Will
   Borgen, Joe Veleno and Jeffrey Viel matched to last season's stats through this
   season's games (unique team + initial + last name; brothers never matched).

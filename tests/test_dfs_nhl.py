@@ -286,6 +286,27 @@ def test_season_rates_leave_a_missing_report_field_missing(monkeypatch):
     assert r[norm("No Realtime")]["shots"] == 2.0
 
 
+def test_regress_rates_pull_short_samples_to_ice_time_prior():
+    from edge import dfs_run_nhl as R
+    rates = {"vet": {"goals": 0.2, "assists": 0.3, "shots": 2.0, "blocks": 0.5, "toi": 15.0, "gp": 80, "pos": "F"},
+             "hot": {"goals": 0.5, "assists": 0.3, "shots": 2.0, "toi": 15.0, "gp": 10, "pos": "F"},
+             "d": {"goals": 0.05, "assists": 0.3, "shots": 1.5, "blocks": 1.5, "toi": 20.0, "gp": 80, "pos": "D"},
+             "no_toi": {"goals": 0.9, "assists": 0.0, "shots": 1.0, "toi": None, "gp": 6}}
+    out = R.regress_rates(rates, k=30.0)
+    prior_g = (0.2 * 80 + 0.5 * 10) / 90               # F goals a game at 15 min (one toi: b unidentified)
+    assert abs(out["hot"]["goals"] - (10 * 0.5 + 30 * prior_g) / 40) < 1e-9
+    assert out["hot"]["goals"] < 0.35                                 # 10 hot games mostly regress (0.5 raw)
+    assert abs(out["vet"]["goals"] - 0.2) < 0.02                      # 80 games barely move
+    assert "blocks" not in out["hot"]                                 # missing stays missing
+    assert abs(out["d"]["blocks"] - 1.5) < 1e-9                       # sole D: his own prior
+    assert out["no_toi"] is rates["no_toi"]                           # no ice time: untouched
+    assert R.regress_rates(rates, k=0) is rates
+    # the prior's slope in ice time: per-game shots rising as toi ** 2 recover b = 2
+    rows = [{"shots": 0.01 * t ** 2, "toi": t, "gp": 50} for t in (8.0, 12.0, 16.0, 20.0)]
+    a, b = R.toi_prior(rows, "shots")
+    assert abs(b - 2.0) < 1e-9 and abs(a - 0.01) < 1e-9
+
+
 def test_name_aliases_match_nicknames_but_not_namesakes():
     from edge import dfs_run_nhl as R
     from edge.names import norm

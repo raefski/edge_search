@@ -79,9 +79,9 @@ def load() -> dict:
         if b.get("state") not in ("OFF", "FINAL"):
             continue
         games[b["date"]].append(b)
-    rates = {pid: row for pid, r in nhl.season_skater_stats(PRIOR).items()
-             if (row := R.rate_row(r)) is not None}
-    return {"dates": dict(sorted(games.items())), "rates": rates}
+    raw = {pid: row for pid, r in nhl.season_skater_stats(PRIOR).items()
+           if (row := R.rate_row(r)) is not None}
+    return {"dates": dict(sorted(games.items())), "rates": R.regress_rates(raw), "raw_rates": raw}
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -114,6 +114,13 @@ def no_role(c, prm):
     """Cycle 1's ice-time scaling switched off."""
     return R.skater_means(c["base"], c["pos"], c["scale"], seven_d=c["seven_d"],
                           season=season_sums(c))[0]
+
+
+@variant("raw_rates")
+def raw_rates(c, prm):
+    """Last season's rates as reported, not regressed (the recipe before RATE_K)."""
+    return R.skater_means(c["base_raw"], c["pos"], c["scale"], toi_recent=c["toi_recent"],
+                          seven_d=c["seven_d"], season=season_sums(c))[0]
 
 
 @variant("no_season")
@@ -157,6 +164,7 @@ def boards(D: dict):
                 ctxs.append({
                     "id": s["id"], "name": s["name"], "team": t, "opp": a if home else h, "home": home,
                     "pos": pos, "base": D["rates"].get(s["id"]) or {},
+                    "base_raw": D["raw_rates"].get(s["id"]) or {},
                     "scale": (lh if home else la) / R.LEAGUE_TEAM_GOALS,
                     "toi_recent": [x[8] for x in hist[s["id"]]] or None,
                     "hist": list(hist[s["id"]]), "seven_d": pos == "D" and nd[t] >= 7,

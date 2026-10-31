@@ -618,3 +618,58 @@ lock / early): no-prop skaters 22 / 32 (slope 0.81 / 0.71 lock); no-PP 18 / 20; 
 3.5-5k 6 / 5; every PP / line / mid-salary slice NEGATIVE (sign flips = noise). Board
 players who did not play: 82 at lock (359 proj pts), 133 early (567). Goalies MAE 7.90 vs
 constant 7.85 (n 291).
+
+## Cycle 11 (the gap map's four fixes, 2026-10-31)
+
+Four fixes from cycle 10's gap map, run in parallel (availability critic + two worktree
+agents). Lab cache predates cycle 10 (its "shipped" = pre-knot, lock test 4.4452 / 5.9648);
+deltas below are variant vs that cache.
+
+**(a) $8.5k+ stars -- cycle 10's knot, shipped `0222f007`.**
+
+**(b) Availability -- SHIPPED `4e2a3e8f` (no fit).** Scratches cost nothing: the 82 lock /
+133 early DNP board skaters were in 0 of 675 logged lineup player-nights (DFO drops them
+70-90 min after lock; only 5 of 14 test GTD flags sat). The hole: DK <-> DailyFaceoff names
+joined by exact norm(); a nickname (DK Freddy / Nick / Jake / Max vs DFO Frederick /
+Nicholas / Jacob / Maxwell) left the skater lineless, and no-prop + no line = dropped.
+41 train / 60 test player-games that PLAYED (235 / 297 DK pts) were off the board, avg
+5.9 pts at $2,660 on test, 13 test games at 3x+. Gabe Perreault (F1 PP2) and Max Shabanov
+(PP1) stayed on via props with line = pp = None. Fix: (team, initial, last) fallback when
+unique on DFO's team list and DK's board; goalies too; listed on the page. Lab rebuild of
+155421: 7 aliases. Held-out effect: re-cache pending.
+Runner-ups: "Projected" goalies at lock wrong 4 / 25 vs 1 / 231 Confirmed -- fit a start
+probability; props skaters with no DFO line still boarded (8 lock DNPs) -- require a line or
+a recent game. Logged lineups != entered lineups (10/24 Kuemper): log what is entered.
+
+**(c) No-prop spread -- SHIPPED (RATE_K 30).** Mechanism: last season's per-game rates
+used raw; 2025-26 replay slope 0.54 for 1-20 games of rates, 0.78 for 21-40, 0.85 for 60+.
+Each rate shrinks toward a * toi ** b per position / component (fitted on the rates table)
+with RATE_K games of prior weight. A linear-in-TOI prior failed (lock test MAE 4.445 ->
+4.452, F4 bias +0.02 -> +0.27). K grid on season H1 (1 seed): none 4.4487 / 6.0248, 15
+4.4443 / 6.0178, **30 4.4432 / 6.0146**, 60 4.4463 / 6.0168.
+
+| check | MAE | RMSE | no-prop slope |
+|---|---|---|---|
+| season H1 (fit), 22,716 | 4.4471 -> 4.4417 | 6.0234 -> 6.0130 | 0.872 -> 0.901 |
+| season H2, 24,515 | 4.4728 -> **4.4740** | 6.1134 -> 6.1095 | 0.912 -> 0.929 |
+| lock train, 2,196 | 4.5317 -> 4.5274 | 6.0745 -> 6.0703 | 0.809 -> 0.848 |
+| lock test, 2,962 | 4.4452 -> 4.4411 | 5.9648 -> 5.9572 | 0.712 -> 0.758 |
+| early train, 2,176 | 4.5379 -> 4.5333 | 6.0913 -> 6.0863 | 0.802 -> 0.842 |
+| early test, 2,923 | 4.4560 -> 4.4532 | 5.9894 -> 5.9820 | 0.662 -> 0.701 |
+
+Paired dSE per skater-game: H2 -0.047 [-0.080, -0.014] (53/86 dates); test lock -0.119
+[-0.251, +0.003], early -0.160 [-0.313, -0.032] (10/13 nights each). Judgment call: shipped
+on the target (this season, both states, both metrics) despite H2 MAE +0.0012; that MAE
+cost sits on late-season many-game skaters where this season's blend already dominates.
+Parity 155435: production == variant to 4.4e-16. SKATER_SCALE would refit 0.9728 lock /
+0.9755 early (0.9749 / 0.9772 without): left at 0.976 until the re-cache.
+
+**(d) Bonus tails -- NOT shipped.** The tails are calibrated conditional on the mean:
+season H1 likelihood peaks at the shipped SHOT_K 19.4 / BLOCK_K 11.4 (shots ~10, wider),
+H2 likelihood too. Tail-rate fit 40 / 20 + scale 0.977: test RMSE 5.9648 -> 5.9647 lock,
+5.9894 -> 5.9866 early, 3.5-5k bias +0.46 -> +0.45 -- noise, and narrower than the
+likelihood wants (GPP ceilings). The 5+ shot excess at 3.5-5k is a MEAN gap (shots 1.82
+sim vs 1.67 actual, test lock; season H2 blocks 0.813 vs 0.765).
+
+Next: re-cache the lab with (a)-(c) in production, re-baseline, refit SKATER_SCALE once;
+then blocks run ~6% high (season H2) -- the block means, not their tail.
