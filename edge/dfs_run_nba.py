@@ -523,6 +523,9 @@ def build_slate(draft_group=None, client=None, n_sims: int = 3000, iters: int = 
     # (2026-10-30, 155928: Jokic vs Luka). A fixed order makes the same board give the same
     # lineup everywhere.
     pool.sort(key=lambda p: (str(p.get("game") or ""), str(p.get("team") or ""), p["name"]))
+    from edge import nba_minutes_ml
+    info["minutes_source"] = ("gradient-boosted (ML)" if nba_minutes_ml.LAST_SOURCE == "ml"
+                              else nba_minutes_ml.LAST_SOURCE)
     info["built_at"] = datetime.now(ET).strftime("%-I:%M %p ET")   # the page shows it: a cached build is visible
     sim = theory.simulate(pool, n_sims=n_sims, seed=seed)
     theory.summarise(sim, pool)

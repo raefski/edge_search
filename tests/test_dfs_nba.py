@@ -13,6 +13,15 @@ from edge import nba_project as NP
 from edge import dfs_run_nba as R
 
 
+@pytest.fixture(autouse=True)
+def _hand_minutes_model(monkeypatch):
+    """These tests pin the hand-built minutes model's mechanics on toy teams; the
+    gradient-boosted correction (edge/nba_minutes_ml.py) has its own tests."""
+    from edge import nba_minutes_ml
+    monkeypatch.setattr(nba_minutes_ml, "ENABLED", False)
+
+
+
 def _p(name, pos, team, salary, proj, game=None):
     return {"name": name, "dk_pos": pos, "elig": O.eligible(pos), "team": team,
             "game": game or ("g1" if team in ("NYK", "PHI") else "g2"), "salary": salary,

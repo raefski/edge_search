@@ -177,7 +177,7 @@ st.markdown(
     f"projected of {info.get('priced')} priced · {len(info.get('imputed') or [])} with no NBA "
     f"history (*) · history through {info.get('history_date')}<br>"
     f"salaries: {info.get('draftables_source')} · NBA.com lineups: {src} · "
-    f"injuries (Out): {info.get('injuries_source') or 'none'} · "
+    f"injuries (Out): {info.get('injuries_source') or 'none'} · minutes: {info.get('minutes_source') or '?'} · "
     + (f"buzz: {info['buzz_rows']} players named by today's shows (in ownership) · "
        if info.get("buzz_rows") else "buzz: none collected yet (ownership is the value prior) · ")
     + ("implied points: " + ", ".join(f"{t} {v:.0f}" for t, v in sorted(imp.items(), key=lambda kv: -kv[1]))

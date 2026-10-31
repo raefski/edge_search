@@ -345,11 +345,12 @@ def project(team: list, params: dict | None = None) -> dict:
         soft = project([{**pl, "starter": None} for pl in team], known)
         return {i: {**v, "minutes": round(w * v["minutes"] + (1 - w) * soft.get(i, v)["minutes"], 1)}
                 for i, v in hard.items()}
-    roles_, start_, promoted = {}, {}, {}
+    roles_, start_, promoted, rinfo = {}, {}, {}, {}
     for pl in team:
         hist = pl["history"]
         n_pre = int(pl.get("n_pre") or 0)
         r = role_v2(hist, pl.get("cur_n"), n_pre, p)
+        rinfo[pl["id"]] = r
         b, s = r["base"], r["start_rate"]
         real = hist[: len(hist) - n_pre] if n_pre else hist
         n_real = len(real)
@@ -392,9 +393,10 @@ def project(team: list, params: dict | None = None) -> dict:
         mode = "confirmed" if any(pl.get("starter") is not None for pl in team) else "inactives"
         mins, slope = rank_gap({pl["id"]: roles_[pl["id"]] for pl in active}, GAP_COEF[mode])
         ss = sum(slope.values()) or 1.0
-        return {pl["id"]: {"minutes": round(mins[pl["id"]], 1), "base": round(roles_[pl["id"]], 1),
-                           "promoted": promoted[pl["id"]], "share": round(slope[pl["id"]] / ss, 3)}
-                for pl in active}
+        res = {pl["id"]: {"minutes": round(mins[pl["id"]], 1), "base": round(roles_[pl["id"]], 1),
+                          "promoted": promoted[pl["id"]], "share": round(slope[pl["id"]] / ss, 3)}
+               for pl in active}
+        return _ml(team, res, roles_, rinfo, p)
     out_pl = [pl for pl in team if pl["inactive"] and roles_[pl["id"]] >= REGULAR_MIN]
     missing = sum(roles_[pl["id"]] for pl in out_pl)
     lost: dict = {}
@@ -407,9 +409,19 @@ def project(team: list, params: dict | None = None) -> dict:
         weights[pl["id"]] = max(roles_[pl["id"]], 1.0) ** p["ROLE_POW"] * (1 + p["POS_W"] * min(1.0, share))
     tw = sum(weights.values()) or 1.0
     mins = {pl["id"]: min(48.0, max(0.0, roles_[pl["id"]] + missing * weights[pl["id"]] / tw)) for pl in active}
-    return {pl["id"]: {"minutes": round(mins[pl["id"]], 1), "base": round(roles_[pl["id"]], 1),
-                       "promoted": promoted[pl["id"]], "share": round(weights[pl["id"]] / tw, 3)}
-            for pl in active}
+    res = {pl["id"]: {"minutes": round(mins[pl["id"]], 1), "base": round(roles_[pl["id"]], 1),
+                      "promoted": promoted[pl["id"]], "share": round(weights[pl["id"]] / tw, 3)}
+           for pl in active}
+    return _ml(team, res, roles_, rinfo, p)
+
+
+def _ml(team: list, res: dict, roles_: dict, rinfo: dict, p: dict) -> dict:
+    """Overnight review 2026-10-30: the gradient-boosted correction (edge/nba_minutes_ml.py).
+    Off for a caller that passes params={"ML": False} (backtests of the hand model)."""
+    if p.get("ML") is False:
+        return res
+    from edge import nba_minutes_ml
+    return nba_minutes_ml.adjust(team, res, roles_, rinfo, REGULAR_MIN)
 
 
 

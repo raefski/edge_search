@@ -1264,3 +1264,45 @@ carries ~nothing the position/start-rate features don't. **Verdict across cycles
 a research view; no form of it (position transfer, minutes delta, residual delta, P(start)) earns
 a place in the projection.** Runner-ups (untested): 28+ min scratch under-shared (slice 6.98);
 a narrower slice for CourtIQ-relevant rows; multi-scratch double counting in the cycle-22 delta.
+
+## Overnight 2026-10-30: gradient-boosted minutes correction — SHIPPED
+
+Adam asked for an all-night ML review; seven parallel studies (minutes ML, DK-points rate,
+ceilings, GPP ownership, lineup construction, phone/desktop mismatch, code review). This one won.
+
+`edge/nba_minutes_ml.py` + `edge/nba_minutes_ml_trees.npz`: two HistGradientBoosting models
+(five known / not), applied at the end of `nba_minutes.project`, features computed by project()
+from its own internals (shipped minutes, adjusted role, role_v2 pieces, recent minutes, team
+scratch load, ranks, position) -- training (`scripts/nba_minutes_ml_fit.py`, rebuilding each
+lab night in the LIVE input format and calling project() itself) and live share one code path.
+Prediction clipped 0-48, team rescaled to the shipped total; trees walked with numpy (no sklearn
+at run time). Fitted on 2024-25 only; hyperparameters from a time split inside 2024-25.
+
+| RMSE / MAE (bias unchanged) | 2025-26 held out (n 31,218) | 2026-27 (n 1,936) |
+|---|---|---|
+| five known: shipped -> ML | 6.273 / 4.70 -> **6.102 / 4.57** | 6.335 / 4.79 -> **6.250 / 4.65** |
+| five not known: shipped -> ML | 6.579 / 4.87 -> **6.498 / 4.80** | 6.859 / 5.01 -> **6.784 / 4.92** |
+
+Baselines reproduce the lab exactly (production path == harness); parity: production project()
+with the exported trees == the fit script's prediction on 200 team-games (0 differ > 0.1 min).
+A leak caught in the study: its `promoted` flag used the TRUE starters in the no-five state
+(its 6.31 there was fake); here starter/promoted are NaN without a five (tested).
+Not run: the official-report replay (report_preds) -- the model sits inside project(), which
+that path wraps, so it inherits it; re-check at the next critique cycle. Build time +5 s.
+Off switch: nba_minutes_ml.ENABLED = False (or params {"ML": False}); a missing tree file
+falls back to the shipped minutes and the page says so ("minutes: ..." in the summary).
+Refit: python3 scripts/nba_minutes_ml_fit.py --write (refit on 2024-25 + 2025-26 once the
+season has ~6 weeks, holding out 2026-27).
+
+**The other studies (overnight, held out):**
+- Ceilings: empirical error quantiles per projection bucket SHIPPED (NBA_STATUS.md).
+- Points per minute (cash): EWMA rate -0.011 MAE (0.16%), GBM rate noise -- nothing shipped;
+  live 10/20-29: minutes run -1.1 low while the rate runs +1.4 high (grows with salary) -- recheck
+  at 25+ nights before fitting a correction.
+- GPP ownership: 0.75 shipped + 0.25 GBM blend 3.34 -> 3.26 MAE on 5 clean nights -- directional
+  (9 nights), not shipped; contest size has no effect on concentration.
+- Lineup construction (10 cash / 12 GPP slates): nothing beat shipped (team caps, minute floors,
+  95/99th, fades, stacks); shipped cash missed the line 7/10 by 25-78 pts -- projections, not shape.
+- Phone vs desktop: pool order drove different near-tied lineups -- fixed (sorted pool); the
+  10/30 LeBron -> Isaac Jones entry NOT reproducible from any Cloud input.
+- Code review: late swap could silently drop a held player -- fixed.

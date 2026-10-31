@@ -10,6 +10,15 @@ from edge import nba_minutes as NM
 from harness import nba_scratch as S
 
 
+@pytest.fixture(autouse=True)
+def _hand_minutes_model(monkeypatch):
+    """These tests pin the hand-built minutes model's mechanics on toy teams; the
+    gradient-boosted correction (edge/nba_minutes_ml.py) has its own tests."""
+    from edge import nba_minutes_ml
+    monkeypatch.setattr(nba_minutes_ml, "ENABLED", False)
+
+
+
 def _hist(minutes, started=False, pts_per_min=1.0, n=10):
     return [(float(minutes), started, minutes * pts_per_min) for _ in range(n)]
 
