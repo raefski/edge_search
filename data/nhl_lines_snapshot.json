@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-01T23:44:38+00:00",
+"generated_at": "2026-11-01T23:58:56+00:00",
 "goalies": {
 "2026-11-01": {
 "ANA": {
@@ -24,7 +24,7 @@
 },
 "OTT": {
 "goalie": "Jonas Johansson",
-"status": null
+"status": "Confirmed"
 },
 "PHI": {
 "goalie": "Dan Vladar",
@@ -7691,7 +7691,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Drake Batherson": {
@@ -7931,7 +7931,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Nick Cousins": {
@@ -7965,7 +7965,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Nikolas Matinpalo": {
@@ -8067,7 +8067,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Samuel Ersson": {
@@ -8307,7 +8307,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 }
 },
