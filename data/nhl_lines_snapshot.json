@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-01T16:29:03+00:00",
+"generated_at": "2026-11-01T17:58:57+00:00",
 "goalies": {
 "2026-11-01": {
 "ANA": {
@@ -36,7 +36,7 @@
 },
 "WPG": {
 "goalie": "Stuart Skinner",
-"status": null
+"status": "Confirmed"
 },
 "WSH": {
 "goalie": "Logan Thompson",
@@ -11124,38 +11124,40 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Cole Koepke": {
+"Clay Stevenson": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 0,
-"blocks": 7,
 "gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 98,
-"toiSeconds": 30
+"goalieGoalsAgainst": 30,
+"goalieGoalsAgainstAvg": "3.19",
+"goalieLosses": 5,
+"goalieMinutes": 564,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.885",
+"goalieSaves": 232,
+"goalieSeconds": 30,
+"goalieShotsAgainst": 262,
+"goalieShutouts": 0,
+"goalieWins": 4
 },
 "last5": {
-"assists": 0,
-"blocks": 4,
 "gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 48,
-"toiSeconds": 39
+"goalieGoalsAgainst": 15,
+"goalieGoalsAgainstAvg": "3.05",
+"goalieLosses": 3,
+"goalieMinutes": 294,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.891",
+"goalieSaves": 122,
+"goalieSeconds": 45,
+"goalieShotsAgainst": 137,
+"goalieShutouts": 0,
+"goalieWins": 2
 },
-"line": "F4",
-"pk": "PK1",
-"pos": "lw",
+"line": "G2",
+"pk": null,
+"pos": "g",
 "pp": null
 },
 "Cole Perfetti": {
@@ -11221,7 +11223,7 @@
 "toiMinutes": 78,
 "toiSeconds": 11
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
@@ -11255,7 +11257,7 @@
 "toiMinutes": 95,
 "toiSeconds": 30
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -11323,7 +11325,7 @@
 "toiMinutes": 81,
 "toiSeconds": 55
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
@@ -11357,7 +11359,7 @@
 "toiMinutes": 91,
 "toiSeconds": 39
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -11600,40 +11602,38 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Nico Daws": {
+"Nino Niederreiter": {
 "gtd": false,
 "injury": null,
 "last10": {
+"assists": 2,
+"blocks": 1,
 "gamesPlayed": 10,
-"goalieGoalsAgainst": 27,
-"goalieGoalsAgainstAvg": "2.99",
-"goalieLosses": 4,
-"goalieMinutes": 541,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.881",
-"goalieSaves": 200,
-"goalieSeconds": 27,
-"goalieShotsAgainst": 227,
-"goalieShutouts": 0,
-"goalieWins": 4
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 15,
+"toiMinutes": 123,
+"toiSeconds": 31
 },
 "last5": {
+"assists": 0,
+"blocks": 1,
 "gamesPlayed": 5,
-"goalieGoalsAgainst": 9,
-"goalieGoalsAgainstAvg": "2.12",
-"goalieLosses": 2,
-"goalieMinutes": 254,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.911",
-"goalieSaves": 92,
-"goalieSeconds": 52,
-"goalieShotsAgainst": 101,
-"goalieShutouts": 0,
-"goalieWins": 2
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 57,
+"toiSeconds": 25
 },
-"line": "G2",
-"pk": null,
-"pos": "g",
+"line": "F4",
+"pk": "PK1",
+"pos": "lw",
 "pp": null
 },
 "Stuart Skinner": {
