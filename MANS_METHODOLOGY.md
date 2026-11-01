@@ -119,18 +119,52 @@ window, per player: early -0.81 to +0.01, late -0.47 to +1.25. Late came out abo
 early on only 4 of 7 slates. Whatever late-game preference the field has, our ownership
 model already prices it.
 
-**Verdict, 7 main slates.** Nothing ships. Two leads, for different reasons:
-1. **GPP: fade the single most-owned player, ideally to his teammate.** It agrees with
-   the field test above (G1: lineups holding the top-owned player did worse at top 1%
-   on 4/5 slates at fixed projection) and with "top chalk under its projection 6/7".
-   It costs only 1.7-3.1 projected points, against 11.5 for the blanket own_weight
-   fade. But its 7 build outcomes split 3-3, so it is not proven.
-2. **Cash: the chalk core four** cashed the Double Up 6/7 against 4/7, but that is two
-   cashes on +1.8 points, which is noise.
-Re-run `python3 scripts/mans_layer_backtest.py` (and `--placebo`) after each week's
-import; the pre-lock pool is already logged, so this needs no new forward log. Decide
-at ~12 main slates (around 12/6). The bar is: better on ≥8/12, and k=1 still on top in
-the placebo.
+**Correction, Adam 11/1: score a GPP in dollars.** The sign counts above are a cash-game
+score. A GPP is meant to pay in a few big weeks, and Jeff says the same (ep 326: "you may
+only win one, two, maybe three weeks in GPPs"). Each 7-slate column pays per $1 entry
+(`--dollars`, $7 staked):
+
+| lineup | total paid | ROI |
+|---|---|---|
+| shipped GPP | $8.47 | +21% |
+| drop the top-owned player | $14.18 | +103% |
+| drop him, force his teammate | $13.25 | +89% |
+| own_weight 30 | $9.87 | +41% |
+| force a salary saver | $7.50 | +7% |
+| pivot + saver | $5.90 | -16% |
+| placebo, drop #2 / #3 / #4 / #5 / #6 / #7 / #8 | $15.00 / 1.50 / 5.97 / 6.50 / 8.47 / 10.47 / 10.97 | |
+
+Field average: $0.84 per $1. The best week here paid $4.78; top 0.1% pays $47-50 and first
+pays ~$940-1,000. So these 7 lineups never touched the prizes that fund months of entries.
+
+**The field does reach those prizes** (`--field-tail`). Real lineups without vs with the
+k-th most-owned player on our pre-lock board, same projection quintile, 7 main slates,
+about 100,900 lineups:
+
+| | without him | with him | slates favouring "without" |
+|---|---|---|---|
+| return per $1, #1 | $1.09 | $0.73 | 6/7 |
+| top 1% rate, #1 | 1.45% | 0.79% | 6/7 |
+| top 0.1% rate, #1 | 0.155% | 0.064% | 6/7 |
+| return per $1, #2 (mean diff, placebo) | +$0.43 | | 5/7 |
+| return per $1, #3 / #4 / #5 / #6 / #7 / #8 (mean diff) | -0.81 / +0.22 / -0.19 / -0.05 / +0.30 / -0.09 | | 2-5/7 |
+
+The one loss is large: 9/27, when Garrett Wilson scored 29.7, the without-him lineups
+returned $0.55 and the with-him lineups $2.01. Fading pays while the top chalk booms on
+fewer than about 31% of slates (+$0.66 on the six bust slates, -$1.46 on the boom). He
+boomed on 1 of 7, and a true 31% boom rate would give 1 or fewer in 7 about 31% of the
+time, so 7 slates cannot separate this from break-even.
+
+**Verdict, 7 main slates.** Nothing ships as a default. The GPP chalk fade is the best
+lead, and Adam's point upgrades it: it pays in the shape a GPP should. #2 looks the same as
+#1, which may mean "the top two", but that was seen after the fact and needs a forward test.
+The salary saver stays rejected in dollars too. The cash core four is still two extra
+Double Up cashes on +1.8 points, which is noise.
+
+Re-run `python3 scripts/mans_layer_backtest.py`, `--placebo`, `--dollars` and `--field-tail`
+after each week's import; the pre-lock pool is already logged. Decide at ~12 main slates
+(around 12/6) on dollars: return without > with on at least 9/12, #1 above the #3-8
+placebos, and the boom rate clearly below break-even.
 
 ## The broader philosophy (eps 319-323)
 

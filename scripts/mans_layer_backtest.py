@@ -374,6 +374,90 @@ def run_placebo(args):
                 rows=out)
 
 
+def payout_table(con, cid: int):
+    rows = con.execute("select points, payout from entry_feature where contest_id=? and live=1 "
+                       "order by points", (cid,)).fetchall()
+    return [r[0] for r in rows], [r[1] or 0.0 for r in rows]
+
+
+def paid(table, x: float) -> float:
+    """What a score would have paid: the prize of the best real entry at or below it."""
+    import bisect
+    i = bisect.bisect_right(table[0], x) - 1
+    return table[1][i] if i >= 0 else 0.0
+
+
+def dollars(con):
+    """The cached rule and placebo lineups in dollars per $1 Daily Dollar entry.
+
+    Adam, 2026-11-01: a GPP is judged by what it pays, not by how many weeks it beat
+    another lineup ("3 big weeks can fuel my DFS lineups for months"). Sign counts
+    are a cash-game score, so they cannot accept or reject a GPP rule."""
+    d = json.loads(OUT.read_text())
+    gpp = {s[0]: payout_table(con, s[5]) for s in SLATES if s[3]}
+    mains = [s for s in d["slates"] if s["main"]]
+    print(" " * 12 + "".join(f"{s['label']:>8s}" for s in mains) + "   total     ROI")
+    for n in mains[0]["rows"]:
+        v = [paid(gpp[s["label"]], s["rows"][n]["actual"]) for s in mains if s["rows"][n]]
+        print(f"{n:12s}" + "".join(f"{x:8.2f}" for x in v)
+              + f"{sum(v):8.2f}{100 * (sum(v) / len(v) - 1):+7.0f}%")
+    plc = OUT.parent / "mans_layer_placebo.json"
+    if plc.exists():
+        res = json.loads(plc.read_text())
+        for k in range(1, PLACEBO_K + 1):
+            v = [paid(gpp[s["label"]], s["base"] + next(r for r in s["rows"] if r["k"] == k)["d_actual"])
+                 for s in res]
+            print(f"drop k={k:<4d}" + "".join(f"{x:8.2f}" for x in v)
+                  + f"{sum(v):8.2f}{100 * (sum(v) / len(v) - 1):+7.0f}%")
+
+
+def field_tail(con):
+    """Real-field lineups WITHOUT the k-th most-owned player (our pre-lock order, so usable
+    before lock) against those WITH him, inside the slate's projection quintiles.
+
+    One rebuilt lineup per slate never reached the top 1%, so it cannot see the prizes
+    that make a GPP pay. The field can: 12-18k real lineups a slate, with real top-0.1%
+    finishes. Rows are per slate because every entry shares that slate's one realisation."""
+    import numpy as np
+    mains = [s for s in SLATES if s[3]]
+    res = defaultdict(dict)
+    for label, gid, _, _, _, cid in mains:
+        pool = load_pool(con, gid)
+        proj = {p["norm"]: p["proj"] for p in pool}
+        ranked = [p["norm"] for p in sorted((p for p in pool if "DST" not in p["pos"]),
+                                            key=lambda p: -p["own"])][:PLACEBO_K]
+        ent = defaultdict(set)
+        for e, n in con.execute("select entry_id, player_norm from entry_player where contest_id=?",
+                                (cid,)):
+            ent[e].add(n)
+        rows = con.execute("select entry_id, rank, payout from entry_feature where contest_id=? "
+                           "and live=1", (cid,)).fetchall()
+        ps = np.array([sum(proj.get(n, 0) for n in ent[r[0]]) for r in rows])
+        rk = np.array([r[1] for r in rows])
+        pay = np.array([r[2] or 0.0 for r in rows])
+        bins = np.searchsorted(np.quantile(ps, [.2, .4, .6, .8]), ps)
+        for k, n in enumerate(ranked, 1):
+            has = np.array([n in ent[r[0]] for r in rows])
+            for name, y in (("ret", pay), ("top1", (rk <= .01 * len(rows)) * 100.0),
+                            ("top01", (rk <= .001 * len(rows)) * 100.0)):
+                a, b, w = [], [], []
+                for q in range(5):
+                    h, o = (bins == q) & has, (bins == q) & ~has
+                    if h.sum() >= 20 and o.sum() >= 20:
+                        a.append(y[o].mean())
+                        b.append(y[h].mean())
+                        w.append(min(h.sum(), o.sum()))
+                res[k].setdefault(name, {})[label] = (np.average(a, weights=w), np.average(b, weights=w))
+    print(" " * 22 + " ".join(f"{s[0]:>7s}" for s in mains))
+    for name, title in (("ret", "$ per $1"), ("top1", "top 1% pp"), ("top01", "top .1% pp")):
+        for k in range(1, PLACEBO_K + 1):
+            v = [res[k][name][s[0]] for s in mains]
+            d = [x - y for x, y in v]
+            print(f"{title:11s} k={k} diff  " + " ".join(f"{x:+7.3f}" for x in d)
+                  + f"  without {sum(x for x, _ in v) / len(v):.3f} with {sum(y for _, y in v) / len(v):.3f}"
+                  + f" pos {sum(x > 0 for x in d)}/{len(d)}")
+
+
 PLACEBO_K = 8
 
 
@@ -383,7 +467,13 @@ def main():
     ap.add_argument("--workers", type=int, default=5)
     ap.add_argument("--placebo", action="store_true",
                     help="fade the k-th most-owned player for k=1..8 instead of the rule set")
+    ap.add_argument("--dollars", action="store_true", help="cached lineups in $ per $1 entry")
+    ap.add_argument("--field-tail", action="store_true",
+                    help="real-field return and tail rates without vs with the k-th most-owned")
     a = ap.parse_args()
+    if a.dollars or a.field_tail:
+        con = sqlite3.connect(DB)
+        return dollars(con) if a.dollars else field_tail(con)
     if a.placebo:
         jobs = [s + (a.iters,) for s in SLATES if s[3]]
         with ProcessPoolExecutor(a.workers) as ex:
