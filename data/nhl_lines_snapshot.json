@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-01T13:59:14+00:00",
+"generated_at": "2026-11-01T14:29:17+00:00",
 "goalies": {
 "2026-11-01": {
 "ANA": {
@@ -4980,7 +4980,7 @@
 "toiSeconds": 6
 },
 "line": "F1",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": "PP1"
 },
@@ -5052,39 +5052,39 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Isaac Howard": {
-"gtd": true,
+"Filip Hallander": {
+"gtd": false,
 "injury": null,
 "last10": {
-"assists": 1,
+"assists": 2,
 "blocks": 3,
 "gamesPlayed": 10,
 "goals": 1,
-"points": 2,
+"points": 3,
 "powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 85,
-"toiSeconds": 9
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 113,
+"toiSeconds": 39
 },
 "last5": {
 "assists": 0,
-"blocks": 2,
+"blocks": 1,
 "gamesPlayed": 5,
-"goals": 1,
-"points": 1,
+"goals": 0,
+"points": 0,
 "powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 5,
-"toiMinutes": 37,
-"toiSeconds": 22
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 46,
+"toiSeconds": 55
 },
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Jason Dickinson": {
 "gtd": false,
@@ -5116,7 +5116,7 @@
 "toiSeconds": 23
 },
 "line": "F3",
-"pk": "PK2",
+"pk": null,
 "pos": "c",
 "pp": null
 },
@@ -5150,7 +5150,7 @@
 "toiSeconds": 4
 },
 "line": "F2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rw",
 "pp": "PP1"
 },
@@ -5218,7 +5218,7 @@
 "toiSeconds": 12
 },
 "line": "F3",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rw",
 "pp": null
 },
@@ -5253,7 +5253,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5290,7 +5290,7 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Owen Michaels": {
 "gtd": false,
@@ -5322,7 +5322,7 @@
 "toiSeconds": 49
 },
 "line": "F4",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "c",
 "pp": null
 },
@@ -5493,7 +5493,7 @@
 "goalieShutouts": 2,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7998,7 +7998,7 @@
 "toiSeconds": 46
 },
 "line": "D3",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -8204,7 +8204,7 @@
 "toiSeconds": 8
 },
 "line": "D2",
-"pk": "PK2",
+"pk": null,
 "pos": "ld",
 "pp": "PP2"
 },
@@ -11120,9 +11120,9 @@
 "toiSeconds": 34
 },
 "line": "F3",
-"pk": "PK1",
+"pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Cole Koepke": {
 "gtd": false,
@@ -11154,7 +11154,7 @@
 "toiSeconds": 39
 },
 "line": "F4",
-"pk": null,
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 },
@@ -11222,7 +11222,7 @@
 "toiSeconds": 11
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
 },
@@ -11256,7 +11256,7 @@
 "toiSeconds": 30
 },
 "line": "D2",
-"pk": "PK2",
+"pk": null,
 "pos": "rd",
 "pp": null
 },
@@ -11324,9 +11324,9 @@
 "toiSeconds": 55
 },
 "line": "D3",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Gabriel Vilardi": {
 "gtd": false,
@@ -11394,7 +11394,7 @@
 "line": "D3",
 "pk": null,
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Isak Rosen": {
 "gtd": false,
@@ -11460,7 +11460,7 @@
 "toiSeconds": 52
 },
 "line": "F2",
-"pk": "PK2",
+"pk": null,
 "pos": "lw",
 "pp": "PP1"
 },
@@ -11562,7 +11562,7 @@
 "toiSeconds": 4
 },
 "line": "F4",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": null
 },
@@ -11598,7 +11598,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Nico Daws": {
 "gtd": false,
@@ -11736,7 +11736,7 @@
 "toiSeconds": 31
 },
 "line": "F2",
-"pk": "PK1",
+"pk": null,
 "pos": "c",
 "pp": "PP2"
 }
