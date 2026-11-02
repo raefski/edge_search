@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-02T16:29:25+00:00",
+"generated_at": "2026-11-02T16:59:13+00:00",
 "goalies": {
 "2026-11-02": {
 "BOS": {
@@ -20,7 +20,7 @@
 },
 "DET": {
 "goalie": "Daniil Tarasov",
-"status": null
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
@@ -89,7 +89,7 @@
 "status": null
 },
 "PIT": {
-"goalie": "Sergei Murashov",
+"goalie": "Arturs Silovs",
 "status": null
 },
 "STL": {
@@ -2319,7 +2319,7 @@
 "toiMinutes": 76,
 "toiSeconds": 50
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -2455,9 +2455,9 @@
 "toiMinutes": 48,
 "toiSeconds": 54
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Denton Mateychuk": {
@@ -2523,9 +2523,9 @@
 "toiMinutes": 64,
 "toiSeconds": 28
 },
-"line": "D3",
+"line": "D4",
 "pk": "PK1",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Ivan Provorov": {
@@ -2557,7 +2557,7 @@
 "toiMinutes": 126,
 "toiSeconds": 54
 },
-"line": "D4",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -2591,9 +2591,9 @@
 "toiMinutes": 75,
 "toiSeconds": 2
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Jet Greaves": {
@@ -2799,7 +2799,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Valeri Nichushkin": {
@@ -4479,7 +4479,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Gabriel Landeskog": {
@@ -4545,7 +4545,7 @@
 "toiMinutes": 44,
 "toiSeconds": 32
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -4751,9 +4751,9 @@
 "toiMinutes": 57,
 "toiSeconds": 50
 },
-"line": "F2",
+"line": "F4",
 "pk": "PK1",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Noah Juulsen": {
@@ -11855,7 +11855,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12333,7 +12333,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12578,7 +12578,7 @@
 "line": "F1",
 "pk": "PK1",
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Darnell Nurse": {
 "gtd": false,
@@ -12680,7 +12680,7 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Ivar Stenberg": {
 "gtd": false,
@@ -12782,7 +12782,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Macklin Celebrini": {
 "gtd": false,
@@ -12884,7 +12884,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Michael Misa": {
 "gtd": false,
@@ -14837,9 +14837,9 @@
 "toiMinutes": 65,
 "toiSeconds": 37
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Jack Roslovic": {
@@ -14873,7 +14873,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Jake McCabe": {
@@ -15145,7 +15145,7 @@
 "toiMinutes": 52,
 "toiSeconds": 57
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -15179,7 +15179,7 @@
 "toiMinutes": 97,
 "toiSeconds": 21
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP1"
@@ -16003,7 +16003,7 @@
 "toiMinutes": 80,
 "toiSeconds": 33
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -16347,7 +16347,7 @@
 "toiMinutes": 65,
 "toiSeconds": 37
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
