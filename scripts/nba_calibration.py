@@ -12,8 +12,8 @@ night that way). The draft group comes from data/contest_meta.json, which
 not tagged is refused rather than guessed.
 
 Reports n, bias, MAE, rank correlation and the tails against the simulated
-floor and ceiling; for college, also per projection source (props / fppg /
-salary -- the board's three tiers, which says whether the fallbacks earn their
+floor and ceiling; for college, also per projection source (props / blend /
+salary / bench -- the board's tiers, which says whether the fallbacks earn their
 place). The NBA log carries no source column: every NBA row is minutes x rate.
 ONE CONTEST IS ONE SLATE: below ~5 slates this is a reading, not a fit.
 
@@ -127,7 +127,7 @@ def main() -> int:
           f"or scored. ONE slate: a reading, not a fit.")
     if len(scored) >= 5:
         print(line("all", scored, pcts))
-    for src in ("props", "fppg", "salary"):
+    for src in ("props", "blend", "salary", "bench"):
         grp = [r for r in scored if r.get("proj_source") == src]
         if len(grp) >= 5:
             print(line(src, grp, pcts))

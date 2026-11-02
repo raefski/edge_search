@@ -1,15 +1,16 @@
 """pages/13_🏀_NCAAB_DFS.py — DK College Basketball cash + GPP lineups.
 
 edge/dfs_run_ncaab.py builds the board (roster G G G F F F UTIL UTIL). Most
-college players have no prop, so most projections are DK's FPPG scaled to
-tonight's implied team points -- the board marks every player's source.
+college players have no prop, so most projections blend last season's production
+(moved to this team and tonight's game) with the salary line -- the board marks
+every player's source.
 
 THE THINGS THIS PAGE SAYS OUT LOUD
   1. WHO IS OUT AND WHO IS QUESTIONABLE, at the top. A lineup with a
      scratched player in it is a zero.
-  2. WHERE EVERY PROJECTION CAME FROM: props, DK's FPPG, or salary. A fallback
-     projection does not move when a teammate is ruled out; a prop does once
-     the books re-post. The summary counts each.
+  2. WHERE EVERY PROJECTION CAME FROM: props, last season + salary, salary alone,
+     or bench. A fallback projection does not move when a teammate is ruled out; a
+     prop does once the books re-post. The summary counts each.
   3. WHICH GAMES HAVE NO LINE (simulated at the league average) and how old
      the props snapshot is.
 """
@@ -75,11 +76,10 @@ def _portfolio(res, n, iters):
 
 
 
-BOARD_NOTE = ("Source marks: none = props; ·f = DK's FPPG scaled to tonight's implied "
-                  "team points; ·$ = no FPPG yet (early season, or a new rotation player), "
-                  "projected off DK's own salary at 4.6 points per $1K — a prior. ⚠️ = DK "
-                  "lists him questionable. A min-salary player with no FPPG is left off as "
-                  "a probable DNP.")
+BOARD_NOTE = ("Source marks: none = props; ·h = last season's production moved to this "
+                  "team and tonight's game, half-and-half with the salary line; ·$ = no history "
+                  "(a freshman): salary line only; ·b = cheap and not a listed starter. "
+                  "⚠️ = DK or RotoWire lists him as questionable.")
 
 ET = ZoneInfo("America/New_York")
 
@@ -108,7 +108,7 @@ table.lu td.num {text-align:right; font-variant-numeric:tabular-nums; white-spac
 </style>
 """
 
-SOURCE_MARK = {"props": "", "fppg": " ·f", "salary": " ·$"}
+SOURCE_MARK = {"props": "", "blend": " ·h", "salary": " ·$", "bench": " ·b"}
 
 
 def et(iso: str | None) -> str:
@@ -178,8 +178,9 @@ def summary(res: dict, sport_label: str) -> None:
         f"<div class='summary'><b>{meta.get('label')}</b> · {info.get('games')} games · "
         f"{et(meta.get('start'))} · draft group {res['gid']}<br>{info.get('pool')} "
         f"{sport_label} players projected of {info.get('priced')} priced — "
-        f"<b>{src.get('props', 0)}</b> from props, <b>{src.get('fppg', 0)}</b> from DK FPPG"
-        + (f", <b>{src.get('salary', 0)}</b> from salary" if src.get("salary") else "")
+        f"<b>{src.get('props', 0)}</b> props, <b>{src.get('blend', 0)}</b> last season + salary, "
+        f"<b>{src.get('salary', 0)}</b> salary only, <b>{src.get('bench', 0)}</b> bench"
+        + f"<br>starters: {info.get('starters', 0)} from {info.get('starters_source', 'none')}"
         + f"<br>implied points: " + ", ".join(f"{t} {g:.1f}" for t, g in top)
         + (" …" if len(imp) > len(top) else "")
         + f"<br>{odds} · books: {books} · salaries: {info.get('draftables_source', 'live')}"
@@ -191,7 +192,7 @@ def summary(res: dict, sport_label: str) -> None:
         if info.get("doubtful"):
             msg.append("<b>Questionable (kept, ⚠️ in lineups):</b> " + ", ".join(info["doubtful"]))
         st.markdown("<div class='warn'>🩹 " + "<br>".join(msg) + "<br>A teammate's prop moves "
-                    "once the books re-post after a scratch; an FPPG projection never does. "
+                    "once the books re-post after a scratch; a ·h or ·$ projection never does. "
                     "<b>Refresh</b> after news, and use late swap.</div>",
                     unsafe_allow_html=True)
     else:
@@ -200,8 +201,22 @@ def summary(res: dict, sport_label: str) -> None:
     if info.get("missing_lines"):
         st.markdown("<div class='warn'>No betting line matched for: "
                     + ", ".join(info["missing_lines"]) + " — simulated at the league "
-                    "average, and FPPG players there are not scaled to tonight.</div>",
+                    "average, and players there are not scaled to tonight.</div>",
                     unsafe_allow_html=True)
+    if info.get("starters_source") != "rotowire":
+        st.markdown(f"<div class='warn'>No starters this build: RotoWire "
+                    f"{info.get('starters_source', 'unavailable')}. Cheap players are read "
+                    "as bench without it.</div>", unsafe_allow_html=True)
+    if not info.get("history_rows"):
+        st.markdown("<div class='warn'>No last-season stats file: projections without props "
+                    "fall back to salary only.</div>", unsafe_allow_html=True)
+    audit = info.get("name_audit") or []
+    joined = ", ".join(f"{r['source']} {r['joined']}" for r in audit)
+    problems = [f"{r['source']}: {x}" for r in audit for x in r["refused"] + r["loose"]]
+    with st.expander(f"Name check against DraftKings: {joined}"
+                     + (f" · {len(problems)} to read" if problems else " · all clean")):
+        st.markdown("<br>".join(problems) or "Every name from every source resolved to one "
+                    "DraftKings player on his own team.", unsafe_allow_html=True)
 
 
 def board(res: dict, note: str) -> None:

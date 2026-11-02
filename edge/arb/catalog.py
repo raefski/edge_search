@@ -76,8 +76,13 @@ LEAGUES: tuple[League, ...] = (
     League("icehockey_nhl", "NHL", "icehockey", (r"^NHL$",),
            "icehockey", (r"^NHL$",), ("/us/hockey/nhl",), props=True),
     League("basketball_ncaab", "NCAAB", "basketball",
-           (r"^NCAA Basketball", r"^College Basketball"),
-           "basketball", (r"^College Basketball$",),
+           # FanDuel files women's games as "NCAA Basketball Women's Games"; the
+           # store strips their "(W)", so they read as a second Maryland game.
+           (r"^NCAA Basketball(?!.*Wom)", r"^College Basketball(?!.*\(W\))"),
+           # "College Basketball (M)": DK's catalog name by 2026-11-02, when the
+           # bare pattern matched nothing and the opener's scan carried no DK
+           # prices at all. "(W)" (id 36647) is a separate league and must not match.
+           "basketball", (r"^College Basketball( \(M\))?$",),
            ("/us/basketball/ncaam",), props=True),
 
     # ---- soccer: Fanatics carries the big European leagues ----

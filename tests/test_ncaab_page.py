@@ -39,6 +39,8 @@ def fake_world(monkeypatch):
     # no contest lobby: the GPP tab's contest picker must cope with an empty one
     from edge import dfs_leverage_ui as LU
     monkeypatch.setattr(LU, "slate_gpps", lambda sport, gid: [])
+    # no RotoWire call from a test
+    monkeypatch.setattr(dfs_run_ncaab.ncaab_rotowire, "fetch", lambda: "")
     # the forward-test log must not be written by a test
     monkeypatch.setattr(dfs_run_ncaab, "log_forward_test", lambda *a, **k: {"logged": False})
     return client
@@ -52,7 +54,8 @@ def test_page_renders_both_lineups(fake_world):
     html = " ".join(m.value for m in at.markdown)
     assert "Pts" in html and "UTIL" in html
     assert html.count("<table class='lu'>") >= 3          # cash, gpp, board
-    assert "from DK FPPG" in html and "Out (dropped)" in html
+    assert "last season + salary" in html and "Out (dropped)" in html
+    assert any("Name check against DraftKings" in e.label for e in at.expander)
 
 
 def test_leverage_toggle_renders(fake_world):

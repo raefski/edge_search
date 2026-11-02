@@ -10,11 +10,10 @@ actual_points is re-exported rather than copied. The ROSTER is not:
 There is no centre slot. DK lists college bigs as "F" or "F/C"; anything that
 is not a guard fills F.
 
-WHAT IS NOT VERIFIED (the season opens ~11/3; nothing here has met a live
-payload): the lobby code "CBB", the Classic game-type id (resolved by the
-lobby's GameTypes NAME in edge/dfs_run_ncaab.py, so no id is hardcoded), the
-"F/C" spelling, and the 2-game minimum. `python3 -m harness run hoops-verify`
-reads all of them off DraftKings and prints any disagreement.
+VERIFIED LIVE 2026-11-02 (`python3 -m harness run hoops-verify -- --sport CBB`, draft
+group 155565): lobby code "CBB", Classic game type 98, these slots, $50,000, min 2 games,
+late swap on, FPPG stat id 279. Positions on that board were F / G / G/F ("F/C" has not
+been seen, but is still accepted).
 
 TEAM NAMES ARE THE HARD PART. DraftKings writes "DUKE @ UNC"; a book writes
 "Duke Blue Devils" and "North Carolina Tar Heels"; there are 360+ teams and no
@@ -36,8 +35,7 @@ SLOT_ELIGIBLE = {"G": {"G"}, "F": {"F"}, "UTIL": {"G", "F"}}
 SALARY_CAP = 50000
 MIN_TEAMS = 2
 MIN_GAMES = 2
-#: NOT verified for CBB (NBA's is). Kept True so slot assignment still puts
-#: the latest tips in UTIL; it costs nothing if DK turns out to disallow it.
+#: Verified for CBB 2026-11-02 (the Classic rules' lateSwap flag).
 ALLOW_LATE_SWAP = True
 
 
@@ -65,7 +63,9 @@ def slots_for(dk_position: str) -> set[str]:
 _FILLER = re.compile(r"\b(university|univ|of|the|at)\b")
 #: The short forms that defeat every string test. Only the ones a main slate
 #: actually carries are worth listing; anything missing just falls back to the
-#: league-average total (flagged on the page), it does not break a build.
+#: league-average total (flagged on the page), it does not break a build. A tuple
+#: is several spellings; every code also matches itself as a whole word ("BYU").
+#: UF / IL / ILLST / WSU / STMRY / FDU read off DK's first slate, 2026-11-02.
 ALIASES = {
     "UNC": "north carolina", "UK": "kentucky", "KU": "kansas", "UCONN": "connecticut",
     "MSU": "michigan state", "OSU": "ohio state", "LSU": "louisiana state",
@@ -85,15 +85,33 @@ ALIASES = {
     "CREI": "creighton", "MARQ": "marquette", "XAV": "xavier", "PROV": "providence",
     "SHU": "seton hall", "GTWN": "georgetown", "DEP": "depaul", "BUT": "butler",
     "SJU": "st johns", "HOU": "houston", "BAY": "baylor", "CIN": "cincinnati",
-    "MEM": "memphis", "STMARY": "saint marys", "SMC": "saint marys",
+    "MEM": "memphis", "STMARY": ("saint marys", "st marys"), "SMC": ("saint marys", "st marys"),
+    "STMRY": ("saint marys", "st marys"), "UF": "florida", "MIA": "miami", "IL": "illinois",
+    "ILLST": "illinois state", "WSU": "washington state", "FDU": "fairleigh dickinson",
+    "DAV": "davidson", "FORD": "fordham", "ARMY": "army",
 }
+#: What can follow a school's name and make it a DIFFERENT school: "Kansas" must not
+#: claim "Kansas St.", nor "Miami" claim "Miami (OH)", nor "Illinois" claim "Illinois St."
+_OTHER_SCHOOL = {"state", "tech", "am", "at", "christian", "southern", "northern", "eastern",
+                 "western", "central", "(oh)", "oh", "ohio", "international", "baptist",
+                 "chicago", "wesleyan", "commonwealth", "gulf", "upstate", "atlantic"}
 
 
 def _clean(name: str) -> str:
-    s = (name or "").lower().replace("&", "").replace("'", "").replace(".", "")
-    s = re.sub(r"\bst\b", "st", s)
-    s = _FILLER.sub(" ", s)
+    s = _FILLER.sub(" ", (name or "").lower().replace("-", " "))
+    s = s.replace("&", "").replace("'", "").replace("\u2019", "").replace(".", "")
+    s = re.sub(r"\bst$", "state", " ".join(s.split()))
+    s = re.sub(r"\bst (?=\(|$)", "state ", s)
     return " ".join(s.split())
+
+
+def _school_is(target: str, name: str) -> bool:
+    if not name.startswith(target):
+        return False
+    rest = name[len(target):].split()
+    if name[len(target):] and not name[len(target):].startswith(" "):
+        return False
+    return not rest or rest[0] not in _OTHER_SCHOOL
 
 
 def match_team(dk_abbr: str, book_name: str) -> float:
@@ -109,11 +127,14 @@ def match_team(dk_abbr: str, book_name: str) -> float:
     if not code or not name:
         return 0.0
     words = name.split()
+    if words[0] == code.lower():
+        return 1.0
     target = ALIASES.get(code)
     if target:
         # A listed alias is authoritative either way: UK is Kentucky, so it is
         # never Kansas no matter what the letter tests below would say.
-        return 1.0 if name.startswith(target) else 0.0
+        spellings = (target,) if isinstance(target, str) else target
+        return 1.0 if any(_school_is(t, name) for t in spellings) else 0.0
     flat = name.replace(" ", "")
     low = code.lower()
     if flat.startswith(low) or words[0] == low:

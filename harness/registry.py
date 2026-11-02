@@ -101,7 +101,10 @@ JOBS: dict[str, Job] = {j.name: j for j in [
     _j("lineups-nba", "optimize", "scripts/dfs_lineups_nba.py", sport="nba",
        tests=("tests/test_dfs_nba.py",)),
     _j("lineups-ncaab", "optimize", "scripts/dfs_lineups_ncaab.py", sport="ncaab",
-       tests=("tests/test_dfs_ncaab.py",)),
+       tests=("tests/test_dfs_ncaab.py", "tests/test_ncaab_names.py")),
+    _j("ncaab-prior-fit", "evaluate", "scripts/ncaab_prior_fit.py", sport="ncaab",
+       tests=("tests/test_ncaab_names.py",),
+       doc="college no-prop rules vs the prop market: harness run ncaab-prior-fit -- <draft group>"),
     _j("lineups-nfl", "optimize", "scripts/dfs_lineups_nfl.py", sport="nfl"),
     _j("lineups-ncaaf", "optimize", "scripts/dfs_lineups_ncaaf.py", sport="ncaaf"),
     _j("lineups-nascar", "optimize", "scripts/dfs_lineups_nascar.py", sport="nascar"),
@@ -174,22 +177,25 @@ RULES: list[tuple[str, str]] = [
     (r"(overlay|agent|blocked|live|alert|monitor|watchlist|scan)", "monitor"),
     (r"(lab|idea|discovery|endorsement|scout|correlation|pilot|rounds|season_sim|"
      r"situational|threes|variance|sigma|td_|skill|nfl_matchup|dupe|slate_size|stack_shape|"
-     r"^mans_|^pickem_handicap|^pickem_sentiment|^public_bettors)",
+     r"^mans_|^pickem_handicap|^pickem_sentiment|^public_bettors|^nba_courtiq_pstart|"
+     r"^nba_preseason_blend|^nba_rewind)",
      "research"),
 ]
 
 EDGE_RULES: list[tuple[str, str]] = [
     (r"^(git_lock|data_branch)$", "publish"),
     (r"^dfs_entry_edge$", "model"),
-    (r"^(nba_minutes|nba_minutes_gap|nba_project)$", "model"),
+    (r"^(nba_minutes|nba_minutes_gap|nba_minutes_ml|nba_project|nba_ceiling_quantiles|nba_courtiq)$", "model"),
+    (r"^scrollrail$", "app"),
     (r"^(dfs_opt|dfs_leverage|dfs_swap|dfs_roster|dfs_lineup|sgp|parlay)", "optimize"),
     (r"(_sim$|_theory$|_field$|_onoff$|dfs_project|dfs_ladder|pickem_strategy|pickem_features|"
      r"pickem$|fairodds|oddsmath|dfs_contest|dfs_nfl_contest|dfs_validate|clv)", "model"),
     (r"^pagereload$", "app"),
     (r"^dfs_forward_log$", "evaluate"),
-    (r"^(dfs_run|dfs_slate|dfs_sport|repo_files|names|scanner)", "optimize"),
+    (r"^(dfs_run|dfs_slate|dfs_sport|repo_files|names|scanner|ncaab_names)", "optimize"),
     (r"^(client|dfs$|nfl$|nfl_intel$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
-     r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups|nba_availability|nba_injury_report|nba_rotowire)", "ingest"),
+     r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups|nba_availability|nba_injury_report|nba_rotowire|"
+     r"ncaab_rotowire|ncaab_torvik)", "ingest"),
 ]
 
 

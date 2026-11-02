@@ -37,6 +37,12 @@ def test_triple_double_does_not_stack_with_double_double():
     assert nba.actual_points(box) == pytest.approx(10 + 12.5 + 15 + 3.0)
 
 
+@pytest.fixture(autouse=True)
+def _no_rotowire(monkeypatch):
+    """No network from these tests: RotoWire reads as a page with no lineups."""
+    monkeypatch.setattr(RC.ncaab_rotowire, "fetch", lambda: "")
+
+
 # ---------------------------------------------------------------------------
 # positions and team names
 # ---------------------------------------------------------------------------
@@ -63,6 +69,17 @@ def test_dk_team_aliases():
     ("DUKE", "Duke Blue Devils", True), ("UNC", "North Carolina Tar Heels", True),
     ("KU", "Kansas Jayhawks", True), ("GONZ", "Gonzaga Bulldogs", True),
     ("DUKE", "North Carolina Tar Heels", False), ("UK", "Kansas Jayhawks", False),
+    # read off draft group 155565: every code against the book / Torvik / RotoWire spelling
+    ("UF", "Florida", True), ("MIA", "Miami", True), ("MIA", "Miami FL", True),
+    ("IL", "Illinois", True), ("ILLST", "Illinois St.", True), ("ILLST", "Illinois State", True),
+    ("WSU", "Washington St.", True), ("WSU", "Washington State", True),
+    ("STMRY", "Saint Mary's", True), ("STMRY", "St. Mary's (CAL)", True),
+    ("FDU", "Fairleigh-Dickinson", True), ("FDU", "Fairleigh Dickinson", True),
+    ("BYU", "BYU", True), ("OSU", "Ohio St.", True), ("ISU", "Iowa St.", True),
+    # the school next door must not match
+    ("KU", "Kansas St.", False), ("IL", "Illinois St.", False), ("MIA", "Miami (OH)", False),
+    ("UF", "Florida St.", False), ("UF", "Florida A&M", False), ("UNC", "North Carolina A&T", False),
+    ("ARIZ", "Arizona St.", False), ("UF", "Florida Atlantic", False),
 ])
 def test_college_team_matching(code, name, ok):
     assert (ncaab.match_team(code, name) >= 0.6) is ok
@@ -244,7 +261,7 @@ CBB_POS = ["G", "G", "G/F", "F", "F", "F/C", "G", "F", "G"]
 
 def test_ncaab_slate_end_to_end(monkeypatch):
     sal = _salaries(CBB_GAMES, CBB_POS, "Cbb")
-    # no FPPG at all for the third game: early season -> salary fallback
+    # no FPPG at all for the third game: freshmen -> salary fallback
     for info in sal.values():
         if info["game"] == 1002:
             info["dk_fppg"] = None
@@ -259,7 +276,7 @@ def test_ncaab_slate_end_to_end(monkeypatch):
     # matches nothing -- it still matches on player votes (props subjects
     # carry "(TEAM)" and resolve to DK names)
     assert "UNC @ DUKE" not in info["missing_lines"] and "BAY @ KU" not in info["missing_lines"]
-    assert info["sources"]["props"] and info["sources"]["fppg"] and info["sources"]["salary"]
+    assert info["sources"]["props"] and info["sources"]["blend"] and info["sources"]["salary"]
     for mode in ("cash", "gpp"):
         lu = res[mode]
         assert lu and OC.valid(res["pool"], lu["idx"])

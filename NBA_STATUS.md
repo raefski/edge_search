@@ -1,4 +1,4 @@
-# NBA + college basketball DFS — status (NBA built 2026-10-15, opens 2026-10-20; college opens ~11/3)
+# NBA + college basketball DFS — status (NBA built 2026-10-15, opens 2026-10-20; college live 2026-11-02)
 
 60-second orientation. Read before changing the NBA model.
 
@@ -213,34 +213,69 @@ measured held out. What came across:
   to no change 7.576 at the fitted K=160 (CI [-0.001, +0.002], nothing). The minutes
   model already carries a scratch; the publisher and its timer were dropped.
 
-## College basketball (DK CBB Classic) — built 2026-10-13, NOT verified live
+## College basketball (DK CBB Classic) — first live slate 2026-11-02 (draft group 155565)
 
 | piece | file |
 |---|---|
-| app | `pages/13_🏀_NCAAB_DFS.py` (cash, GPP + leverage map, board with each row's source) |
+| app | `pages/13_🏀_NCAAB_DFS.py` (cash, GPP + leverage map, board with each row's source, name check) |
 | pipeline | `edge/dfs_run_ncaab.py` `build_slate` (same call as `scripts/dfs_lineups_ncaab.py`) |
-| teams / roster | `edge/ncaab.py` — G G G F F F UTIL UTIL; book names matched to DK codes by prop-subject votes, then name similarity inside one tip window |
+| names | `edge/ncaab_names.py`: every outside name -> one DK player, inside a team or game; audit on page + CLI |
+| teams / roster | `edge/ncaab.py` — G G G F F F UTIL UTIL; DK code <-> book/Torvik/RotoWire spellings |
+| starters + injuries | `edge/ncaab_rotowire.py` (reads the link title: the visible text is "D. Aberdeen") |
+| last season | `edge/ncaab_torvik.py`, `data/ncaab_torvik_2026.json` (Barttorvik; on `main`, frozen) |
+| ladders | `edge/dfs_ladder.mean_gapped` + `HOOPS_OVERROUND` |
 | simulator | `edge/ncaab_sim.py` — whole games: shared pace, team efficiency, blowout minutes cut, usage renormalised within team, Poisson box scores (DD/TD bonuses priced) |
 | theory | `edge/dfs_ncaab_theory.py` — cash 25th pct, GPP 90th; ownership prior per G/F group |
 | optimiser | `edge/dfs_opt_ncaab.py` on `edge/dfs_opt_climb.py` |
-| odds | profile `dfs_ncaab`; `deploy/odds-{collect,publish}-dfs-ncaab.timer` — install in November |
+| odds | profile `dfs_ncaab` (full ladders); `deploy/odds-{collect,publish}-dfs-ncaab.timer`, installed 11/2 |
 
-Projections, in order, every row says which: **props** (two-sided lines inverted
-to means, combos fill missing stats) → **fppg** (DK's, scaled half-way to tonight's
-implied points) → **salary** (4.6 DK pts per $1K, PRIOR). Every simulator and
-ownership constant is a PRIOR.
+**Verified live 11/2** (`harness run hoops-verify -- --sport CBB`): lobby code CBB, Classic game
+type 98, slots, $50,000, min 2 games, late swap on, FPPG stat id 279 (pinned), positions F / G / G/F.
 
-**Go-live (once DK lists a CBB slate, ~late October):**
-1. `python3 -m harness run hoops-verify -- --sport CBB` — checked 2026-10-16: DK's
-   CBB lobby listed nothing yet, so the lobby code, Classic id, roster, FPPG id and
-   position strings are all still assumed. It exits 3 until there is a slate to read.
-2. `python3 -m harness run odds-dfs_ncaab`, then
-   `python3 -m harness run lineups-ncaab -- --no-log --board 30`: books > 0, game lines
-   matched (the page names any game with none), no implausible values.
-3. Install the two `dfs-ncaab` odds timers.
-4. After the first contest: `harness run import-contests`, then
-   `harness run calibrate-nba -- data/contest-standings-N.csv --sport ncaab`
-   (per source; `--fit-ownership` reads, never ships, below ~5 slates).
+**What the first board taught, each of which the old build got wrong:**
+- DK's sportsbook league is now "College Basketball (M)": the catalog pattern matched nothing and
+  no DK price was collected. FanDuel's women's games were also being read as men's (a second
+  Maryland game).
+- DK posts college props only as one-sided milestones with gaps (8+, 10+, 12+, 15+...): a main-line
+  client got one rung each and projected nobody from props. Overround fitted on NBA boards where DK
+  posts both forms (points .067, stable by date); estimator graded on NBA outcomes: 11 slates, 689
+  player-games, bias +0.87, MAE 8.24. No O/U exists in college to check it directly.
+- DK's FPPG is LAST season's, at the old school: Thomas Haugh 32.3 vs Torvik's 31.9. On transfers
+  it misleads: Dennis Parker Jr. 31.5 from Radford, $3,500 at Kansas.
+- The market's salary line is flat: 9.21 + 2.13 per $1K (r .73, n=33), not 4.6 per $1K. The old
+  fallback put a $10,300 freshman at 47.
+- Same name, two players: Trent Perry, UCLA $7,600 and Kansas $7,500. Props and history are keyed
+  by the salary-list key, never the name.
+
+**Projections, in order, every row says which:**
+1. **props** ladders inverted, averaged across books; stats a book does not post come from combos,
+   then the player's own last-season shape, then the position profile.
+2. **blend** half carryover of last season (moved for same school / up / sideways / down a conference
+   tier, and for tonight's implied points), half the salary line.
+3. **salary** no verifiable history, at $4,000+ or a listed starter.
+4. **bench** under $4,000 and not a listed starter, on a team RotoWire lists. Fitted to what the
+   team's implied points leave (2.04 DK points per team point, measured, 365 teams).
+
+**Evidence.** Carryover, fit 2024-25 -> 2025-26, held out 2023-24 -> 2024-25, MAE vs carrying raw FPPG:
+same school 4.60 / 4.84 (n=1,554), up 6.00 / 8.89 (315), sideways 5.67 / 6.41 (511), down 6.12 / 9.81
+(221). Against tonight's market, each game's props hidden and predicted (`harness run ncaab-prior-fit
+-- 155565`, 33 players, 4 games): shipped MAE 2.87, bias -0.17; salary line alone 3.32; history alone
+3.73; raw FPPG 4.18; 4.6 x salary 8.23. **One night against the market, not results: not enough data
+to call any of that proven.** The salary line, blend weight, bench rule, Q_PLAY and every simulator
+and ownership constant are still priors.
+
+**After the first contest:**
+1. `harness run import-contests`, then `harness run calibrate-nba -- data/contest-standings-N.csv
+   --sport ncaab` (per source; `--fit-ownership` reads, never ships, below ~5 slates).
+2. Is the bench rule right? It has never met a result. Popovic ($3,000) would have been bench at 1
+   point without his DK props; a cheap freshman with no prop and no starter tag is the board's blind spot.
+3. Refit `SALARY_LINE` each night until it settles: `harness run ncaab-prior-fit -- <gid>`.
+
+**Known gaps.** DK FPPG will start mixing this season in as games are played, and Torvik's 2027 file is
+not read yet: on a later slate a player's "last season" goes stale. `harness/late_swap.py` does not cover
+college. Ownership is the untouched prior and `own_weight` is 0, Adam's call to adjust per night
+until an export says otherwise (GPP_META: ownership had no ROI effect at fixed projection in MLB/NHL;
+never measured for college).
 
 ## CourtIQ: position shuffle when a player sits (2026-10-29)
 

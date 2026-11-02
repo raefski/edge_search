@@ -63,8 +63,16 @@ def main() -> int:
     info = res["stats"]
     src = info["sources"]
     print(f"draft group {res['gid']} ({res['meta'].get('label')}), {info['games']} games, "
-          f"{info['pool']} projected: {src['props']} props / {src['fppg']} FPPG / "
-          f"{src['salary']} salary;  props from {info['books'] or 'no book'}")
+          f"{info['pool']} projected: {src['props']} props / {src['blend']} blend / "
+          f"{src['salary']} salary / {src['bench']} bench;  props from {info['books'] or 'no book'}")
+    print(f"starters: {info['starters']} from {info['starters_source']};  "
+          f"last season's stats: {info['history_rows']} Torvik rows")
+    for row in info.get("name_audit", []):
+        print(f"names, {row['source']}: {row['joined']} joined"
+              + (f"; READ THESE: {'; '.join(row['loose'])}" if row["loose"] else "")
+              + (f"; NOT JOINED: {'; '.join(row['refused'])}" if row["refused"] else ""))
+    print("bench scale (to the team's implied points): "
+          + ", ".join(f"{t} {x:.2f}" for t, x in sorted(info.get("team_scale", {}).items())))
     print("implied points: " + ", ".join(f"{t} {g:.1f}" for t, g in
                                          sorted(info["implied"].items(), key=lambda kv: -kv[1])))
     if info["missing_lines"]:

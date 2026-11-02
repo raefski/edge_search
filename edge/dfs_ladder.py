@@ -601,6 +601,83 @@ def exceed(rungs: list[tuple[float, float]], threshold: float,
     return above[0][1] if above else 0.0
 
 
+#: Multiplicative overround on one rung of DraftKings' BASKETBALL milestones. FITTED
+#: 2026-11-02 on NBA scans, 10/15-11/2 (19 dates), where DK posts a two-sided O/U and
+#: milestones for one player in one scan: the O/U devigs itself, the milestones either
+#: side of it are interpolated (probit) to the same line. Held out by date (train 10/15-
+#: 10/23 vs test 10/24-11/2), medians: points .067/.068 (n=1,819), rebounds .081/.081
+#: (1,614), assists .081/.078 (1,194), Pts+Reb .076/.077 (1,708), Pts+Ast .076/.077
+#: (1,341), Reb+Ast .083/.084 (1,182), PRA .073/.074 (1,399). College is the same book
+#: and the same ladder but no O/U exists to check it against: these are NBA numbers.
+#: Threes measured .145 and is not used: a small integer interpolated between rungs is
+#: the bug class named above LADDER_OVERROUND, so it takes rebounds' value. Threes is
+#: worth 0.5 DK points each, so the choice moves a player by about 0.05.
+#: GRADED end to end on NBA boards (mean_gapped on milestones, stats the book did not post
+#: filled at league shares) against the DK points in our contest exports, 10/20-11/1: 11
+#: slates, 689 player-games who played, bias +0.87, MAE 8.24, r 0.48-0.81 by slate. Against
+#: the O/U line it was left out of (one board, 10/30): points +0.39, rebounds +0.04 (n=65),
+#: assists -0.01 (n=39). Not yet graded on college: first export pending.
+HOOPS_OVERROUND = {
+    "player_points": 0.067, "player_rebounds": 0.081, "player_assists": 0.079,
+    "player_threes": 0.081, "player_steals": 0.081, "player_blocks": 0.081,
+    "player_turnovers": 0.081, "player_blocks_steals": 0.081,
+    "player_points_rebounds": 0.076, "player_points_assists": 0.077,
+    "player_rebounds_assists": 0.083, "player_points_rebounds_assists": 0.073,
+}
+
+
+def mean_gapped(rungs: list[tuple[float, float]], overround: float) -> float | None:
+    """E[N] for an integer stat from a ladder with GAPS (8+, 10+, 12+, 15+, 20+, 25+).
+
+        E[N] = sum over k >= 1 of P(N >= k)
+
+    mean_count sums only the rungs posted, which undercounts a ladder with gaps by
+    every k it skips. mean_continuous integrates from zero and so overstates an integer
+    stat by half a unit: harmless on 60 rushing yards, 3% of a 15-point scorer. Here
+    the missing ks are interpolated in probit between their neighbours, which is the
+    shape of the book's own curve; below the lowest rung and above the highest the
+    outer slope continues, clamped so S stays monotone. None under 2 rungs: one price
+    has no slope, and one rung is what a misconfigured main-line client produces.
+    """
+    # A rung far BELOW the prices above it is another market filed under this one. NBA
+    # boards mix first-quarter rungs in (Brunson 2026-11-02: "6+" at +890 next to "15+" at
+    # -1200); isotonic pooling would average them into the real ladder and pull the mean
+    # down by points. A stale rung off by a few percent is not this, and pooling handles it.
+    kept, top = [], 0.0
+    for t, d in sorted(rungs, reverse=True):
+        q = 1.0 / d
+        if q >= top - 0.10:
+            kept.append((t, d))
+            top = max(top, q)
+    pts = [(int(round(t)), p) for t, p in survival(sorted(kept), overround) if t >= 1]
+    if len(pts) < 2:
+        return None
+    zs = [(k, _N.inv_cdf(min(1 - _EPS, max(_EPS, p)))) for k, p in pts]
+    out = 0.0
+    lo, hi = zs[0][0], zs[-1][0]
+    for k in range(1, hi + 41):
+        if k <= lo:
+            (k0, z0), (k1, z1) = zs[0], zs[1]
+        elif k >= hi:
+            (k0, z0), (k1, z1) = zs[-2], zs[-1]
+        else:
+            i = next(i for i, (t, _) in enumerate(zs) if t >= k)
+            (k0, z0), (k1, z1) = zs[i - 1], zs[i]
+        slope = (z1 - z0) / max(1, k1 - k0)
+        # A flat outer pair (isotonic pooling) must not invent a heavy tail or head.
+        if k > hi:
+            slope = min(slope, -0.05)
+        if k < lo:
+            slope = min(slope, -0.02)
+        p = _N.cdf(z0 + slope * (k - k0))
+        if k < lo:
+            p = max(p, pts[0][1])
+        if k > hi:
+            p = min(p, pts[-1][1])
+        out += p
+    return out
+
+
 def project_market(rungs: list[tuple[float, float]], market: str,
                    overround: float | None = None) -> dict:
     """One market's ladder -> {mean, ...}, choosing the right estimator.

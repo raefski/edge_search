@@ -119,7 +119,7 @@ def mlb_draft_groups() -> list[dict]:
 #: the snapshot writer filtered on a bare 408 while the reader looked for all
 #: three, so college and NASCAR snapshots reached Streamlit Cloud with the FPPG
 #: column already thrown away.
-FPPG_STAT_IDS = (408, 174, 653, 635, 341)  # 635: MMA's "per fight"; 341: NHL (2026-09-28)
+FPPG_STAT_IDS = (408, 174, 653, 635, 341, 279)  # 635: MMA's "per fight"; 341: NHL (2026-09-28); 279: CBB (2026-11-02)
 
 #: The id detect_fppg_id() settled on for the last draftables read that
 #: carried none of FPPG_STAT_IDS (NBA and college basketball, 2026-10-13:
@@ -311,15 +311,15 @@ class SalaryLookup:
         return cands[0] if len(cands) == 1 else None
 
     def _nick(self, name: str) -> list:
-        """Mitch <-> Mitchell, Cam <-> Cameron: same surname, one first name a prefix
-        of the other (3+ letters). A bare first initial was not enough (Mike / Malik
-        Williams); the caller still needs exactly one."""
+        """Mitch <-> Mitchell, Bobby <-> Robert: same surname and first names that
+        edge.names.first_names_agree accepts. A bare first initial was not enough
+        (Mike / Malik Williams); the caller still needs exactly one."""
+        from edge.names import first_names_agree
         first, _, last = name.strip().partition(" ")
-        f = self._bare(first)
-        if len(f) < 3 or not last:
+        if not last:
             return []
         return [i for g, i in self.by_last.get(self._bare(last), ())
-                if len(g) >= 3 and (g.startswith(f) or f.startswith(g))]
+                if first_names_agree(first, g)]
 
 
 class DraftablesUnavailable(RuntimeError):

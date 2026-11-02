@@ -208,6 +208,10 @@ PROFILES: dict[str, Profile] = {
         # a thin board, not a broken one.
         required_markets=(),
         props=True, prop_events=SLATE_EVENTS, alt_lines=False,
+        # DraftKings posts college props as one-sided milestone ladders (2026-11-02:
+        # 1,168 of 1,168 prop quotes "over"), as in NCAAF. A main-line client serves
+        # one rung per player and no projection.
+        full_ladders=True,
         max_age_seconds=1800,
         est_seconds=40,
         publish_markets=(

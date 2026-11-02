@@ -18,27 +18,34 @@ gave 21 of 28 teams the wrong opponent (DFS_STATUS.md). A book's line is
 admitted only for a slate game, and only if its tip is within MATCH_TOLERANCE.
 
 WHERE EACH PLAYER'S MEANS COME FROM, IN ORDER
-    1. PROPS. Points, rebounds, assists, threes, steals, blocks, turnovers --
-       every book that posts them, each two-sided line inverted to a mean
-       under the simulator's own variance model (ncaab_sim.mean_from_market)
-       and averaged across books. A stat with no line of its own is derived
-       from a combo (Pts+Reb minus Pts, ...) and then from the position
-       profile scaled by his points. `imputed` names each one.
-    2. DK FPPG, when he has no points line, scaled half-way toward tonight's
-       implied team points, split into stats by his position profile.
-    3. SALARY (SALARY_VALUE points per $1K) for a rotation player a week into
-       the season with no FPPG yet -- DK's price is the only projection there is.
-Books post college props only for the top few players of the televised games,
-so most of a board is (2). Every row's `source` says which.
+    1. PROPS. DraftKings posts college props as one-sided milestone ladders, so a
+       ladder is inverted by edge/dfs_ladder.mean_gapped at a fitted overround; a
+       two-sided line from another book devigs itself. A stat with no line is derived
+       from a combo (Pts+Reb minus Pts, ...), then from his own shape last season, then
+       the position profile, scaled by his points. `imputed` names each one.
+    2. BLEND: half last season's production carried to this team (CARRYOVER), half the
+       salary line (SALARY_LINE). Neither DK number is usable alone on opening night.
+       DK's FPPG is LAST season's wherever he played it (Dennis Parker Jr., 31.5 from
+       Radford, $3,500 at Kansas); DK's salary misprices transfers the other way.
+    3. SALARY: no verifiable history (a freshman), at a price or a starting job that
+       says he plays. Tyran Stokes $10,300, Caleb Holt $10,200.
+    4. BENCH: cheap, not a listed starter. Last season's own output, or BENCH_POINTS.
+A team's bench is then scaled to what its implied points leave (TEAM_DK_PER_POINT).
+Every row's `source` says which.
 
 TEAM NAMES DO NOT MATCH. "DUKE" against "Duke Blue Devils": a book event is
 matched by which slate players its props resolve to, then by name similarity
 inside one tip-off window (edge/ncaab.match_team). A game no line matches is
 simulated at the league average and named on the page; nothing is dropped.
 
-EVERYTHING HERE IS A PRIOR until the first college slate is graded (season
-opens ~11/3): SALARY_VALUE, the profiles, the simulator's constants and the
-ownership weights. NBA_STATUS.md (college section) lists what to fit first.
+PLAYER NAMES DO NOT MATCH EITHER, see edge/ncaab_names.py: every outside name is
+resolved inside a team or game, by rule, and what a source could not resolve is listed
+in stats["name_audit"] (shown on the page and by the CLI).
+
+THE FIRST LIVE SLATE IS 2026-11-02 (draft group 155565). Carryover is fitted on real
+seasons and held out; the salary line, blend and bench rule are one night against the
+prop market, not against outcomes. Fit them on graded slates, then the simulator's
+constants and the ownership weights (NBA_STATUS.md, college section).
 """
 from __future__ import annotations
 
@@ -52,9 +59,10 @@ from zoneinfo import ZoneInfo
 
 from edge import dfs_slate
 from edge import dfs_forward_log
-from edge import dfs, dfs_ncaab_theory as theory, dfs_opt_ncaab, ncaab, ncaab_sim
+from edge import dfs, dfs_ladder, dfs_ncaab_theory as theory, dfs_opt_ncaab, ncaab, ncaab_sim
+from edge import ncaab_rotowire, ncaab_torvik
+from edge.ncaab_names import Audit, Rosters
 from edge.dfs_slate import parse_time as _parse_time, slate_games
-from edge.names import norm
 
 log = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,15 +77,47 @@ NAME_WINDOW = timedelta(hours=3)
 #: College margin vs the closing spread (ncaab_sim's eff_sd prior), for a
 #: moneyline -> spread conversion when no spread posts.
 MARGIN_SD = 10.7
-#: A no-prop player is projected from FPPG only at or above this.
-MIN_FPPG = 6.0
-#: DK points per $1K for the salary fallback: the value a DK college salary
-#: implies for a rotation player (DK's own pricing runs ~4.5-5x). PRIOR,
-#: 2026-10-13; fit it on the first slate with scripts/nba_calibration.py --sport ncaab.
-SALARY_VALUE = 4.6
-#: The salary fallback applies only above min salary x this (a min-salary
-#: player with no FPPG is a probable DNP and is left off).
-SALARY_FLOOR_MULT = 1.15
+#: Fewest milestones that make a ladder: edge/dfs_ladder.mean_gapped needs a slope.
+MIN_RUNGS = 3
+#: DK points a player earns per point his team scores. MEASURED, Torvik 2025-26, all
+#: rows summed per team (365 teams with 25+ games): mean 2.040, sd 0.063, 5th-95th
+#: 1.94-2.14. The whole team's output, so what props do not claim is left for the rest.
+TEAM_DK_PER_POINT = 2.04
+#: The smallest a team's bench may be scaled to fit that budget. PRIOR, 2026-11-02.
+BENCH_SCALE_FLOOR = 0.35
+#: Last season's points move with tonight's implied team points to this power. Same hold-
+#: out: power 0 MAE 2.85 bias -0.65, power .5 2.87 / -0.04, power 1 3.12 / +0.63.
+ENV_POWER = 0.5
+#: DK points from salary in $K, read off the prop market: least squares on the 33 slate
+#: players with DK ladders on 2026-11-02 (4 games), r=0.73. The flat slope is the
+#: finding: $3,000 = 15.6 and $10,000 = 30.5, where the earlier prior (4.6 per $1K, a
+#: pro pricing rule) said 13.8 and 46. PRIOR until graded: one night, players a book
+#: chose to price, against the market rather than results. Refit: scripts/ncaab_prior_fit.py.
+SALARY_LINE = (9.21, 2.13)
+#: Last season's DK points carried to this one, by what changed: (intercept, slope).
+#: FITTED on Torvik players with 8+ games in both 2024-25 and 2025-26, joined by Torvik's
+#: player id, up/down by conference tier. HELD OUT on 2023-24 -> 2024-25, MAE vs carrying
+#: raw FPPG: same school 4.60 vs 4.84 (n=1,554), moved up 6.00 vs 8.89 (315), same tier
+#: 5.67 vs 6.41 (511), moved down 6.12 vs 9.81 (221). Bias there +0.2 to +1.2 (the +1.2
+#: on same school: both seasons required, so the seasons a player lost his job are gone).
+CARRYOVER = {"same": (5.75, 0.884), "up": (7.30, 0.406), "side": (10.40, 0.469),
+             "down": (14.80, 0.340)}
+#: Blend of carryover and salary line, each game's props hidden and predicted against the
+#: 33 players the books priced on 2026-11-02 (MAE, scripts/ncaab_prior_fit.py): 4.6 x salary
+#: 8.23; raw FPPG 4.18; history alone 3.71; salary line alone 3.34; w=.3 2.88; w=.5 2.87,
+#: bias -0.04; w=.7 3.09. Not enough data to say more (one night, 4 games).
+BLEND_WEIGHT = 0.5
+#: Under this price and not a listed starter, no credit for salary: the salary line was
+#: read off players a book chose to price, and a $3,000 walk-on is not one of them.
+BENCH_SALARY = 4000
+#: DK points for a cheap non-starter with no history. PRIOR, 2026-11-02; most of the
+#: ~120 no-history players on the first board are walk-ons and redshirts.
+BENCH_POINTS = 3.0
+#: Fewer games than this last season is not a season.
+MIN_PRIOR_GAMES = 3
+#: A no-prop questionable player's chance of playing (a props price already carries it).
+#: PRIOR, 2026-11-02: an opening-night tag, nothing to fit it on yet.
+Q_PLAY = 0.7
 
 #: Odds market -> simulator stat (singles) and combo keys.
 SINGLE = {"player_points": "pts", "player_rebounds": "reb", "player_assists": "ast",
@@ -88,14 +128,17 @@ COMBO = {"player_points_rebounds_assists": "pra", "player_points_rebounds": "pr"
          "player_blocks_steals": "sb"}
 MARKETS = list(SINGLE) + list(COMBO)
 
-#: A typical box score per position group, used to split an FPPG (or a points
-#: line with nothing else) into stats. Only the SHAPE matters -- each is scaled
-#: to the player's own total. PRIORS: shorter game, fewer threes per point
-#: than the NBA.
+#: A typical box score per position group, used to split a projection into stats when
+#: a player has no season of his own. Only the SHAPE matters -- each is scaled to the
+#: player's own total. MEASURED, Torvik 2025-26, 15+ mpg and 15+ games: G = Pure PG /
+#: Scoring PG / Combo G / Wing G (n=1,618), F = Wing F / Stretch 4 / PF/C / C (n=1,028).
 PROFILES = {
-    "G": {"pts": 13.0, "reb": 3.6, "ast": 3.2, "fg3": 1.9, "stl": 1.1, "blk": 0.2, "tov": 1.9},
-    "F": {"pts": 12.0, "reb": 6.5, "ast": 1.6, "fg3": 0.9, "stl": 0.8, "blk": 0.9, "tov": 1.5},
+    "G": {"pts": 10.18, "reb": 3.13, "ast": 2.22, "fg3": 1.28, "stl": 0.96, "blk": 0.19, "tov": 1.72},
+    "F": {"pts": 9.06, "reb": 5.17, "ast": 1.18, "fg3": 0.61, "stl": 0.66, "blk": 0.70, "tov": 1.46},
 }
+#: Conference tiers for CARRYOVER's up/down.
+POWER_CONF = {"ACC", "B10", "B12", "SEC", "BE"}
+MID_CONF = {"A10", "MWC", "WCC", "Amer", "MVC"}
 OUT_STATUS = {"OUT", "O", "IR", "SUSP", "NA"}
 DOUBT_STATUS = {"Q", "GTD", "D", "DOUBTFUL", "QUESTIONABLE"}
 
@@ -159,59 +202,97 @@ def _subject(name: str) -> str:
     return name.split(" (")[0].strip() if name.endswith(")") else name
 
 
-def player_props(client, lookup: dfs.SalaryLookup, games: dict | None = None,
-                 refused: list | None = None) -> tuple[dict, dict, dict]:
-    """({salary_key: {stat: [mean per book]}}, {event_id: {salary_keys}},
-    {book: players priced}) for every book that posted a line.
+def _two_sided(outcomes: list, name: str) -> dict | None:
+    """The {Over, Under, point} closest to even for one subject, or None if the book
+    posted no point with both sides (DK's college props have none, 2026-11-02)."""
+    by_point: dict = {}
+    for o in outcomes:
+        if o.get("description") == name and o.get("point") is not None:
+            by_point.setdefault(float(o["point"]), {})[o.get("name")] = o.get("price")
+    pairs = [(pt, v) for pt, v in by_point.items() if v.get("Over") and v.get("Under")]
+    if not pairs:
+        return None
+    pt, v = min(pairs, key=lambda kv: abs(1.0 / kv[1]["Over"] - 1.0 / kv[1]["Under"]))
+    return {"Over": v["Over"], "Under": v["Under"], "point": pt}
 
-    A subject's lines are taken only from the event that is HIS game on this
-    slate (edge/dfs_slate.event_games): college basketball has hundreds of
-    off-slate games a night, and a name-only join averaged any namesake's
-    line into a slate player's mean -- the NCAAF build lost a cash game to
-    exactly that on 2026-10-16. Names refused are appended to `refused`."""
-    payloads: dict = {}
-    kickoffs: dict = {}
-    subjects: dict = {}
+
+def market_mean(market_key: str, stat: str, outcomes: list, name: str) -> float | None:
+    """One subject's one market -> its mean. A two-sided pair devigs itself; a one-sided
+    milestone ladder (DK) goes through edge/dfs_ladder with the fitted hoops overround."""
+    pair = _two_sided(outcomes, name)
+    if pair:
+        return ncaab_sim.mean_from_market(stat if stat in ncaab_sim.STATS else "pts", pair, LEAGUE)
+    rungs = dfs_ladder.rungs_from_outcomes(outcomes, name)
+    if len(rungs) < MIN_RUNGS:
+        return None
+    return dfs_ladder.mean_gapped(rungs, dfs_ladder.HOOPS_OVERROUND.get(
+        market_key, dfs_ladder.DEFAULT_OVERROUND))
+
+
+def _event_subjects(payload: dict) -> set:
+    return {o["description"] for bk in payload.get("bookmakers", [])
+            for m in bk.get("markets", []) for o in m.get("outcomes", []) if o.get("description")}
+
+
+def player_props(client, rosters: Rosters, games: dict, salaries: dict,
+                 audit: Audit | None = None) -> tuple[dict, dict, dict]:
+    """({salary key: {stat: [mean per book]}}, {event id: {salary keys}}, {book: players
+    priced}) for every book that posted a line.
+
+    Keyed by the salary-list key, not the name: board 155565 has two Trent Perrys. An
+    event is first assigned to ONE slate game (by its team names and tip, and by whose
+    players its subjects resolve to, edge/ncaab.match_team / _match_event); each subject
+    is then resolved only among that game's two teams. College basketball has hundreds
+    of off-slate games a night, and a name-only join averaged any namesake's line into
+    a slate player's mean -- the NCAAF build lost a cash game to exactly that, 2026-10-16.
+    """
+    out: dict = {}
+    event_players: dict = {}
+    books: dict = {}
     for ev in client.get_events(SPORT):
-        kickoffs[ev["id"]] = ev.get("commence_time")
         try:
             payload = client.get_event_odds(SPORT, ev["id"], MARKETS, "us")
         except Exception as exc:                            # noqa: BLE001
             log.warning("ncaab: no props for event %s (%s)", ev.get("id"), exc)
             continue
-        payloads[ev["id"]] = payload
-        subjects[ev["id"]] = {_subject(o["description"]) for bk in payload.get("bookmakers", [])
-                              for m in bk.get("markets", []) for o in m.get("outcomes", [])
-                              if o.get("description")}
-    owner, wrong = dfs_slate.subject_events(subjects, lookup.get, kickoffs, games)
-    if refused is not None:
-        refused.extend(wrong)
-
-    out: dict = {}
-    event_players: dict = {}
-    books: dict = {}
-    for ev_id, payload in payloads.items():
-        for bk in payload.get("bookmakers", []):
-            names = {o["description"] for m in bk.get("markets", [])
-                     for o in m.get("outcomes", []) if o.get("description")}
+        names = _event_subjects(payload)
+        if not names:
+            continue
+        # Who could this event be? Each slate game votes with the subjects it can resolve.
+        votes: dict = {}
+        for gid, g in games.items():
+            keys = set()
             for name in names:
-                if owner.get(_subject(name)) != ev_id:
-                    continue
-                info = lookup.get(_subject(name))
+                info, _ = rosters.resolve(name, (team(g["home"]), team(g["away"])))
+                if info is not None:
+                    keys.add(rosters.key(info))
+            # Half the subjects, as dfs_slate.event_games: one namesake is not a game.
+            if keys and 2 * len(keys) >= len(names):
+                votes[gid] = keys
+        ev_votes = {ev["id"]: set().union(*votes.values())} if votes else {}
+        gid, _ = _match_event(ev, games, ev_votes, salaries)
+        if gid is None:
+            continue
+        pair = (team(games[gid]["home"]), team(games[gid]["away"]))
+        for bk in payload.get("bookmakers", []):
+            markets = {m["key"]: m.get("outcomes", []) for m in bk.get("markets", [])}
+            seen = {o["description"] for ocs in markets.values() for o in ocs if o.get("description")}
+            for name in seen:
+                info, how = rosters.resolve(name, pair)
+                if audit is not None:
+                    audit.add(name, info, how, "/".join(pair))
                 if info is None:
                     continue
-                key = norm(info["name"])
-                pm = dfs.player_markets(bk, name)
+                key = rosters.key(info)
                 row = out.setdefault(key, {})
                 hit = False
                 for market, stat in {**SINGLE, **COMBO}.items():
-                    mu = ncaab_sim.mean_from_market(stat if stat in ncaab_sim.STATS else "pts",
-                                                    pm.get(market), LEAGUE)
+                    mu = market_mean(market, stat, markets.get(market) or [], name)
                     if mu is not None:
                         row.setdefault(stat, []).append(mu)
                         hit = True
                 if hit:
-                    event_players.setdefault(ev_id, set()).add(key)
+                    event_players.setdefault(ev["id"], set()).add(key)
                     books[bk.get("key")] = books.get(bk.get("key"), 0) + 1
     return out, event_players, books
 
@@ -269,19 +350,46 @@ def _median(xs):
     return statistics.median(xs) if xs else None
 
 
+def _main_line(outcomes: list, side_a: str, side_b: str) -> float | None:
+    """The point closest to even money, read as side_a's. A full-ladder payload carries
+    every alternate total and spread as outcomes on one market, so "the" line has to be
+    chosen: DK posted 2,302 alternates per market on the 2026-11-02 slate."""
+    pairs: dict = {}
+    for x in outcomes:
+        if x.get("point") is None or not x.get("price"):
+            continue
+        point = abs(float(x["point"])) if side_a in ("Over", "Under") else float(x["point"])
+        if x.get("name") == side_a:
+            pairs.setdefault(point, {})["a"] = x["price"]
+        elif x.get("name") == side_b:
+            # a spread's other side is written at the opposite sign
+            other = point if side_a in ("Over", "Under") else -point
+            pairs.setdefault(other, {})["b"] = x["price"]
+    both = [(pt, v) for pt, v in pairs.items() if "a" in v and "b" in v]
+    if both:
+        return min(both, key=lambda kv: abs(1.0 / kv[1]["a"] - 1.0 / kv[1]["b"]))[0]
+    return next(iter(pairs)) if pairs else None
+
+
 def _event_prices(ev: dict) -> dict:
     """total / home spread / P(home wins) across every book on one event."""
     totals, spreads, p_home = [], [], []
     home, away = ev.get("home_team"), ev.get("away_team")
     for bk in ev.get("bookmakers", []):
         for m in bk.get("markets", []):
-            o = {x.get("name"): x for x in m.get("outcomes", [])}
-            if m["key"] == "totals" and "Over" in o and o["Over"].get("point") is not None:
-                totals.append(float(o["Over"]["point"]))
-            elif m["key"] == "spreads" and home in o and o[home].get("point") is not None:
-                spreads.append(float(o[home]["point"]))
-            elif m["key"] == "h2h" and home in o and away in o:
-                p_home.append(ncaab_sim.devig(o[home]["price"], o[away]["price"]))
+            outs = m.get("outcomes", [])
+            if m["key"] == "totals":
+                pt = _main_line(outs, "Over", "Under")
+                if pt is not None:
+                    totals.append(pt)
+            elif m["key"] == "spreads":
+                pt = _main_line(outs, home, away)
+                if pt is not None:
+                    spreads.append(pt)
+            elif m["key"] == "h2h":
+                o = {x.get("name"): x for x in outs}
+                if home in o and away in o:
+                    p_home.append(ncaab_sim.devig(o[home]["price"], o[away]["price"]))
     return {"total": _median(totals), "spread_home": _median(spreads),
             "p_home": _median(p_home)}
 
@@ -355,6 +463,143 @@ def game_lines(client, games: dict, event_players: dict | None = None,
 
 
 # ---------------------------------------------------------------------------
+# Who starts, who is hurt, what they did last year
+# ---------------------------------------------------------------------------
+def lineup_news(salaries: dict, rosters: Rosters, teams: set, html: str | None = None):
+    """({key: starter row}, {key: tag}, audit, source) from RotoWire, every name resolved
+    inside its own team. A failed fetch is an empty result, visibly: `source` says so."""
+    audit = Audit("rotowire")
+    starters: dict = {}
+    tags: dict = {}
+    try:
+        rows = ncaab_rotowire.parse(html if html is not None else ncaab_rotowire.fetch())
+    except Exception as exc:                                # noqa: BLE001
+        log.warning("ncaab: RotoWire unavailable (%s)", exc)
+        return starters, tags, audit, f"unavailable ({type(exc).__name__})"
+    for row in rows:
+        code = [t for t in teams if ncaab.match_team(t, row["team"]) >= 0.8]
+        if len(code) != 1:
+            continue
+        for bucket, is_starter in ((row["starters"], True), (row["injuries"], False)):
+            for r in bucket:
+                info, how = rosters.resolve(r["name"], code)
+                audit.add(r["name"], info, how, code[0])
+                if info is None:
+                    continue
+                key = rosters.key(info)
+                if is_starter:
+                    starters[key] = r
+                if r.get("tag"):
+                    tags[key] = r["tag"]
+    return starters, tags, audit, "rotowire"
+
+
+def team_tiers(teams: set, rows: list) -> dict:
+    """{DK team: conference tier}: 2 power, 1 multi-bid, 0 the rest, by last season's
+    conference (a school that has since moved is a season behind)."""
+    votes: dict = {}
+    for r in rows:
+        for t in teams:
+            if ncaab.match_team(t, r["team"]) >= 0.8:
+                votes.setdefault(t, {}).setdefault(r["conf"], 0)
+                votes[t][r["conf"]] += 1
+    return {t: tier(max(v, key=v.get)) for t, v in votes.items()}
+
+
+def tier(conf: str) -> int:
+    return 2 if conf in POWER_CONF else 1 if conf in MID_CONF else 0
+
+
+def carried(tv: dict | None, fppg: float | None, team_tier: int | None) -> float | None:
+    """Last season's production, carried across whatever changed; None without one."""
+    if tv and tv["gp"] >= MIN_PRIOR_GAMES:
+        fp = ncaab_torvik.dk_points(tv)
+        if tv.get("same_school"):
+            kind = "same"
+        else:
+            was, now = tier(tv["conf"]), team_tier if team_tier is not None else 0
+            kind = "up" if now > was else "down" if now < was else "side"
+    elif fppg:
+        # DK has a number, Torvik's row did not verify (2 of 308 on the first board):
+        # no school to judge a move by, and treated as a sideways move.
+        fp, kind = fppg, "side"
+    else:
+        return None
+    a, b = CARRYOVER[kind]
+    return a + b * fp
+
+
+def no_prop_points(salary: int, tv: dict | None, fppg: float | None, starter: bool,
+                   team_tier: int | None, implied: float | None = None,
+                   env_power: float | None = None, weight: float | None = None,
+                   team_listed: bool = True) -> tuple[float, str]:
+    """(DK points before the team budget, source) for a player with no props. Last
+    season's output is a season's average game, so it is moved to tonight's by how many
+    points his team is implied to score; the salary line was read off tonight's market
+    and already knows. `team_listed`: RotoWire named starters for his team. On a team
+    it did not (Memphis, 2026-11-02, whose $3,500-3,700 players price at 20+), "not a
+    listed starter" says nothing, so a cheap player with a real history is a player."""
+    env = ENV_POWER if env_power is None else env_power
+    w = BLEND_WEIGHT if weight is None else weight
+    factor = ((implied or LEAGUE.team_points) / LEAGUE.team_points) ** env
+    line = SALARY_LINE[0] + SALARY_LINE[1] * salary / 1000.0
+    prior = carried(tv, fppg, team_tier)
+    prior = prior * factor if prior is not None else None
+    cheap = salary < BENCH_SALARY and not starter
+    if cheap and (team_listed or prior is None or (tv and tv.get("same_school")
+                                                   and ncaab_torvik.dk_points(tv) < 10)):
+        # His own numbers if he has any. Below 10 DK points a same-school bump to the
+        # carryover's intercept (a bigger role) is what never came for a walk-on.
+        if tv and tv.get("same_school") and ncaab_torvik.dk_points(tv) < 10:
+            return max(ncaab_torvik.dk_points(tv), 1.0), "bench"
+        if prior is not None:
+            return w * prior + (1 - w) * BENCH_POINTS, "bench"
+        return BENCH_POINTS, "bench"
+    if prior is None:
+        return line, "salary"
+    return w * prior + (1 - w) * line, "blend"
+
+
+def shape_of(tv: dict | None, profile: dict) -> dict:
+    """His own box score as a split when he has one worth reading."""
+    if tv and tv["pts"] >= 3 and tv["gp"] >= MIN_PRIOR_GAMES:
+        return {s: tv[s] for s in ncaab_sim.STATS}
+    return profile
+
+
+def apply_team_budget(rows: list, implied: dict, floor: float | None = None) -> dict:
+    """Fit each team's BENCH rows (in place) to what its implied points leave after the
+    rotation, and return {team: bench scale} for the page.
+
+    ONLY THE BENCH MOVES. In the market hold-out (scripts/ncaab_prior_fit.py, 33 priced
+    players, 2026-11-02) leaving rotation players alone scored MAE 2.87, bias about zero;
+    scaling them to the budget proportionally 4.92, bias -4.5, and cutting them second,
+    after the bench, 3.37. The books' top six or seven use nearly the whole team.
+    Raising them to fill a shortfall put Davidson's Scovens (21.8 FPPG last year) at 31:
+    a shortfall means someone on the roster we cannot see, not that a known player does
+    more, so it is left unfilled. A bench is never scaled to zero: most of them will
+    log minutes in a 40-point game, and a zero would hide that from the page.
+    """
+    low = BENCH_SCALE_FLOOR if floor is None else floor
+    scales: dict = {}
+    by_team: dict = {}
+    for r in rows:
+        by_team.setdefault(r["team"], []).append(r)
+    for t, group in by_team.items():
+        bench = [r for r in group if r["source"] == "bench"]
+        bench_fp = sum(r["fp"] for r in bench)
+        if bench_fp <= 0:
+            continue
+        budget = TEAM_DK_PER_POINT * implied.get(t, LEAGUE.team_points)
+        room = budget - sum(r["fp"] for r in group if r["source"] != "bench")
+        scale = min(max(room / bench_fp, low), 1.0)
+        for r in bench:
+            r["fp"] *= scale
+        scales[t] = round(scale, 2)
+    return scales
+
+
+# ---------------------------------------------------------------------------
 # The board
 # ---------------------------------------------------------------------------
 def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0):
@@ -363,10 +608,10 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
     info = {"draftables_source": dfs.LAST_DRAFTABLES_SOURCE,
             "fppg_id": dfs.LAST_DETECTED_FPPG_ID}
     games = slate_games(salaries)
-    lookup = dfs.SalaryLookup(salaries)
-    wrong_game: list = []
+    rosters = Rosters(salaries)
+    prop_audit = Audit("props")
     try:
-        props, event_players, books = player_props(client, lookup, games, wrong_game)
+        props, event_players, books = player_props(client, rosters, games, salaries, prop_audit)
     except Exception as exc:                                # noqa: BLE001
         log.warning("ncaab: props unavailable (%s)", exc)
         props, event_players, books = {}, {}, {}
@@ -374,19 +619,28 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
     start = _parse_time(meta.get("start") or next(iter(games.values()), {}).get("start"))
     date = (start.astimezone(ET).date() if start else datetime.now(ET).date()).isoformat()
     teams = {team(g[s]) for g in games.values() for s in ("home", "away")}
-    min_salary = min((s["salary"] for s in salaries.values() if s.get("salary")), default=0)
+    starters, tags, news_audit, news_source = lineup_news(salaries, rosters, teams)
+    torvik_rows = ncaab_torvik.load()
+    history, torvik_audit = ncaab_torvik.join(salaries, torvik_rows)
+    tiers = team_tiers(teams, torvik_rows)
+    listed_teams = {team(salaries[k].get("team")) for k in starters}
     info.update({"games": len(games), "priced": len(salaries), "implied": implied,
                  "lines": {games[k]["matchup"]: v for k, v in lines.items()},
                  "missing_lines": sorted(g["matchup"] for k, g in games.items() if k not in lines),
                  "date": date, "books": books, "out": [], "doubtful": [],
-                 "dropped_no_projection": [], "sources": {"props": 0, "fppg": 0, "salary": 0},
-                 "imputed": 0, "wrong_game": wrong_game})
+                 "sources": {"props": 0, "blend": 0, "salary": 0, "bench": 0},
+                 "imputed": 0, "starters_source": news_source, "starters": len(starters),
+                 "history_rows": len(torvik_rows),
+                 "name_audit": [prop_audit.row(), news_audit.row(),
+                                {"source": "torvik", "joined": len(history), "loose": [],
+                                 "refused": [f"{n}: stats do not match DK's" for n in
+                                             torvik_audit["refused_mismatch"]]}]})
     opp_of = {}
     for g in games.values():
         opp_of[team(g["home"])] = team(g["away"])
         opp_of[team(g["away"])] = team(g["home"])
     pool = []
-    for sal in salaries.values():
+    for sal_key, sal in salaries.items():
         if not sal.get("salary"):
             continue
         t = team(sal.get("team"))
@@ -395,39 +649,46 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
         if not slots or not pos or t not in teams:
             continue
         status = (sal.get("dk_status") or "").upper()
-        if status in OUT_STATUS:
+        if status == "NONE":
+            status = ""
+        tag = tags.get(sal_key)
+        if status in OUT_STATUS or tag in ncaab_rotowire.OUT_TAGS:
             info["out"].append(f"{sal['name']} ({t})")
             continue
         group = pos[0]
-        profile = PROFILES[group]
-        means, imputed = means_from_props(props.get(norm(sal["name"])) or {}, profile)
+        tv = history.get(sal_key)
+        shape = shape_of(tv, PROFILES[group])
+        means, imputed = means_from_props(props.get(sal_key) or {}, shape)
         source = "props"
+        fp = None
         if means is None:
             imputed = ["all"]
-            fp = sal.get("dk_fppg")
-            if fp is not None and fp >= MIN_FPPG:
-                source = "fppg"
-            elif sal["salary"] >= min_salary * SALARY_FLOOR_MULT:
-                fp, source = SALARY_VALUE * sal["salary"] / 1000.0, "salary"
-            else:
-                info["dropped_no_projection"].append(sal["name"])
-                continue
-            if t in implied:
-                # DK's FPPG already carries his team's average night; scale
-                # half-way toward tonight's environment (a PRIOR exponent).
-                fp *= (implied[t] / LEAGUE.team_points) ** 0.5
-            means = means_from_total(fp, profile)
+            fp, source = no_prop_points(sal["salary"], tv, sal.get("dk_fppg"), sal_key in starters,
+                                        tiers.get(t), implied.get(t),
+                                        team_listed=t in listed_teams)
+            if status in DOUBT_STATUS or tag:
+                fp *= Q_PLAY
+        else:
+            fp = ncaab_sim.fantasy_mean(means)
         info["sources"][source] += 1
         if imputed:
             info["imputed"] += 1
-        if status in DOUBT_STATUS:
-            info["doubtful"].append(f"{sal['name']} ({t}, {status})")
+        if status in DOUBT_STATUS or tag:
+            info["doubtful"].append(f"{sal['name']} ({t}, {status or tag})")
         pool.append({"name": sal["name"], "team": t, "opp": opp_of.get(t),
                      "game": sal.get("game"), "matchup": sal.get("matchup"),
                      "start": sal.get("start"), "salary": sal["salary"],
                      "dk_pos": sal.get("position"), "group": group, "slots": slots,
-                     "means": means, "imputed": imputed, "source": source,
-                     "status": status or None, "dk_fppg": sal.get("dk_fppg")})
+                     "means": means, "imputed": imputed, "source": source, "fp": fp, "shape": shape,
+                     "status": status or tag or None, "dk_fppg": sal.get("dk_fppg"),
+                     "starter": sal_key in starters,
+                     "last_team": tv["team"] if tv else None,
+                     "last_mpg": tv["mpg"] if tv else None})
+    info["team_scale"] = apply_team_budget(pool, implied)
+    for p in pool:
+        if p["means"] is None:
+            p["means"] = means_from_total(p["fp"], p["shape"])
+        del p["shape"]
 
     sim_games = {}
     for k, g in games.items():
@@ -445,7 +706,8 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
 # Forward-test log
 # ---------------------------------------------------------------------------
 PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp", "dk_pos", "salary", "proj", "sd",
-                 "floor", "ceil", "own", "proj_source", "imputed", "status", "source")
+                 "floor", "ceil", "own", "proj_source", "imputed", "status", "starter",
+                 "last_team", "last_mpg", "dk_fppg", "source")
 
 
 def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> dict:
@@ -457,6 +719,9 @@ def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> di
              "proj": p["proj"], "sd": p["sd"], "floor": p["floor"], "ceil": p["ceil"],
              "own": p.get("own", ""), "proj_source": p.get("source"),
              "imputed": "|".join(p.get("imputed", [])), "status": p.get("status") or "",
+             "starter": int(bool(p.get("starter"))), "last_team": p.get("last_team") or "",
+             "last_mpg": p.get("last_mpg") if p.get("last_mpg") is not None else "",
+             "dk_fppg": p.get("dk_fppg") if p.get("dk_fppg") is not None else "",
              "source": "live"} for p in pool]
     lineups = [{"mode": mode, "slot": slot, "player": p["name"], "team": p["team"],
                 "salary": p["salary"], "proj": p["proj"], "own": p.get("own")}
