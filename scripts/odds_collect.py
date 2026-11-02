@@ -29,6 +29,11 @@ from edge.odds.store import DEFAULT_PATH  # noqa: E402
 # props counts as "not posted yet", not broken. 48h keeps Thursday/Friday CFB
 # scans strict ahead of a Saturday noon lock.
 OFFDAY_HOURS = 48
+#: dfs_ncaaf: DK's first ladders for a Tuesday game reached our scans 12-26 hours before
+#: kickoff (7 games, 10/13-10/28, first committed scan, so an upper bound on the wait),
+#: and Saturday's are not up until ~5 days out. At 48 a normal Monday went red every week
+#: (11/2, 34h before a Tuesday slate). Inside 12h, no props is a fault again.
+OFFDAY_HOURS_BY_PROFILE = {"dfs_ncaaf": 12}
 # The autolog refreshes the lobby cache several times a day; older than this
 # and it cannot vouch for "no slate soon", so the guard stays strict.
 LOBBY_CACHE_MAX_AGE_H = 24
@@ -151,9 +156,10 @@ def main() -> int:
             # failure, because a broken parser looks exactly like this too.
             from edge.odds import CollectionError
             nxt = _next_slate(prof.name)
-            if isinstance(exc, CollectionError) and nxt is not None and nxt[0] > OFFDAY_HOURS:
+            limit = OFFDAY_HOURS_BY_PROFILE.get(prof.name, OFFDAY_HOURS)
+            if isinstance(exc, CollectionError) and nxt is not None and nxt[0] > limit:
                 print(f"\nSKIPPED (off day): {exc}\n  next {nxt[1]} slate locks in "
-                      f"{nxt[0]:.0f}h (> {OFFDAY_HOURS}h); props are not posted yet. "
+                      f"{nxt[0]:.0f}h (> {limit}h); props are not posted yet. "
                       f"Nothing committed or published.")
                 return 0
             print(f"\nFAILED: {type(exc).__name__}: {exc}", file=sys.stderr)

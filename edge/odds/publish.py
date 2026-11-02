@@ -118,9 +118,11 @@ class SnapshotOddsClient:
         self._events = self.payload.get("events") or []
         if max_age_seconds is not None and self.age_seconds > max_age_seconds:
             from .source import StaleOdds
-            raise StaleOdds(
+            stale = StaleOdds(
                 f"snapshot {self.path.name} was generated {self.generated_at}, "
                 f"older than this caller's {max_age_seconds}s contract.")
+            stale.age_seconds = self.age_seconds
+            raise stale
 
     @property
     def age_seconds(self) -> float:

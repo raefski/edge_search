@@ -173,6 +173,11 @@ with st.spinner("Simulating the card…"):
     try:
         res = _mma_build(gid, sims, st.session_state.mma_nonce)
     except Exception as exc:                                # noqa: BLE001
+        from edge.odds.cli import stale_odds_note
+        _stale = stale_odds_note(exc)
+        if _stale:
+            st.warning(_stale)
+            st.stop()
         st.error(f"Build failed: {exc}")
         st.exception(exc)
         st.stop()

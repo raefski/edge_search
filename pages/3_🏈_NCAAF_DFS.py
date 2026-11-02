@@ -232,6 +232,11 @@ with st.spinner("Building cash + GPP lineups…"):
     try:
         res = _cfb_build(gid, iters, stack_n, st.session_state.cfb_nonce)
     except Exception as exc:                                # noqa: BLE001
+        from edge.odds.cli import stale_odds_note
+        _stale = stale_odds_note(exc, "DraftKings posts college football props about 12-26 hours before a midweek kickoff (first seen in our scans, 7 Tuesday games, Oct 2026).")
+        if _stale:
+            st.warning(_stale)
+            st.stop()
         st.error(f"Build failed: {exc}")
         st.exception(exc)
         st.stop()

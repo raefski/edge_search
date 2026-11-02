@@ -230,6 +230,11 @@ with st.spinner("Building cash + GPP lineups…"):
     try:
         res = _nfl_build(gid, iters, st.session_state.nfl_nonce)
     except Exception as exc:                                # noqa: BLE001
+        from edge.odds.cli import stale_odds_note
+        _stale = stale_odds_note(exc)
+        if _stale:
+            st.warning(_stale)
+            st.stop()
         st.error(f"Build failed: {exc}")
         st.exception(exc)
         st.stop()

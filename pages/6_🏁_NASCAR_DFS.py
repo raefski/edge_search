@@ -201,6 +201,11 @@ with st.spinner("Simulating the race…"):
     try:
         res = _nascar_build(gid, sims, iters, st.session_state.nas_nonce)
     except Exception as exc:                                # noqa: BLE001
+        from edge.odds.cli import stale_odds_note
+        _stale = stale_odds_note(exc)
+        if _stale:
+            st.warning(_stale)
+            st.stop()
         st.error(f"Build failed: {exc}")
         st.exception(exc)
         st.stop()

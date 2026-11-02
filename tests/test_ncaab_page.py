@@ -64,3 +64,50 @@ def test_leverage_toggle_renders(fake_world):
     at.run()
     at.toggle(key="cbb_lev_on").set_value(True).run()
     assert not at.exception, [e.value for e in at.exception]
+
+
+def test_no_fresh_prices_is_a_message_not_a_traceback(fake_world, monkeypatch):
+    """A weekly sport's snapshot ages out before the books post props: normal, not a crash."""
+    from streamlit.testing.v1 import AppTest
+    from edge.odds import cli
+    from edge.odds.source import StaleOdds
+
+    def stale(sport, consumer="dfs", **k):
+        exc = StaleOdds("snapshot x.json was generated long ago")
+        exc.age_seconds = 35 * 3600
+        raise exc
+    monkeypatch.setattr(cli, "scraped_client", stale)
+    import streamlit as st
+    st.cache_data.clear()                  # the other tests' builds are cached under these args
+    at = AppTest.from_file(str(PAGE), default_timeout=120)
+    at.run()
+    assert not at.exception, [e.value for e in at.exception]
+    assert any("last published 35 hours ago" in w.value for w in at.warning)
+    assert not any("Build failed" in e.value for e in at.error)
+
+
+def test_every_dfs_page_handles_stale_odds():
+    pages = sorted((ROOT / "pages").glob("*DFS*.py"))
+    assert len(pages) == 7
+    for page in pages:
+        assert "stale_odds_note(exc" in page.read_text(), page.name
+
+
+def test_stale_odds_note_only_claims_its_own_errors():
+    from edge.odds.cli import stale_odds_note
+    from edge.odds.source import StaleOdds
+    assert stale_odds_note(ValueError("boom")) is None
+    assert "none published" in stale_odds_note(RuntimeError("no free odds for 'dfs_x'"))
+    note = stale_odds_note(StaleOdds("old"), "Soon.")
+    assert note.endswith("Soon.")
+
+
+def test_snapshot_staleness_carries_its_age(tmp_path):
+    import json
+    from edge.odds.publish import SnapshotOddsClient
+    from edge.odds.source import StaleOdds
+    p = tmp_path / "s.json"
+    p.write_text(json.dumps({"profile": "dfs_x", "generated_at": "2026-01-01T00:00:00+00:00", "events": []}))
+    with pytest.raises(StaleOdds) as e:
+        SnapshotOddsClient(p, max_age_seconds=60)
+    assert e.value.age_seconds > 3600

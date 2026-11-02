@@ -120,6 +120,22 @@ def scraped_client(sport: str, consumer: str = "dfs",
         f"Run `python3 scripts/odds_collect.py --profile {prof.name} --publish`.")
 
 
+def stale_odds_note(exc: BaseException, hint: str = "") -> str | None:
+    """What a page should SAY when a build died of no fresh prices, or None for any other
+    error. Reached on the phone whenever a weekly sport's snapshot passes its age limit:
+    the publisher refuses to publish until the books post props, which is the normal state
+    days before a slate, and every DFS page showed it as "Build failed" with a traceback
+    (NCAAF, 2026-11-02, 34 hours before a Tuesday slate). Matched by class NAME because a
+    deploy's module reload rebinds the class (edge/pagereload.py)."""
+    if type(exc).__name__ != "StaleOdds" and "no free odds" not in str(exc):
+        return None
+    age = getattr(exc, "age_seconds", None)
+    when = f"last published {age / 3600:.0f} hours ago" if age is not None else "none published"
+    return (f"No fresh prices for this sport yet ({when}), so there is nothing to build from. "
+            f"The desktop publishes on its own as soon as the books post props."
+            + (f" {hint}" if hint else ""))
+
+
 def client_from_args(args, sport: str, consumer: str = "dfs", spend: bool = False):
     """Resolve --source into a client. Both satisfy the same interface.
 

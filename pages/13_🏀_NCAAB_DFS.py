@@ -286,6 +286,11 @@ with st.spinner("Simulating every game on the slate…"):
     try:
         res = _cbb_build(gid, sims, iters, nonce)
     except Exception as exc:                            # noqa: BLE001
+        from edge.odds.cli import stale_odds_note
+        _stale = stale_odds_note(exc)
+        if _stale:
+            st.warning(_stale)
+            st.stop()
         st.error(f"Build failed: {exc}")
         st.exception(exc)
         st.stop()
