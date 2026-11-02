@@ -1,0 +1,301 @@
+date,gid,player,team,opp,dk_pos,salary,proj,sd,floor,ceil,own,proj_source,imputed,status,starter,last_team,last_mpg,dk_fppg,source
+2026-11-02,155565,Tyran Stokes,KU,FORD,G,10300,30.94,9.43,24.0,43.25,5.4,salary,all,,1,,,,live
+2026-11-02,155565,Caleb Holt,ARIZ,UCLA,G,10200,30.7,9.39,23.75,42.75,5.4,salary,all,,1,,,,live
+2026-11-02,155565,Bruce Branch III,BYU,OSU,F,10100,30.95,9.21,24.5,43.25,7.2,salary,all,,1,,,,live
+2026-11-02,155565,Thomas Haugh,UF,MIA,F,9900,33.08,9.72,26.0,46.25,8.5,props,stl|blk|tov,,1,Florida,33.318,32.3,live
+2026-11-02,155565,Anthony Thompson,OSU,BYU,F,9800,30.51,9.33,23.75,43.0,7.4,salary,all,,1,,,,live
+2026-11-02,155565,Cameron Williams,DUKE,ARMY,F,9700,30.33,8.77,24.0,41.75,7.5,salary,all,,0,,,,live
+2026-11-02,155565,Tamin Lipsey,ISU,MEM,G,9500,34.72,9.73,27.75,47.5,7.9,props,stl|blk|tov,,1,Iowa St.,31.421,30.5,live
+2026-11-02,155565,Motiejus Krivas,ARIZ,UCLA,F,9400,30.19,8.8,23.75,41.75,7.9,blend,all,,1,Arizona,25.361,27.2,live
+2026-11-02,155565,Alex Condon,UF,MIA,F,9300,32.67,8.88,26.25,44.5,9.5,props,fg3|stl|blk|tov,,1,Florida,30.538,33.3,live
+2026-11-02,155565,Braden Huff,GONZ,PUR,F,9200,33.08,9.45,26.5,45.75,9.8,props,stl|blk|tov,,1,Gonzaga,25.394,28.7,live
+2026-11-02,155565,Quentin Coleman,IL,FDU,G,9100,33.35,9.77,26.5,46.03,7.9,props,stl|blk|tov,,1,,,,live
+2026-11-02,155565,Shelton Henderson,MIA,UF,F,9000,24.87,7.79,19.25,35.25,5.6,props,fg3|stl|blk|tov,,1,Miami FL,31.24,25.4,live
+2026-11-02,155565,Robert Wright III,BYU,OSU,G,8900,31.9,9.76,25.0,44.53,7.6,blend,all,,1,BYU,34.82,31.6,live
+2026-11-02,155565,Patrick Ngongba II,DUKE,ARMY,F,8800,28.19,8.26,22.5,39.0,7.0,props,fg3|stl|blk|tov,,1,Duke,21.884,23.2,live
+2026-11-02,155565,Malik Reneau,MIA,UF,F,8700,31.98,9.64,25.0,44.5,9.2,props,stl|blk|tov,,1,Miami FL,29.006,33.2,live
+2026-11-02,155565,Jaxon Kohler,BYU,OSU,F,8600,26.62,8.51,20.25,38.25,6.2,blend,all,,1,Michigan St.,27.729,28.8,live
+2026-11-02,155565,Andrej Stojakovic,IL,FDU,G,8500,28.75,8.59,22.75,40.0,6.3,props,stl|blk|tov,,1,Illinois,26.344,22.0,live
+2026-11-02,155565,Ivan Kharchenkov,ARIZ,UCLA,F,8400,26.95,8.45,21.25,38.25,6.4,blend,all,,1,Arizona,28.349,22.3,live
+2026-11-02,155565,Davis Fogle,GONZ,PUR,G,8300,26.66,8.33,20.75,37.5,5.4,props,reb|ast|stl|blk|tov,,1,Gonzaga,16.717,16.8,live
+2026-11-02,155565,Dame Sarr,DUKE,ARMY,G/F,8200,24.22,8.67,18.0,35.75,4.5,props,stl|blk|tov,,1,Duke,23.518,15.6,live
+2026-11-02,155565,Stefan Vaaks,IL,FDU,G,8100,26.34,8.95,20.0,38.25,5.3,blend,all,,0,Providence,31.494,26.5,live
+2026-11-02,155565,Rueben Chinyelu,UF,MIA,F,8000,27.46,8.1,21.5,38.25,6.7,props,fg3|stl|blk|tov,,1,Florida,24.526,29.6,live
+2026-11-02,155565,John Mobley Jr.,OSU,BYU,G,7900,27.42,9.6,20.25,40.25,5.7,blend,all,,1,Ohio St.,31.661,25.4,live
+2026-11-02,155565,Daniel Jacobsen,PUR,GONZ,F,7800,25.68,8.0,20.0,36.25,5.9,props,fg3|stl|blk|tov,,1,Purdue,12.91,12.1,live
+2026-11-02,155565,Cayden Boozer,DUKE,ARMY,G,7700,24.6,7.92,18.94,35.0,4.6,blend,all,,1,Duke,22.795,16.3,live
+2026-11-02,155565,Trent Perry,UCLA,ARIZ,G,7600,25.23,8.51,19.25,36.0,4.8,blend,all,,1,UCLA,29.946,22.6,live
+2026-11-02,155565,Massamba Diop,GONZ,PUR,F,7500,26.47,8.15,20.75,37.25,6.3,props,fg3|stl|blk|tov,,1,Arizona St.,29.651,27.2,live
+2026-11-02,155565,Trent Perry,KU,FORD,G,7500,25.3,8.19,19.5,36.5,4.8,salary,all,,0,,,,live
+2026-11-02,155565,Xaivian Lee,GONZ,PUR,G,7400,28.77,9.23,22.0,41.25,6.4,props,stl|blk|tov,,1,Florida,27.417,25.1,live
+2026-11-02,155565,Tomislav Ivisic,IL,FDU,F,7400,29.49,9.03,22.75,41.25,8.2,props,stl|blk|tov,,1,Illinois,25.371,21.8,live
+2026-11-02,155565,Acaden Lewis,MIA,UF,G,7300,24.8,8.45,18.75,35.5,4.7,props,stl|blk|tov,,1,Villanova,30.521,27.3,live
+2026-11-02,155565,Justin Pippen,OSU,BYU,G,7300,25.66,8.39,19.75,36.78,5.0,blend,all,,1,California,30.816,30.6,live
+2026-11-02,155565,Caden Pierce,PUR,GONZ,F,7200,31.27,9.42,24.75,43.5,9.8,props,stl|blk|tov,,1,,,,live
+2026-11-02,155565,Omer Mayer,PUR,GONZ,G,7200,20.19,7.72,14.5,30.5,3.2,props,stl|blk|tov,,1,Purdue,14.3,9.4,live
+2026-11-02,155565,Eric Dailey Jr.,UCLA,ARIZ,G/F,7100,25.07,7.9,19.5,35.28,4.8,blend,all,,1,UCLA,27.634,23.1,live
+2026-11-02,155565,John Blackwell,DUKE,ARMY,G,7100,29.14,9.26,22.5,41.75,6.8,props,stl|blk|tov,,1,Wisconsin,33.759,32.0,live
+2026-11-02,155565,Trey Kaufman-Renn,KU,FORD,F,7000,17.47,6.77,12.75,26.25,3.0,blend,all,Q,1,Purdue,28.149,29.3,live
+2026-11-02,155565,Nikola Kusturica,UCLA,ARIZ,G/F,6900,24.05,8.16,18.25,34.75,4.4,salary,all,,1,,,,live
+2026-11-02,155565,Javon Bennett,GONZ,PUR,G,6900,23.83,8.47,17.75,34.75,4.4,blend,all,,0,Dayton,34.535,26.6,live
+2026-11-02,155565,Boogie Fland,UF,MIA,G,6800,25.57,8.19,19.75,36.5,5.1,props,stl|blk|tov,,1,Florida,29.991,23.3,live
+2026-11-02,155565,Amare Bynum,OSU,BYU,F,6800,24.1,8.0,18.25,35.0,5.4,blend,all,,1,Ohio St.,28.497,20.3,live
+2026-11-02,155565,Dante Allen,MIA,UF,G,6700,21.62,7.64,16.25,31.5,3.6,blend,all,,1,Miami FL,23.863,15.5,live
+2026-11-02,155565,Tre White,KU,FORD,G,6700,27.28,8.76,21.0,39.0,6.0,blend,all,,0,Kansas,31.329,26.6,live
+2026-11-02,155565,Sebastian Akins,WSU,DAV,G,6600,14.73,6.21,10.44,23.25,2.0,blend,all,Q,1,Wake Forest,15.211,11.0,live
+2026-11-02,155565,Jaquan Johnson,ISU,MEM,G,6600,23.4,7.78,17.75,33.5,4.3,props,fg3|stl|blk|tov,,1,Bradley,30.359,32.1,live
+2026-11-02,155565,Ladji Dembele,WSU,DAV,F,6500,20.04,6.73,15.25,28.75,3.8,blend,all,,1,,,12.6,live
+2026-11-02,155565,Melvin Council Jr.,KU,FORD,G,6500,28.14,8.4,22.25,39.5,6.6,blend,all,,1,Kansas,34.78,28.9,live
+2026-11-02,155565,Blake Buchanan,ISU,MEM,F,6400,24.23,7.55,19.0,34.0,5.8,props,fg3|stl|blk|tov,,1,Iowa St.,24.5,21.1,live
+2026-11-02,155565,Jaylen Petty,UCLA,ARIZ,G,6400,21.18,7.98,15.75,31.75,3.5,blend,all,,1,Texas Tech,30.479,19.9,live
+2026-11-02,155565,Ronnie Harrison,WSU,DAV,F,6300,20.81,7.34,15.5,30.5,4.2,blend,all,,1,East Texas A&M,29.487,28.4,live
+2026-11-02,155565,Collin Chandler,BYU,OSU,G,6300,21.86,7.72,16.25,32.0,3.8,blend,all,,1,Kentucky,27.111,20.0,live
+2026-11-02,155565,Josh Ojianwuna,OSU,BYU,F,6200,22.39,7.45,17.0,32.0,4.9,salary,all,,0,,,,live
+2026-11-02,155565,C.J. Cox,PUR,GONZ,G,6200,26.22,8.83,20.0,38.0,5.8,props,stl|blk|tov,,1,Purdue,24.431,15.7,live
+2026-11-02,155565,Xavier Booker,UCLA,ARIZ,F,6100,20.97,7.3,16.0,30.5,4.3,blend,all,,1,UCLA,20.117,15.7,live
+2026-11-02,155565,Caleb Foster,DUKE,ARMY,G,6100,23.85,8.36,17.75,34.75,4.7,blend,all,,0,Duke,24.864,17.6,live
+2026-11-02,155565,Zvonimir Ivisic,IL,FDU,F,6000,23.1,8.09,17.25,34.0,5.5,blend,all,,0,Illinois,17.208,16.9,live
+2026-11-02,155565,Taylen Kinney,KU,FORD,G,6000,22.11,8.66,16.0,33.75,4.0,salary,all,,0,,,,live
+2026-11-02,155565,Somto Cyril,MIA,UF,F,5900,15.85,5.88,11.5,23.25,2.6,props,ast|fg3|stl|blk|tov,,1,Georgia,21.176,22.3,live
+2026-11-02,155565,Joshua Dent,STMRY,ILLST,G,5900,26.62,8.4,20.75,37.75,6.3,blend,all,,0,Saint Mary's,36.212,28.0,live
+2026-11-02,155565,RJ Godfrey,ARIZ,UCLA,F,5800,15.34,5.93,11.25,23.0,2.5,blend,all,Q,0,Clemson,25.177,23.0,live
+2026-11-02,155565,Denzel Aberdeen,UF,MIA,G,5800,24.8,8.11,18.94,35.53,5.4,props,stl|blk|tov,,1,Kentucky,30.556,23.4,live
+2026-11-02,155565,Fraser Roxburgh,WSU,DAV,F,5700,19.12,7.04,14.25,28.5,3.8,blend,all,,0,Manhattan,30.625,22.0,live
+2026-11-02,155565,Derek Dixon,ARIZ,UCLA,G,5700,19.6,7.35,14.44,29.25,3.2,blend,all,,1,North Carolina,22.336,14.5,live
+2026-11-02,155565,Keanu Dawes,KU,FORD,F,5600,23.25,7.37,18.0,33.03,6.0,blend,all,,0,Utah,30.769,28.5,live
+2026-11-02,155565,Jamarion Batemon,ISU,MEM,G,5600,19.32,8.24,13.5,30.25,3.1,props,ast|stl|blk|tov,,1,Iowa St.,15.608,10.5,live
+2026-11-02,155565,Caleb Gaskins,MIA,UF,F,5500,21.12,7.25,16.19,30.28,4.8,salary,all,,0,,,,live
+2026-11-02,155565,Leroy Blyden Jr.,KU,FORD,G,5500,21.29,8.58,15.25,32.5,3.9,blend,all,,1,Toledo,33.447,32.4,live
+2026-11-02,155565,Joaquim Boumtje Boumtje,DUKE,ARMY,F,5400,26.13,8.24,20.25,37.25,8.8,props,ast|fg3|stl|blk|tov,,1,,,,live
+2026-11-02,155565,Isiah Harwell,GONZ,PUR,G,5400,19.47,7.59,14.0,29.75,3.2,blend,all,,1,Houston,13.853,8.8,live
+2026-11-02,155565,Tre Singleton,ISU,MEM,F,5300,20.73,6.92,16.0,30.0,4.8,props,ast|fg3|stl|blk|tov,,1,Northwestern,25.012,17.8,live
+2026-11-02,155565,Jimmie Williams,OSU,BYU,G,5300,19.61,6.97,14.5,28.75,3.3,blend,all,,0,Duquesne,29.718,27.9,live
+2026-11-02,155565,Filip Jovic,UCLA,ARIZ,F,5200,18.6,6.44,14.0,27.25,3.8,blend,all,,0,Auburn,18.281,13.5,live
+2026-11-02,155565,Gicarri Harris,PUR,GONZ,G,5200,17.18,6.64,12.25,26.0,2.6,props,stl|blk|tov,,1,Purdue,15.731,9.9,live
+2026-11-02,155565,Josh Scovens,DAV,WSU,G/F,5200,22.47,7.34,17.5,32.25,4.7,blend,all,,0,Davidson,24.8,21.8,live
+2026-11-02,155565,Tyler Kropp,WSU,DAV,F,5100,18.79,6.45,14.25,27.0,4.0,blend,all,,1,Northwestern,11.884,7.3,live
+2026-11-02,155565,Cameron Holmes,ARIZ,UCLA,G,5100,20.18,7.2,15.0,29.5,3.7,salary,all,,0,,,,live
+2026-11-02,155565,Andrija Jelavic,OSU,BYU,F,5000,18.38,6.83,13.75,27.25,3.9,blend,all,,1,Kentucky,15.628,13.0,live
+2026-11-02,155565,Luke Ertel,PUR,GONZ,G,5000,20.05,7.27,14.94,29.5,3.7,salary,all,,0,,,,live
+2026-11-02,155565,Rikus Schulte,FORD,KU,F,4900,23.6,7.93,18.0,34.75,7.7,blend,all,,0,Fordham,30.044,27.9,live
+2026-11-02,155565,Jamari Phillips,WSU,DAV,G,4900,18.65,7.25,13.5,28.0,3.2,blend,all,,1,Oregon,11.396,5.0,live
+2026-11-02,155565,Julius Thedford,MEM,ISU,G,4900,14.63,5.76,10.75,22.25,2.0,blend,all,Q,0,Memphis,20.385,18.2,live
+2026-11-02,155565,Akira Jacobs,FORD,KU,F,4800,19.07,7.39,13.75,28.75,4.5,blend,all,,0,Fordham,28.413,16.1,live
+2026-11-02,155565,Nick Janowski,DAV,WSU,G,4800,19.23,7.1,14.25,28.75,3.5,blend,all,,0,St. Thomas,31.55,28.2,live
+2026-11-02,155565,David Jevtic,FDU,IL,G,4800,17.36,6.99,12.25,26.5,2.8,blend,all,,0,Fairleigh Dickinson,20.261,13.5,live
+2026-11-02,155565,Kevin Gad,STMRY,ILLST,F,4700,14.71,6.07,10.5,22.75,2.6,blend,all,,0,Saint Mary's,10.086,4.5,live
+2026-11-02,155565,Ras Elijah Godbolt,FDU,IL,G,4700,13.98,5.93,9.75,21.75,1.9,blend,all,,0,Fairleigh Dickinson,11.767,4.4,live
+2026-11-02,155565,Ryan Prather Jr.,ISU,MEM,G,4700,19.85,7.39,14.5,29.75,3.9,blend,all,,0,Robert Morris,34.085,28.9,live
+2026-11-02,155565,Mantas Juzenas,STMRY,ILLST,G/F,4700,14.73,6.24,10.25,23.0,2.0,blend,all,,0,Saint Mary's,5.754,4.6,live
+2026-11-02,155565,Jake Wahlin,BYU,OSU,F,4600,18.09,6.85,13.25,27.25,4.2,blend,all,,0,Clemson,20.446,12.5,live
+2026-11-02,155565,Urban Klavzar,UF,MIA,G,4600,16.18,7.15,11.0,25.75,2.5,props,stl|blk|tov,,0,Florida,20.7,14.8,live
+2026-11-02,155565,Antione West Jr.,PUR,GONZ,G,4600,18.96,7.03,14.0,28.5,3.6,salary,all,,0,,,0.0,live
+2026-11-02,155565,Jake Davis,IL,FDU,F,4500,16.84,6.9,11.75,26.0,3.6,props,stl|blk|tov,,1,Illinois,19.587,10.8,live
+2026-11-02,155565,Rihards Vavers,MEM,ISU,F,4500,18.89,7.44,13.69,28.75,4.8,props,ast|stl|blk|tov,,0,Washington St.,25.3,19.9,live
+2026-11-02,155565,Luke Fennell,STMRY,ILLST,G,4500,17.49,6.6,12.5,26.53,3.0,blend,all,,0,Syracuse,6.48,2.9,live
+2026-11-02,155565,Curtis Givens III,OSU,BYU,G,4500,17.04,6.98,12.0,26.25,2.9,blend,all,,0,Memphis,25.656,17.5,live
+2026-11-02,155565,RJ Jones,WSU,DAV,G,4500,17.69,7.0,12.75,26.78,3.1,blend,all,,0,TCU,6.2,4.7,live
+2026-11-02,155565,Khadim Mboup,BYU,OSU,F,4400,17.48,6.64,12.5,26.25,4.1,blend,all,,0,BYU,15.629,11.0,live
+2026-11-02,155565,Tyler Betsey,BYU,OSU,F,4400,17.92,7.4,12.5,27.75,4.3,blend,all,,1,Syracuse,18.09,12.3,live
+2026-11-02,155565,JJ Mandaquit,ARIZ,UCLA,G,4400,17.9,6.77,13.0,27.0,3.3,blend,all,,0,Washington,19.614,13.5,live
+2026-11-02,155565,Johnny Kinziger,ILLST,STMRY,G,4400,21.76,8.02,16.25,32.5,5.6,blend,all,,0,Illinois St.,32.172,22.0,live
+2026-11-02,155565,Raysean Johnson,FDU,IL,G,4400,15.62,6.47,11.0,24.5,2.4,blend,all,,0,Fairleigh Dickinson,17.535,9.4,live
+2026-11-02,155565,Roor Akhuar,FORD,KU,F,4300,17.43,7.31,12.25,26.53,4.2,blend,all,,0,Fordham,19.496,13.7,live
+2026-11-02,155565,Robert Miller III,MIA,UF,F,4300,18.56,6.53,14.0,27.0,4.9,blend,all,,0,LSU,19.323,16.0,live
+2026-11-02,155565,Chase Walker,ILLST,STMRY,F,4300,23.26,7.54,18.0,33.5,9.7,blend,all,,0,Illinois St.,22.594,25.8,live
+2026-11-02,155565,Rory Hawke,STMRY,ILLST,G,4300,14.59,6.25,10.25,22.78,2.2,blend,all,,0,Saint Mary's,10.7,4.7,live
+2026-11-02,155565,Jack Benter,PUR,GONZ,G,4300,16.47,6.61,12.0,24.75,2.8,blend,all,,0,Purdue,14.666,9.9,live
+2026-11-02,155565,Ryan Curry,ARMY,DUKE,G,4300,22.24,8.16,16.5,32.5,6.2,blend,all,,0,Army,33.755,27.5,live
+2026-11-02,155565,Abass Bodija,FORD,KU,F,4200,18.15,6.85,13.25,27.0,4.8,blend,all,,0,Fordham,19.307,16.4,live
+2026-11-02,155565,Tate Laczkowski,ARMY,DUKE,F,4200,18.19,6.58,13.5,26.5,4.9,blend,all,,0,Army,21.509,16.9,live
+2026-11-02,155565,Bol Agu,FDU,IL,F,4200,15.29,6.1,11.0,23.25,3.2,blend,all,,0,Saint Peter's,9.848,7.3,live
+2026-11-02,155565,Jayden Reid,MEM,ISU,G,4200,19.63,7.67,14.0,30.0,4.5,props,reb|stl|blk|tov,,0,Northwestern,25.759,21.2,live
+2026-11-02,155565,Leon Bond III,ISU,MEM,G,4200,18.2,7.44,12.75,27.75,3.7,blend,all,,0,Northern Iowa,32.833,23.4,live
+2026-11-02,155565,JR Jacobs,FDU,IL,G,4200,18.38,7.28,13.25,27.5,3.8,salary,all,,0,,,,live
+2026-11-02,155565,Corneilous Williams,MEM,ISU,F,4100,18.03,6.18,13.5,26.25,5.0,blend,all,,0,North Alabama,32.503,27.3,live
+2026-11-02,155565,Thomas Ndong,STMRY,ILLST,F,4100,15.88,5.88,11.75,23.28,3.6,blend,all,,0,Cal Baptist,17.494,15.2,live
+2026-11-02,155565,Taj Manning,ISU,MEM,F,4100,13.06,5.53,9.25,20.0,2.3,blend,all,Q,0,Kansas St.,20.717,14.6,live
+2026-11-02,155565,Raleigh Burgess,PUR,GONZ,F,4100,17.72,6.18,13.5,26.25,4.7,salary,all,,0,,,,live
+2026-11-02,155565,Dawson Baker,BYU,OSU,G,4100,12.18,5.93,8.0,20.25,1.6,blend,all,Q,0,BYU,19.817,11.7,live
+2026-11-02,155565,Mason Klabo,ILLST,STMRY,G,4100,16.72,6.55,12.25,25.28,3.1,blend,all,,0,Illinois St.,16.147,11.2,live
+2026-11-02,155565,Nathan De Sousa,GONZ,PUR,G,4100,17.96,7.11,12.75,27.25,3.7,salary,all,,0,,,,live
+2026-11-02,155565,Vangelis Zougris,STMRY,ILLST,F,4000,17.81,6.36,13.25,26.25,5.0,blend,all,,0,Louisville,9.093,7.3,live
+2026-11-02,155565,Christian Reeves,KU,FORD,F,4000,18.12,6.91,13.25,27.25,5.3,blend,all,,1,Charleston,21.368,24.8,live
+2026-11-02,155565,Malik Messina-Moore,ILLST,STMRY,G,4000,19.9,7.5,14.5,29.75,5.1,blend,all,,0,Xavier,33.203,22.7,live
+2026-11-02,155565,Lateef Patrick Jr.,FORD,KU,G,4000,17.14,6.92,12.0,26.75,3.4,blend,all,,0,Stephen F. Austin,28.491,25.0,live
+2026-11-02,155565,Brandin Cummings,MEM,ISU,G,4000,19.51,7.54,14.0,29.75,4.8,blend,all,,0,Pittsburgh,26.2,19.3,live
+2026-11-02,155565,Deron Rippey Jr.,DUKE,ARMY,G,4000,17.63,6.8,12.75,26.25,3.6,salary,all,,0,,,,live
+2026-11-02,155565,Luca Foster,GONZ,PUR,F,3900,1.01,1.37,0.0,3.0,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Jacen Holloway,ARMY,DUKE,F,3900,18.89,7.08,14.0,27.78,6.2,blend,all,,0,Army,28.206,19.0,live
+2026-11-02,155565,Austin Ratliff,FDU,IL,F,3900,1.03,1.4,0.0,3.25,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Sam Brown,DAV,WSU,G,3900,18.44,7.06,13.5,27.53,4.3,blend,all,,0,Davidson,23.691,14.9,live
+2026-11-02,155565,Bryson Howard,DUKE,ARMY,G,3900,1.05,1.54,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Demarion Burch,ILLST,STMRY,G,3900,17.23,6.88,12.5,26.0,3.6,blend,all,,0,Bradley,23.058,14.6,live
+2026-11-02,155565,Kevin McCarthy,ARMY,DUKE,G,3900,16.92,7.04,11.75,26.25,3.4,blend,all,,0,Army,24.3,14.3,live
+2026-11-02,155565,Paul Mbiya,KU,FORD,F,3800,1.24,1.52,0.0,3.25,0.4,bench,all,,0,Kansas,5.067,3.5,live
+2026-11-02,155565,Dominykas Pleta,ISU,MEM,F,3800,3.0,2.45,1.25,6.25,0.5,bench,all,,0,Iowa St.,11.263,8.8,live
+2026-11-02,155565,JaQualon Roberts,DAV,WSU,F,3800,15.73,5.99,11.5,23.25,3.9,blend,all,,0,,,8.0,live
+2026-11-02,155565,Max Miller,FORD,KU,G,3800,0.36,0.87,0.0,1.5,0.3,bench,all,,0,Fordham,2.4,1.2,live
+2026-11-02,155565,CJ Ingram,UF,MIA,G,3800,1.59,1.86,0.0,4.25,0.3,bench,all,,0,Florida,5.405,4.4,live
+2026-11-02,155565,Jaylen Harrell,WSU,DAV,G,3800,8.21,4.42,5.0,14.25,0.9,bench,all,,0,Providence,9.133,5.6,live
+2026-11-02,155565,John Carter Jr.,DAV,WSU,G,3800,3.09,2.64,1.0,6.75,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Pavle Stosic,FDU,IL,F,3700,16.84,6.4,12.0,25.5,5.0,blend,all,,0,Pepperdine,16.174,10.9,live
+2026-11-02,155565,Domen Petrovic,UF,MIA,F,3700,1.04,1.41,0.0,3.25,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Tylik Weeks,MEM,ISU,F,3700,22.28,7.7,16.75,32.5,12.4,props,fg3|stl|blk|tov,,0,Southern Miss,33.577,31.4,live
+2026-11-02,155565,Vophcy Prophete,FDU,IL,G,3700,1.07,1.52,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Azavier Robinson,UCLA,ARIZ,G,3700,3.64,2.92,1.5,7.5,0.4,bench,all,,0,Butler,18.277,15.0,live
+2026-11-02,155565,Aidan Crotty,FORD,KU,G,3700,0.77,1.25,0.0,2.75,0.3,bench,all,,0,Fordham,2.42,2.3,live
+2026-11-02,155565,Josh Holloway,MEM,ISU,G,3700,17.94,6.73,13.25,26.75,4.4,blend,all,,0,Texas A&M,13.362,10.6,live
+2026-11-02,155565,Nnaemeka Ikechi,ARMY,DUKE,F,3600,3.18,2.39,1.25,6.5,0.5,bench,all,,0,Army,5.0,2.9,live
+2026-11-02,155565,John Nowland,DAV,WSU,F,3600,1.27,1.54,0.0,3.25,0.4,bench,all,,0,Davidson,2.32,1.2,live
+2026-11-02,155565,Travis Torain,FDU,IL,F,3600,14.21,5.65,10.0,21.75,3.3,blend,all,,0,Austin Peay,7.996,5.6,live
+2026-11-02,155565,Brent Bland,MIA,UF,G,3600,3.81,3.04,1.25,8.0,0.5,bench,all,,0,Saint Peter's,33.183,27.9,live
+2026-11-02,155565,Lazerek Houston,WSU,DAV,G,3600,2.39,2.33,0.5,5.5,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Ty Blake,ILLST,STMRY,G,3600,0.4,0.91,0.0,1.5,0.3,bench,all,,0,Illinois St.,2.438,1.2,live
+2026-11-02,155565,Andrew Canda,FDU,IL,G,3600,1.03,1.53,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,William Whorton,MEM,ISU,F,3500,1.95,1.93,0.0,4.5,0.4,bench,all,,0,Memphis,9.032,5.5,live
+2026-11-02,155565,Dylan Murans,ARMY,DUKE,F,3500,1.32,1.52,0.0,3.5,0.4,bench,all,,0,Army,2.827,0.8,live
+2026-11-02,155565,Endurance Aiyamenkhue,ARIZ,UCLA,F,3500,0.7,1.14,0.0,2.0,0.3,bench,all,Q,0,,,,live
+2026-11-02,155565,Luke Almodovar,MEM,ISU,G,3500,20.27,7.79,14.75,30.5,7.3,props,ast|stl|blk|tov,,0,Southeast Missouri St.,26.997,23.0,live
+2026-11-02,155565,Nick Dorn,MIA,UF,G,3500,3.46,3.09,1.0,7.75,0.4,bench,all,,0,Indiana,23.19,12.9,live
+2026-11-02,155565,Brendon O'Keefe,ARMY,DUKE,G,3500,2.57,2.47,1.0,6.0,0.4,bench,all,,0,Army,2.444,2.0,live
+2026-11-02,155565,Dennis Parker Jr.,KU,FORD,G,3500,4.24,3.13,2.0,8.5,0.5,bench,all,,0,Radford,29.259,31.5,live
+2026-11-02,155565,Ian Platteeuw,DAV,WSU,F,3400,16.94,6.06,12.5,25.0,6.1,blend,all,,0,Davidson,15.171,13.2,live
+2026-11-02,155565,Louie Semona III,ILLST,STMRY,F,3400,13.12,5.35,9.25,20.0,3.0,blend,all,,0,Western Kentucky,8.511,6.9,live
+2026-11-02,155565,Ugnius Jarusevicius,ARIZ,UCLA,F,3400,3.55,2.69,1.5,7.25,0.5,bench,all,,0,Nebraska,10.5,13.0,live
+2026-11-02,155565,Zaxton King,ILLST,STMRY,G,3400,14.5,6.17,10.0,22.5,2.9,blend,all,,0,Missouri St.,26.997,14.0,live
+2026-11-02,155565,Jaden Ellis,ARMY,DUKE,G,3400,2.99,2.57,1.25,6.5,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Kelvin Odih,FORD,KU,G,3400,15.77,6.26,11.25,24.0,3.6,blend,all,,0,St. John's,5.55,4.9,live
+2026-11-02,155565,AJ Brown,UF,MIA,G,3400,1.1,1.56,0.0,3.5,0.3,bench,all,,0,,,0.0,live
+2026-11-02,155565,Sergej Macura,UCLA,ARIZ,F,3300,3.45,2.52,1.5,6.75,0.5,bench,all,,0,Mississippi St.,18.411,12.8,live
+2026-11-02,155565,Salih Altuntas,STMRY,ILLST,F,3300,16.51,6.19,12.25,24.75,6.0,blend,all,,0,Miami FL,7.872,5.3,live
+2026-11-02,155565,Jerry Deng,MEM,ISU,F,3300,17.64,7.03,12.5,27.0,7.4,blend,all,,0,N.C. State,12.5,11.3,live
+2026-11-02,155565,Nate Pickens,BYU,OSU,G,3300,1.05,1.48,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Nick Coval,DAV,WSU,G,3300,16.13,6.47,11.25,24.75,4.0,blend,all,,0,Davidson,19.467,11.5,live
+2026-11-02,155565,Deng Garang,ILLST,STMRY,G,3300,15.8,6.25,11.25,24.25,3.8,blend,all,,0,Le Moyne,30.128,22.0,live
+2026-11-02,155565,Kohl Rosario,KU,FORD,G,3300,1.65,1.96,0.0,4.5,0.3,bench,all,Q,0,Kansas,11.603,6.7,live
+2026-11-02,155565,Brandon Williams,UCLA,ARIZ,G/F,3300,2.34,2.26,0.75,5.5,0.3,bench,all,,0,UCLA,12.223,6.8,live
+2026-11-02,155565,Dylan Benner,ARMY,DUKE,F,3200,3.5,2.64,1.5,7.0,0.5,bench,all,,0,Army,5.668,3.1,live
+2026-11-02,155565,Sebastian Haubro,FDU,IL,F,3200,0.78,1.21,0.0,2.25,0.3,bench,all,,0,Fairleigh Dickinson,3.761,2.2,live
+2026-11-02,155565,Flynn Pavely,STMRY,ILLST,F,3200,1.06,1.47,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Luke Barnett,KU,FORD,G,3200,1.1,1.63,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Dillon Watt,ARMY,DUKE,G,3200,2.14,2.15,0.0,5.0,0.3,bench,all,,0,Army,5.018,2.1,live
+2026-11-02,155565,Danzelle Bullock Coles,FDU,IL,G,3200,1.03,1.5,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Phillip Kavu,DAV,WSU,G,3200,1.04,1.46,0.0,3.5,0.3,bench,all,,0,Davidson,2.76,1.0,live
+2026-11-02,155565,Jackson Keith,DAV,WSU,G/F,3200,16.29,6.52,11.5,24.75,4.4,blend,all,,0,Butler,8.585,4.8,live
+2026-11-02,155565,Jack Whitbourn,FORD,KU,F,3100,18.92,7.01,14.0,28.25,11.3,blend,all,,0,Fordham,23.827,21.3,live
+2026-11-02,155565,Zavier Zens,IL,FDU,F,3100,2.64,2.32,1.0,5.75,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Noah Cleveland,ILLST,STMRY,F,3100,1.05,1.37,0.0,3.03,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Jeremy Dent-Smith,STMRY,ILLST,G,3100,18.27,7.19,13.0,28.0,7.0,blend,all,,0,Stanford,20.079,14.7,live
+2026-11-02,155565,Amir Lindsey,FORD,KU,G,3100,17.24,6.87,12.0,26.25,5.7,blend,all,,0,Albany,37.59,31.6,live
+2026-11-02,155565,Jahaan Green,ARMY,DUKE,G,3100,2.08,2.14,0.0,5.0,0.3,bench,all,,0,Army,3.19,1.1,live
+2026-11-02,155565,Tyler McQuaid,FDU,IL,G,3100,0.36,0.88,0.0,1.5,0.2,bench,all,,0,Fairleigh Dickinson,1.571,0.3,live
+2026-11-02,155565,Egor Ryzhov,MIA,UF,F,3000,1.02,1.43,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Christopher Birden Jr.,MIA,UF,F,3000,1.05,1.44,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,DeSean Goode,MIA,UF,F,3000,4.04,2.72,2.0,7.5,0.6,bench,all,,0,Robert Morris,30.936,31.2,live
+2026-11-02,155565,Javonte Floyd,UCLA,ARIZ,F,3000,1.04,1.42,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Atticus Richmond,KU,FORD,F,3000,1.05,1.46,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Davion Adkins,KU,FORD,F,3000,1.07,1.41,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Dorian Rinaldo-Komlan,ISU,MEM,F,3000,1.04,1.41,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Xzavion Mitchell,ISU,MEM,F,3000,0.56,1.04,0.0,2.0,0.3,bench,all,,0,Iowa St.,2.843,1.7,live
+2026-11-02,155565,Sam Funches,GONZ,PUR,F,3000,1.08,1.42,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Parker Jefferson,GONZ,PUR,F,3000,1.06,1.41,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Izan Almansa,GONZ,PUR,F,3000,1.02,1.38,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Maxime Meyer,DUKE,ARMY,F,3000,0.99,1.4,0.0,3.0,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Drew Scharnowski,DUKE,ARMY,F,3000,4.14,2.78,2.0,8.0,0.6,bench,all,,0,Belmont,21.763,25.6,live
+2026-11-02,155565,Jazz Gardner,STMRY,ILLST,F,3000,1.06,1.43,0.0,3.25,0.3,bench,all,,0,,,0.0,live
+2026-11-02,155565,Jalen Lewis,STMRY,ILLST,F,3000,1.04,1.4,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Trent MacLean,STMRY,ILLST,F,3000,1.04,1.46,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Jason Jakstys,IL,FDU,F,3000,4.59,3.07,2.25,8.75,0.6,bench,all,,0,Illinois,5.3,5.1,live
+2026-11-02,155565,Landon Davis,IL,FDU,F,3000,2.71,2.3,1.25,6.0,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Mohamed Sankhe,WSU,DAV,F,3000,2.39,2.13,1.0,5.25,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Dominik Robinson,WSU,DAV,F,3000,2.47,2.19,1.0,5.5,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Brayden Kyman,WSU,DAV,F,3000,2.41,2.19,1.0,5.5,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Roman Stathis,WSU,DAV,F,3000,2.47,2.22,1.0,5.5,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Dean Rueckert,BYU,OSU,F,3000,1.06,1.42,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Petar Ostojic,BYU,OSU,F,3000,1.03,1.36,0.0,3.0,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Adam Stewart,BYU,OSU,F,3000,2.54,2.24,1.0,5.5,0.4,bench,all,,0,TCU,1.05,0.8,live
+2026-11-02,155565,Brody Kozlowski,BYU,OSU,F,3000,1.04,1.4,0.0,3.03,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Arturas Butajevas,UF,MIA,F,3000,1.08,1.47,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Jones Lay,UF,MIA,F,3000,1.02,1.39,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Viktor Mikic,UF,MIA,F,3000,0.97,1.32,0.0,2.75,0.3,bench,all,,0,Florida,2.918,2.9,live
+2026-11-02,155565,Evan Otten,ARIZ,UCLA,F,3000,2.75,2.24,1.25,5.75,0.4,bench,all,,0,Idaho St.,14.724,13.4,live
+2026-11-02,155565,Mabil Mawut,ARIZ,UCLA,F,3000,1.07,1.4,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Maksim Brnovic,ARIZ,UCLA,F,3000,1.09,1.42,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Omar Essam,FORD,KU,F,3000,1.07,1.42,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Frank Siaca Bey,FORD,KU,F,3000,1.05,1.43,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Maxim Logue,MEM,ISU,F,3000,15.25,5.8,11.0,23.0,5.9,blend,all,,0,Florida Atlantic,11.146,10.8,live
+2026-11-02,155565,Fred Smith Jr.,MEM,ISU,F,3000,0.71,1.18,0.0,2.0,0.3,bench,all,Q,0,,,,live
+2026-11-02,155565,Enzo Shahrvin,PUR,GONZ,F,3000,1.03,1.42,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Rivers Knight,PUR,GONZ,F,3000,1.06,1.43,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Sinan Huan,PUR,GONZ,F,3000,1.08,1.43,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Sam King,PUR,GONZ,F,3000,1.09,1.42,0.0,3.25,0.3,bench,all,,0,,,0.0,live
+2026-11-02,155565,Parker Henderson,ARMY,DUKE,F,3000,2.96,2.43,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-02,155565,Michael Masini,ARMY,DUKE,F,3000,2.97,2.44,1.25,6.25,0.5,bench,all,,0,,,,live
+2026-11-02,155565,Henry Rasmussen,ARMY,DUKE,F,3000,2.96,2.38,1.25,6.25,0.5,bench,all,,0,,,,live
+2026-11-02,155565,Matthew Szafoni,ILLST,STMRY,F,3000,1.04,1.41,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Leyton Wolf,ILLST,STMRY,F,3000,0.99,1.38,0.0,3.0,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Nick Allen,ILLST,STMRY,F,3000,0.99,1.36,0.0,2.78,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Tom Stoiber,DAV,WSU,F,3000,3.07,2.56,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-02,155565,Quadri Bashiru,DAV,WSU,F,3000,2.94,2.4,1.25,6.25,0.5,bench,all,,0,,,,live
+2026-11-02,155565,Vuk Lazarevic,OSU,BYU,F,3000,1.02,1.35,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Alex Smith,OSU,BYU,F,3000,1.03,1.39,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Ivan Njegovan,OSU,BYU,F,3000,2.83,2.37,1.25,6.0,0.5,bench,all,,0,Ohio St.,11.443,8.2,live
+2026-11-02,155565,Lee Aaliya,OSU,BYU,F,3000,1.05,1.39,0.0,3.0,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Quin Berger,MIA,UF,G,3000,2.29,2.42,0.0,5.5,0.3,bench,all,,0,Bucknell,16.61,7.5,live
+2026-11-02,155565,Jordan Houegban,UCLA,ARIZ,G,3000,1.09,1.55,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Markell Alston,UCLA,ARIZ,G,3000,1.06,1.48,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Eric Freeny,UCLA,ARIZ,G,3000,1.3,1.67,0.0,3.5,0.3,bench,all,Q,0,UCLA,11.064,5.5,live
+2026-11-02,155565,Will Thengvall,KU,FORD,G,3000,0.35,0.87,0.0,1.5,0.2,bench,all,,0,Kansas,1.45,0.2,live
+2026-11-02,155565,Yusef Gray Jr.,ISU,MEM,G,3000,1.04,1.53,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Anthony Rise,ISU,MEM,G,3000,0.31,0.8,0.0,1.5,0.2,bench,all,,0,Iowa St.,1.309,0.8,live
+2026-11-02,155565,Carter Nilson,GONZ,PUR,G,3000,0.99,1.43,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Juwan Ekanga,GONZ,PUR,G,3000,1.06,1.52,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Alonzo Metz,GONZ,PUR,G,3000,0.99,1.45,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Nick Arnold,DUKE,ARMY,G,3000,1.0,1.49,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Jacob Theodosiou,DUKE,ARMY,G,3000,3.99,3.01,1.75,8.0,0.5,bench,all,,0,Loyola MD,23.33,24.0,live
+2026-11-02,155565,Cooper Lewis,STMRY,ILLST,G,3000,1.04,1.5,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Sam Curvy,STMRY,ILLST,G,3000,1.12,1.55,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Darius Bivins,STMRY,ILLST,G,3000,1.09,1.48,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Quentin McCoy,IL,FDU,G,3000,2.63,2.46,1.0,6.0,0.3,bench,all,,0,,,0.0,live
+2026-11-02,155565,Ethan Brown,IL,FDU,G,3000,24.04,8.04,18.25,34.75,12.7,props,stl|blk|tov,,1,,,,live
+2026-11-02,155565,Lucas Morillo,IL,FDU,G,3000,2.65,2.38,1.0,5.75,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Lincoln Williams,IL,FDU,G,3000,1.79,1.95,0.0,4.5,0.3,bench,all,Q,0,,,,live
+2026-11-02,155565,Blake Fagbemi,IL,FDU,G,3000,1.76,1.9,0.0,4.5,0.3,bench,all,,0,Illinois,3.646,2.1,live
+2026-11-02,155565,Casey Jones,WSU,DAV,G,3000,2.41,2.37,0.0,5.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Dio Blakely,WSU,DAV,G,3000,1.34,1.74,0.0,3.5,0.3,bench,all,,0,Washington St.,1.2,1.8,live
+2026-11-02,155565,Pedro Sancho Moraga,WSU,DAV,G,3000,1.67,1.85,0.0,4.25,0.3,bench,all,Q,0,,,,live
+2026-11-02,155565,Dovydas Buika,BYU,OSU,G,3000,1.03,1.51,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Brooks Bahr,BYU,OSU,G,3000,1.13,1.56,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Alex Kovatchev,UF,MIA,G,3000,0.5,1.05,0.0,2.0,0.2,bench,all,,0,Florida,3.24,1.4,live
+2026-11-02,155565,Alex Lloyd,UF,MIA,G,3000,0.88,1.36,0.0,2.75,0.2,bench,all,,0,Florida,4.771,2.6,live
+2026-11-02,155565,Isaiah Brown,UF,MIA,G,3000,3.36,2.62,1.25,6.75,0.4,bench,all,,0,Florida,12.739,10.9,live
+2026-11-02,155565,Joaquin Rigdon,ARIZ,UCLA,G,3000,1.07,1.5,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Addison Arnold,ARIZ,UCLA,G,3000,0.43,0.99,0.0,2.0,0.2,bench,all,,0,Arizona,2.185,1.3,live
+2026-11-02,155565,Jackson Cook,ARIZ,UCLA,G,3000,0.37,0.92,0.0,1.5,0.2,bench,all,,0,Arizona,1.34,0.3,live
+2026-11-02,155565,Bryce James,ARIZ,UCLA,G,3000,15.65,6.56,11.0,24.03,4.6,salary,all,,1,,,,live
+2026-11-02,155565,JJ Laboy,FORD,KU,G,3000,13.24,5.93,9.0,20.75,2.8,blend,all,,0,,,2.7,live
+2026-11-02,155565,Hassan Koureissi,FORD,KU,G,3000,1.03,1.51,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Desmond Bellot Jr.,FORD,KU,G,3000,1.04,1.52,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Cello Jackson Jr.,MEM,ISU,G,3000,1.15,1.56,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Parker Pounds,MEM,ISU,G,3000,1.07,1.5,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Jacob Webber,PUR,GONZ,G,3000,1.06,1.5,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Jack Lusk,PUR,GONZ,G,3000,0.34,0.86,0.0,1.5,0.2,bench,all,,0,Purdue,2.067,0.4,live
+2026-11-02,155565,Jace Rayl,PUR,GONZ,G,3000,0.34,0.82,0.0,1.5,0.2,bench,all,,0,Purdue,1.938,0.0,live
+2026-11-02,155565,Patrick McDonough,ARMY,DUKE,G,3000,2.95,2.54,1.25,6.5,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Deke Cooper Jr.,ARMY,DUKE,G,3000,3.05,2.56,1.25,6.75,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Jordan Williams,ILLST,STMRY,G,3000,1.11,1.5,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Myles Dickerson,FDU,IL,G,3000,1.06,1.55,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Devin Wright,FDU,IL,G,3000,1.05,1.48,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Honor Withers Carello,DAV,WSU,G,3000,2.9,2.47,1.0,6.5,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Eetu Heinonen,DAV,WSU,G,3000,3.02,2.67,1.0,6.53,0.4,bench,all,,0,,,,live
+2026-11-02,155565,Malik Davis,DAV,WSU,G,3000,3.03,2.57,1.25,6.5,0.4,bench,all,,0,,,,live
+2026-11-02,155565,LJ Smith,OSU,BYU,G,3000,0.97,1.41,0.0,3.25,0.2,bench,all,,0,,,,live
+2026-11-02,155565,Braylen Nash,OSU,BYU,G,3000,0.33,0.84,0.0,1.5,0.2,bench,all,,0,Ohio St.,1.3,0.3,live
+2026-11-02,155565,Myles Herro,OSU,BYU,G,3000,1.05,1.48,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Joe Philon III,UCLA,ARIZ,G/F,3000,1.02,1.47,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Gunars Grinvalds,UCLA,ARIZ,G/F,3000,1.03,1.53,0.0,3.28,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Brock Davis,DUKE,ARMY,G/F,3000,1.03,1.48,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Sebastian Wilkins,DUKE,ARMY,G/F,3000,1.06,1.56,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Isaac Ericksen,ILLST,STMRY,G/F,3000,1.03,1.48,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-02,155565,Diing Maiwen,FDU,IL,G/F,3000,1.03,1.5,0.0,3.25,0.3,bench,all,,0,,,,live
