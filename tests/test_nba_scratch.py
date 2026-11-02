@@ -2,6 +2,7 @@
 (edge/nba_minutes.py): what fires, once, how loud, and who it names."""
 from __future__ import annotations
 
+import json
 from datetime import date, datetime, timezone
 
 import pytest
@@ -165,3 +166,139 @@ def test_news_log_records_changes_and_a_failed_source_keeps_its_state(tmp_path, 
     st = S._log_news(st, t, {"rotowire": [("NOP", "Jordan Poole", "Out")], "official": []})
     rows = (tmp_path / "news.csv").read_text().splitlines()
     assert [r.split(",")[-1] for r in rows[1:]] == ["Doubtful", "Out"]
+
+
+# ── a player in a logged lineup (11/1: Poeltl OUT 8:46 PM went out "high", was missed) ──
+_MINE = {("milesmcbride", "NYK"): [(156049, "cash")], ("jalenbrunson", "NYK"): [(156043, "gpp"), (156049, "cash")]}
+_DAY = date(2026, 10, 15)
+_NOW = datetime(2026, 10, 15, 23, 0, tzinfo=timezone.utc)      # 7:00 pm ET; the game tips 7:30
+
+
+def _swap_alert(night=None, lineups=_MINE, **kw):
+    _, seen = S.assess(_night(), HIST, {}, DK, {}, prime=True)
+    alerts, seen = S.assess(night or _night(out_star=True), HIST, {}, DK, seen, lineups=lineups, day=_DAY,
+                            labels={"156049": "Night 2g", "156043": "Main 4g"}, now=_NOW, **kw)
+    return alerts, seen
+
+
+def test_an_out_player_in_a_logged_lineup_is_urgent_with_the_deadline_and_a_swap_link():
+    a = _swap_alert()[0][0]
+    assert a["priority"] == "urgent" and "rotating_light" in a["tags"]
+    assert a["title"].startswith("🚨 SWAP BY 7:30 PM") and "Brunson OUT" in a["title"]
+    assert "cash + GPP lineup" in a["title"]
+    assert "Night 2g cash" in a["body"] and "Main 4g GPP" in a["body"]
+    assert "gid=156049" in a["click"] and "swap=1" in a["click"] and "mode=cash" in a["click"]
+    assert f"at={int(_NOW.timestamp())}" in a["click"]
+    assert a["swap"][0]["id"] == "1" and a["swap"][0]["tip"] == "2026-10-15T23:30:00+00:00"
+
+
+def test_a_player_not_in_a_logged_lineup_keeps_the_old_alert_and_namesakes_on_other_teams_do_not_match():
+    for lineups in (None, {}, {("jalenbrunson", "BOS"): [(156049, "cash")]}):
+        a = _swap_alert(lineups=lineups)[0][0]
+        assert "SWAP" not in a["title"] and "swap=1" not in a["click"] and not a["swap"]
+
+
+def test_an_out_player_in_a_lineup_fires_even_if_he_is_no_regular_and_nobody_gains():
+    deep = _player("13", "Player 13", inactive=True)
+    night = _night()
+    night[0]["players"] = [p for p in night[0]["players"] if p["id"] != "13"] + [deep]
+    hist = dict(HIST, **{"13": _hist(3, False, 0.5)})
+    _, seen = S.assess(_night(), hist, {}, DK, {}, prime=True)
+    quiet, _ = S.assess(night, hist, {}, DK, seen)
+    assert not quiet                                            # no lineup: not worth a push, as before
+    alerts, _ = S.assess(night, hist, {}, DK, seen, lineups={("player13", "NYK"): [(156049, "cash")]},
+                         day=_DAY, now=_NOW)
+    assert alerts and alerts[0]["priority"] == "urgent" and "Player 13 OUT" not in alerts[0]["title"]
+    assert "13 OUT" in alerts[0]["title"]
+
+
+def test_after_the_tip_there_is_nothing_to_swap_so_no_swap_alert():
+    night = _night(out_star=True)
+    night[0]["status"] = "Q1 11:02"
+    a = _swap_alert(night=night)[0][0]
+    assert "SWAP" not in a["title"] and not a["swap"]
+
+
+def test_a_doubtful_player_in_a_lineup_is_a_swap_alert_too():
+    a = _swap_alert(night=_night(), official_doubtful={"jalenbrunson"})[0][0]
+    assert a["priority"] == "urgent" and "SWAP BY" in a["title"] and "DOUBTFUL" in a["title"]
+
+
+def test_preseason_never_gets_a_swap_alert():
+    a = _swap_alert(night=_night(game_id="0012600001", out_star=True))[0][0]
+    assert a["priority"] == "low" and "SWAP" not in a["title"] and not a["swap"]
+
+
+def _watch(tip="2026-10-15T23:30:00+00:00", **kw):
+    return {"id": "1", "name": "Brunson", "tip": tip, "what": "OUT", "modes": "cash", "gid": 156049,
+            "mode": "cash", "team": "NYK", "opp": "PHI", "reminded": False, **kw}
+
+
+def test_the_reminder_fires_once_in_the_last_five_minutes_while_he_is_still_out():
+    seen = {"1": {"out": True}}
+    at = lambda h, m: datetime(2026, 10, 15, h, m, tzinfo=timezone.utc)    # noqa: E731
+    assert S.swap_reminders([_watch()], seen, at(23, 24)) == []            # too early
+    a = S.swap_reminders([_watch()], seen, at(23, 26))[0]
+    assert a["priority"] == "urgent" and "LAST CALL" in a["title"] and "7:30 PM" in a["title"]
+    assert "gid=156049" in a["click"] and a["watch_id"] == "1"
+    assert S.swap_reminders([_watch(reminded=True)], seen, at(23, 26)) == []
+    assert S.swap_reminders([_watch()], seen, at(23, 30)) == []            # tipped: too late
+    assert S.swap_reminders([_watch()], {"1": {"out": False}}, at(23, 26)) == []    # he is back
+
+
+def test_an_alert_inside_the_last_five_minutes_is_its_own_reminder():
+    a = _swap_alert()[0][0]
+    far = S.watch_from(a, datetime(2026, 10, 15, 23, 0, tzinfo=timezone.utc))
+    near = S.watch_from(a, datetime(2026, 10, 15, 23, 27, tzinfo=timezone.utc))
+    assert far and not far[0]["reminded"] and near and near[0]["reminded"]
+
+
+def test_the_timer_run_pushes_the_swap_alert_then_one_last_call(monkeypatch):
+    # run() end to end, as the timer calls it: it is the one path that only ever runs live.
+    from edge import data_branch, dfs_run_nba, nba_availability, nba_injury_report, nba_lineups, nba_rotowire
+    state, pushed = {}, []
+    night = {"games": _night()}
+    clock = {"now": datetime(2026, 10, 15, 22, 0, tzinfo=timezone.utc)}
+    snap = {"players": {pid: {"hist": rows, "name": f"p{pid}", "team": "NYK", "season_games": 10}
+                        for pid, rows in HIST.items()}}
+    monkeypatch.setattr(S, "_now", lambda: clock["now"])
+    monkeypatch.setattr(S, "fetch", lambda d, use_cache=True: {})
+    monkeypatch.setattr(S, "parse", lambda raw: night["games"])
+    monkeypatch.setattr(S, "_load_state", lambda: json.loads(json.dumps(state)))
+    monkeypatch.setattr(S, "_save_state", lambda s: (state.clear(), state.update(json.loads(json.dumps(s)))))
+    monkeypatch.setattr(S, "dk_players", lambda st, now, day: DK)
+    monkeypatch.setattr(S, "_log_changes", lambda *a: {})
+    monkeypatch.setattr(S, "_log_news", lambda *a: {})
+    monkeypatch.setattr(S, "lineup_index", lambda day: {("jalenbrunson", "NYK"): [(156049, "cash")]})
+    monkeypatch.setattr(S.monitor, "push", lambda a: pushed.append(a) or True)
+    monkeypatch.setattr(S.monitor, "log", lambda a, path=None: None)
+    monkeypatch.setattr(nba_lineups, "write_snapshot", lambda *a: False)
+    monkeypatch.setattr(dfs_run_nba, "load_history", lambda: snap)
+    monkeypatch.setattr(nba_availability, "tonight_out", lambda: [])
+    monkeypatch.setattr(nba_injury_report, "latest", lambda: None)
+    monkeypatch.setattr(nba_rotowire, "fetch", lambda: "")
+    monkeypatch.setattr(nba_rotowire, "parse", lambda raw: [])
+
+    S.run(do_push=True)                                         # 6:00: the first look, all in
+    assert not pushed
+    night["games"] = _night(out_star=True)
+    clock["now"] = datetime(2026, 10, 15, 23, 10, tzinfo=timezone.utc)
+    S.run(do_push=True)                                         # 7:10: ruled out, 20 min to tip
+    assert len(pushed) == 1 and pushed[0]["title"].startswith("🚨 SWAP BY 7:30 PM")
+    assert pushed[0]["priority"] == "urgent" and "gid=156049" in pushed[0]["click"]
+    clock["now"] = datetime(2026, 10, 15, 23, 15, tzinfo=timezone.utc)
+    S.run(do_push=True)                                         # 7:15: nothing new
+    assert len(pushed) == 1
+    clock["now"] = datetime(2026, 10, 15, 23, 26, tzinfo=timezone.utc)
+    S.run(do_push=True)                                         # 7:26: the last call
+    assert len(pushed) == 2 and "LAST CALL" in pushed[1]["title"]
+    clock["now"] = datetime(2026, 10, 15, 23, 28, tzinfo=timezone.utc)
+    S.run(do_push=True)                                         # once only
+    assert len(pushed) == 2
+
+
+def test_a_failed_last_call_goes_again_on_the_next_run():
+    w = _watch()
+    at = datetime(2026, 10, 15, 23, 26, tzinfo=timezone.utc)
+    assert S.swap_reminders([w], {"1": {"out": True}}, at)
+    assert not w["reminded"]                                    # only run() marks it, once sent

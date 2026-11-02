@@ -192,3 +192,50 @@ def test_start_epoch_parses_draftkings_seven_digit_fractional_seconds(dp):
     assert dp._start_epoch({"StartDate": "2026-09-20T17:00:00.0000000Z"}) is not None
     assert dp._start_epoch({"StartDate": ""}) is None
     assert dp._start_epoch({}) is None
+
+
+# ── a locked slate's snapshot and index row outlive its first tip (11/1) ─────
+def _publish_mod():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("draftables_publish_t", ROOT / "scripts" / "draftables_publish.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_a_locked_slate_keeps_its_snapshot_until_its_last_game_has_started(tmp_path):
+    from datetime import datetime, timezone
+    mod = _publish_mod()
+    path = tmp_path / "156049.json"
+    path.write_text(json.dumps([{"competition": {"startTime": "2026-11-02T01:30:00.0000000Z"}},
+                                {"competition": {"startTime": "2026-11-02T02:00:00.0000000Z"}},
+                                {"competition": None}]))
+    at = lambda h, m: datetime(2026, 11, 2, h, m, tzinfo=timezone.utc)     # noqa: E731
+    assert not mod.prunable(path, {156049}, at(9, 0))                      # in the lobby
+    assert not mod.prunable(path, set(), at(1, 45))                        # locked, 9:00 tip to come
+    assert not mod.prunable(path, set(), at(2, 30))                        # the page's cache may list it
+    assert mod.prunable(path, set(), at(3, 0))
+    (tmp_path / "1.json").write_text("not json")
+    assert mod.prunable(tmp_path / "1.json", set(), at(1, 45))             # undatable: as before
+
+
+def test_the_slate_index_keeps_a_group_that_left_the_lobby_until_its_snapshot_goes(tmp_path, monkeypatch):
+    mod = _publish_mod()
+    monkeypatch.setattr(mod.dfs, "_SNAP_DIR", tmp_path)
+    snap = tmp_path / "7.json"
+    snap.write_text(json.dumps([{"competition": {"startTime": "2026-11-02T02:00:00.0000000Z"}}]))
+    group = {"DraftGroupId": 7, "GameTypeId": 70, "GameCount": 2, "StartDate": "2026-11-02T01:30:00.0000000Z",
+             "ContestStartTimeSuffix": " (Night)", "Volatile": 5}
+    unpriced = {"DraftGroupId": 8, "GameTypeId": 70}
+    mod.write_index({"NBA": [group, unpriced]})
+    index = json.loads((tmp_path / mod.dfs.SLATE_INDEX_NAME).read_text())
+    assert list(index["NBA"]) == ["7"] and index["NBA"]["7"]["last_start"].startswith("2026-11-02T02:00")
+    assert "Volatile" not in index["NBA"]["7"]
+    before = (tmp_path / mod.dfs.SLATE_INDEX_NAME).stat().st_mtime_ns
+    mod.write_index({"NBA": [group]})                                      # no change, no write, no commit
+    assert (tmp_path / mod.dfs.SLATE_INDEX_NAME).stat().st_mtime_ns == before
+    mod.write_index({"NBA": []})                                           # left the lobby: stays
+    assert "7" in json.loads((tmp_path / mod.dfs.SLATE_INDEX_NAME).read_text())["NBA"]
+    snap.unlink()
+    mod.write_index({"NBA": []})                                           # pruned: goes with it
+    assert json.loads((tmp_path / mod.dfs.SLATE_INDEX_NAME).read_text())["NBA"] == {}

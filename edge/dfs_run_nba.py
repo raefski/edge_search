@@ -72,6 +72,47 @@ def classic_groups(groups: list[dict] | None = None) -> list[dict]:
     return dfs_slate.classic_rows(groups, CLASSIC)
 
 
+def open_locked_slates(lobby_rows: list[dict], now: datetime | None = None) -> list[dict]:
+    """Classic slates that have locked with a game still to tip, which is when a late
+    swap is possible and when the lobby no longer lists them (2026-11-01: locked 8:30,
+    Poeltl out 8:44, last tip 9:00, and the page could not reach the slate). They come
+    from the index draftables_publish keeps. An unreadable index raises: the page says
+    so rather than showing a list that quietly lacks them."""
+    from edge import repo_files
+    found = repo_files.read(dfs._SNAP_DIR / dfs.SLATE_INDEX_NAME)
+    if found is None:
+        return []
+    now = now or datetime.now(ET)
+    index = found.json().get(DK_SPORT) or {}
+    listed = {r["gid"] for r in lobby_rows}
+    out = []
+    for row in dfs_slate.classic_rows(list(index.values()), CLASSIC):
+        last = index[str(row["gid"])].get("last_start")
+        first, final = _parse_time(row["start"]), _parse_time(last)
+        if row["gid"] not in listed and first and final and first <= now < final:
+            out.append({**row, "locked": True, "last_start": last})
+    return out
+
+
+def logged_lineups(date: str, path: Path | None = None) -> dict:
+    """{gid: {mode: [{"name", "team"}]}} from the day's logged lineups: what the page's
+    Swap tab starts from and what the scratch alert checks. Not the page's current
+    build, which has already dropped whoever was ruled out and so reports "no swap
+    needed". GitHub's copy on Cloud (the autolog publishes it)."""
+    import io
+
+    from edge import repo_files
+    found = repo_files.read(path or ROOT / "data" / f"dfs_lineups_nba_{date}.csv")
+    if found is None:
+        return {}
+    out: dict = {}
+    for r in csv.DictReader(io.StringIO(found.data)):
+        if (r.get("gid") or "").isdigit():
+            out.setdefault(int(r["gid"]), {}).setdefault(r.get("mode"), []).append(
+                {"name": r.get("player"), "team": r.get("team")})
+    return out
+
+
 def resolve_slate(draft_group=None, groups: list[dict] | None = None):
     """(gid, meta): the explicit group, else the next Main slate to lock."""
     rows = classic_groups(groups)
@@ -403,7 +444,10 @@ def late_swap(pool: list, sim, entered: list[str], priced: dict, mode: str = "gp
         slot and salary at 0 points;
       * the rest stay unless `improve`, which re-optimises every unlocked slot
         (the lineup's own objective, so in a GPP it drifts toward chalk).
-    Returns {"lineup", "swaps": [(out, in)], "locked", "stuck", "replace", "error"}."""
+    Only players whose game has not started can come IN: DK refuses anyone else, and the
+    search once offered Al Horford at 8:47 PM, 17 minutes after GSW tipped (2026-11-01).
+    Returns {"lineup", "swaps": [(out, in)], "locked", "stuck", "replace", "deadline",
+    "error"}; `deadline` = the DK start time by which the first replacement must be made."""
     import numpy as np
     now = now or datetime.now(ET)
     board = {p["name"]: p for p in pool}
@@ -420,7 +464,9 @@ def late_swap(pool: list, sim, entered: list[str], priced: dict, mode: str = "gp
     stuck = [n for n in entered if n not in board and started(n)]
     replace = [n for n in entered if n not in board and not started(n)]
     keep = [] if improve else [n for n in entered if n in board and not started(n)]
-    pool2, sim2 = list(pool), sim
+    held = {*locked, *keep}
+    open_ix = [i for i, p in enumerate(pool) if p["name"] in held or not started(p["name"])]
+    pool2, sim2 = [pool[i] for i in open_ix], sim[:, open_ix]
     for n in stuck:                         # his slot and salary stay, at zero points
         r = priced.get(n) or {}
         pool2.append({"name": n, "team": r.get("team"), "salary": r.get("salary") or 0,
@@ -430,7 +476,10 @@ def late_swap(pool: list, sim, entered: list[str], priced: dict, mode: str = "gp
         sim2 = np.hstack([sim2, np.zeros((sim2.shape[0], 1))])
     res = dfs_opt_nba.optimize(pool2, sim2, mode=mode, iters=iters, seed=seed, own_weight=own_weight,
                                locked=set(locked) | set(stuck) | set(keep))
-    out = {"locked": locked, "stuck": stuck, "replace": replace, "lineup": res, "swaps": [], "error": None}
+    starts = [(priced.get(n) or {}).get("start") for n in replace]
+    deadline = min((s for s in starts if _parse_time(s)), key=_parse_time, default=None)
+    out = {"locked": locked, "stuck": stuck, "replace": replace, "lineup": res, "swaps": [],
+           "deadline": deadline, "error": None}
     if res is None:
         out["error"] = "No legal lineup keeps the locked players (cap, positions or 2-game rule)."
         return out
@@ -471,10 +520,13 @@ def optimal_columns(pool: list, sim, nights: int | None = None) -> dict:
                                        for r in rows}}
 
 
-def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> dict:
+def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None,
+                     now: datetime | None = None) -> dict:
     """Persist a build so a contest export has something to be joined to --
-    edge/dfs_forward_log.py's rules (past dates never, this draft group only)."""
+    edge/dfs_forward_log.py's rules (past dates never, after lock never, this draft
+    group only)."""
     date = info.get("date")
+    lock = min((t for t in (_parse_time(p.get("start")) for p in pool) if t), default=None)
     rows = [{"date": date, "gid": gid, "player": p["name"], "team": p["team"], "opp": p.get("opp"),
              "dk_pos": p.get("dk_pos"), "salary": p["salary"], "minutes": p.get("minutes"),
              "proj": p["proj"], "sd": p.get("sd"), "floor": p.get("floor"), "ceil": p.get("ceil"),
@@ -490,7 +542,7 @@ def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> di
                for slot, p in (res or {}).get("slots") or []]
     return dfs_forward_log.write("nba", date, gid, PROJ_LOG_COLS, rows,
                                  ("mode", "slot", "player", "team", "salary", "proj", "own"),
-                                 lineups, root=root)
+                                 lineups, root=root, lock=lock, now=now)
 
 
 def build_slate(draft_group=None, client=None, n_sims: int = 3000, iters: int = 200, seed: int = 0,

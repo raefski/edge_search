@@ -471,3 +471,74 @@ def test_late_swap_matches_the_entered_spelling_to_the_board():
     shout = [n.upper() for n in entered]                            # "G1" for "g1"
     sw = R.late_swap(pool, sim, shout, priced, mode="gpp", now=now, iters=15)
     assert sw["error"] is None and not sw["swaps"]
+
+
+# ── after lock (11/1: Poeltl ruled out 8:44 PM, 14 min after an 8:30 lock, 9:00 tip) ──
+def test_late_swap_never_offers_a_player_whose_game_has_already_tipped():
+    # The live replay offered Al Horford (GSW, tipped 8:30) at 8:47 for Poeltl: DK refuses it.
+    pool, sim, priced, entered, now = _swap_slate()
+    late = next(n for n in entered if priced[n]["game"] == "g2")
+    keep = [i for i, p in enumerate(pool) if p["name"] != late]
+    # the tipped game's bench is priced to be the obvious pick, the trap the replay fell in
+    board = [dict(pool[i]) for i in keep]
+    sim_b = sim[:, keep].copy()
+    for j, p in enumerate(board):
+        if p["game"] == "g1" and p["name"] not in entered:
+            sim_b[:, j] += 40.0
+    for improve in (False, True):
+        sw = R.late_swap(board, sim_b, entered, priced, mode="gpp", now=now, iters=15, improve=improve)
+        assert sw["error"] is None and sw["swaps"]
+        added = {b for _, b in sw["swaps"]}
+        assert all(priced[n]["game"] == "g2" for n in added)
+        assert sw["deadline"] == priced[late]["start"]
+
+
+def test_a_build_after_lock_never_touches_the_logged_lineups(tmp_path):
+    # 11/1: a rebuild at 10:47 PM replaced the 8:15 log with a lineup that knew who sat.
+    from datetime import datetime, timezone
+    from edge import dfs_forward_log as F
+    pool, sim, priced, entered, _ = _swap_slate()
+    lu = O.optimize(pool, sim, mode="gpp", iters=15, seed=0)
+    info = {"date": datetime.now(R.ET).date().isoformat()}
+    before = datetime(2020, 1, 1, tzinfo=timezone.utc)
+    assert R.log_forward_test(pool, lu, lu, 7, info, root=tmp_path, now=before)["logged"]
+    log = tmp_path / "data" / "dfs_proj_log_nba.csv"
+    lineups = tmp_path / "data" / f"dfs_lineups_nba_{info['date']}.csv"
+    hist = tmp_path / "data" / "dfs_proj_history_nba.csv"
+    snap = [f.read_bytes() for f in (log, lineups, hist)]
+    after = datetime(2026, 10, 20, 19, 0, tzinfo=timezone.utc)      # the first tip, to the second
+    res = R.log_forward_test(pool, lu, lu, 7, info, root=tmp_path, now=after)
+    assert res["skipped_after_lock"] and not res["logged"]
+    assert [f.read_bytes() for f in (log, lineups, hist)] == snap
+    assert F.write("nba", info["date"], 7, R.PROJ_LOG_COLS, [], root=tmp_path, lock=after, now=before)["logged"]
+
+
+def test_logged_lineups_are_read_per_draft_group_and_mode(tmp_path):
+    p = tmp_path / "dfs_lineups_nba_2026-11-01.csv"
+    p.write_text("gid,mode,slot,player,team,salary,proj,own\n"
+                 "156043,cash,UTIL,Jakob Poeltl,TOR,4100,21.5,7.0\n"
+                 "156049,gpp,C,Charles Bassey,GSW,3200,22.1,19.4\n"
+                 "156049,cash,UTIL,Jakob Poeltl,TOR,4100,21.5,16.6\n")
+    got = R.logged_lineups("2026-11-01", path=p)
+    assert got[156049]["cash"] == [{"name": "Jakob Poeltl", "team": "TOR"}]
+    assert got[156049]["gpp"][0]["name"] == "Charles Bassey" and 156043 in got
+    assert R.logged_lineups("2026-11-02", path=tmp_path / "none.csv") == {}
+
+
+def test_a_locked_slate_stays_listed_until_its_last_game_tips(tmp_path, monkeypatch):
+    # DK drops a slate from the lobby at its first tip; a later game can still be swapped.
+    from datetime import datetime, timezone
+    from edge import dfs
+    monkeypatch.setattr(dfs, "_SNAP_DIR", tmp_path)
+    (tmp_path / dfs.SLATE_INDEX_NAME).write_text(json.dumps({"NBA": {
+        "156049": {"DraftGroupId": 156049, "GameTypeId": 70, "GameCount": 2, "ContestStartTimeSuffix": " (Night)",
+                   "StartDate": "2026-11-02T01:30:00.0000000Z", "last_start": "2026-11-02T02:00:00.0000000Z"},
+        "156040": {"DraftGroupId": 156040, "GameTypeId": 81, "GameCount": 1, "ContestStartTimeSuffix": None,
+                   "StartDate": "2026-11-02T01:30:00.0000000Z", "last_start": "2026-11-02T02:00:00.0000000Z"}}}))
+    at = lambda h, m: datetime(2026, 11, 2, h, m, tzinfo=timezone.utc)     # noqa: E731
+    assert R.open_locked_slates([], now=at(1, 29)) == []                   # not locked yet
+    rows = R.open_locked_slates([], now=at(1, 47))
+    assert [(r["gid"], r["label"], r["games"], r["locked"]) for r in rows] == [(156049, "Night", 2, True)]
+    assert rows[0]["last_start"].startswith("2026-11-02T02:00")
+    assert R.open_locked_slates([], now=at(2, 0)) == []                    # last game tipped
+    assert R.open_locked_slates([{"gid": 156049}], now=at(1, 47)) == []    # still in the lobby

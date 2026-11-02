@@ -17,6 +17,23 @@
 | history | `scripts/nba_history_publish.py` + `nba-history-publish.timer` (06:00, 14:00) | `data/nba_player_history.json` for desktop + cloud |
 | odds | `odds-collect-dfs-nba.timer`, `odds-publish-dfs-nba.timer` | game lines (implied totals); props collected, NOT yet used |
 
+## Late swap after lock (2026-11-02)
+
+11/1 Night 2g (156049) locked 8:30; Poeltl first showed out 8:44 (not on the 8:30 official report; NBA.com had a confirmed start at 8:42); TOR@LAL tipped 9:00. The build was not wrong, but the 14 minutes were lost: Adam got the "high" push and did not see it, and the swap could not have been done on the phone anyway. n = 1 night, a replay of one incident, not a measurement. All of it had to change together:
+
+| link | was | now |
+|---|---|---|
+| alert | "high" unless a cheap teammate was value; no deadline | a player in a logged lineup ruled out before their tip is urgent: `🚨 SWAP BY 9:00 PM`, plus a last call 5 min before tip. Fires for non-regulars too |
+| reaching the slate | the picker read only the lobby, which drops a slate at its first tip | `data/draftables_snapshot/slates.json`; listed as 🔒 until the last tip; the alert's link (`?gid=&swap=1&mode=&at=`) works even without it |
+| salaries on Cloud | snapshot pruned once out of the lobby | kept until last start + 1 h |
+| stale build | a build cached up to 15 min could still list the player | the link's `at` rebuilds once |
+| lineup loaded | the current build, which has already dropped the player: always "no swap needed" | the logged lineup |
+| suggestion | could offer a player whose game had tipped (Horford at 8:47; legal answer Jackson-Davis) | only games not started |
+| phone layout | swap ~1,400 px down at 390 px | on the link, the answer is on the first screen |
+| log | a rebuild after lock replaced the logged lineups (done by accident 11/1, restored from the `data` branch) | NBA refuses to log at or after the first tip |
+
+Not done: the alert and Swap know the logged lineup, not the real DK entry. `late_swap` takes names, not DK slots, so a replacement that does not fit the open slot would be refused by DK. The after-lock log guard is NBA only. The NCAAB page has no Swap tab at all. Cloud's path has only been driven with AppTest and locally: first real proof is a live scratch.
+
 ## Measured (held out on 2025-26, fit on 2024-25)
 
 - **Points**: 7.65 DK pts mean |error|, corr 0.765 (29,311 player-games) vs last-10 average 7.88 / 0.743, season average 8.19 / 0.725. With the minutes he actually played: 4.54 / 0.909 → **minutes are most of the error**.

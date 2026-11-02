@@ -28,6 +28,18 @@ ntfy cannot colour text; the emoji, the tags shown before the title and the
 priority do that job -- "urgent" (its own sound, stays on screen) when a player at
 or under URGENT_MAX_SALARY reaches URGENT_VALUE points per $1k.
 
+A player in a LOGGED LINEUP ruled out before his game tips is always urgent, and says
+what to do and by when:
+
+    🚨 SWAP BY 9:00 PM · 🔴 Poeltl OUT (DK: OUT) · in your cash lineup · TOR vs LAL
+
+Adam, 2026-11-01: that push went out "high" as "Poeltl OUT · TOR vs LAL", 14 minutes
+before tip, and was on his phone but not seen; none of its teammates was cheap value,
+so news about his own lineup ranked below a value tip. A tap opens the slate's Swap
+tab. A last call follows SWAP_REMINDER before tip, since this job cannot see a DK entry
+and so cannot know he already swapped. It knows the logged lineups only: a player
+added by hand on DK does not fire this.
+
 Every change the feeds show is appended to data/nba_lineup_log.csv (gitignored),
 which is how we learn when starters and inactives actually post.
 """
@@ -70,12 +82,21 @@ DK_LOBBY_EVERY = timedelta(hours=1)
 MIN_GAIN_PTS = 3.0
 #: Teammates listed per push.
 MAX_LISTED = 3
+#: A swap alert not yet acted on is repeated this long before the player's tip.
+SWAP_REMINDER = timedelta(minutes=5)
 #: Urgent: a player this cheap reaching this many DK points per $1,000.
 URGENT_MAX_SALARY = 5000
 URGENT_VALUE = 6.0
 CLASSIC = 70
 #: The phone app's NBA page, opened on tap with the "Promoted / changed only" filter on.
 APP_URL = "https://edgesearch-h2dkcwvywzteys8e7tjk6v.streamlit.app/NBA_DFS?promoted=1"
+
+
+def swap_url(gid, mode: str, now: datetime) -> str:
+    """The page on that slate's Swap tab; `at` makes the page rebuild once for the news."""
+    return f"{APP_URL.split('?')[0]}?gid={gid}&swap=1&mode={mode}&at={int(now.timestamp())}"
+
+
 #: Preseason (NBA game ids 001...) has no inactive list and no DK contests: pushes are
 #: labelled tests, low priority, a few per run.
 PRESEASON_MAX_PUSH = 3
@@ -110,7 +131,7 @@ def tip_time(status: str | None, day: date) -> datetime | None:
 def dk_players(state: dict, now: datetime, day: date) -> dict:
     """{(norm name, NBA team): {"salary", "status"}} for the night's Classic slates,
     refreshed at most every DK_EVERY (lobby hourly). Cached in `state`."""
-    from edge import dfs
+    from edge import dfs, dfs_slate
     dk = state.setdefault("dk", {})
     if dk.get("day") != day.isoformat():
         dk.clear()
@@ -126,6 +147,9 @@ def dk_players(state: dict, now: datetime, day: date) -> dict:
         # and its games' players then went "no DK salary" in every push (10/26, after
         # the 7 PM main left only the 2-game Night slate).
         new = [g["DraftGroupId"] for g in sorted(groups, key=lambda g: -(g.get("GameCount") or 0))]
+        for g in groups:
+            row = dfs_slate.group_row(g)
+            dk.setdefault("labels", {})[str(row["gid"])] = f"{row['label']} {row['games']}g"
         dk["groups"] = dk.get("groups", []) + [g for g in new if g not in dk.get("groups", [])]
         dk["lobby_at"] = now.isoformat()
     players: dict = {}
@@ -143,18 +167,25 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
            prime: bool = False, windows: dict | None = None,
            extra: dict | None = None, espn_out: set | None = None,
            official_out: set | None = None, name_ids: dict | None = None,
-           official_doubtful: set | None = None) -> tuple[list, dict]:
+           official_doubtful: set | None = None, lineups: dict | None = None,
+           day: date | None = None, labels: dict | None = None,
+           now: datetime | None = None) -> tuple[list, dict]:
     """(alerts, new `seen`) for tonight's games. `seen` = {player_id: {"out", "starter"}}
     from the previous run; an event fires on a change into OUT or into the starting five.
     `prime` = the day's first look: who is already out is old news (priced into DK's
-    salaries) and does not fire; a promoted starter still does."""
+    salaries) and does not fire; a promoted starter still does. `lineups` =
+    logged_lineups(): {(norm name, team): [(gid, mode)]}."""
     alerts, now_seen = [], {}
     for g in games:
+        # Only a game that has not tipped can be swapped; preseason has no contests.
+        tip = tip_time(g.get("status"), day) if lineups and day else None
+        if str(g["game_id"]).startswith("001") or (tip and now and now >= tip):
+            tip = None
         teams = {}
         for p in g["players"]:
             teams.setdefault(p["team"], []).append(p)
         for team, ps in teams.items():
-            rows, events = [], []
+            rows, events, swap = [], [], []
             # Before NBA.com posts the full roster it lists only the starting fives:
             # projecting from those alone split 240 minutes over ~5 players (10/28: LAL
             # Thybulle 18->46, Kessler and Reaves 48 min). The rest of the team comes
@@ -184,10 +215,16 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
                 p = dict(p, official=official)
                 now_seen[pid] = {"out": out, "starter": p["starter"], "doubtful": doubtful}
                 before = {"out": out, "starter": False, "doubtful": doubtful} if prime else seen.get(pid, {})
-                if out and not before.get("out") and r["base"] >= NM.REGULAR_MIN:
+                mine = ((lineups or {}).get((norm(p["name"]), team)) or []) if tip else []
+                # A player in the lineup is news however small his role.
+                if out and not before.get("out") and (r["base"] >= NM.REGULAR_MIN or mine):
                     events.append(("out", p, d, r))
-                elif doubtful and not before.get("doubtful") and r["base"] >= NM.REGULAR_MIN:
+                    if mine:
+                        swap.append({"id": pid, "name": _surname(p["name"]), "what": "OUT", "in": mine})
+                elif doubtful and not before.get("doubtful") and (r["base"] >= NM.REGULAR_MIN or mine):
                     events.append(("doubtful", p, d, r))
+                    if mine:
+                        swap.append({"id": pid, "name": _surname(p["name"]), "what": "DOUBTFUL", "in": mine})
                 out = out or doubtful
                 if (not p.get("filler") and p["starter"] and not before.get("starter") and not out
                         and r["games"] >= 5 and r["start_rate"] < 0.5):
@@ -222,8 +259,9 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
             # salary counts as an average $6k), a promoted starter always first.
             gains.sort(key=lambda x: (not x["promoted"],
                                       -(x["pts1"] - x["pts0"]) * 1000 / (x["salary"] or 6000)))
-            if gains:                     # an absence nobody absorbs is not worth a push
-                alerts.append(_alert(g, team, events, gains[:MAX_LISTED]))
+            # An absence nobody absorbs is not worth a push, unless it is in a lineup.
+            if gains or swap:
+                alerts.append(_alert(g, team, events, gains[:MAX_LISTED], swap, tip, labels, now))
     return alerts, now_seen
 
 
@@ -233,7 +271,17 @@ def _surname(name: str) -> str:
     return parts[-1] if parts else name
 
 
-def _alert(game: dict, team: str, events: list, gains: list) -> dict:
+def _modes(modes) -> str:
+    """'cash', 'GPP' or 'cash + GPP', cash first."""
+    return " + ".join(m if m == "cash" else "GPP" for m in sorted(set(modes)))
+
+
+def _clock(t: datetime) -> str:
+    return t.astimezone(ET).strftime("%-I:%M %p")
+
+
+def _alert(game: dict, team: str, events: list, gains: list, swap: list | None = None,
+           tip: datetime | None = None, labels: dict | None = None, now: datetime | None = None) -> dict:
     heads = []
     for kind, p, d, _ in events:
         last = _surname(p["name"])
@@ -256,6 +304,22 @@ def _alert(game: dict, team: str, events: list, gains: list) -> dict:
                  for x in gains)
     opp = game["home"] if team == game["away"] else game["away"]
     title = f"{' · '.join(heads)} · {team} vs {opp}"
+    click, watch = APP_URL, []
+    if swap:
+        urgent = True
+        now = now or _now()
+        modes = _modes(m for s in swap for _, m in s["in"])
+        title = f"🚨 SWAP BY {_clock(tip)} · {' · '.join(heads)} · in your {modes} lineup · {team} vs {opp}"
+        where = ", ".join(f"{(labels or {}).get(str(gid), f'slate {gid}')} {_modes([m])}"
+                          for gid, m in swap[0]["in"])
+        lines.insert(0, f"⏰ Tips {_clock(tip)} ET. {swap[0]['name']} is in your logged lineups: {where}. "
+                        "Tap for the swap.")
+        # The slate built last (the file's order); a Main and a Night can both hold him.
+        gid = swap[0]["in"][-1][0]
+        mode = next(m for g_, m in swap[0]["in"] if g_ == gid)
+        click = swap_url(gid, mode, now)
+        watch = [{"id": s["id"], "name": s["name"], "what": s["what"], "modes": _modes(m for _, m in s["in"]),
+                  "gid": gid, "mode": mode, "tip": tip.isoformat(), "team": team, "opp": opp} for s in swap]
     key = "|".join(sorted(f"{k}:{p['id']}" for k, p, _, _ in events))
     kinds = {k for k, *_ in events}
     tags = ",".join((["rotating_light"] if urgent else []) + (["red_circle"] if "out" in kinds else [])
@@ -268,7 +332,44 @@ def _alert(game: dict, team: str, events: list, gains: list) -> dict:
             "title": title, "body": "\n".join(lines) or "No teammate gains enough to name.",
             "key": key, "tags": tags, "game": game["game_id"], "team": team,
             "players": [str(p["id"]) for _, p, _, _ in events], "preseason": preseason,
-            "click": APP_URL}
+            "click": click, "swap": watch}
+
+
+def watch_from(alert: dict, now: datetime) -> list[dict]:
+    """An alert's swap players to remind about. One sent inside the reminder window is
+    already the last call."""
+    return [{**w, "reminded": datetime.fromisoformat(w["tip"]) - now <= SWAP_REMINDER}
+            for w in alert.get("swap") or []]
+
+
+def swap_reminders(watch: list[dict], seen: dict, now: datetime) -> list[dict]:
+    """The last call for each watched player still ruled out, inside the window."""
+    out = []
+    for w in watch:
+        tip = datetime.fromisoformat(w["tip"])
+        state = seen.get(w["id"], {})
+        if w.get("reminded") or not (tip - SWAP_REMINDER <= now < tip):
+            continue
+        if not (state.get("out") or state.get("doubtful")):
+            continue
+        out.append({"kind": "nba_scratch", "priority": "urgent", "tags": "rotating_light,red_circle,basketball",
+                    "title": f"🚨 LAST CALL · swap by {_clock(tip)} · {w['name']} {w['what']} · "
+                             f"in your {w['modes']} lineup · {w['team']} vs {w['opp']}",
+                    "body": "If you already swapped, ignore this: the app cannot see your DK entry.",
+                    "key": f"remind:{w['id']}", "team": w["team"], "players": [w["id"]], "preseason": False,
+                    "click": swap_url(w["gid"], w["mode"], now), "watch_id": w["id"]})
+    return out
+
+
+def lineup_index(day: date) -> dict:
+    """{(norm name, NBA team): [(gid, mode)]} from the day's logged lineups."""
+    from edge.dfs_run_nba import logged_lineups
+    out: dict = {}
+    for gid, modes in logged_lineups(day.isoformat()).items():
+        for mode, rows in modes.items():
+            for r in rows:
+                out.setdefault((norm(r["name"] or ""), nba.team(r["team"])), []).append((gid, mode))
+    return out
 
 
 def _log_changes(games: list[dict], dk: dict, prev: dict, now: datetime) -> dict:
@@ -395,10 +496,18 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
             print(f"DK unavailable ({exc}); using NBA.com only")
         if do_push:                                         # the timer's runs are the record
             state["log"] = _log_changes(games, dk, state.get("log", {}), now)
+    lineups = None
+    if not replay:
+        try:
+            lineups = lineup_index(d)
+        except Exception as exc:                            # noqa: BLE001
+            # Say so in the job's log: the alerts still fire, without the swap wording.
+            print(f"logged lineups unreadable ({exc}); no swap alerts this run")
     alerts, seen = assess(games, hist, pos, dk, state.get("seen", {}),
                           prime=not replay and not state.get("seen"), windows=windows, extra=extra,
                           espn_out=espn_out, official_out=official_out,
-                          name_ids=name_ids, official_doubtful=official_doubtful)
+                          name_ids=name_ids, official_doubtful=official_doubtful,
+                          lineups=lineups, day=d, labels=state.get("dk", {}).get("labels"), now=now)
     new = [a for a in alerts if a["key"] not in state["sent"]]
     if any(a["preseason"] for a in new):
         new = sorted(new, key=lambda a: a["preseason"])[:PRESEASON_MAX_PUSH]
@@ -423,5 +532,14 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
                 else:
                     seen.pop(pid, None)
         state["seen"] = seen
+        watch = state.setdefault("swap_watch", [])
+        for a in sent:
+            watch += [w for w in watch_from(a, now) if w["id"] not in {x["id"] for x in watch}]
+        # Marked only once sent: a push that failed goes again on the next run.
+        for a in swap_reminders(watch, seen, now):
+            if monitor.push(a):
+                monitor.log([a], path=monitor.ALERTS)
+                print(f"📲 [{a['priority']}] {a['title']}")
+                next(w for w in watch if w["id"] == a["watch_id"])["reminded"] = True
         _save_state(state)
     return new

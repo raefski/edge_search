@@ -27,6 +27,11 @@ now live here and each sport supplies only its columns:
   5. The day's lineups file `dfs_lineups_<sport>_<date>.csv` leads with `gid`
      and keeps every OTHER draft group's rows. A pre-2026-10-16 file without a
      gid column is replaced, as it always was.
+  6. `lock` (the slate's first tip) refuses a build at or after it: all three
+     files stay as they were. Rule 4 protected the history but not the log or
+     the lineups file, and on 2026-11-01 a 10:47 PM rebuild of the 8:30 NBA slate
+     replaced them with a lineup that knew Poeltl sat. Rule 1 only starts at
+     midnight. NBA passes it; the other sports do not yet.
 
 MLB (edge/dfs_run.py) is the exception: its log predates draft-group keys,
 splits sub-slates into per-(date, gid) files, and its calibration scripts read
@@ -57,7 +62,8 @@ def _read(path: Path) -> tuple[list[str], list[dict]]:
 
 def write(sport: str, date: str | None, gid, cols: tuple, rows: list[dict],
           lineup_cols: tuple | None = None, lineups: list[dict] | None = None,
-          root: Path | None = None, frozen: bool = False) -> dict:
+          root: Path | None = None, frozen: bool = False, lock: datetime | None = None,
+          now: datetime | None = None) -> dict:
     """Log one build. `rows` are the pool, `lineups` the recommended lineups
     (None = leave the lineups file alone), both dicts keyed by their columns.
     Returns {logged, n, date} plus skipped_past_date / skipped_after_lock /
@@ -68,6 +74,9 @@ def write(sport: str, date: str | None, gid, cols: tuple, rows: list[dict],
         return result
     if date < today_et():
         result["skipped_past_date"] = True
+        return result
+    if lock is not None and (now or datetime.now(timezone.utc)) >= lock:
+        result["skipped_after_lock"] = True
         return result
     gid = str(gid)
     plog = root / "data" / f"dfs_proj_log_{sport}.csv"

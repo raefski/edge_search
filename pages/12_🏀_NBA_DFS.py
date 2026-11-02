@@ -14,6 +14,8 @@ THE THINGS THIS PAGE SAYS OUT LOUD
      whose projection moved with tonight's news, green-highlighted, with the
      points they gained. A tap on the phone alert (harness/nba_scratch.py) opens
      the page with that filter on (?promoted=1).
+     An alert about a player in a logged lineup opens that slate with the swap on the
+     first screen instead (?gid=&swap=1&mode=&at=): logged lineup loaded, swap already run.
   3. WHERE THE NUMBERS CAME FROM: live or published snapshot, and who has no NBA
      history (projected from his price, starred).
 """
@@ -71,10 +73,35 @@ table.lu tr.promo td.nm {color:#8fe0b4; font-weight:700;}
 """, unsafe_allow_html=True)
 
 
+def _link_param(name: str) -> str:
+    return str(st.query_params.get(name, "") or "")
+
+
+# The swap alert's link (harness/nba_scratch.swap_url). `at` rebuilds once for the news,
+# as 🔄 Refresh does: a build cached before the scratch still has the player on its board
+# and answers "no swap needed".
+link_gid = int(_link_param("gid")) if _link_param("gid").isdigit() else None
+swap_link = _link_param("swap") == "1"
+if _link_param("at") and st.session_state.get("nba_link_at") != _link_param("at"):
+    st.session_state.nba_link_at = _link_param("at")
+    st.cache_data.clear()
+
+
 @st.cache_data(ttl=300, show_spinner=False)
 def _nba_slates(_nonce: int):
+    """(the lobby's slates + those locked with a game still to tip, a note if the latter
+    could not be read). DK drops a slate from the lobby at its first tip."""
     from edge import dfs
-    return R.classic_groups(dfs.draft_groups(R.DK_SPORT))
+    rows = R.classic_groups(dfs.draft_groups(R.DK_SPORT))
+    try:
+        return sorted(rows + R.open_locked_slates(rows), key=lambda r: r["start"] or ""), ""
+    except Exception as exc:                                # noqa: BLE001
+        return rows, f"Locked slates could not be read ({type(exc).__name__}): swap from the alert's link."
+
+
+@st.cache_data(ttl=120, show_spinner=False)
+def _nba_logged_lineups(date: str):
+    return R.logged_lineups(date)
 
 
 # 15 minutes, not 3: every expiry re-ran the whole simulation + optimiser, and the
@@ -131,16 +158,27 @@ with st.sidebar:
         st.cache_data.clear()
         st.rerun()
     try:
-        slates = _nba_slates(st.session_state.nba_nonce)
+        slates, slates_note = _nba_slates(st.session_state.nba_nonce)
     except Exception as exc:                                # noqa: BLE001
-        slates = []
+        slates, slates_note = [], ""
         st.error(f"DraftKings lobby unreachable: {exc}")
-    gid = None
+    if slates_note:
+        st.warning(slates_note)
+    if link_gid and not any(s["gid"] == link_gid for s in slates):
+        # The link still works when the index does not list the slate.
+        slates = [{"gid": link_gid, "label": f"Slate {link_gid}", "games": 0, "start": None, "locked": True}, *slates]
+    gid, slate = None, {}
     if slates:
-        labels = [f"{s['label']} · {s['games']} games · {_et(s['start'])}" for s in slates]
-        default = next((i for i, s in enumerate(slates) if s["label"] == "Main"), 0)
+        labels = [(f"🔒 {s['label']} · {s['games']} games · swap until {_et(s['last_start'])}"
+                   if s.get("last_start") else f"🔒 {s['label']} · from the alert")
+                  if s.get("locked") else f"{s['label']} · {s['games']} games · {_et(s['start'])}"
+                  for s in slates]
+        ready = [i for i, s in enumerate(slates) if not s.get("locked")]
+        default = next((i for i, s in enumerate(slates) if s["gid"] == link_gid),
+                       next((i for i in ready if slates[i]["label"] == "Main"), ready[0] if ready else 0))
         choice = st.selectbox("Slate", labels, index=default)
-        gid = slates[labels.index(choice)]["gid"]
+        slate = slates[labels.index(choice)]
+        gid = slate["gid"]
     sims = st.select_slider("Simulations", options=[1000, 3000, 6000], value=3000,
                             help="Every floor and ceiling on this page is a percentile of these.")
     iters = st.select_slider("Search effort", options=[80, 200, 400], value=200)
@@ -162,13 +200,24 @@ with st.spinner("Projecting minutes and simulating the slate…"):
         st.exception(exc)
         st.stop()
 if res.get("unpriced"):
-    st.warning("DraftKings lists this slate but has not priced it yet.")
+    st.warning(f"This locked slate's salaries are not available: {res.get('unpriced_reason')}"
+               if slate.get("locked") else "DraftKings lists this slate but has not priced it yet.")
     st.stop()
 if res.get("error"):
     st.error(res["error"])
     st.stop()
 
 info, meta, pool = res["stats"], res["meta"], res["pool"]
+if slate.get("locked"):       # build_slate only finds a slate in the lobby, which dropped it
+    meta = {**meta, **{k: slate[k] for k in ("label", "start") if slate.get(k)}}
+    if not swap_link:
+        st.markdown("<div class='warn'>🔒 <b>This slate has locked.</b> Lineups below are a rebuild on tonight's "
+                    "news, not what you entered. Use 🔁 Swap: only players whose game has not started can come in"
+                    + (f", until {_et(slate['last_start'])}" if slate.get("last_start") else "")
+                    + ".</div>", unsafe_allow_html=True)
+# The alert's link answers on the first screen: at 390px the summary and news boxes put
+# the tabs ~1,400px down, with minutes left before the tip (Playwright, 2026-11-02).
+swap_top = st.container() if swap_link else None
 imp = info.get("implied") or {}
 src = info.get("lineups_source") or "none"
 st.markdown(
@@ -268,7 +317,11 @@ def render(result, mode: str) -> None:
                 unsafe_allow_html=True)
 
 
-t_cash, t_gpp, t_board, t_swap = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board", "🔁 Swap"])
+if swap_top is None:
+    t_cash, t_gpp, t_board, t_swap = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board", "🔁 Swap"])
+else:
+    t_cash, t_gpp, t_board = st.tabs(["💵 CASH", "🚀 GPP", "📋 Board"])
+    t_swap = swap_top
 with t_cash:
     render(res.get("cash"), "cash")
     st.caption("Objective: the 30th percentile of the lineup's simulated total (a double-up "
@@ -357,37 +410,52 @@ with t_board:
 with t_swap:
     # Late swap: DK locks each game at its tip, so after a scratch you keep the
     # players already playing and replace the OUT one (edge/dfs_run_nba.late_swap).
+    # It starts from the LOGGED lineup: this page's current build has already dropped
+    # whoever was ruled out, so starting from it always says "no swap needed".
     priced = (res.get("stats") or {}).get("priced_rows") or {}
+    if swap_link:
+        st.subheader("🔁 Late swap")
+    answer_box = st.container() if swap_link else None    # above the inputs, on the link
     sw_mode = st.radio("Lineup", ["gpp", "cash"], horizontal=True, key="nba_swap_mode",
+                       index=1 if _link_param("mode") == "cash" else 0,
                        format_func=lambda m: "🚀 GPP" if m == "gpp" else "💵 CASH")
     app_lu = [p["name"] for _, p in ((res.get(sw_mode) or {}).get("slots") or [])]
-    names = sorted(set(priced) | {p["name"] for p in pool})
+    try:
+        logged_lu = [r["name"] for r in _nba_logged_lineups(info["date"]).get(int(res["gid"]), {}).get(sw_mode, [])]
+    except Exception as exc:                                # noqa: BLE001
+        logged_lu = []
+        st.warning(f"The logged lineup could not be read ({type(exc).__name__}).")
+    names = sorted(set(priced) | {p["name"] for p in pool} | set(logged_lu))
     entered = st.multiselect("Your entered lineup (8 players)", names,
-                             default=[n for n in app_lu if n in names], max_selections=8,
-                             key=f"nba_swap_entered_{sw_mode}",
-                             help="Starts as this app's lineup. Change it to what you actually entered on DK.")
+                             default=[n for n in (logged_lu or app_lu) if n in names], max_selections=8,
+                             key=f"nba_swap_entered_{res['gid']}_{sw_mode}",
+                             help="Change it to what you actually entered on DK.")
+    st.caption("Starts as the lineup logged for this slate before lock." if logged_lu else
+               "⚠️ No lineup is logged for this slate: this is the app's current build, which has already "
+               "dropped anyone ruled out. Enter your real lineup or it will say no swap is needed.")
     improve = st.toggle("Also re-optimise the healthy unlocked slots", value=False, key="nba_swap_improve",
                         help="Off: only replace OUT players (keeps your build). On: re-optimise every "
                              "slot whose game has not tipped.")
-    if len(entered) == 8 and st.button("🔁 Late swap", width="stretch"):
+    if len(entered) == 8 and (st.button("🔁 Late swap", width="stretch") or swap_link):
         sw = R.late_swap(pool, res["sim"], entered, priced, mode=sw_mode, improve=improve,
                          iters=iters, own_weight=own_weight)
-        if sw["locked"]:
-            st.caption("🔒 Locked (game started): " + ", ".join(sw["locked"]))
-        if sw["stuck"]:
-            st.markdown("<div class='bad'>⛔ OUT but already locked (0 pts, can't swap): "
-                        + ", ".join(sw["stuck"]) + "</div>", unsafe_allow_html=True)
-        if sw["error"]:
-            st.markdown(f"<div class='bad'>{sw['error']}</div>", unsafe_allow_html=True)
-        else:
-            if sw["swaps"]:
-                st.markdown("<div class='ok'>" + "<br>".join(
-                    f"<span class='out'>{a}</span> → <b>{b}</b>" for a, b in sw["swaps"]) + "</div>",
-                    unsafe_allow_html=True)
+        with answer_box or st.container():
+            if sw["locked"]:
+                st.caption("🔒 Locked (game started): " + ", ".join(sw["locked"]))
+            if sw["stuck"]:
+                st.markdown("<div class='bad'>⛔ OUT but already locked (0 pts, can't swap): "
+                            + ", ".join(sw["stuck"]) + "</div>", unsafe_allow_html=True)
+            if sw["error"]:
+                st.markdown(f"<div class='bad'>{sw['error']}</div>", unsafe_allow_html=True)
             else:
-                st.markdown("<div class='ok'>✅ No swap needed: everyone is dressing.</div>",
-                            unsafe_allow_html=True)
-            render(sw["lineup"], sw_mode)
+                if sw["swaps"]:
+                    st.markdown("<div class='ok'>" + (f"⏰ <b>Swap by {_et(sw['deadline'])}</b><br>" if sw.get("deadline") else "")
+                                + "<br>".join(f"<span class='out'>{a}</span> → <b>{b}</b>" for a, b in sw["swaps"])
+                                + "</div>", unsafe_allow_html=True)
+                elif not sw["stuck"]:
+                    st.markdown("<div class='ok'>✅ No swap needed: everyone is dressing.</div>",
+                                unsafe_allow_html=True)
+                render(sw["lineup"], sw_mode)
     elif len(entered) != 8:
         st.caption("Pick all 8 players you entered.")
     st.caption("Tap 🔄 Refresh first so the board has the latest OUT list and starters.")

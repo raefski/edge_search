@@ -8,8 +8,11 @@ asks, so this runs on a timer from this machine (deploy/draftables-publish.timer
 
 Salaries are frozen per draft group, so most ticks change nothing and push
 nothing; a commit lands when DK posts a new slate. Groups that have left the
-lobby are pruned -- the app resolves slates from the lobby, so it can never ask
-for them again.
+lobby are pruned once their LAST game has started. DK drops a slate at its FIRST
+tip, and pruning then took away the salaries a late swap needs: on 2026-11-01 the
+8:30 Night slate left the lobby with TOR@LAL still to tip at 9:00, Poeltl was ruled
+out at 8:44, and the phone could not build the slate. slates.json in the same
+directory lists the priced groups, so the page can offer them after lock.
 
     python3 scripts/draftables_publish.py            # snapshot + prune, no git
     python3 scripts/draftables_publish.py --push     # ...and commit/push
@@ -21,7 +24,7 @@ import json
 import re
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,6 +33,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from edge import dfs  # noqa: E402
 from edge.data_branch import publish_one  # noqa: E402
+from edge.dfs_slate import parse_time  # noqa: E402
 
 #: DK lobby codes to publish salaries for. NOT the odds-feed sport keys --
 #: college football is "CFB" here and NASCAR is "NAS"; passing "NCAAF" returns
@@ -50,6 +54,14 @@ from edge.data_branch import publish_one  # noqa: E402
 #: Saturday more -- but priced groups drop to the 6-hour heartbeat, so the
 #: steady cost is the new groups per day, not the lobby size.
 SPORTS = ("MLB", "NFL", "CFB", "NAS", "MMA", "NHL", "NBA", "CBB")
+
+#: A slate's snapshot outlives its last game's start by this much: the swap window
+#: closes at that start, and this is only slack for the page's own 5-minute slate cache.
+KEEP_AFTER_LAST_START = timedelta(hours=1)
+#: The lobby fields the page's slate picker reads (edge/dfs_slate.group_row). Nothing
+#: volatile: this file must not change, and so commit, on a tick when no slate did.
+INDEX_FIELDS = ("DraftGroupId", "GameTypeId", "GameCount", "ContestStartTimeSuffix",
+                "StartDate", "StartDateEst", "DraftGroupTag")
 
 
 # Last attempt per draft group, for groups DK has not priced yet (those write
@@ -127,6 +139,54 @@ def _should_fetch(gid: int, g: dict, attempts: dict, args) -> bool:
     return (now - last) >= min(1800 * (2 ** max(0, misses - 1)), cap)
 
 
+def _last_start(path: Path) -> str | None:
+    """The latest game start in a snapshot, as DK wrote it (None = unreadable, or a
+    group with no game times)."""
+    try:
+        rows = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return None
+    starts = [(p.get("competition") or {}).get("startTime") for p in rows if isinstance(p, dict)]
+    return max((s for s in starts if s and parse_time(s)), key=parse_time, default=None)
+
+
+def prunable(path: Path, live: set, now: datetime) -> bool:
+    """Out of the lobby and past its last game's start. A snapshot we cannot date goes,
+    as every group out of the lobby used to."""
+    if int(path.stem) in live:
+        return False
+    last = _last_start(path)
+    return last is None or now >= parse_time(last) + KEEP_AFTER_LAST_START
+
+
+def update_index(index: dict, seen: dict) -> dict:
+    """The new slates.json: this tick's lobby rows (`seen` = {sport: [group]}) over the
+    last one's, so a slate that left the lobby stays. Only groups with a snapshot on
+    disk, so a pruned one leaves the index with its salaries."""
+    out = {sport: dict(rows) for sport, rows in index.items()}
+    for sport, groups in seen.items():
+        rows = out.setdefault(sport, {})
+        for g in groups:
+            gid = g.get("DraftGroupId")
+            path = dfs._SNAP_DIR / f"{gid}.json"
+            if gid is not None and path.exists():
+                rows[str(gid)] = {**{k: g.get(k) for k in INDEX_FIELDS}, "last_start": _last_start(path)}
+    return {sport: {gid: row for gid, row in rows.items() if (dfs._SNAP_DIR / f"{gid}.json").exists()}
+            for sport, rows in out.items()}
+
+
+def write_index(seen: dict) -> None:
+    path = dfs._SNAP_DIR / dfs.SLATE_INDEX_NAME
+    try:
+        old = json.loads(path.read_text())
+    except (OSError, ValueError):
+        old = {}
+    new = update_index(old, seen)
+    if new != old:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(new, sort_keys=True, indent=0))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -145,6 +205,7 @@ def main() -> int:
 
     attempts = _load_attempts()
     live, failed, fetched, skipped = set(), False, 0, 0
+    seen: dict = {}
     for sport in SPORTS:
         try:
             groups = dfs.draft_groups(sport)
@@ -152,6 +213,7 @@ def main() -> int:
             print(f"{sport}: lobby fetch failed ({e}) -- keeping existing snapshots")
             failed = True
             continue
+        seen[sport] = groups
         for g in groups:
             gid = g.get("DraftGroupId")
             if gid is None:
@@ -185,10 +247,12 @@ def main() -> int:
           f"({skipped} skipped -- priced already, or not close enough to matter)")
 
     if not failed:
+        now = datetime.now(timezone.utc)
         for f in dfs._SNAP_DIR.glob("*.json"):
-            if f.stem.isdigit() and int(f.stem) not in live:
+            if f.stem.isdigit() and prunable(f, live, now):
                 f.unlink()
                 print(f"  pruned {f.name}")
+    write_index(seen)
 
     if args.push and dfs._SNAP_DIR.exists():
         return 0 if publish_one(dfs._SNAP_DIR, "draftables") else 1

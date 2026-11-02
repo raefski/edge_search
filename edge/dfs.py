@@ -236,6 +236,10 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
 
 
 _SNAP_DIR = __import__("pathlib").Path(__file__).resolve().parents[1] / "data" / "draftables_snapshot"
+#: {lobby code: {gid: lobby row + last_start}} in that directory, written by
+#: scripts/draftables_publish.py. DK drops a slate from the lobby at its FIRST tip, so
+#: this is how the Cloud page still lists one whose later games can be swapped.
+SLATE_INDEX_NAME = "slates.json"
 
 class SalaryLookup:
     """Find a sportsbook subject in fetch_draftables' salaries, suffix-tolerant.
