@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-02T19:59:59+00:00",
+"generated_at": "2026-11-02T20:29:26+00:00",
 "goalies": {
 "2026-11-02": {
 "BOS": {
@@ -4285,7 +4285,7 @@
 },
 "line": "D2",
 "pk": "PK2",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Brett Kulak": {
@@ -4455,7 +4455,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Gabriel Landeskog": {
@@ -4492,40 +4492,6 @@
 "pos": "lw",
 "pp": "PP2"
 },
-"Gavin Brindley": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 81,
-"toiSeconds": 34
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 44,
-"toiSeconds": 32
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Jaden Schwartz": {
 "gtd": false,
 "injury": null,
@@ -4559,6 +4525,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
+},
+"Logan O'Connor": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 128,
+"toiSeconds": 5
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 68,
+"toiSeconds": 53
+},
+"line": "F4",
+"pk": "PK1",
+"pos": "rw",
+"pp": null
 },
 "Mackenzie Blackwood": {
 "gtd": false,
@@ -4727,9 +4727,9 @@
 "toiMinutes": 57,
 "toiSeconds": 50
 },
-"line": "F4",
-"pk": "PK1",
-"pos": "c",
+"line": "F2",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Noah Juulsen": {
@@ -4831,7 +4831,7 @@
 },
 "line": "D2",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Scott Wedgewood": {
@@ -5936,6 +5936,40 @@
 "pos": "g",
 "pp": null
 },
+"John Leonard": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 11,
+"toiMinutes": 112,
+"toiSeconds": 5
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 53,
+"toiSeconds": 18
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
 "Justin Faulk": {
 "gtd": false,
 "injury": null,
@@ -6139,40 +6173,6 @@
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP1"
-},
-"Nate Danielson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 112,
-"toiSeconds": 31
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 57,
-"toiSeconds": 25
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
 },
 "Sheldon Dries": {
 "gtd": false,
@@ -7341,7 +7341,7 @@
 "pp": null
 },
 "Jacob Markstrom": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
