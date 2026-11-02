@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-02T18:31:01+00:00",
+"generated_at": "2026-11-02T18:59:18+00:00",
 "goalies": {
 "2026-11-02": {
 "BOS": {
@@ -12,7 +12,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": "Likely"
+"status": "Confirmed"
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
@@ -28,7 +28,7 @@
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
-"status": null
+"status": "Likely"
 },
 "VGK": {
 "goalie": "Carter Hart",
@@ -109,7 +109,7 @@
 "status": null
 },
 "VAN": {
-"goalie": "Kevin Lankinen",
+"goalie": "Leevi Merilainen",
 "status": null
 },
 "VGK": {
@@ -3250,40 +3250,6 @@
 "pos": "lw",
 "pp": "PP1"
 },
-"Maxim Tsyplakov": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 118,
-"toiSeconds": 14
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 53,
-"toiSeconds": 29
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Mikael Backlund": {
 "gtd": false,
 "injury": null,
@@ -3419,6 +3385,16 @@
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
+},
+"William Stromgren": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Yan Kuznetsov": {
 "gtd": false,
@@ -12575,7 +12551,7 @@
 "toiMinutes": 82,
 "toiSeconds": 29
 },
-"line": "F1",
+"line": "F3",
 "pk": "PK1",
 "pos": "rw",
 "pp": null
@@ -12645,7 +12621,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP1"
 },
 "Filip Bystedt": {
@@ -12951,7 +12927,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Sam Dickinson": {
@@ -13051,9 +13027,9 @@
 "toiMinutes": 65,
 "toiSeconds": 14
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Will Smith": {
@@ -13087,7 +13063,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Yaroslav Askarov": {
@@ -16003,7 +15979,7 @@
 "toiMinutes": 80,
 "toiSeconds": 33
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -16277,7 +16253,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -16313,7 +16289,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -16347,7 +16323,7 @@
 "toiMinutes": 65,
 "toiSeconds": 37
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -16385,40 +16361,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
-},
-"Luke Schenn": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 13,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 130,
-"toiSeconds": 29
-},
-"last5": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 64,
-"toiSeconds": 45
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "rd",
-"pp": null
 },
 "Marco Rossi": {
 "gtd": false,
@@ -16553,6 +16495,40 @@
 },
 "line": "D2",
 "pk": null,
+"pos": "rd",
+"pp": null
+},
+"Victor Mancini": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 13,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 149,
+"toiSeconds": 8
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 59,
+"toiSeconds": 29
+},
+"line": "D3",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
