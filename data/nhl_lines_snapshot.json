@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-02T17:29:26+00:00",
+"generated_at": "2026-11-02T17:59:19+00:00",
 "goalies": {
 "2026-11-02": {
 "BOS": {
@@ -102,7 +102,7 @@
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
-"status": null
+"status": "Confirmed"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -10005,7 +10005,7 @@
 "pp": null
 },
 "Jonathan Marchessault": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 3,
@@ -17307,8 +17307,8 @@
 "toiMinutes": 72,
 "toiSeconds": 45
 },
-"line": "F3",
-"pk": "PK2",
+"line": "F2",
+"pk": "PK1",
 "pos": "c",
 "pp": null
 },
@@ -17341,10 +17341,44 @@
 "toiMinutes": 66,
 "toiSeconds": 54
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
+},
+"Brad Lambert": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 0,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 89,
+"toiSeconds": 0
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 40,
+"toiSeconds": 11
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
 },
 "Clay Stevenson": {
 "gtd": false,
@@ -17382,6 +17416,40 @@
 "pos": "g",
 "pp": null
 },
+"Cole Koepke": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 98,
+"toiSeconds": 30
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 48,
+"toiSeconds": 39
+},
+"line": "F4",
+"pk": "PK2",
+"pos": "lw",
+"pp": null
+},
 "Cole Perfetti": {
 "gtd": false,
 "injury": null,
@@ -17411,7 +17479,7 @@
 "toiMinutes": 91,
 "toiSeconds": 46
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -17445,9 +17513,9 @@
 "toiMinutes": 79,
 "toiSeconds": 56
 },
-"line": "F1",
-"pk": "PK2",
-"pos": "rw",
+"line": "F3",
+"pk": "PK1",
+"pos": "lw",
 "pp": "PP2"
 },
 "Dylan DeMelo": {
@@ -17581,7 +17649,7 @@
 "toiMinutes": 88,
 "toiSeconds": 55
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -17649,9 +17717,9 @@
 "toiMinutes": 61,
 "toiSeconds": 43
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Kyle Connor": {
@@ -17683,7 +17751,7 @@
 "toiMinutes": 105,
 "toiSeconds": 6
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -17785,8 +17853,8 @@
 "toiMinutes": 68,
 "toiSeconds": 28
 },
-"line": "F4",
-"pk": "PK1",
+"line": "F3",
+"pk": "PK2",
 "pos": "c",
 "pp": null
 },
@@ -17824,40 +17892,6 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Nino Niederreiter": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 16,
-"toiMinutes": 121,
-"toiSeconds": 10
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 59,
-"toiSeconds": 51
-},
-"line": "F4",
-"pk": "PK1",
-"pos": "lw",
-"pp": null
-},
 "Stuart Skinner": {
 "gtd": false,
 "injury": null,
@@ -17894,40 +17928,6 @@
 "pos": "g",
 "pp": null
 },
-"Tyrel Bauer": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 86,
-"toiSeconds": 30
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 42,
-"toiSeconds": 0
-},
-"line": "D4",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Viggo Bj\u00f6rck": {
 "gtd": false,
 "injury": null,
@@ -17957,9 +17957,9 @@
 "toiMinutes": 65,
 "toiSeconds": 54
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 }
 },
