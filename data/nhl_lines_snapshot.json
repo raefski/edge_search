@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-02T13:59:02+00:00",
+"generated_at": "2026-11-02T15:29:19+00:00",
 "goalies": {
 "2026-11-02": {
 "BOS": {
@@ -23,7 +23,7 @@
 "status": null
 },
 "FLA": {
-"goalie": "Akira Schmid",
+"goalie": "Jacob Markstrom",
 "status": null
 },
 "SJS": {
@@ -7053,7 +7053,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7228,42 +7228,6 @@
 "pos": "c",
 "pp": null
 },
-"Cooper Black": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 3,
-"goalieGoalsAgainst": 8,
-"goalieGoalsAgainstAvg": "3.75",
-"goalieLosses": 1,
-"goalieMinutes": 127,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.818",
-"goalieSaves": 36,
-"goalieSeconds": 30,
-"goalieShotsAgainst": 44,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"last5": {
-"gamesPlayed": 3,
-"goalieGoalsAgainst": 8,
-"goalieGoalsAgainstAvg": "3.75",
-"goalieLosses": 1,
-"goalieMinutes": 127,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.818",
-"goalieSaves": 36,
-"goalieSeconds": 30,
-"goalieShotsAgainst": 44,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
-},
 "Dmitry Kulikov": {
 "gtd": false,
 "injury": null,
@@ -7398,6 +7362,42 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "ld",
+"pp": null
+},
+"Jacob Markstrom": {
+"gtd": true,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 20,
+"goalieGoalsAgainstAvg": "2.24",
+"goalieLosses": 2,
+"goalieMinutes": 534,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.895",
+"goalieSaves": 171,
+"goalieSeconds": 21,
+"goalieShotsAgainst": 191,
+"goalieShutouts": 2,
+"goalieWins": 5
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 12,
+"goalieGoalsAgainstAvg": "2.75",
+"goalieLosses": 1,
+"goalieMinutes": 261,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.883",
+"goalieSaves": 91,
+"goalieSeconds": 29,
+"goalieShotsAgainst": 103,
+"goalieShutouts": 0,
+"goalieWins": 2
+},
+"line": "G1",
+"pk": null,
+"pos": "g",
 "pp": null
 },
 "Lars Eller": {
