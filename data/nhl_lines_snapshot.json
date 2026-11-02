@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-02T15:29:19+00:00",
+"generated_at": "2026-11-02T15:59:13+00:00",
 "goalies": {
 "2026-11-02": {
 "BOS": {
@@ -24,7 +24,7 @@
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
-"status": null
+"status": "Confirmed"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -878,7 +878,7 @@
 "toiSeconds": 36
 },
 "line": "D1",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rd",
 "pp": "PP1"
 },
@@ -1014,7 +1014,7 @@
 "toiSeconds": 54
 },
 "line": "D1",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -1153,7 +1153,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Marat Khusnutdinov": {
@@ -1255,8 +1255,42 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP2"
+},
+"Matthew Poitras": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 7,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 99,
+"toiSeconds": 55
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 47,
+"toiSeconds": 10
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
 },
 "Michael DiPietro": {
 "gtd": false,
@@ -1358,7 +1392,7 @@
 "toiSeconds": 43
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -1395,40 +1429,6 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
-},
-"Sean Kuraly": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 130,
-"toiSeconds": 19
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 59,
-"toiSeconds": 43
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
-"pp": null
 },
 "Tanner Jeannot": {
 "gtd": false,
@@ -1494,7 +1494,7 @@
 "toiSeconds": 27
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 }
