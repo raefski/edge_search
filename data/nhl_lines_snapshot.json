@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-03T15:29:21+00:00",
+"generated_at": "2026-11-03T15:59:26+00:00",
 "goalies": {
 "2026-11-03": {
 "ANA": {
@@ -36,11 +36,11 @@
 },
 "MTL": {
 "goalie": "Jacob Fowler",
-"status": null
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Connor Hellebuyck",
-"status": null
+"status": "Likely"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -48,15 +48,15 @@
 },
 "NYR": {
 "goalie": "Dylan Garand",
-"status": null
+"status": "Confirmed"
 },
 "PHI": {
-"goalie": "Joseph Woll",
-"status": null
+"goalie": "Dan Vladar",
+"status": "Confirmed"
 },
 "PIT": {
 "goalie": "Arturs Silovs",
-"status": null
+"status": "Likely"
 },
 "STL": {
 "goalie": "Joel Hofer",
@@ -88,7 +88,7 @@
 },
 "WSH": {
 "goalie": "Logan Thompson",
-"status": null
+"status": "Confirmed"
 }
 },
 "2026-11-04": {
