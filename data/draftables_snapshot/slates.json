@@ -81,6 +81,46 @@
 "StartDate": "2026-11-05T00:30:00.0000000Z",
 "StartDateEst": "2026-11-04T19:30:00.0000000",
 "last_start": "2026-11-05T00:30:00.0000000Z"
+},
+"156213": {
+"ContestStartTimeSuffix": null,
+"DraftGroupId": 156213,
+"DraftGroupTag": "Featured",
+"GameCount": 2,
+"GameTypeId": 94,
+"StartDate": "2026-11-06T00:30:00.0000000Z",
+"StartDateEst": "2026-11-05T19:30:00.0000000",
+"last_start": "2026-11-06T01:00:00.0000000Z"
+},
+"156225": {
+"ContestStartTimeSuffix": " (Afternoon)",
+"DraftGroupId": 156225,
+"DraftGroupTag": "",
+"GameCount": 5,
+"GameTypeId": 94,
+"StartDate": "2026-11-07T20:30:00.0000000Z",
+"StartDateEst": "2026-11-07T15:30:00.0000000",
+"last_start": "2026-11-07T21:15:00.0000000Z"
+},
+"156227": {
+"ContestStartTimeSuffix": " (Night)",
+"DraftGroupId": 156227,
+"DraftGroupTag": "Featured",
+"GameCount": 7,
+"GameTypeId": 94,
+"StartDate": "2026-11-08T00:30:00.0000000Z",
+"StartDateEst": "2026-11-07T19:30:00.0000000",
+"last_start": "2026-11-08T00:45:00.0000000Z"
+},
+"156228": {
+"ContestStartTimeSuffix": " (Late Night)",
+"DraftGroupId": 156228,
+"DraftGroupTag": "",
+"GameCount": 5,
+"GameTypeId": 94,
+"StartDate": "2026-11-08T02:30:00.0000000Z",
+"StartDateEst": "2026-11-07T21:30:00.0000000",
+"last_start": "2026-11-08T03:30:00.0000000Z"
 }
 },
 "MLB": {},
