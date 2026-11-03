@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-03T15:59:26+00:00",
+"generated_at": "2026-11-03T16:29:11+00:00",
 "goalies": {
 "2026-11-03": {
 "ANA": {
@@ -11,8 +11,8 @@
 "status": null
 },
 "CBJ": {
-"goalie": "Jet Greaves",
-"status": null
+"goalie": "Cam Talbot",
+"status": "Likely"
 },
 "COL": {
 "goalie": "Scott Wedgewood",
@@ -32,7 +32,7 @@
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
-"status": null
+"status": "Confirmed"
 },
 "MTL": {
 "goalie": "Jacob Fowler",
@@ -56,7 +56,7 @@
 },
 "PIT": {
 "goalie": "Arturs Silovs",
-"status": "Likely"
+"status": "Confirmed"
 },
 "STL": {
 "goalie": "Joel Hofer",
@@ -93,7 +93,7 @@
 },
 "2026-11-04": {
 "BUF": {
-"goalie": "Ukko-Pekka Luukkonen",
+"goalie": "Colten Ellis",
 "status": null
 },
 "CGY": {
@@ -879,7 +879,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -1425,7 +1425,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2251,7 +2251,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2593,7 +2593,7 @@
 "goalieShutouts": 1,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13167,7 +13167,7 @@
 "toiMinutes": 66,
 "toiSeconds": 46
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -13375,7 +13375,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Erik Karlsson": {
@@ -13412,40 +13412,6 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Evgeni Malkin": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 4,
-"points": 7,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 20,
-"toiMinutes": 168,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 3,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 5,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 76,
-"toiSeconds": 36
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
-},
 "Hendrix Lapierre": {
 "gtd": false,
 "injury": null,
@@ -13478,10 +13444,44 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
+"pp": "PP2"
+},
+"Justin Brazeau": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 119,
+"toiSeconds": 29
+},
+"last5": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 65,
+"toiSeconds": 25
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Kaedan Korczak": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -13819,7 +13819,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 }
 },
