@@ -78,7 +78,7 @@ def _portfolio(res, n, iters):
 
 BOARD_NOTE = ("Source marks: none = props; ·h = last season's production moved to this "
                   "team and tonight's game, half-and-half with the salary line; ·$ = no history "
-                  "(a freshman): salary line only; ·b = cheap and not a listed starter. "
+                  "or prop (a freshman): a lower salary line from results; ·b = cheap and not a listed starter. "
                   "⚠️ = DK or RotoWire lists him as questionable.")
 
 ET = ZoneInfo("America/New_York")

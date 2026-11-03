@@ -21,6 +21,7 @@ import csv
 import glob
 import json
 import re
+import sys
 from pathlib import Path
 
 from edge.names import norm
@@ -155,8 +156,19 @@ def parse_contest_file(path) -> dict:
     QB/RB/RB/WR/WR/WR/FLEX/S-FLEX: a receiver can be drafted as WR, FLEX or
     S-FLEX and a quarterback as QB or S-FLEX, so most of the board is
     multi-slot rather than a minority of it.
+
+    TWO PLAYERS, ONE NAME, ARE LEFT OUT. The board has no team column, so two
+    non-CPT rows with one name and different FPTS are namesakes, and neither's
+    points or ownership can be told apart: the 2026-11-02 college board's Trent
+    Perrys scored 35.25 (UCLA) and 7.00 (Kansas), and the last row won for both.
+    Found on 3 boards of 237 (the others MLB: Max Muncy on two, Jose Fermin on
+    one). Said on stderr, so a
+    grader's count is not quietly short; namesakes who scored the same, or of
+    whom one went undrafted, cannot be seen here (scripts/nba_calibration.py
+    guards those from its own board).
     """
     out: dict = {}
+    namesakes: set = set()
     with open(path, newline="", encoding="utf-8-sig") as fh:
         for row in csv.DictReader(fh):
             name = (row.get("Player") or "").strip()
@@ -181,6 +193,8 @@ def parse_contest_file(path) -> dict:
                 out[key]["pct_drafted"] = round(
                     out[key]["pct_drafted"] + pct_val, 4)
                 if not cpt:
+                    if out[key]["slots"] != ["CPT"] and out[key]["fpts"] != fpts_val:
+                        namesakes.add(key)
                     out[key]["fpts"] = fpts_val
                 if slot and slot not in out[key]["slots"]:
                     out[key]["slots"].append(slot)
@@ -190,4 +204,7 @@ def parse_contest_file(path) -> dict:
                             "slots": [slot] if slot else []}
             if cpt:
                 out[key]["cpt_pct"] = round(out[key]["cpt_pct"] + pct_val, 4)
-    return out
+    if namesakes:
+        print(f"{Path(path).name}: two players share a name, left out: "
+              f"{', '.join(out[k]['name'] for k in sorted(namesakes))}", file=sys.stderr)
+    return {k: v for k, v in out.items() if k not in namesakes}

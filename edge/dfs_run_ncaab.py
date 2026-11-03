@@ -27,8 +27,9 @@ WHERE EACH PLAYER'S MEANS COME FROM, IN ORDER
        salary line (SALARY_LINE). Neither DK number is usable alone on opening night.
        DK's FPPG is LAST season's wherever he played it (Dennis Parker Jr., 31.5 from
        Radford, $3,500 at Kansas); DK's salary misprices transfers the other way.
-    3. SALARY: no verifiable history (a freshman), at a price or a starting job that
-       says he plays. Tyran Stokes $10,300, Caleb Holt $10,200.
+    3. SALARY: no verifiable history and no prop (a freshman), at a price or a starting
+       job that says he plays, on a line from results (SALARY_TIER_LINE). Tyran Stokes
+       $10,300, Caleb Holt $10,200.
     4. BENCH: cheap, not a listed starter. Last season's own output, or BENCH_POINTS.
 A team's bench is then scaled to what its implied points leave (TEAM_DK_PER_POINT).
 Every row's `source` says which.
@@ -94,6 +95,13 @@ ENV_POWER = 0.5
 #: pro pricing rule) said 13.8 and 46. PRIOR until graded: one night, players a book
 #: chose to price, against the market rather than results. Refit: scripts/ncaab_prior_fit.py.
 SALARY_LINE = (9.21, 2.13)
+#: DK points from salary for a player with NO history and NO prop at lock. FITTED on results:
+#: the 18 such players of 2026-11-02 (gid 155565, 7 games, box scores, scripts/ncaab_box_grade.py
+#: --fit). SALARY_LINE on them: MAE 12.31, bias +11.80, 16 of 18 below it. This line, held out by
+#: game: MAE 5.50, bias +0.07. SALARY_LINE was read off players a book chose to price, and the
+#: book not pricing a player is news: 4 no-history players WITH props averaged 33.8 that night,
+#: these 11.2. ONE SLATE, opening night: not enough data to call it proven; refit each night.
+SALARY_TIER_LINE = (1.86, 1.45)
 #: Last season's DK points carried to this one, by what changed: (intercept, slope).
 #: FITTED on Torvik players with 8+ games in both 2024-25 and 2025-26, joined by Torvik's
 #: player id, up/down by conference tier. HELD OUT on 2023-24 -> 2024-25, MAE vs carrying
@@ -556,7 +564,7 @@ def no_prop_points(salary: int, tv: dict | None, fppg: float | None, starter: bo
             return w * prior + (1 - w) * BENCH_POINTS, "bench"
         return BENCH_POINTS, "bench"
     if prior is None:
-        return line, "salary"
+        return SALARY_TIER_LINE[0] + SALARY_TIER_LINE[1] * salary / 1000.0, "salary"
     return w * prior + (1 - w) * line, "blend"
 
 

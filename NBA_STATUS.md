@@ -252,7 +252,8 @@ type 98, slots, $50,000, min 2 games, late swap on, FPPG stat id 279 (pinned), p
    then the player's own last-season shape, then the position profile.
 2. **blend** half carryover of last season (moved for same school / up / sideways / down a conference
    tier, and for tonight's implied points), half the salary line.
-3. **salary** no verifiable history, at $4,000+ or a listed starter.
+3. **salary** no verifiable history and no prop, at $4,000+ or a listed starter. Its own line from
+   results (1.86 + 1.45 per $1K), not the market's: see the first grade below.
 4. **bench** under $4,000 and not a listed starter, on a team RotoWire lists. Fitted to what the
    team's implied points leave (2.04 DK points per team point, measured, 365 teams).
 
@@ -264,15 +265,45 @@ same school 4.60 / 4.84 (n=1,554), up 6.00 / 8.89 (315), sideways 5.67 / 6.41 (5
 to call any of that proven.** The salary line, blend weight, bench rule, Q_PLAY and every simulator
 and ownership constant are still priors.
 
-**After the first contest:**
-1. `harness run import-contests`, then `harness run calibrate-nba -- data/contest-standings-N.csv
-   --sport ncaab` (per source; `--fit-ownership` reads, never ships, below ~5 slates).
-2. Is the bench rule right? It has never met a result. Popovic ($3,000) would have been bench at 1
-   point without his DK props; a cheap freshman with no prop and no starter tag is the board's blind spot.
+**First grade, 2026-11-02** (gid 155565, ONE slate, 300 logged players, ESPN box scores including the
+undrafted: `harness run ncaab-box-grade -- 155565`; DK's FPTS agreed on 172 of 173):
+
+| tier | n | proj | actual | bias | MAE | played |
+|---|---|---|---|---|---|---|
+| props | 37 | 25.3 | 24.3 | +1.04 | 8.91 | 100% |
+| blend | 97 | 19.3 | 16.8 | +2.50 | 9.29 | 94% |
+| salary | 18 | 23.1 | 11.2 | +11.80 | 12.31 | 100% |
+| bench | 148 | 1.7 | 3.4 | -1.75 | 3.48 | 43% |
+
+- **Salary tier was the miss.** 16 of 18 fell short of `SALARY_LINE`, which came from players a book chose
+  to price; the five at $9,700+ averaged 16.0. The same night's 4 no-history players WITH props averaged
+  33.8, so no prop at lock is itself news. Now `SALARY_TIER_LINE` (1.86 + 1.45 per $1K), held out by game:
+  MAE 5.50, bias +0.07, vs 12.31 / +11.80 (n=18, 7 games). It also removes most of the +11.7 DK points per
+  team the board was over. One slate: tonight's is its first real test. Refit: `ncaab-box-grade --fit`.
+- **The bench rule held on average.** The export said -5.13 only because it lists drafted players (43 of
+  148). Its hole is specific: Darius Bivins $3,000, 1.09 -> 24.00 at 23.6% field; Hassan Koureissi $3,000,
+  1.03 -> 24.75. We cannot see those two before lock yet. Once a team has played, its last box can (below).
+- **Starters:** RotoWire listed 13 of 20 teams, 60 of its 65 right. The other 7 teams are correctly not
+  benched (`team_listed`). Tagged Q: 3 of 12 played (3 of 6 at $4,100+), vs `Q_PLAY` .7; not enough data.
+- **Out list worked:** the 8 box rows not on our board all logged 0 minutes.
+- **Baselines**, the 152 priced rows: shipped MAE 9.56 / rho .476, salary line 9.97 / .332; on the 131 with a
+  DK FPPG, shipped 9.12 / .507, raw FPPG 9.55 / .385. Field ownership ranks them better than we do, .589.
+- **Ownership** (GPP 197428763, field 740; cash not pooled): MAE 2.69, rho .73, but far too flat. The field's
+  top 10 averaged 30.0% and we had them at 7.4%; Joshua Dent 37.7% vs 6.3%. Nothing tried beat that held out
+  by game (value, salary, FPPG; top-10 MAE 22.6-28). `own^2` was 18.3 in sample only. Not shipped. Top 1% of
+  lineups summed 134% ownership, the field 139%: no answer yet on whether it matters, one contest.
+- **Two players, one name:** `parse_contest_file` gave both Trent Perrys the last row. Now left out and said
+  on stderr, in every sport (3 boards of 237; `contests.db` still holds the merged name, 3 boards).
+
+**After each contest:**
+1. `harness run import-contests`, then `harness run ncaab-box-grade -- <gid>`, then `--fit`.
+2. `harness run calibrate-nba -- data/contest-standings-N.csv --sport ncaab` for floor/ceiling coverage;
+   `--fit-ownership` reads, never ships, below ~5 slates.
 3. Refit `SALARY_LINE` each night until it settles: `harness run ncaab-prior-fit -- <gid>`.
 
-**Known gaps.** DK FPPG will start mixing this season in as games are played, and Torvik's 2027 file is
-not read yet: on a later slate a player's "last season" goes stale. `harness/late_swap.py` does not cover
+**Known gaps.** DK FPPG will start mixing this season in as games are played, and neither Torvik's 2027
+file nor last game's box (minutes, who started) is read yet: on a later slate a player's "last season" goes
+stale, and a Bivins stays invisible. Next build target; of 11/3's 16 teams, only Lipscomb's game is on 11/2's board. `harness/late_swap.py` does not cover
 college. Ownership is the untouched prior and `own_weight` is 0, Adam's call to adjust per night
 until an export says otherwise (GPP_META: ownership had no ROI effect at fixed projection in MLB/NHL;
 never measured for college).

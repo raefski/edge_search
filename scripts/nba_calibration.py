@@ -24,6 +24,7 @@ separately (CLAUDE.md: never pooled) -- the type comes from contest_meta.json.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import csv
 import json
 import statistics
@@ -106,9 +107,12 @@ def main() -> int:
               f"(data/dfs_proj_log_{sport}.csv). Nothing to grade.")
         return 1
     contest = parse_contest_file(args.file)
+    # The export has no team column. Two logged players with one name get nobody's score,
+    # including when only one was drafted and parse_contest_file saw a single row.
+    names = Counter(norm(r["player"]) for r in logged)
     rows = []
     for r in logged:
-        real = contest.get(norm(r["player"]))
+        real = contest.get(norm(r["player"])) if names[norm(r["player"])] == 1 else None
         rows.append({**r, "salary": float(r["salary"]), "proj": float(r["proj"]),
                      "floor": float(r["floor"]), "ceil": float(r["ceil"]),
                      "own": float(r["own"] or 0), "group": (r["dk_pos"] or "").split("/")[0],
@@ -125,6 +129,9 @@ def main() -> int:
     print(f"{Path(args.file).name}: {sport} draft group {gid} ({kind}, field "
           f"{meta.get('field', '?')}) -- {len(scored)} of {len(rows)} logged players drafted "
           f"or scored. ONE slate: a reading, not a fit.")
+    if sport == "ncaab":
+        print("  The export lists drafted players only, so cheap tiers read too low here. All players, "
+              f"from box scores: harness run ncaab-box-grade -- {gid}")
     if len(scored) >= 5:
         print(line("all", scored, pcts))
     for src in ("props", "blend", "salary", "bench"):

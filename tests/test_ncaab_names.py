@@ -308,7 +308,7 @@ def test_low_major_star_is_not_carried_at_his_old_number():
 def test_freshman_gets_the_salary_line_not_the_old_pro_rule():
     fp, src = R.no_prop_points(10300, None, None, True, 2, 83.5)
     assert src == "salary"
-    assert fp == pytest.approx(R.SALARY_LINE[0] + R.SALARY_LINE[1] * 10.3)
+    assert fp == pytest.approx(R.SALARY_TIER_LINE[0] + R.SALARY_TIER_LINE[1] * 10.3)
     assert fp < 35        # 4.6 per $1K said 47
 
 
