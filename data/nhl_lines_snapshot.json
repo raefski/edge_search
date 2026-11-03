@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-03T15:00:17+00:00",
+"generated_at": "2026-11-03T15:29:21+00:00",
 "goalies": {
 "2026-11-03": {
 "ANA": {
@@ -3076,7 +3076,7 @@
 "toiSeconds": 59
 },
 "line": "F1",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
 "pp": "PP1"
 },
@@ -3110,7 +3110,7 @@
 "toiSeconds": 16
 },
 "line": "F4",
-"pk": "PK1",
+"pk": null,
 "pos": "c",
 "pp": null
 },
@@ -3460,7 +3460,7 @@
 "toiSeconds": 14
 },
 "line": "F3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
 },
@@ -3632,7 +3632,7 @@
 "toiSeconds": 51
 },
 "line": "F2",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": "PP1"
 },
@@ -3838,7 +3838,7 @@
 "toiSeconds": 20
 },
 "line": "F3",
-"pk": "PK1",
+"pk": null,
 "pos": "c",
 "pp": "PP2"
 },
@@ -4352,7 +4352,7 @@
 "toiSeconds": 9
 },
 "line": "F3",
-"pk": "PK2",
+"pk": null,
 "pos": "c",
 "pp": "PP2"
 },
@@ -4728,7 +4728,7 @@
 "toiSeconds": 9
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": null
 },
@@ -5862,7 +5862,7 @@
 "toiSeconds": 51
 },
 "line": "F1",
-"pk": "PK1",
+"pk": null,
 "pos": "c",
 "pp": "PP1"
 },
@@ -5898,7 +5898,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "John Gibson": {
 "gtd": false,
@@ -5968,7 +5968,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Justin Faulk": {
 "gtd": false,
@@ -6204,7 +6204,7 @@
 "toiSeconds": 24
 },
 "line": "F4",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": null
 },
@@ -7406,7 +7406,7 @@
 "toiSeconds": 54
 },
 "line": "F3",
-"pk": "PK2",
+"pk": null,
 "pos": "rw",
 "pp": "PP2"
 },
@@ -7576,7 +7576,7 @@
 "toiSeconds": 8
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
 },
@@ -14610,7 +14610,7 @@
 "toiSeconds": 15
 },
 "line": "F4",
-"pk": "PK1",
+"pk": null,
 "pos": "lw",
 "pp": null
 },
@@ -14678,7 +14678,7 @@
 "toiSeconds": 34
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -14882,7 +14882,7 @@
 "toiSeconds": 12
 },
 "line": "F1",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
 },
@@ -15052,7 +15052,7 @@
 "toiSeconds": 47
 },
 "line": "D1",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -15190,7 +15190,7 @@
 "toiSeconds": 17
 },
 "line": "F4",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "c",
 "pp": null
 }
