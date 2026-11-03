@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-03T23:44:34+00:00",
+"generated_at": "2026-11-03T23:47:19+00:00",
 "goalies": {
 "2026-11-03": {
 "ANA": {
@@ -13481,7 +13481,7 @@
 "pp": null
 },
 "Kaedan Korczak": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -13645,7 +13645,7 @@
 "toiMinutes": 90,
 "toiSeconds": 27
 },
-"line": "D2",
+"line": "D1",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -13749,7 +13749,7 @@
 "toiMinutes": 89,
 "toiSeconds": 38
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -19447,7 +19447,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Cole Perfetti": {
@@ -19957,9 +19957,9 @@
 "toiMinutes": 42,
 "toiSeconds": 0
 },
-"line": "D4",
+"line": "F4",
 "pk": null,
-"pos": "rd",
+"pos": "lw",
 "pp": null
 },
 "Viggo Bj\u00f6rck": {
