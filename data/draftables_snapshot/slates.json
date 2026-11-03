@@ -399,6 +399,16 @@
 "StartDateEst": "2026-11-03T22:00:00.0000000",
 "last_start": "2026-11-04T03:00:00.0000000Z"
 },
+"155993": {
+"ContestStartTimeSuffix": " (Thu-Mon)",
+"DraftGroupId": 155993,
+"DraftGroupTag": "",
+"GameCount": 15,
+"GameTypeId": 1,
+"StartDate": "2026-11-06T01:15:00.0000000Z",
+"StartDateEst": "2026-11-05T20:15:00.0000000",
+"last_start": "2026-11-10T01:15:00.0000000Z"
+},
 "155994": {
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 155994,
@@ -408,6 +418,16 @@
 "StartDate": "2026-11-08T18:00:00.0000000Z",
 "StartDateEst": "2026-11-08T13:00:00.0000000",
 "last_start": "2026-11-08T21:25:00.0000000Z"
+},
+"156000": {
+"ContestStartTimeSuffix": " (JAX @ BAL)",
+"DraftGroupId": 156000,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 96,
+"StartDate": "2026-11-06T01:15:00.0000000Z",
+"StartDateEst": "2026-11-05T20:15:00.0000000",
+"last_start": "2026-11-06T01:15:00.0000000Z"
 }
 },
 "NHL": {
