@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-03T13:59:37+00:00",
+"generated_at": "2026-11-03T15:00:17+00:00",
 "goalies": {
 "2026-11-03": {
 "ANA": {
@@ -18694,7 +18694,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Brayden McNabb": {
 "gtd": false,
@@ -18760,9 +18760,9 @@
 "toiSeconds": 57
 },
 "line": "F2",
-"pk": "PK2",
+"pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Carter Hart": {
 "gtd": false,
@@ -19034,7 +19034,7 @@
 "toiSeconds": 7
 },
 "line": "F1",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rw",
 "pp": "PP1"
 },
@@ -19068,7 +19068,7 @@
 "toiSeconds": 22
 },
 "line": "F2",
-"pk": null,
+"pk": "PK1",
 "pos": "rw",
 "pp": "PP1"
 },
