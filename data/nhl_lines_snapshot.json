@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-03T17:59:25+00:00",
+"generated_at": "2026-11-03T18:59:17+00:00",
 "goalies": {
 "2026-11-03": {
 "ANA": {
@@ -72,7 +72,7 @@
 },
 "UTA": {
 "goalie": "Sebastian Cossa",
-"status": "Likely"
+"status": "Confirmed"
 },
 "VAN": {
 "goalie": "Kevin Lankinen",
@@ -12210,6 +12210,40 @@
 "pos": "c",
 "pp": "PP2"
 },
+"Sammy Blais": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 95,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 54,
+"toiSeconds": 13
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Samuel Ersson": {
 "gtd": false,
 "injury": null,
@@ -12414,40 +12448,6 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
-},
-"Xavier Bourgault": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 9,
-"toiMinutes": 86,
-"toiSeconds": 11
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 2,
-"toiMinutes": 49,
-"toiSeconds": 37
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
 "pp": null
 }
 },
@@ -14062,40 +14062,6 @@
 "pos": "lw",
 "pp": "PP1"
 },
-"Curtis Douglas": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 72,
-"toiSeconds": 33
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 28,
-"toiSeconds": 51
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Frederick Gaudreau": {
 "gtd": false,
 "injury": null,
@@ -14128,6 +14094,40 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "c",
+"pp": null
+},
+"Jani Nyman": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 9,
+"toiMinutes": 112,
+"toiSeconds": 27
+},
+"last5": {
+"assists": 2,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 7,
+"toiMinutes": 63,
+"toiSeconds": 50
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Joey Daccord": {
@@ -14297,7 +14297,7 @@
 "toiMinutes": 78,
 "toiSeconds": 5
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -14331,13 +14331,13 @@
 "toiMinutes": 62,
 "toiSeconds": 55
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
 },
 "Matty Beniers": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
