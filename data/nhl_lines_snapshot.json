@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-03T19:59:51+00:00",
+"generated_at": "2026-11-03T21:29:20+00:00",
 "goalies": {
 "2026-11-03": {
 "ANA": {
@@ -128,40 +128,6 @@
 },
 "lines": {
 "ANA": {
-"A.J. Greer": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 4,
-"points": 5,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 16,
-"toiMinutes": 123,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 3,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 63,
-"toiSeconds": 25
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Alex Killorn": {
 "gtd": false,
 "injury": null,
@@ -539,6 +505,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
+},
+"Nico Myatovic": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 0,
+"gamesPlayed": 7,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 0,
+"toiMinutes": 57,
+"toiSeconds": 36
+},
+"last5": {
+"assists": 2,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 0,
+"toiMinutes": 57,
+"toiSeconds": 36
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Nikita Nesterenko": {
 "gtd": false,
@@ -14822,11 +14822,11 @@
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 6,
+"assists": 5,
 "blocks": 4,
 "gamesPlayed": 10,
 "goals": 1,
-"points": 7,
+"points": 6,
 "powerplayAssists": 1,
 "powerplayGoals": 0,
 "powerplayPoints": 1,
@@ -14835,11 +14835,11 @@
 "toiSeconds": 57
 },
 "last5": {
-"assists": 3,
+"assists": 2,
 "blocks": 0,
 "gamesPlayed": 5,
 "goals": 1,
-"points": 4,
+"points": 3,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
@@ -14958,11 +14958,11 @@
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 1,
+"assists": 2,
 "blocks": 4,
 "gamesPlayed": 10,
 "goals": 3,
-"points": 4,
+"points": 5,
 "powerplayAssists": 0,
 "powerplayGoals": 1,
 "powerplayPoints": 1,
@@ -14971,11 +14971,11 @@
 "toiSeconds": 25
 },
 "last5": {
-"assists": 0,
+"assists": 1,
 "blocks": 2,
 "gamesPlayed": 5,
 "goals": 2,
-"points": 2,
+"points": 3,
 "powerplayAssists": 0,
 "powerplayGoals": 1,
 "powerplayPoints": 1,
