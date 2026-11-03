@@ -230,16 +230,6 @@
 "StartDateEst": "2026-11-03T12:00:00.0000000",
 "last_start": "2026-11-03T21:00:00.0000000Z"
 },
-"155892": {
-"ContestStartTimeSuffix": " (Madden Stream PHI @ WAS)",
-"DraftGroupId": 155892,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 159,
-"StartDate": "2026-11-03T19:00:00.0000000Z",
-"StartDateEst": "2026-11-03T14:00:00.0000000",
-"last_start": "2026-11-03T19:00:00.0000000Z"
-},
 "155893": {
 "ContestStartTimeSuffix": " (Madden Stream PIT @ DET)",
 "DraftGroupId": 155893,
@@ -389,6 +379,26 @@
 "StartDate": "2026-11-08T18:00:00.0000000Z",
 "StartDateEst": "2026-11-08T13:00:00.0000000",
 "last_start": "2026-11-08T21:25:00.0000000Z"
+},
+"155995": {
+"ContestStartTimeSuffix": " (Early Only)",
+"DraftGroupId": 155995,
+"DraftGroupTag": "",
+"GameCount": 7,
+"GameTypeId": 1,
+"StartDate": "2026-11-08T18:00:00.0000000Z",
+"StartDateEst": "2026-11-08T13:00:00.0000000",
+"last_start": "2026-11-08T18:00:00.0000000Z"
+},
+"155996": {
+"ContestStartTimeSuffix": " (Sun-Mon)",
+"DraftGroupId": 155996,
+"DraftGroupTag": "",
+"GameCount": 13,
+"GameTypeId": 1,
+"StartDate": "2026-11-08T18:00:00.0000000Z",
+"StartDateEst": "2026-11-08T13:00:00.0000000",
+"last_start": "2026-11-10T01:15:00.0000000Z"
 },
 "156000": {
 "ContestStartTimeSuffix": " (JAX @ BAL)",
