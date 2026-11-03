@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-03T21:29:20+00:00",
+"generated_at": "2026-11-03T23:44:34+00:00",
 "goalies": {
 "2026-11-03": {
 "ANA": {
@@ -24,7 +24,7 @@
 },
 "DET": {
 "goalie": "John Gibson",
-"status": null
+"status": "Confirmed"
 },
 "EDM": {
 "goalie": "Tristan Jarry",
@@ -64,7 +64,7 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": null
+"status": "Confirmed"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
@@ -80,11 +80,11 @@
 },
 "VGK": {
 "goalie": "Adin Hill",
-"status": null
+"status": "Confirmed"
 },
 "WPG": {
 "goalie": "Stuart Skinner",
-"status": null
+"status": "Confirmed"
 },
 "WSH": {
 "goalie": "Logan Thompson",
@@ -2392,6 +2392,74 @@
 "pos": "rd",
 "pp": "PP2"
 },
+"Dante Fabbro": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 17,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 159,
+"toiSeconds": 52
+},
+"last5": {
+"assists": 0,
+"blocks": 9,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 67,
+"toiSeconds": 54
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
+"Danton Heinen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 111,
+"toiSeconds": 0
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 48,
+"toiSeconds": 54
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Denton Mateychuk": {
 "gtd": false,
 "injury": null,
@@ -2426,74 +2494,6 @@
 "pos": "rd",
 "pp": "PP2"
 },
-"Dmitri Voronkov": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 5,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 5,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 10,
-"toiMinutes": 115,
-"toiSeconds": 32
-},
-"last5": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 48,
-"toiSeconds": 33
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
-"Erik Gudbranson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 18,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 151,
-"toiSeconds": 58
-},
-"last5": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 64,
-"toiSeconds": 28
-},
-"line": "D3",
-"pk": "PK1",
-"pos": "rd",
-"pp": null
-},
 "Ivan Provorov": {
 "gtd": false,
 "injury": null,
@@ -2524,7 +2524,7 @@
 "toiSeconds": 54
 },
 "line": "D2",
-"pk": null,
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -2765,7 +2765,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Sean Monahan": {
@@ -16049,7 +16049,7 @@
 "toiMinutes": 98,
 "toiSeconds": 47
 },
-"line": "D3",
+"line": "D4",
 "pk": null,
 "pos": "ld",
 "pp": "PP1"
@@ -16561,7 +16561,7 @@
 "toiMinutes": 70,
 "toiSeconds": 13
 },
-"line": "D4",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -19375,44 +19375,10 @@
 "toiMinutes": 66,
 "toiSeconds": 54
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
-},
-"Brad Lambert": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 89,
-"toiSeconds": 0
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 40,
-"toiSeconds": 11
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
-"pp": null
 },
 "Clay Stevenson": {
 "gtd": false,
@@ -19547,9 +19513,9 @@
 "toiMinutes": 79,
 "toiSeconds": 56
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Dylan DeMelo": {
@@ -19722,40 +19688,6 @@
 "pos": "ld",
 "pp": null
 },
-"Isak Rosen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 132,
-"toiSeconds": 22
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 61,
-"toiSeconds": 43
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
-},
 "Kyle Connor": {
 "gtd": false,
 "injury": null,
@@ -19926,6 +19858,40 @@
 "pos": "rd",
 "pp": "PP1"
 },
+"Nino Niederreiter": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 16,
+"toiMinutes": 121,
+"toiSeconds": 10
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 59,
+"toiSeconds": 51
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
 "Stuart Skinner": {
 "gtd": false,
 "injury": null,
@@ -19960,6 +19926,40 @@
 "line": "G1",
 "pk": null,
 "pos": "g",
+"pp": null
+},
+"Tyrel Bauer": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 86,
+"toiSeconds": 30
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 42,
+"toiSeconds": 0
+},
+"line": "D4",
+"pk": null,
+"pos": "rd",
 "pp": null
 },
 "Viggo Bj\u00f6rck": {
