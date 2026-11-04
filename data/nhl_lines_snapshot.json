@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-04T19:29:18+00:00",
+"generated_at": "2026-11-04T19:59:17+00:00",
 "goalies": {
 "2026-11-04": {
 "BUF": {
@@ -13824,40 +13824,6 @@
 }
 },
 "PIT": {
-"Andrei Kuzmenko": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 128,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 65,
-"toiSeconds": 8
-},
-"line": "F2",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Arturs Silovs": {
 "gtd": false,
 "injury": null,
@@ -14061,7 +14027,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Erik Karlsson": {
@@ -14097,6 +14063,40 @@
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP1"
+},
+"Evgeni Malkin": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 7,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 20,
+"toiMinutes": 168,
+"toiSeconds": 49
+},
+"last5": {
+"assists": 3,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 76,
+"toiSeconds": 36
+},
+"line": "F2",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
 },
 "Hendrix Lapierre": {
 "gtd": false,
@@ -14680,40 +14680,6 @@
 "pos": "rd",
 "pp": "PP2"
 },
-"Cale Fleury": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 19,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 10,
-"toiMinutes": 152,
-"toiSeconds": 53
-},
-"last5": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 68,
-"toiSeconds": 22
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Chandler Stephenson": {
 "gtd": false,
 "injury": null,
@@ -15160,6 +15126,40 @@
 "pos": "ld",
 "pp": null
 },
+"Ville Ottavainen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 15,
+"toiMinutes": 121,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 53,
+"toiSeconds": 28
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Vince Dunn": {
 "gtd": false,
 "injury": null,
@@ -15228,7 +15228,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Alex Nedeljkovic": {
 "gtd": false,
@@ -15332,7 +15332,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Darnell Nurse": {
 "gtd": false,
@@ -15396,6 +15396,40 @@
 "shots": 6,
 "toiMinutes": 85,
 "toiSeconds": 2
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": "PP2"
+},
+"Eric Pohlkamp": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 3,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 9,
+"toiMinutes": 58,
+"toiSeconds": 56
+},
+"last5": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 3,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 9,
+"toiMinutes": 58,
+"toiSeconds": 56
 },
 "line": "D3",
 "pk": null,
@@ -15502,7 +15536,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Kiefer Sherwood": {
 "gtd": false,
@@ -15673,40 +15707,6 @@
 "pk": null,
 "pos": "c",
 "pp": "PP2"
-},
-"Nolan Allan": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 153,
-"toiSeconds": 10
-},
-"last5": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 69,
-"toiSeconds": 51
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
 },
 "Sam Dickinson": {
 "gtd": false,
