@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-04T20:29:09+00:00",
+"generated_at": "2026-11-04T20:59:11+00:00",
 "goalies": {
 "2026-11-04": {
 "BUF": {
@@ -8336,6 +8336,40 @@
 }
 },
 "LAK": {
+"Adrian Kempe": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 4,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 6,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 32,
+"toiMinutes": 207,
+"toiSeconds": 27
+},
+"last5": {
+"assists": 2,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 18,
+"toiMinutes": 103,
+"toiSeconds": 18
+},
+"line": "F1",
+"pk": null,
+"pos": "rw",
+"pp": "PP1"
+},
 "Alex Laferriere": {
 "gtd": false,
 "injury": null,
@@ -8475,7 +8509,7 @@
 "pp": "PP1"
 },
 "Brandt Clarke": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 5,
@@ -8743,7 +8777,7 @@
 "toiMinutes": 69,
 "toiSeconds": 22
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
 "pos": "rw",
 "pp": null
@@ -8782,6 +8816,40 @@
 "pos": "ld",
 "pp": null
 },
+"Kenny Connors": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 53,
+"toiSeconds": 1
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 53,
+"toiSeconds": 1
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "Martin Chromiak": {
 "gtd": false,
 "injury": null,
@@ -8811,10 +8879,10 @@
 "toiMinutes": 53,
 "toiSeconds": 42
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Mikey Anderson": {
 "gtd": false,
@@ -8884,40 +8952,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Samuel Helenius": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 84,
-"toiSeconds": 9
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 38,
-"toiSeconds": 21
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
-"pp": null
-},
 "Scott Laughton": {
 "gtd": false,
 "injury": null,
@@ -8952,40 +8986,6 @@
 "pos": "c",
 "pp": null
 },
-"Taylor Ward": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 93,
-"toiSeconds": 53
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 53,
-"toiSeconds": 43
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Trevor Moore": {
 "gtd": false,
 "injury": null,
@@ -9018,7 +9018,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 }
 },
 "MTL": {
