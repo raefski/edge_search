@@ -72,6 +72,66 @@
 "StartDateEst": "2026-11-05T20:00:00.0000000",
 "last_start": "2026-11-06T01:00:00.0000000Z"
 },
+"156216": {
+"ContestStartTimeSuffix": null,
+"DraftGroupId": 156216,
+"DraftGroupTag": "Featured",
+"GameCount": 5,
+"GameTypeId": 94,
+"StartDate": "2026-11-07T00:00:00.0000000Z",
+"StartDateEst": "2026-11-06T19:00:00.0000000",
+"last_start": "2026-11-07T03:15:00.0000000Z"
+},
+"156218": {
+"ContestStartTimeSuffix": " (VT @ SMU)",
+"DraftGroupId": 156218,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 95,
+"StartDate": "2026-11-07T00:00:00.0000000Z",
+"StartDateEst": "2026-11-06T19:00:00.0000000",
+"last_start": "2026-11-07T00:00:00.0000000Z"
+},
+"156219": {
+"ContestStartTimeSuffix": " (NEB @ IL)",
+"DraftGroupId": 156219,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 95,
+"StartDate": "2026-11-07T01:00:00.0000000Z",
+"StartDateEst": "2026-11-06T20:00:00.0000000",
+"last_start": "2026-11-07T01:00:00.0000000Z"
+},
+"156220": {
+"ContestStartTimeSuffix": " (Night)",
+"DraftGroupId": 156220,
+"DraftGroupTag": "",
+"GameCount": 2,
+"GameTypeId": 94,
+"StartDate": "2026-11-07T02:00:00.0000000Z",
+"StartDateEst": "2026-11-06T21:00:00.0000000",
+"last_start": "2026-11-07T03:15:00.0000000Z"
+},
+"156221": {
+"ContestStartTimeSuffix": " (TCU @ ARIZ)",
+"DraftGroupId": 156221,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 95,
+"StartDate": "2026-11-07T03:15:00.0000000Z",
+"StartDateEst": "2026-11-06T22:15:00.0000000",
+"last_start": "2026-11-07T03:15:00.0000000Z"
+},
+"156224": {
+"ContestStartTimeSuffix": " (BYU @ UTAH)",
+"DraftGroupId": 156224,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 95,
+"StartDate": "2026-11-07T17:00:00.0000000Z",
+"StartDateEst": "2026-11-07T12:00:00.0000000",
+"last_start": "2026-11-07T17:00:00.0000000Z"
+},
 "156225": {
 "ContestStartTimeSuffix": " (Afternoon)",
 "DraftGroupId": 156225,
@@ -101,6 +161,46 @@
 "StartDate": "2026-11-08T02:30:00.0000000Z",
 "StartDateEst": "2026-11-07T21:30:00.0000000",
 "last_start": "2026-11-08T03:30:00.0000000Z"
+},
+"156230": {
+"ContestStartTimeSuffix": " (TXST @ ORST)",
+"DraftGroupId": 156230,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 95,
+"StartDate": "2026-11-08T03:30:00.0000000Z",
+"StartDateEst": "2026-11-07T22:30:00.0000000",
+"last_start": "2026-11-08T03:30:00.0000000Z"
+},
+"156236": {
+"ContestStartTimeSuffix": " (MIA @ ND)",
+"DraftGroupId": 156236,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 95,
+"StartDate": "2026-11-08T00:30:00.0000000Z",
+"StartDateEst": "2026-11-07T19:30:00.0000000",
+"last_start": "2026-11-08T00:30:00.0000000Z"
+},
+"156237": {
+"ContestStartTimeSuffix": " (UGA @ MISS)",
+"DraftGroupId": 156237,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 95,
+"StartDate": "2026-11-08T00:30:00.0000000Z",
+"StartDateEst": "2026-11-07T19:30:00.0000000",
+"last_start": "2026-11-08T00:30:00.0000000Z"
+},
+"156362": {
+"ContestStartTimeSuffix": " (BAMA @ LSU)",
+"DraftGroupId": 156362,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 95,
+"StartDate": "2026-11-07T20:30:00.0000000Z",
+"StartDateEst": "2026-11-07T15:30:00.0000000",
+"last_start": "2026-11-07T20:30:00.0000000Z"
 }
 },
 "MLB": {},
