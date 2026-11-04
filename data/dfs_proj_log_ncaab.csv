@@ -542,3 +542,162 @@ date,gid,player,team,opp,dk_pos,salary,proj,sd,floor,ceil,own,proj_source,impute
 2026-11-03,156039,BJ Brown Jr.,DREXE,UVA,G/F,3000,3.01,2.59,1.25,6.5,0.5,bench,all,,0,,,,live
 2026-11-03,156039,Latief Lorenzano-White,DREXE,UVA,G/F,3000,3.05,2.64,1.25,6.75,0.5,bench,all,,0,,,,live
 2026-11-03,156039,Rickey Paulding III,DREXE,UVA,G/F,3000,3.0,2.59,1.0,6.5,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Tahaad Pettiford,AUB,SELA,G,10000,32.06,9.78,25.25,44.5,12.3,blend,all,,1,Auburn,32.276,27.8,live
+2026-11-04,156123,Jalen Jackson,BUTLE,FDU,G,9700,28.87,8.53,23.0,39.75,10.6,blend,all,,1,Butler,22.533,21.3,live
+2026-11-04,156123,Treyson Anderson,BUTLE,FDU,F,9500,23.69,7.57,18.19,33.75,12.3,blend,all,,1,North Dakota St.,18.209,21.1,live
+2026-11-04,156123,Lee Dort,CAL,RAD,F,9300,19.6,7.35,14.25,29.0,9.6,blend,all,Q,1,California,23.096,21.3,live
+2026-11-04,156123,Kevin Overton,AUB,SELA,G,9200,29.04,9.28,22.75,41.03,11.9,blend,all,,1,Auburn,31.692,23.0,live
+2026-11-04,156123,Drayton Jones,BUTLE,FDU,F,8800,25.69,7.8,20.25,35.78,16.3,blend,all,,1,Butler,19.466,16.5,live
+2026-11-04,156123,Nojus Indrusaitis,CAL,RAD,G,8500,25.38,8.48,19.25,37.0,9.3,blend,all,,1,Pittsburgh,23.539,17.7,live
+2026-11-04,156123,Michael Cooper,CAL,RAD,G,8200,24.64,8.2,18.75,36.25,8.8,blend,all,,0,Wright St.,26.436,22.1,live
+2026-11-04,156123,Caleb Williams,AUB,SELA,G,8100,13.71,6.26,9.25,22.25,3.6,salary,all,,1,,,,live
+2026-11-04,156123,Jordan Ross,CAL,RAD,G,8000,23.61,7.31,18.5,33.25,8.1,blend,all,,1,Georgia,20.863,14.4,live
+2026-11-04,156123,Thomas Dowd,AUB,SELA,F,7900,25.13,8.03,19.5,36.0,16.1,blend,all,,1,Troy,36.047,36.3,live
+2026-11-04,156123,Jordan Ellerbee,BUTLE,FDU,G,7800,21.99,7.74,16.5,32.0,7.0,blend,all,,0,Florida Gulf Coast,26.888,22.4,live
+2026-11-04,156123,Owen Freeman,AUB,SELA,F,7700,15.7,6.22,11.25,23.75,7.2,blend,all,Q,0,Creighton,11.873,13.8,live
+2026-11-04,156123,Joshua Dent,STMRY,NDSU,G,7600,27.77,9.18,21.25,39.75,11.6,blend,all,,0,Saint Mary's,36.212,28.0,live
+2026-11-04,156123,George Kimble III,AUB,SELA,G,7500,12.61,5.96,8.25,20.5,3.1,salary,all,,0,,,,live
+2026-11-04,156123,Kenyon Giles,WICH,CS-NR,G,7500,28.05,9.57,21.0,40.5,11.9,blend,all,,0,Wichita St.,36.178,28.9,live
+2026-11-04,156123,Christian Moore,BUTLE,FDU,F,7400,20.71,7.67,15.25,30.53,11.0,blend,all,,0,The Citadel,25.064,17.9,live
+2026-11-04,156123,Michael Gray Jr.,WICH,CS-NR,G,7300,22.99,8.18,17.25,33.75,7.7,blend,all,,0,Wichita St.,26.925,17.4,live
+2026-11-04,156123,Josiah Davis,CS-NR,WICH,G,7200,25.02,7.94,19.5,35.53,9.3,blend,all,,0,Cal St. Northridge,33.338,33.7,live
+2026-11-04,156123,Quincy Allen,SELA,AUB,G,7100,21.99,8.45,16.0,33.25,7.1,blend,all,,0,Bryant,24.438,22.4,live
+2026-11-04,156123,Andy Stefonowicz,NDSU,STMRY,G,7000,22.99,8.05,17.25,33.5,7.9,blend,all,,0,North Dakota St.,32.391,23.6,live
+2026-11-04,156123,Asim Djulovic,BUTLE,FDU,F,6900,11.95,5.61,7.75,19.25,4.8,salary,all,,1,,,,live
+2026-11-04,156123,David Jevtic,FDU,BUTLE,G,6800,19.94,7.83,14.5,30.5,6.0,blend,all,,0,Fairleigh Dickinson,20.261,13.5,live
+2026-11-04,156123,Eduardo Klafke,BUTLE,FDU,G,6700,20.52,8.26,14.5,31.25,6.3,blend,all,,1,Mississippi,14.959,11.2,live
+2026-11-04,156123,Jahari Long,WICH,CS-NR,G,6600,22.33,7.96,16.5,33.0,7.6,blend,all,,0,George Mason,33.815,23.6,live
+2026-11-04,156123,William Berg,WICH,CS-NR,F,6500,22.13,7.42,16.75,32.0,12.8,blend,all,,0,,,23.2,live
+2026-11-04,156123,Ras Elijah Godbolt,FDU,BUTLE,G,6400,16.1,6.77,11.25,25.03,4.1,blend,all,,0,Fairleigh Dickinson,11.767,4.4,live
+2026-11-04,156123,Riley Massey,NDSU,STMRY,G,6300,17.77,6.92,12.75,26.53,4.9,blend,all,,0,North Dakota St.,8.239,4.0,live
+2026-11-04,156123,Thomas Ndong,STMRY,NDSU,F,6200,18.15,6.16,13.75,26.5,8.7,blend,all,,0,Cal Baptist,17.494,15.2,live
+2026-11-04,156123,Semetri Carr,CAL,RAD,G,6100,19.63,7.16,14.44,28.75,6.1,blend,all,,0,,,11.2,live
+2026-11-04,156123,Amier Ali,CAL,RAD,G/F,6000,20.25,7.31,15.0,30.0,6.5,blend,all,,0,Mississippi St.,7.3,6.1,live
+2026-11-04,156123,Lamine Niang,CS-NR,WICH,F,5900,17.91,6.34,13.25,26.0,8.6,blend,all,,0,Tennessee Martin,9.044,8.2,live
+2026-11-04,156123,TJ Williams,WICH,CS-NR,G,5800,21.84,7.18,16.75,31.5,8.0,blend,all,,0,Wichita St.,22.083,18.4,live
+2026-11-04,156123,Dominykas Daubaris,CAL,RAD,F,5700,10.09,4.94,6.5,16.25,3.6,salary,all,,0,,,,live
+2026-11-04,156123,JR Jacobs,FDU,BUTLE,G,5600,10.09,5.1,6.25,16.75,2.1,salary,all,,0,,,,live
+2026-11-04,156123,Dillon Battie,WICH,CS-NR,F,5500,20.33,6.66,15.75,29.0,11.9,blend,all,,0,Wichita St.,17.377,16.3,live
+2026-11-04,156123,Jeremy Dent-Smith,STMRY,NDSU,G,5400,20.21,7.65,14.75,30.28,7.2,blend,all,,0,Stanford,20.079,14.7,live
+2026-11-04,156123,Garrett Shoemaker,SELA,AUB,F,5300,15.92,6.05,11.5,24.25,7.2,blend,all,,0,Southeastern Louisiana,7.079,4.3,live
+2026-11-04,156123,Brooklyn Hicks,CS-NR,WICH,G,5200,19.19,6.84,14.25,28.25,6.6,blend,all,,0,Montana,22.1,16.6,live
+2026-11-04,156123,Kevin Gad,STMRY,NDSU,F,5100,14.88,5.84,10.75,22.75,6.4,blend,all,,0,Saint Mary's,10.086,4.5,live
+2026-11-04,156123,Santiago Paz Vazquez,NDSU,STMRY,G,5000,9.11,4.66,5.75,15.5,1.9,salary,all,,0,,,,live
+2026-11-04,156123,Bukky Oboye,AUB,SELA,F,5000,17.8,6.1,13.5,25.75,9.5,blend,all,,0,Santa Clara,17.735,17.4,live
+2026-11-04,156123,Raysean Johnson,FDU,BUTLE,G,4900,16.46,6.75,11.75,25.25,5.0,blend,all,,0,Fairleigh Dickinson,17.535,9.4,live
+2026-11-04,156123,Vangelis Zougris,STMRY,NDSU,F,4900,18.44,6.57,13.75,27.0,10.6,blend,all,,0,Louisville,9.093,7.3,live
+2026-11-04,156123,Luke Fennell,STMRY,NDSU,G,4800,17.62,6.75,13.0,26.25,5.9,blend,all,,0,Syracuse,6.48,2.9,live
+2026-11-04,156123,Bol Agu,FDU,BUTLE,F,4800,16.17,6.38,11.5,24.75,8.0,blend,all,,0,Saint Peter's,9.848,7.3,live
+2026-11-04,156123,Caleb Smith,CS-NR,WICH,G,4700,19.63,6.51,15.0,28.25,8.1,blend,all,,0,Rider,29.683,20.4,live
+2026-11-04,156123,Emmanuel Stephen,CS-NR,WICH,F,4700,18.89,6.23,14.5,27.0,11.9,blend,all,,0,UNLV,15.5,11.0,live
+2026-11-04,156123,Tyler Rolison,SELA,AUB,G,4600,18.14,7.06,13.25,27.5,6.8,blend,all,,0,Nevada,17.232,12.7,live
+2026-11-04,156123,Yanis Ndjonga,SELA,AUB,F,4600,16.23,6.29,11.5,24.75,8.4,blend,all,,0,McNeese St.,10.382,7.8,live
+2026-11-04,156123,Rob Diaz III,NDSU,STMRY,G,4500,18.96,6.69,14.0,27.5,7.9,blend,all,,0,Long Beach St.,21.978,19.4,live
+2026-11-04,156123,Adam Olsen,AUB,SELA,F,4500,19.38,7.56,14.0,29.5,13.6,blend,all,,0,South Alabama,35.816,26.7,live
+2026-11-04,156123,Keziah Ekissi,CS-NR,WICH,G,4400,18.42,6.97,13.25,28.0,7.5,blend,all,,0,Oregon St.,17.341,10.4,live
+2026-11-04,156123,Cyr Malonga,WICH,CS-NR,F,4400,14.82,5.42,11.0,22.0,7.2,blend,all,,0,New Mexico St.,11.704,7.9,live
+2026-11-04,156123,Carson Smith,NDSU,STMRY,G,4400,15.94,6.17,11.5,24.0,5.2,blend,all,,0,North Dakota St.,9.983,5.3,live
+2026-11-04,156123,Daniel Akoue,SELA,AUB,F,4300,15.68,6.13,11.25,23.75,8.4,blend,all,,0,Bryant,11.808,8.0,live
+2026-11-04,156123,Rory Hawke,STMRY,NDSU,G,4300,14.15,5.93,10.0,22.25,4.1,blend,all,,0,Saint Mary's,10.7,4.7,live
+2026-11-04,156123,Frederik Erichsen,RAD,CAL,F,4300,16.49,6.57,11.75,25.25,9.5,blend,all,,0,Radford,13.266,10.6,live
+2026-11-04,156123,Jalen Barbee,CS-NR,WICH,G,4200,7.84,4.4,4.75,13.53,1.6,salary,all,,0,,,,live
+2026-11-04,156123,Tristan Gross,RAD,CAL,G,4200,16.38,6.55,11.75,25.0,6.0,blend,all,,0,Mercer,13.525,9.0,live
+2026-11-04,156123,Quinton Webb,CS-NR,WICH,G,4100,7.77,4.41,4.5,13.75,1.6,salary,all,,0,,,,live
+2026-11-04,156123,Mantas Juzenas,STMRY,NDSU,G/F,4100,13.96,5.68,10.0,21.5,4.2,blend,all,,0,Saint Mary's,5.754,4.6,live
+2026-11-04,156123,Narcisse Ngoy,AUB,SELA,F,4100,7.66,4.31,4.5,13.0,2.5,salary,all,,1,,,,live
+2026-11-04,156123,Ashley Sims II,SELA,AUB,F,4000,17.36,6.56,12.75,26.0,12.1,blend,all,,0,Bryant,31.374,18.3,live
+2026-11-04,156123,Warren Keel Jr.,RAD,CAL,G,4000,13.12,5.79,8.75,20.75,3.8,blend,all,,0,Radford,6.136,3.4,live
+2026-11-04,156123,Tyler McQuaid,FDU,BUTLE,G,4000,11.7,5.53,7.75,19.0,3.0,blend,all,,0,Fairleigh Dickinson,1.571,0.3,live
+2026-11-04,156123,Sebastian Haubro,FDU,BUTLE,F,3900,0.84,1.25,0.0,2.5,0.8,bench,all,,0,Fairleigh Dickinson,3.761,2.2,live
+2026-11-04,156123,BJ Omot,CS-NR,WICH,F,3900,0.71,1.16,0.0,2.0,0.8,bench,all,Q,0,,,,live
+2026-11-04,156123,Jack Robison,NDSU,STMRY,G,3900,16.35,6.67,11.5,25.0,6.7,blend,all,,0,Wisconsin,1.823,2.0,live
+2026-11-04,156123,Tybo Bailey,SELA,AUB,G,3900,17.36,7.61,11.75,27.0,7.9,blend,all,,0,East Carolina,23.44,12.4,live
+2026-11-04,156123,Gabriel Ferreira,RAD,CAL,F,3800,5.23,3.08,3.0,9.25,1.7,bench,all,,0,Radford,8.055,7.7,live
+2026-11-04,156123,Karl Poom,NDSU,STMRY,F,3800,17.16,6.47,12.5,25.5,12.9,blend,all,,0,Northern Arizona,19.603,15.1,live
+2026-11-04,156123,Kolier Pruett,RAD,CAL,G,3800,2.02,2.1,0.0,4.75,0.6,bench,all,,0,,,,live
+2026-11-04,156123,Jordan Frison,WICH,CS-NR,G,3800,18.05,6.91,13.25,27.25,9.4,blend,all,,0,Chattanooga,29.919,28.2,live
+2026-11-04,156123,Pavle Stosic,FDU,BUTLE,F,3700,17.32,6.63,12.75,25.75,14.0,blend,all,,0,Pepperdine,16.174,10.9,live
+2026-11-04,156123,Alex Nokes,RAD,CAL,F,3700,1.97,1.96,0.0,4.75,0.9,bench,all,,0,,,,live
+2026-11-04,156123,Kolby King,AUB,SELA,G,3700,3.21,2.74,1.25,6.75,0.7,bench,all,,0,Utah St.,19.194,15.6,live
+2026-11-04,156123,Mikah Ballew,CS-NR,WICH,G,3700,18.49,7.53,13.0,28.5,10.8,blend,all,,0,Portland,23.645,14.1,live
+2026-11-04,156123,JJ Massaquoi,SELA,AUB,F,3600,16.0,6.13,11.5,24.5,11.7,blend,all,,0,UMass Lowell,16.753,13.0,live
+2026-11-04,156123,Henry Thengvall,WICH,CS-NR,F,3600,0.34,0.82,0.0,1.25,0.7,bench,all,,0,Wichita St.,2.482,0.9,live
+2026-11-04,156123,Melvin Bell Jr.,NDSU,STMRY,G,3600,18.41,6.55,13.75,27.03,11.4,blend,all,,0,San Jose St.,33.421,16.3,live
+2026-11-04,156123,Daniel Culberson,CS-NR,WICH,G,3600,1.04,1.5,0.0,3.5,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Salih Altuntas,STMRY,NDSU,F,3500,16.57,6.26,12.25,25.0,13.8,blend,all,,0,Miami FL,7.872,5.3,live
+2026-11-04,156123,Parby Kabamba,RAD,CAL,F,3500,16.32,6.44,11.75,24.75,13.1,blend,all,,0,Marist,16.739,12.6,live
+2026-11-04,156123,Travis Torain,FDU,BUTLE,F,3500,14.19,5.62,10.25,21.5,8.8,blend,all,,0,Austin Peay,7.996,5.6,live
+2026-11-04,156123,Jackson Furman,SELA,AUB,G,3500,16.42,7.55,11.0,26.25,8.4,blend,all,,0,Army,23.512,16.4,live
+2026-11-04,156123,Vophcy Prophete,FDU,BUTLE,G,3400,1.08,1.5,0.0,3.5,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Bryce Heard,WICH,CS-NR,G,3400,16.06,6.21,11.75,24.5,8.4,blend,all,,0,Dayton,18.456,11.5,live
+2026-11-04,156123,Jaret Valencia,WICH,CS-NR,F,3400,2.56,2.25,1.0,5.5,1.0,bench,all,,0,Wichita St.,13.182,7.1,live
+2026-11-04,156123,Flynn Pavely,STMRY,NDSU,F,3400,1.04,1.41,0.0,3.25,0.7,bench,all,,0,,,,live
+2026-11-04,156123,Cameron Jackson,RAD,CAL,F,3400,15.95,5.96,11.75,24.0,13.0,blend,all,,0,UT Arlington,17.142,11.2,live
+2026-11-04,156123,Naceiar Kirksey,CS-NR,WICH,G,3300,1.02,1.5,0.0,3.25,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Jordyn Kee,RAD,CAL,G,3300,15.63,6.45,11.0,24.25,8.3,blend,all,,0,Miami FL,3.15,1.6,live
+2026-11-04,156123,Jaheim Nyam,SELA,AUB,G,3300,12.87,5.64,8.75,20.28,4.8,blend,all,,0,Bryant,1.18,-0.1,live
+2026-11-04,156123,Andrew Nagy,NDSU,STMRY,F,3300,1.36,1.62,0.0,3.5,0.8,bench,all,,0,,,,live
+2026-11-04,156123,Samis Calderon,BUTLE,FDU,F,3300,7.97,4.32,4.75,14.0,2.9,bench,all,,0,Kansas,4.131,2.3,live
+2026-11-04,156123,Jalen Lewis,STMRY,NDSU,F,3200,1.04,1.44,0.0,3.25,0.7,bench,all,,0,,,,live
+2026-11-04,156123,Andrew Canda,FDU,BUTLE,G,3200,1.0,1.51,0.0,3.25,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Joy Ighovodja,WICH,CS-NR,G,3200,1.03,1.49,0.0,3.25,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Jordan Hare,CS-NR,WICH,G,3200,1.07,1.54,0.0,3.5,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Kaden Tate,NDSU,STMRY,F,3200,1.43,1.62,0.0,3.5,0.8,bench,all,,0,,,,live
+2026-11-04,156123,Jazz Gardner,STMRY,NDSU,F,3100,1.09,1.46,0.0,3.25,0.7,bench,all,,0,,,0.0,live
+2026-11-04,156123,Austin Ratliff,FDU,BUTLE,F,3100,1.08,1.44,0.0,3.25,0.7,bench,all,,0,,,,live
+2026-11-04,156123,Ja'Corey Robinson,RAD,CAL,G,3100,16.72,6.38,12.0,25.25,12.1,blend,all,,0,Austin Peay,17.187,14.8,live
+2026-11-04,156123,Gio Sanford,SELA,AUB,G,3100,13.66,5.88,9.5,21.5,6.4,blend,all,,0,Bryant,13.033,4.2,live
+2026-11-04,156123,Jaziah Harper,NDSU,STMRY,G,3100,1.49,1.79,0.0,4.0,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Nicolas Mitrovic,CAL,RAD,F,3000,1.07,1.43,0.0,3.25,0.7,bench,all,,0,,,,live
+2026-11-04,156123,Jake Wilkins,CAL,RAD,F,3000,17.79,7.16,12.5,27.5,26.3,blend,all,,1,Georgia,10.166,9.7,live
+2026-11-04,156123,Sammie Yeanay,CAL,RAD,F,3000,12.66,5.69,8.5,20.25,8.6,blend,all,,1,California,4.478,3.1,live
+2026-11-04,156123,Dhiaukuei Manyiel Dut,CAL,RAD,F,3000,1.09,1.44,0.0,3.25,0.7,bench,all,,0,California,3.692,3.0,live
+2026-11-04,156123,Mantas Kocanas,CAL,RAD,F,3000,1.32,1.62,0.0,3.5,0.7,bench,all,,0,California,6.836,4.0,live
+2026-11-04,156123,Jeremiah Bowman,AUB,SELA,F,3000,1.09,1.48,0.0,3.25,0.7,bench,all,,0,,,,live
+2026-11-04,156123,Herly Brutus,BUTLE,FDU,F,3000,2.99,2.49,1.25,6.5,1.0,bench,all,,0,,,,live
+2026-11-04,156123,Marko Maric,BUTLE,FDU,F,3000,2.94,2.45,1.25,6.25,1.0,bench,all,,0,,,,live
+2026-11-04,156123,Bryson Cardinal,BUTLE,FDU,F,3000,2.98,2.44,1.25,6.25,1.0,bench,all,,0,,,,live
+2026-11-04,156123,Kevin Ndzie,BUTLE,FDU,F,3000,2.98,2.48,1.25,6.5,1.0,bench,all,,0,,,,live
+2026-11-04,156123,Trent MacLean,STMRY,NDSU,F,3000,1.03,1.41,0.0,3.25,0.7,bench,all,,0,,,,live
+2026-11-04,156123,Jael Martin,CS-NR,WICH,F,3000,15.78,6.01,11.5,23.5,17.0,blend,all,,0,Loyola Marymount,7.618,4.4,live
+2026-11-04,156123,Chance Schoenfeld,NDSU,STMRY,F,3000,1.43,1.7,0.0,3.5,0.7,bench,all,,0,,,,live
+2026-11-04,156123,Colin Stack,NDSU,STMRY,F,3000,1.35,1.63,0.0,3.5,0.7,bench,all,,0,,,,live
+2026-11-04,156123,Oliver Junker,NDSU,STMRY,F,3000,1.52,1.71,0.0,4.0,0.8,bench,all,,0,,,,live
+2026-11-04,156123,Pierre Couisnard,WICH,CS-NR,G,3000,1.05,1.51,0.0,3.25,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Desmeon Jones,WICH,CS-NR,G,3000,1.03,1.5,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Tyrus Rathan-Mayes,WICH,CS-NR,G,3000,1.08,1.49,0.0,3.25,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Gabriel Sularski,CAL,RAD,G,3000,1.07,1.48,0.0,3.25,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Jorell Clark,CAL,RAD,G,3000,1.03,1.54,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,BJ Fisher,CAL,RAD,G,3000,0.36,0.85,0.0,1.5,0.4,bench,all,,0,California,1.329,0.2,live
+2026-11-04,156123,Luke Butler,CAL,RAD,G,3000,0.31,0.79,0.0,1.5,0.4,bench,all,,0,California,0.914,0.6,live
+2026-11-04,156123,Jovani Ruff,CAL,RAD,G,3000,1.07,1.54,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Simon Walker,AUB,SELA,G,3000,1.31,1.7,0.0,3.5,0.5,bench,all,,0,Auburn,5.192,3.7,live
+2026-11-04,156123,Blake Muschalek,AUB,SELA,G,3000,0.85,1.35,0.0,2.75,0.4,bench,all,,0,Auburn,5.456,2.5,live
+2026-11-04,156123,Bradley Pearson,AUB,SELA,G,3000,1.08,1.62,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Drake Cardwell,AUB,SELA,G,3000,0.34,0.85,0.0,1.5,0.4,bench,all,,0,Auburn,1.3,0.0,live
+2026-11-04,156123,Joah Shay,AUB,SELA,G,3000,1.12,1.6,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Samu Adler,BUTLE,FDU,G,3000,3.08,2.68,1.0,6.75,0.7,bench,all,,0,,,,live
+2026-11-04,156123,Baron Walker,BUTLE,FDU,G,3000,3.0,2.61,1.19,6.75,0.7,bench,all,,0,,,,live
+2026-11-04,156123,Ethan McComb,BUTLE,FDU,G,3000,1.5,1.8,0.0,4.0,0.5,bench,all,,0,Butler,1.217,1.5,live
+2026-11-04,156123,Cooper Lewis,STMRY,NDSU,G,3000,1.08,1.51,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Sam Curvy,STMRY,NDSU,G,3000,1.12,1.58,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Darius Bivins,STMRY,NDSU,G,3000,1.08,1.57,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Greg Gazarian,CS-NR,WICH,G,3000,13.12,5.67,9.0,20.75,6.1,blend,all,,0,Cal St. Northridge,3.111,0.4,live
+2026-11-04,156123,Omer Dahan,CS-NR,WICH,G,3000,1.12,1.6,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Zion Walker,RAD,CAL,G,3000,1.94,2.04,0.0,4.75,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Mathieu Grujicic,RAD,CAL,G,3000,15.37,6.2,11.0,23.25,9.9,blend,all,,0,Ohio St.,5.567,2.9,live
+2026-11-04,156123,Diogo Alves,RAD,CAL,G,3000,2.08,2.13,0.0,5.0,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Kye Davis,RAD,CAL,G,3000,2.01,2.09,0.0,4.78,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Caden Cantrell,RAD,CAL,G,3000,2.06,2.16,0.0,5.0,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Logan Suber,SELA,AUB,G,3000,1.02,1.49,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Cody Al-Naziat,SELA,AUB,G,3000,1.03,1.47,0.0,3.28,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Pablo Jimenez,SELA,AUB,G,3000,1.05,1.51,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Terran Perry,SELA,AUB,G,3000,1.07,1.53,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Haki Muhammad II,SELA,AUB,G,3000,1.09,1.55,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Danzelle Bullock Coles,FDU,BUTLE,G,3000,1.05,1.51,0.0,3.25,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Myles Dickerson,FDU,BUTLE,G,3000,1.08,1.49,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Devin Wright,FDU,BUTLE,G,3000,1.14,1.55,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Max Iversen,NDSU,STMRY,G,3000,1.37,1.7,0.0,3.5,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Amir Danforth,NDSU,STMRY,G,3000,1.4,1.79,0.0,3.5,0.5,bench,all,,0,,,,live
+2026-11-04,156123,Dionycius Bakare,CAL,RAD,G/F,3000,1.06,1.52,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-04,156123,Diing Maiwen,FDU,BUTLE,G/F,3000,1.09,1.55,0.0,3.5,0.4,bench,all,,0,,,,live
