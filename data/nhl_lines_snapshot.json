@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-04T21:29:18+00:00",
+"generated_at": "2026-11-04T22:14:12+00:00",
 "goalies": {
 "2026-11-04": {
 "BUF": {
@@ -65,7 +65,7 @@
 "status": null
 },
 "DET": {
-"goalie": "John Gibson",
+"goalie": "Daniil Tarasov",
 "status": null
 },
 "EDM": {
@@ -6513,7 +6513,7 @@
 "goalieShutouts": 2,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6585,42 +6585,6 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
-},
-"John Gibson": {
-"gtd": true,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 32,
-"goalieGoalsAgainstAvg": "3.74",
-"goalieLosses": 4,
-"goalieMinutes": 513,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.851",
-"goalieSaves": 183,
-"goalieSeconds": 35,
-"goalieShotsAgainst": 215,
-"goalieShutouts": 0,
-"goalieWins": 4
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 13,
-"goalieGoalsAgainstAvg": "3.29",
-"goalieLosses": 2,
-"goalieMinutes": 237,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.831",
-"goalieSaves": 64,
-"goalieSeconds": 0,
-"goalieShotsAgainst": 77,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"line": "G1",
-"pk": null,
-"pos": "g",
-"pp": null
 },
 "John Leonard": {
 "gtd": false,
@@ -6825,6 +6789,42 @@
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
+},
+"Michal Postava": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 3,
+"goalieGoalsAgainst": 4,
+"goalieGoalsAgainstAvg": "2.2",
+"goalieLosses": 0,
+"goalieMinutes": 108,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.911",
+"goalieSaves": 41,
+"goalieSeconds": 1,
+"goalieShotsAgainst": 45,
+"goalieShutouts": 0,
+"goalieWins": 1
+},
+"last5": {
+"gamesPlayed": 3,
+"goalieGoalsAgainst": 4,
+"goalieGoalsAgainstAvg": "2.2",
+"goalieLosses": 0,
+"goalieMinutes": 108,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.911",
+"goalieSaves": 41,
+"goalieSeconds": 1,
+"goalieShotsAgainst": 45,
+"goalieShutouts": 0,
+"goalieWins": 1
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
 },
 "Moritz Seider": {
 "gtd": false,
