@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-04T13:59:23+00:00",
+"generated_at": "2026-11-04T15:02:05+00:00",
 "goalies": {
 "2026-11-04": {
 "BUF": {
@@ -17283,9 +17283,9 @@
 "toiMinutes": 71,
 "toiSeconds": 20
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Andrew Peeke": {
@@ -17322,40 +17322,6 @@
 "pos": "rd",
 "pp": null
 },
-"Artem Duda": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 8,
-"gamesPlayed": 7,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 95,
-"toiSeconds": 6
-},
-"last5": {
-"assists": 1,
-"blocks": 8,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 95,
-"toiSeconds": 6
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Barrett Hayton": {
 "gtd": false,
 "injury": null,
@@ -17385,7 +17351,7 @@
 "toiMinutes": 75,
 "toiSeconds": 27
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -17487,7 +17453,7 @@
 "toiMinutes": 92,
 "toiSeconds": 14
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -17521,9 +17487,9 @@
 "toiMinutes": 59,
 "toiSeconds": 52
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Karel Vejmelka": {
@@ -17557,7 +17523,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -17761,9 +17727,9 @@
 "toiMinutes": 58,
 "toiSeconds": 55
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Mikhail Sergachev": {
@@ -17834,6 +17800,40 @@
 "pos": "ld",
 "pp": null
 },
+"Nick DeSimone": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 141,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 65,
+"toiSeconds": 14
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Nick Schmaltz": {
 "gtd": false,
 "injury": null,
@@ -17863,9 +17863,9 @@
 "toiMinutes": 84,
 "toiSeconds": 7
 },
-"line": "F1",
+"line": "F3",
 "pk": "PK1",
-"pos": "c",
+"pos": "lw",
 "pp": "PP1"
 },
 "Sebastian Cossa": {
@@ -17899,7 +17899,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
