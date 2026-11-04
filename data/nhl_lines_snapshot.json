@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-04T15:02:05+00:00",
+"generated_at": "2026-11-04T15:29:16+00:00",
 "goalies": {
 "2026-11-04": {
 "BUF": {
@@ -109,7 +109,7 @@
 "status": null
 },
 "UTA": {
-"goalie": "Sebastian Cossa",
+"goalie": "Karel Vejmelka",
 "status": null
 },
 "VAN": {
@@ -3076,7 +3076,7 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Dante Fabbro": {
 "gtd": false,
@@ -3212,7 +3212,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Jake Christiansen": {
 "gtd": false,
@@ -3347,7 +3347,7 @@
 "toiMinutes": 41,
 "toiSeconds": 47
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -3483,7 +3483,7 @@
 "toiMinutes": 81,
 "toiSeconds": 12
 },
-"line": "F4",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
@@ -4938,7 +4938,7 @@
 "line": "F1",
 "pk": "PK2",
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Brent Burns": {
 "gtd": false,
@@ -5382,7 +5382,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Nicolas Roy": {
 "gtd": false,
@@ -5971,7 +5971,7 @@
 "pp": "PP2"
 },
 "Miro Heiskanen": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 7,
@@ -10770,7 +10770,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Nick Perbix": {
 "gtd": false,
@@ -11076,7 +11076,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 }
 },
 "NYI": {
@@ -11798,7 +11798,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Alberts Smits": {
 "gtd": false,
@@ -11970,7 +11970,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Gabriel Perreault": {
 "gtd": false,
@@ -12346,7 +12346,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Tye Kartye": {
 "gtd": false,
@@ -12380,7 +12380,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Vladislav Gavrikov": {
 "gtd": false,
@@ -16636,7 +16636,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Brandon Hagel": {
 "gtd": false,
@@ -16670,7 +16670,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Brayden Point": {
 "gtd": false,
@@ -16907,7 +16907,7 @@
 "toiMinutes": 76,
 "toiSeconds": 5
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -18144,6 +18144,40 @@
 "pos": "rd",
 "pp": "PP1"
 },
+"Guillaume Brisebois": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 105,
+"toiSeconds": 0
+},
+"last5": {
+"assists": 0,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 71,
+"toiSeconds": 0
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Jacob Quillan": {
 "gtd": false,
 "injury": null,
@@ -18522,40 +18556,6 @@
 "pos": "lw",
 "pp": "PP2"
 },
-"Tom Willander": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 201,
-"toiSeconds": 51
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 101,
-"toiSeconds": 53
-},
-"line": "D2",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Victor Mancini": {
 "gtd": false,
 "injury": null,
@@ -18619,9 +18619,9 @@
 "toiMinutes": 105,
 "toiSeconds": 23
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP2"
 }
 },
@@ -18694,7 +18694,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Brayden McNabb": {
 "gtd": false,
@@ -18762,7 +18762,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Carter Hart": {
 "gtd": false,
@@ -19957,9 +19957,9 @@
 "toiMinutes": 44,
 "toiSeconds": 18
 },
-"line": "F4",
+"line": "D4",
 "pk": null,
-"pos": "lw",
+"pos": "ld",
 "pp": null
 },
 "Viggo Bj\u00f6rck": {
