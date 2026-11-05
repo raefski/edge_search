@@ -471,6 +471,16 @@
 "StartDateEst": "2026-11-08T16:05:00.0000000",
 "last_start": "2026-11-08T21:25:00.0000000Z"
 },
+"155999": {
+"ContestStartTimeSuffix": " (Primetime)",
+"DraftGroupId": 155999,
+"DraftGroupTag": "",
+"GameCount": 2,
+"GameTypeId": 1,
+"StartDate": "2026-11-09T01:20:00.0000000Z",
+"StartDateEst": "2026-11-08T20:20:00.0000000",
+"last_start": "2026-11-10T01:15:00.0000000Z"
+},
 "156000": {
 "ContestStartTimeSuffix": " (JAX @ BAL)",
 "DraftGroupId": 156000,
@@ -600,6 +610,26 @@
 "StartDate": "2026-11-08T21:25:00.0000000Z",
 "StartDateEst": "2026-11-08T16:25:00.0000000",
 "last_start": "2026-11-08T21:25:00.0000000Z"
+},
+"156013": {
+"ContestStartTimeSuffix": " (TB @ CHI)",
+"DraftGroupId": 156013,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 96,
+"StartDate": "2026-11-09T01:20:00.0000000Z",
+"StartDateEst": "2026-11-08T20:20:00.0000000",
+"last_start": "2026-11-09T01:20:00.0000000Z"
+},
+"156014": {
+"ContestStartTimeSuffix": " (BUF @ MIN)",
+"DraftGroupId": 156014,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 96,
+"StartDate": "2026-11-10T01:15:00.0000000Z",
+"StartDateEst": "2026-11-09T20:15:00.0000000",
+"last_start": "2026-11-10T01:15:00.0000000Z"
 },
 "156015": {
 "ContestStartTimeSuffix": " (2H JAX @ BAL)",
