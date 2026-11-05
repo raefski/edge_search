@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-05T13:59:03+00:00",
+"generated_at": "2026-11-05T15:29:10+00:00",
 "goalies": {
 "2026-11-05": {
 "ANA": {
@@ -88,7 +88,7 @@
 },
 "WPG": {
 "goalie": "Stuart Skinner",
-"status": null
+"status": "Likely"
 }
 },
 "2026-11-06": {
@@ -1694,7 +1694,7 @@
 "toiSeconds": 51
 },
 "line": "F3",
-"pk": "PK2",
+"pk": null,
 "pos": "c",
 "pp": "PP2"
 },
@@ -2068,7 +2068,7 @@
 "toiSeconds": 33
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": null
 },
@@ -3788,7 +3788,7 @@
 "toiSeconds": 54
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": null
 },
@@ -3856,7 +3856,7 @@
 "toiSeconds": 14
 },
 "line": "F2",
-"pk": "PK2",
+"pk": null,
 "pos": "c",
 "pp": null
 },
@@ -4380,7 +4380,7 @@
 "toiSeconds": 16
 },
 "line": "F3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 },
@@ -4516,7 +4516,7 @@
 "toiSeconds": 52
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
 },
@@ -4584,7 +4584,7 @@
 "toiSeconds": 32
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": null
 },
@@ -4720,7 +4720,7 @@
 "toiSeconds": 12
 },
 "line": "F4",
-"pk": "PK2",
+"pk": null,
 "pos": "c",
 "pp": null
 },
@@ -4824,7 +4824,7 @@
 "toiSeconds": 15
 },
 "line": "F3",
-"pk": "PK1",
+"pk": null,
 "pos": "rw",
 "pp": "PP2"
 },
@@ -13196,7 +13196,7 @@
 "toiSeconds": 58
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
 "pp": null
 },
@@ -13229,9 +13229,9 @@
 "toiMinutes": 80,
 "toiSeconds": 20
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
 },
 "Darnell Nurse": {
@@ -13468,7 +13468,7 @@
 "toiSeconds": 1
 },
 "line": "F2",
-"pk": "PK2",
+"pk": null,
 "pos": "rw",
 "pp": "PP2"
 },
@@ -13502,7 +13502,7 @@
 "toiSeconds": 14
 },
 "line": "F1",
-"pk": "PK2",
+"pk": null,
 "pos": "c",
 "pp": "PP1"
 },
@@ -13603,9 +13603,9 @@
 "toiMinutes": 74,
 "toiSeconds": 2
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Sam Dickinson": {
@@ -13672,7 +13672,7 @@
 "toiSeconds": 20
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": null
 },
@@ -13705,9 +13705,9 @@
 "toiMinutes": 72,
 "toiSeconds": 53
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Will Smith": {
