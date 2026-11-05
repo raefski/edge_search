@@ -302,7 +302,7 @@ def test_low_major_star_is_not_carried_at_his_old_number():
     star["same_school"] = False
     # Starting at Kansas at $3,500: moved up, so the carryover says about 20, not 31.5.
     fp, src = R.no_prop_points(3500, star, 31.5, True, 2, 72.5)
-    assert src == "blend" and 15 < fp < 22
+    assert src == "blend" and 12 < fp < 22   # BLEND_RESULT (11/5) pulls a cheap blend down
 
 
 def test_freshman_gets_the_salary_line_not_the_old_pro_rule():

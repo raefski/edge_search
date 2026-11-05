@@ -63,11 +63,20 @@ def _num(x) -> float:
 
 
 def box_rows(summary: dict, codes: tuple) -> list[dict]:
-    """One row per athlete in an ESPN game summary, tagged with his DK team code."""
+    """One row per athlete in an ESPN game summary, tagged with his DK team code. The two
+    codes are given to the two sides as a pair, never each side's best on its own: alone,
+    "Arkansas-Pine Bluff" read as ARK and the whole UAPB box went to Arkansas (11/3)."""
     out = []
-    for side in summary.get("boxscore", {}).get("players", []):
-        school = side["team"]["displayName"]
-        code = max(codes, key=lambda c: match_team(c, school))
+    sides = summary.get("boxscore", {}).get("players", [])
+    schools = [side["team"]["displayName"] for side in sides]
+    order = list(codes)
+    if len(sides) == 2 and len(codes) == 2:
+        flip = (match_team(codes[1], schools[0]) + match_team(codes[0], schools[1])
+                > match_team(codes[0], schools[0]) + match_team(codes[1], schools[1]))
+        order = [codes[1], codes[0]] if flip else [codes[0], codes[1]]
+    for i, side in enumerate(sides):
+        school = schools[i]
+        code = order[i] if len(order) == len(sides) else max(codes, key=lambda c: match_team(c, school))
         for table in side.get("statistics", [])[:1]:
             for a in table.get("athletes", []):
                 st = dict(zip(table.get("keys", []), a.get("stats", [])))

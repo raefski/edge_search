@@ -89,12 +89,20 @@ ALIASES = {
     "STMRY": ("saint marys", "st marys"), "UF": "florida", "MIA": "miami", "IL": "illinois",
     "ILLST": "illinois state", "WSU": "washington state", "FDU": "fairleigh dickinson",
     "DAV": "davidson", "FORD": "fordham", "ARMY": "army",
+    # Read off 11/3-11/4 boards, where these five games got no line and no box grade.
+    # SDSU is DK's code for BOTH (South Dakota St. @ Kansas St., 11/3); the opponent decides.
+    "SDSU": ("san diego state", "south dakota state"), "SHSU": ("sam houston", "sam houston state"),
+    "UNO": ("new orleans", "lsu new orleans"), "NDSU": "north dakota state",
+    "CS-NR": ("cal state northridge", "csu northridge", "csun"), "WICH": "wichita state",
+    "UAPB": ("arkansas pine bluff", "uapb"),
 }
 #: What can follow a school's name and make it a DIFFERENT school: "Kansas" must not
-#: claim "Kansas St.", nor "Miami" claim "Miami (OH)", nor "Illinois" claim "Illinois St."
+#: claim "Kansas St.", nor "Miami" claim "Miami (OH)", nor "Illinois" claim "Illinois St.",
+#: nor "Arkansas" claim "Arkansas-Pine Bluff" (11/3: all 12 UAPB box rows read as ARK).
 _OTHER_SCHOOL = {"state", "tech", "am", "at", "christian", "southern", "northern", "eastern",
                  "western", "central", "(oh)", "oh", "ohio", "international", "baptist",
-                 "chicago", "wesleyan", "commonwealth", "gulf", "upstate", "atlantic"}
+                 "chicago", "wesleyan", "commonwealth", "gulf", "upstate", "atlantic", "new",
+                 "pine", "little", "corpus", "san"}
 
 
 def _clean(name: str) -> str:
@@ -127,9 +135,11 @@ def match_team(dk_abbr: str, book_name: str) -> float:
     if not code or not name:
         return 0.0
     words = name.split()
-    if words[0] == code.lower():
-        return 1.0
     target = ALIASES.get(code)
+    # "LSU New Orleans Privateers" (ESPN's New Orleans) is not LSU: the code as the first
+    # word counts only when nothing after it names another school; then the alias decides.
+    if words[0] == code.lower() and (len(words) == 1 or words[1] not in _OTHER_SCHOOL):
+        return 1.0
     if target:
         # A listed alias is authoritative either way: UK is Kentucky, so it is
         # never Kansas no matter what the letter tests below would say.

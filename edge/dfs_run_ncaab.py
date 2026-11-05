@@ -95,13 +95,21 @@ ENV_POWER = 0.5
 #: pro pricing rule) said 13.8 and 46. PRIOR until graded: one night, players a book
 #: chose to price, against the market rather than results. Refit: scripts/ncaab_prior_fit.py.
 SALARY_LINE = (9.21, 2.13)
-#: DK points from salary for a player with NO history and NO prop at lock. FITTED on results:
-#: the 18 such players of 2026-11-02 (gid 155565, 7 games, box scores, scripts/ncaab_box_grade.py
-#: --fit). SALARY_LINE on them: MAE 12.31, bias +11.80, 16 of 18 below it. This line, held out by
-#: game: MAE 5.50, bias +0.07. SALARY_LINE was read off players a book chose to price, and the
-#: book not pricing a player is news: 4 no-history players WITH props averaged 33.8 that night,
-#: these 11.2. ONE SLATE, opening night: not enough data to call it proven; refit each night.
-SALARY_TIER_LINE = (1.86, 1.45)
+#: DK points from salary for a player with NO history and NO prop at lock. FITTED on results
+#: (box scores, scripts/ncaab_box_grade.py --fit): 41 such players, 3 slates, 17 games,
+#: 2026-11-02..04 (gids 155565, 156039, 156123). Held out by slate: MAE 8.56, bias +0.70; as
+#: logged 10.67 / +2.77. First fit (11/2 only, 1.86 + 1.45) held out on 11/3 and 11/4: bias
+#: -4.61 and -3.82. SALARY_LINE was read off players a book chose to price, and the book not
+#: pricing one is news: on 11/2 the 4 no-history players WITH props averaged 33.8, these 11.2.
+#: Not enough data below ~5 slates; refit each night.
+SALARY_TIER_LINE = (2.06, 1.81)
+#: A blend projection is mapped to a + b x itself. FITTED on results, 269 blend rows, 3 slates
+#: (same gids, box scores including the ones who sat): blend ran high every night, +2.50,
+#: +5.00, +3.34, all of it under $7,000 (actual/proj .72-.80; above $7,000, 1.00). Each slate
+#: held out, fitted on the other two: MAE 9.29 -> 8.52, 9.39 -> 8.12, 8.53 -> 7.75; a flat
+#: scale (.81) only 8.99 / 8.32 / 7.96. The steep slope is the finding: the salary line's
+#: intercept carries cheap rotation players too far. Not enough data below ~5 slates.
+BLEND_RESULT = (-11.33, 1.407)
 #: Last season's DK points carried to this one, by what changed: (intercept, slope).
 #: FITTED on Torvik players with 8+ games in both 2024-25 and 2025-26, joined by Torvik's
 #: player id, up/down by conference tier. HELD OUT on 2023-24 -> 2024-25, MAE vs carrying
@@ -565,7 +573,7 @@ def no_prop_points(salary: int, tv: dict | None, fppg: float | None, starter: bo
         return BENCH_POINTS, "bench"
     if prior is None:
         return SALARY_TIER_LINE[0] + SALARY_TIER_LINE[1] * salary / 1000.0, "salary"
-    return w * prior + (1 - w) * line, "blend"
+    return max(BLEND_RESULT[0] + BLEND_RESULT[1] * (w * prior + (1 - w) * line), 1.0), "blend"
 
 
 def shape_of(tv: dict | None, profile: dict) -> dict:

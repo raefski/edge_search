@@ -295,6 +295,25 @@ undrafted: `harness run ncaab-box-grade -- 155565`; DK's FPTS agreed on 172 of 1
 - **Two players, one name:** `parse_contest_file` gave both Trent Perrys the last row. Now left out and said
   on stderr, in every sport (3 boards of 237; `contests.db` still holds the merged name, 3 boards).
 
+**Three slates, 2026-11-02..04** (gids 155565, 156039, 156123; box scores, `ncaab-box-grade`):
+
+| tier | 11/2 bias | 11/3 bias | 11/4 bias |
+|---|---|---|---|
+| props | +1.04 (37) | -2.03 (7) | none posted (0) |
+| blend | +2.50 (97) | +5.00 (92) | +3.34 (80) |
+| salary | +11.80 (18) | -4.61 (14) | -3.82 (9) |
+| bench | -1.75 (148) | -4.49 (130) | -2.49 (70) |
+
+- Midweek DK posts few or no college props: the board runs on blend, so blend is the lever.
+- Blend high every night, all of it under $7,000. `BLEND_RESULT` (-11.33 + 1.407 x blend), each slate
+  held out: MAE 9.29 -> 8.52, 9.39 -> 8.12, 8.53 -> 7.75. `SALARY_TIER_LINE` refit on all three: 2.06 + 1.81
+  per $1K, held out by slate MAE 8.56 bias +0.70 (n=41). Both shipped 11/5; not enough data below ~5 slates.
+- Bench low every night, but raising it made MAE worse on 2 of 3 held out (most score ~0): the hole is
+  which cheap player plays, not the level. Unchanged.
+- Team codes: SDSU is DK's code for South Dakota St. too; SHSU, UNO ("LSU New Orleans" on ESPN, which LSU
+  claimed), NDSU, CS-NR, UAPB added; "Arkansas" no longer claims Arkansas-Pine Bluff. 11/3's SDSU @ KSU and
+  SHSU @ BAMA ran with no line because of this.
+
 **After each contest:**
 1. `harness run import-contests`, then `harness run ncaab-box-grade -- <gid>`, then `--fit`.
 2. `harness run calibrate-nba -- data/contest-standings-N.csv --sport ncaab` for floor/ceiling coverage;

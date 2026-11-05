@@ -59,7 +59,7 @@ def test_salary_line_recovers_a_known_line():
 def test_no_history_no_prop_uses_the_results_line_not_the_market_line():
     fp, source = no_prop_points(10000, None, None, True, None)
     assert source == "salary"
-    assert fp == pytest.approx(16.36)
+    assert fp == pytest.approx(20.16)
     assert fp < SALARY_LINE[0] + SALARY_LINE[1] * 10
 
 
@@ -86,3 +86,10 @@ def test_one_player_in_two_slots_is_still_summed(tmp_path, capsys):
 def test_captain_row_at_one_and_a_half_times_is_not_a_namesake(tmp_path, capsys):
     out = parse_contest_file(_export(tmp_path, [("Brady Hiestand", "CPT", 5.0, 132.79), ("Brady Hiestand", "FLEX", 9.0, 88.53)]))
     assert out["bradyhiestand"]["fpts"] == 88.53 and capsys.readouterr().err == ""
+
+
+def test_sides_are_tagged_as_a_pair_not_each_to_its_best_code():
+    summary = _game(_summary("Arkansas Razorbacks", [_athlete("Jalen A", 20, 10)]),
+                    _summary("Arkansas-Pine Bluff Golden Lions", [_athlete("Jalen Tatum", 34, 20)]))
+    rows = g.box_rows(summary, ("ARK", "UAPB"))
+    assert [r["team"] for r in rows] == ["ARK", "UAPB"]

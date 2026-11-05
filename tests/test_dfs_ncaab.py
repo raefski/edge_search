@@ -344,3 +344,14 @@ def test_forward_log_is_keyed_by_draft_group(cbb_slate, tmp_path):
     text = (tmp_path / "data" / "dfs_proj_log_ncaab.csv").read_text().splitlines()
     assert text[0].startswith("date,gid,player") and ",555," in text[1]
     assert (tmp_path / "data" / f"dfs_lineups_ncaab_{out['date']}.csv").read_text().startswith("gid,")
+
+
+def test_match_team_codes_read_off_the_november_boards():
+    from edge.ncaab import match_team as m
+    yes = [("LSU", "LSU Tigers"), ("UNO", "LSU New Orleans Privateers"), ("SDSU", "South Dakota State Jackrabbits"),
+           ("SDSU", "San Diego State Aztecs"), ("SHSU", "Sam Houston State Bearkats"), ("UAPB", "Arkansas-Pine Bluff Golden Lions"),
+           ("ARK", "Arkansas Razorbacks"), ("NDSU", "North Dakota State Bison"), ("CS-NR", "Cal State Northridge Matadors"),
+           ("BYU", "BYU Cougars")]
+    no = [("LSU", "LSU New Orleans Privateers"), ("ARK", "Arkansas-Pine Bluff Golden Lions"), ("KU", "Kansas State Wildcats")]
+    assert all(m(c, n) >= 0.9 for c, n in yes)
+    assert all(m(c, n) == 0 for c, n in no)
