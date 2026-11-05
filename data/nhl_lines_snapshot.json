@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-05T23:44:16+00:00",
+"generated_at": "2026-11-05T23:45:03+00:00",
 "goalies": {
 "2026-11-05": {
 "ANA": {
@@ -4246,6 +4246,40 @@
 "pos": "ld",
 "pp": null
 },
+"Andrew Mangiapane": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 112,
+"toiSeconds": 52
+},
+"last5": {
+"assists": 2,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 52,
+"toiSeconds": 35
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Anton Frondell": {
 "gtd": false,
 "injury": null,
@@ -4379,7 +4413,7 @@
 "toiMinutes": 71,
 "toiSeconds": 16
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -4449,7 +4483,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Ethan Del Mastro": {
@@ -4554,40 +4588,6 @@
 "pos": "rd",
 "pp": null
 },
-"Jordan Greenway": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 130,
-"toiSeconds": 4
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 66,
-"toiSeconds": 32
-},
-"line": "F4",
-"pk": "PK2",
-"pos": "rw",
-"pp": null
-},
 "Oliver Moore": {
 "gtd": false,
 "injury": null,
@@ -4653,7 +4653,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Ryan Donato": {
@@ -4824,7 +4824,7 @@
 "toiSeconds": 15
 },
 "line": "F3",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
 },
@@ -4859,7 +4859,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Wyatt Kaiser": {
