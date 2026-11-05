@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-05T17:29:02+00:00",
+"generated_at": "2026-11-05T18:00:42+00:00",
 "goalies": {
 "2026-11-05": {
 "ANA": {
@@ -24,7 +24,7 @@
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
-"status": null
+"status": "Confirmed"
 },
 "DAL": {
 "goalie": "Casey DeSmith",
@@ -35,8 +35,8 @@
 "status": "Likely"
 },
 "EDM": {
-"goalie": "Tristan Jarry",
-"status": null
+"goalie": "Matt Tomkins",
+"status": "Likely"
 },
 "MTL": {
 "goalie": "Jakub Dobes",
@@ -7361,7 +7361,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7601,7 +7601,7 @@
 "goalieShutouts": 2,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7851,7 +7851,7 @@
 "pp": null
 },
 "Joel Eriksson Ek": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 7,
@@ -13845,10 +13845,44 @@
 "toiMinutes": 88,
 "toiSeconds": 37
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
+},
+"Aleksanteri Kaskimaki": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 19,
+"toiMinutes": 130,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 58,
+"toiSeconds": 52
+},
+"line": "F2",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Alexey Toropchenko": {
 "gtd": false,
@@ -13913,8 +13947,8 @@
 "toiMinutes": 92,
 "toiSeconds": 31
 },
-"line": "D1",
-"pk": "PK1",
+"line": "D2",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -13951,6 +13985,40 @@
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
+},
+"Colton Parayko": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 18,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 209,
+"toiSeconds": 10
+},
+"last5": {
+"assists": 0,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 99,
+"toiSeconds": 47
+},
+"line": "D1",
+"pk": "PK1",
+"pos": "rd",
+"pp": null
 },
 "Connor McMichael": {
 "gtd": false,
@@ -14018,7 +14086,7 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Dylan Holloway": {
 "gtd": false,
@@ -14153,43 +14221,9 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
-"pp": null
-},
-"Jonatan Berggren": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 1,
-"powerplayPoints": 2,
-"shots": 16,
-"toiMinutes": 142,
-"toiSeconds": 29
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 69,
-"toiSeconds": 12
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
 "pp": null
 },
 "Jordan Binnington": {
@@ -14223,7 +14257,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -14259,7 +14293,7 @@
 },
 "line": "D3",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Mason McTavish": {
@@ -14464,40 +14498,6 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
-},
-"Theo Lindstein": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 155,
-"toiSeconds": 17
-},
-"last5": {
-"assists": 2,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 66,
-"toiSeconds": 6
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
 "pp": null
 }
 },
