@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-05T00:14:03+00:00",
+"generated_at": "2026-11-05T00:29:09+00:00",
 "goalies": {
 "2026-11-04": {
 "BUF": {
@@ -12518,7 +12518,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Claude Giroux": {
 "gtd": false,
@@ -12617,9 +12617,9 @@
 "toiMinutes": 86,
 "toiSeconds": 28
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP1"
 },
 "Fabian Zetterlund": {
@@ -12653,8 +12653,42 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
+},
+"Hayden Hodgson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 60,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 33,
+"toiSeconds": 19
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Jake Sanderson": {
 "gtd": false,
@@ -12790,7 +12824,7 @@
 "toiSeconds": 34
 },
 "line": "F3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 },
@@ -12823,8 +12857,8 @@
 "toiMinutes": 43,
 "toiSeconds": 51
 },
-"line": "F4",
-"pk": null,
+"line": "F1",
+"pk": "PK2",
 "pos": "lw",
 "pp": null
 },
@@ -12896,40 +12930,6 @@
 "pos": "lw",
 "pp": null
 },
-"Ridly Greig": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 173,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 1,
-"blocks": 9,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 90,
-"toiSeconds": 23
-},
-"line": "F3",
-"pk": "PK1",
-"pos": "c",
-"pp": "PP2"
-},
 "Sammy Blais": {
 "gtd": false,
 "injury": null,
@@ -12961,7 +12961,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Samuel Ersson": {
