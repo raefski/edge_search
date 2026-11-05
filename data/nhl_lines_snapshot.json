@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-05T20:29:13+00:00",
+"generated_at": "2026-11-05T21:14:07+00:00",
 "goalies": {
 "2026-11-05": {
 "ANA": {
@@ -2154,7 +2154,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 8,
+"shots": 9,
 "toiMinutes": 125,
 "toiSeconds": 11
 },
@@ -2167,7 +2167,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 6,
+"shots": 7,
 "toiMinutes": 55,
 "toiSeconds": 48
 },
@@ -4768,10 +4768,10 @@
 "goalieLosses": 7,
 "goalieMinutes": 593,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.892",
-"goalieSaves": 272,
+"goalieSavePercentage": "0.891",
+"goalieSaves": 271,
 "goalieSeconds": 27,
-"goalieShotsAgainst": 305,
+"goalieShotsAgainst": 304,
 "goalieShutouts": 0,
 "goalieWins": 3
 },
@@ -4783,9 +4783,9 @@
 "goalieMinutes": 295,
 "goalieOvertimeLosses": 0,
 "goalieSavePercentage": "0.897",
-"goalieSaves": 131,
+"goalieSaves": 130,
 "goalieSeconds": 7,
-"goalieShotsAgainst": 146,
+"goalieShotsAgainst": 145,
 "goalieShutouts": 0,
 "goalieWins": 1
 },
@@ -5649,9 +5649,43 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
+"pp": null
+},
+"Colin Blackwell": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 99,
+"toiSeconds": 44
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 49,
+"toiSeconds": 8
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "David Perron": {
@@ -5685,7 +5719,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Esa Lindell": {
@@ -5718,8 +5752,8 @@
 "toiSeconds": 27
 },
 "line": "D1",
-"pk": null,
-"pos": "ld",
+"pk": "PK1",
+"pos": "rd",
 "pp": null
 },
 "Jake Oettinger": {
@@ -5753,7 +5787,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5855,7 +5889,7 @@
 "toiMinutes": 63,
 "toiSeconds": 8
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -5923,7 +5957,7 @@
 "toiMinutes": 82,
 "toiSeconds": 52
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -5962,40 +5996,6 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Miro Heiskanen": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 7,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 8,
-"powerplayAssists": 3,
-"powerplayGoals": 0,
-"powerplayPoints": 3,
-"shots": 17,
-"toiMinutes": 251,
-"toiSeconds": 19
-},
-"last5": {
-"assists": 3,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 8,
-"toiMinutes": 113,
-"toiSeconds": 5
-},
-"line": "D1",
-"pk": "PK1",
-"pos": "rd",
-"pp": "PP1"
-},
 "Nils Lundkvist": {
 "gtd": false,
 "injury": null,
@@ -6028,7 +6028,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Radek Faksa": {
 "gtd": false,
@@ -6098,40 +6098,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Sam Steel": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 168,
-"toiSeconds": 29
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 81,
-"toiSeconds": 33
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Thomas Harley": {
 "gtd": false,
 "injury": null,
@@ -6161,10 +6127,44 @@
 "toiMinutes": 123,
 "toiSeconds": 48
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": "PP1"
+},
+"Trey Taylor": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 82,
+"toiSeconds": 5
+},
+"last5": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 82,
+"toiSeconds": 5
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
 },
 "Tyler Myers": {
 "gtd": false,
@@ -13754,10 +13754,10 @@
 "goalieLosses": 7,
 "goalieMinutes": 593,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.888",
-"goalieSaves": 261,
+"goalieSavePercentage": "0.887",
+"goalieSaves": 260,
 "goalieSeconds": 26,
-"goalieShotsAgainst": 294,
+"goalieShotsAgainst": 293,
 "goalieShutouts": 0,
 "goalieWins": 3
 },
@@ -13768,10 +13768,10 @@
 "goalieLosses": 3,
 "goalieMinutes": 297,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.911",
-"goalieSaves": 143,
+"goalieSavePercentage": "0.91",
+"goalieSaves": 142,
 "goalieSeconds": 11,
-"goalieShotsAgainst": 157,
+"goalieShotsAgainst": 156,
 "goalieShutouts": 0,
 "goalieWins": 2
 },
