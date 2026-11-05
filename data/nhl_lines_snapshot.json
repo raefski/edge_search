@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-05T16:59:04+00:00",
+"generated_at": "2026-11-05T17:29:02+00:00",
 "goalies": {
 "2026-11-05": {
 "ANA": {
@@ -27,8 +27,8 @@
 "status": null
 },
 "DAL": {
-"goalie": "Jake Oettinger",
-"status": null
+"goalie": "Casey DeSmith",
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "Daniil Tarasov",
@@ -67,16 +67,16 @@
 "status": "Confirmed"
 },
 "STL": {
-"goalie": "Joel Hofer",
-"status": null
+"goalie": "Jordan Binnington",
+"status": "Confirmed"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": null
+"status": "Likely"
 },
 "UTA": {
 "goalie": "Sebastian Cossa",
-"status": null
+"status": "Likely"
 },
 "VAN": {
 "goalie": "Leevi Merilainen",
@@ -12685,7 +12685,7 @@
 "pp": "PP1"
 },
 "Evgeni Malkin": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 3,
