@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-05T02:29:17+00:00",
+"generated_at": "2026-11-05T02:59:11+00:00",
 "goalies": {
 "2026-11-04": {
 "BUF": {
@@ -20,7 +20,7 @@
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
-"status": "Likely"
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Samuel Ersson",
@@ -28,7 +28,7 @@
 },
 "SEA": {
 "goalie": "Joey Daccord",
-"status": "Likely"
+"status": "Confirmed"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -15196,40 +15196,6 @@
 }
 },
 "SJS": {
-"Adam Gaudette": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 101,
-"toiSeconds": 31
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 49,
-"toiSeconds": 48
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Alex Nedeljkovic": {
 "gtd": false,
 "injury": null,
@@ -15740,6 +15706,40 @@
 "line": "D1",
 "pk": "PK2",
 "pos": "ld",
+"pp": null
+},
+"Ty Dellandrea": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 141,
+"toiSeconds": 59
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 68,
+"toiSeconds": 55
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Tyler Toffoli": {
