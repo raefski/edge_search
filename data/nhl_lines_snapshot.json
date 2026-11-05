@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-05T15:59:14+00:00",
+"generated_at": "2026-11-05T16:29:12+00:00",
 "goalies": {
 "2026-11-05": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "CBJ": {
 "goalie": "Cam Talbot",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CHI": {
 "goalie": "Arvid Soderblom",
@@ -40,11 +40,11 @@
 },
 "MTL": {
 "goalie": "Jakub Dobes",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Connor Hellebuyck",
-"status": null
+"status": "Likely"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -52,7 +52,7 @@
 },
 "NYI": {
 "goalie": "Semyon Varlamov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -64,7 +64,7 @@
 },
 "PIT": {
 "goalie": "Arturs Silovs",
-"status": "Likely"
+"status": "Confirmed"
 },
 "STL": {
 "goalie": "Joel Hofer",
@@ -8391,10 +8391,10 @@
 "toiMinutes": 90,
 "toiSeconds": 12
 },
-"line": "F1",
-"pk": "PK2",
-"pos": "c",
-"pp": "PP1"
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": "PP2"
 },
 "Alexandre Carrier": {
 "gtd": false,
@@ -8564,41 +8564,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
-},
-"Florian Xhekaj": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 88,
-"toiSeconds": 15
-},
-"last5": {
-"assists": 2,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 39,
-"toiSeconds": 58
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
+"pp": "PP1"
 },
 "Jacob Fowler": {
 "gtd": false,
@@ -8631,7 +8597,7 @@
 "goalieShutouts": 1,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -8701,7 +8667,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -8808,6 +8774,40 @@
 "pos": "ld",
 "pp": null
 },
+"Kirby Dach": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 107,
+"toiSeconds": 24
+},
+"last5": {
+"assists": 2,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 61,
+"toiSeconds": 42
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Lane Hutson": {
 "gtd": false,
 "injury": null,
@@ -8840,6 +8840,40 @@
 "line": "D1",
 "pk": null,
 "pos": "ld",
+"pp": "PP1"
+},
+"Nick Suzuki": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 8,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 5,
+"points": 13,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 27,
+"toiMinutes": 214,
+"toiSeconds": 6
+},
+"last5": {
+"assists": 3,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 5,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 17,
+"toiMinutes": 111,
+"toiSeconds": 45
+},
+"line": "F1",
+"pk": "PK2",
+"pos": "c",
 "pp": "PP1"
 },
 "Noah Dobson": {
@@ -8909,40 +8943,6 @@
 "pk": null,
 "pos": "c",
 "pp": "PP2"
-},
-"Owen Beck": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 96,
-"toiSeconds": 36
-},
-"last5": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 43,
-"toiSeconds": 28
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Phillip Danault": {
 "gtd": false,
@@ -11855,9 +11855,9 @@
 "toiMinutes": 61,
 "toiSeconds": 18
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Dan Vladar": {
@@ -11925,9 +11925,9 @@
 "toiMinutes": 74,
 "toiSeconds": 36
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP1"
 },
 "Jamie Drysdale": {
@@ -12233,7 +12233,7 @@
 "toiMinutes": 76,
 "toiSeconds": 2
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -12437,7 +12437,7 @@
 "toiMinutes": 84,
 "toiSeconds": 9
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
