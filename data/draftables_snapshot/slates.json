@@ -169,7 +169,7 @@
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 156055,
 "DraftGroupTag": "Featured",
-"GameCount": 13,
+"GameCount": 14,
 "GameTypeId": 168,
 "StartDate": "2026-11-07T22:00:00.0000000Z",
 "StartDateEst": "2026-11-07T17:00:00.0000000",
@@ -510,6 +510,26 @@
 "StartDate": "2026-11-10T01:15:00.0000000Z",
 "StartDateEst": "2026-11-09T20:15:00.0000000",
 "last_start": "2026-11-10T01:15:00.0000000Z"
+},
+"156017": {
+"ContestStartTimeSuffix": " (2H TB @ CHI)",
+"DraftGroupId": 156017,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 108,
+"StartDate": "2026-11-09T02:20:00.0000000Z",
+"StartDateEst": "2026-11-08T21:20:00.0000000",
+"last_start": "2026-11-09T02:20:00.0000000Z"
+},
+"156019": {
+"ContestStartTimeSuffix": " (2H BUF @ MIN)",
+"DraftGroupId": 156019,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 108,
+"StartDate": "2026-11-10T02:15:00.0000000Z",
+"StartDateEst": "2026-11-09T21:15:00.0000000",
+"last_start": "2026-11-10T02:15:00.0000000Z"
 },
 "156363": {
 "ContestStartTimeSuffix": " (Afternoon Turbo)",
