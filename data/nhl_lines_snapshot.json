@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-06T13:59:06+00:00",
+"generated_at": "2026-11-06T14:59:23+00:00",
 "goalies": {
 "2026-11-06": {
 "ANA": {
@@ -29,11 +29,11 @@
 },
 "2026-11-07": {
 "CAR": {
-"goalie": "Brandon Bussi",
+"goalie": "Pyotr Kochetkov",
 "status": null
 },
 "CHI": {
-"goalie": "Arvid Soderblom",
+"goalie": "Spencer Knight",
 "status": null
 },
 "COL": {
@@ -41,7 +41,7 @@
 "status": null
 },
 "DAL": {
-"goalie": "Casey DeSmith",
+"goalie": "Jake Oettinger",
 "status": null
 },
 "DET": {
@@ -49,7 +49,7 @@
 "status": null
 },
 "EDM": {
-"goalie": "Matt Tomkins",
+"goalie": "Tristan Jarry",
 "status": null
 },
 "FLA": {
@@ -65,7 +65,7 @@
 "status": null
 },
 "MTL": {
-"goalie": "Jakub Dobes",
+"goalie": "Jacob Fowler",
 "status": null
 },
 "NJD": {
@@ -101,7 +101,7 @@
 "status": null
 },
 "STL": {
-"goalie": "Jordan Binnington",
+"goalie": "Joel Hofer",
 "status": null
 },
 "TBL": {
@@ -113,7 +113,7 @@
 "status": null
 },
 "UTA": {
-"goalie": "Sebastian Cossa",
+"goalie": "Karel Vejmelka",
 "status": null
 },
 "VAN": {
@@ -572,7 +572,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Noah Warren": {
 "gtd": false,
@@ -674,7 +674,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Sam Colangelo": {
 "gtd": false,
@@ -708,7 +708,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Tim Washe": {
 "gtd": false,
@@ -742,7 +742,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Travis Mitchell": {
 "gtd": false,
@@ -1565,7 +1565,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -1975,7 +1975,7 @@
 "goalieShutouts": 2,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -3701,7 +3701,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -4111,7 +4111,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -4971,7 +4971,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5042,7 +5042,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Esa Lindell": {
 "gtd": false,
@@ -5073,10 +5073,10 @@
 "toiMinutes": 120,
 "toiSeconds": 55
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Jake Oettinger": {
 "gtd": false,
@@ -5109,7 +5109,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5316,7 +5316,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Nils Lundkvist": {
 "gtd": false,
@@ -5347,10 +5347,10 @@
 "toiMinutes": 95,
 "toiSeconds": 56
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK2",
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Radek Faksa": {
 "gtd": false,
@@ -6683,7 +6683,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6788,7 +6788,7 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Ryan Nugent-Hopkins": {
 "gtd": false,
@@ -6923,7 +6923,7 @@
 "goalieShutouts": 2,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6960,7 +6960,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 }
 },
 "FLA": {
@@ -9291,7 +9291,7 @@
 "goalieShutouts": 1,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9361,7 +9361,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -11282,7 +11282,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Ilya Sorokin": {
 "gtd": false,
@@ -11352,7 +11352,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Kyle MacLean": {
 "gtd": false,
@@ -11798,7 +11798,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Alberts Smits": {
 "gtd": false,
@@ -12414,7 +12414,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Will Cuylle": {
 "gtd": false,
@@ -13206,7 +13206,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Blake Lizotte": {
 "gtd": false,
@@ -13820,7 +13820,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 }
 },
 "SEA": {
@@ -15601,7 +15601,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15637,7 +15637,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15950,7 +15950,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Brandon Hagel": {
 "gtd": false,
@@ -16049,9 +16049,9 @@
 "toiMinutes": 100,
 "toiSeconds": 5
 },
-"line": "D4",
+"line": "D2",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP1"
 },
 "Conor Geekie": {
@@ -16153,7 +16153,7 @@
 "toiMinutes": 91,
 "toiSeconds": 40
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -16255,7 +16255,7 @@
 "toiMinutes": 87,
 "toiSeconds": 47
 },
-"line": "D1",
+"line": "D4",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -16357,10 +16357,10 @@
 "toiMinutes": 91,
 "toiSeconds": 20
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
-"pos": "rd",
-"pp": "PP2"
+"pos": "ld",
+"pp": "PP1"
 },
 "Maxwell Crozier": {
 "gtd": false,
@@ -16462,7 +16462,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Ryan McDonagh": {
 "gtd": false,
@@ -16493,7 +16493,7 @@
 "toiMinutes": 87,
 "toiSeconds": 46
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -16527,10 +16527,10 @@
 "toiMinutes": 71,
 "toiSeconds": 4
 },
-"line": "D3",
+"line": "D1",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Zemgus Girgensons": {
 "gtd": false,
@@ -17523,7 +17523,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -17899,7 +17899,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -18173,7 +18173,7 @@
 "toiMinutes": 72,
 "toiSeconds": 49
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -18275,7 +18275,7 @@
 "toiMinutes": 84,
 "toiSeconds": 47
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
