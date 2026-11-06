@@ -174,6 +174,16 @@
 "StartDate": "2026-11-07T22:00:00.0000000Z",
 "StartDateEst": "2026-11-07T17:00:00.0000000",
 "last_start": "2026-11-08T02:40:00.0000000Z"
+},
+"156460": {
+"ContestStartTimeSuffix": " (Late)",
+"DraftGroupId": 156460,
+"DraftGroupTag": "Featured",
+"GameCount": 8,
+"GameTypeId": 169,
+"StartDate": "2026-11-08T00:00:00.0000000Z",
+"StartDateEst": "2026-11-07T19:00:00.0000000",
+"last_start": "2026-11-08T02:40:00.0000000Z"
 }
 },
 "NAS": {
@@ -278,6 +288,86 @@
 "StartDate": "2026-11-07T04:00:00.0000000Z",
 "StartDateEst": "2026-11-06T23:00:00.0000000",
 "last_start": "2026-11-07T04:00:00.0000000Z"
+},
+"156197": {
+"ContestStartTimeSuffix": " (DEN @ IND)",
+"DraftGroupId": 156197,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 81,
+"StartDate": "2026-11-07T22:00:00.0000000Z",
+"StartDateEst": "2026-11-07T17:00:00.0000000",
+"last_start": "2026-11-07T22:00:00.0000000Z"
+},
+"156199": {
+"ContestStartTimeSuffix": null,
+"DraftGroupId": 156199,
+"DraftGroupTag": "Featured",
+"GameCount": 5,
+"GameTypeId": 70,
+"StartDate": "2026-11-08T00:30:00.0000000Z",
+"StartDateEst": "2026-11-07T19:30:00.0000000",
+"last_start": "2026-11-08T02:00:00.0000000Z"
+},
+"156203": {
+"ContestStartTimeSuffix": " (BKN @ ATL)",
+"DraftGroupId": 156203,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 81,
+"StartDate": "2026-11-08T00:30:00.0000000Z",
+"StartDateEst": "2026-11-07T19:30:00.0000000",
+"last_start": "2026-11-08T00:30:00.0000000Z"
+},
+"156204": {
+"ContestStartTimeSuffix": " (Turbo)",
+"DraftGroupId": 156204,
+"DraftGroupTag": "",
+"GameCount": 2,
+"GameTypeId": 70,
+"StartDate": "2026-11-08T01:00:00.0000000Z",
+"StartDateEst": "2026-11-07T20:00:00.0000000",
+"last_start": "2026-11-08T01:30:00.0000000Z"
+},
+"156205": {
+"ContestStartTimeSuffix": " (ORL @ GSW)",
+"DraftGroupId": 156205,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 81,
+"StartDate": "2026-11-08T01:30:00.0000000Z",
+"StartDateEst": "2026-11-07T20:30:00.0000000",
+"last_start": "2026-11-08T01:30:00.0000000Z"
+},
+"156206": {
+"ContestStartTimeSuffix": " (Night)",
+"DraftGroupId": 156206,
+"DraftGroupTag": "Featured",
+"GameCount": 2,
+"GameTypeId": 70,
+"StartDate": "2026-11-08T02:00:00.0000000Z",
+"StartDateEst": "2026-11-07T21:00:00.0000000",
+"last_start": "2026-11-08T03:00:00.0000000Z"
+},
+"156455": {
+"ContestStartTimeSuffix": " (SAS @ POR)",
+"DraftGroupId": 156455,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 81,
+"StartDate": "2026-11-08T03:00:00.0000000Z",
+"StartDateEst": "2026-11-07T22:00:00.0000000",
+"last_start": "2026-11-08T03:00:00.0000000Z"
+},
+"156456": {
+"ContestStartTimeSuffix": " (2H SAS @ POR)",
+"DraftGroupId": 156456,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 112,
+"StartDate": "2026-11-08T04:00:00.0000000Z",
+"StartDateEst": "2026-11-07T23:00:00.0000000",
+"last_start": "2026-11-08T04:00:00.0000000Z"
 }
 },
 "NFL": {
