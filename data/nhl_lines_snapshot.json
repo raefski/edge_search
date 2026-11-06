@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-06T18:29:07+00:00",
+"generated_at": "2026-11-06T20:28:57+00:00",
 "goalies": {
 "2026-11-06": {
 "ANA": {
@@ -14510,6 +14510,40 @@
 }
 },
 "SJS": {
+"Adam Gaudette": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 101,
+"toiSeconds": 31
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 49,
+"toiSeconds": 48
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Alex Nedeljkovic": {
 "gtd": false,
 "injury": null,
@@ -14715,40 +14749,6 @@
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
-},
-"Filip Bystedt": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 103,
-"toiSeconds": 27
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 61,
-"toiSeconds": 41
-},
-"line": "F3",
-"pk": null,
-"pos": "c",
-"pp": null
 },
 "Ivar Stenberg": {
 "gtd": false,
@@ -15051,9 +15051,9 @@
 "toiMinutes": 65,
 "toiSeconds": 20
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Tyler Toffoli": {
