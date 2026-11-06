@@ -701,3 +701,207 @@ date,gid,player,team,opp,dk_pos,salary,proj,sd,floor,ceil,own,proj_source,impute
 2026-11-04,156123,Amir Danforth,NDSU,STMRY,G,3000,1.4,1.79,0.0,3.5,0.5,bench,all,,0,,,,live
 2026-11-04,156123,Dionycius Bakare,CAL,RAD,G/F,3000,1.06,1.52,0.0,3.5,0.4,bench,all,,0,,,,live
 2026-11-04,156123,Diing Maiwen,FDU,BUTLE,G/F,3000,1.09,1.55,0.0,3.5,0.4,bench,all,,0,,,,live
+2026-11-05,156240,Thomas Haugh,UF,JAC,F,10000,33.3,9.4,26.5,45.75,17.7,props,stl|blk|tov,,1,Florida,33.318,32.3,live
+2026-11-05,156240,Motiejus Krivas,ARIZ,CPS,F,9800,31.05,8.82,24.5,43.25,15.3,blend,all,,1,Arizona,25.361,27.2,live
+2026-11-05,156240,Alex Condon,UF,JAC,F,9500,38.06,10.09,30.75,51.53,31.8,blend,all,,1,Florida,30.538,33.3,live
+2026-11-05,156240,Jeremy Fears Jr.,MSU,TOL,G,9400,36.66,10.3,29.19,50.25,17.4,props,stl|blk|tov,,1,Michigan St.,32.431,34.7,live
+2026-11-05,156240,Tomislav Ivisic,IL,PENN,F,9200,24.88,8.11,19.0,35.75,9.2,props,stl|blk|tov,,1,Illinois,25.371,21.8,live
+2026-11-05,156240,Caleb Holt,ARIZ,CPS,G,9100,18.64,6.98,13.75,28.0,4.6,salary,all,,1,,,,live
+2026-11-05,156240,Patrick Ngongba II,DUKE,C-C,F,9000,29.2,8.32,23.0,39.75,14.3,props,ast|fg3|stl|blk|tov,,1,Duke,21.884,23.2,live
+2026-11-05,156240,Ivan Kharchenkov,ARIZ,CPS,F,8900,26.28,8.17,20.25,37.25,10.8,blend,all,,1,Arizona,28.349,22.3,live
+2026-11-05,156240,Matas Vokietaitis,TEX,GWB,F,8800,32.57,9.15,26.0,44.5,20.7,blend,all,,1,Texas,26.008,26.7,live
+2026-11-05,156240,Andrej Stojakovic,IL,PENN,G,8700,34.74,9.62,27.75,47.5,18.6,props,fg3|stl|blk|tov,,1,Illinois,26.344,22.0,live
+2026-11-05,156240,Rueben Chinyelu,UF,JAC,F,8600,31.32,8.61,25.0,42.75,18.8,props,fg3|stl|blk|tov,,1,Florida,24.526,29.6,live
+2026-11-05,156240,Isaiah Johnson,TEX,GWB,G,8500,26.87,8.78,20.75,38.25,10.2,blend,all,,1,Colorado,30.609,27.3,live
+2026-11-05,156240,David Punch,TEX,GWB,F,8400,28.3,8.21,22.5,39.25,14.1,blend,all,,1,TCU,29.653,31.6,live
+2026-11-05,156240,John Blackwell,DUKE,C-C,G,8300,29.19,9.17,22.75,41.5,12.7,props,reb|ast|stl|blk|tov,,1,Wisconsin,33.759,32.0,live
+2026-11-05,156240,Stefan Vaaks,IL,PENN,G,8200,26.23,8.93,19.75,38.5,9.8,blend,all,,0,Providence,31.494,26.5,live
+2026-11-05,156240,Coen Carr,MSU,TOL,F,8100,25.54,7.91,20.0,35.75,10.8,props,fg3|stl|blk|tov,,1,Michigan St.,29.249,22.8,live
+2026-11-05,156240,Layden Blocker,DPU,USF,G,8000,24.54,7.9,19.0,34.75,8.5,props,stl|blk|tov,,0,DePaul,29.056,22.7,live
+2026-11-05,156240,Boogie Fland,UF,JAC,G,7900,27.74,8.62,21.75,39.0,11.4,props,fg3|stl|blk|tov,,1,Florida,29.991,23.3,live
+2026-11-05,156240,Quentin Coleman,IL,PENN,G,7800,37.2,10.43,29.75,50.75,27.5,props,stl|blk|tov,,1,,,,live
+2026-11-05,156240,Dame Sarr,DUKE,C-C,G/F,7700,24.08,8.19,18.25,35.0,8.2,props,ast|fg3|stl|blk|tov,,1,Duke,23.518,15.6,live
+2026-11-05,156240,Joaquim Boumtje Boumtje,DUKE,C-C,F,7600,15.82,6.36,11.25,24.5,3.7,salary,all,,1,,,,live
+2026-11-05,156240,Caleb Foster,DUKE,C-C,G,7500,23.54,7.78,18.0,33.75,7.8,blend,all,,0,Duke,24.864,17.6,live
+2026-11-05,156240,Jordan Scott,MSU,TOL,F,7400,25.32,8.33,19.25,36.25,11.8,props,stl|blk|tov,,1,Michigan St.,20.826,14.0,live
+2026-11-05,156240,Cameron Williams,DUKE,C-C,F,7300,15.22,6.08,11.0,23.25,3.5,salary,all,,0,,,,live
+2026-11-05,156240,Zvonimir Ivisic,IL,PENN,F,7200,22.98,8.71,16.5,34.75,9.2,blend,all,,0,Illinois,17.208,16.9,live
+2026-11-05,156240,Anton Bonke,MSU,TOL,F,7100,25.96,7.99,20.25,37.0,13.7,props,fg3|stl|blk|tov,,0,Charlotte,25.582,25.7,live
+2026-11-05,156240,Marcus Spears Jr.,TEX,GWB,F,7000,14.6,5.64,10.5,22.0,3.3,salary,all,,0,,,,live
+2026-11-05,156240,Cayden Boozer,DUKE,C-C,G,6900,20.25,6.97,15.5,29.5,5.7,props,fg3|stl|blk|tov,,1,Duke,22.795,16.3,live
+2026-11-05,156240,Magoon Gwath,DPU,USF,F,6800,25.42,8.19,19.75,36.0,13.8,props,fg3|stl|blk|tov,,0,San Diego St.,19.052,18.3,live
+2026-11-05,156240,TJ Power,PENN,IL,F,6700,29.53,10.23,22.25,43.03,24.6,blend,all,,0,Penn,35.083,33.5,live
+2026-11-05,156240,Elyjah Freeman,TEX,GWB,G/F,6600,21.39,7.34,16.25,31.25,6.6,blend,all,,1,Auburn,26.816,20.8,live
+2026-11-05,156240,Denzel Aberdeen,UF,JAC,G,6500,24.06,8.01,18.25,35.0,9.0,props,stl|blk|tov,,1,Kentucky,30.556,23.4,live
+2026-11-05,156240,Ade Popoola,DPU,USF,G,6400,21.0,7.84,15.5,31.25,6.4,props,stl|blk|tov,,0,Tulsa,28.697,22.2,live
+2026-11-05,156240,Kahmare Holmes,DPU,USF,G,6300,24.12,7.66,18.5,34.28,9.3,blend,all,,0,Wofford,31.877,35.4,live
+2026-11-05,156240,Derek Dixon,ARIZ,CPS,G,6100,16.47,6.7,11.75,25.25,3.9,blend,all,,1,North Carolina,22.336,14.5,live
+2026-11-05,156240,Josh Omojafo,USF,DPU,G,6000,21.56,7.36,16.25,31.25,7.2,blend,all,,0,South Florida,27.159,22.3,live
+2026-11-05,156240,Cam Ward,MSU,TOL,F,5900,16.76,6.87,11.75,26.0,5.0,blend,all,,0,,,12.0,live
+2026-11-05,156240,Koree Cotton,DPU,USF,G,5800,20.86,7.19,15.75,30.5,6.9,blend,all,,0,UT Rio Grande Valley,27.049,28.3,live
+2026-11-05,156240,Kaleb Glenn,MSU,TOL,F,5800,12.72,5.69,8.75,20.5,2.8,salary,all,,0,,,,live
+2026-11-05,156240,Jacob Hudson,GWB,TEX,G,5700,16.43,6.44,11.75,24.75,4.0,blend,all,,0,Gardner Webb,27.028,21.2,live
+2026-11-05,156240,Kur Teng,MSU,TOL,G,5700,16.54,7.72,11.0,26.75,4.1,blend,all,,0,Michigan St.,17.491,12.4,live
+2026-11-05,156240,Cameron Holmes,ARIZ,CPS,G,5600,12.08,5.53,8.0,19.75,2.3,salary,all,,0,,,,live
+2026-11-05,156240,Hamad Mousa,CPS,ARIZ,G/F,5600,21.87,7.64,16.5,32.0,8.2,blend,all,,0,Cal Poly,31.334,34.1,live
+2026-11-05,156240,Sonny Wilson,USF,DPU,G,5500,17.25,6.77,12.5,26.0,4.6,blend,all,,0,Toledo,36.241,31.3,live
+2026-11-05,156240,Urban Klavzar,UF,JAC,G,5500,18.49,7.9,12.75,29.0,5.4,blend,all,,0,Florida,20.7,14.8,live
+2026-11-05,156240,Michael Zanoni,PENN,IL,G/F,5400,17.64,7.49,12.25,27.75,4.9,blend,all,,0,Penn,28.827,17.0,live
+2026-11-05,156240,Ace Talbert,GWB,TEX,G,5400,13.59,6.03,9.25,21.5,2.8,blend,all,,0,Gardner Webb,25.334,14.0,live
+2026-11-05,156240,Austin Parks,TOL,MSU,F,5300,20.67,7.21,15.5,30.5,11.5,blend,all,,0,Toledo,25.165,22.5,live
+2026-11-05,156240,JJ Mandaquit,ARIZ,CPS,G,5300,15.07,5.86,11.0,22.75,3.5,blend,all,,0,Washington,19.614,13.5,live
+2026-11-05,156240,Cayden Ward,CPS,ARIZ,G,5200,18.93,7.05,14.0,28.28,6.0,blend,all,,0,Cal Poly,29.373,26.4,live
+2026-11-05,156240,Jamias Ferere,GWB,TEX,G,5100,12.55,5.57,8.5,20.25,2.5,blend,all,,0,Gardner Webb,16.994,11.8,live
+2026-11-05,156240,Mynor Strong,TOL,MSU,G,5100,13.03,6.06,8.75,21.25,2.7,blend,all,,0,Toledo,17.642,10.9,live
+2026-11-05,156240,Hayden Wood,JAC,UF,G,5000,17.59,7.32,12.25,27.5,5.2,blend,all,,0,Jacksonville,26.916,20.2,live
+2026-11-05,156240,AJ Levine,PENN,IL,G,5000,19.71,7.58,14.25,30.0,7.1,blend,all,,0,Penn,24.363,21.3,live
+2026-11-05,156240,Richard Goods,USF,DPU,F,4900,13.46,5.49,9.5,20.75,3.7,blend,all,,0,Stony Brook,24.953,21.3,live
+2026-11-05,156240,Jasiah Jervis,MSU,TOL,G,4900,20.06,7.49,14.75,29.75,7.7,props,stl|blk|tov,,1,,,,live
+2026-11-05,156240,Wilson Jacques,DPU,USF,F,4800,19.3,6.79,14.5,28.5,11.5,blend,all,,0,Fresno St.,27.378,24.3,live
+2026-11-05,156240,Garrett Johnson,USF,DPU,F,4800,15.63,6.76,10.75,25.0,5.8,blend,all,,0,George Washington,22.569,18.8,live
+2026-11-05,156240,Jake Davis,CPS,ARIZ,G,4700,14.27,5.89,10.25,22.0,3.4,blend,all,,0,Cal Poly,21.081,14.2,live
+2026-11-05,156240,Jaylan Ouwinga,TOL,MSU,F,4700,14.35,6.11,10.0,22.75,4.7,blend,all,,0,Toledo,18.638,13.7,live
+2026-11-05,156240,Noah Meeusen,DPU,USF,G,4600,17.0,6.77,12.25,25.53,5.4,blend,all,,0,Arizona St.,27.307,16.9,live
+2026-11-05,156240,Evan Sterck,JAC,UF,G,4600,14.24,6.34,9.75,22.03,3.5,blend,all,,0,Jacksonville,24.734,15.4,live
+2026-11-05,156240,Augustus Gerhart,PENN,IL,F,4500,14.55,5.6,10.75,21.78,5.3,blend,all,,0,Penn,19.827,14.1,live
+2026-11-05,156240,Lucas Lueth,PENN,IL,F,4500,12.19,5.21,8.5,19.0,3.3,blend,all,,0,,,9.8,live
+2026-11-05,156240,Angel Montas Jr.,TOL,MSU,G,4500,17.14,6.84,12.25,26.25,5.7,blend,all,,0,UMass Lowell,29.183,26.8,live
+2026-11-05,156240,Sam Mbingazo,JAC,UF,F,4400,9.96,4.59,6.75,16.25,2.2,salary,all,,0,,,,live
+2026-11-05,156240,Guzman Vasilic,CPS,ARIZ,G,4400,13.99,6.27,9.5,22.25,3.5,blend,all,,0,Cal Poly,23.14,14.2,live
+2026-11-05,156240,Tristan Thompson,C-C,DUKE,G,4300,11.35,4.85,7.75,17.75,2.3,blend,all,,0,Coastal Carolina,19.541,11.4,live
+2026-11-05,156240,Kruz McClure,DPU,USF,G,4300,17.89,7.32,12.75,27.5,6.9,props,stl|blk|tov,,0,DePaul,18.6,10.5,live
+2026-11-05,156240,Mike James,USF,DPU,G,4300,13.09,5.64,9.0,20.75,3.1,blend,all,,0,Vanderbilt,10.604,5.2,live
+2026-11-05,156240,Deron Rippey Jr.,DUKE,C-C,G,4200,9.56,4.84,6.0,16.0,1.7,salary,all,,0,,,,live
+2026-11-05,156240,Jamie Phillips Jr.,JAC,UF,G,4200,16.56,6.84,11.75,25.75,5.8,blend,all,,0,Stetson,30.688,28.3,live
+2026-11-05,156240,Niklas Polonowski,PENN,IL,G/F,4200,7.12,4.04,4.25,12.5,1.1,blend,all,,0,Penn,6.052,2.7,live
+2026-11-05,156240,Austin Goode,CPS,ARIZ,F,4100,12.15,5.61,8.25,19.75,3.8,blend,all,,0,Cal Poly,16.341,11.0,live
+2026-11-05,156240,DaJohn Craig,C-C,DUKE,G,4100,9.97,5.21,6.0,17.0,1.9,blend,all,,0,Coastal Carolina,12.613,8.0,live
+2026-11-05,156240,Amari Evans,TEX,GWB,G,4100,14.05,5.78,9.75,21.5,3.9,blend,all,,0,Tennessee,14.449,11.5,live
+2026-11-05,156240,Zayden High,USF,DPU,F,4000,13.58,5.25,9.75,20.75,5.5,blend,all,,0,North Carolina,9.148,8.7,live
+2026-11-05,156240,Derrick Green,C-C,DUKE,F,4000,9.18,4.45,6.0,15.25,2.0,blend,all,,0,Coastal Carolina,10.623,6.4,live
+2026-11-05,156240,Bryson Howard,DUKE,C-C,G,4000,9.3,4.92,5.75,15.78,1.7,salary,all,,0,,,,live
+2026-11-05,156240,Jaden Newell,JAC,UF,F,3900,10.63,4.82,7.25,16.75,2.9,blend,all,,0,Georgia,1.378,0.6,live
+2026-11-05,156240,Jay Jones,PENN,IL,G,3900,4.05,2.84,2.0,7.75,0.7,bench,all,,0,Penn,13.726,9.3,live
+2026-11-05,156240,Mikhail Pocknett,GWB,TEX,F,3900,10.6,4.66,7.25,17.0,2.9,blend,all,,0,Buffalo,13.996,11.2,live
+2026-11-05,156240,CJ Ingram,UF,JAC,G,3900,4.36,3.27,2.0,8.75,0.7,bench,all,,0,Florida,5.405,4.4,live
+2026-11-05,156240,Rex Stirling,JAC,UF,F,3800,10.77,4.56,7.5,16.75,3.2,blend,all,,0,Wofford,14.547,10.8,live
+2026-11-05,156240,Ashton Hardaway,C-C,DUKE,F,3800,12.61,5.71,8.25,20.0,4.9,blend,all,,0,Memphis,19.524,13.7,live
+2026-11-05,156240,James Morrow,JAC,UF,F,3800,12.2,5.6,8.25,19.75,4.4,blend,all,,0,South Carolina St.,20.75,15.8,live
+2026-11-05,156240,Dalton Scantlebury,PENN,IL,F,3800,13.88,5.77,9.75,21.5,6.6,blend,all,,0,Penn,15.521,14.5,live
+2026-11-05,156240,Reph Stevenson,USF,DPU,F,3700,2.78,2.33,1.25,6.0,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Jackson Mosley,CPS,ARIZ,G,3700,11.12,5.37,7.25,18.5,2.6,blend,all,,0,Cal Poly,12.465,9.0,live
+2026-11-05,156240,Ginuwine Tropnas,GWB,TEX,F,3700,3.05,2.41,1.25,6.28,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Will James Jr.,TOL,MSU,G,3700,7.29,3.82,4.5,12.25,1.2,bench,all,,0,Toledo,9.494,6.6,live
+2026-11-05,156240,Domen Petrovic,UF,JAC,F,3600,3.04,2.56,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Troy Plumtree,CPS,ARIZ,F,3600,10.96,4.96,7.25,17.5,3.7,blend,all,,0,Cal Poly,12.223,9.5,live
+2026-11-05,156240,Drew Fuquay,C-C,DUKE,F,3600,8.74,4.17,5.75,14.25,2.1,blend,all,,0,Marshall,7.445,6.4,live
+2026-11-05,156240,Seth Brown,GWB,TEX,G,3600,2.91,2.58,1.0,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Endurance Aiyamenkhue,ARIZ,CPS,F,3500,1.4,1.62,0.0,3.5,0.3,bench,all,Q,0,,,,live
+2026-11-05,156240,Sir Mohammed,PENN,IL,G,3500,13.63,5.82,9.5,21.25,4.6,blend,all,,0,Notre Dame,16.355,12.0,live
+2026-11-05,156240,Fletcher Bigham,C-C,DUKE,F,3500,2.97,2.44,1.25,6.25,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Jackson Skipper,GWB,TEX,F,3500,8.0,4.19,5.0,13.75,1.8,blend,all,,0,Vermont,8.22,3.9,live
+2026-11-05,156240,Sean Jones,TOL,MSU,G,3500,13.64,6.21,9.25,21.5,4.6,blend,all,,0,Marquette,21.275,15.6,live
+2026-11-05,156240,Ugnius Jarusevicius,ARIZ,CPS,F,3500,6.86,3.74,4.25,11.75,1.3,bench,all,,0,Nebraska,10.5,13.0,live
+2026-11-05,156240,Caleb Middleton,C-C,DUKE,F,3400,9.08,4.08,6.25,14.25,2.5,blend,all,,0,Elon,10.172,8.8,live
+2026-11-05,156240,Caleb Williams,JAC,UF,G,3400,14.87,6.67,10.25,23.75,6.3,blend,all,,0,Lafayette,31.584,26.2,live
+2026-11-05,156240,William Kruse,PENN,IL,F,3400,2.11,1.98,0.0,4.75,0.4,bench,all,,0,Penn,3.6,5.0,live
+2026-11-05,156240,Andrej Shoshkikj,USF,DPU,G,3400,11.23,5.17,7.5,18.0,2.9,blend,all,,0,Stony Brook,25.903,20.7,live
+2026-11-05,156240,Aaron Price Jr.,CPS,ARIZ,F,3400,8.96,4.34,6.0,14.5,2.4,blend,all,,0,Cal Poly,6.129,4.3,live
+2026-11-05,156240,Trey Perry,C-C,DUKE,G,3400,9.61,4.65,6.5,16.0,2.1,blend,all,,0,Miami OH,13.181,10.4,live
+2026-11-05,156240,Rich Barron,TOL,MSU,F,3400,3.02,2.47,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Bo Ogden,TEX,GWB,G,3300,2.89,2.53,1.0,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Payton Kamin,PENN,IL,G/F,3300,0.72,1.27,0.0,2.0,0.3,bench,all,,0,Penn,3.575,1.7,live
+2026-11-05,156240,Joshua Lewis,USF,DPU,F,3300,6.67,3.82,4.0,11.75,1.4,blend,all,Q,0,Louisiana,22.567,15.5,live
+2026-11-05,156240,Ali Assran,CPS,ARIZ,F,3300,10.88,4.82,7.5,17.25,4.3,blend,all,,0,Cal Poly,12.764,10.3,live
+2026-11-05,156240,Darius Washington III,C-C,DUKE,G,3300,9.56,4.54,6.25,15.5,2.1,blend,all,,0,Kennesaw St.,15.104,10.8,live
+2026-11-05,156240,Brave Rutsindura,GWB,TEX,F,3300,2.83,2.29,1.25,5.75,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Nehemiah Turner,JAC,UF,F,3300,10.65,4.85,7.0,17.0,4.0,blend,all,,0,Minnesota,5.686,4.7,live
+2026-11-05,156240,Dorian Glogovac,PENN,IL,G,3200,1.33,1.7,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Chris Davis Jr.,USF,DPU,G,3200,8.75,4.66,5.25,15.0,1.8,blend,all,,0,Charleston,18.277,12.9,live
+2026-11-05,156240,Jess Esso Essis,CPS,ARIZ,G,3200,12.52,5.77,8.5,20.5,4.3,blend,all,,0,Cal Poly,17.429,16.3,live
+2026-11-05,156240,AJ Brown,UF,JAC,G,3200,3.04,2.67,1.0,6.75,0.5,bench,all,,0,,,0.0,live
+2026-11-05,156240,Jaylen Cross,C-C,DUKE,G,3200,9.62,4.91,6.0,16.0,2.2,blend,all,,0,Wake Forest,5.131,3.9,live
+2026-11-05,156240,DJ Daniel,GWB,TEX,G,3200,3.05,2.51,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Chris Riddle,TOL,MSU,F,3200,8.55,4.4,5.5,14.25,2.4,bench,all,,0,Toledo,12.967,9.2,live
+2026-11-05,156240,Roman Loux,JAC,UF,G,3100,1.01,1.51,0.0,3.25,0.3,bench,all,,0,Jacksonville,3.05,2.8,live
+2026-11-05,156240,Michael Pereira,PENN,IL,F,3100,1.3,1.58,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Donovan Waleskowski,USF,DPU,G,3100,2.84,2.51,1.0,6.25,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Kieran Elliott,CPS,ARIZ,G,3100,10.56,4.64,7.25,16.53,2.9,blend,all,,0,Cal Poly,16.906,10.5,live
+2026-11-05,156240,Jaevian Alston,C-C,DUKE,G/F,3100,3.05,2.64,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Sam Nosakhare,GWB,TEX,F,3100,7.79,4.05,4.75,13.25,2.0,blend,all,,0,,,4.8,live
+2026-11-05,156240,Toby Nwokolo,TOL,MSU,F,3100,1.46,1.65,0.0,3.5,0.3,bench,all,,0,Toledo,2.333,1.0,live
+2026-11-05,156240,Arturas Butajevas,UF,JAC,F,3000,2.94,2.41,1.25,6.25,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Jones Lay,UF,JAC,F,3000,2.98,2.41,1.25,6.25,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Alex Kovatchev,UF,JAC,G,3000,1.5,1.8,0.0,4.0,0.3,bench,all,,0,Florida,3.24,1.4,live
+2026-11-05,156240,Alex Lloyd,UF,JAC,G,3000,2.54,2.4,0.69,6.0,0.4,bench,all,,0,Florida,4.771,2.6,live
+2026-11-05,156240,Viktor Mikic,UF,JAC,F,3000,2.89,2.44,1.25,6.25,0.5,bench,all,,0,Florida,2.918,2.9,live
+2026-11-05,156240,Lincoln Williams,IL,PENN,G,3000,2.92,2.55,1.0,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Jason Jakstys,IL,PENN,F,3000,5.08,3.28,2.75,9.75,0.9,bench,all,,0,Illinois,5.3,5.1,live
+2026-11-05,156240,Quentin McCoy,IL,PENN,G,3000,2.93,2.61,1.0,6.5,0.5,bench,all,,0,,,0.0,live
+2026-11-05,156240,Ethan Brown,IL,PENN,G,3000,30.29,8.93,23.75,41.75,18.1,props,stl|blk|tov,,1,,,,live
+2026-11-05,156240,Lucas Morillo,IL,PENN,G,3000,7.5,4.46,4.25,13.5,1.5,salary,all,,1,,,,live
+2026-11-05,156240,Landon Davis,IL,PENN,F,3000,3.0,2.55,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Zavier Zens,IL,PENN,F,3000,2.95,2.44,1.25,6.25,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Blake Fagbemi,IL,PENN,G,3000,2.04,2.2,0.0,5.0,0.4,bench,all,,0,Illinois,3.646,2.1,live
+2026-11-05,156240,Andrew Jensen,DPU,USF,F,3000,1.05,1.4,0.0,3.03,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Noah Smith,DPU,USF,G,3000,1.01,1.48,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Jonas Johnson,DPU,USF,F,3000,1.02,1.41,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Nate Kasher,DPU,USF,G,3000,11.01,5.42,7.0,18.25,3.4,blend,all,,0,DePaul,1.74,1.9,live
+2026-11-05,156240,Fabian Flores,DPU,USF,F,3000,12.61,5.45,8.75,19.75,9.1,blend,all,,0,DePaul,10.575,8.5,live
+2026-11-05,156240,Mason Lockett IV,DPU,USF,G,3000,0.7,1.22,0.0,2.0,0.3,bench,all,Q,0,,,,live
+2026-11-05,156240,Joaquin Rigdon,ARIZ,CPS,G,3000,2.11,2.2,0.0,5.0,0.4,bench,all,,0,,,,live
+2026-11-05,156240,Evan Otten,ARIZ,CPS,F,3000,5.6,3.26,3.25,10.0,1.1,bench,all,,0,Idaho St.,14.724,13.4,live
+2026-11-05,156240,Addison Arnold,ARIZ,CPS,G,3000,0.91,1.37,0.0,3.0,0.3,bench,all,,0,Arizona,2.185,1.3,live
+2026-11-05,156240,Drew Scharnowski,DUKE,C-C,F,3000,6.43,3.71,3.75,11.28,1.4,bench,all,,0,Belmont,21.763,25.6,live
+2026-11-05,156240,Nick Arnold,DUKE,C-C,G,3000,1.67,1.91,0.0,4.25,0.4,bench,all,,0,,,,live
+2026-11-05,156240,Maxime Meyer,DUKE,C-C,F,3000,1.65,1.85,0.0,4.0,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Mabil Mawut,ARIZ,CPS,F,3000,2.07,1.99,0.0,4.75,0.4,bench,all,,0,,,,live
+2026-11-05,156240,Sebastian Wilkins,DUKE,C-C,G/F,3000,1.58,1.85,0.0,4.0,0.4,bench,all,,0,,,,live
+2026-11-05,156240,Jacob Theodosiou,DUKE,C-C,G,3000,6.23,3.71,3.5,11.25,1.1,bench,all,,0,Loyola MD,23.33,24.0,live
+2026-11-05,156240,Jackson Cook,ARIZ,CPS,G,3000,0.7,1.24,0.0,2.5,0.3,bench,all,,0,Arizona,1.34,0.3,live
+2026-11-05,156240,Mantas Laurencikas,TEX,GWB,G,3000,2.98,2.53,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Coleman Elkins,TEX,GWB,F,3000,3.05,2.43,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Austin Goosby,TEX,GWB,G,3000,7.68,4.43,4.5,13.5,1.5,salary,all,,1,,,,live
+2026-11-05,156240,Joe Sterling,TEX,GWB,G,3000,2.97,2.63,1.0,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,John Clark,TEX,GWB,F,3000,2.99,2.41,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Anthon McDermott,TEX,GWB,G,3000,2.64,2.35,1.0,5.75,0.5,bench,all,,0,Texas,2.829,2.6,live
+2026-11-05,156240,Lewis Obiorah,TEX,GWB,F,3000,2.99,2.49,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Jesse McCulloch,MSU,TOL,F,3000,7.89,4.39,4.75,13.5,2.2,blend,all,,1,Michigan St.,7.371,5.5,live
+2026-11-05,156240,Carlos Medlock Jr.,MSU,TOL,G,3000,1.0,1.48,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Brennan Walton,MSU,TOL,F,3000,0.36,0.85,0.0,1.5,0.2,bench,all,,0,Michigan St.,1.333,0.9,live
+2026-11-05,156240,Colin Walton,MSU,TOL,F,3000,0.34,0.8,0.0,1.25,0.2,bench,all,,0,Michigan St.,1.275,0.6,live
+2026-11-05,156240,Bryce James,ARIZ,CPS,G,3000,7.64,4.23,4.5,13.5,1.5,salary,all,,1,,,,live
+2026-11-05,156240,Julius Avent,MSU,TOL,F,3000,1.05,1.42,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Ethan Taylor,MSU,TOL,F,3000,0.99,1.38,0.0,3.0,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Maksim Brnovic,ARIZ,CPS,F,3000,2.02,2.0,0.0,4.75,0.4,bench,all,,0,,,,live
+2026-11-05,156240,Matthew Watkins,MSU,TOL,G,3000,1.08,1.5,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Evan Roberts,JAC,UF,G,3000,1.05,1.5,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,LJ Katz,JAC,UF,G,3000,1.06,1.51,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Maddox Palmer,JAC,UF,G,3000,1.03,1.54,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Lyndell Buckingham Jr.,JAC,UF,G,3000,1.05,1.52,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Ryan Altman,PENN,IL,G/F,3000,0.93,1.39,0.0,3.0,0.3,bench,all,Q,0,,,,live
+2026-11-05,156240,Chase Geremia,PENN,IL,G,3000,1.46,1.76,0.0,3.75,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Isaiah Carroll,PENN,IL,G,3000,1.34,1.74,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Ethan Lin,PENN,IL,G,3000,1.3,1.66,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Johnny Keenan,PENN,IL,G,3000,1.4,1.74,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Finley Billy,PENN,IL,F,3000,1.3,1.59,0.0,3.5,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Tiefing Diawara,USF,DPU,F,3000,10.5,4.73,7.0,16.75,4.8,blend,all,,0,Syracuse,2.35,2.4,live
+2026-11-05,156240,Jake Feldhaus,USF,DPU,F,3000,2.67,2.25,1.0,5.75,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Darren Moore,USF,DPU,G,3000,2.71,2.4,1.0,6.0,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Jayden Johnson,USF,DPU,G,3000,2.79,2.46,1.0,6.25,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Canon Wyatt,CPS,ARIZ,G,3000,0.98,1.46,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Jason Scott,CPS,ARIZ,G,3000,8.4,4.47,5.0,14.5,1.8,blend,all,,0,Cal Poly,5.775,4.0,live
+2026-11-05,156240,Anthony Moore,CPS,ARIZ,G,3000,1.03,1.46,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-05,156240,Braden Freeman,CPS,ARIZ,F,3000,1.03,1.41,0.0,3.25,0.3,bench,all,,0,,,,live
+2026-11-05,156240,JT Kelsheimer,C-C,DUKE,G,3000,3.02,2.57,1.0,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Q Williams IV,C-C,DUKE,G,3000,3.02,2.57,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Jordan Buzzard,C-C,DUKE,F,3000,2.97,2.38,1.25,6.25,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Bryson Sams,C-C,DUKE,G,3000,3.08,2.55,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Rue Wells,GWB,TEX,G,3000,3.01,2.53,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,David Gaymon,GWB,TEX,G,3000,2.99,2.54,1.25,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Chinedu Okpara,GWB,TEX,F,3000,2.92,2.4,1.25,6.0,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Bryson Luther,GWB,TEX,G,3000,3.04,2.68,1.0,6.75,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Manny Johnson,TOL,MSU,G,3000,2.92,2.53,1.0,6.25,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Jaylohn Allen,TOL,MSU,G,3000,3.01,2.61,1.0,6.5,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Marco Mattucci,TOL,MSU,G,3000,2.96,2.54,1.25,6.25,0.5,bench,all,,0,,,,live
+2026-11-05,156240,Rashaun Porter,TOL,MSU,F,3000,2.96,2.42,1.25,6.25,0.5,bench,all,,0,,,,live
