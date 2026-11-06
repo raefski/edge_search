@@ -331,26 +331,6 @@
 }
 },
 "NFL": {
-"155561": {
-"ContestStartTimeSuffix": null,
-"DraftGroupId": 155561,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 385,
-"StartDate": "2026-11-06T01:15:00.0000000Z",
-"StartDateEst": "2026-11-05T20:15:00.0000000",
-"last_start": "2026-11-06T01:15:00.0000000Z"
-},
-"155649": {
-"ContestStartTimeSuffix": " (Mon-Thu)",
-"DraftGroupId": 155649,
-"DraftGroupTag": "",
-"GameCount": 2,
-"GameTypeId": 1,
-"StartDate": "2026-11-03T01:15:00.0000000Z",
-"StartDateEst": "2026-11-02T20:15:00.0000000",
-"last_start": "2026-11-06T01:15:00.0000000Z"
-},
 "155910": {
 "ContestStartTimeSuffix": " (Madden Stream)",
 "DraftGroupId": 155910,
@@ -450,16 +430,6 @@
 "StartDate": "2026-11-09T01:20:00.0000000Z",
 "StartDateEst": "2026-11-08T20:20:00.0000000",
 "last_start": "2026-11-10T01:15:00.0000000Z"
-},
-"156000": {
-"ContestStartTimeSuffix": " (JAX @ BAL)",
-"DraftGroupId": 156000,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-06T01:15:00.0000000Z",
-"StartDateEst": "2026-11-05T20:15:00.0000000",
-"last_start": "2026-11-06T01:15:00.0000000Z"
 },
 "156001": {
 "ContestStartTimeSuffix": " (CIN vs ATL)",
@@ -607,8 +577,8 @@
 "DraftGroupTag": "",
 "GameCount": 1,
 "GameTypeId": 108,
-"StartDate": "2026-11-06T02:15:00.0000000Z",
-"StartDateEst": "2026-11-05T21:15:00.0000000",
+"StartDate": "2026-11-06T02:40:00.0000000Z",
+"StartDateEst": "2026-11-05T21:40:00.0000000",
 "last_start": "2026-11-06T02:15:00.0000000Z"
 },
 "156363": {
