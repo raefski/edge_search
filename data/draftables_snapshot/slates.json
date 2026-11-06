@@ -209,16 +209,6 @@
 }
 },
 "NBA": {
-"156183": {
-"ContestStartTimeSuffix": " (2H MIA @ GSW)",
-"DraftGroupId": 156183,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 112,
-"StartDate": "2026-11-06T04:16:00.0000000Z",
-"StartDateEst": "2026-11-05T23:16:00.0000000",
-"last_start": "2026-11-06T04:16:00.0000000Z"
-},
 "156184": {
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 156184,
@@ -572,6 +562,66 @@
 "StartDate": "2026-11-07T01:00:00.0000000Z",
 "StartDateEst": "2026-11-06T20:00:00.0000000",
 "last_start": "2026-11-07T01:00:00.0000000Z"
+},
+"156259": {
+"ContestStartTimeSuffix": " (Early)",
+"DraftGroupId": 156259,
+"DraftGroupTag": "",
+"GameCount": 2,
+"GameTypeId": 125,
+"StartDate": "2026-11-07T17:30:00.0000000Z",
+"StartDateEst": "2026-11-07T12:30:00.0000000",
+"last_start": "2026-11-07T18:00:00.0000000Z"
+},
+"156260": {
+"ContestStartTimeSuffix": " (NYR @ SEA)",
+"DraftGroupId": 156260,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-07T22:00:00.0000000Z",
+"StartDateEst": "2026-11-07T17:00:00.0000000",
+"last_start": "2026-11-07T22:00:00.0000000Z"
+},
+"156261": {
+"ContestStartTimeSuffix": null,
+"DraftGroupId": 156261,
+"DraftGroupTag": "Featured",
+"GameCount": 9,
+"GameTypeId": 125,
+"StartDate": "2026-11-08T00:00:00.0000000Z",
+"StartDateEst": "2026-11-07T19:00:00.0000000",
+"last_start": "2026-11-08T03:00:00.0000000Z"
+},
+"156265": {
+"ContestStartTimeSuffix": " (Turbo)",
+"DraftGroupId": 156265,
+"DraftGroupTag": "",
+"GameCount": 3,
+"GameTypeId": 125,
+"StartDate": "2026-11-08T01:00:00.0000000Z",
+"StartDateEst": "2026-11-07T20:00:00.0000000",
+"last_start": "2026-11-08T01:00:00.0000000Z"
+},
+"156266": {
+"ContestStartTimeSuffix": " (Late)",
+"DraftGroupId": 156266,
+"DraftGroupTag": "",
+"GameCount": 3,
+"GameTypeId": 125,
+"StartDate": "2026-11-08T02:00:00.0000000Z",
+"StartDateEst": "2026-11-07T21:00:00.0000000",
+"last_start": "2026-11-08T03:00:00.0000000Z"
+},
+"156267": {
+"ContestStartTimeSuffix": " (VAN @ EDM)",
+"DraftGroupId": 156267,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-08T03:00:00.0000000Z",
+"StartDateEst": "2026-11-07T22:00:00.0000000",
+"last_start": "2026-11-08T03:00:00.0000000Z"
 }
 }
 }
