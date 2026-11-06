@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-06T15:59:22+00:00",
+"generated_at": "2026-11-06T16:29:29+00:00",
 "goalies": {
 "2026-11-06": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "CGY": {
 "goalie": "Dustin Wolf",
-"status": null
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -844,7 +844,7 @@
 "toiSeconds": 3
 },
 "line": "F4",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 },
@@ -949,6 +949,40 @@
 },
 "line": "F3",
 "pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
+"Jiri Kulich": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 128,
+"toiSeconds": 11
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 69,
+"toiSeconds": 6
+},
+"line": "F3",
+"pk": null,
 "pos": "lw",
 "pp": "PP2"
 },
@@ -982,9 +1016,9 @@
 "toiSeconds": 36
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Josh Norris": {
 "gtd": false,
@@ -1222,7 +1256,7 @@
 "line": "F1",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Rasmus Dahlin": {
 "gtd": false,
@@ -1258,40 +1292,6 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Ryan McLeod": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 148,
-"toiSeconds": 46
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 72,
-"toiSeconds": 0
-},
-"line": "F3",
-"pk": "PK1",
-"pos": "rw",
-"pp": "PP2"
-},
 "Sam Carrick": {
 "gtd": false,
 "injury": null,
@@ -1322,7 +1322,7 @@
 "toiSeconds": 32
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": null
 },
@@ -1390,7 +1390,7 @@
 "toiSeconds": 33
 },
 "line": "F4",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "c",
 "pp": null
 },
@@ -1460,7 +1460,7 @@
 "toiSeconds": 30
 },
 "line": "F1",
-"pk": "PK1",
+"pk": null,
 "pos": "lw",
 "pp": "PP1"
 },
