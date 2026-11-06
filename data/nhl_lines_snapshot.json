@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-06T17:29:15+00:00",
+"generated_at": "2026-11-06T17:59:04+00:00",
 "goalies": {
 "2026-11-06": {
 "ANA": {
@@ -78,7 +78,7 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": null
+"status": "Likely"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -2906,42 +2906,6 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Arsenii Sergeev": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 9,
-"goalieGoalsAgainst": 6,
-"goalieGoalsAgainstAvg": "3.0",
-"goalieLosses": 1,
-"goalieMinutes": 120,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.903",
-"goalieSaves": 56,
-"goalieSeconds": 0,
-"goalieShotsAgainst": 62,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 6,
-"goalieGoalsAgainstAvg": "3.0",
-"goalieLosses": 1,
-"goalieMinutes": 120,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.903",
-"goalieSaves": 56,
-"goalieSeconds": 0,
-"goalieShotsAgainst": 62,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
-},
 "Aydar Suniev": {
 "gtd": false,
 "injury": null,
@@ -2975,6 +2939,42 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
+},
+"Devin Cooley": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 26,
+"goalieGoalsAgainstAvg": "2.76",
+"goalieLosses": 5,
+"goalieMinutes": 564,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.901",
+"goalieSaves": 236,
+"goalieSeconds": 8,
+"goalieShotsAgainst": 262,
+"goalieShutouts": 0,
+"goalieWins": 4
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 7,
+"goalieGoalsAgainstAvg": "1.62",
+"goalieLosses": 1,
+"goalieMinutes": 259,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.95",
+"goalieSaves": 132,
+"goalieSeconds": 25,
+"goalieShotsAgainst": 139,
+"goalieShutouts": 0,
+"goalieWins": 4
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
 },
 "Dustin Wolf": {
 "gtd": false,
@@ -11148,6 +11148,40 @@
 "pos": "rw",
 "pp": "PP2"
 },
+"Ben Hutton": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 11,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 16,
+"toiMinutes": 145,
+"toiSeconds": 13
+},
+"last5": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 83,
+"toiSeconds": 42
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Bo Horvat": {
 "gtd": false,
 "injury": null,
@@ -11279,7 +11313,7 @@
 "toiMinutes": 66,
 "toiSeconds": 35
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -11420,7 +11454,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Logan Stanley": {
 "gtd": false,
@@ -11487,7 +11521,7 @@
 },
 "line": "D3",
 "pk": "PK1",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Matthew Schaefer": {
@@ -11520,7 +11554,7 @@
 "toiSeconds": 7
 },
 "line": "D1",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": "PP1"
 },
@@ -11587,44 +11621,10 @@
 "toiMinutes": 77,
 "toiSeconds": 38
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
-},
-"Scott Mayfield": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 14,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 132,
-"toiSeconds": 27
-},
-"last5": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 61,
-"toiSeconds": 29
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "rd",
-"pp": null
 },
 "Semyon Varlamov": {
 "gtd": false,
@@ -11691,7 +11691,7 @@
 "toiMinutes": 104,
 "toiSeconds": 33
 },
-"line": "F1",
+"line": "F3",
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP1"
@@ -11762,7 +11762,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 }
 },
 "NYR": {
@@ -16877,7 +16877,7 @@
 "pp": "PP2"
 },
 "Jack Roslovic": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 8,
