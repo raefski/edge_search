@@ -79,3 +79,10 @@ player table ignores its date filter (leaks). NCAAB_EXPERT_SOURCES.md.
 **Runner-ups:** transfers in a team's first game on teams RotoWire did not list (11/3: 17 false
 actives, 224 projected points); Q_PLAY flat 0.7 vs 9 of 14 at $4K+ and 5 of 28 below played;
 RotoWire non-starters in blend run +2.7..+5.8 high (n=62).
+
+**Team-share fix, re-tested ON TOP of the last game (same folds, LAST_GAME refit per fold on each
+model's own projection; scratch combined.py):** priced MAE CURR+LG -> TEAM+LG 8.543->8.492 (11/2,
+no previous box), 7.892->7.732 (11/3), 7.225->7.195, 7.461->7.456, 7.020->6.975; rho .627->.634,
+.618->.610, .658->.657; forward 7.621->7.601, 6.998->6.956. Where a last game exists the gain is
+0.005-0.045 and rank is flat or worse: the last game already carries most of what the team split
+did. **Not shipped.** Retest at 10 slates.
