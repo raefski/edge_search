@@ -95,6 +95,11 @@ ALIASES = {
     "UNO": ("new orleans", "lsu new orleans"), "NDSU": "north dakota state",
     "CS-NR": ("cal state northridge", "csu northridge", "csun"), "WICH": "wichita state",
     "UAPB": ("arkansas pine bluff", "uapb"),
+    # Read off 11/5-11/6 boards (gids 156240, 156342), where these five games went ungraded.
+    # USF was South Florida (vs DePaul); San Francisco kept as the other DK spelling.
+    "CPS": ("cal poly", "cal poly slo"), "C-C": "coastal carolina", "DPU": "depaul",
+    "USF": ("south florida", "san francisco"), "JMU": "james madison",
+    "MTSU": ("middle tennessee", "middle tennessee state"),
 }
 #: What can follow a school's name and make it a DIFFERENT school: "Kansas" must not
 #: claim "Kansas St.", nor "Miami" claim "Miami (OH)", nor "Illinois" claim "Illinois St.",
