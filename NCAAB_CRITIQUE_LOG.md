@@ -145,3 +145,31 @@ but bench worse on 11/5-11/6; retest at 6+ slates. (2) The lab grades 11/2-11/4 
 blend/salary model (priced bias +2..+3.4); replay them with fold-refit constants before judging any
 priced-row change. (3) Spread / blowout terms null or worse; several previous games untestable yet
 (0 teams had 2 in the window).
+
+### Cycle 2 runner-ups, tested 2026-11-07 evening (on top of the shipped cycle-2 board; nothing shipped)
+
+**Q_PLAY split by price** (availability runner-up: 9 of 14 tagged at $4K+ played, 5 of 28 below). Logged
+x0.7 undone, (q under $4K, q $4K+) grid-fit on training slates' tagged rows, then LAST_GAME. Fits want
+(0.0, 0.75-1.0). LOSO all MAE: 11/2 6.558 -> 6.589, 11/3 7.613 -> 7.456, 11/4 5.654 -> 5.667, 11/5 5.629 ->
+5.612, 11/6 5.317 -> 5.286 (tagged n = 12/15/3/4/8). Worse on 2 of 5: **not shipped**; 42 tagged rows, retest
+at 10 slates.
+
+**RotoWire role offsets** (cycle-1 critic runner-up: listed non-starters +2.7..+5.8 high before
+LAST_GAME). Mean residual per group on training slates, added to blend/salary rows. Pooled offsets:
+LOSO all 6.558 -> 6.398, 7.613 -> 7.550, but 5.654 -> 5.733, 5.629 -> 5.714, 5.317 -> 5.423; forward worse on
+both. Split by has-a-last-game: better only on 11/2 (no previous games). LAST_GAME absorbed it: **not
+shipped**; it only helps on opening nights.
+
+**Lab fidelity (cycle-2 critic runner-up 2): 11/2-11/4 replayed under the current model** (blend/salary
+from the cycle-1 critic's replay inputs, critic-ncaab-1/rows.json; props and bench as logged), LAST_GAME
+(env) refit per fold on top. Current-model all MAE is lower than the as-run lab shows on the old slates
+(11/2 5.92 vs 6.56, 11/3 7.09 vs 7.62, 11/4 5.42 vs 5.69): the lab's as-run baseline overstates them.
+(a) Refitting BLEND_RESULT / SALARY_TIER_LINE per fold vs the shipped ones, LAST_GAME on top: 11/4-11/6
+differ by <= 0.015 all MAE (5.418/5.627/5.387 shipped vs 5.409/5.618/5.393), forward 5.653 -> 5.650, 5.281
+-> 5.282: **no gain, constants kept** (all-5 refit would be -10.20 + 1.331 x blend, 4.42 + 1.685/$1K).
+(b) LAST_GAME refit on current-model projections (all 5): (0.092, 0.315, 0.124, 0.444) vs shipped (0.029,
+0.298, 0.128, 0.449); held out the shipped constants are as good or better on every slate: the cycle-2
+fit is not distorted by the pre-11/5 logs.
+
+**Not run:** last game's started flag (critic: retest at 6+ slates; 5 graded), transfers in a team's
+first game (every team has now played: no such slate left this season).
