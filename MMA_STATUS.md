@@ -307,3 +307,116 @@ Two model lineups were entered. **GPP 415.8, 585th of ~1,000.** **Cash 442.7, 56
 **Status:** No calibration run yet—the 10/3 date has no projection log. Rerun calibration once 10/3 projection log is generated (`scripts/mma_calibration.py --fit-ownership`). Entries came from phone-built lineups using live snapshot data only.
 
 **Note:** MMA has no late-swap window (lock is first fight's bell). Build timing was final—no opportunity to update after initial lock.
+
+## 13. Joe Rogan as a source — tested 2026-11-07, nothing shipped
+
+**Question.** Does what Rogan says before a fight (JRE MMA Show, JRE episodes
+with fighters/coaches, card previews) carry information the de-biased market
+(§4) has not priced: injuries, weight cuts, short notice, camp changes,
+cardio, chin, picks? Prior: no (touts were coin flips, GPP_META.md §C2;
+fading the crowd was null, §G). Tool: `scripts/mma_rogan.py`
+(`episodes | fetch | extract | sample | grade`); report in
+`data/mma_rogan/grade.json`; claims (with quotes, gitignored) in
+`data/mma_rogan/claims.csv`.
+
+**Sources.** The JRE RSS feed (megaphone GLT1412515089) holds all 2,778
+episodes since 2009 with pubDates, audio only. 368 are about fights: 187 JRE
+MMA Shows, 69 Fight Companions, 112 regular episodes whose guest is a UFC
+fighter or a named MMA coach/analyst. 315 of them are on the PowerfulJRE
+YouTube channel; **296 had captions** (auto-generated) and were read. 53 are
+audio only and were NOT transcribed (Whisper, ~25 CPU-min each).
+
+**Timing.** A claim counts only for fights on a later UTC day than the
+episode became public = the RSS pubDate (a date-only stamp = end of that
+day; YouTube's minute only if it falls within 2 days after). **A trap found
+on the way:** PowerfulJRE re-uploaded 61 old episodes in 2024 (and 15 in
+2013-14). The first version took "the later of RSS and YouTube" and so dated
+2021 talk as 2024 and matched it to 2024 fights, all of it in the test
+period; the mention result moved from −14.0 to −10.2 points when fixed.
+Fight Companion is released after the card, so it only ever feeds a
+fighter's NEXT fight.
+
+**Worked example (Adam's memory: "2020, a weekday episode, the fight the next
+Saturday").** JRE MMA Show #92 with Angela Hill: RSS 2020-02-18, YouTube
+2020-02-18 12:00 PT; she fought Loma Lookboonmee 2020-02-22 (UFC Auckland)
+and won by decision. They discuss flying to New Zealand during the
+coronavirus news. 2h21m of transcript contain **no claim about the fight**:
+at the sign-off Rogan asks "tell me your opponent's name again" (captioned
+"look boo me"). The pre-fight guest appearance is promotion, not analysis.
+
+**Extraction** is a lexicon over the words around each fighter's name,
+bounded by any other UFC fighter's name (no LLM on this machine). Hand-
+labelled samples of the final output: **mentions 7/30 wrong (23%)**, almost
+all surname-only hits on namesakes ("machine gun kelly", "ginger grant");
+**typed claims 13/30 wrong (43%)**, mostly the claim belonging to the
+opponent/guest, and several correct ones describe the past.
+
+**What was collected.** 4,771 rows: 2,500 pre-fight mentions and 82 typed
+pre-fight claims (40 injury, 13 short notice, 8 weight cut, 9 picks for,
+3 against, 6 cardio, 3 chin), plus 2,102 mentions and 87 typed claims of
+next-fight evidence. **Rogan rarely makes the kind of claim the hypothesis
+needs**: 82 typed claims in 296 episodes, half of them misattributed.
+
+**Held-out results** (fit before 2023-01-01, chosen before grading; report
+on 2023-01-01 → 2026-03-28, where ufc-master.csv prices end; unit = the
+fight, side A's signal minus side B's, each episode counted once; 90%
+intervals resample events / episodes):
+
+| signal (pre-fight, ≤30 days) | train fights | b (train) | test fights / events / episodes | residual vs market, test | 90% (event) | 90% (episode) | log loss saved / fight |
+|---|---|---|---|---|---|---|---|
+| **mention volume** log1p(episodes) | 433 | −0.20 | **96 / 60 / 38** | **−10.2 pts** (won 40.6% vs 50.9% priced) | [−16.7, −4.0] | [−17.7, −3.7] | +0.0130 [+0.0038, +0.0221] |
+| guest within 60 days (no extraction) | 12 | −0.72 | 2 / 2 / 2 | — | — | — | not enough data |
+| picks (for − against) | 8 | +0.01 | 2 | — | — | — | not enough data |
+| injury / weight cut / short notice | 37 | +0.18 | 3 | — | — | — | not enough data |
+| cardio, chin (win and P(KO'd)) | ≤3 | — | ≤1 | — | — | — | not enough data |
+| next-fight mention (Fight Companion etc.) | 247 | −0.11 | 17 | +18.5 pts | [+1.3, +36.8] | [−1.0, +37.1] | −0.0144 (worse) |
+| next-fight picks / health / cardio | ≤27 | — | ≤3 | — | — | — | not enough data |
+
+**Mention volume is the one signal with a held-out effect, and it points the
+"wrong" way for the hypothesis**: the fighter Rogan talks about more wins
+LESS than the market says. Checks (all priced fights 2010-26, logistic
+on top of the market, clustered by event):
+* not experience or age: b −0.279 (se 0.118) → −0.269 (0.119) with both
+  controls (younger fighters beat the market, +0.022/yr, independently);
+* same sign at 7, 14 and 30 days (−0.37, −0.35, −0.28), in MMA Shows
+  (−0.25) and Fight Companion previews (−0.54), weak in guest episodes (−0.11);
+* **it is all in favourites**: the more-discussed fighter as favourite won
+  58.9% vs 66.7% priced (270 fights, b −0.50 se 0.17); as underdog 34.7% vs
+  34.5% (259, −0.01). Five-round favourites with NO mention also run under
+  the market (62.9% vs 68.2%, n = 504, se 2.1 pts; train −6.1, test −3.3) —
+  a separate main-event lead for §4, not a Rogan effect; discussed ones run
+  further under (−14.7, n = 75).
+
+Read: what Rogan talks about is what the public talks about, and the hyped
+favourite is over-bet. It is an attention signal, not private knowledge.
+
+**Why nothing shipped.** The pre-registered test beats the market on held-out
+log loss, but on 96 fights (below the ~100 floor), with the test effect four
+times the train one (train residual −2.5 pts [−6.0, +1.3], not separable
+from 0), and the favourite split was found after looking. It moves a
+discussed favourite ~3 pts of win probability (b −0.20 × log 2), on roughly
+one fight in two cards. Not enough to justify a pre-card timer, a feed and an
+app panel at weight 0. No change to `mma_market.py` / `dfs_run_mma.py`.
+
+**Collect next** (in this order):
+1. **Grow the test set, not the lexicon**: captions for every 2023-26 JRE
+   episode (any guest; ~550, ~75 min at the polite pace) and the matching
+   2010-22 ones for training, then re-run the identical test with b fixed.
+   Decide at ≥150 held-out fights.
+2. A general attention measure (YouTube/Google search volume, our own MMA
+   buzz) to see whether Rogan adds anything beyond "public attention on the
+   favourite" — if attention in general does it, Rogan is one noisy proxy.
+3. Forward grading needs post-2026-03 prices: grade against
+   `data/mma_odds_history/` (DK's own lines since 2026-09-26) once ~10 cards.
+4. The 53 audio-only episodes (Whisper) only if 1 says the signal holds.
+5. The five-round favourite bias (−5 pts, unmentioned) as a §4 market
+   refit candidate, held out the same way.
+
+**Other commentators.** Same shape, same likely answer. Broadcasters are paid
+to promote the product, have no stake in being right, and mostly talk about
+the stars, so their talk measures attention rather than information. Where
+the market is thin (NASCAR's booth on non-favourites, NCAAB) attention can
+still be priced in late; the test is cheap with this script's pattern
+(timestamped transcripts → mentions → residual vs the de-biased close), but
+expect "talked-about favourites are over-bet" rather than an information
+edge, and prefer a sport-wide attention measure over one voice.

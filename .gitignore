@@ -245,3 +245,8 @@ data/overlay_payouts_live.json
 data/ncaaf_availability/
 data/ncaaf_depth/
 data/ncaaf_qb_rush_td.json
+# scripts/mma_rogan.py: claims.csv carries transcript excerpts (public repo) and
+# the YouTube listings are re-fetchable; only the episode list and the grade are kept.
+data/mma_rogan/*
+!data/mma_rogan/episodes.json
+!data/mma_rogan/grade.json
