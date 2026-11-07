@@ -490,3 +490,22 @@ def test_missing_rate_table_is_said_not_hidden(tmp_path):
     from edge import dfs_run_ncaaf as R
     rates, source = R.load_qb_rush_rates(tmp_path / "nope.json")
     assert rates == {} and "yards/110" in source
+
+
+def test_game_line_is_the_balanced_pair_not_the_first_alternate():
+    """With full ladders the client hands game markets over with every alternate
+    rung; the old reader took the first total it saw (36.5 on a 56.5 game) and
+    never filled the spread. Shapes from DraftKings, Georgia @ Ole Miss 2026-11-07."""
+    from edge import dfs_run_ncaaf as R
+    ev = {"home_team": "Ole Miss", "bookmakers": [{"key": "draftkings", "markets": [
+        {"key": "totals", "outcomes": [
+            {"name": "Over", "point": 36.5, "price": 1.06}, {"name": "Under", "point": 36.5, "price": 7.9},
+            {"name": "Over", "point": 56.5, "price": 1.91}, {"name": "Under", "point": 56.5, "price": 1.91},
+            {"name": "Over", "point": 60.5, "price": 2.3}, {"name": "Under", "point": 60.5, "price": 1.6}]},
+        {"key": "spreads", "outcomes": [
+            {"name": "Georgia", "point": 3.5, "price": 1.32}, {"name": "Ole Miss", "point": -3.5, "price": 3.23},
+            {"name": "Georgia", "point": -3.5, "price": 1.89}, {"name": "Ole Miss", "point": 3.5, "price": 1.93},
+            {"name": "Georgia", "point": -18.5, "price": 5.54}, {"name": "Ole Miss", "point": 18.5, "price": 1.12}]}]}]}
+    assert R.main_line(ev, "totals", "Over") == 56.5
+    assert R.main_line(ev, "spreads", "Ole Miss") == 3.5
+    assert R.main_line(ev, "spreads", None) is None

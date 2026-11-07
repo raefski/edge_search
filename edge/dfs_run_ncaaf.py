@@ -335,6 +335,55 @@ def project_player(ladders: dict, sport, position: str | None = None,
 # ---------------------------------------------------------------------------
 # The pool
 # ---------------------------------------------------------------------------
+#: Book order for a game line: DraftKings first (its sportsbook prices the
+#: slate's own props), then the others.
+LINE_BOOKS = ("draftkings", "fanduel", "fanatics")
+
+
+def main_line(ev: dict, market: str, side: str | None) -> float | None:
+    """`side`'s point on the MAIN line of a two-way game market: the pair
+    priced closest to even, from the first book in LINE_BOOKS that has one.
+
+    The pool reads odds with main_line_only=False (college props are ladders),
+    and that client hands game markets over WITH their alternate rungs too:
+    on 2026-11-07 Georgia @ Ole Miss carried 86 DraftKings totals outcomes from
+    36.5 up, and the first one seen was the total. The old reader took the
+    first `point` from whichever book came first (36.5, 49.5 and 56.5 on one
+    game) and never filled the spread. Replayed slates showed totals of 21.5
+    and 25.5. The main line is the one the book prices closest to a coin flip;
+    the main-line client agrees with this rule (checked in tests)."""
+    if not side:
+        return None
+    books = {bk.get("key"): bk for bk in ev.get("bookmakers", [])}
+    for key in [*LINE_BOOKS, *[k for k in books if k not in LINE_BOOKS]]:
+        bk = books.get(key)
+        if not bk:
+            continue
+        for m in bk.get("markets", []):
+            if m.get("key") != market:
+                continue
+            outs = [o for o in m.get("outcomes", [])
+                    if o.get("point") is not None and o.get("price")]
+            best = None
+            for o in outs:
+                if o.get("name") != side:
+                    continue
+                # the partner: Under at the same total, or the other team at
+                # the negated spread (Ole Miss +3.5 pairs Georgia -3.5; the
+                # alternate Georgia +3.5 is a different bet)
+                want = float(o["point"]) * (1 if market == "totals" else -1)
+                partner = [q for q in outs if q.get("name") != side
+                           and abs(float(q["point"]) - want) < 1e-9]
+                if len(partner) != 1:
+                    continue
+                gap = abs(1.0 / o["price"] - 1.0 / partner[0]["price"])
+                if best is None or gap < best[0]:
+                    best = (gap, float(o["point"]))
+            if best is not None:
+                return best[1]
+    return None
+
+
 def game_lines(client, games: dict, event_players: dict,
                salaries: dict) -> tuple[dict, dict]:
     """{game_id: {total, spread_home, home}} for the slate's games only.
@@ -381,12 +430,8 @@ def game_lines(client, games: dict, event_players: dict,
             report["unmatched_events"] += 1
             continue
         home = games[gid]["home"]
-        total = spread_home = None
-        for bk in ev.get("bookmakers", []):
-            for m in bk.get("markets", []):
-                for o in m.get("outcomes", []):
-                    if m["key"] == "totals" and total is None and o.get("point") is not None:
-                        total = float(o["point"])
+        total = main_line(ev, "totals", "Over")
+        spread_home = main_line(ev, "spreads", ev.get("home_team"))
         if total is not None and gid not in lines:
             lines[gid] = {"total": total, "spread_home": spread_home, "home": home}
     report["missing_games"] = sorted(g["matchup"] for gid, g in games.items()
