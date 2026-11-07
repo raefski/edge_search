@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-07T17:29:26+00:00",
+"generated_at": "2026-11-07T17:59:08+00:00",
 "goalies": {
 "2026-11-07": {
 "CAR": {
@@ -12,7 +12,7 @@
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
-"status": null
+"status": "Likely"
 },
 "DAL": {
 "goalie": "Jake Oettinger",
@@ -23,7 +23,7 @@
 "status": null
 },
 "EDM": {
-"goalie": "Tristan Jarry",
+"goalie": "Devon Levi",
 "status": null
 },
 "FLA": {
@@ -44,11 +44,11 @@
 },
 "NJD": {
 "goalie": "Jake Allen",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NSH": {
 "goalie": "Juuse Saros",
-"status": null
+"status": "Confirmed"
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
@@ -79,8 +79,8 @@
 "status": "Confirmed"
 },
 "TBL": {
-"goalie": "Andrei Vasilevskiy",
-"status": null
+"goalie": "Dennis Hildeby",
+"status": "Confirmed"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
@@ -6334,7 +6334,7 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Connor McDavid": {
 "gtd": false,
@@ -6402,6 +6402,42 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "rd",
+"pp": null
+},
+"Devon Levi": {
+"gtd": true,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 24,
+"goalieGoalsAgainstAvg": "2.64",
+"goalieLosses": 1,
+"goalieMinutes": 544,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.898",
+"goalieSaves": 211,
+"goalieSeconds": 8,
+"goalieShotsAgainst": 235,
+"goalieShutouts": 0,
+"goalieWins": 8
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 14,
+"goalieGoalsAgainstAvg": "2.75",
+"goalieLosses": 1,
+"goalieMinutes": 305,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.907",
+"goalieSaves": 137,
+"goalieSeconds": 12,
+"goalieShotsAgainst": 151,
+"goalieShutouts": 0,
+"goalieWins": 4
+},
+"line": "G1",
+"pk": null,
+"pos": "g",
 "pp": null
 },
 "Evan Bouchard": {
@@ -6574,42 +6610,6 @@
 "pos": "rw",
 "pp": null
 },
-"Matt Tomkins": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 10,
-"goalieGoalsAgainstAvg": "3.09",
-"goalieLosses": 1,
-"goalieMinutes": 193,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.868",
-"goalieSaves": 66,
-"goalieSeconds": 35,
-"goalieShotsAgainst": 76,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 9,
-"goalieGoalsAgainstAvg": "3.29",
-"goalieLosses": 1,
-"goalieMinutes": 163,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.871",
-"goalieSaves": 61,
-"goalieSeconds": 17,
-"goalieShotsAgainst": 70,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
-},
 "Mattias Ekholm": {
 "gtd": false,
 "injury": null,
@@ -6710,7 +6710,7 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Ryan Nugent-Hopkins": {
 "gtd": false,
@@ -6846,7 +6846,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Tristan Jarry": {
 "gtd": false,
@@ -6879,7 +6879,7 @@
 "goalieShutouts": 2,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6950,7 +6950,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Zach Hyman": {
 "gtd": true,
@@ -7742,6 +7742,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Alex Turcotte": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 11,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 9,
+"toiMinutes": 120,
+"toiSeconds": 55
+},
+"last5": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 6,
+"toiMinutes": 73,
+"toiSeconds": 38
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
+},
 "Andre Lee": {
 "gtd": false,
 "injury": null,
@@ -7771,7 +7805,7 @@
 "toiMinutes": 48,
 "toiSeconds": 57
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -8081,7 +8115,7 @@
 "toiMinutes": 71,
 "toiSeconds": 38
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
@@ -8115,7 +8149,7 @@
 "toiMinutes": 68,
 "toiSeconds": 3
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -8183,44 +8217,10 @@
 "toiMinutes": 64,
 "toiSeconds": 22
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": null
-},
-"Martin Chromiak": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 77,
-"toiSeconds": 52
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 62,
-"toiSeconds": 45
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
 },
 "Mikey Anderson": {
 "gtd": false,
@@ -8319,7 +8319,7 @@
 "toiMinutes": 71,
 "toiSeconds": 21
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -15492,7 +15492,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Jacob Trouba": {
 "gtd": false,
@@ -15696,7 +15696,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Sam Dickinson": {
 "gtd": false,
@@ -16139,9 +16139,9 @@
 "toiMinutes": 77,
 "toiSeconds": 17
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Dalibor Dvorsky": {
@@ -16175,7 +16175,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Dylan Holloway": {
@@ -16241,7 +16241,7 @@
 "toiMinutes": 80,
 "toiSeconds": 45
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP1"
@@ -16387,7 +16387,7 @@
 "pp": null
 },
 "Mason McTavish": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
