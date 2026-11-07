@@ -86,3 +86,19 @@ no previous box), 7.892->7.732 (11/3), 7.225->7.195, 7.461->7.456, 7.020->6.975;
 .618->.610, .658->.657; forward 7.621->7.601, 6.998->6.956. Where a last game exists the gain is
 0.005-0.045 and rank is flat or worse: the last game already carries most of what the team split
 did. **Not shipped.** Retest at 10 slates.
+
+## Cycle 2 — baseline (2026-11-07, evening)
+
+New harness: `harness run ncaab-lab -- report` (scripts/ncaab_lab.py) replays the shipped board
+(as-run log, then LAST_GAME through the production last_game_lines / apply_last_game) on every
+graded slate; its LOSO table reproduces cycle 1's held-out numbers exactly (parity). Same 5 slates
+as cycle 1: 156344 (11/7) was not final at 5:49 PM. Held-out baseline (LAST_GAME refit per fold):
+
+| slate | all MAE | all bias | priced n | priced MAE | priced bias | rho | bench MAE | bench bias |
+|---|---|---|---|---|---|---|---|---|
+| 11/2 155565 | 6.56 | +0.78 | 152 | 9.56 | +3.24 | .476 | 3.48 | -1.75 |
+| 11/3 156039 | 7.64 | -0.74 | 113 | 9.01 | +3.37 | .475 | 6.45 | -4.31 |
+| 11/4 156123 | 5.80 | +0.68 | 89 | 7.80 | +1.99 | .562 | 3.27 | -0.99 |
+| 11/5 156240 | 5.88 | -0.18 | 114 | 7.48 | +0.60 | .616 | 3.84 | -1.17 |
+| 11/6 156342 | 5.51 | -0.35 | 123 | 6.98 | -0.64 | .653 | 3.84 | -0.01 |
+| pooled | 6.35 | | 591 | 8.25 | +1.76 | | 4.29 | |
