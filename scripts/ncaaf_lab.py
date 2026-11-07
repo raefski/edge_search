@@ -29,6 +29,7 @@ import json
 import collections
 import csv
 import math
+import os
 import sqlite3
 import sys
 from pathlib import Path
@@ -320,6 +321,154 @@ def qb_rush_td_pred(rows: list[dict], cutoff: str, k: float | None = None):
     return make(k)
 
 
+# ---------------------------------------------------------------------------
+# Re-projection from raw ladders (cycle 4 runner-ups): every variant below is
+# production project_player on the slate's own ladders, with one knob moved.
+# ---------------------------------------------------------------------------
+def replay_ladders(gid: int) -> dict:
+    """{norm name: {pos, ladders: {market: [(line, decimal), ...]}}} for one
+    draft group's pool at lock, plus "__lines__"/"__games__" (the build's game
+    lines as it computed them), cached like replay_components."""
+    path = REPLAY_DIR / f"ladders_{gid}.json"
+    if path.exists():
+        return json.loads(path.read_text())
+    import ncaaf_names_lab as NL
+    from edge import dfs
+    import edge.dfs_run_ncaaf as R
+    from edge.odds.source import ScrapedOddsClient
+    from edge.odds.store import OddsStore
+    lock, rows = NL.board_at_lock(gid)
+    store = OddsStore()
+    # Replaying an archived scan over /mnt/f is ~100x slower (STATUS §10 trap 2):
+    # NCAAF_LAB_ARCH names a local folder holding copies of the month files.
+    arch = os.environ.get("NCAAF_LAB_ARCH")
+    if arch:
+        orig = store.archived_file
+        store.archived_file = lambda sid, _o=orig: (
+            Path(arch) / _o(sid).name if _o(sid) is not None
+            and (Path(arch) / _o(sid).name).exists() else _o(sid))
+    scan = NL.scan_before(store, lock) if rows else None
+    if not scan:
+        return {}
+    cap = {}
+    orig_lines, orig_pp = R.game_lines, R.project_player
+
+    def lines(client, games, ep, sal):
+        out, rep = orig_lines(client, games, ep, sal)
+        cap["lines"] = {str(k): v for k, v in out.items()}
+        cap["games"] = {str(g): {k: v for k, v in info.items() if isinstance(v, (str, int, float))}
+                        for g, info in games.items()}
+        return out, rep
+
+    def pp(ladders, sport, position=None, rush_td_mean=None):
+        out = orig_pp(ladders, sport, position=position, rush_td_mean=rush_td_mean)
+        for m, v in (out.get("ladders") or {}).items():
+            v["rungs_raw"] = ladders.get(m)
+        return out
+    R.game_lines, R.project_player = lines, pp
+    try:
+        dfs._draftables_raw = lambda g, rows=rows: rows
+        pool, _ = R.build_pool(ScrapedOddsClient(store, "dfs_ncaaf", scan_id=scan[0],
+                                                 main_line_only=False),
+                               dfs.fetch_draftables(gid), qb_rates={})
+    finally:
+        R.game_lines, R.project_player = orig_lines, orig_pp
+    out = {"__lines__": cap.get("lines", {}), "__games__": cap.get("games", {})}
+    for p in pool:
+        out[norm(p["name"])] = {"pos": p["dk_pos"], "team": p["team"], "game": str(p.get("game")),
+                                "ladders": {m: v.get("rungs_raw") for m, v in (p.get("ladders") or {}).items()}}
+    REPLAY_DIR.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(out, default=str))
+    return out
+
+
+def reproject_pred(rows: list[dict], cutoff: str, qb_overround: dict | None = None,
+                   count_tail: dict | None = None, quiet: bool = False):
+    """Shipped model rebuilt from each slate's raw ladders: production
+    project_player, the cycle-3 QB rush-TD rate, and optionally
+      qb_overround  {market: overround} for QUARTERBACKS only (runner-up 1)
+      count_tail    {market: E[N - k_max | N >= k_max]} (runner-up 2).
+    Rows without cached ladders keep the logged projection."""
+    import edge.dfs_ladder as DL
+    import edge.dfs_run_ncaaf as R
+    from edge import dfs_sport
+    sport = dfs_sport.get(R.SPORT)
+    slate_week, rate = season_rates(rows)
+    lad = {gid: replay_ladders(gid) for gid in sorted({r["gid"] for r in rows})}
+    cache: dict = {}
+
+    def project(r):
+        key = (r["gid"], norm(r["player"]))
+        if key in cache:
+            return cache[key]
+        ent = lad[r["gid"]].get(norm(r["player"]))
+        if not ent or not ent.get("ladders") or any(v is None for v in ent["ladders"].values()):
+            cache[key] = None
+            return None
+        ladders = {m: [tuple(x) for x in v] for m, v in ent["ladders"].items()}
+        td = None
+        if r["pos"] == "QB":
+            got = rate(r["player"], slate_week[r["gid"]][0])
+            if got and got[1] >= QB_RUSH_TD_MIN_G:
+                td = got[0]
+        old_or, old_tail = dict(DL.LADDER_OVERROUND), dict(DL.COUNT_TAIL_EXCESS)
+        try:
+            if qb_overround and r["pos"] == "QB":
+                DL.LADDER_OVERROUND.update(qb_overround)
+            if count_tail:
+                DL.COUNT_TAIL_EXCESS.update(count_tail)
+            res = R.project_player(ladders, sport, position=ent["pos"], rush_td_mean=td)
+        finally:
+            DL.LADDER_OVERROUND.clear(); DL.LADDER_OVERROUND.update(old_or)
+            DL.COUNT_TAIL_EXCESS.clear(); DL.COUNT_TAIL_EXCESS.update(old_tail)
+        cache[key] = res.get("proj")
+        return cache[key]
+
+    def pred(r):
+        p = project(r)
+        return r["proj"] if p is None else p
+    return pred
+
+
+def qb_implied_pred(rows: list[dict], cutoff: str, base):
+    """Cycle 4 runner-up 3: a QB's implied TEAM total from the game's main
+    total and spread (dfs_run_ncaaf.main_line, fixed 2026-11-07), as a term
+    beside the shipped projection: pred = base + k (implied - pivot), k = slope
+    of the slate-demeaned train residual on slate-demeaned implied, pivot =
+    train mean. The ladders price a QB's own volume; this asks whether the
+    team's scoring expectation carries anything they do not."""
+    lad = {gid: replay_ladders(gid) for gid in sorted({r["gid"] for r in rows})}
+
+    def implied(r):
+        ent = lad[r["gid"]].get(norm(r["player"]))
+        if r["pos"] != "QB" or not ent:
+            return None
+        line = lad[r["gid"]].get("__lines__", {}).get(str(ent.get("game")))
+        if not line or line.get("total") is None or line.get("spread_home") is None:
+            return None
+        sign = -1 if ent.get("team") == line.get("home") else 1
+        return (line["total"] + sign * line["spread_home"]) / 2.0
+    train = [r for r in rows if r["date"] < cutoff and implied(r) is not None]
+    by = collections.defaultdict(list)
+    for r in train:
+        by[r["gid"]].append((implied(r), r["actual"] - base(r)))
+    xs, ys = [], []
+    for g in by.values():
+        mx, my = sum(x for x, _ in g) / len(g), sum(y for _, y in g) / len(g)
+        xs += [x - mx for x, _ in g]
+        ys += [y - my for _, y in g]
+    k = sum(x * y for x, y in zip(xs, ys)) / sum(x * x for x in xs)
+    pivot = sum(implied(r) for r in train) / len(train)
+    n_te = sum(1 for r in rows if r["date"] >= cutoff and implied(r) is not None)
+    print(f"QB implied team total (train {len(train)} QBs / {len(by)} slates, test {n_te}): "
+          f"k={k:.3f} per point, pivot={pivot:.2f}")
+
+    def pred(r):
+        x = implied(r)
+        return base(r) if x is None else base(r) + k * (x - pivot)
+    return pred
+
+
 def qb_pass_stretch_pred(rows: list[dict], cutoff: str, base):
     """Critique cycle 4 (QB) candidate: the passing part of a QB projection
     (pass yds + pass TD + INT points, from the replayed components) is spread
@@ -368,6 +517,16 @@ def main() -> int:
     rp.add_argument("--qb-pass-stretch", action="store_true",
                     help="cycle 4 (QB) candidate, on top of --qb-rush-td: stretch "
                          "QB passing points around the train mean by the train slope")
+    rp.add_argument("--reproject", action="store_true",
+                    help="rebuild every projection from the slate's raw ladders "
+                         "(today's code + cycle-3 QB rush-TD rate): the base for "
+                         "--qb-rush-overround / --pass-td-tail")
+    rp.add_argument("--qb-rush-overround", type=float,
+                    help="cycle 4 runner-up 1: player_rush_yds overround for QBs only")
+    rp.add_argument("--pass-td-tail", type=float,
+                    help="cycle 4 runner-up 2: COUNT_TAIL_EXCESS for player_pass_tds")
+    rp.add_argument("--qb-implied", action="store_true",
+                    help="cycle 4 runner-up 3: QB implied team total term (needs --reproject base)")
     rp.add_argument("--pos", help="report one position only (QB, RB, WR)")
     rp.add_argument("--dedup", action="store_true",
                     help="drop a player-date already graded on an earlier draft group "
@@ -389,6 +548,15 @@ def main() -> int:
             pred = stretch_pred(rows, a.cutoff)
         elif a.qb_rush_td is not None:
             pred = qb_rush_td_pred(rows, a.cutoff, None if a.qb_rush_td < 0 else a.qb_rush_td)
+        if a.reproject:
+            pred = reproject_pred(
+                rows, a.cutoff,
+                qb_overround=({"player_rush_yds": a.qb_rush_overround}
+                              if a.qb_rush_overround is not None else None),
+                count_tail=({"player_pass_tds": a.pass_td_tail}
+                            if a.pass_td_tail is not None else None))
+        if a.qb_implied:
+            pred = qb_implied_pred(rows, a.cutoff, pred or (lambda r: r["proj"]))
         if a.qb_pass_stretch:
             pred = qb_pass_stretch_pred(rows, a.cutoff, pred or (lambda r: r["proj"]))
         if a.pos:

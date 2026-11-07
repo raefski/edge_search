@@ -480,3 +480,53 @@ TEST (held out)
 Critic's files: scratchpad critic-ncaaf-4/ (pass_stretch_table.txt,
 resid_slope_by_component.txt, rung_calibration.txt, passtd_tail.txt,
 variants.txt, qb.csv).
+
+### Cycle 4 runner-ups, tested (2026-11-07): one bug fix shipped, three modelling changes NOT SHIPPED
+
+The lab can now rebuild every projection from each slate's raw ladders
+(`--reproject`: production `project_player` on cached ladders, with today's
+code and the cycle-3 QB rate). Cache: `data/harness/ncaaf_lab/ladders_<gid>.json`.
+All 11 slates were regenerated from the scans at lock; F: archive copies are
+read via `NCAAF_LAB_ARCH`. The re-projection reproduces the shipped
+predictor within 0.1 on the 9 slates logged by current code. 9/26 and 10/3
+differ because older code logged them, so these comparisons use the
+re-projected baseline: test QB MAE 6.19, RMSE 7.93, rho 0.67 (n=63).
+
+**1. "QB rush-yards ladders run low" was a measurement artefact.**
+- cfbfastR leaves sacks out of QB rushing (its 4,076 sack rows have no
+  rush_player). DK counts them, as NCAA stats do.
+- Per QB (n=100), DK FPTS minus cfbfastR DK points: −0.108 per yard sacked
+  (`sack_taken_stat` is yards lost), intercept −0.07. QBs who were not sacked:
+  +0.20. RB +0.17 and WR −0.08 agree.
+- With sack yards subtracted, rungs devigged near 0.50 hit 0.41 (train) and
+  0.40 (test). Without them they looked like 0.63 / 0.68. If anything, QB rush
+  ladders run high.
+- A QB-only rush overround fitted on train rungs by Brier is 0.30 (test rungs
+  alone: 0.21; shipped 0.102). Held-out QB MAE 6.19 → 6.21, RMSE 7.93 → 7.95,
+  bias −0.33 → −0.11. **Not shipped:** flat.
+- Caveat for every cfbfastR-graded QB number: cfbfastR QB points run about 1.4
+  high against DK (2 sacks a game).
+
+**2. Pass-TD tail.** Measured on 2024+2025 cfbfastR (QB-games with 10+
+attempts), E[N−k | N≥k] = 0.59 / 0.44 / 0.27 / 0.12 at k = 2 / 3 / 4 / 5.
+Weighted by the train ladders' top rungs (2: 9, 3: 19, 4: 18) that is 0.40,
+against the shipped 0.000.
+- Train QB MAE 9.89 → 9.84. Test 6.19 → 6.20, RMSE 7.93 → 7.96, bias −0.33 →
+  −0.53.
+- **Not shipped:** the constant is wrong on the data, but changing it does
+  not help the held-out projection.
+
+**3. Game lines (SHIPPED as a bug fix, f79d654f), then the implied team total (NOT SHIPPED).**
+- `game_lines` took the first `totals` point from any book. With the
+  full-ladder client that is an alternate rung (DK 36.5 on a 56.5 game), and
+  the spread was never filled.
+- `main_line()` now takes the pair priced closest to even, DraftKings first,
+  with spreads paired at the negated point. Against the main-line client:
+  104 of 106 equal; the other 2 are one point apart.
+- Replays now show totals 40.5–72.5 and every spread.
+- Implied team total as a QB term (`--qb-implied`): k = 0.501 per point,
+  pivot 26.55, fitted on train (46 QBs). Held out: MAE 6.19 → **6.35**, RMSE
+  7.93 → 8.20, rho 0.67 → 0.62; worse on 4 of 6 slates. **Not shipped:** the
+  ladders already price the team's scoring.
+- Caveat: the spread is read from the book's home team. At a neutral site the
+  book and DK could disagree on home; not checked.
