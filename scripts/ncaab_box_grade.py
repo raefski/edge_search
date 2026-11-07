@@ -23,7 +23,6 @@ import json
 import re
 import sys
 import time
-import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,19 +30,13 @@ sys.path.insert(0, str(ROOT))
 
 from edge.dfs_contest import parse_contest_file  # noqa: E402
 from edge.names import norm  # noqa: E402
-from edge.ncaab import actual_points, match_team  # noqa: E402
+from edge.ncaab import match_team  # noqa: E402
+from edge.ncaab_espn import ESPN, _num, box_rows, get as _get  # noqa: E402
 from edge.ncaab_names import Rosters  # noqa: E402
 
-ESPN = "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball"
 BOX_DIR = ROOT / "data" / "ncaab_box"
 LOG = ROOT / "data" / "dfs_proj_log_ncaab.csv"
 _SLOT = re.compile(r"(?:^|\s)(?:G|F|UTIL)\s+")
-
-
-def _get(url: str) -> dict:
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=30) as fh:
-        return json.load(fh)
 
 
 def logged(gid: int) -> list[dict]:
@@ -53,42 +46,6 @@ def logged(gid: int) -> list[dict]:
         for k in ("salary", "proj", "own"):
             r[k] = float(r[k] or 0)
     return rows
-
-
-def _num(x) -> float:
-    try:
-        return float(x)
-    except (TypeError, ValueError):
-        return 0.0
-
-
-def box_rows(summary: dict, codes: tuple) -> list[dict]:
-    """One row per athlete in an ESPN game summary, tagged with his DK team code. The two
-    codes are given to the two sides as a pair, never each side's best on its own: alone,
-    "Arkansas-Pine Bluff" read as ARK and the whole UAPB box went to Arkansas (11/3)."""
-    out = []
-    sides = summary.get("boxscore", {}).get("players", [])
-    schools = [side["team"]["displayName"] for side in sides]
-    order = list(codes)
-    if len(sides) == 2 and len(codes) == 2:
-        flip = (match_team(codes[1], schools[0]) + match_team(codes[0], schools[1])
-                > match_team(codes[0], schools[0]) + match_team(codes[1], schools[1]))
-        order = [codes[1], codes[0]] if flip else [codes[0], codes[1]]
-    for i, side in enumerate(sides):
-        school = schools[i]
-        code = order[i] if len(order) == len(sides) else max(codes, key=lambda c: match_team(c, school))
-        for table in side.get("statistics", [])[:1]:
-            for a in table.get("athletes", []):
-                st = dict(zip(table.get("keys", []), a.get("stats", [])))
-                threes = str(st.get("threePointFieldGoalsMade-threePointFieldGoalsAttempted", "0"))
-                out.append({
-                    "team": code, "name": a["athlete"]["displayName"], "min": _num(st.get("minutes")),
-                    "started": bool(a.get("starter")),
-                    "fp": actual_points({"PTS": _num(st.get("points")), "REB": _num(st.get("rebounds")),
-                                         "AST": _num(st.get("assists")), "STL": _num(st.get("steals")),
-                                         "BLK": _num(st.get("blocks")), "TOV": _num(st.get("turnovers")),
-                                         "FG3M": _num(threes.split("-")[0])})})
-    return out
 
 
 def fetch(rows: list[dict]) -> list[dict] | None:

@@ -39,8 +39,11 @@ def test_triple_double_does_not_stack_with_double_double():
 
 @pytest.fixture(autouse=True)
 def _no_rotowire(monkeypatch):
-    """No network from these tests: RotoWire reads as a page with no lineups."""
+    """No network from these tests: RotoWire reads as a page with no lineups, and no team
+    has a last game on ESPN."""
     monkeypatch.setattr(RC.ncaab_rotowire, "fetch", lambda: "")
+    monkeypatch.setattr(RC, "last_game_lines",
+                        lambda *a, **k: ({}, {"source": "test", "teams": 0, "missing": []}))
 
 
 # ---------------------------------------------------------------------------
@@ -355,3 +358,49 @@ def test_match_team_codes_read_off_the_november_boards():
     no = [("LSU", "LSU New Orleans Privateers"), ("ARK", "Arkansas-Pine Bluff Golden Lions"), ("KU", "Kansas State Wildcats")]
     assert all(m(c, n) >= 0.9 for c, n in yes)
     assert all(m(c, n) == 0 for c, n in no)
+
+
+# ---------------------------------------------------------------------------
+# last game (edge/ncaab_espn.py, LAST_GAME): NCAAB_CRITIQUE_LOG.md cycle 1
+# ---------------------------------------------------------------------------
+def test_last_game_moves_non_props_rows_only():
+    rows = [{"source": "bench", "fp": 1.5, "last_min": 22.0, "last_fp": 24.0},     # Bivins, 11/4
+            {"source": "blend", "fp": 16.6, "last_min": 0.0, "last_fp": 0.0},      # Altuntas, DNP
+            {"source": "props", "fp": 30.0, "last_min": 30.0, "last_fp": 10.0},
+            {"source": "blend", "fp": 20.0, "last_min": None, "last_fp": None}]   # no box: as is
+    assert RC.apply_last_game(rows) == 2
+    assert rows[0]["fp"] > 10 and rows[1]["fp"] < 7
+    assert rows[2]["fp"] == 30.0 and rows[3]["fp"] == 20.0
+    rows = [{"source": "bench", "fp": 2.0, "last_min": 60.0, "last_fp": 0.0}]
+    RC.apply_last_game(rows, (0.0, 0.0, 0.0, 1.0))
+    assert rows[0]["fp"] == RC.LAST_GAME_MIN_CAP
+
+
+def _event(eid, a, b, done=True):
+    return {"id": eid, "status": {"type": {"completed": done}},
+            "competitions": [{"competitors": [{"team": {"displayName": a}}, {"team": {"displayName": b}}]}]}
+
+
+def _summary(a, b):
+    def side(name, who):
+        return {"team": {"displayName": name},
+                "statistics": [{"keys": ["minutes", "points"], "athletes": [
+                    {"athlete": {"displayName": who}, "starter": True, "stats": ["20", "10"]}]}]}
+    return {"boxscore": {"players": [side(a, f"{a} Guard"), side(b, f"{b} Guard")]}}
+
+
+def test_last_games_never_reads_the_slate_day_and_a_refused_school_keeps_searching(monkeypatch):
+    from datetime import date
+    from edge import ncaab_espn as E
+    days = {date(2026, 11, 7): [_event("1", "Boise State Broncos", "X")],          # slate day
+            date(2026, 11, 6): [_event("2", "Ball State Cardinals", "Y")],
+            date(2026, 11, 5): [_event("3", "Boise State Broncos", "Z"),
+                                _event("4", "Houston Cougars", "W", done=False)]}
+    sums = {"1": _summary("Boise State Broncos", "X"), "2": _summary("Ball State Cardinals", "Y"),
+            "3": _summary("Boise State Broncos", "Z")}
+    monkeypatch.setattr(E, "scoreboard", lambda d: days.get(d, []))
+    monkeypatch.setattr(E, "summary", lambda eid: sums[eid])
+    got = E.last_games({"BSU", "UH"}, date(2026, 11, 7),
+                       validate=lambda code, rows: rows[0]["name"].startswith("Boise"))
+    assert set(got) == {"BSU"}                                   # UH's only game unfinished
+    assert got["BSU"]["date"] == "2026-11-05" and got["BSU"]["rows"][0]["min"] == 20.0

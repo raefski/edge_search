@@ -100,6 +100,11 @@ ALIASES = {
     "CPS": ("cal poly", "cal poly slo"), "C-C": "coastal carolina", "DPU": "depaul",
     "USF": ("south florida", "san francisco"), "JMU": "james madison",
     "MTSU": ("middle tennessee", "middle tennessee state"),
+    # Last-game lookups (edge/ncaab_espn.py) across a whole day's scoreboard, 11/7.
+    "ARST": "arkansas state", "STL": ("saint louis", "st louis"), "GWB": "george washington",
+    # BSU is also Ball St.: a box whose names are not the DK roster is refused, so the search goes on.
+    "UH": "houston", "BSU": ("boise state", "ball state"),
+    "GU": "georgetown", "UMD": "maryland", "NMST": "new mexico state",
 }
 #: What can follow a school's name and make it a DIFFERENT school: "Kansas" must not
 #: claim "Kansas St.", nor "Miami" claim "Miami (OH)", nor "Illinois" claim "Illinois St.",

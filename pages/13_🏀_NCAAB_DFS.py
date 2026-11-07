@@ -181,6 +181,8 @@ def summary(res: dict, sport_label: str) -> None:
         f"<b>{src.get('props', 0)}</b> props, <b>{src.get('blend', 0)}</b> last season + salary, "
         f"<b>{src.get('salary', 0)}</b> salary only, <b>{src.get('bench', 0)}</b> bench"
         + f"<br>starters: {info.get('starters', 0)} from {info.get('starters_source', 'none')}"
+        + (f"<br>last game: {lg.get('teams', 0)} teams from {lg.get('source')}, "
+           f"{lg.get('moved', 0)} players moved by it" if (lg := info.get("last_game")) else "")
         + f"<br>implied points: " + ", ".join(f"{t} {g:.1f}" for t, g in top)
         + (" …" if len(imp) > len(top) else "")
         + f"<br>{odds} · books: {books} · salaries: {info.get('draftables_source', 'live')}"
@@ -207,6 +209,11 @@ def summary(res: dict, sport_label: str) -> None:
         st.markdown(f"<div class='warn'>No starters this build: RotoWire "
                     f"{info.get('starters_source', 'unavailable')}. Cheap players are read "
                     "as bench without it.</div>", unsafe_allow_html=True)
+    lg = info.get("last_game") or {}
+    if lg and (lg.get("source") != "espn" or lg.get("missing")):
+        st.markdown(f"<div class='warn'>No last game this season ({lg.get('source')}) for: "
+                    + ", ".join(lg.get("missing") or ["every team"]) + " — those players are "
+                    "on last season and salary only.</div>", unsafe_allow_html=True)
     if not info.get("history_rows"):
         st.markdown("<div class='warn'>No last-season stats file: projections without props "
                     "fall back to salary only.</div>", unsafe_allow_html=True)
