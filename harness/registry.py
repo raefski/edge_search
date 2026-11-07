@@ -157,6 +157,8 @@ JOBS: dict[str, Job] = {j.name: j for j in [
        doc="read off DK what the NBA/CBB build assumed (Classic id, roster, FPPG id, prop tabs)"),
     _j("calibrate-nascar", "evaluate", "scripts/nascar_calibration.py", sport="nascar"),
     _j("calibrate-mma", "evaluate", "scripts/mma_calibration.py", "--grade", sport="mma"),
+    _j("mma-rogan", "evaluate", "scripts/mma_rogan.py", sport="mma", tests=("tests/test_mma_rogan.py",),
+       doc="Joe Rogan's pre-fight claims vs the de-biased market: harness run mma-rogan -- episodes|fetch|extract|sample|grade (2026-11-07: nothing shipped)"),
     _j("contest-db", "evaluate", "scripts/contest_db.py",
        doc="(re)build data/contests.db from every contest export + projection log"),
     _j("gpp-meta", "evaluate", "scripts/gpp_meta.py", doc="what finishes in the money: chalk or contrarian"),
