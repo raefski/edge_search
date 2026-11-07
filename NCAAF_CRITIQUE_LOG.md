@@ -530,3 +530,94 @@ against the shipped 0.000.
   ladders already price the team's scoring.
 - Caveat: the spread is read from the book's home team. At a neutral site the
   book and DK could disagree on home; not checked.
+
+## Cycle 5 — 2026-11-07 afternoon: four parallel critics. Nothing new shipped, so the 3:30 and 7:30 slates use cycle 3 plus the game-line fix
+
+Four agents, read-only, each in its own area. Same split as cycles 3–4
+(train before 10/17: 5 slates; test from 10/17: 6 slates, of which 155010
+and 155122 are one day). Baseline = `ncaaf_lab.py report --reproject`.
+
+**RB/WR projections (dfs-model-critic). Null.** Test RB n=91 MAE 6.151,
+WR n=197 MAE 5.743.
+- **The scorecard's +1.1 under-projection is not a fixable hole.** It is
+  period drift plus older logged code: RB/WR bias is +1.72 on train and +0.25
+  on test, and the test WR median residual is −0.10. A train-fitted shift
+  takes test RB MAE 6.15 → 6.75 and WR 5.74 → 5.93; a ×1.16 scale gives
+  6.79 / 5.99.
+- **WR R² 0.16 is near its ceiling.** Var(proj)/var(actual) is 0.13 / 0.21.
+  The fitted slope flips (1.33 train, 0.81 test), and a salary term hurts
+  (5.74 → 5.89).
+- **Implied team total, game total and pace add nothing.** They flip sign
+  between periods, with |r| ≤ 0.16, using the corrected lines.
+- **Ladder overrounds refitted to outcomes:** RB 6.15 → 6.14, WR 5.74 → 5.79.
+- **Closest miss: RB receiving.** Imputed receiving runs 1.1–1.2 pts per back
+  low in both periods, but a level fix hurts held out (6.15 → 6.33) because RB
+  rushing ran high on test. Blending in each back's own season receiving rate
+  at w=0.3 gives test RB 6.151 → 6.047 (better on 4 of 6 slates, 2 flat), but
+  the train curve is flat (2.641 vs 2.662) and train RMSE is slightly worse.
+  Not shipped; re-test after 2–3 more graded slates.
+- **Season TD rates for RB/WR** (cycle 3's idea): the sign flips. It does not
+  carry over from QBs.
+- **Where the error is:** the top 20 of 288 test misses carry 45% of squared
+  error, all single big games.
+
+**Availability (dfs-availability-critic). Real gap, but no measured gain on the board.**
+- **The gap:** `build_pool` reads neither DK's injury flag (`dk_status`, which
+  NBA, NHL and NCAAB use) nor the conference reports.
+- **Play rate by report status**, established Power-4 skill players, train /
+  test:
+  - Update 2 Doubtful: 0/21 / 0/24
+  - Update 2 Out: 6% / 6%
+  - Game Day Out: 5% (n=153) / 5% (n=252)
+  - Update 2 Questionable: 0.42 / 0.33
+  - Game Day GTD: 0.45 / 0.27
+  - Probable: 0.68 / 0.65
+- **The Out/Doubtful zero rule moves nothing held out.** On the graded board
+  it flags **0 of 264 train and 0 of 351 test rows**, whichever report day is
+  used: books pull an Out player's ladder, so he never reaches the board. Test
+  false actives (7, 57 projected pts) were 10 of 17 G5 or non-conference
+  (no report) and mostly undrafted. Not shipped: it does not win held out.
+- **An FPPG fallback for off-board players** (0.537 × FPPG, gated by DK status
+  and the reports): off-board MAE 5.13 → 4.88 (n=47, 6 slates). The gate
+  removed 21 of 21 non-players. But k is unstable (actual/FPPG 0.52 train vs
+  0.78 test), and it changes the pool, not the graded metric. Not shipped.
+- **Promoted chalk we could not see:** Trelain Maddox (GT, 10/17, 27–39%
+  owned, 19.2 pts) behind Justice Haynes, who was Doubtful on Thursday and
+  DK "D" 19 h before lock.
+- **Post-lock Game Day reports:** Patterson 10/24 and Payne 11/6 were public
+  1.5–2 h after lock and before kickoff. Late swap is not wired for NCAAF.
+  We had 0 exposure both times.
+
+**GPP ownership (dfs-model-critic, GPP only, largest field per draft group). Lead, not shipped.**
+- **Where it fails:** on 2–3 game slates the field drafts by raw projection
+  (studs at 68–90%), while our value softmax caps at 55% and over-owns cheap
+  value.
+- **The fit:** short-slate constants fitted on the 3 short train slates (value
+  gamma 0, FPPG weight 0.4, projection weight 0.9, cap 70).
+- **Held out:** the 3 short test slates go 0.574 → 0.531 misplaced, pool MAE
+  10.5 → 9.1. Better on 2 of 3; 156216 is flat to worse (0.643 → 0.652).
+- **Not enough data (3 test slates).** It also would not touch today's
+  12-game and 7-game slates. Re-test as weekday slates are graded.
+- **Small-field noise:** fields under ~150 put a sampling floor of 0.17–0.30
+  under misplaced. Weight slates by field size in the next ownership refit.
+
+**External expert signals (dfs-model-critic). Null.**
+- **Laddered players:** pace, matchup pace, pass rate, DvP, yards per play
+  for and against, a season rating minus the line (a Sagarin/SP+ proxy),
+  usage, last-3 usage and the implied total each moved test MAE by −0.02 to
+  +0.08. LOSO over 11 slates: within ±0.02.
+- **Unladdered drafted players:** usage + salary scores 4.50 vs 5.80 for zero
+  (n=255, all 6 test slates). Adding external signals changes that by ±0.01.
+- **Not testable today:** SP+, FPI and FEI history (needs a CFBD key), weather
+  history, and the paid PFF / ETR / Stokastic. The new captures (reports,
+  depth charts, FanDuel props) start today.
+
+**Collect next:**
+- The missing DK exports for 10/24 Main and 10/31 Main: logged, but not
+  gradable without them.
+- Pre-lock draftables versions with DK status, per build: only 1–11 per draft
+  group survive, so lead time is not measurable before 10/30.
+- The new captures (availability reports, Ourlads, FanDuel props) through
+  5+ slates.
+- Short weekday slates' GPP exports, for the ownership lead.
+- A CFBD key (Tier 1, $1/month) if weather or ratings history is wanted.
