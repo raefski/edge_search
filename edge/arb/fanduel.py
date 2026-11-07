@@ -180,6 +180,16 @@ PITCHER_RE = re.compile(
 # excludes them by construction rather than by a deny-list to maintain.
 PLAYER_PROP_RE = re.compile(
     r"^PLAYER_[A-Z]_(?:ALT_)?(?P<stat>[A-Z0-9_]+?)(?:_(?:HIGH|MEDIUM|LOW))?$")
+# College writes the same markets with the tier FIRST and a _CFB suffix:
+#   PLAYER_MEDIUM_RECEIVING_YARDS_CFB       the main line ("X Over 52.5")
+#   PLAYER_HIGH_ALT_RECEPTIONS_CFB          an alternate ladder ("X 5+ Receptions")
+# PLAYER_PROP_RE wants one letter after PLAYER_, so every one of them was
+# dropped: on 2026-11-07 odds.db held 511,209 FanDuel NCAAF quotes and not one
+# with a player subject. The field markets beside them (HOME_DRIVE_X_..._CFB,
+# AWAY_TEAM_DRIVE_X_-_PLAYER_TO_CATCH_A_PASS_CFB) do not begin PLAYER_, so the
+# same anchor keeps them out.
+PLAYER_PROP_CFB_RE = re.compile(
+    r"^PLAYER_(?:HIGH|MEDIUM|LOW)_(?:ALT_)?(?P<stat>[A-Z0-9_]+?)_CFB$")
 # One table serves every sport FanDuel writes this way, which is the point:
 # adding NBA is adding rows here, not writing a second parser.
 PLAYER_PROP_STATS = {
@@ -344,7 +354,7 @@ def _classify(market_type: str) -> tuple[str, float | None] | None:
     # Before the tolerant game-market fallback below, deliberately: a player
     # prop that reached that fallback would be keyed `totals` with no subject
     # and merge straight into the real game total.
-    ppm = PLAYER_PROP_RE.match(mt)
+    ppm = PLAYER_PROP_CFB_RE.match(mt) or PLAYER_PROP_RE.match(mt)
     if ppm:
         key = PLAYER_PROP_STATS.get(ppm.group("stat"))
         if key:

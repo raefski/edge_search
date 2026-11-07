@@ -182,8 +182,11 @@ class ArbConfig:
         "baseball_mlb": ["popular", "pitcher-props", "batter-props"],
         "americanfootball_nfl": ["popular", "passing-props", "rushing-props",
                                  "receiving-props"],
-        "americanfootball_ncaaf": ["popular", "passing-props", "rushing-props",
-                                   "receiving-props"],
+        # College: `popular` alone. It carried every player market the three
+        # prop tabs did on four Saturday games, 2026-11-07 (38/38 and 24/24
+        # where props were up), and one request per game is what lets the
+        # dfs_ncaaf profile reach a 100-game Saturday instead of its first 20.
+        "americanfootball_ncaaf": ["popular"],
         # NOT verified -- NBA is out of season as of 2026-09-06. Probe a real
         # matchup with scripts/fd_tabs.py before NBA DFS ships, the same way
         # the NFL names above were checked.

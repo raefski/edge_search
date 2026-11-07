@@ -189,6 +189,16 @@ def freshness() -> list[tuple[str, datetime | None, float, str]]:
         if "videos" not in f.name:
             out.append((f.stem.replace("_", " "), datetime.fromtimestamp(f.stat().st_mtime, timezone.utc),
                         STALE_H["buzz"], "only matters on its sport's slate days"))
+    # Capture logs, written only when something new is posted: the last write is
+    # the last new report / changed chart. Reports run Wed-Sat in conference
+    # play, so Sunday to Wednesday night is a normal 4-day gap.
+    for name, d, hours, note in (
+            ("NCAAF availability reports", "ncaaf_availability", 24 * 4.5,
+             "SEC/B10/ACC/B12, conference games, Wed-Sat; history can't be refilled"),
+            ("NCAAF depth charts (Ourlads)", "ncaaf_depth", 48, "logged only when a chart changes")):
+        logs = sorted((DATA / d).glob("*.csv"), key=lambda p: p.stat().st_mtime)
+        out.append((name, datetime.fromtimestamp(logs[-1].stat().st_mtime, timezone.utc)
+                    if logs else None, hours, note))
     exports = sorted(DATA.glob("contest-standings-*.csv"), key=lambda p: p.stat().st_mtime)
     if exports:
         out.append((f"latest contest export ({len(exports)} total)",

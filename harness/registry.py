@@ -98,6 +98,13 @@ JOBS: dict[str, Job] = {j.name: j for j in [
        doc="held-out test of NBA buzz vs GPP %Drafted, by night"),
     _j("buzz-nfl", "ingest", "scripts/buzz_nfl.py", sport="nfl", timer="buzz-publish.timer"),
     _j("buzz-ncaaf", "ingest", "scripts/buzz_ncaaf.py", sport="ncaaf"),
+    _j("ncaaf-availability", "ingest", "scripts/ncaaf_availability_capture.py", "--push", sport="ncaaf",
+       timer="ncaaf-availability.timer", timeout=600, tests=("tests/test_ncaaf_capture.py",),
+       doc="SEC/Big Ten/ACC/Big 12 availability reports, every version + season archive "
+           "-> data/ncaaf_availability/ (data branch)"),
+    _j("ncaaf-depth", "ingest", "scripts/ncaaf_depth_capture.py", "--push", sport="ncaaf",
+       timer="ncaaf-depth.timer", timeout=1200, tests=("tests/test_ncaaf_capture.py",),
+       doc="Ourlads FBS depth charts, every change -> data/ncaaf_depth/ (data branch)"),
     _j("tout-picks", "ingest", "scripts/tout_picks.py", sport="pickem",
        doc="extract and grade tout picks from transcripts"),
     _j("pickem-tick", "ingest", "scripts/pickem_deadline_tick.py", sport="pickem",

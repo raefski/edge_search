@@ -1,0 +1,21 @@
+[Unit]
+Description=NCAAF availability reports: hourly, every 15 min on game evenings and Saturday
+
+[Timer]
+Unit=ncaaf-availability.service
+# 1. Hourly, every day. Initial and update reports post Wed-Fri around 8-9 PM
+#    ET and stand for about a day, so an hour never misses one. Outside
+#    conference play a run is four requests and writes nothing.
+OnCalendar=*-*-* 07..23:05:00
+# 2. Every 15 minutes where a GAME-DAY report (final, 90-120 min before
+#    kickoff) can come and be overtaken: Thu/Fri night games, all of Saturday
+#    (noon kickoffs post ~10:00, the 10:30 PM ones ~8:30).
+#    The step is on the MINUTE field on purpose here, inside an hour range:
+#    `systemd-analyze calendar 'Sat *-*-* 08..21:00/15:00'` -> 08:00, 08:15, ...
+OnCalendar=Thu,Fri *-*-* 16..21:00/15:00
+OnCalendar=Sat *-*-* 08..21:00/15:00
+RandomizedDelaySec=60
+Persistent=true
+
+[Install]
+WantedBy=timers.target

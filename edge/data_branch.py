@@ -65,6 +65,8 @@ FEEDS: tuple[str, ...] = (
     "data/dfs_proj_history_*.csv",        # every logged build, stamped built_at (dfs_forward_log)
     "data/dfs_lineups_*.csv",             # scripts/dfs_autolog.py
     "data/overlay_payouts_live.json",     # harness/overlay.py (the page prices from it)
+    "data/ncaaf_availability",            # scripts/ncaaf_availability_capture.py (history, not rebuildable)
+    "data/ncaaf_depth",                   # scripts/ncaaf_depth_capture.py (history, not rebuildable)
 )
 
 

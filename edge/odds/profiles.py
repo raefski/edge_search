@@ -90,6 +90,9 @@ class Profile:
         cfg.include_uncatalogued = not self.sports
         cfg.draftkings_props = self.props
         cfg.prop_events_per_league = self.prop_events
+        # The FanDuel prop queue has a global cap too; a one-league profile
+        # that asks for more events than it must get them.
+        cfg.fanduel_max_events = max(cfg.fanduel_max_events, self.prop_events)
         if not self.alt_lines:
             cfg.fanduel_alt_line_events = 0
         return cfg
@@ -155,7 +158,12 @@ PROFILES: dict[str, Profile] = {
         sports=("americanfootball_ncaaf",),
         required_markets=("player_pass_yds", "player_rush_yds",
                           "player_reception_yds", "player_receptions"),
-        props=True, prop_events=SLATE_EVENTS, alt_lines=False,
+        # 120, not SLATE_EVENTS: the cap only binds FanDuel, whose props are a
+        # per-game call taken soonest first (DraftKings serves college at league
+        # level). FanDuel listed 104 college games for Saturday 2026-11-07, FCS
+        # included; at 20 the queue stopped at the noon kickoffs. These are the
+        # two-sided college props NCAAF_EXPERT_SOURCES.md #4 needs stored.
+        props=True, prop_events=120, alt_lines=False,
         full_ladders=True,
         # A college slate locks at noon ET on Saturday and DraftKings keeps
         # adding ladders through Friday night, so a stale scan here is a THIN

@@ -1,0 +1,18 @@
+# Ourlads FBS depth charts, every change kept. See scripts/ncaaf_depth_capture.py.
+# ~138 pages 1.5 s apart, about 4 minutes; only teams whose chart changed are logged.
+#
+#   cp deploy/ncaaf-depth.service deploy/ncaaf-depth.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now ncaaf-depth.timer
+#   journalctl --user -u ncaaf-depth -n 50
+[Unit]
+Description=Capture Ourlads NCAAF depth charts and publish changes
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/ncaaf_depth_capture.py --push
+Restart=no
+Nice=10
+TimeoutStartSec=1200

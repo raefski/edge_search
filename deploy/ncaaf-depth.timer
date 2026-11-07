@@ -1,0 +1,14 @@
+[Unit]
+Description=NCAAF depth charts three times a day
+
+[Timer]
+Unit=ncaaf-depth.service
+# Ourlads stamped Alabama 11/06 9:09 PM and Texas 9:10 PM on a Friday, so the
+# 08:10 run sees Friday night's charts before Saturday's noon lock; 14:10 and
+# 22:10 catch the midweek and evening updates.
+OnCalendar=*-*-* 08,14,22:10:00
+RandomizedDelaySec=120
+Persistent=true
+
+[Install]
+WantedBy=timers.target

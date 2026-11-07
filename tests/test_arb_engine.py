@@ -700,6 +700,37 @@ def test_fanduel_classifies_the_markets_it_was_dropping(market_type, expected):
     assert classify(market_type) == expected
 
 
+@pytest.mark.parametrize("market_type,expected", [
+    ("PLAYER_MEDIUM_RECEIVING_YARDS_CFB", ("player_reception_yds", None)),
+    ("PLAYER_HIGH_ALT_RECEPTIONS_CFB", ("player_receptions", None)),
+    ("PLAYER_LOW_ALT_RECEIVING_YARDS_CFB", ("player_reception_yds", None)),
+    ("PLAYER_HIGH_PASSING_TOUCHDOWNS_CFB", ("player_pass_tds", None)),
+    ("PLAYER_MEDIUM_ALT_RUSHING_YARDS_CFB", ("player_rush_yds", None)),
+    # field and team markets beside them stay out
+    ("HOME_DRIVE_X_RECEIVING_YDS_-_PLAYER_Y_CFB", None),
+    ("AWAY_TEAM_DRIVE_X_-_PLAYER_TO_CATCH_A_PASS_CFB", None),
+    ("AWAY_TOTAL_RUSHING_YARDS_-_O/U_CFB", None),
+    ("HOME_ALT_TOTAL_RUSHING_YARDS_CFB", None),
+])
+def test_fanduel_classifies_college_player_props(market_type, expected):
+    """College writes the tier first and a _CFB suffix, so every FanDuel NCAAF
+    player prop was dropped: 511,209 FanDuel NCAAF quotes in odds.db on
+    2026-11-07, none with a player subject."""
+    from edge.arb.fanduel import classify
+    assert classify(market_type, "americanfootball_ncaaf") == expected
+
+
+def test_ncaaf_profile_reaches_a_full_saturday_on_fanduel():
+    """The FanDuel prop queue is soonest-first and capped twice (per league and
+    globally); at 20 a 104-game Saturday stopped at the noon kickoffs."""
+    from edge.odds.profiles import PROFILES
+    cfg = PROFILES["dfs_ncaaf"].config()
+    assert cfg.prop_events_per_league >= 100 and cfg.fanduel_max_events >= 100
+    assert cfg.tabs_for("americanfootball_ncaaf") == ["popular"]
+    # the other profiles keep the global default
+    assert PROFILES["dfs_nfl"].config().fanduel_max_events == ArbConfig().fanduel_max_events
+
+
 def test_fanduel_pitcher_outs_lands_two_sided():
     """PITCHER_*_OUTS_RECORDED_SB was unclassified, so pitcher_outs -- which
     edge/dfs.py needs -- had zero FanDuel groups."""

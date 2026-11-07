@@ -1,0 +1,23 @@
+# Power-4 football availability reports (SEC, Big Ten, ACC, Big 12), every
+# version as it is posted. See scripts/ncaaf_availability_capture.py. The
+# vendor serves only each game's LATEST report, so a version this does not
+# catch is gone: Wednesday's initial report is replaced on Thursday, Friday's
+# by the game-day report 90-120 minutes before kickoff.
+#
+#   cp deploy/ncaaf-availability.service deploy/ncaaf-availability.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now ncaaf-availability.timer
+#   journalctl --user -u ncaaf-availability -n 50
+[Unit]
+Description=Capture NCAAF conference availability reports and publish them
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/ncaaf_availability_capture.py --push
+# A missed poll is repaired by the next one unless a version came and went in
+# between; the dense windows below make that unlikely. Do not spin.
+Restart=no
+Nice=10
+TimeoutStartSec=600
