@@ -108,14 +108,38 @@ def stats(pairs: list[tuple[float, float]]) -> dict:
             "bias": sum(err) / n}
 
 
+def spearman(pairs: list[tuple[float, float]]) -> float | None:
+    """Rank correlation of projection and actual (average ranks for ties)."""
+    if len(pairs) < 3:
+        return None
+    def ranks(xs):
+        order = sorted(range(len(xs)), key=lambda i: xs[i])
+        out = [0.0] * len(xs)
+        i = 0
+        while i < len(order):
+            j = i
+            while j + 1 < len(order) and xs[order[j + 1]] == xs[order[i]]:
+                j += 1
+            for k in range(i, j + 1):
+                out[order[k]] = (i + j) / 2
+            i = j + 1
+        return out
+    a, b = ranks([p for p, _ in pairs]), ranks([y for _, y in pairs])
+    ma, mb = sum(a) / len(a), sum(b) / len(b)
+    num = sum((x - ma) * (y - mb) for x, y in zip(a, b))
+    den = math.sqrt(sum((x - ma) ** 2 for x in a) * sum((y - mb) ** 2 for y in b))
+    return num / den if den else None
+
+
 def table(title: str, groups: dict) -> None:
     print(f"\n{title}")
-    print(f"  {'slice':<22}{'n':>5}{'MAE':>8}{'RMSE':>8}{'bias(a-p)':>11}")
+    print(f"  {'slice':<22}{'n':>5}{'MAE':>8}{'RMSE':>8}{'bias(a-p)':>11}{'rho':>7}")
     for k, pairs in groups.items():
         s = stats(pairs)
         if s["n"]:
+            rho = spearman(pairs)
             print(f"  {str(k):<22}{s['n']:>5}{s['mae']:>8.2f}{s['rmse']:>8.2f}"
-                  f"{s['bias']:>+11.2f}")
+                  f"{s['bias']:>+11.2f}" + (f"{rho:>7.2f}" if rho is not None else f"{'':>7}"))
 
 
 def report(rows: list[dict], cover: dict, cutoff: str, pred=None) -> None:
@@ -191,7 +215,9 @@ def replay_components(gid: int) -> dict:
     older code, whose rush-TD rule was the same yards/110."""
     path = REPLAY_DIR / f"replay_{gid}.json"
     if path.exists():
-        return json.loads(path.read_text())
+        got = json.loads(path.read_text())
+        if all("components" in v for v in got.values()):
+            return got                           # older caches lack components: rebuild
     import ncaaf_names_lab as NL
     from edge import dfs
     import edge.dfs_run_ncaaf as R
@@ -206,7 +232,8 @@ def replay_components(gid: int) -> dict:
     pool, _ = R.build_pool(ScrapedOddsClient(store, "dfs_ncaaf", scan_id=scan[0],
                                              main_line_only=False), dfs.fetch_draftables(gid))
     out = {norm(p["name"]): {"rush_td_pts": (p.get("components") or {}).get("rush TD", 0.0),
-                             "proj": p["proj"]} for p in pool}
+                             "proj": p["proj"], "components": p.get("components") or {}}
+           for p in pool}
     REPLAY_DIR.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out))
     return out
@@ -293,6 +320,39 @@ def qb_rush_td_pred(rows: list[dict], cutoff: str, k: float | None = None):
     return make(k)
 
 
+def qb_pass_stretch_pred(rows: list[dict], cutoff: str, base):
+    """Critique cycle 4 (QB) candidate: the passing part of a QB projection
+    (pass yds + pass TD + INT points, from the replayed components) is spread
+    too narrowly between quarterbacks. pred = base + k (pass_pts - pivot), k =
+    OLS slope of the slate-demeaned residual of `base` on slate-demeaned
+    pass_pts, pivot = mean pass_pts; both from TRAIN QBs only."""
+    comp = {gid: replay_components(gid) for gid in sorted({r["gid"] for r in rows})}
+
+    def pass_pts(r):
+        c = (comp[r["gid"]].get(norm(r["player"])) or {}).get("components")
+        if r["pos"] != "QB" or not c:
+            return None
+        return c.get("pass yds", 0.0) + c.get("pass TD", 0.0) + c.get("INT", 0.0)
+    train = [r for r in rows if r["date"] < cutoff and pass_pts(r) is not None]
+    by = collections.defaultdict(list)
+    for r in train:
+        by[r["gid"]].append((pass_pts(r), r["actual"] - base(r)))
+    xs, ys = [], []
+    for g in by.values():
+        mx, my = sum(x for x, _ in g) / len(g), sum(y for _, y in g) / len(g)
+        xs += [x - mx for x, _ in g]
+        ys += [y - my for _, y in g]
+    k = sum(x * y for x, y in zip(xs, ys)) / sum(x * x for x in xs)
+    pivot = sum(pass_pts(r) for r in train) / len(train)
+    print(f"QB pass stretch (train, {len(train)} QBs / {len(by)} slates): "
+          f"k={k:.3f} pivot={pivot:.2f}")
+
+    def pred(r):
+        pp = pass_pts(r)
+        return base(r) if pp is None else base(r) + k * (pp - pivot)
+    return pred
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -305,6 +365,10 @@ def main() -> int:
     rp.add_argument("--qb-rush-td", nargs="?", const=-1.0, type=float, default=None,
                     help="cycle 3 candidate: QB rush TDs from his season rate "
                          "(optional shrinkage k; omitted = chosen on train)")
+    rp.add_argument("--qb-pass-stretch", action="store_true",
+                    help="cycle 4 (QB) candidate, on top of --qb-rush-td: stretch "
+                         "QB passing points around the train mean by the train slope")
+    rp.add_argument("--pos", help="report one position only (QB, RB, WR)")
     rp.add_argument("--dedup", action="store_true",
                     help="drop a player-date already graded on an earlier draft group "
                          "of the same day (one realisation counted once)")
@@ -325,6 +389,13 @@ def main() -> int:
             pred = stretch_pred(rows, a.cutoff)
         elif a.qb_rush_td is not None:
             pred = qb_rush_td_pred(rows, a.cutoff, None if a.qb_rush_td < 0 else a.qb_rush_td)
+        if a.qb_pass_stretch:
+            pred = qb_pass_stretch_pred(rows, a.cutoff, pred or (lambda r: r["proj"]))
+        if a.pos:
+            # AFTER the predictor is built: the slate-week read needs every graded
+            # player (>= 5 per slate), and a 3-QB slate falling back to "the week
+            # after the file" would put that slate's own game into its rates.
+            rows = [r for r in rows if r["pos"] == a.pos.upper()]
         report(rows, cover, a.cutoff, pred)
     else:
         with open(a.out, "w", newline="") as fh:

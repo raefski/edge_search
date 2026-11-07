@@ -351,3 +351,132 @@ Worse on one slate only: 155281, 4.64 → 4.72 (28 players). 156213 was
   stretch on top of this.
 - RB receiving from each back's own season rate: no real gain (test
   6.08 → 6.03, n=71). Not worth it.
+
+## Cycle 4 (QB) — 2026-11-07: quarterback DK points vs projection
+
+**Target:** QB DK points vs the pre-lock projection, held out: MAE, RMSE,
+bias, and Spearman rho per slate (a QB pick is mostly a ranking). Same split
+as cycle 3 (train before 10/17: 5 slates, 48 QBs; test 6 slates, 63 QBs).
+Baseline = the shipped model, which now includes cycle 3:
+`ncaaf_lab.py report --cutoff 2026-10-17 --qb-rush-td 0 --pos QB`.
+`--pos` filters after the predictor is built. Filtering first broke the
+slate-week read on 3-QB slates and leaked: QB MAE showed 6.15 instead of 6.19.
+
+```
+cutoff 2026-10-17: train 5 slates / 48 players, test 6 slates / 63 players
+coverage (logged -> graded): 153951 68->63, 154161 136->130, 155010 128->127, 155105 17->16, 155109 30->28, 155112 27->27, 155122 74->59, 155277 118->81, 155281 28->28, 156213 20->20, 156216 38->36
+
+TRAIN
+  slice                     n     MAE    RMSE  bias(a-p)    rho
+  all                      48    9.92   11.71      +1.42   0.49
+  QB                       48    9.92   11.71      +1.42   0.49
+  $5k-7                    18   10.16   11.86      +1.06   0.20
+  $7k-+                    30    9.77   11.62      +1.64   0.49
+  2026-09-26 153951        12    9.02   10.37      +1.66   0.49
+  2026-10-03 154161        23   11.01   12.63      +1.71   0.58
+  2026-10-14 155105         3    9.24   11.21      -9.24   0.50
+  2026-10-15 155109         6   10.59   13.16      +2.27   0.31
+  2026-10-16 155112         4    5.81    7.25      +5.81  -1.00
+
+TEST (held out)
+  slice                     n     MAE    RMSE  bias(a-p)    rho
+  all                      63    6.19    7.94      -0.34   0.67
+  QB                       63    6.19    7.94      -0.34   0.67
+  $0k-5                     5    5.45    5.52      -2.83   0.15
+  $5k-7                    27    5.98    7.59      -1.02   0.44
+  $7k-+                    31    6.50    8.54      +0.66   0.57
+  2026-10-17 155010        23    4.98    6.75      -1.50   0.55
+  2026-10-17 155122        13    5.50    7.59      -2.05   0.62
+  2026-10-24 155277        14    7.83    8.73      -0.48   0.82
+  2026-10-22 155281         4    8.90   12.21      +4.34   0.80
+  2026-11-05 156213         3    5.01    6.01      -1.46   1.00
+  2026-11-06 156216         6    7.29    8.14      +5.62  -0.09
+```
+
+**Hole (critic):** the passing part of a QB projection (pass yds + pass TD +
+INT points) is spread about half as widely as outcomes between quarterbacks.
+Slate-demeaned, actual on the joint passing and rushing projection: passing
+2.00 (se 0.57) train / 1.63 (0.31) test; rushing 1.25 / 1.17. The held-out
+error rises 0.6–0.9 points per point of projected passing above the slate
+mean, and which part of the error carries it differs by period: rush TDs on
+train, pass TDs on test. Mechanism: each ladder is devigged on its own (flat
+`LADDER_OVERROUND`, edge/dfs_ladder.py) and the parts are summed
+independently, so nothing carries team or offence strength across them.
+
+**Fix tested:** `ncaaf_lab.py report --qb-rush-td 0 --qb-pass-stretch`:
+pred = shipped + k (pass_pts − pivot), with k = the train slope of the
+slate-demeaned residual on slate-demeaned pass_pts and pivot = the train mean.
+Train (46 QBs, 5 slates): **k = 1.047 (se 0.60), pivot 13.50**. The critic's
+numbers were reproduced exactly. The lab replay cache now keeps every
+component, seeded from cycle 3's production replays.
+
+```
+QB pass stretch (train, 46 QBs / 5 slates): k=1.047 pivot=13.50
+cutoff 2026-10-17: train 5 slates / 48 players, test 6 slates / 63 players
+coverage (logged -> graded): 153951 68->63, 154161 136->130, 155010 128->127, 155105 17->16, 155109 30->28, 155112 27->27, 155122 74->59, 155277 118->81, 155281 28->28, 156213 20->20, 156216 38->36
+
+TRAIN
+  slice                     n     MAE    RMSE  bias(a-p)    rho
+  all                      48    9.32   11.40      +1.42   0.60
+  QB                       48    9.32   11.40      +1.42   0.60
+  $5k-7                    18   10.07   11.99      +3.46   0.33
+  $7k-+                    30    8.87   11.03      +0.20   0.66
+  2026-09-26 153951        12    8.50    9.91      +0.46   0.62
+  2026-10-03 154161        23   10.33   12.51      +2.19   0.65
+  2026-10-14 155105         3    9.29   11.82      -9.21   0.50
+  2026-10-15 155109         6    9.75   11.70      +3.10   0.43
+  2026-10-16 155112         4    5.37    7.37      +5.37  -1.00
+
+TEST (held out)
+  slice                     n     MAE    RMSE  bias(a-p)    rho
+  all                      63    6.01    7.77      -0.46   0.65
+  QB                       63    6.01    7.77      -0.46   0.65
+  $0k-5                     5    3.41    4.78      +0.54   0.15
+  $5k-7                    27    6.23    8.06      -0.08   0.34
+  $7k-+                    31    6.23    7.91      -0.96   0.65
+  2026-10-17 155010        23    5.67    7.52      -1.52   0.53
+  2026-10-17 155122        13    5.52    7.68      -1.62   0.55
+  2026-10-24 155277        14    6.32    7.81      -0.16   0.86
+  2026-10-22 155281         4    8.29   10.76      +5.05   0.80
+  2026-11-05 156213         3    5.55    6.20      -5.55   1.00
+  2026-11-06 156216         6    6.34    7.14      +4.23   0.43
+```
+
+| held out (QB) | n | MAE | RMSE | pooled rho |
+|---|---|---|---|---|
+| shipped (cycle 3) | 63 | 6.19 | 7.94 | 0.67 |
+| + pass stretch | 63 | 6.01 | 7.77 | 0.65 |
+| without 10/24 (155277), shipped → stretch | 49 | 5.72 → **5.92** | | |
+
+**Decision: NOT SHIPPED.**
+- **One slate carries the gain.** Better on 3 of 6 slates (3 of 5 independent
+  nights). All of the improvement comes from 155277 (7.83 → 6.32, 14 QBs).
+  Without it, held-out QB MAE gets worse: 5.72 → 5.92.
+- **The ranking does not clearly improve.** Pooled rho falls 0.67 → 0.65. Per
+  slate it rises on two (155277 0.82 → 0.86, 156216 −0.09 → 0.43), falls on
+  two (155010 0.55 → 0.53, 155122 0.62 → 0.55) and is flat on two.
+- **k is uncertain:** 1.7 se from zero, on 46 train QBs.
+- **Same pattern as cycle 1's stretch** (−0.02 overall, 2 of 5 slates worse),
+  which was also not shipped. Re-run `--qb-pass-stretch` when more graded
+  slates exist. The structural version is a team-strength factor shared by the
+  pass-TD and rush-TD parts, and it needs a working implied total (runner-up 3).
+
+**Runners-up (critic):**
+1. **QB rush-yards ladders run low.** Rungs priced at a devigged 0.40–0.60
+   hit 66% on test (n=35) and 67% on 9/26 (n=15), against 47% expected.
+   Laddered QBs' rush-yards points run +1.08 (test) / +1.65 (train) short.
+   A flat +5 or +10 yards does not lower MAE (test 6.17–6.18, train worse)
+   because the error is skewed. It needs a QB-specific rush overround or head
+   fill, fitted on the rungs.
+2. **`COUNT_TAIL_EXCESS["player_pass_tds"] = 0.000` is a fitting artefact.**
+   Ladders stop at 3+ or 4+. In cfbfastR, the extra passing TDs beyond 3,
+   given at least 3, average 0.41 (2024) and 0.48 (2025). Correct but small:
+   test 6.191 → 6.188.
+3. **The replayed pool's game `total` is not the full-game line** (21.5,
+   25.5, 27.5 seen) and `spread_home` is None on every slate. It is display
+   only, but it blocks any implied-total feature. Worth fixing before a
+   team-strength term is tried.
+
+Critic's files: scratchpad critic-ncaaf-4/ (pass_stretch_table.txt,
+resid_slope_by_component.txt, rung_calibration.txt, passtd_tail.txt,
+variants.txt, qb.csv).
