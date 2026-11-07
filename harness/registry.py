@@ -222,7 +222,7 @@ EDGE_RULES: list[tuple[str, str]] = [
     (r"^(dfs_run|dfs_slate|dfs_sport|repo_files|names|scanner|ncaab_names)", "optimize"),
     (r"^(client|dfs$|nfl$|nfl_intel$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
      r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups|nba_availability|nba_injury_report|nba_rotowire|"
-     r"ncaab_rotowire|ncaab_torvik)", "ingest"),
+     r"ncaab_rotowire|ncaab_torvik|ncaab_espn)", "ingest"),
 ]
 
 
