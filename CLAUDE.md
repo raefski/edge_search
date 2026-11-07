@@ -13,6 +13,14 @@ python3 -m harness list --jobs     # runnable jobs; `harness list --role evaluat
 python3 -m harness verify          # compile + the tests that cover what you changed
 ```
 
+DFS results in one machine-readable file: `python3 -m harness run dfs-scorecard`
+-> `data/dfs_scorecard.json` (ROI by period/sport/cash-GPP with 90% ranges, contest
+groups by field/contest/slate size and overlay, per-slate series, code updates,
+projection accuracy by sport and position; every record carries its n and an
+`enough_data` flag; players and player-slate rows with field GPP ownership). Rebuild it before
+quoting results; the ROI dashboard shows the same numbers. Read it at three heights with
+`python3 scripts/dfs_scorecard.py show [SPORT ["player"]]` (DFS_COMMANDS.md).
+
 Durable lessons live in Claude's auto-memory (MEMORY.md index, loaded each
 session) and the write-ups: DFS_STATUS.md, NHL_STATUS.md, NCAAF_STATUS.md,
 NASCAR_STATUS.md, MMA_STATUS.md, NBA_STATUS.md (NBA + college), DFS_METHODOLOGY.md, GPP_META.md (what wins

@@ -3,6 +3,30 @@
 Quick reference for the commands you'll actually run day to day. All commands
 assume you're in the repo root (`cd ~/Downloads/edge_search`).
 
+## What's working: the DFS scorecard (run a few times a week)
+
+Rebuild it first (about 5 seconds; it reads contests.db and the newest DK
+entry-history export), then look at it from three heights:
+
+```bash
+python3 -m harness run dfs-scorecard                        # rebuild data/dfs_scorecard.json
+
+python3 scripts/dfs_scorecard.py show                       # 30,000 ft: every sport
+python3 scripts/dfs_scorecard.py show NCAAF                 # 500 ft: one sport
+python3 scripts/dfs_scorecard.py show NCAAF "Sam Leavitt"   # 30 ft: one player in that sport
+```
+
+| View | What it shows |
+|---|---|
+| `show` | Cash and GPP ROI per sport with 90% ranges and the last 5 slates; projection R², MAE and bias per sport with the weakest position; which contest groups made and lost money across all sports (field size, contest size, slate size, overlay, overlay alert) |
+| `show <SPORT>` | That sport's ROI, its last 10 slates, every contest group (cash and GPP apart), accuracy by position, the players we projected most too low and most too high (with the field's GPP ownership vs our guess), its last code updates |
+| `show <SPORT> "<player>"` | That player's every graded slate: salary, projected, actual, miss, field GPP ownership, our ownership guess. Part of a name works; Jr./III and capitals don't matter |
+
+"thin" marks anything under 5 slates. Bias above 0 means we project too low.
+To hand it to Claude: *"rebuild the DFS scorecard and tell me what's working"*
+(Claude reads `data/dfs_scorecard.json`, the same numbers as the ROI dashboard).
+New contest exports go in first: `python3 -m harness run import-contests`.
+
 ## Build lineups
 
 ```

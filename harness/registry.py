@@ -66,6 +66,16 @@ JOBS: dict[str, Job] = {j.name: j for j in [
            "Downloads, tag them from DK, update contests.db, grade each by its draft group"),
     _j("entry-history", "evaluate", "scripts/dfs_entry_history.py",
        doc="real-money ROI from DK entry-history exports"),
+    _j("roi-dashboard-rows", "evaluate", "scripts/dfs_roi_rows.py",
+       "--out", "data/harness/dfs_roi/dfs_roi_entries.json",
+       "--updates-out", "data/harness/dfs_roi/dfs_code_updates.json",
+       "--proj-out", "data/harness/dfs_roi/dfs_proj_accuracy.json",
+       doc="rows for the 'DFS ROI by Sport' dashboard (claude.ai artifact N4rKiCCFV2h9LHcTTq3Xc5): "
+           "every paid entry, each sport's code updates, projected vs actual player points; Claude uploads them"),
+    _j("dfs-scorecard", "evaluate", "scripts/dfs_scorecard.py",
+       doc="every DFS result number for a script or LLM -> data/dfs_scorecard.json: ROI by period/sport/"
+           "type, contest groups (field/cap/games/overlay/alert), per-slate series, code updates, "
+           "projection accuracy by position; the dashboard's numbers, each with its n"),
     _j("buzz-nhl", "ingest", "scripts/buzz_nhl.py", sport="nhl", timer="buzz-nhl-publish.timer",
        doc="tonight's NHL DFS YouTube mentions"),
     _j("inverse-consensus", "evaluate", "scripts/inverse_consensus.py",
