@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-07T16:30:43+00:00",
+"generated_at": "2026-11-07T16:59:01+00:00",
 "goalies": {
 "2026-11-07": {
 "CAR": {
@@ -16,7 +16,7 @@
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": null
+"status": "Likely"
 },
 "DET": {
 "goalie": "Daniil Tarasov",
@@ -44,7 +44,7 @@
 },
 "NJD": {
 "goalie": "Jake Allen",
-"status": null
+"status": "Likely"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -76,7 +76,7 @@
 },
 "STL": {
 "goalie": "Joel Hofer",
-"status": null
+"status": "Confirmed"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -5000,40 +5000,6 @@
 "pos": "g",
 "pp": null
 },
-"Colin Blackwell": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 98,
-"toiSeconds": 21
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 48,
-"toiSeconds": 49
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "David Perron": {
 "gtd": false,
 "injury": null,
@@ -5065,7 +5031,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Esa Lindell": {
@@ -5235,7 +5201,7 @@
 "toiMinutes": 62,
 "toiSeconds": 28
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -5443,6 +5409,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
+},
+"Sam Steel": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 168,
+"toiSeconds": 29
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 81,
+"toiSeconds": 33
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Thomas Harley": {
 "gtd": false,
@@ -16387,7 +16387,7 @@
 "pp": null
 },
 "Mason McTavish": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
