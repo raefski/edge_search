@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-06T23:43:55+00:00",
+"generated_at": "2026-11-07T00:44:21+00:00",
 "goalies": {
 "2026-11-06": {
 "ANA": {
@@ -2231,7 +2231,7 @@
 "goalieMinutes": 541,
 "goalieOvertimeLosses": 0,
 "goalieSavePercentage": "0.914",
-"goalieSaves": 226,
+"goalieSaves": 222,
 "goalieSeconds": 58,
 "goalieShotsAgainst": 243,
 "goalieShutouts": 1,
@@ -2245,7 +2245,7 @@
 "goalieMinutes": 276,
 "goalieOvertimeLosses": 0,
 "goalieSavePercentage": "0.935",
-"goalieSaves": 119,
+"goalieSaves": 115,
 "goalieSeconds": 18,
 "goalieShotsAgainst": 123,
 "goalieShutouts": 0,
@@ -2637,7 +2637,7 @@
 "injury": null,
 "last10": {
 "assists": 6,
-"blocks": 5,
+"blocks": 4,
 "gamesPlayed": 10,
 "goals": 5,
 "points": 11,
@@ -2650,7 +2650,7 @@
 },
 "last5": {
 "assists": 4,
-"blocks": 4,
+"blocks": 3,
 "gamesPlayed": 5,
 "goals": 3,
 "points": 7,
@@ -3080,6 +3080,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Joel Hanley": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 16,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 161,
+"toiSeconds": 27
+},
+"last5": {
+"assists": 0,
+"blocks": 13,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 0,
+"toiMinutes": 84,
+"toiSeconds": 50
+},
+"line": "D1",
+"pk": "PK2",
+"pos": "ld",
+"pp": null
+},
 "Jonathan Castagna": {
 "gtd": false,
 "injury": null,
@@ -3112,40 +3146,6 @@
 "line": "F4",
 "pk": "PK2",
 "pos": "c",
-"pp": null
-},
-"Kevin Bahl": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 220,
-"toiSeconds": 46
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 107,
-"toiSeconds": 10
-},
-"line": "D1",
-"pk": "PK2",
-"pos": "ld",
 "pp": null
 },
 "Martin Pospisil": {
