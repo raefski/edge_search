@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-07T13:59:27+00:00",
+"generated_at": "2026-11-07T15:29:17+00:00",
 "goalies": {
 "2026-11-07": {
 "CAR": {
@@ -28,7 +28,7 @@
 },
 "FLA": {
 "goalie": "Akira Schmid",
-"status": null
+"status": "Confirmed"
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
@@ -59,7 +59,7 @@
 "status": null
 },
 "OTT": {
-"goalie": "Linus Ullmark",
+"goalie": "Samuel Ersson",
 "status": null
 },
 "PIT": {
@@ -96,7 +96,7 @@
 },
 "WSH": {
 "goalie": "Logan Thompson",
-"status": null
+"status": "Confirmed"
 }
 },
 "2026-11-08": {
@@ -1110,40 +1110,6 @@
 "pos": "lw",
 "pp": "PP2"
 },
-"James Hagens": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 11,
-"gamesPlayed": 10,
-"goals": 4,
-"points": 8,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 23,
-"toiMinutes": 133,
-"toiSeconds": 40
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 71,
-"toiSeconds": 39
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
-},
 "Jeremy Swayman": {
 "gtd": false,
 "injury": null,
@@ -1317,6 +1283,40 @@
 "pk": null,
 "pos": "g",
 "pp": null
+},
+"Michael Eyssimont": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 18,
+"toiMinutes": 119,
+"toiSeconds": 10
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 66,
+"toiSeconds": 13
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP2"
 },
 "Morgan Geekie": {
 "gtd": false,
@@ -12813,7 +12813,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13019,7 +13019,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
