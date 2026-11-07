@@ -376,6 +376,18 @@ def test_last_game_moves_non_props_rows_only():
     assert rows[0]["fp"] == RC.LAST_GAME_MIN_CAP
 
 
+def test_last_game_minutes_follow_tonights_implied_points():
+    """Cycle 2: the same 32 minutes are worth more at a 102-point favourite than a 55-point dog."""
+    def one(team):
+        return {"source": "blend", "fp": 20.0, "last_min": 32.0, "last_fp": 20.0, "team": team}
+    rows = [one("ARIZ"), one("C-C"), one("NOLINE")]
+    RC.apply_last_game(rows, implied={"ARIZ": 102.0, "C-C": 54.5})
+    fav, dog, flat = (r["fp"] for r in rows)
+    assert fav > flat > dog
+    a, b, c, d = RC.LAST_GAME
+    assert flat == pytest.approx(a + b * 20 + c * 20 + d * 32)
+
+
 def _event(eid, a, b, done=True):
     return {"id": eid, "status": {"type": {"completed": done}},
             "competitions": [{"competitors": [{"team": {"displayName": a}}, {"team": {"displayName": b}}]}]}

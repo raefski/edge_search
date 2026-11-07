@@ -102,3 +102,46 @@ as cycle 1: 156344 (11/7) was not final at 5:49 PM. Held-out baseline (LAST_GAME
 | 11/5 156240 | 5.88 | -0.18 | 114 | 7.48 | +0.60 | .616 | 3.84 | -1.17 |
 | 11/6 156342 | 5.51 | -0.35 | 123 | 6.98 | -0.64 | .653 | 3.84 | -0.01 |
 | pooled | 6.35 | | 591 | 8.25 | +1.76 | | 4.29 | |
+
+### Cycle 2 — hole, fix, decision: LAST_GAME's minutes follow tonight's implied points, SHIPPED
+
+**Hole (dfs-model-critic):** LAST_GAME shrinks the board's projection to ~0.36, and that projection was
+the only carrier of tonight's game environment (ENV_POWER), so its biggest term, 0.374 x last
+minutes, paid a 32-minute player at a 54.5-point underdog (Trey Perry, C-C, 11/5) the same as one at a
+102-point favourite (ARIZ). Moved rows by implied points, LOSO: under 66 (n=102) bias +2.25, 80+ (n=184)
+-1.45. Examples: Krivas (ARIZ, 102) 28.3 -> 33.1 vs 46.0 actual; Perry 22.0 -> 17.8 vs 17.75; worse:
+Mandaquit (ARIZ) 21.4 -> 27.9 vs 7.0.
+
+**Fix:** minutes term x (implied / LEAGUE.team_points)^1; LAST_GAME refit on the same 491 rows ->
+(0.029, 0.298, 0.128, 0.449); `implied` added to the log; lab reads it or the backfill.
+
+**Judgment call re-decided on train:** the critic picked power 1 from a table that showed held-out
+slates. Re-chosen inside each fold by inner leave-one-slate-out over the training slates: k=1 in 4 of
+5 folds (1.5 for 11/6: all 5.42, still better than 5.51). Forward with k chosen on 11/2-11/4 only (two
+usable inner folds) picks 2: 11/5 all 5.96 -> 5.63, 11/6 all 5.47 -> 5.45 but priced 7.01 -> 7.07, rho
+.628 -> .625: the one held-out cell that got worse.
+
+**Held out (lab LOSO, LAST_GAME refit per fold; harness == critic to the 2nd decimal):**
+
+| slate | rows moved | all MAE | priced MAE | priced rho | bench MAE |
+|---|---|---|---|---|---|
+| 11/2 155565 | 0 | 6.56 -> 6.56 | 9.56 -> 9.56 | .476 -> .476 | 3.48 -> 3.48 |
+| 11/3 156039 | 16 | 7.64 -> 7.62 | 9.01 -> 8.96 | .475 -> .477 | 6.45 -> 6.46 |
+| 11/4 156123 | 96 | 5.80 -> 5.69 | 7.80 -> 7.57 | .562 -> .580 | 3.27 -> 3.31 |
+| 11/5 156240 | 150 | 5.88 -> 5.61 | 7.48 -> 7.08 | .616 -> .645 | 3.84 -> 3.75 |
+| 11/6 156342 | 229 | 5.51 -> 5.35 | 6.98 -> 6.84 | .653 -> .664 | 3.84 -> 3.66 |
+| pooled | | 6.349 -> 6.249 | 8.252 -> 8.100 | | 4.29 -> 4.25 |
+
+Forward (k=1, fit 11/2-4): all 5.96 -> 5.63, 5.47 -> 5.27; priced 7.65 -> 7.11, 7.01 -> 6.79. Moved rows
+$7K+ (n=51) MAE 8.02 -> 7.67, bias -3.13 -> -2.38 (eases cycle 1's star worry). Team-games 27 of 35
+better. Bench on 11/4 slightly worse. **3 real slates: not enough data.** Shipped: wins the target
+metric on every applicable held-out slate. 156346 (Sun 11/8 1 PM) rebuild vs the cycle-1 constants:
+mean |change| 0.56; CAL (64.25 implied) down ~2-3, UH/USC/PITT (78-82) up ~1.5-2; cash out Long,
+Indrusaitis, Phipps, in Heard, Foster, Rice; GPP Frison -> Long. The NCAAB projection history file
+rotates once (new column), by design.
+
+**Runner-ups:** (1) last game's started flag as a 5th term: LOSO priced 7.57/7.08/6.84 -> 7.47/6.88/6.69
+but bench worse on 11/5-11/6; retest at 6+ slates. (2) The lab grades 11/2-11/4 on the pre-11/5
+blend/salary model (priced bias +2..+3.4); replay them with fold-refit constants before judging any
+priced-row change. (3) Spread / blowout terms null or worse; several previous games untestable yet
+(0 teams had 2 in the window).

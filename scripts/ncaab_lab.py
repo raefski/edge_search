@@ -5,7 +5,9 @@
     python3 scripts/ncaab_lab.py rows out.json     # every player-slate row, for a critic's own tests
 
 What "the shipped board" is here. The logged pre-lock projection (data/dfs_proj_log_ncaab.csv,
-one row per player per draft group) as it ran, then LAST_GAME applied exactly as
+one row per player per draft group) as it ran, then LAST_GAME (with tonight's implied team
+points: the log's `implied` column, or data/ncaab_implied_backfill.json for slates logged
+before it existed) applied exactly as
 edge/dfs_run_ncaab.build_board applies it: the same last_game_lines (ESPN, games a day
 before the slate, the >= 50% roster check) and the same apply_last_game. Truth is the ESPN
 box (scripts/ncaab_box_grade.join: draft group + edge.names.norm, undrafted included, a
@@ -38,6 +40,8 @@ from edge.names import norm  # noqa: E402
 from edge.ncaab_names import Rosters  # noqa: E402
 
 PRICED = ("props", "blend", "salary")
+#: Implied team points for slates logged before the log had an `implied` column (cycle 2).
+BACKFILL = ROOT / "data" / "ncaab_implied_backfill.json"
 
 
 def slates() -> list[int]:
@@ -56,25 +60,32 @@ def load(gid: int) -> list[dict]:
                 for r in rows}
     teams = {r["team"] for r in rows}
     last, _audit = RC.last_game_lines(salaries, Rosters(salaries), teams, rows[0]["date"])
+    backfill = json.loads(BACKFILL.read_text()).get(str(gid), {}) if BACKFILL.exists() else {}
     for key, info in salaries.items():
         r = info["row"]
         m, fp, _d = last.get(key, (None, None, None))
-        r.update(gid=gid, last_min=m, last_fp=fp, source=r["proj_source"])
+        imp = float(r["implied"]) if r.get("implied") not in (None, "") else backfill.get(r["team"])
+        r.update(gid=gid, last_min=m, last_fp=fp, source=r["proj_source"], implied=imp)
     return rows
+
+
+def _env(r: dict) -> float:
+    return (r["implied"] or RC.LEAGUE.team_points) / RC.LEAGUE.team_points
 
 
 def shipped(rows: list[dict], coef: tuple | None = None) -> list[float]:
     """The board's projection for each row: as logged, then LAST_GAME (`coef` to override)."""
-    tmp = [{"source": r["source"], "fp": r["proj"], "last_min": r["last_min"], "last_fp": r["last_fp"]}
-           for r in rows]
-    RC.apply_last_game(tmp, coef)
+    tmp = [{"source": r["source"], "fp": r["proj"], "last_min": r["last_min"], "last_fp": r["last_fp"],
+            "team": r["team"]} for r in rows]
+    RC.apply_last_game(tmp, coef, {r["team"]: r["implied"] for r in rows if r["implied"]})
     return [t["fp"] for t in tmp]
 
 
 def fit_last_game(rows: list[dict]) -> tuple:
     """LAST_GAME's least squares on the as-run projection (how the shipped constants were fit)."""
     use = [r for r in rows if r["source"] != "props" and r["last_min"] is not None]
-    X = np.array([[1.0, r["proj"], r["last_fp"], min(r["last_min"], RC.LAST_GAME_MIN_CAP)] for r in use])
+    X = np.array([[1.0, r["proj"], r["last_fp"], min(r["last_min"], RC.LAST_GAME_MIN_CAP) * _env(r)]
+                  for r in use])
     return tuple(float(c) for c in np.linalg.lstsq(X, np.array([r["act"] for r in use]), rcond=None)[0])
 
 
@@ -130,7 +141,7 @@ def dump(path: str) -> int:
         for r, p in zip(rows, shipped(rows)):
             out.append({k: r.get(k) for k in ("gid", "date", "player", "team", "opp", "salary", "proj",
                                               "proj_source", "status", "starter", "own", "act", "min",
-                                              "started", "last_min", "last_fp")} | {"shipped": p})
+                                              "started", "last_min", "last_fp", "implied")} | {"shipped": p})
     Path(path).write_text(json.dumps(out))
     print(f"{len(out)} rows -> {path}")
     return 0

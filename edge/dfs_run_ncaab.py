@@ -136,20 +136,22 @@ MIN_PRIOR_GAMES = 3
 #: A no-prop questionable player's chance of playing (a props price already carries it).
 #: PRIOR, 2026-11-02: an opening-night tag, nothing to fit it on yet.
 Q_PLAY = 0.7
-#: proj' = a + b*proj + c*last_fp + d*min(last_min, LAST_GAME_MIN_CAP) for every non-props
+#: proj' = a + b*proj + c*last_fp + d*min(last_min, LAST_GAME_MIN_CAP)*env for every non-props
 #: row whose team's last final game (edge/ncaab_espn.last_games, a day before the slate's)
 #: resolved; a DK player missing from that box counts 0 / 0. Props rows are untouched: the
-#: books already saw that game. FITTED 2026-11-07 (NCAAB_CRITIQUE_LOG.md cycle 1) by least
-#: squares on the LOGGED final proj (after Q_PLAY and the team budget, so applied after
-#: them here) vs ESPN box DK points: 491 rows with a previous box on 4 slates (156039 16,
-#: 156123 96, 156240 150, 156342 229; bench 236, blend 223, salary 32). Held out by slate,
-#: refit each fold: all-player MAE 7.74->7.64, 6.77->5.80, 6.18->5.88, 6.54->5.51; bench
-#: 6.54->6.45, 4.14->3.27, 4.28->3.84, 4.76->3.84; rho under $4K .30->.33, .42->.62,
-#: .43->.55, .37->.68. Forward (fit 11/2-11/4, test 11/5-11/6): 6.18->5.96, 6.54->5.47.
-#: The fold coefficients move (b .30-.41, c .16-.28, d .26-.44): 3 slates with a real
-#: previous box, under the ~5-slate bar. Refit as slates come in. One game only: the
-#: weight on several games is untested.
-LAST_GAME = (0.048, 0.359, 0.190, 0.374)
+#: books already saw that game. env = tonight's implied team points / LEAGUE.team_points (1 with
+#: no line). Cycle 1 (2026-11-07) shipped it without env; cycle 2 found the minutes term, the
+#: largest, blind to tonight's game (b ~.3 shrinks away the only carrier of ENV_POWER): a
+#: 32-minute player at a 55-point underdog and at a 102-point favourite got the same credit.
+#: FITTED 2026-11-07 (NCAAB_CRITIQUE_LOG.md cycle 2) by least squares on the LOGGED final proj
+#: (after Q_PLAY and the team budget, so applied after them here) vs ESPN box DK points: 491 rows
+#: with a previous box on 4 slates (156039 16, 156123 96, 156240 150, 156342 229). env's power 1
+#: was re-chosen inside each fold by inner leave-one-slate-out (k=1 in 4 of 5 folds). Held out
+#: by slate vs the cycle-1 form (each refit per fold): all MAE 7.64->7.62, 5.80->5.69, 5.88->5.61,
+#: 5.51->5.35; priced 9.01->8.96, 7.80->7.57, 7.48->7.08, 6.98->6.84; $7K+ bias -3.13->-2.38.
+#: Forward (fit 11/2-4) all 5.96->5.63, 5.47->5.27. Fold coefficients b .25-.34, c .11-.14,
+#: d .41-.49. 3 real slates: not enough data; refit as slates come in (scripts/ncaab_lab.py).
+LAST_GAME = (0.029, 0.298, 0.128, 0.449)
 LAST_GAME_MIN_CAP = 35.0
 #: A team's box is read only if this share of its names resolve to the DK roster (the
 #: critic's guard; a wrong school's box would zero a real rotation).
@@ -660,15 +662,17 @@ def last_game_lines(salaries: dict, rosters: Rosters, teams: set, date: str) -> 
     return out, {"source": "espn", "teams": len(found), "missing": sorted(teams - set(found))}
 
 
-def apply_last_game(rows: list, coef: tuple | None = None) -> int:
-    """Move each non-props row with a `last_min` (in place) by LAST_GAME; how many moved."""
+def apply_last_game(rows: list, coef: tuple | None = None, implied: dict | None = None) -> int:
+    """Move each non-props row with a `last_min` (in place) by LAST_GAME, its minutes scaled
+    by the team's `implied` points tonight; how many moved."""
     a, b, c, d = LAST_GAME if coef is None else coef
     n = 0
     for r in rows:
         if r["source"] == "props" or r.get("last_min") is None:
             continue
+        env = ((implied or {}).get(r.get("team")) or LEAGUE.team_points) / LEAGUE.team_points
         r["fp"] = max(a + b * r["fp"] + c * r["last_fp"]
-                      + d * min(r["last_min"], LAST_GAME_MIN_CAP), 0.0)
+                      + d * min(r["last_min"], LAST_GAME_MIN_CAP) * env, 0.0)
         n += 1
     return n
 
@@ -761,9 +765,10 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
                      "last_mpg": tv["mpg"] if tv else None,
                      "last_min": last[sal_key][0] if sal_key in last else None,
                      "last_fp": last[sal_key][1] if sal_key in last else None,
-                     "last_date": last[sal_key][2] if sal_key in last else None})
+                     "last_date": last[sal_key][2] if sal_key in last else None,
+                     "implied": implied.get(t)})
     info["team_scale"] = apply_team_budget(pool, implied)
-    info["last_game"]["moved"] = apply_last_game(pool)
+    info["last_game"]["moved"] = apply_last_game(pool, implied=implied)
     for p in pool:
         if p["means"] is None:
             p["means"] = means_from_total(p["fp"], p["shape"])
@@ -786,7 +791,7 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
 # ---------------------------------------------------------------------------
 PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp", "dk_pos", "salary", "proj", "sd",
                  "floor", "ceil", "own", "proj_source", "imputed", "status", "starter",
-                 "last_team", "last_mpg", "dk_fppg", "source")
+                 "last_team", "last_mpg", "dk_fppg", "source", "implied")
 
 
 def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> dict:
@@ -801,7 +806,8 @@ def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> di
              "starter": int(bool(p.get("starter"))), "last_team": p.get("last_team") or "",
              "last_mpg": p.get("last_mpg") if p.get("last_mpg") is not None else "",
              "dk_fppg": p.get("dk_fppg") if p.get("dk_fppg") is not None else "",
-             "source": "live"} for p in pool]
+             "source": "live",
+             "implied": p.get("implied") if p.get("implied") is not None else ""} for p in pool]
     lineups = [{"mode": mode, "slot": slot, "player": p["name"], "team": p["team"],
                 "salary": p["salary"], "proj": p["proj"], "own": p.get("own")}
                for mode, res in (("cash", cash), ("gpp", gpp))

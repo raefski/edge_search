@@ -315,8 +315,10 @@ undrafted: `harness run ncaab-box-grade -- 155565`; DK's FPTS agreed on 172 of 1
   SHSU @ BAMA ran with no line because of this.
 
 **Last game, 2026-11-07** (NCAAB_CRITIQUE_LOG.md cycle 1): every non-props row of a team whose
-last final game is on ESPN moves by `LAST_GAME` (0.048 + 0.359 proj + 0.190 last DK pts + 0.374
-min(last minutes, 35); not in the box = 0). Held out on 4 slates all-player MAE 7.74/6.77/6.18/6.54
+last final game is on ESPN moves by `LAST_GAME` (cycle 2: 0.029 + 0.298 proj + 0.128 last DK pts +
+0.449 min(last minutes, 35) x tonight's implied points / 72.5; not in the box = 0; the env term took
+held-out all MAE 5.80/5.88/5.51 -> 5.69/5.61/5.35). The log now has an `implied` column; older slates'
+implied points are in data/ncaab_implied_backfill.json. Replay: `harness run ncaab-lab -- report`. Held out on 4 slates all-player MAE 7.74/6.77/6.18/6.54
 -> 7.64/5.80/5.88/5.51, bench and cheap rank better everywhere; 3 real slates, refit as they come.
 Fetch: `edge/ncaab_espn.py` (cached in data/cache/ncaab_espn). Props rows untouched (no gain there).
 Torvik ratings lose to the market; the team-share fix and whole-slate ownership wait (log).

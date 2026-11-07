@@ -111,6 +111,9 @@ data/draftkings-contest-entry-history*.csv
 # data -- same category as the DFS calibration JSON above), so it needs an
 # exception to the blanket `data/*.json` rule.
 !data/pickem_backtest_results.json
+# Implied team points for the NCAAB slates logged before the log had an implied column
+# (scripts/ncaab_lab.py replays LAST_GAME with them); the same numbers the log now carries.
+!data/ncaab_implied_backfill.json
 
 # Pick'em: your TOO-GOODE pool's standings, opponents, and $ splits, plus
 # your own per-game pick log -- same "real financial/contest activity in a
