@@ -293,3 +293,42 @@ def player_teams(box: dict) -> dict:
         if team:
             votes[norm(v["player"])][team] += 1
     return {n: c.most_common(1)[0][0] for n, c in votes.items()}
+
+
+def qb_rush_td_rates(play_rows: list[dict], before_week: int | None = None) -> dict:
+    """{normalised name: {player, team, rush_td, team_games, rate}}: rushing
+    touchdowns per TEAM game this season, from cfbfastR play rows.
+
+    Critique cycle 3 (2026-11-07, NCAAF_CRITIQUE_LOG.md): a college QB's rushing
+    touchdowns follow his goal-line role (designed runs, sneaks), not his
+    yardage, so yards/110 under-rated the runners and over-rated scramblers.
+    edge/dfs_run_ncaaf.py uses `rate` in place of that rule for quarterbacks;
+    scripts/ncaaf_lab.py calls this same function, so the two cannot drift.
+
+      * team games are the denominator (a game he sat counts: module docstring);
+      * his team is the majority over his games (player_teams): the per-row
+        team label is noisy for quarterbacks;
+      * a name two players share is LEFT OUT, never guessed between;
+      * `before_week` keeps weeks < it (the lab's live-faithful cut); the
+        published table uses the whole file, which only holds games played.
+    """
+    if before_week is not None:
+        play_rows = [r for r in play_rows if int(r["week"]) < before_week]
+    box = boxscores(play_rows)
+    games = team_games(play_rows)
+    team_of = player_teams(box)
+    spellings: dict = collections.defaultdict(set)
+    tds: dict = collections.defaultdict(float)
+    for v in box.values():
+        k = norm(v["player"])
+        spellings[k].add(v["player"])
+        tds[k] += v.get("rush_td", 0.0)
+    out = {}
+    for k, names in spellings.items():
+        team = team_of.get(k)
+        if len(names) != 1 or not team or not games.get(team):
+            continue
+        g = len(games[team])
+        out[k] = {"player": next(iter(names)), "team": team, "rush_td": tds[k],
+                  "team_games": g, "rate": tds[k] / g}
+    return out

@@ -256,7 +256,9 @@ st.markdown(
     f"<div class='summary'><b>{meta['label']}</b> slate · {meta['games']} games · "
     f"{_et(meta.get('start'))} · draft group {res['gid']}<br>"
     f"pool: <b>{stats['projected']}</b> players carry a DraftKings ladder, of "
-    f"{stats['slate_players']} on the slate</div>", unsafe_allow_html=True)
+    f"{stats['slate_players']} on the slate<br>"
+    f"QB rush TDs from their season: {stats.get('qb_rush_td_season', 0)} "
+    f"({stats.get('qb_rush_td_source', 'unknown')})</div>", unsafe_allow_html=True)
 
 if stats.get("name_alias"):
     st.markdown("<div class='summary'><b>Matched by team + last name</b> (DK's salary "

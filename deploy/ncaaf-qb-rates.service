@@ -1,0 +1,18 @@
+# Refresh cfbfastR and publish each QB's rushing touchdowns per team game, which
+# the NCAAF build uses in place of rush yards / 110 (edge/dfs_run_ncaaf.py
+# QB_RUSH_TD_*, critique cycle 3). See scripts/ncaaf_qb_rates_publish.py.
+#
+#   cp deploy/ncaaf-qb-rates.service deploy/ncaaf-qb-rates.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now ncaaf-qb-rates.timer
+[Unit]
+Description=Publish NCAAF QB rush-TD rates from cfbfastR
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/ncaaf_qb_rates_publish.py --push
+Restart=no
+Nice=10
+TimeoutStartSec=900

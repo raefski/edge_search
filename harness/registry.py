@@ -102,6 +102,10 @@ JOBS: dict[str, Job] = {j.name: j for j in [
        timer="ncaaf-availability.timer", timeout=600, tests=("tests/test_ncaaf_capture.py",),
        doc="SEC/Big Ten/ACC/Big 12 availability reports, every version + season archive "
            "-> data/ncaaf_availability/ (data branch)"),
+    _j("ncaaf-qb-rates", "publish", "scripts/ncaaf_qb_rates_publish.py", "--push", sport="ncaaf",
+       timer="ncaaf-qb-rates.timer", timeout=900, tests=("tests/test_dfs_ncaaf.py",),
+       doc="refresh cfbfastR, publish each QB's rush TDs per team game (the build's "
+           "QB rush-TD rate, critique cycle 3) -> data/ncaaf_qb_rush_td.json"),
     _j("ncaaf-depth", "ingest", "scripts/ncaaf_depth_capture.py", "--push", sport="ncaaf",
        timer="ncaaf-depth.timer", timeout=1200, tests=("tests/test_ncaaf_capture.py",),
        doc="Ourlads FBS depth charts, every change -> data/ncaaf_depth/ (data branch)"),

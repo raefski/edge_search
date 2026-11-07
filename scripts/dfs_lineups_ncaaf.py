@@ -143,6 +143,8 @@ def main() -> int:
           f"somewhere, {stats['not_on_slate']} of them in another game)")
     if stats.get("name_alias"):
         print(f"  matched by team + last name: {', '.join(stats['name_alias'])}")
+    print(f"  QB rush TDs from their season: {stats.get('qb_rush_td_season', 0)} "
+          f"({stats.get('qb_rush_td_source', 'unknown')}; the rest yards/110)")
     if stats.get("one_rung"):
         print(f"  WARNING: {stats['one_rung']} players had ONE rung per market. "
               f"That is the signature of a client built with main_line_only "

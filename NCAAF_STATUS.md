@@ -422,3 +422,27 @@ Result: recall is 1.000 on train and test, with 0 wrong joins. Brothers on
 one roster (Dylan / Dayton Raiola, Quinten / Quintaelyn Joyner) are what the
 short-name rule exists for. Unpriced games (FSU @ MIA, AF @ WYO, ...) are
 coverage, not names: DK posted no ladders for them.
+
+## 12. A quarterback's rushing touchdowns come from his season (2026-11-07)
+
+Critique cycle 3 (NCAAF_CRITIQUE_LOG.md). DK posts no college TD market we
+collect, so rushing TDs were imputed from rush yards (`NCAAF_RUSH_TD_PER_YARD_QB`
+= 1/110). For a QB that misses the goal-line role: designed runs and sneaks
+score, scrambles mostly do not. Trinidad Chambliss had 7 rush TDs in 8 team
+games and was credited 1.3 points; pocket QBs with 0 were credited 0.6–1.2.
+
+Now a QB with ≥ 2 team games gets `6 × (season rush TDs ÷ team games)` from
+cfbfastR in place of that term (`dfs_run_ncaaf.QB_RUSH_TD_*`,
+`ncaaf.qb_rush_td_rates`). There is no shrinkage: k = 0 was chosen on train.
+Everyone else, and any name two cfbfastR players share, keeps yards/110.
+Held out (6 slates from 10/17, 351 players): MAE 6.03 → 5.93, QB 6.78 → 6.19
+(n=63), better on 5 of 6 slates. The table is `data/ncaaf_qb_rush_td.json`,
+refreshed daily by `ncaaf-qb-rates.timer` (`scripts/ncaaf_qb_rates_publish.py`),
+on the data branch for the phone. The page and CLI say how many QBs used it
+and where the table came from. If the table is missing, every QB falls back,
+visibly.
+
+Known limits: 63 test QBs is thin; held-out QB bias went +0.54 → −0.34; and
+early-season rates rest on 2–4 games. QB projections are still compressed
+(slope ~1.45 after the fix). A college anytime-TD market would price this
+directly: none is collected.

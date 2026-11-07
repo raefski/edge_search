@@ -1,0 +1,13 @@
+[Unit]
+Description=NCAAF QB rush-TD rates from cfbfastR, daily 07:30 (before any lock)
+
+[Timer]
+Unit=ncaaf-qb-rates.service
+# cfbfastR posts a week's games after the weekend; 07:30 daily picks them up by
+# Monday or Tuesday. Weekday slates read the same week's table.
+OnCalendar=*-*-* 07:30:00
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -25,6 +25,7 @@ which biases the graded set slightly toward players who played.
 from __future__ import annotations
 
 import argparse
+import json
 import collections
 import csv
 import math
@@ -171,6 +172,127 @@ def stretch_pred(rows: list[dict], cutoff: str):
     return pred
 
 
+# ---------------------------------------------------------------------------
+# Critique cycle 3: a QB's rushing touchdowns from his own season rate
+# ---------------------------------------------------------------------------
+#: replayed components per draft group (production build_pool at the last
+#: dfs_ncaaf scan before lock, draftables as of the last commit before lock)
+REPLAY_DIR = ROOT / "data" / "harness" / "ncaaf_lab"
+QB_RUSH_TD_MIN_G = 2                  # team games before the slate, else unchanged
+QB_RUSH_TD_K_GRID = (0, 1, 2, 3, 4, 6, 8)
+
+
+def replay_components(gid: int) -> dict:
+    """{norm name: rush-TD points the model imputed} for one draft group, cached.
+
+    The log keeps the projection, not its parts, so the imputed term is rebuilt
+    by replaying production. On 9 of 11 graded groups the replay reproduces the
+    logged projection exactly (critic, 2026-11-07); 9/26 and 10/3 were logged by
+    older code, whose rush-TD rule was the same yards/110."""
+    path = REPLAY_DIR / f"replay_{gid}.json"
+    if path.exists():
+        return json.loads(path.read_text())
+    import ncaaf_names_lab as NL
+    from edge import dfs
+    import edge.dfs_run_ncaaf as R
+    from edge.odds.source import ScrapedOddsClient
+    from edge.odds.store import OddsStore
+    lock, rows = NL.board_at_lock(gid)
+    store = OddsStore()
+    scan = NL.scan_before(store, lock) if rows else None
+    if not scan:
+        return {}
+    dfs._draftables_raw = lambda g, rows=rows: rows
+    pool, _ = R.build_pool(ScrapedOddsClient(store, "dfs_ncaaf", scan_id=scan[0],
+                                             main_line_only=False), dfs.fetch_draftables(gid))
+    out = {norm(p["name"]): {"rush_td_pts": (p.get("components") or {}).get("rush TD", 0.0),
+                             "proj": p["proj"]} for p in pool}
+    REPLAY_DIR.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(out))
+    return out
+
+
+def season_rates(rows: list[dict]):
+    """(slate week per gid, rate(name, week) -> (rush TDs per team game, G) or None).
+
+    The slate's cfbfastR week is READ, not assumed (STATUS §10 trap 1): the week
+    whose box-score DK points best match the export's FPTS for the graded
+    players. The rate is production's own edge.ncaaf.qb_rush_td_rates on the
+    weeks before it, so lab and build cannot drift."""
+    from edge import ncaaf
+    plays = ncaaf.fetch_season(2026)
+    box = ncaaf.boxscores(plays)
+    week_of = {r["game_id"]: int(r["week"]) for r in plays}
+    by_name: dict = collections.defaultdict(list)
+    for v in box.values():
+        by_name[norm(v["player"])].append((week_of[v["game_id"]], v))
+    slate_week = {}
+    for gid in sorted({r["gid"] for r in rows}):
+        part = [r for r in rows if r["gid"] == gid]
+        best = None
+        for w in sorted(set(week_of.values())):
+            errs = [abs(v["dk"] - r["actual"]) for r in part
+                    for wk, v in by_name.get(norm(r["player"]), []) if wk == w]
+            if len(errs) >= 5:
+                mae = sum(errs) / len(errs)
+                if best is None or mae < best[1]:
+                    best = (w, mae, len(errs))
+        # A slate after the file's last week fits no week (11/5: best MAE 8.3
+        # on week 9); it is the week after the last one, not the closest one.
+        if best and best[1] <= 3.0:
+            slate_week[gid] = best
+        else:
+            slate_week[gid] = (max(week_of.values()) + 1, float("nan"), 0)
+    tables: dict = {}
+
+    def rate(name: str, week: int):
+        if week not in tables:
+            tables[week] = ncaaf.qb_rush_td_rates(plays, before_week=week)
+        got = tables[week].get(norm(name))
+        return (got["rate"], got["team_games"]) if got else None
+    return slate_week, rate
+
+
+def qb_rush_td_pred(rows: list[dict], cutoff: str, k: float | None = None):
+    """pred = proj - imputed rush-TD points + 6 x shrunk season rush TDs per team
+    game, QBs with >= QB_RUSH_TD_MIN_G team games only. Shrinkage toward the
+    imputed rate: td = (TDs + k imp) / (G + k); k picked on TRAIN by MAE."""
+    slate_week, rate = season_rates(rows)
+    print("slate week (cfbfastR, MAE vs DK FPTS, n):",
+          ", ".join(f"{g} w{w} {m:.2f}/{n}" for g, (w, m, n) in sorted(slate_week.items())))
+    comp = {gid: replay_components(gid) for gid in sorted({r["gid"] for r in rows})}
+    feat = {}
+    for r in rows:
+        if r["pos"] != "QB" or r["gid"] not in slate_week:
+            continue
+        c = comp[r["gid"]].get(norm(r["player"]))
+        got = rate(r["player"], slate_week[r["gid"]][0])
+        if c is None or got is None or got[1] < QB_RUSH_TD_MIN_G:
+            continue
+        feat[id(r)] = (c["rush_td_pts"], got[0], got[1])
+    def make(kk):
+        def pred(r):
+            f = feat.get(id(r))
+            if f is None:
+                return r["proj"]
+            imp_pts, td_pg, g = f
+            td = (td_pg * g + kk * imp_pts / 6.0) / (g + kk)
+            return r["proj"] - imp_pts + 6.0 * td
+        return pred
+    train = [r for r in rows if r["date"] < cutoff]
+    n_tr = sum(1 for r in train if id(r) in feat)
+    n_te = sum(1 for r in rows if r["date"] >= cutoff and id(r) in feat)
+    if k is None:
+        scores = {kk: stats([(make(kk)(r), r["actual"]) for r in train])["mae"]
+                  for kk in QB_RUSH_TD_K_GRID}
+        k = min(scores, key=scores.get)
+        print("train MAE by k:", ", ".join(f"{kk}: {m:.4f}" for kk, m in scores.items()),
+              f"-> k={k}")
+    print(f"QBs re-rated: train {n_tr} / {sum(r['pos'] == 'QB' for r in train)}, "
+          f"test {n_te} / {sum(r['pos'] == 'QB' and r['date'] >= cutoff for r in rows)}")
+    return make(k)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -180,13 +302,30 @@ def main() -> int:
     rp.add_argument("--stretch", action="store_true",
                     help="cycle 1 candidate: stretch QB/RB around the train "
                          "position mean by the slate-demeaned train OLS slope")
+    rp.add_argument("--qb-rush-td", nargs="?", const=-1.0, type=float, default=None,
+                    help="cycle 3 candidate: QB rush TDs from his season rate "
+                         "(optional shrinkage k; omitted = chosen on train)")
+    rp.add_argument("--dedup", action="store_true",
+                    help="drop a player-date already graded on an earlier draft group "
+                         "of the same day (one realisation counted once)")
     dp = sub.add_parser("dump")
     dp.add_argument("out")
     a = ap.parse_args()
     rows, cover = joined()
     if a.cmd == "report":
-        report(rows, cover, a.cutoff,
-               stretch_pred(rows, a.cutoff) if a.stretch else None)
+        if a.dedup:
+            seen, keep = set(), []
+            for r in sorted(rows, key=lambda r: (r["date"], -r["gid"])):
+                if (r["date"], norm(r["player"])) not in seen:
+                    seen.add((r["date"], norm(r["player"])))
+                    keep.append(r)
+            rows = keep
+        pred = None
+        if a.stretch:
+            pred = stretch_pred(rows, a.cutoff)
+        elif a.qb_rush_td is not None:
+            pred = qb_rush_td_pred(rows, a.cutoff, None if a.qb_rush_td < 0 else a.qb_rush_td)
+        report(rows, cover, a.cutoff, pred)
     else:
         with open(a.out, "w", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=list(rows[0]))

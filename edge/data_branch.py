@@ -67,6 +67,7 @@ FEEDS: tuple[str, ...] = (
     "data/overlay_payouts_live.json",     # harness/overlay.py (the page prices from it)
     "data/ncaaf_availability",            # scripts/ncaaf_availability_capture.py (history, not rebuildable)
     "data/ncaaf_depth",                   # scripts/ncaaf_depth_capture.py (history, not rebuildable)
+    "data/ncaaf_qb_rush_td.json",         # scripts/ncaaf_qb_rates_publish.py (the NCAAF build reads it)
 )
 
 

@@ -434,3 +434,59 @@ def test_an_alias_never_takes_a_player_the_exact_join_already_has():
                                ["Bam McReynolds (UAB)", "Braylon McReynolds (UAB)"])
     names, alias = _aliases(sal, ev, sp)
     assert "Bam McReynolds" in names and alias == []
+
+
+# --- critique cycle 3: a QB's rushing touchdowns from his season ------------
+def _play(game, week, team, rusher=None, yds=0.0, to_goal=50, passer=None):
+    NA = "NA"
+    return {"game_id": game, "week": str(week), "team": team, "opponent": "OPP",
+            "reception_player": NA, "rush_player": rusher or NA,
+            "completion_player": NA, "incompletion_player": passer or NA,
+            "interception_thrown_player": NA, "target_player": NA,
+            "rush_yds": str(yds), "reception_yds": "NA", "completion_yds": "NA",
+            "yards_to_goal": str(to_goal)}
+
+
+def test_qb_rush_td_rate_is_per_team_game_and_cut_by_week():
+    plays = [_play("g1", 1, "WVU", "Michael Hawkins Jr.", 5, to_goal=3),   # TD
+             _play("g1", 1, "WVU", "Michael Hawkins Jr.", 2, to_goal=1),   # TD
+             _play("g2", 2, "WVU", passer="Backup Qb"),                    # he sat
+             _play("g3", 3, "WVU", "Michael Hawkins Jr.", 9, to_goal=8)]   # TD, week 3
+    rates = ncaaf.qb_rush_td_rates(plays)
+    assert rates["michaelhawkins"]["team_games"] == 3          # the game he sat counts
+    assert rates["michaelhawkins"]["rate"] == pytest.approx(3 / 3)
+    before3 = ncaaf.qb_rush_td_rates(plays, before_week=3)
+    assert before3["michaelhawkins"]["rate"] == pytest.approx(2 / 2)
+
+
+def test_a_name_two_players_share_gets_no_rate():
+    plays = [_play("g1", 1, "MSU", "Fredrick Moore", 3, to_goal=2),
+             _play("g2", 1, "ALA", "Fredrick Moore.", 3, to_goal=2)]   # same key, other spelling
+    assert "fredrickmoore" not in ncaaf.qb_rush_td_rates(plays)
+
+
+def _qb_ladders():
+    def price(p):
+        return 1.0 / p
+    return {"player_pass_yds": [(150, price(0.8)), (200, price(0.6)), (250, price(0.35)),
+                                (300, price(0.15))],
+            "player_rush_yds": [(15, price(0.7)), (30, price(0.45)), (45, price(0.25)),
+                                (60, price(0.1))]}
+
+
+def test_season_rate_replaces_yards_over_110_for_a_qb():
+    from edge import dfs_run_ncaaf as R
+    sport = dfs_sport.get("americanfootball_ncaaf")
+    base = R.project_player(_qb_ladders(), sport, "QB")
+    yds = base["means"]["player_rush_yds"]
+    assert base["components"]["rush TD"] == pytest.approx(6 * yds / 110.0, abs=0.06)
+    season = R.project_player(_qb_ladders(), sport, "QB", rush_td_mean=2.0)
+    assert season["components"]["rush TD"] == pytest.approx(12.0, abs=0.06)
+    assert season["proj"] - base["proj"] == pytest.approx(
+        season["components"]["rush TD"] - base["components"]["rush TD"], abs=0.11)
+
+
+def test_missing_rate_table_is_said_not_hidden(tmp_path):
+    from edge import dfs_run_ncaaf as R
+    rates, source = R.load_qb_rush_rates(tmp_path / "nope.json")
+    assert rates == {} and "yards/110" in source
