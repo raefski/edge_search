@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-11-07T15:29:17+00:00",
+"generated_at": "2026-11-07T16:00:52+00:00",
 "goalies": {
 "2026-11-07": {
 "CAR": {
 "goalie": "Pyotr Kochetkov",
-"status": null
+"status": "Likely"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -84,7 +84,7 @@
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
-"status": null
+"status": "Likely"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -2210,6 +2210,40 @@
 }
 },
 "CAR": {
+"Alexander Nikishin": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 139,
+"toiSeconds": 32
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 71,
+"toiSeconds": 28
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": "PP2"
+},
 "Andrei Svechnikov": {
 "gtd": false,
 "injury": null,
@@ -2483,40 +2517,6 @@
 "pk": "PK2",
 "pos": "rw",
 "pp": null
-},
-"Juuso Valimaki": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 11,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 136,
-"toiSeconds": 33
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 72,
-"toiSeconds": 53
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": "PP2"
 },
 "K'Andre Miller": {
 "gtd": false,
