@@ -1,9 +1,9 @@
 {
-"generated_at": "2026-11-08T20:00:11+00:00",
+"generated_at": "2026-11-08T20:28:42+00:00",
 "goalies": {
 "2026-11-08": {
 "ANA": {
-"goalie": "Ville Husso",
+"goalie": "Laurent Brossoit",
 "status": null
 },
 "BOS": {
@@ -349,7 +349,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -759,7 +759,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10479,7 +10479,7 @@
 "toiMinutes": 76,
 "toiSeconds": 49
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -10583,7 +10583,7 @@
 "toiMinutes": 74,
 "toiSeconds": 40
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -10957,7 +10957,7 @@
 "toiMinutes": 71,
 "toiSeconds": 45
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
