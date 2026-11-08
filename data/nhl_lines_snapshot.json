@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-08T16:00:45+00:00",
+"generated_at": "2026-11-08T16:00:01+00:00",
 "goalies": {
 "2026-11-08": {
 "ANA": {
@@ -3556,6 +3556,40 @@
 "pos": "g",
 "pp": null
 },
+"Anton Lundell": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 24,
+"toiMinutes": 172,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 3,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 15,
+"toiMinutes": 85,
+"toiSeconds": 20
+},
+"line": "F2",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Bokondji Imama": {
 "gtd": false,
 "injury": null,
@@ -4067,40 +4101,6 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP1"
-},
-"Sandis Vilmanis": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 6,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 15,
-"toiMinutes": 125,
-"toiSeconds": 33
-},
-"last5": {
-"assists": 3,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 5,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 57,
-"toiSeconds": 54
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Seth Jones": {
 "gtd": false,
