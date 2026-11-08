@@ -44,28 +44,7 @@
 }
 },
 "MLB": {},
-"MMA": {
-"156055": {
-"ContestStartTimeSuffix": null,
-"DraftGroupId": 156055,
-"DraftGroupTag": "Featured",
-"GameCount": 14,
-"GameTypeId": 168,
-"StartDate": "2026-11-07T22:00:00.0000000Z",
-"StartDateEst": "2026-11-07T17:00:00.0000000",
-"last_start": "2026-11-08T02:40:00.0000000Z"
-},
-"156460": {
-"ContestStartTimeSuffix": " (Late)",
-"DraftGroupId": 156460,
-"DraftGroupTag": "Featured",
-"GameCount": 8,
-"GameTypeId": 169,
-"StartDate": "2026-11-08T00:00:00.0000000Z",
-"StartDateEst": "2026-11-07T19:00:00.0000000",
-"last_start": "2026-11-08T02:40:00.0000000Z"
-}
-},
+"MMA": {},
 "NAS": {
 "155914": {
 "ContestStartTimeSuffix": " (Cup)",
@@ -205,9 +184,9 @@
 "DraftGroupTag": "",
 "GameCount": 1,
 "GameTypeId": 112,
-"StartDate": "2026-11-08T04:00:00.0000000Z",
-"StartDateEst": "2026-11-07T23:00:00.0000000",
-"last_start": "2026-11-08T04:00:00.0000000Z"
+"StartDate": "2026-11-08T04:17:00.0000000Z",
+"StartDateEst": "2026-11-07T23:17:00.0000000",
+"last_start": "2026-11-08T04:17:00.0000000Z"
 }
 },
 "NFL": {
