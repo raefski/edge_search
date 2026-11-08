@@ -28,6 +28,10 @@ hedge left 2025-26 untouched and helped only the live state. Requiring every OTH
 point estimate <= 0 keeps a pure-noise change from passing on one lucky state; the
 7-day forward re-gate (critique_loop) is the second check. A candidate that edited a lab's gate()
 function is never auto-passed: the numbers are shown and the verdict is "review".
+A model change that also edits a script producing the gate rows (judge_files) and does
+not pass goes to Adam as "review", not "fail" (Adam, 2026-11-08): a fix to how the lab
+scores (11/8 NCAAB: the lab applied LAST_GAME twice from 11/7) is otherwise refused by
+the very lab it corrects. A pass on such a change still takes the 7-day re-gate.
 """
 from __future__ import annotations
 
@@ -104,6 +108,14 @@ def _gate_source(path: Path) -> str | None:
         if isinstance(node, ast.FunctionDef) and node.name == "gate":
             return ast.dump(node)
     return None
+
+
+def judge_files(sport: str) -> set[str]:
+    """Every script that produces the sport's gate rows (its cmds, prepare and judge file)."""
+    spec = SPECS.get(sport) or {}
+    out = {c[0] for c in spec.get("cmd", [])}
+    out |= {spec["judge"]} if spec.get("judge") else set()
+    return out | ({spec["prepare"][0]} if spec.get("prepare") else set())
 
 
 def judge_changed(sport: str, base: Path, cand: Path) -> bool:

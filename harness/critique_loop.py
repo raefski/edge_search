@@ -345,6 +345,13 @@ def judge(sport: str, cand: Path, paths: list[str]) -> tuple[str, dict]:
         # not .get(kind, gate["verdict"]): the default is evaluated first, and a record /
         # protected candidate has no gate run (11/8: the NHL record cycle crashed the night)
         verdict = {"protected": "review", "record": "record"}.get(kind) or gate["verdict"]
+        lab = sorted(set(paths) & critique_gate.judge_files(sport))
+        if kind == "model" and verdict != "pass" and lab:
+            # the candidate changed how its own lab scores and main's lab disagrees with it:
+            # main cannot be the judge of a fix to itself -- Adam decides (11/8)
+            verdict = "review"
+            gate["reasons"].append(f"edits the lab that scores it ({', '.join(lab)}); gate said "
+                                   f"{gate['verdict']} on main's scoring: Adam decides")
         if kind == "protected":
             gate["reasons"].append("touches the loop's own judge (skill / critic / hooks / gate): Adam decides")
     finally:

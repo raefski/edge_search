@@ -160,6 +160,21 @@ def test_a_candidate_that_breaks_its_own_gate_rows_fails(tmp_path, monkeypatch):
         pass
 
 
+def test_a_model_change_that_also_fixes_its_lab_goes_to_adam_not_fail(tmp_path, monkeypatch):
+    """11/8 NCAAB: a lab fix + model change failed on the lab it corrected."""
+    monkeypatch.setattr(C, "worktree", lambda *a, **k: tmp_path)
+    monkeypatch.setattr(C, "drop_worktree", lambda *a, **k: None)
+    monkeypatch.setattr(C, "link_data", lambda *a, **k: None)
+    monkeypatch.setattr(C, "classify", lambda *a, **k: "model")
+    monkeypatch.setattr(C, "verify", lambda wt, paths: (True, "ok"))
+    for gv, want in (("fail", "review"), ("unchanged", "review"), ("pass", "pass")):
+        monkeypatch.setattr(G, "run", lambda *a, _v=gv, **k: {"verdict": _v, "table": "", "reasons": []})
+        assert C.judge("ncaab", tmp_path, ["edge/dfs_run_ncaab.py", "scripts/ncaab_lab.py"])[0] == want
+    monkeypatch.setattr(G, "run", lambda *a, **k: {"verdict": "fail", "table": "", "reasons": []})
+    assert C.judge("ncaab", tmp_path, ["edge/dfs_run_ncaab.py"])[0] == "fail"
+    assert "scripts/nhl_skater_lab.py" in G.judge_files("nhl") and G.judge_files("mma") == set()
+
+
 def test_rotation_skips_paused_pending_out_of_season_and_done():
     now = datetime(2026, 11, 8, tzinfo=timezone.utc)
     st = {"next": 0, "sports": {}}
