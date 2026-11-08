@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-08T21:43:43+00:00",
+"generated_at": "2026-11-08T21:57:05+00:00",
 "goalies": {
 "2026-11-08": {
 "ANA": {
@@ -40,7 +40,7 @@
 },
 "TOR": {
 "goalie": "Anthony Stolarz",
-"status": "Likely"
+"status": "Confirmed"
 },
 "VGK": {
 "goalie": "Adin Hill",
@@ -4206,40 +4206,6 @@
 "pos": "lw",
 "pp": null
 },
-"Anthony Mantha": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 4,
-"points": 8,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 135,
-"toiSeconds": 56
-},
-"last5": {
-"assists": 3,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 5,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 68,
-"toiSeconds": 15
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Arseny Gritsyuk": {
 "gtd": false,
 "injury": null,
@@ -4273,6 +4239,40 @@
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
+},
+"Brenden Dillon": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 13,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 156,
+"toiSeconds": 33
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 79,
+"toiSeconds": 26
+},
+"line": "D4",
+"pk": null,
+"pos": "ld",
+"pp": null
 },
 "Brett Pesce": {
 "gtd": false,
@@ -4340,7 +4340,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Connor Brown": {
 "gtd": false,
