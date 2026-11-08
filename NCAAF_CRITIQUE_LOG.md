@@ -621,3 +621,137 @@ WR n=197 MAE 5.743.
   5+ slates.
 - Short weekday slates' GPP exports, for the ownership lead.
 - A CFBD key (Tier 1, $1/month) if weather or ratings history is wanted.
+
+
+## Cycle 6 — 2026-11-08 (unattended): RB receiving from the back's own season — committed for the gate
+
+**Split:** same as cycles 3–5. Train = before 2026-10-17 (5 slates, 264
+players). Test = 10/17 on, now **7 slates / 474 players**. 155990 (11/7 Main,
+123 players) is newly graded. 155010 and 155122 are the same day.
+
+**Baseline** (`ncaaf_lab.py report --reproject --no-rb-rec --cutoff 2026-10-17`,
+= main): train MAE 7.65 / RMSE 10.19; test MAE 6.03 / RMSE 7.97 / bias +0.39 /
+rho 0.54. By position: QB 6.51 (n=85), RB 6.51 (n=123), WR 5.65 (n=266).
+
+**Hole (dfs-model-critic):** 100 of 123 test backs and 58 of 63 train backs
+have a rush ladder and no receiving ladder. For them, receptions and receiving
+yards come from rush yards by one league line (`NCAAF_RB_REC_*`, R² 0.29 / 0.22).
+For laddered backs that line runs ~40% low, and the bias is stable across
+periods:
+
+| period | imputed rec pts | actual rec pts | ratio | n backs | slates |
+|---|---|---|---|---|---|
+| train | 2.29 | 3.79 | 1.66× | 58 | 5 |
+| test | 2.15 | 3.67 | 1.71× | 87 | 6 |
+
+The residual tracks the back's own season receiving, slate-demeaned, with the
+same sign in both periods:
+
+| season feature | train r | test r |
+|---|---|---|
+| receiving yards per game | +0.12 | +0.30 |
+| targets per game | +0.11 | +0.22 |
+| red-zone targets per game | +0.10 | +0.34 |
+
+A level fix (+1.51, or ×1.66) improves test RMSE but worsens test MAE
+(6.03 → 6.07–6.08), as cycle 5 found. The role is the missing information, not
+the level.
+
+**Fix:** for an RB with no receiving ladder and ≥ 2 team games before the
+slate's cfbfastR week:
+
+    rec  = (G·rec/G  + K·imputed rec)  / (G+K)
+    recy = (G·recy/G + K·imputed recy) / (G+K)
+
+Receiving TDs follow the yards, as before. **K = 4**, from the train grid.
+Production: `dfs_run_ncaaf.rb_receiving_means` / `RB_REC_SHRINK_GAMES`. The
+season rows are `ncaaf.qb_rush_td_rates` (new `rec_rate` / `rec_yds_rate`), so
+the lab and the build share one table and one week cut.
+
+K grid, re-run by me (MAE / RMSE):
+
+| K | train MAE | train RMSE | test MAE | test RMSE | test RB MAE |
+|---|---|---|---|---|---|
+| 0 | 7.682 | 10.214 | 5.962 | 7.839 | 6.260 |
+| 1 | 7.663 | 10.208 | 5.969 | 7.852 | 6.286 |
+| 2 | 7.652 | 10.203 | 5.975 | 7.864 | 6.310 |
+| **4** | **7.646** | 10.200 | 5.984 | 7.881 | 6.346 |
+| 8 | 7.647 | 10.197 | 5.996 | 7.905 | 6.389 |
+| 16 | 7.650 | 10.195 | 6.005 | 7.928 | 6.426 |
+| ∞ (main) | 7.653 | 10.191 | 6.027 | 7.974 | 6.511 |
+
+Judgment calls:
+- K = 4 is the train-MAE minimum, but K = 8 is a near-tie (7.6465).
+- Train RMSE prefers no blend at all; the train evidence is weak.
+- Test prefers K = 0. It was not used.
+- The critic picked RB receiving after screening ~12 candidates on both
+  periods: a test peek in choosing the target, flagged.
+
+**Held out, before → after** (production through the lab; parity with the
+critic's prototype is exact: 6.027 → 5.986):
+
+| slice | n | MAE | RMSE | bias | rho |
+|---|---|---|---|---|---|
+| all | 474 | 6.03 → **5.98** | 7.97 → 7.88 | +0.39 → +0.37 | 0.54 → 0.55 |
+| RB | 123 | 6.51 → **6.35** | 8.76 → 8.43 | +0.63 → +0.54 | 0.56 → 0.60 |
+| QB / WR | 85 / 266 | unchanged | | | |
+| 155010 10/17 | 127 | 5.23 → 5.16 | 6.80 → 6.71 | | |
+| 155122 10/17 | 59 | 6.23 → 6.14 | | | |
+| 155277 10/24 | 81 | 6.67 → 6.71 | | | |
+| 155281 10/22 | 28 | 4.72 → 4.63 | | | |
+| 155990 11/7 (new) | 123 | 6.31 → 6.24 | 8.28 → 8.08 | | |
+| 156213 11/5 | 20 | 7.51 → 7.54 | | | |
+| 156216 11/6 | 36 | 6.28 → 6.31 | | | |
+
+- Better on 4 of 7 test slates. Each of the 3 losses is ≤ 0.04.
+- Counting 10/17 once (n=415): 5.998 → 5.963.
+- Train MAE 7.653 → 7.646. Better on the two large slates (9/26, 10/3), worse
+  on the three small weekday ones.
+
+**Gate preview** (`ncaaf_lab.py gate`: cutoff 10/11, 545 rows / 10 slates,
+absolute error): −0.027 per row. The 90% slate-bootstrap interval is
+[−0.054, +0.015], so this is **not beyond noise**, and I expect the gate to
+fail it. The point estimate improves on both test metrics, so it is committed
+and the gate decides. The 10/14–10/16 weekday slates, which are in the gate's
+primary set, are each slightly worse (+0.06 to +0.10).
+
+**Decision:** committed on the branch:
+- production change, with provenance comments;
+- the lab's `--reproject` now passes the season row;
+- new flags `--no-rb-rec` and `--rb-rec-k`;
+- tests;
+- STATUS §13;
+- the page and CLI show how many backs used their season.
+
+Mirrors were NOT regenerated: unattended mode does not run mirror jobs. Run
+`python3 -m harness run mirror-ncaaf` if this merges. The published rate
+table carries no `rec_rate` until `ncaaf-qb-rates.timer` reruns. Until then
+production keeps the old imputation (visible: "RB receiving from their
+season: 0").
+
+**Runner-ups (critic):**
+1. **The gate scores MAE alone.** A mean correction (the level fix: RMSE
+   better, MAE worse) can never pass. DFS lineups sum means, so the gate
+   should also report RMSE. A person decides: the gate is a protected file.
+2. **Cycle 4's QB pass stretch, rechecked with 155990.**
+   - Refit on train: k = 0.60.
+   - QB test MAE 6.506 → 6.444, but 155990 gets worse (7.42 → 7.71), and so
+     does 155010.
+   - Still one slate's gain (155277). Not shipped.
+3. **The lab's `truth()` keys on the normalised name only.**
+   - 155990 has two Austin Simmons, a QB (17.98) and a WR (0.0); whichever is
+     read last wins.
+   - Right today by luck (1 row). Key it on name + position or DK id. It is
+     the judge's file, so this goes to Adam.
+
+Null (|r| ≤ 0.2 or sign flips): implied team total as a TD multiplier; team
+WR yards vs QB pass yards; season rush yards for QBs with no rush ladder; WR
+receptions per yard from the player's season (−0.008); unpriced-head share;
+rung calibration after overround removal.
+
+Unattended gate (20261108-1255): **fail**
+
+| split | state | n | clusters | main MAE | candidate MAE | loss diff [90%] | verdict |
+|---|---|---|---|---|---|---|---|
+| primary | all | 545 | 10 | 6.2173 | 6.1902 | -0.0272 [-0.0544, +0.0155] | noise |
+- no primary state better beyond noise
