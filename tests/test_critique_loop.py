@@ -141,6 +141,25 @@ def test_judge_a_record_or_protected_candidate_runs_no_gate(tmp_path, monkeypatc
         assert C.judge("nhl", tmp_path, ["NHL_CRITIQUE_LOG.md"])[0] == want
 
 
+def test_a_candidate_that_breaks_its_own_gate_rows_fails(tmp_path, monkeypatch):
+    cand = tmp_path / "cand"
+    monkeypatch.setattr(C, "worktree", lambda *a, **k: tmp_path / "main")
+    monkeypatch.setattr(C, "drop_worktree", lambda *a, **k: None)
+    monkeypatch.setattr(C, "link_data", lambda *a, **k: None)
+    monkeypatch.setattr(C, "classify", lambda *a, **k: "model")
+    monkeypatch.setattr(G, "run", lambda *a, **k: (_ for _ in ()).throw(
+        RuntimeError(f"nhl gate rows failed in {cand} (scripts/x.py, rc 1): TypeError")))
+    v, gate = C.judge("nhl", cand, ["edge/nhl_sim.py"])
+    assert v == "fail" and "TypeError" in gate["reasons"][0]
+    monkeypatch.setattr(G, "run", lambda *a, **k: (_ for _ in ()).throw(
+        RuntimeError(f"nhl gate rows failed in {tmp_path / 'main'} (scripts/x.py, rc 1)")))
+    try:
+        C.judge("nhl", cand, ["edge/nhl_sim.py"])
+        raise AssertionError("main's failure must raise")
+    except RuntimeError:
+        pass
+
+
 def test_rotation_skips_paused_pending_out_of_season_and_done():
     now = datetime(2026, 11, 8, tzinfo=timezone.utc)
     st = {"next": 0, "sports": {}}

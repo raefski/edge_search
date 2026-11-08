@@ -333,7 +333,15 @@ def judge(sport: str, cand: Path, paths: list[str]) -> tuple[str, dict]:
             gate["reasons"].append(f"no gate for {sport} yet (a lab gate() + critique_gate.SPECS entry): "
                                    "the agent's own numbers are in the log")
         elif kind == "model":
-            gate = critique_gate.run(sport, cand, base)
+            try:
+                gate = critique_gate.run(sport, cand, base)
+            except RuntimeError as e:
+                # the candidate's own code broke its gate rows (11/8: NCAAF cycle 6 added a
+                # project_player argument the lab's wrapper did not take) -> a fail with the
+                # error; main's rows failing is the loop's problem and still raises
+                if str(cand) not in str(e):
+                    raise
+                gate = {"verdict": "fail", "table": "", "reasons": [f"gate rows failed on the candidate: {e}"[-1200:]]}
         # not .get(kind, gate["verdict"]): the default is evaluated first, and a record /
         # protected candidate has no gate run (11/8: the NHL record cycle crashed the night)
         verdict = {"protected": "review", "record": "record"}.get(kind) or gate["verdict"]
