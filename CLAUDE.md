@@ -39,7 +39,7 @@ failures) is never written by hand: `harness status` reads it.
 | evaluate | `scripts/*_calibration.py`, `scripts/contest_db.py` → `data/contests.db`, `scripts/gpp_meta.py`, `scripts/model_accuracy.py`, `scripts/buzz_trust.py`, backtests |
 | publish | `edge/data_branch.py` (every timer feed → the `data` branch), `scripts/odds_collect.py --push`, `draftables_publish.py`, `nhl_lines_publish.py`, `mirror_app.py` (generated standalone repos — never edit a mirror) |
 | monitor | `harness/monitor.py` (goalie changes, line moves → ntfy), `scripts/dfs_overlay.py`, `harness/status.py` |
-| harness | `harness/` (catalog, runner + `data/harness/runs.jsonl`, verify, status, monitor, late swap, navigator), `.claude/hooks/` |
+| harness | `harness/` (catalog, runner + `data/harness/runs.jsonl`, verify, status, monitor, late swap, navigator, `critique_loop` + `critique_gate`: the nightly unattended `/dfs-critique` cycle, gated vs main held out — `harness critique-loop --status`), `.claude/hooks/` |
 
 Sports are separate models with separate calibration loops (MLB, NFL, NCAAF,
 NHL, NASCAR, MMA, NBA, NCAAB — college basketball unverified live until ~11/3: NBA_STATUS.md). Learnings carry over; parameters do not.

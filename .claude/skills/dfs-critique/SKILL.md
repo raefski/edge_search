@@ -28,6 +28,26 @@ no timestamped pre-lock state log to measure this against, building that log + a
 replay script (`scripts/availability_lab.py <sport> report --cutoff`) is the cycle's
 work. Log under the sport's log as "Cycle N (availability)".
 
+**Unattended mode** (last argument `unattended`; the nightly `edge-critique.timer`
+runs `harness critique-loop`, which starts `claude -p "/dfs-critique <sport> unattended"`
+in a fresh worktree on a `critique/<sport>-<stamp>` branch). Nobody is watching, so:
+- Do the cycle exactly as below, but never ask a question: where you would ask, take
+  the conservative option and say so in the log.
+- Commit to the CURRENT branch only: `git add <your paths>` + commit. Never pull,
+  rebase, push, switch branches, merge, run publish/ingest jobs, mirror pushes or
+  `import-contests`, or write the shared stores (`data/odds.db`, `data/contests.db`
+  are symlinks to main's).
+- "Ship" means: commit the production change + tests + doc + log entry on the branch.
+  Your verdict is a claim: `harness/critique_gate.py` re-measures main vs your branch
+  on the fixed lab rows (`gate` command of the sport's lab) and only that decides; a
+  passing branch is re-gated after 7 forward days before it merges. Don't edit a lab's
+  `gate()` function, the skill, the critic prompts, `.claude/` or `harness/critique_*`:
+  any of those sends the branch to Adam for review instead of merging.
+- Not shipped: commit the log entry anyway (it is the next critic's memory).
+- Last step: write `critique_result.json` at the worktree root (do NOT commit it):
+  `{"sport", "cycle", "hole": one line, "fix": one line, "shipped": bool, "summary":
+  3-5 lines with the before/after numbers}` -- it becomes the push to Adam's phone.
+
 ## 1. The sport's target metric and where things are
 
 Each sport is judged on the quantity that drives its DK points and that its model

@@ -1,0 +1,10 @@
+[Unit]
+Description=Nightly 02:30 local: one unattended DFS critique cycle (after the last West-coast tip, hours before any lock)
+
+[Timer]
+OnCalendar=*-*-* 02:30:00
+# not Persistent: a cycle caught up at boot could run into the afternoon's locks
+Persistent=false
+
+[Install]
+WantedBy=timers.target

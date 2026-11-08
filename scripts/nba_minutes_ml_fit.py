@@ -96,10 +96,45 @@ def score(P, model=None):
     return f"{np.sqrt((e ** 2).mean()):.4f} / {np.abs(e).mean():.3f} / {e.mean():+.2f} (n {len(e):,})"
 
 
+def gate(out: str) -> int:
+    """Rows for the unattended critique loop's gate (harness/critique_gate.py): the model
+    exactly as it ships -- production project() with the WRITTEN trees, not a refit -- so a
+    candidate that changed the hand model without refitting the trees is judged on what it
+    would actually run. One JSON line per held-out active player-game and state: projected
+    and actual minutes (the gate squares the error), clustered by night. 2025-26 is the primary held-out season; 2026-27
+    (live, still growing) is the guard. Same row set as collect(): the players the
+    correction scored, with a box score."""
+    import json
+    D = L.load(verbose=False)
+    rows, n = D["rows"], 0
+    with open(out, "w") as fh:
+        for g in D["games"]:
+            split = {"2025-26": "primary", "2026-27": "guard"}.get(g["season"])
+            if not split:
+                continue
+            for mode in ("confirmed", "inactives"):
+                ML.CAPTURE = []
+                live = NM.project(team_input(D, g, mode))
+                cap, ML.CAPTURE = ML.CAPTURE, None
+                F = next((f for m, f in reversed(cap) if m == mode), None) or {}
+                for i in F:
+                    if rows[i]["actual"] is None:
+                        continue
+                    fh.write(json.dumps({"key": f"{mode}|{g['gid']}|{rows[i]['pid']}", "cluster": g["date"],
+                                         "split": split, "state": mode, "pred": live[i]["minutes"],
+                                         "actual": float(rows[i]["actual"])}) + "\n")
+                    n += 1
+    print(f"{n:,} gate rows -> {out}; trees: {ML.LAST_SOURCE}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
+    ap.add_argument("--gate", metavar="OUT", help="write the critique gate's rows (shipped trees) and stop")
     a = ap.parse_args()
+    if a.gate:
+        return gate(a.gate)
     from sklearn.ensemble import HistGradientBoostingRegressor as HGB
     ML.ENABLED = False
     D = L.load(verbose=False)

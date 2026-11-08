@@ -1,0 +1,173 @@
+"""The unattended critique loop's gate and bookkeeping (harness/critique_gate.py,
+harness/critique_loop.py). The gate is the only thing standing between an agent's
+claim and main, so its refusals are tested one by one."""
+from __future__ import annotations
+
+from datetime import datetime, timedelta, timezone
+
+import numpy as np
+
+from harness import critique_gate as G
+from harness import critique_loop as C
+
+
+def _rows(pred_shift=0.0, nights=8, per=40, split="primary", state="confirmed", seed=1, better=None):
+    rng = np.random.default_rng(seed)
+    out = []
+    for n in range(nights):
+        for i in range(per):
+            act = float(rng.uniform(0, 40))
+            noise = float(rng.normal(0, 5))
+            p = act + noise
+            if better is not None:
+                p = act + noise * better
+            out.append({"key": f"{split}|{state}|{n}|{i}", "cluster": f"2025-11-{n + 1:02d}", "split": split,
+                        "state": state, "pred": p + pred_shift, "actual": act})
+    return out
+
+
+def test_identical_candidate_is_unchanged_not_a_pass():
+    b = _rows()
+    r = G.compare(b, [dict(x) for x in b])
+    assert not r["ok"] and r["groups"][0]["verdict"] == "unchanged"
+
+
+def test_noise_is_not_a_pass():
+    # half the nights a little better, half a little worse: no clear winner
+    b = _rows()
+    c = [dict(x, pred=x["actual"] + (x["pred"] - x["actual"]) * (0.95 if int(x["cluster"][-2:]) % 2 else 1.05))
+         for x in b]
+    r = G.compare(b, c)
+    assert not r["ok"] and r["groups"][0]["verdict"] == "noise"
+
+
+def test_consistently_better_candidate_passes():
+    b = _rows()
+    c = _rows(better=0.8)          # same draws, every error shrunk 20%
+    r = G.compare(b, c)
+    assert r["ok"], r["reasons"]
+    assert r["groups"][0]["verdict"] == "better" and r["groups"][0]["hi"] < 0
+
+
+def test_worse_candidate_fails():
+    r = G.compare(_rows(), _rows(better=1.3))
+    assert not r["ok"] and r["groups"][0]["verdict"] == "worse"
+
+
+def test_changed_truth_or_dropped_rows_fail():
+    b, c = _rows(), _rows(better=0.8)
+    c[0] = {**c[0], "actual": c[0]["actual"] + 1}
+    assert any("truth" in x for x in G.compare(b, c)["reasons"])
+    c = _rows(better=0.8)[: int(len(b) * 0.9)]
+    assert any("scored" in x for x in G.compare(b, c)["reasons"])
+
+
+def test_too_few_clusters_is_not_enough_data():
+    b = _rows(nights=3)
+    r = G.compare(b, _rows(nights=3, better=0.5), min_clusters=5)
+    assert not r["ok"] and r["groups"][0]["verdict"] == "not enough data"
+
+
+def test_guard_period_worse_blocks_a_primary_win():
+    b = _rows() + _rows(split="guard", seed=2)
+    c = _rows(better=0.8) + _rows(split="guard", seed=2, better=1.3)
+    r = G.compare(b, c)
+    assert not r["ok"] and any(x.startswith("guard") for x in r["reasons"])
+    c = _rows(better=0.8) + _rows(split="guard", seed=2)
+    assert G.compare(b, c)["ok"]
+
+
+def test_a_change_aimed_at_one_state_passes_when_the_others_are_untouched():
+    # cycle 25: the Expected-five hedge moved only the live state
+    b = _rows() + _rows(state="inactives", seed=3)
+    c = _rows(better=0.8) + _rows(state="inactives", seed=3)
+    assert G.compare(b, c)["ok"]
+
+
+def test_another_state_worse_in_its_point_estimate_blocks_the_pass():
+    b = _rows() + _rows(state="inactives", seed=3)
+    c = _rows(better=0.8) + _rows(state="inactives", seed=3, better=1.0 + 1e-4)
+    r = G.compare(b, c)
+    assert not r["ok"] and any("inactives" in x for x in r["reasons"])
+
+
+def test_absolute_loss_and_table():
+    b, c = _rows(), _rows(better=0.8)
+    r = G.compare(b, c, loss="abs")
+    assert r["ok"]
+    assert "MAE" in G.table(r, "abs") and "RMSE" in G.table(r, "sq")
+
+
+def _checkout(tmp_path, name, gate_body, extra=None):
+    d = tmp_path / name
+    (d / "scripts").mkdir(parents=True)
+    (d / "scripts" / "nba_minutes_ml_fit.py").write_text(f"def gate(out):\n    {gate_body}\n\ndef other():\n    return {extra!r}\n")
+    return d
+
+
+def test_judge_change_is_detected_by_gate_function_only(tmp_path):
+    base = _checkout(tmp_path, "base", "return 0", extra=1)
+    same = _checkout(tmp_path, "same", "return 0", extra=2)        # other code changed: fine
+    edited = _checkout(tmp_path, "edited", "return 1")
+    assert not G.judge_changed("nba", base, same)
+    assert G.judge_changed("nba", base, edited)
+
+
+def test_classify_protects_the_loops_own_judge(tmp_path):
+    base = _checkout(tmp_path, "base", "return 0")
+    cand = _checkout(tmp_path, "cand", "return 0")
+    assert C.classify(["NBA_MINUTES_CRITIQUE_LOG.md", "scripts/nba_minutes_lab.py"], "nba", cand, base) == "record"
+    assert C.classify(["edge/nba_minutes.py", "NBA_MINUTES_CRITIQUE_LOG.md"], "nba", cand, base) == "model"
+    assert C.classify([".claude/skills/dfs-critique/SKILL.md"], "nba", cand, base) == "protected"
+    assert C.classify(["harness/critique_gate.py"], "nba", cand, base) == "protected"
+    edited = _checkout(tmp_path, "edited", "return 1")
+    assert C.classify(["scripts/nba_minutes_ml_fit.py"], "nba", edited, base) == "protected"
+
+
+def test_rotation_skips_paused_and_pending():
+    now = datetime(2026, 11, 8, tzinfo=timezone.utc)
+    st = {"next": 0, "sports": {}}
+    C._sport(st, "nba")["paused_until"] = (now + timedelta(days=3)).isoformat()
+    C._sport(st, "ncaab")["pending"] = {"branch": "x"}
+    assert C.pick(st, now) == "nhl"
+    assert C.pick(st, now) == "nhl"
+    C._sport(st, "nba")["paused_until"] = (now - timedelta(days=1)).isoformat()
+    assert C.pick(st, now) == "nba"
+
+
+def test_claude_binary_override(monkeypatch):
+    monkeypatch.setenv("EDGE_CLAUDE", "/opt/claude")
+    assert C.claude_bin() == "/opt/claude"
+
+
+def test_link_data_copies_small_and_lab_caches_links_big(tmp_path, monkeypatch):
+    root, wt = tmp_path / "root", tmp_path / "wt"
+    (root / "data" / "cache" / "nba_minutes_lab").mkdir(parents=True)
+    (root / "data" / "cache" / "nba_minutes_lab" / "k.json").write_text("x" * 50)
+    (root / "data" / "small.csv").write_text("a")
+    (root / "data" / "big.db").write_text("y" * 200)
+    wt.mkdir()
+    monkeypatch.setattr(C, "ROOT", root)
+    monkeypatch.setattr(C, "LINK_ABOVE", 100)
+    monkeypatch.setattr(C, "ALWAYS_COPY", ("data/cache/nba_minutes_lab/",))
+    monkeypatch.setattr(C, "git", lambda *a, **k: "data/cache/nba_minutes_lab/\ndata/small.csv\ndata/big.db")
+    C.link_data(wt)
+    assert (wt / "data" / "big.db").is_symlink()
+    assert not (wt / "data" / "small.csv").is_symlink() and (wt / "data" / "small.csv").read_text() == "a"
+    assert not (wt / "data" / "cache" / "nba_minutes_lab").is_symlink()
+    assert (wt / "data" / "cache" / "nba_minutes_lab" / "k.json").exists()
+
+
+def test_refresh_replaces_a_stale_copy_with_the_current_one(tmp_path, monkeypatch):
+    root, wt = tmp_path / "root", tmp_path / "wt"
+    (root / "data" / "nba_injury_reports").mkdir(parents=True)
+    (root / "data" / "nba_injury_reports" / "a.pdf").write_text("a")
+    wt.mkdir()
+    monkeypatch.setattr(C, "ROOT", root)
+    monkeypatch.setattr(C, "git", lambda *a, **k: "data/nba_injury_reports/")
+    C.link_data(wt)
+    (root / "data" / "nba_injury_reports" / "b.pdf").write_text("b")     # a report lands later
+    C.link_data(wt)
+    assert not (wt / "data" / "nba_injury_reports" / "b.pdf").exists()   # frozen copy
+    C.link_data(wt, refresh=True)
+    assert (wt / "data" / "nba_injury_reports" / "b.pdf").exists()

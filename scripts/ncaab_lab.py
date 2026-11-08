@@ -3,6 +3,7 @@
 
     python3 scripts/ncaab_lab.py report            # shipped constants + leave-one-slate-out refit
     python3 scripts/ncaab_lab.py rows out.json     # every player-slate row, for a critic's own tests
+    python3 scripts/ncaab_lab.py gate out.jsonl    # LOSO rows for the critique loop's gate
 
 What "the shipped board" is here. The logged pre-lock projection (data/dfs_proj_log_ncaab.csv,
 one row per player per draft group) as it ran, then LAST_GAME (with tonight's implied team
@@ -147,11 +148,31 @@ def dump(path: str) -> int:
     return 0
 
 
+def gate(path: str) -> int:
+    """Rows for the unattended critique loop's gate (harness/critique_gate.py): the LOSO
+    table's projections (the honest held-out baseline) and actual DK points per
+    player-slate (the gate scores absolute error), clustered by slate. Every graded slate is primary: the slate is the unit."""
+    data = {g: load(g) for g in slates()}
+    n = 0
+    with open(path, "w") as fh:
+        for g, rows in data.items():
+            train = [r for h, rs in data.items() if h != g for r in rs]
+            for p, r in zip(shipped(rows, fit_last_game(train)), rows):
+                fh.write(json.dumps({"key": f"{g}|{r['team']}|{r['player']}", "cluster": str(g),
+                                     "split": "primary", "state": "all", "pred": float(p),
+                                     "actual": float(r["act"])}) + "\n")
+                n += 1
+    print(f"{n:,} gate rows ({len(data)} slates) -> {path}")
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if not argv or argv[0] == "report":
         return report()
     if argv[0] == "rows" and len(argv) == 2:
         return dump(argv[1])
+    if argv[0] == "gate" and len(argv) == 2:
+        return gate(argv[1])
     print(__doc__)
     return 2
 

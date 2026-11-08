@@ -1,0 +1,27 @@
+# The DFS critique loop, unattended: one /dfs-critique cycle a night (rotating NBA,
+# NCAAB, NHL), measured by harness/critique_gate.py against main on the fixed held-out
+# lab rows; a passing change is re-gated after 7 forward days, then merged and pushed.
+# Every verdict goes to the phone through ntfy (same topic as the monitor).
+# See harness/critique_loop.py for why it is built this way.
+#
+#   cp deploy/edge-critique.service deploy/edge-critique.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now edge-critique.timer
+#   journalctl --user -u edge-critique -n 50
+#   python3 -m harness critique-loop --status | --drop nba | --merge nba | --resume nba
+#
+# Runs `claude -p` with permissions bypassed inside its own worktree (the repo's guard
+# and verify hooks still apply). Set EDGE_CRITIQUE_BUDGET (USD) to cap a night's spend,
+# EDGE_CLAUDE to pin the binary (default: PATH, else the VS Code extension's).
+[Unit]
+Description=One unattended DFS critique cycle, gated against main
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 -m harness critique-loop
+Restart=no
+Nice=15
+# agent <= 5 h + two gate measurements (NBA ~15 min each) + verify
+TimeoutStartSec=25200

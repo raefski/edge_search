@@ -183,6 +183,10 @@ JOBS: dict[str, Job] = {j.name: j for j in [
     Job("overlay-alert", "monitor", (PY, "-m", "harness", "overlay"), timeout=900,
         timer="edge-overlay.timer",
         doc="push guaranteed contests whose next entry is worth it at lock (ntfy)"),
+    Job("critique-loop", "evaluate", (PY, "-m", "harness", "critique-loop"), timeout=25200,
+        timer="edge-critique.timer",
+        doc="one unattended /dfs-critique cycle a night (nba/ncaab/nhl), gated vs main held out "
+            "(harness/critique_gate.py), merged after a 7-day re-gate; --status / --drop / --merge"),
     Job("code-sync", "publish", (PY, "-m", "harness.code_sync"), timeout=120,
         timer="edge-code-sync.timer",
         doc="fast-forward this checkout to origin/main when it has no local commits"),

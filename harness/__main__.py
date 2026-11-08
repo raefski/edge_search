@@ -9,6 +9,8 @@
     python3 -m harness overlay [--push] [--min-roi 0.10] [--hours 2.5]   guaranteed contests not filling
     python3 -m harness nba-scratch [--push] [--date YYYY-MM-DD]          NBA late scratches / promoted starters
     python3 -m harness navigate <url> [--match S] [--click TEXT] [--wait S] [--profile DIR]
+    python3 -m harness critique-loop [--sport S] [--dry-run] [--status] [--drop|--merge|--resume S]
+    python3 -m harness critique-gate <sport> <candidate checkout>   held-out gate vs main
 """
 from __future__ import annotations
 
@@ -70,6 +72,16 @@ def main(argv=None) -> int:
     s = sub.add_parser("nba-scratch")
     s.add_argument("--push", action="store_true", help="send new changes to the phone")
     s.add_argument("--date", help="replay a past night (YYYY-MM-DD): no DK, no push, no state")
+    s = sub.add_parser("critique-loop", help="one unattended /dfs-critique cycle, gated (harness/critique_loop.py)")
+    s.add_argument("--sport")
+    s.add_argument("--dry-run", action="store_true")
+    s.add_argument("--status", action="store_true")
+    s.add_argument("--drop", metavar="SPORT", help="veto a pending candidate")
+    s.add_argument("--merge", metavar="SPORT", help="approve a pending candidate now")
+    s.add_argument("--resume", metavar="SPORT", help="lift a pause")
+    s = sub.add_parser("critique-gate", help="candidate checkout vs main, held out (harness/critique_gate.py)")
+    s.add_argument("sport")
+    s.add_argument("candidate")
     s = sub.add_parser("data-pull", help="copy the data branch's files into this checkout")
     s.add_argument("--overwrite", action="store_true",
                    help="replace files that already exist (default: leave them)")
@@ -130,6 +142,13 @@ def main(argv=None) -> int:
         from harness import nba_scratch
         nba_scratch.run(do_push=a.push, day=a.date)
         return 0
+    if a.cmd == "critique-loop":
+        from harness import critique_loop
+        return critique_loop.main(sport=a.sport, dry_run=a.dry_run, show=a.status, drop=a.drop,
+                                  resume=a.resume, merge=a.merge)
+    if a.cmd == "critique-gate":
+        from harness import critique_gate
+        return critique_gate.main([a.sport, a.candidate])
     if a.cmd == "data-pull":
         from edge import data_branch
         wrote = data_branch.checkout_files(overwrite=a.overwrite)

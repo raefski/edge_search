@@ -7,6 +7,7 @@ loop (NHL_CRITIQUE_LOG.md, .claude/skills/dfs-critique) measures every change on
     python3 scripts/nhl_skater_lab.py report             # the shipped model's standard table
     python3 scripts/nhl_skater_lab.py report --variant <name> [--variant <name> ...]
     python3 scripts/nhl_skater_lab.py parity             # lab == shipped build_board, slate by slate
+    python3 scripts/nhl_skater_lab.py gate out.jsonl     # TEST rows for the critique loop's gate
 
 WHAT IS PROJECTED, AND WHEN
 Every slate in data/dfs_proj_log_nhl.csv is rebuilt from its pinned inputs
@@ -471,6 +472,27 @@ def parity(state: str = "lock") -> str:
     return f"{state}: {len(df)} board rows, max |lab - shipped| {d.max():.4f}, mean {d.mean():.5f}"
 
 
+def gate(path: str, seeds: int = 4) -> int:
+    """Rows for the unattended critique loop's gate (harness/critique_gate.py): the shipped
+    variant on the TEST nights, both states, projected and actual DK points per
+    skater-game (the gate squares the error), clustered by night; 4 seeds, as decisions are taken here (one seed moves RMSE ~0.01)."""
+    import json
+    box, n = box_by_date(), 0
+    with open(path, "w") as fh:
+        for state in ("lock", "early"):
+            slates = load(state)
+            if not slates:
+                continue
+            x, _ = grade(project(slates, "shipped", seeds=seeds), box)
+            for r in split(x)["test"].itertuples():
+                fh.write(json.dumps({"key": f"{state}|{r.date}|{r.team}|{r.name}", "cluster": r.date,
+                                     "split": "primary", "state": state,
+                                     "pred": float(r.proj), "actual": float(r.actual)}) + "\n")
+                n += 1
+    print(f"{n:,} gate rows -> {path}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -487,7 +509,11 @@ def main() -> int:
     g.add_argument("--state", choices=list(STATES))
     g.add_argument("--seeds", type=int, default=1, help="average seeds 0..n-1 (decisions: 4)")
     sub.add_parser("parity")
+    gt = sub.add_parser("gate", help="TEST rows for harness/critique_gate.py")
+    gt.add_argument("out")
     a = ap.parse_args()
+    if a.cmd == "gate":
+        return gate(a.out)
     if a.cmd == "cache":
         gids = a.gids or sorted(pd.read_csv(ROOT / "data" / "dfs_proj_log_nhl.csv").gid.unique())
         cache([int(g) for g in gids], {a.state: STATES[a.state]} if a.state else STATES)
