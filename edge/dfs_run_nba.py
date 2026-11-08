@@ -56,6 +56,16 @@ IMPUTED_PER_K = 4.5
 #: role >= 10), 2024-25 fit: cut 13 / 14 / 15 / none RMSE 6.478 / 6.467 / 6.465 / 6.477;
 #: 2025-26 held out 6.655 / 6.634 / 6.634 / 6.644 (scripts/nba_minutes_lab.py live).
 ACTIVE_ROSTER = 15
+#: Critique cycle 25 (2026-11-07): NBA.com's EXPECTED five skipped the injury-report hedge
+#: (only "announced" was checked), so an Expected starter on the report got P(dress) 1 and
+#: starter minutes; 2026-27, Questionable Expected starters dressed 45% (n 31) and played
+#: 12.5 min on average. Now hedged with the 2024-25 no-five REPORT_P (nothing fitted on
+#: 2026-27). scripts/nba_expected_replay.py, production team_minutes, 2026-27 (204
+#: team-games, 14 nights), board RMSE off -> on: five + report as of tip-90 5.843 -> 5.710
+#: (sq. error per row -1.54 [90% -2.44, -0.76] by night; the 51 affected rows 15.96 ->
+#: 12.80, bias +7.43 -> +2.56); tip-45 5.489 -> 5.485 (11 rows, noise); tip-30 5.437 ->
+#: 5.437 (3 rows). Five known / no five: unchanged (no Expected starter).
+EXPECTED_HEDGE = True
 ET = ZoneInfo("America/New_York")
 #: First regular-season night. Before it, DK's slates are PRESEASON games, where
 #: starters play 15-25 minutes -- the projections assume regular-season roles.
@@ -217,6 +227,69 @@ def official_index(rows, known: set) -> tuple[dict, dict]:
     return official, official_sig
 
 
+def team_minutes(ps: list, official: bool) -> tuple[dict, list, dict]:
+    """One team's minutes from its board rows (build_board's per-team step, split out
+    2026-11-07 so scripts/nba_expected_replay.py runs the SAME code on logged nights):
+    the roster cut (sets r["not_dressing"]), the uncertain set, NM.project_uncertain
+    (sets r["avail"] / r["avail_why"]). `official`: the NBA's injury report was read.
+    Returns (minutes as NM.project, team_in, unc)."""
+    announced = sum(1 for r in ps if r["starter"]) == 5
+    listed = any(r["inactive_listed"] for r in ps)
+    if not listed:
+        # Until NBA.com posts the inactive list (~30 min before tip), DK's ~20-man
+        # list includes players who will not dress. A game-night roster is 13
+        # active and its roles add to ~241 minutes (2025-26 median; 230 opening
+        # week), so keep the 13 most-used and treat the rest as not dressing.
+        # Without this the team was held to 240 over 21 roles summing to 300-360,
+        # and every starter lost a quarter of his minutes.
+        healthy = [r for r in ps if not r["out"]]
+        # NBA.com's announced starters always dress: a rookie on preseason
+        # minutes (or a name the join missed) must not be cut by his role.
+        ranked = sorted(healthy, key=lambda r: (not r["starter"], -NM.role_v2(
+            [(m, s) for m, s, _ in r["history"]], r["cur_n"], r["n_pre"])["base"]))
+        for r in ranked[ACTIVE_ROSTER:]:
+            r["not_dressing"] = True
+    team_in = [{"id": r["name"], "position": r["nba_pos"],
+                "inactive": r["out"] or r.get("not_dressing", False),
+                "starter": r["starter"] if announced else None, "window": r["window"],
+                # NBA.com's Expected five is a guess (wrong in 7 of 28 team-games on
+                # 2026-10-20/21): project() blends it with no five until it's confirmed
+                "confirmed": bool(r["confirmed"]) if announced else None,
+                "history": [(m, s) for m, s, _ in r["history"]], "cur_n": r["cur_n"],
+                "n_pre": r["n_pre"], "since_return": r["since_return"], "pick": r["pick"],
+                "salary": r["salary"]} for r in ps]
+    # Critique cycles 6-7: a kept player who is Doubtful / Questionable / Probable on
+    # the official report, or not listed but sat his team's latest game ("stale"),
+    # may not dress: he gets P(dress) x his minutes, his teammates their expected
+    # minutes over his two cases (NM.project_uncertain). Not an announced starter.
+    unc, by_id = {}, {}
+    for r in ps:
+        if r["out"] or r.get("not_dressing"):
+            continue
+        inj = {"Available": "Probable"}.get(r["injury"], r["injury"])
+        if announced and r["starter"]:
+            # Critique cycle 25: a CONFIRMED starter dresses. An Expected one on the report
+            # may not (see EXPECTED_HEDGE): his P(dress) comes from the no-five table --
+            # whether he starts is still open -- and the sits-case keeps the other four.
+            if r["confirmed"] or not EXPECTED_HEDGE or inj not in ("Doubtful", "Questionable", "Probable"):
+                continue
+            by_id[r["name"]] = NM.REPORT_P["inactives"]
+        if inj in ("Doubtful", "Questionable", "Probable"):
+            unc[r["name"]] = inj
+        elif r["missed_last"]:
+            unc[r["name"]] = "stale"
+    keeps = ({k: {x["name"] for x in [x for x in ranked if x["name"] != k][:ACTIVE_ROSTER]} for k in unc}
+             if unc and not listed else None)
+    mode_ = "confirmed" if announced else "inactives"
+    probs = NM.REPORT_P[mode_] if official else {
+        **NM.REPORT_P[mode_], ("stale", False): NM.AVAIL_P[mode_][0], ("stale", True): NM.AVAIL_P[mode_][1]}
+    mins, avail = NM.project_uncertain(team_in, unc, mode_, keeps, probs, probs_by_id=by_id)
+    for r in ps:
+        if r["name"] in avail:
+            r["avail"], r["avail_why"] = avail[r["name"]], unc[r["name"]]
+    return mins, team_in, unc
+
+
 def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
     """(pool, info) for one DK NBA Classic slate: every playable player projected."""
     salaries = dfs.fetch_draftables(gid)
@@ -338,53 +411,8 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
     for r in rows:
         by_team.setdefault(r["team"], []).append(r)
     for t, ps in by_team.items():
+        mins, team_in, unc = team_minutes(ps, bool(official))
         announced = sum(1 for r in ps if r["starter"]) == 5
-        listed = any(r["inactive_listed"] for r in ps)
-        if not listed:
-            # Until NBA.com posts the inactive list (~30 min before tip), DK's ~20-man
-            # list includes players who will not dress. A game-night roster is 13
-            # active and its roles add to ~241 minutes (2025-26 median; 230 opening
-            # week), so keep the 13 most-used and treat the rest as not dressing.
-            # Without this the team was held to 240 over 21 roles summing to 300-360,
-            # and every starter lost a quarter of his minutes.
-            healthy = [r for r in ps if not r["out"]]
-            # NBA.com's announced starters always dress: a rookie on preseason
-            # minutes (or a name the join missed) must not be cut by his role.
-            ranked = sorted(healthy, key=lambda r: (not r["starter"], -NM.role_v2(
-                [(m, s) for m, s, _ in r["history"]], r["cur_n"], r["n_pre"])["base"]))
-            for r in ranked[ACTIVE_ROSTER:]:
-                r["not_dressing"] = True
-        team_in = [{"id": r["name"], "position": r["nba_pos"],
-                    "inactive": r["out"] or r.get("not_dressing", False),
-                    "starter": r["starter"] if announced else None, "window": r["window"],
-                    # NBA.com's Expected five is a guess (wrong in 7 of 28 team-games on
-                    # 2026-10-20/21): project() blends it with no five until it's confirmed
-                    "confirmed": bool(r["confirmed"]) if announced else None,
-                    "history": [(m, s) for m, s, _ in r["history"]], "cur_n": r["cur_n"],
-                    "n_pre": r["n_pre"], "since_return": r["since_return"], "pick": r["pick"],
-                    "salary": r["salary"]} for r in ps]
-        # Critique cycles 6-7: a kept player who is Doubtful / Questionable / Probable on
-        # the official report, or not listed but sat his team's latest game ("stale"),
-        # may not dress: he gets P(dress) x his minutes, his teammates their expected
-        # minutes over his two cases (NM.project_uncertain). Not an announced starter.
-        unc = {}
-        for r in ps:
-            if r["out"] or r.get("not_dressing") or (announced and r["starter"]):
-                continue
-            inj = {"Available": "Probable"}.get(r["injury"], r["injury"])
-            if inj in ("Doubtful", "Questionable", "Probable"):
-                unc[r["name"]] = inj
-            elif r["missed_last"]:
-                unc[r["name"]] = "stale"
-        keeps = ({k: {x["name"] for x in [x for x in ranked if x["name"] != k][:ACTIVE_ROSTER]} for k in unc}
-                 if unc and not listed else None)
-        mode_ = "confirmed" if announced else "inactives"
-        probs = NM.REPORT_P[mode_] if official else {
-            **NM.REPORT_P[mode_], ("stale", False): NM.AVAIL_P[mode_][0], ("stale", True): NM.AVAIL_P[mode_][1]}
-        mins, avail = NM.project_uncertain(team_in, unc, mode_, keeps, probs)
-        for r in ps:
-            if r["name"] in avail:
-                r["avail"], r["avail_why"] = avail[r["name"]], unc[r["name"]]
         if unc:
             info.setdefault("uncertain", []).extend(f"{k} ({v})" for k, v in sorted(unc.items()))
         # "Usual" = the same team with no news: everyone healthy who dresses, no

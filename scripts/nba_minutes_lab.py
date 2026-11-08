@@ -1224,7 +1224,8 @@ def fetch_tips(seasons=("2024-25", "2025-26")) -> None:
     import time as _time
     import urllib.request
     from edge.nba_availability import _headers
-    tips = {}
+    f_ = GT / "schedule_tips.json"
+    tips = json.loads(f_.read_text()) if f_.exists() else {}     # merge: other seasons stay
     for s_ in seasons:
         url = f"https://stats.nba.com/stats/scheduleleaguev2?Season={s_}&LeagueID=00"
         with urllib.request.urlopen(urllib.request.Request(url, headers=_headers()), timeout=60) as r:
@@ -1232,7 +1233,7 @@ def fetch_tips(seasons=("2024-25", "2025-26")) -> None:
         tips.update({g["gameId"]: g["gameDateTimeEst"] for day in d["leagueSchedule"]["gameDates"]
                      for g in day["games"] if g["gameId"].startswith("002")})
         _time.sleep(1.5)
-    (GT / "schedule_tips.json").write_text(json.dumps(tips))
+    f_.write_text(json.dumps(tips))
 
 
 def report_status(D: dict, lead_min: int = 60, espn_like: bool = False) -> dict:

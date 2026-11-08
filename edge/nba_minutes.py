@@ -455,7 +455,8 @@ def project_available(team: list, stale: set, mode: str, keep: set | None = None
 
 
 def project_uncertain(team: list, unc: dict, mode: str, keeps: dict | None = None,
-                      probs: dict | None = None, params: dict | None = None) -> tuple[dict, dict]:
+                      probs: dict | None = None, params: dict | None = None,
+                      probs_by_id: dict | None = None) -> tuple[dict, dict]:
     """Critique cycle 7: expected minutes when some dressing players may sit. `unc` =
     {id: category} -- "Doubtful" / "Questionable" / "Probable" on the NBA's official
     injury report, or "stale" (not listed, did not dress for his team's latest game this
@@ -465,6 +466,8 @@ def project_uncertain(team: list, unc: dict, mode: str, keeps: dict | None = Non
         m_i = A_i + sum over uncertain k != i of (1 - p_k) (B_k,i - A_i),   x p_i if i is uncertain
     on his limit for a Doubtful / Questionable player: role x REPORT_K, the rest re-shared
     by the 240 step (cycles 16-17).
+    `probs_by_id` = {id: probs} for players whose P(dress) comes from another table (an
+    Expected starter on the report: the no-five table, critique cycle 25).
     Mirrors scripts/nba_minutes_lab.report_score. Returns (minutes as project(), {id: p})."""
     a = project(team, params)
     if not unc:
@@ -475,7 +478,7 @@ def project_uncertain(team: list, unc: dict, mode: str, keeps: dict | None = Non
     for k, c in unc.items():
         pl = by_id[k]
         big = role_v2(pl["history"], pl.get("cur_n"), int(pl.get("n_pre") or 0))["base"] >= REPORT_ROLE
-        p[k] = probs[(c, big)]
+        p[k] = (probs_by_id or {}).get(k, probs)[(c, big)]
     B = {}
     for k in unc:
         kept = None if keeps is None else keeps.get(k)

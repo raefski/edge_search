@@ -229,6 +229,25 @@ them 2025-26 opening week goes 5.01 â†’ 5.18 and 2026-27's night one goes 6.98 â
   - **On the page:** "sat last game: x% to dress". Every ESPN snapshot is logged to
     `data/nba_espn_injuries/` so the real miss rate can be measured.
 
+### 2b. An Expected starter on the injury report is not certain (critique cycle 25)
+
+- **The hole:** "announced starters always dress" was applied to NBA.com's EXPECTED five
+  too. An Expected starter who is Doubtful / Questionable / Probable got P(dress) 1 and
+  starter minutes. In 2026-27, Questionable Expected starters dressed 45% (n 31).
+- **Now:** a CONFIRMED starter is still certain. An Expected one on the report goes
+  through `project_uncertain` like any other uncertain player, with P(dress) from the
+  2024-25 **no-five** `REPORT_P` (whether he starts is still open), and his limit
+  (`REPORT_K`). In the sits case the other four stay in the five.
+- **Where:** `edge/dfs_run_nba.team_minutes` (`EXPECTED_HEDGE`, `probs_by_id`); the
+  per-team step of `build_board`, split out so the replay runs the same code.
+- **Measured on the live state:** `scripts/nba_expected_replay.py report --cutoff N`
+  replays 2026-27 nights with the five and the report as they stood N minutes before
+  tip (data/nba_lineup_log.csv; only this season has it), through production
+  `team_minutes`, non-dressers scored 0. Board RMSE, hedge off -> on (204 team-games,
+  14 nights): tip-90 5.843 -> 5.710, tip-45 5.489 -> 5.485, tip-30 5.437 -> 5.437.
+  The lab's "five known" / "no five" states never see an Expected five; this replay
+  is the third state, and the critique gate scores it (tip-45 / tip-90).
+
 ## Step 3: close the team's gap to 240 by role rank (critique cycle 1)
 
 When at least 8 players are active:
@@ -612,5 +631,6 @@ def project(team):                                             # critique cycle 
 | `edge/nba_injury_report.py` | the NBA's official injury report: fetch (cached, archive), parse, latest |
 | `scripts/nba_history_publish.py` | the history file and its `cur_n` / `n_pre` / `pick` / `since_return` fields |
 | `scripts/nba_minutes_lab.py` | `diagnose`, `ablate`, `fit`, `salary`, `report`, `live`, `cycles`, `cycle4` (the Expected state): the live-faithful backtest |
+| `scripts/nba_expected_replay.py` | the live state (Expected five + report as of tip-N) through production `team_minutes`, 2026-27 |
 | `scripts/nba_minutes_backtest.py` | the legacy protocol |
 | `NBA_STATUS.md` | results, open items |

@@ -1327,3 +1327,72 @@ Official-report replay (production's information state) through the PRODUCTION p
 scripts/nba_minutes_ml_replay.py, P(dress) fitted 2024-25, held out 2025-26 (n 31,218), ML off -> on:
 five known board 6.479 -> 6.336, active 6.302 -> 6.133; no five board 7.049 -> 6.985, active
 6.641 -> 6.562. The shipped correction holds in the state production runs.
+
+## Cycle 25 (2026-11-07): the Expected five skipped the injury-report hedge — SHIPPED
+
+Baseline (shipped, ML on; `nba_minutes_ml_fit.py`, production code path):
+
+| state | season | RMSE / MAE / bias | n |
+|---|---|---|---|
+| five known | 2025-26 | 6.1018 / 4.574 / -0.09 | 31,218 |
+| five known | 2026-27 | 6.1925 / 4.616 / -0.11 | 3,161 |
+| no five | 2025-26 | 6.4977 / 4.803 / -0.10 | 31,218 |
+| no five | 2026-27 | 6.6684 / 4.853 / -0.11 | 3,161 |
+
+Official-report replay through production (`nba_minutes_ml_replay.py`), 2025-26 board:
+five known 6.336, no five 6.985 (n 31,218): reproduces the 10-30 entry.
+
+**Critic's hole.** Production mostly builds in a state nothing measured: NBA.com's
+EXPECTED five, unconfirmed. 71% of the live 2026-27 board's squared error sat on rows
+built that way (716 of 1,208 rows, 7 dates, median build 44 min before tip). The
+Expected five was wrong at build time in 30.4% of team-games (84 / 276). And
+`build_board` skipped every announced starter when choosing who is uncertain, Expected
+or Confirmed. So a Questionable Expected starter got P(dress) 1 and starter minutes.
+Those players dressed 45% (n 31) and played 12.5 min on average. The critic also
+checked and dismissed two other suspects: `recency()` after the ML (2025-26 no five
+6.4977 -> 6.4910, 2026-27 worse; noise) and a deep-bench leak (not a mean error).
+
+**Fix.** A CONFIRMED starter stays certain. An EXPECTED starter on the report
+(Doubtful / Questionable / Probable) goes through `project_uncertain`, with P(dress)
+from the 2024-25 no-five `REPORT_P` and the fitted `REPORT_K` limit. No new
+parameters, nothing fitted on 2026-27. The per-team step of `build_board` moved into
+`edge/dfs_run_nba.team_minutes` (no behaviour change: NBA tests unchanged), so the
+replay runs production code. The switch is `EXPECTED_HEDGE` (now True).
+
+**The new harness** is `scripts/nba_expected_replay.py report --cutoff N`. It replays
+the 2026-27 nights with the five (the last 5-starter snapshot in data/nba_lineup_log.csv)
+and the official report as they stood N minutes before tip, through production
+`team_minutes`, ML on. Non-dressers are scored 0 (board), with a paired bootstrap by night.
+
+| five + report as of | team-games (Expected) | board RMSE / MAE / bias, off -> on | sq. error / row [90%] | Expected starters on the report: n, RMSE, bias |
+|---|---|---|---|---|
+| tip - 90 min | 204 (202) | 5.843 / 3.756 / -0.10 -> **5.710 / 3.724 / -0.11** | -1.535 [-2.438, -0.758] | 51: 15.96 -> 12.80, +7.43 -> +2.56 |
+| tip - 45 min | 204 (200) | 5.489 / 3.584 / -0.10 -> 5.485 / 3.584 / -0.10 | -0.047 [-0.276, +0.148] | 11: 13.74 -> 13.22, +2.43 -> -1.99 |
+| tip - 30 min | 204 (197) | 5.437 / 3.555 / -0.10 -> 5.437 / 3.554 / -0.10 | -0.002 [-0.017, +0.007] | 3 |
+
+14 nights. 30 of the 234 lab team-games have no cached report at the cutoff. Five
+known / no five: unchanged by construction (no Expected starter); the ML-fit rows do
+not pass through `team_minutes`.
+
+**Decision: shipped.** It is beyond noise at tip-90 and never worse. The 45-minute
+build gains little because most Questionable starters are resolved by then.
+Judgment calls:
+- The no-five P(dress) table, not the five-known one: whether he starts is still open.
+- Stale (sat last game) still does not hedge an Expected starter, because NBA.com's
+  five already reflects a return.
+- The 2024-25 Questionable / big-role P is 0.88, against a 2026-27 dress rate of 0.45
+  (n 31). Not refitted on 31 held-out rows. Refit when the lab can replay the
+  Expected state on 2024-25 (it cannot: no snapshots), or once 2026-27 has ~100 such
+  rows. That would be fitting on 2026-27 with a later held-out stretch.
+
+**Runner-ups (not done this cycle):**
+- Re-choose `EXPECTED_W` (0.70, tuned for a 25% miss rate; measured now 30%): the
+  cycle-4 minimax on 2024-25 over rho 20-40%, scored on this replay. At most ~0.02.
+- ML over-projects high-role starters in 2026-27 (five known, base >= 28, n 769): bias
+  hand +0.06 -> ML +0.31 -> shipped +0.36, RMSE 5.47 -> 5.56. Cycle 24's watch item
+  persists: cap the correction or do the 2024-25 + 2025-26 refit.
+- `nba_minutes_ml_fit.py` / `ml_replay` score before `recency()`, which production
+  applies after the ML: report the production ordering (noise today).
+- Tooling: `nba_minutes_lab.fetch_tips` now merges seasons (it overwrote the file);
+  2026-27 tips fetched. The lab cache key moves with every 15-min report, so a night
+  of experiments should load once (`nba_expected_replay.py --lab <pickle>`).

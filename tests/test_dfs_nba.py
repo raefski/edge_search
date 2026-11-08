@@ -542,3 +542,34 @@ def test_a_locked_slate_stays_listed_until_its_last_game_tips(tmp_path, monkeypa
     assert rows[0]["last_start"].startswith("2026-11-02T02:00")
     assert R.open_locked_slates([], now=at(2, 0)) == []                    # last game tipped
     assert R.open_locked_slates([{"gid": 156049}], now=at(1, 47)) == []    # still in the lobby
+
+
+def _board_team(starter_injury=None, confirmed=False):
+    """A 10-man board team (team_minutes' row shape): five announced starters, the first
+    on the injury report as `starter_injury`, Confirmed or Expected."""
+    ps = []
+    for k in range(10):
+        st = k < 5
+        hist = [(32.0 if st else 16.0, st, None)] * 20
+        ps.append({"name": f"p{k}", "out": False, "inactive_listed": False, "starter": st,
+                   "confirmed": confirmed if st else False, "injury": starter_injury if k == 0 else None,
+                   "missed_last": False, "nba_pos": "G", "window": None, "history": hist, "cur_n": 20,
+                   "n_pre": 0, "since_return": None, "pick": None, "salary": None})
+    return ps
+
+
+def test_an_expected_starter_on_the_report_is_hedged_a_confirmed_one_is_not(monkeypatch):
+    # critique cycle 25: the Expected five used to skip the report hedge entirely
+    monkeypatch.setattr(R, "EXPECTED_HEDGE", True)
+    plain, _, _ = R.team_minutes(_board_team(), True)
+    ps = _board_team("Questionable")
+    m, _, unc = R.team_minutes(ps, True)
+    assert unc == {"p0": "Questionable"}
+    assert ps[0]["avail"] == NM.REPORT_P["inactives"][("Questionable", True)]
+    assert m["p0"]["minutes"] < plain["p0"]["minutes"] - 3
+    assert sum(m[f"p{k}"]["minutes"] for k in range(1, 10)) > sum(plain[f"p{k}"]["minutes"] for k in range(1, 10))
+    conf, _, unc_c = R.team_minutes(_board_team("Questionable", confirmed=True), True)
+    assert not unc_c and conf["p0"]["minutes"] == plain["p0"]["minutes"]
+    monkeypatch.setattr(R, "EXPECTED_HEDGE", False)
+    off, _, unc_off = R.team_minutes(_board_team("Questionable"), True)
+    assert not unc_off and off["p0"]["minutes"] == plain["p0"]["minutes"]
