@@ -229,7 +229,10 @@ merge main's lab would double-apply it). 11/8 (156346) is cycle 2's code, handle
 leads from earlier cycles: last game's started flag (retest at 6+ slates: now), team-share at 10 slates,
 GPP ownership refit at 5 GPP slates (11/7 has no GPP export).
 
-Unattended gate (20261108-0621): **fail**
+Unattended gate (20261108-0621): **review** -- waiting for Adam: harness critique-loop --merge / --drop
+(re-labelled 11/8 by hand under the new rule: a change that edits the lab scoring it goes to Adam, not
+fail. The gate saw only the 5 slates main can grade -- 11/7's box is not committed -- where the fix
+changes nothing by design, hence "unchanged"; the slate it corrects, 11/7, is in the agent's table above.)
 
 | split | state | n | clusters | main MAE | candidate MAE | loss diff [90%] | verdict |
 |---|---|---|---|---|---|---|---|

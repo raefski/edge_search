@@ -6,7 +6,8 @@
     python3 scripts/ncaab_lab.py gate out.jsonl    # LOSO rows for the critique loop's gate
 
 What "the shipped board" is here. The logged pre-lock projection (data/dfs_proj_log_ncaab.csv,
-one row per player per draft group) as it ran, then LAST_GAME (with tonight's implied team
+one row per player per draft group) as it ran -- before LAST_GAME: from 11/7 the log already
+has it, and `base_projection` takes it back out (BAKED, below) --, then LAST_GAME (with tonight's implied team
 points: the log's `implied` column, or data/ncaab_implied_backfill.json for slates logged
 before it existed) applied exactly as
 edge/dfs_run_ncaab.build_board applies it: the same last_game_lines (ESPN, games a day
@@ -44,6 +45,48 @@ PRICED = ("props", "blend", "salary")
 #: Implied team points for slates logged before the log had an `implied` column (cycle 2).
 BACKFILL = ROOT / "data" / "ncaab_implied_backfill.json"
 
+#: LAST_GAME AS IT RAN, for slates whose logged `proj` ALREADY HAS IT (critique cycle 3,
+#: 2026-11-08). LAST_GAME shipped 11/7 14:27 ET; every build since logs the moved
+#: projection, and this lab used to apply LAST_GAME to it a second time. On 11/7 (156344,
+#: built 14:49 ET with cycle 1's constants) the bench rows whose team's last game gave them
+#: 20+ minutes were logged at 15.5 points and replayed at ~5 -- the lab was grading a board
+#: that never ran. The fix recovers the pre-LAST_GAME projection by inverting the affine
+#: step with the constants that were live at the build (b > 0, a > 0, so it never clipped):
+#:   - a `base_proj` column (logged since this cycle): exact, used as is;
+#:   - 156344: cycle 1, (0.048, 0.359, 0.190, 0.374), no implied-points factor;
+#:   - any other row with an `implied` column (cycle 2's log, 11/7 18:03 ET on): cycle 2,
+#:     (0.029, 0.298, 0.128, 0.449) with the minutes term x implied / LEAGUE.team_points.
+#: The inverted base carries the sim's noise / b (~0.6 points on a moved row; the logged
+#: proj is a 2,000-sim mean) and comes back to within ~0.2 when re-applied. If LAST_GAME's
+#: constants change on main before base_proj is logged, add that window here.
+BAKED = {156344: ((0.048, 0.359, 0.190, 0.374), False)}
+CYCLE2 = ((0.029, 0.298, 0.128, 0.449), True)
+
+
+def _baked(gid: int, logged_implied) -> tuple | None:
+    """(LAST_GAME constants, env on) already in a row's logged proj, or None. The log's
+    `implied` COLUMN dates the build: cycle 2 added it with the implied-points factor."""
+    if gid in BAKED:
+        return BAKED[gid]
+    if logged_implied not in (None, ""):
+        return CYCLE2
+    return None
+
+
+def base_projection(gid: int, r: dict, logged_implied) -> float:
+    """The pre-LAST_GAME projection for a loaded row (`last_min`/`last_fp`/`implied`
+    resolved; `proj` as logged; `logged_implied` = the raw log column)."""
+    if r["source"] == "props" or r["last_min"] is None:
+        return r["proj"]                    # LAST_GAME never moves these rows
+    if r.get("base_proj") not in (None, ""):
+        return float(r["base_proj"])
+    baked = _baked(gid, logged_implied)
+    if baked is None:
+        return r["proj"]
+    (a, b, c, d), env_on = baked
+    env = _env(r) if env_on else 1.0
+    return (r["proj"] - a - c * r["last_fp"] - d * min(r["last_min"], RC.LAST_GAME_MIN_CAP) * env) / b
+
 
 def slates() -> list[int]:
     """Draft groups with both a logged build and a saved box."""
@@ -65,8 +108,11 @@ def load(gid: int) -> list[dict]:
     for key, info in salaries.items():
         r = info["row"]
         m, fp, _d = last.get(key, (None, None, None))
-        imp = float(r["implied"]) if r.get("implied") not in (None, "") else backfill.get(r["team"])
-        r.update(gid=gid, last_min=m, last_fp=fp, source=r["proj_source"], implied=imp)
+        logged_imp = r.get("implied")
+        imp = float(logged_imp) if logged_imp not in (None, "") else backfill.get(r["team"])
+        r.update(gid=gid, last_min=m, last_fp=fp, source=r["proj_source"], implied=imp,
+                 logged_proj=r["proj"])
+        r["proj"] = base_projection(gid, r, logged_imp)
     return rows
 
 

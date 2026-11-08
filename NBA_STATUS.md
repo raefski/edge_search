@@ -322,6 +322,13 @@ implied points are in data/ncaab_implied_backfill.json. Replay: `harness run nca
 -> 7.64/5.80/5.88/5.51, bench and cheap rank better everywhere; 3 real slates, refit as they come.
 Fetch: `edge/ncaab_espn.py` (cached in data/cache/ncaab_espn). Props rows untouched (no gain there).
 Torvik ratings lose to the market; the team-share fix and whole-slate ownership wait (log).
+**The log's `proj` is AFTER LAST_GAME from 11/7 on** (cycle 3, 2026-11-08): the lab used to apply it a
+second time (11/7's bench rows with a 20+ minute last game were logged at 15.5, replayed at ~5). The
+lab now takes it back out with the constants that ran (`BAKED` / `CYCLE2` in scripts/ncaab_lab.py,
+exact: re-applied it reproduces the log to 1e-14) and the log carries `base_proj` (pre-LAST_GAME) for
+every build since. If LAST_GAME's constants change, slates logged without `base_proj` need their window
+added to `BAKED`. 11/7 (156344) forward with cycle 2's constants: all MAE 5.13 as run -> 5.06, priced
+7.16 -> 6.96, rho .573 -> .610 (one slate).
 
 **After each contest:**
 1. `harness run import-contests`, then `harness run ncaab-box-grade -- <gid>`, then `--fit`.

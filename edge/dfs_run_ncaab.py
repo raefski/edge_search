@@ -768,6 +768,11 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
                      "last_date": last[sal_key][2] if sal_key in last else None,
                      "implied": implied.get(t)})
     info["team_scale"] = apply_team_budget(pool, implied)
+    # The projection BEFORE LAST_GAME goes in the forward-test log as `base_proj` (critique
+    # cycle 3, 2026-11-08): the log's `proj` is after it, and without the base the lab
+    # (scripts/ncaab_lab.py) applied LAST_GAME a second time to every slate from 11/7 on.
+    for p in pool:
+        p["base_fp"] = round(p["fp"], 3)
     info["last_game"]["moved"] = apply_last_game(pool, implied=implied)
     for p in pool:
         if p["means"] is None:
@@ -791,7 +796,7 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
 # ---------------------------------------------------------------------------
 PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp", "dk_pos", "salary", "proj", "sd",
                  "floor", "ceil", "own", "proj_source", "imputed", "status", "starter",
-                 "last_team", "last_mpg", "dk_fppg", "source", "implied")
+                 "last_team", "last_mpg", "dk_fppg", "source", "implied", "base_proj")
 
 
 def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> dict:
@@ -807,7 +812,8 @@ def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> di
              "last_mpg": p.get("last_mpg") if p.get("last_mpg") is not None else "",
              "dk_fppg": p.get("dk_fppg") if p.get("dk_fppg") is not None else "",
              "source": "live",
-             "implied": p.get("implied") if p.get("implied") is not None else ""} for p in pool]
+             "implied": p.get("implied") if p.get("implied") is not None else "",
+             "base_proj": p.get("base_fp", "")} for p in pool]
     lineups = [{"mode": mode, "slot": slot, "player": p["name"], "team": p["team"],
                 "salary": p["salary"], "proj": p["proj"], "own": p.get("own")}
                for mode, res in (("cash", cash), ("gpp", gpp))

@@ -346,6 +346,9 @@ def test_forward_log_is_keyed_by_draft_group(cbb_slate, tmp_path):
     assert out["logged"]
     text = (tmp_path / "data" / "dfs_proj_log_ncaab.csv").read_text().splitlines()
     assert text[0].startswith("date,gid,player") and ",555," in text[1]
+    # Cycle 3: the pre-LAST_GAME projection is logged, so the lab never applies it twice.
+    assert text[0].split(",")[-1] == "base_proj"
+    assert all(p.get("base_fp") is not None for p in res["pool"])
     assert (tmp_path / "data" / f"dfs_lineups_ncaab_{out['date']}.csv").read_text().startswith("gid,")
 
 
@@ -386,6 +389,32 @@ def test_last_game_minutes_follow_tonights_implied_points():
     assert fav > flat > dog
     a, b, c, d = RC.LAST_GAME
     assert flat == pytest.approx(a + b * 20 + c * 20 + d * 32)
+
+
+def test_lab_takes_last_game_back_out_of_a_logged_projection():
+    """Cycle 3: from 11/7 the log's proj already has LAST_GAME; the lab recovers the base with
+    the constants that ran (cycle 1 on 156344, cycle 2 once the implied column exists, the
+    logged base_proj after that) so re-applying LAST_GAME reproduces the log, not doubles it."""
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location(
+        "ncaab_lab_t", Path(__file__).resolve().parents[1] / "scripts" / "ncaab_lab.py")
+    L = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(L)
+
+    def row(proj, **kw):
+        return {"source": "bench", "proj": proj, "last_min": 24.0, "last_fp": 20.0,
+                "implied": 80.0, "team": "NEB"} | kw
+    base = 2.7
+    for gid, logged_imp, (coef, env_on) in ((156344, "", L.BAKED[156344]), (999999, "80.0", L.CYCLE2)):
+        moved = [{"source": "bench", "fp": base, "last_min": 24.0, "last_fp": 20.0, "team": "NEB"}]
+        RC.apply_last_game(moved, coef, {"NEB": 80.0} if env_on else None)
+        assert moved[0]["fp"] > 10                                  # what the log holds
+        assert L.base_projection(gid, row(moved[0]["fp"]), logged_imp) == pytest.approx(base)
+    assert L.base_projection(1, row(15.0, base_proj="3.1"), "80.0") == 3.1      # logged: exact
+    assert L.base_projection(1, row(15.0), "") == 15.0               # before 11/7: as logged
+    assert L.base_projection(156344, row(30.0, source="props"), "") == 30.0
+    assert L.base_projection(156344, row(9.0, last_min=None), "") == 9.0
 
 
 def _event(eid, a, b, done=True):

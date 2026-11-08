@@ -1,5 +1,5 @@
 {
- "_note": "Implied team points per draft group, rebuilt 2026-11-07 by edge/dfs_run_ncaab.game_lines on the dfs_ncaab odds scan finished just before each logged build (the log had no implied column until cycle 2). Teams absent had no line: the board ran them at LEAGUE.team_points.",
+ "_note": "Implied team points per draft group, rebuilt 2026-11-07 by edge/dfs_run_ncaab.game_lines on the dfs_ncaab odds scan finished just before each logged build (the log had no implied column until cycle 2). Teams absent had no line: the board ran them at LEAGUE.team_points. 156344 (11/7) added 2026-11-08 the same way (dfs_ncaab scan 20564, finished 19:49:55Z, 1 s before the logged build); the method reproduces 156346's logged implied on all 12 teams.",
  "155565": {
   "MIA": 76.75,
   "WSU": 76.0,
@@ -79,5 +79,17 @@
   "STL": 79.5,
   "MTSU": 64.0,
   "JMU": 66.0
+ },
+ "156344": {
+  "COL": 74.25,
+  "GONZ": 90.75,
+  "GU": 71.25,
+  "MEM": 78.5,
+  "NEB": 80.5,
+  "NMST": 61.25,
+  "PROV": 78.0,
+  "SDSU": 77.25,
+  "UMD": 74.75,
+  "VCU": 81.0
  }
 }
