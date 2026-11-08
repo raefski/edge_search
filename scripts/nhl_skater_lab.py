@@ -265,6 +265,41 @@ def regressed_rates(s, prm):
     return s
 
 
+@variant("shots_power")
+def shots_power(s, prm):
+    """Cycle 12 (not shipped): a skater with no shots prop gets his per-game shot rate x
+    scale ** e instead of x scale (scale = implied team goals / LEAGUE_TEAM_GOALS) --
+    production's elasticity of 1 was never fitted. Every later step on an imputed shots
+    mean (ice-time role, season blend at the same scale, 7-D) is multiplicative or
+    linear in the scaled terms, so the board's shots x scale ** (e - 1) is the rebuilt
+    mean, up to the goals + 0.05 floor (== a production knob to 9e-16 on all 20,152 cached
+    skater rows, 2026-11-08). e defaults to 0.5, the TRAIN fit (lock + early RMSE, 4
+    seeds). Optional prm k: shrink_imputed_shots after."""
+    e = prm.get("e", 0.5)
+    for p in s["pool"]:
+        if p["pos"] != "G" and "shots" in (p.get("imputed") or []):
+            mu = p["means"]
+            scale = s["implied"][p["team"]] / R.LEAGUE_TEAM_GOALS
+            mu["shots"] = max(mu["shots"] * scale ** (e - 1.0), mu["goals"] + 0.05)
+    if prm.get("k") is not None:
+        shrink_imputed_shots(s, prm["k"])
+    return s
+
+
+def shrink_imputed_shots(s, k: float):
+    """Cycle 12 (b): imputed shots -> m + k (shots - m), m = the slate's mean imputed
+    shots for the position (C / W / D); never below goals + 0.05."""
+    grp = defaultdict(list)
+    for p in s["pool"]:
+        if p["pos"] != "G" and "shots" in (p.get("imputed") or []):
+            grp[p["pos"]].append(p)
+    for ps in grp.values():
+        m = float(np.mean([p["means"]["shots"] for p in ps]))
+        for p in ps:
+            mu = p["means"]
+            mu["shots"] = max(m + k * (mu["shots"] - m), mu["goals"] + 0.05)
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # grading
 # ──────────────────────────────────────────────────────────────────────────────

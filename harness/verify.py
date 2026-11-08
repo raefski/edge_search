@@ -74,6 +74,8 @@ def tests_for(paths: list[str]) -> list[str]:
 def compile_errors(paths: list[str]) -> list[str]:
     errs = []
     for path in paths:
+        if not path.endswith(".py"):
+            continue                        # a .md / .json named on the command line
         try:
             py_compile.compile(str(ROOT / path), doraise=True)
         except py_compile.PyCompileError as exc:

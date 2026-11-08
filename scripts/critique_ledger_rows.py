@@ -35,7 +35,7 @@ ET = ZoneInfo("America/New_York")
 TARGET = {"nba": "minutes", "ncaab": "DK points", "nhl": "skater DK points", "ncaaf": "DK points",
           "nascar": "DK points", "nfl": "DK points", "mma": "DK points", "mlb": "hitter DK points"}
 RESULT = {"pass": "Passed, re-check in 7 days", "review": "Waiting on Adam", "record": "Not shipped",
-          "fail": "Not shipped", "no result": "No result", "usage limit": "Stopped: usage limit",
+          "fail": "Not shipped", "no result": "No result", "crashed": "Loop error", "usage limit": "Stopped: usage limit",
           "shipped": "Shipped", "not shipped": "Not shipped"}
 
 

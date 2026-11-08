@@ -743,7 +743,6 @@ simulated spread vs realised error: prop skaters 55.2 vs 54.1, no-prop 21.6 vs 2
 percentiles, not this metric); (3) data: A.J. Greer runs on default rates (18 board rows), as
 the NHL lists him "Anthony-John (AJ) Greer" and both the exact and the initial + last joins miss.
 
-Unattended gate (20261108-0638): **fail**
-
-
-- ✗ does not compile:
+Unattended gate (20261108-0638): **not shipped (log / harness only, verified)** -- the night's
+"fail / does not compile" was the loop compiling this .md (fixed 11/8); the lab variant + tests
+landed by hand after harness verify + the NHL suite passed.

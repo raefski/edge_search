@@ -230,7 +230,10 @@ def push_main(wt: Path) -> None:
 def verify(wt: Path, paths: list[str]) -> tuple[bool, str]:
     """harness verify on the changed paths + the DFS suite (CLAUDE.md's table)."""
     py = sys.executable
-    for cmd in ([py, "-m", "harness", "verify", *paths],
+    # verify byte-compiles every path it is given: only .py files (11/8: the log .md
+    # "did not compile" and failed the NHL record cycle)
+    pys = [p for p in paths if p.endswith(".py") and (wt / p).exists()]
+    for cmd in ([py, "-m", "harness", "verify", *pys],
                 [py, "-m", "pytest", "-q", "-x", "tests/test_page_cache_isolation.py", "tests/test_streamlit_api.py",
                  *sorted(str(p.relative_to(wt)) for p in (wt / "tests").glob("test_dfs*.py"))]):
         r = subprocess.run(cmd, cwd=wt, capture_output=True, text=True, timeout=3600)
@@ -331,7 +334,9 @@ def judge(sport: str, cand: Path, paths: list[str]) -> tuple[str, dict]:
                                    "the agent's own numbers are in the log")
         elif kind == "model":
             gate = critique_gate.run(sport, cand, base)
-        verdict = {"protected": "review", "record": "record"}.get(kind, gate["verdict"])
+        # not .get(kind, gate["verdict"]): the default is evaluated first, and a record /
+        # protected candidate has no gate run (11/8: the NHL record cycle crashed the night)
+        verdict = {"protected": "review", "record": "record"}.get(kind) or gate["verdict"]
         if kind == "protected":
             gate["reasons"].append("touches the loop's own judge (skill / critic / hooks / gate): Adam decides")
     finally:
@@ -581,7 +586,13 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
                 break
             done.add(s)
             save_state(st)
-            v = cycle(s, st)
+            try:
+                v = cycle(s, st)
+            except Exception as e:          # noqa: BLE001 -- one sport's crash must not end the night
+                import traceback
+                v = f"crashed ({type(e).__name__}: {e})"
+                ledger({"event": "cycle", "sport": s, "verdict": "crashed", "error": traceback.format_exc()[-1500:]})
+                notify(f"{s} critique: loop crashed", traceback.format_exc()[-1200:], "high")
             save_state(st)
             results.append(f"{s}: {v}")
             print(results[-1], flush=True)

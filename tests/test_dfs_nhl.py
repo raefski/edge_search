@@ -414,3 +414,25 @@ def test_skater_means_blends_this_season_before_the_seven_d_scale():
     seven, _, _ = R.skater_means(base, "D", 1.0, season=(20, 1, 4, 20, 20), seven_d=True)
     assert seven["blocks"] == pytest.approx(six["blocks"] * R.SEVEN_D_SCALE["blocks"])
     assert six["blocks"] < 1.5                                   # 1.0 a game this season pulls it down
+
+
+def test_lab_shots_power_moves_only_imputed_shots():
+    """Cycle 12's lab variant (not shipped): imputed shots x scale ** (e - 1), props
+    untouched, the goals + 0.05 floor kept; the shrink keeps the slate x position mean."""
+    from scripts import nhl_skater_lab as lab
+    from edge import dfs_run_nhl as R
+    hi = 1.5 * R.LEAGUE_TEAM_GOALS
+    s = {"implied": {"AAA": hi}, "pool": [
+        {"pos": "C", "team": "AAA", "imputed": ["shots", "points"],
+         "means": {"shots": 2.25, "goals": 0.3, "assists": 0.4, "blocks": 0.5}},
+        {"pos": "C", "team": "AAA", "imputed": ["shots", "points"],
+         "means": {"shots": 0.30, "goals": 0.29, "assists": 0.1, "blocks": 0.5}},
+        {"pos": "W", "team": "AAA", "imputed": [],
+         "means": {"shots": 3.0, "goals": 0.5, "assists": 0.5, "blocks": 0.3}}]}
+    out = lab.shots_power(s, {"e": 0.5})["pool"]
+    assert out[0]["means"]["shots"] == pytest.approx(2.25 * 1.5 ** -0.5)
+    assert out[1]["means"]["shots"] == pytest.approx(0.34)          # the floor
+    assert out[2]["means"]["shots"] == 3.0                          # a prop: untouched
+    before = np.mean([p["means"]["shots"] for p in out[:2]])
+    lab.shrink_imputed_shots(s, 0.5)
+    assert np.mean([p["means"]["shots"] for p in s["pool"][:2]]) == pytest.approx(before, abs=0.05)

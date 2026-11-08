@@ -129,6 +129,18 @@ def test_classify_protects_the_loops_own_judge(tmp_path):
     assert C.classify(["scripts/nba_minutes_ml_fit.py"], "nba", edited, base) == "protected"
 
 
+def test_judge_a_record_or_protected_candidate_runs_no_gate(tmp_path, monkeypatch):
+    """11/8: a log + lab + tests branch (record) crashed the night on gate["verdict"]."""
+    monkeypatch.setattr(C, "worktree", lambda *a, **k: tmp_path)
+    monkeypatch.setattr(C, "drop_worktree", lambda *a, **k: None)
+    monkeypatch.setattr(C, "link_data", lambda *a, **k: None)
+    monkeypatch.setattr(C, "verify", lambda wt, paths: (True, "ok"))
+    monkeypatch.setattr(G, "run", lambda *a, **k: (_ for _ in ()).throw(AssertionError("gate ran")))
+    for kind, want in (("record", "record"), ("protected", "review")):
+        monkeypatch.setattr(C, "classify", lambda *a, _k=kind, **k: _k)
+        assert C.judge("nhl", tmp_path, ["NHL_CRITIQUE_LOG.md"])[0] == want
+
+
 def test_rotation_skips_paused_pending_out_of_season_and_done():
     now = datetime(2026, 11, 8, tzinfo=timezone.utc)
     st = {"next": 0, "sports": {}}
