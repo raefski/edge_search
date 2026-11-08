@@ -173,3 +173,65 @@ fit is not distorted by the pre-11/5 logs.
 
 **Not run:** last game's started flag (critic: retest at 6+ slates; 5 graded), transfers in a team's
 first game (every team has now played: no such slate left this season).
+
+
+## Cycle 3 — the lab applied LAST_GAME twice from 11/7 on: harness fixed, no model change (2026-11-08, unattended)
+
+**Hole (found recording the baseline, before any critic).** 11/7 (156344) went final overnight and was
+graded into the worktree for this cycle (`ncaab-box-grade 156344`; the box is NOT committed, see below).
+It was built 14:49 ET, after cycle 1 shipped LAST_GAME (14:27), so its logged `proj` already has it --
+and the lab applies LAST_GAME to the logged `proj`. Evidence, logged proj by the team's last game:
+bench rows with 20+ last minutes 4.0 on 11/6 (n=10) vs **15.5 on 11/7 (n=6)**; bench with 0 last minutes
+2.37 vs 1.02. The lab was grading 11/7 on a board that never ran (all MAE 5.21 doubled vs 5.13 as run),
+and every slate from now on would have gone the same way, including through the critique gate.
+
+**Fix (harness + one log column; the model is unchanged).**
+- `scripts/ncaab_lab.py`: `base_projection` recovers the pre-LAST_GAME projection by inverting the step
+  with the constants that ran: 156344 = cycle 1 (0.048, 0.359, 0.190, 0.374, no implied factor), any
+  row with the cycle-2 `implied` column = cycle 2 (0.029, 0.298, 0.128, 0.449, x implied / 72.5), a logged
+  `base_proj` = exact. Parity: re-applying cycle 1's constants to the recovered base reproduces 156344's
+  log to 4e-15; 0 negative bases; recovered means bench 2.69 / blend 17.03 / salary 10.67 (n 70/54/5),
+  the pre-11/7 boards' levels.
+- `edge/dfs_run_ncaab.py`: the forward-test log gets `base_proj` (fp after Q_PLAY and the team budget,
+  before LAST_GAME). Old rows read blank; the history file rotates once (new column).
+- `data/ncaab_implied_backfill.json`: 156344's implied points, rebuilt by `game_lines` on dfs_ncaab
+  scan 20564 (finished 1 s before the logged build). The same method on 156346 reproduces its logged
+  implied on 12 of 12 teams.
+- Test: `test_lab_takes_last_game_back_out_of_a_logged_projection` (+ base_proj in the log test).
+
+**Held out, lab LOSO (LAST_GAME refit per fold), double-applied -> fixed.** 11/2-11/6 change only
+through the refit including 11/7's correct rows:
+
+| slate | all MAE | priced MAE | priced rho | bench MAE | bench bias |
+|---|---|---|---|---|---|
+| 11/2 155565 | 6.56 -> 6.56 | 9.56 -> 9.56 | .476 -> .476 | 3.48 -> 3.48 | -1.75 -> -1.75 |
+| 11/3 156039 | 7.62 -> 7.62 | 8.96 -> 8.96 | .477 -> .477 | 6.46 -> 6.46 | -4.34 -> -4.36 |
+| 11/4 156123 | 5.70 -> 5.68 | 7.57 -> 7.58 | .575 -> .577 | 3.33 -> 3.26 | -0.91 -> -1.04 |
+| 11/5 156240 | 5.59 -> 5.58 | 7.04 -> 7.03 | .648 -> .649 | 3.76 -> 3.74 | -0.97 -> -1.15 |
+| 11/6 156342 | 5.31 -> 5.27 | 6.81 -> 6.82 | .666 -> .669 | 3.59 -> 3.51 | -0.09 -> -0.33 |
+| 11/7 156344 | 5.21 -> 5.06 | 7.08 -> 6.96 | .574 -> .610 | 3.21 -> 3.02 | +1.51 -> +1.29 |
+| pooled | 6.122 -> 6.094 | 7.973 -> 7.961 | | 4.121 -> 4.074 | |
+
+**Cycle 2 on its first real forward slate (11/7, one slate: not enough data).** As run (cycle 1's
+constants live) vs cycle 2's shipped constants on the same base: all MAE 5.13 -> 5.06, priced 7.16 ->
+6.96, rho .573 -> .610; bench 2.96 -> 3.02 (bias +1.14 -> +1.29: 11/7's bench ran high, unlike 11/2-11/6).
+LAST_GAME refit on all 6 slates (-0.197, 0.335, 0.095, 0.451) vs shipped (0.029, 0.298, 0.128, 0.449):
+the minutes term is stable; not refit (one more slate, and this cycle changes no model).
+
+**Decision: SHIP the harness fix** (it is the judge: `scripts/ncaab_lab.py` is the gate's file, so this
+branch goes to Adam, not the auto-merge). No model critic this cycle: the skill puts a faithful harness
+before any critic, and a critic on the double-applied lab would have chased a phantom on 11/7.
+**Conservative calls (unattended):** 156344's box is not committed (the gate compares main vs branch on
+the same keys; grade it on main after this merges: `harness run ncaab-box-grade -- 156344` -- before the
+merge main's lab would double-apply it). 11/8 (156346) is cycle 2's code, handled by `CYCLE2` once graded.
+
+**Next critic:** 6 slates with a box; 11/7 is the first slate both built and graded under LAST_GAME. Open
+leads from earlier cycles: last game's started flag (retest at 6+ slates: now), team-share at 10 slates,
+GPP ownership refit at 5 GPP slates (11/7 has no GPP export).
+
+Unattended gate (20261108-0621): **fail**
+
+| split | state | n | clusters | main MAE | candidate MAE | loss diff [90%] | verdict |
+|---|---|---|---|---|---|---|---|
+| primary | all | 1,137 | 5 | 6.2493 | 6.2493 | +0.0000 [+0.0000, +0.0000] | unchanged |
+- no primary state better beyond noise
