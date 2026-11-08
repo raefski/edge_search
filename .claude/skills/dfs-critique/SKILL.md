@@ -104,5 +104,9 @@ format. Foreground: the next step depends on it. Never tell it what you suspect.
 ## 5. Log and report
 
 Append "Cycle N" to the log: critic's hole + evidence (summary), the fix, the decision,
-before/after table, runner-ups. Commit own paths, push under the repo lock, tell Adam
+before/after table, runner-ups. Hand-run cycles also go on the ROI dashboard's "Is the model
+improving?" card: `python3 scripts/critique_ledger_rows.py add --sport <s> --result
+shipped|"not shipped" --target "<metric>" --state "<held-out state>" --before X --after Y
+--n N --clusters K [--beyond-noise] --hole "..." --fix "..." --cycle N` (the nightly loop
+records its own). Commit own paths, push under the repo lock, tell Adam
 to Reboot if code changed. Reply with: the hole, the fix, the before/after metric table.

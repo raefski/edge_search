@@ -417,6 +417,9 @@ def main():
             show_player(card, a.view[1], a.view[2])
         return
     card = scorecard(dfs_roi_rows.build(), dfs_roi_rows.updates(), dfs_roi_rows.proj_rows())
+    # the critique loop's cycles, shipped or not (the dashboard's "Is the model improving?")
+    import critique_ledger_rows
+    card["critique_cycles"] = critique_ledger_rows.build()
     # one record per line: a reader (or grep) sees a whole group at once
     head = {k: v for k, v in card.items() if not isinstance(v, list) or k == "sources"}
     parts = [json.dumps(head, indent=1)[:-2]]

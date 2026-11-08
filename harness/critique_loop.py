@@ -588,6 +588,12 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
             if v == "usage limit":
                 results.append("stopped: Claude usage limit reached")
                 break
+        try:                                # the dashboard's rows (uploaded at the next refresh)
+            sys.path.insert(0, str(ROOT / "scripts"))
+            import critique_ledger_rows
+            critique_ledger_rows.build()
+        except Exception as e:              # noqa: BLE001 -- never lose the night over the rows file
+            results.append(f"(dashboard rows not rebuilt: {e})")
         if len(results) > 1 or (results and results[-1].startswith("stopped")):
             notify("critique night", "\n".join(results) + "\n\nharness critique-loop --status", "low")
     return 0

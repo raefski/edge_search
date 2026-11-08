@@ -191,3 +191,24 @@ def test_refresh_replaces_a_stale_copy_with_the_current_one(tmp_path, monkeypatc
     assert not (wt / "data" / "nba_injury_reports" / "b.pdf").exists()   # frozen copy
     C.link_data(wt, refresh=True)
     assert (wt / "data" / "nba_injury_reports" / "b.pdf").exists()
+
+
+def test_ledger_rows_keep_every_cycle_and_a_merge_updates_its_cycle(tmp_path):
+    import sys
+    sys.path.insert(0, str(C.ROOT / "scripts"))
+    import critique_ledger_rows as R
+    g = [{"split": "primary", "state": "tip-90 expected", "n": 100, "clusters": 14, "base": 36.0, "cand": 25.0,
+          "d": -11.0, "lo": -15.0, "hi": -5.0, "verdict": "better"},
+         {"split": "primary", "state": "confirmed", "n": 900, "clusters": 160, "base": 36.0, "cand": 36.0,
+          "d": 0.0, "lo": 0.0, "hi": 0.0, "verdict": "unchanged"}]
+    led = [{"at": "2026-11-08T08:00:00+00:00", "event": "cycle", "sport": "nba", "verdict": "pass",
+            "hole": "h1", "loss": "sq", "groups": g},
+           {"at": "2026-11-08T09:00:00+00:00", "event": "cycle", "sport": "nhl", "verdict": "fail",
+            "hole": "h2", "loss": "sq", "groups": []},
+           {"at": "2026-11-15T08:00:00+00:00", "event": "merged", "sport": "nba", "hole": "h1"}]
+    rows = R.rows(led)
+    assert [r["sport"] for r in rows] == ["NBA", "NHL"]                 # nothing hidden
+    nba, nhl = rows
+    assert nba["result"] == "Shipped" and nba["state"] == "tip-90 expected"
+    assert nba["before"] == 6.0 and nba["after"] == 5.0 and nba["beyond_noise"]
+    assert nhl["result"] == "Not shipped" and nhl["before"] is None
