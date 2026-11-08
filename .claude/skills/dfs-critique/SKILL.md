@@ -44,6 +44,12 @@ in a fresh worktree on a `critique/<sport>-<stamp>` branch). Nobody is watching,
   `gate()` function, the skill, the critic prompts, `.claude/` or `harness/critique_*`:
   any of those sends the branch to Adam for review instead of merging.
 - Not shipped: commit the log entry anyway (it is the next critic's memory).
+- No held-out harness for the sport's metric (NFL, MMA tonight): building it is the
+  cycle (section 1). Commit it with a `gate OUT` command that writes one JSON line per
+  held-out row (`key`, `cluster` = slate / night / race, `split` "primary", `state`,
+  `pred`, `actual`), the shape scripts/nascar_lab.py's gate() writes; Adam approves
+  adding it to the gate. A harness-only branch merges after the tests pass; a model
+  change for a sport without a gate goes to Adam with your numbers.
 - Last step: write `critique_result.json` at the worktree root (do NOT commit it):
   `{"sport", "cycle", "hole": one line, "fix": one line, "shipped": bool, "summary":
   3-5 lines with the before/after numbers}` -- it becomes the push to Adam's phone.

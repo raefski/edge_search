@@ -113,6 +113,11 @@ def test_judge_change_is_detected_by_gate_function_only(tmp_path):
     assert G.judge_changed("nba", base, edited)
 
 
+def test_every_rotation_sport_has_a_log_and_gated_sports_have_specs():
+    assert set(C.ROTATION) == set(C.LOGS)
+    assert {"nba", "ncaab", "nhl", "ncaaf", "nascar"} <= set(G.SPECS)
+
+
 def test_classify_protects_the_loops_own_judge(tmp_path):
     base = _checkout(tmp_path, "base", "return 0")
     cand = _checkout(tmp_path, "cand", "return 0")
@@ -124,15 +129,30 @@ def test_classify_protects_the_loops_own_judge(tmp_path):
     assert C.classify(["scripts/nba_minutes_ml_fit.py"], "nba", edited, base) == "protected"
 
 
-def test_rotation_skips_paused_and_pending():
+def test_rotation_skips_paused_pending_out_of_season_and_done():
     now = datetime(2026, 11, 8, tzinfo=timezone.utc)
     st = {"next": 0, "sports": {}}
+    season = lambda s: s != "mlb"                                    # noqa: E731
     C._sport(st, "nba")["paused_until"] = (now + timedelta(days=3)).isoformat()
     C._sport(st, "ncaab")["pending"] = {"branch": "x"}
-    assert C.pick(st, now) == "nhl"
-    assert C.pick(st, now) == "nhl"
+    assert C.pick(st, now, season=season) == "nhl"
+    night = []
+    st["next"] = 0
+    while (s := C.pick(st, now, set(night), season=season)):
+        night.append(s)
+    assert night == ["nhl", "ncaaf", "nascar", "nfl", "mma"]         # each once, no MLB
     C._sport(st, "nba")["paused_until"] = (now - timedelta(days=1)).isoformat()
-    assert C.pick(st, now) == "nba"
+    assert C.pick(st, now, season=season) == "nba"
+
+
+def test_season_comes_from_the_projection_log(tmp_path, monkeypatch):
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "dfs_proj_log_nfl.csv").write_text("date,gid,name\n2026-11-05,1,a\n2026-11-02,0,b\n")
+    (tmp_path / "data" / "dfs_proj_log_2026-10-15_g155140.csv").write_text("x\n")
+    monkeypatch.setattr(C, "ROOT", tmp_path)
+    assert C.last_slate("nfl") == "2026-11-05" and C.last_slate("mlb") == "2026-10-15"
+    now = datetime(2026, 11, 8, tzinfo=timezone.utc)
+    assert C.in_season("nfl", now) and not C.in_season("mlb", now) and not C.in_season("mma", now)
 
 
 def test_claude_binary_override(monkeypatch):

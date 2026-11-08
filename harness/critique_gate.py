@@ -47,7 +47,9 @@ ROOT = Path(__file__).resolve().parents[1]
 #: board cache that a build_board change only reaches after a rebuild), the file holding
 #: its gate() function, the loss, and the minimum clusters per state.
 #: Runtimes on the desktop (2026-11-07): nba ~10-15 min per checkout (lab load rebuilds
-#: when the model source changes), ncaab < 1 min, nhl a few minutes (4 seeds).
+#: when the model source changes) + the live replay ~5 min, ncaab < 1 min, nhl a few
+#: minutes (4 seeds), ncaaf ~2 min (uncached slates replay the odds store), nascar ~5 s.
+#: NFL / MMA / MLB have no held-out lab with a gate() yet: their model changes go to Adam.
 SPECS = {
     # 2025-26 / 2026-27 with the TRUE five or none (the lab's states), plus the live
     # state replayed: NBA.com's five + the report as of tip-45 / tip-90 (2026-27 only)
@@ -56,6 +58,13 @@ SPECS = {
             "judge": "scripts/nba_minutes_ml_fit.py", "loss": "sq", "min_clusters": 5},
     "ncaab": {"cmd": [["scripts/ncaab_lab.py", "gate", "{out}"]],
               "judge": "scripts/ncaab_lab.py", "loss": "abs", "min_clusters": 5},
+    # held-out slates (on/after 10/11) rebuilt from their raw ladders by today's code;
+    # truth = DK FPTS from the contest exports, by draft group
+    "ncaaf": {"cmd": [["scripts/ncaaf_lab.py", "gate", "{out}"]],
+              "judge": "scripts/ncaaf_lab.py", "loss": "abs", "min_clusters": 5},
+    # 2025-26 Cup races, production simulate() with 2022-24-fitted tables, DK points
+    "nascar": {"cmd": [["scripts/nascar_lab.py", "gate", "{out}"]],
+               "judge": "scripts/nascar_lab.py", "loss": "sq", "min_clusters": 5},
     "nhl": {"cmd": [["scripts/nhl_skater_lab.py", "gate", "{out}"]],
             "prepare": ["scripts/nhl_skater_lab.py", "cache"],
             "judge": "scripts/nhl_skater_lab.py", "loss": "sq", "min_clusters": 5},
@@ -98,6 +107,8 @@ def _gate_source(path: Path) -> str | None:
 
 
 def judge_changed(sport: str, base: Path, cand: Path) -> bool:
+    if sport not in SPECS:
+        return False            # no gate yet: critique_loop.judge sends model changes to Adam
     j = SPECS[sport]["judge"]
     return _gate_source(base / j) != _gate_source(cand / j)
 

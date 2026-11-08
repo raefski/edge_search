@@ -1,5 +1,6 @@
-# The DFS critique loop, unattended: one /dfs-critique cycle a night (rotating NBA,
-# NCAAB, NHL), measured by harness/critique_gate.py against main on the fixed held-out
+# The DFS critique loop, unattended: one /dfs-critique cycle per IN-SEASON sport a night
+# (NBA, NCAAB, NHL, NCAAF, NASCAR, NFL, MMA, MLB; in season = a slate in its projection log
+# within 10 days), one after another, measured by harness/critique_gate.py against main on the fixed held-out
 # lab rows; a passing change is re-gated after 7 forward days, then merged and pushed.
 # Every verdict goes to the phone through ntfy (same topic as the monitor).
 # See harness/critique_loop.py for why it is built this way.
@@ -23,5 +24,6 @@ WorkingDirectory=%h/edge_search
 ExecStart=/usr/bin/env python3 -m harness critique-loop
 Restart=no
 Nice=15
-# agent <= 5 h + two gate measurements (NBA ~15 min each) + verify
-TimeoutStartSec=25200
+# cycles start until 11:00 local (or a lock within 1 h, or the Claude usage limit);
+# each agent <= 2.5 h + its gate (NBA ~30-45 min) + verify
+TimeoutStartSec=72000

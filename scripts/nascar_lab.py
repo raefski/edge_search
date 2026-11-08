@@ -43,6 +43,7 @@ and 25th/90th floor/ceiling coverage.
 Run:  python3 scripts/nascar_lab.py report [--variant baseline|running_pos]
       python3 scripts/nascar_lab.py dk      [--variant ...]   # DK points
       python3 scripts/nascar_lab.py fit     # production FINISH_MODEL, 2022-2026
+      python3 scripts/nascar_lab.py gate out.jsonl   # TEST rows for harness/critique_gate.py
 """
 from __future__ import annotations
 
@@ -342,13 +343,42 @@ def table(res: dict) -> str:
     return "\n".join(lines)
 
 
+def gate(path: str, n_sims: int = 400) -> None:
+    """Rows for the unattended critique loop's gate (harness/critique_gate.py): the
+    shipped DK variant (production simulate(), train-fitted tables) on the TEST races,
+    mean simulated DK points vs real per driver-race; the gate squares the error and
+    clusters by race (one realisation: every driver shares the wrecks)."""
+    import json
+    rows = load_all()
+    train = [r for r in rows if r["season"] in TRAIN]
+    test = [r for r in rows if r["season"] in TEST]
+    pred = DK_VARIANTS["shipped"](train)
+    by_race = collections.defaultdict(list)
+    for r in test:
+        by_race[r["race_id"]].append(r)
+    n = 0
+    with open(path, "w") as fh:
+        for rid, race in by_race.items():
+            mean = pred(race, n_sims).mean(axis=0)
+            for r, m in zip(race, mean):
+                who = r.get("driver_id") or r.get("driver") or r.get("name")
+                fh.write(json.dumps({"key": f"{rid}|{who}", "cluster": str(rid), "split": "primary",
+                                     "state": "all", "pred": float(m), "actual": float(r["dk"])}) + "\n")
+                n += 1
+    print(f"{n:,} gate rows -> {path}")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["report", "dk", "fit"])
+    ap.add_argument("cmd", choices=["report", "dk", "fit", "gate"])
+    ap.add_argument("out", nargs="?", help="gate: rows file")
     ap.add_argument("--variant", default=None,
                     help=f"report: {sorted(VARIANTS)} (running_pos); dk: {sorted(DK_VARIANTS)} (shipped)")
     ap.add_argument("--sims", type=int, default=400)
     a = ap.parse_args()
+    if a.cmd == "gate":
+        gate(a.out, a.sims)
+        return
     rows = load_all()
     if a.cmd == "fit":
         # Production table: every season, as the shipped constants always were.

@@ -53,14 +53,29 @@ RUNS = ROOT / "data" / "harness" / "critique"
 WT_DIR = ROOT / ".claude" / "worktrees"
 GIT_LOCK = ROOT / ".git" / "edge_git.lock"
 
-ROTATION = ("nba", "ncaab", "nhl")          # sports with a gate (critique_gate.SPECS)
-LOGS = {"nba": "NBA_MINUTES_CRITIQUE_LOG.md", "ncaab": "NCAAB_CRITIQUE_LOG.md", "nhl": "NHL_CRITIQUE_LOG.md"}
+#: Every sport Adam plays (2026-11-07: "NFL, NCAAF, NBA, NCAAB, NHL, NASCAR, MMA ... stop
+#: running when out of season such as MLB"). A night runs each IN-SEASON sport once, in
+#: this order (the ones the gate can measure first), resuming where the last night stopped.
+ROTATION = ("nba", "ncaab", "nhl", "ncaaf", "nascar", "nfl", "mma", "mlb")
+LOGS = {"nba": "NBA_MINUTES_CRITIQUE_LOG.md", "ncaab": "NCAAB_CRITIQUE_LOG.md", "nhl": "NHL_CRITIQUE_LOG.md",
+        "ncaaf": "NCAAF_CRITIQUE_LOG.md", "nascar": "NASCAR_CRITIQUE_LOG.md", "nfl": "NFL_CRITIQUE_LOG.md",
+        "mma": "MMA_CRITIQUE_LOG.md", "mlb": "MLB_CRITIQUE_LOG.md"}
 MIRRORED = {"nhl", "ncaaf", "nascar", "mma"}  # CLAUDE.md: regenerate the mirror after a code change
 PAUSE_AFTER = 3
 PAUSE_DAYS = 21
 WAIT_DAYS = 7
+#: In season = the sport's forward-test projection log (what the app built before a lock)
+#: has a slate within SEASON_DAYS. Data, not a calendar: MLB (last log 10/15) sits out
+#: and comes back by itself when its builds resume; NASCAR drops ~10 days after its finale.
+SEASON_DAYS = 10
+#: Merges change projections: never with a lock inside 6 h. A cycle only uses CPU on the
+#: desktop (Nice 15) and touches nothing live, so it only steps aside for an imminent lock.
 LOCK_CLEAR_H = 6.0
-AGENT_TIMEOUT = 5 * 3600
+CYCLE_LOCK_H = 1.0
+#: No new cycle after this local hour: Adam's daytime Claude usage is his.
+NIGHT_END_HOUR = 11
+AGENT_TIMEOUT = int(2.5 * 3600)
+LEDGER = ROOT / "data" / "harness" / "critique_ledger.jsonl"
 #: untracked data/ entries above this are symlinked (read-mostly stores); the rest are
 #: copied. Lab caches are copied whatever their size: a candidate rebuilds them.
 LINK_ABOVE = 100 * 2 ** 20
@@ -282,7 +297,23 @@ def run_agent(sport: str, wt: Path, stamp: str) -> dict:
         claim = json.loads((wt / "critique_result.json").read_text())
     except (OSError, ValueError):
         claim = {}
-    return {"rc": rc, "claim": claim}
+    try:
+        res = json.loads(out or "{}")
+    except ValueError:
+        res = {}
+    text = str(res.get("result", "")) + (out or "")[-2000:]
+    limited = rc not in (0,) and bool(re.search(r"usage limit|rate limit|limit reached|out of extra usage", text, re.I))
+    return {"rc": rc, "claim": claim, "limited": limited, "cost": res.get("total_cost_usd"),
+            "minutes": round(res.get("duration_ms", 0) / 60000, 1) if res.get("duration_ms") else None}
+
+
+def ledger(entry: dict) -> None:
+    """One line per cycle / re-gate / merge: what the dashboard's model-improvement card
+    and data/dfs_scorecard.json read (scripts/critique_ledger_rows.py). Kept whether or
+    not anything shipped -- "not improving" is a result."""
+    LEDGER.parent.mkdir(parents=True, exist_ok=True)
+    with LEDGER.open("a") as fh:
+        fh.write(json.dumps({"at": _now().isoformat(), **entry}, default=str) + "\n")
 
 
 def judge(sport: str, cand: Path, paths: list[str]) -> tuple[str, dict]:
@@ -294,7 +325,11 @@ def judge(sport: str, cand: Path, paths: list[str]) -> tuple[str, dict]:
     try:
         kind = classify(paths, sport, cand, base)
         gate = {"table": "", "reasons": []}
-        if kind == "model":
+        if kind == "model" and sport not in critique_gate.SPECS:
+            kind = "protected"
+            gate["reasons"].append(f"no gate for {sport} yet (a lab gate() + critique_gate.SPECS entry): "
+                                   "the agent's own numbers are in the log")
+        elif kind == "model":
             gate = critique_gate.run(sport, cand, base)
         verdict = {"protected": "review", "record": "record"}.get(kind, gate["verdict"])
         if kind == "protected":
@@ -314,6 +349,7 @@ def _note(stamp: str, verdict: str, gate: dict, extra: str = "") -> str:
 
 
 def cycle(sport: str, st: dict) -> str:
+    from harness import critique_gate
     sp = _sport(st, sport)
     stamp = _now().strftime("%Y%m%d-%H%M")
     branch = f"critique/{sport}-{stamp}"
@@ -322,9 +358,15 @@ def cycle(sport: str, st: dict) -> str:
     claim = res["claim"]
     head = claim.get("hole") or "(no critique_result.json)"
     paths = changed(cand)
+    if res["limited"] and not paths:
+        drop_worktree(cand, branch)
+        ledger({"event": "cycle", "sport": sport, "verdict": "usage limit", "minutes": res["minutes"]})
+        return "usage limit"
     if not paths:
         drop_worktree(cand, branch)
         sp["history"].append({"at": stamp, "outcome": "no commits", "rc": res["rc"]})
+        ledger({"event": "cycle", "sport": sport, "verdict": "no result", "rc": res["rc"], "minutes": res["minutes"],
+                "cost_est": res["cost"]})
         sp["streak"] += 1
         notify(f"{sport} critique: no result", f"the agent committed nothing (rc {res['rc']}). "
                f"Run log: data/harness/critique/{stamp}-{sport}.json", "high")
@@ -348,6 +390,11 @@ def cycle(sport: str, st: dict) -> str:
         drop_worktree(cand, branch)
     entry = {"at": stamp, "outcome": verdict, "hole": head, "paths": paths}
     sp["history"].append(entry)
+    ledger({"event": "cycle", "sport": sport, "verdict": verdict, "hole": head, "fix": claim.get("fix"),
+            "agent_shipped": claim.get("shipped"), "summary": claim.get("summary"), "cycle": claim.get("cycle"),
+            "loss": (critique_gate.SPECS.get(sport) or {}).get("loss"), "groups": gate.get("groups", []),
+            "reasons": gate.get("reasons", [])[:6], "minutes": res["minutes"], "cost_est": res["cost"],
+            "paths": paths})
     sp["streak"] = 0 if verdict in ("pass", "review") else sp["streak"] + 1
     if sp["streak"] >= PAUSE_AFTER:
         sp["paused_until"] = (_now() + timedelta(days=PAUSE_DAYS)).isoformat()
@@ -406,15 +453,41 @@ def regate(sport: str, st: dict) -> str | None:
     drop_worktree(cand, p["branch"])
     sp["pending"] = None
     sp["history"].append({"at": stamp, "outcome": f"regate {verdict}", "hole": p["hole"]})
+    ledger({"event": "merged" if verdict == "pass" else "dropped", "sport": sport, "hole": p["hole"],
+            "groups": gate.get("groups", []), "reasons": gate.get("reasons", [])[:6]})
     return verdict
 
 
-def pick(st: dict, now: datetime) -> str | None:
+def last_slate(sport: str) -> str | None:
+    """Date of the newest slate in the sport's forward-test projection log ('YYYY-MM-DD')."""
+    files = [ROOT / "data" / f"dfs_proj_log_{sport}.csv"]
+    if sport == "mlb":                       # MLB logs one file per slate
+        files = sorted((ROOT / "data").glob("dfs_proj_log_20??-??-??_g*.csv"))[-1:]
+        return files[0].name[13:23] if files else None
+    f = files[0]
+    if not f.exists():
+        return None
+    with f.open("rb") as fh:
+        fh.seek(max(0, f.stat().st_size - 4096))
+        tail = fh.read().decode(errors="replace").strip().splitlines()
+    dates = [x[:10] for x in tail if re.match(r"\d{4}-\d{2}-\d{2}", x)]
+    return max(dates) if dates else None
+
+
+def in_season(sport: str, now: datetime | None = None) -> bool:
+    d = last_slate(sport)
+    now = now or _now()
+    return bool(d) and (now.date() - datetime.strptime(d, "%Y-%m-%d").date()).days <= SEASON_DAYS
+
+
+def pick(st: dict, now: datetime, done: set = frozenset(), season=in_season) -> str | None:
+    """The next sport in the rotation that is in season, not paused, not waiting on a
+    pending candidate and not already run tonight."""
     for k in range(len(ROTATION)):
         s = ROTATION[(st["next"] + k) % len(ROTATION)]
         sp = _sport(st, s)
         paused = sp["paused_until"] and datetime.fromisoformat(sp["paused_until"]) > now
-        if not paused and not sp["pending"]:
+        if not paused and not sp["pending"] and s not in done and season(s):
             st["next"] = (st["next"] + k + 1) % len(ROTATION)
             return s
     return None
@@ -425,7 +498,8 @@ def status(st: dict) -> str:
     for s in ROTATION:
         sp = _sport(st, s)
         last = sp["history"][-1] if sp["history"] else {}
-        out.append(f"  {s:<6} streak {sp['streak']}  paused until {sp['paused_until'] or '-'}  "
+        season = f"in season (last slate {last_slate(s)})" if in_season(s) else f"OUT of season ({last_slate(s)})"
+        out.append(f"  {s:<6} {season}  streak {sp['streak']}  paused until {sp['paused_until'] or '-'}  "
                    f"pending {(sp['pending'] or {}).get('branch', '-')}  last {last.get('at', '-')} "
                    f"{last.get('outcome', '')}")
     return "\n".join(out)
@@ -459,6 +533,7 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
             drop_worktree(cand, p["branch"])
             sp["history"].append({"at": _now().strftime("%Y%m%d-%H%M"), "outcome": "merged by Adam",
                                   "hole": p["hole"]})
+            ledger({"event": "merged", "sport": merge, "hole": p["hole"], "by": "Adam"})
             sp["pending"] = None
             save_state(st)
             print(status(st))
@@ -471,32 +546,48 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
                 drop_worktree(cand, sp["pending"]["branch"])
                 sp["history"].append({"at": _now().strftime("%Y%m%d-%H%M"), "outcome": "vetoed",
                                       "hole": sp["pending"]["hole"]})
+                ledger({"event": "dropped", "sport": drop, "hole": sp["pending"]["hole"], "by": "Adam"})
                 sp["pending"] = None
             if resume:
                 sp["paused_until"], sp["streak"] = None, 0
             save_state(st)
             print(status(st))
             return 0
-        soon = locks_soon()
-        if soon:
-            print(f"skipped: {soon[0]['sport']} {soon[0]['label']} locks {soon[0]['lock']:%H:%M} UTC")
-            if not dry_run:
-                return 0
-        for s in ROTATION:
-            if not dry_run:
+        if not dry_run and not locks_soon():
+            for s in ROTATION:
                 r = regate(s, st)
                 if r:
                     print(f"{s}: re-gate {r}")
                     save_state(st)
-        s = sport or pick(st, _now())
-        if not s:
-            print("nothing to run: every sport paused or pending")
-            save_state(st)
-            return 0
         if dry_run:
-            print(f"would run /dfs-critique {s} unattended with {claude_bin()}\n{status(st)}")
+            plan, probe = [], json.loads(json.dumps(st))
+            while (s := (sport if sport and not plan else None) or pick(probe, _now(), set(plan))):
+                plan.append(s)
+                if sport:
+                    break
+            print(f"would run, in order: {', '.join(plan) or 'nothing'} (claude: {claude_bin()})\n{status(st)}")
             return 0
-        save_state(st)
-        print(f"{s}: {cycle(s, st)}")
-        save_state(st)
+        done, results = set(), []
+        while True:
+            soon = locks_soon(CYCLE_LOCK_H)
+            if soon:
+                results.append(f"stopped: {soon[0]['sport']} {soon[0]['label']} locks {soon[0]['lock']:%H:%M} UTC")
+                break
+            if done and datetime.now().hour >= NIGHT_END_HOUR and datetime.now().hour < 23:
+                results.append(f"stopped: past {NIGHT_END_HOUR}:00")
+                break
+            s = (sport if sport and not done else None) or (None if sport else pick(st, _now(), done))
+            if not s:
+                break
+            done.add(s)
+            save_state(st)
+            v = cycle(s, st)
+            save_state(st)
+            results.append(f"{s}: {v}")
+            print(results[-1], flush=True)
+            if v == "usage limit":
+                results.append("stopped: Claude usage limit reached")
+                break
+        if len(results) > 1 or (results and results[-1].startswith("stopped")):
+            notify("critique night", "\n".join(results) + "\n\nharness critique-loop --status", "low")
     return 0

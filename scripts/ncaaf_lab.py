@@ -5,6 +5,7 @@ pre-lock projection, per laddered player.
     python3 scripts/ncaaf_lab.py report                 # shipped model, every slate
     python3 scripts/ncaaf_lab.py report --cutoff 2026-10-11
     python3 scripts/ncaaf_lab.py dump out.csv           # the joined rows, for a critic
+    python3 scripts/ncaaf_lab.py gate out.jsonl         # reprojected held-out rows, for the critique gate
 
 WHY LOGGED PROJECTIONS AND NOT A REPLAY
 `data/dfs_proj_log_ncaaf.csv` is what the app actually showed before lock, so
@@ -502,6 +503,28 @@ def qb_pass_stretch_pred(rows: list[dict], cutoff: str, base):
     return pred
 
 
+def gate(path: str) -> int:
+    """Rows for the unattended critique loop's gate (harness/critique_gate.py): today's
+    code rebuilt from each slate's raw ladders (reproject_pred: production
+    project_player, so a model change on a branch moves it; the logged projection
+    would not), per graded player on the held-out slates (date >= DEFAULT_CUTOFF);
+    the gate scores absolute error, clustered by slate. Players with no cached
+    ladders keep their logged projection in both checkouts."""
+    rows, _ = joined()
+    pred = reproject_pred(rows, DEFAULT_CUTOFF, quiet=True)
+    n = 0
+    with open(path, "w") as fh:
+        for r in rows:
+            if r["date"] < DEFAULT_CUTOFF or r["actual"] is None:
+                continue
+            fh.write(json.dumps({"key": f"{r['gid']}|{norm(r['player'])}", "cluster": str(r["gid"]),
+                                 "split": "primary", "state": "all", "pred": float(pred(r)),
+                                 "actual": float(r["actual"])}) + "\n")
+            n += 1
+    print(f"{n:,} gate rows -> {path}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -533,7 +556,11 @@ def main() -> int:
                          "of the same day (one realisation counted once)")
     dp = sub.add_parser("dump")
     dp.add_argument("out")
+    gp = sub.add_parser("gate", help="held-out rows for harness/critique_gate.py")
+    gp.add_argument("out")
     a = ap.parse_args()
+    if a.cmd == "gate":
+        return gate(a.out)
     rows, cover = joined()
     if a.cmd == "report":
         if a.dedup:
