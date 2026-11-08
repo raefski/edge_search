@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-08T22:27:06+00:00",
+"generated_at": "2026-11-08T22:44:00+00:00",
 "goalies": {
 "2026-11-08": {
 "ANA": {
@@ -949,8 +949,8 @@
 "powerplayGoals": 1,
 "powerplayPoints": 1,
 "shots": 6,
-"toiMinutes": 151,
-"toiSeconds": 6
+"toiMinutes": 158,
+"toiSeconds": 30
 },
 "last5": {
 "assists": 2,
@@ -962,8 +962,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 1,
-"toiMinutes": 69,
-"toiSeconds": 51
+"toiMinutes": 77,
+"toiSeconds": 15
 },
 "line": "D3",
 "pk": null,
@@ -1189,8 +1189,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 12,
-"toiMinutes": 88,
-"toiSeconds": 25
+"toiMinutes": 92,
+"toiSeconds": 28
 },
 "last5": {
 "assists": 0,
@@ -1202,8 +1202,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 3,
-"toiMinutes": 35,
-"toiSeconds": 10
+"toiMinutes": 39,
+"toiSeconds": 13
 },
 "line": "F4",
 "pk": null,
@@ -3867,7 +3867,7 @@
 "injury": null,
 "last10": {
 "assists": 1,
-"blocks": 13,
+"blocks": 14,
 "gamesPlayed": 10,
 "goals": 0,
 "points": 1,
@@ -3880,7 +3880,7 @@
 },
 "last5": {
 "assists": 0,
-"blocks": 6,
+"blocks": 7,
 "gamesPlayed": 5,
 "goals": 0,
 "points": 0,
@@ -8627,9 +8627,9 @@
 "toiMinutes": 87,
 "toiSeconds": 14
 },
-"line": "D3",
+"line": "D4",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Jake Guentzel": {
@@ -8763,9 +8763,9 @@
 "toiMinutes": 84,
 "toiSeconds": 46
 },
-"line": "D4",
+"line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Nikita Kucherov": {
