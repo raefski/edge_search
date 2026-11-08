@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-08T15:30:29+00:00",
+"generated_at": "2026-11-08T16:00:45+00:00",
 "goalies": {
 "2026-11-08": {
 "ANA": {
@@ -20,7 +20,7 @@
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
-"status": null
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Connor Hellebuyck",
@@ -69,7 +69,7 @@
 "status": null
 },
 "SJS": {
-"goalie": "Alex Nedeljkovic",
+"goalie": "Yaroslav Askarov",
 "status": null
 },
 "VAN": {
@@ -2829,7 +2829,7 @@
 "toiMinutes": 59,
 "toiSeconds": 23
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -3171,7 +3171,7 @@
 "toiMinutes": 41,
 "toiSeconds": 57
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -7222,7 +7222,7 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Justin Brazeau": {
 "gtd": false,
@@ -7256,7 +7256,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Kaedan Korczak": {
 "gtd": false,
@@ -7667,7 +7667,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -8281,7 +8281,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
