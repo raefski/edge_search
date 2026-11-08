@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-08T14:57:04+00:00",
+"generated_at": "2026-11-08T15:30:29+00:00",
 "goalies": {
 "2026-11-08": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "CGY": {
 "goalie": "Devin Cooley",
-"status": null
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
@@ -40,7 +40,7 @@
 },
 "TOR": {
 "goalie": "Anthony Stolarz",
-"status": null
+"status": "Likely"
 },
 "VGK": {
 "goalie": "Adin Hill",
@@ -4100,7 +4100,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Seth Jones": {
 "gtd": false,
@@ -4168,7 +4168,7 @@
 "line": "D3",
 "pk": null,
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 }
 },
 "NJD": {
@@ -5091,7 +5091,7 @@
 "toiMinutes": 68,
 "toiSeconds": 10
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -5399,7 +5399,7 @@
 "toiMinutes": 75,
 "toiSeconds": 50
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
@@ -5469,7 +5469,7 @@
 "toiMinutes": 103,
 "toiSeconds": 40
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP1"
