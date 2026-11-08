@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-08T16:57:04+00:00",
+"generated_at": "2026-11-08T17:57:10+00:00",
 "goalies": {
 "2026-11-08": {
 "ANA": {
@@ -1205,9 +1205,9 @@
 "toiMinutes": 41,
 "toiSeconds": 22
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Michael DiPietro": {
@@ -1275,9 +1275,9 @@
 "toiMinutes": 66,
 "toiSeconds": 13
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Morgan Geekie": {
@@ -3557,7 +3557,7 @@
 "pp": null
 },
 "Anton Lundell": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -3585,10 +3585,10 @@
 "toiMinutes": 85,
 "toiSeconds": 20
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
-"pos": "rw",
-"pp": null
+"pos": "c",
+"pp": "PP2"
 },
 "Bokondji Imama": {
 "gtd": false,
@@ -3961,10 +3961,10 @@
 "toiMinutes": 84,
 "toiSeconds": 40
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
-"pos": "c",
-"pp": "PP2"
+"pos": "rw",
+"pp": null
 },
 "Matthew Tkachuk": {
 "gtd": false,
