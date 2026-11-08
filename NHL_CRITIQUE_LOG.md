@@ -673,3 +673,77 @@ sim vs 1.67 actual, test lock; season H2 blocks 0.813 vs 0.765).
 
 Next: re-cache the lab with (a)-(c) in production, re-baseline, refit SKATER_SCALE once;
 then blocks run ~6% high (season H2) -- the block means, not their tail.
+
+
+## Cycle 12 (unattended, 2026-11-08): imputed shots' goal elasticity -- not shipped
+
+**Re-cache first** (cycle 11's open item). The lab cache was rebuilt from today's code
+(cycles 10-11 in production) for every logged slate: 57 per state (154747 / 154752 have no
+draftables snapshot). Box scores fetched through 11/7 (10/30 still missing: 3 games, ~107
+rows ungraded). New baseline, 4 seeds, TRAIN < 10/13 <= TEST:
+
+| state | split | nights | skater-games | MAE | RMSE | bias | rank corr |
+|---|---|---|---|---|---|---|---|
+| lock | train | 11 | 2,223 | 4.511 | 6.062 | -0.009 | +0.363 |
+| lock | test | 24 | 5,952 | 4.483 | 6.017 | -0.078 | +0.416 |
+| early | train | 11 | 2,202 | 4.520 | 6.078 | -0.029 | +0.368 |
+| early | test | 24 | 5,880 | 4.497 | 6.038 | -0.079 | +0.411 |
+
+Parity lab == build_board: max 0.0050 (log rounding). Scratched board skaters 128 lock (567
+proj pts) / 212 early. Goalies test MAE 7.59 vs constant 7.62 (n 331). SKATER_SCALE: bias is
+now -0.08 on test (-0.01 train), so no refit (the 0.976 still sits on the right side).
+
+**Critic #12: imputed shots spread ~1.6x too wide.** Skaters with no shots prop (4,700 of
+8,175 graded rows, incl. ~40% of F2/D1/D2 with a points prop but no shots line) get last
+season's / this season's shot rate x scale (implied team goals / 3.128), an elasticity of 1
+never fitted. Slope of actual on projected shots, no-shots-prop skaters: lock 0.69 train /
+0.66 test, early 0.73 / 0.65 (prop skaters 1.00-1.08). The critic also found the means at the
+noise floor: test MSE 36.24 vs the simulator's own variance 36.12 (train 36.74 / 35.66), and
+every other lever flat (season-blend K 36 cells, role scaling 24 cells, a TOI prior for the
+727 rateless rows, train-fit linear recalibration: |test dRMSE| <= 0.004). Proposed: (a) shots
+x scale ** 0.5, (b) shrink imputed shots toward the slate x position mean, k ~0.62, (c) refit
+SKATER_SCALE. Critic's own estimate -0.003 to -0.004 RMSE, below one seed's noise.
+
+**Variant** `shots_power` (scripts/nhl_skater_lab.py; e, optional k via
+`shrink_imputed_shots`): imputed shots x scale ** (e - 1) on the cached board, == a
+production knob to 9e-16 on all 20,152 cached skater rows. Fit on TRAIN, lock + early RMSE
+summed, 4 seeds: e 1.0 (shipped) 12.1397, 0.5 **12.1350**, 0.25 12.1402, 0 12.1362; k 0.75
+on top 12.1327 (-0.002, noise; slate-relative, cycle 9's shrink was unstable) -> **e 0.5, no
+shrink** (judgment call: 0 and 0.5 within noise; 0.5 is the smaller move).
+
+Season lab (2025-26 no-prop path, team goals = a form estimate, not odds), squared error per
+skater-game vs e = 1:
+
+| e | H1 (fit) RMSE | H2 RMSE | H1 dSE [95%] | H2 dSE [95%] | shots slope H2 |
+|---|---|---|---|---|---|
+| 1.0 | 6.0146 | 6.1112 | -- | -- | 0.863 |
+| 0.5 | 5.9993 | 6.1018 | -0.185 [-0.241, -0.127] | -0.116 [-0.174, -0.059] | 0.922 |
+| 0.0 | 5.9914 | 6.0960 | -0.279 [-0.386, -0.178] | -0.186 [-0.286, -0.088] | 0.947 |
+
+**2026-27 TEST (the target), 4 seeds, e 0.5:**
+
+| state | split | MAE | RMSE | bias | rank | dSE per night [95%], nights better |
+|---|---|---|---|---|---|---|
+| lock | train | 4.511 -> 4.508 | 6.062 -> 6.060 | -0.009 -> -0.013 | +0.363 -> +0.364 | -0.040 [-0.077, -0.002], 8/11 |
+| lock | test | 4.483 -> 4.479 | 6.017 -> 6.016 | -0.078 -> -0.087 | +0.416 -> +0.415 | -0.004 [-0.051, +0.051], 13/24 |
+| early | train | 4.520 -> 4.518 | 6.078 -> 6.075 | -0.029 -> -0.029 | +0.368 -> +0.369 | -0.055 [-0.155, +0.034], 7/11 |
+| early | test | 4.497 -> 4.496 | 6.038 -> 6.039 | -0.079 -> -0.089 | +0.411 -> +0.410 | +0.033 [-0.004, +0.072], 10/24 |
+
+**Not shipped.** The season lab says the elasticity is real and well below 1 (beyond noise in
+both halves), but on this season's real-odds boards the test gain is nil at lock and early
+RMSE is worse in point estimate: the rule (target improves in both states) fails, and the
+gate would refuse it. Likely why: with market implied goals, the scale's spread is already
+small, and the season lab's form-based team goals are noisier, so damping them helps more there.
+Revisit at ~45 test nights (`report --variant shots_power`), or fit e on the season lab with
+odds-based team goals if a 2025-26 odds history is found.
+
+Runner-ups: (1) goal / assist split from props: the outcome weight on the market's goal share
+flips by split (+1.13 test / -0.63 train vs the 3.5 the model applies), ~0.001 RMSE; (2)
+simulated spread vs realised error: prop skaters 55.2 vs 54.1, no-prop 21.6 vs 22.7 (GPP
+percentiles, not this metric); (3) data: A.J. Greer runs on default rates (18 board rows), as
+the NHL lists him "Anthony-John (AJ) Greer" and both the exact and the initial + last joins miss.
+
+Unattended gate (20261108-0638): **fail**
+
+
+- ✗ does not compile:
