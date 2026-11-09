@@ -89,3 +89,5 @@ Runner-ups (critic):
    before the last pre-lock build (availability target).
 3. Two TEs (TE in FLEX) in 5 of 11 shipped cash lineups; cheap-TE projections may run
    hot. Untested on lineups.
+
+Unattended gate (20261109-0817): **not shipped (log / harness only, verified)**
