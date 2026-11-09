@@ -1458,3 +1458,42 @@ The earlier salary-shrink claim (NBA_STATUS.md) is corrected: with the alias-awa
 player MAE gain is -0.120 [-0.293, +0.030], within noise. Reading: our projection ranks cash
 lineups barely better than chance (top 5% of the field by our numbers finish at the 43-46th
 percentile); the next cycle should target that ordering, judged on `field` first.
+
+## Cycle 27 (cash lineup ranking) -- 2026-11-08, hand-run
+
+Target: how our projection ORDERS cash lineups. Metric: `scripts/nba_lineup_lab.py field` on
+cash contests -- each contest's real lineups ranked by the projection (sum of 8), the top-5%
+field percentile and Spearman; cluster = date; train < 10/31 <= test (test is 3 contests:
+not enough data alone, so candidates are also read leave-one-date-out over every cash date).
+GPP contests are the guard. Baseline = cycle 26's corrected table: cash top-5% .455 train
+(11 contests / 8 dates / 1,280 lineups, rho .156), .430 test (3 / 3 / 186, rho .149); GPP
+.550 / .594.
+
+**Critic (dfs-model-critic, ~11 min).** Hole: the projection never used the DK player props
+already collected (dfs_nba scan, since 10/15). Prop-covered players: train MAE ours 8.83 vs
+market 8.32; actual ~ 4.23 + 0.06 proj + 0.843 mkt -- given the market our projection adds
+almost nothing. Field ranking (train-fitted blend): cash top-5% .455 -> .494, rho .156 -> .242;
+LODO cash rho +.076 [-.082, +.195], 7 of 11 dates better; GPP rho +.048. Runner-ups: (1) the
+field metric dropped lineups holding a player off our board (891 of 1,149 in 10/26's cash
+contest, Jaylin Williams 77% owned, off our board); (2) top-5% of a 20-23 entry field is 1-2
+lineups (coin flip); (3) minutes over-confident against salary (no ordering gain).
+
+**Verification + fix.** Props read through production code (`market_points` on a
+ScrapedOddsClient pinned to the last dfs_nba scan finished >= 25 min before the slate's first
+commence; the night's first scan for start times), ~90% of players projected 20+ covered.
+Field metric now counts off-board players as 0 (runner-up 1) and adds top-10% (runner-up 2).
+Train fit 5.679 + 0.141 proj + 0.714 mkt; test player MAE 8.721 -> 8.228 (-.493 [-.779,
+-.117], 598 / 6 dates); market alone 8.259. Optimizer replay (`props-lodo`, blend refit
+without each date, every contest held out):
+
+| mode | contests | dates | field pctile model -> props | diff [90%] | cashed | points | dates better / worse |
+|---|---|---|---|---|---|---|---|
+| cash | 17 | 12 | .275 -> .541 | +.265 [+.111, +.436] | 24% -> 65% | 248.1 -> 270.6 | 8 / 3 |
+| gpp | 33 | 16 | .475 -> .601 | +.126 [-.068, +.332] | 21% -> 52% | 250.2 -> 261.6 | 10 / 6 |
+
+Market alone / market + train offset (+2.135): better train lineups but test GPP -.20 / -.18
+(noise) -- the blend keeps GPP level. **SHIPPED**: PROPS_BLEND = (4.401, 0.139, 0.762), the
+all-dates fit (1,436 rows / 16 dates; LODO is the validation). Log gains model_proj / mkt /
+proj_source; the lab replays from model_proj and its "shipped" variant is production's blend
+("model_only" = before). Live check 11/8 for 11/9's slate: props not posted yet (day-of), the
+page says "none posted yet (model only)". DFS suite 511 passed, verify clean, page AppTest clean.

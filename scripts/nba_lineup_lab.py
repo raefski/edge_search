@@ -20,7 +20,8 @@ pre-lock build, edge/dfs_forward_log.py):
     key; it orders the sim's random draws), else the two teams; pool sorted as build_slate;
   - edge.dfs_nba_theory.simulate (3,000 sims, seed 0) and edge.dfs_opt_nba.optimize for
     cash and GPP (200 iters, seed 0, own_weight 0: production defaults);
-  - a VARIANT (--variant) transforms the pool before the sim; "shipped" leaves it alone.
+  - a VARIANT (--variant) transforms the pool before the sim. "shipped" = today's production
+    (the cycle-27 props blend on the model's projection); "model_only" = no props (pre-11/8).
 Truth: DK's own points for the draft group (contests.db player_result: what the field was
 scored with), else the box score (nba_salary_shrink_lab.box_lookup, alias-aware), else 0 =
 did not play; `report` prints how many lineup players each source scored. Field: every exported contest on that draft group
@@ -60,7 +61,10 @@ def boards() -> dict:
     with LOG.open() as fh:
         for r in csv.DictReader(fh):
             try:
-                proj, sal = float(r["proj"] or 0), float(r["salary"] or 0)
+                # from cycle 27 the logged proj is the props blend: replay from the model's own
+                # number (model_proj) so a variant never blends twice
+                proj = float(r.get("model_proj") or r["proj"] or 0)
+                sal = float(r["salary"] or 0)
             except ValueError:
                 continue
             elig = dfs_opt_nba.eligible(r["dk_pos"])
@@ -73,7 +77,8 @@ def boards() -> dict:
                 "proj": proj, "own": float(r["own"] or 0), "starter": r.get("starter") == "1",
                 "lineup": r.get("lineup") or "", "promoted": r.get("promoted") == "1",
                 "minutes": float(r["minutes"] or 0) if r.get("minutes") else 0.0,
-                "recent": float(r["recent"]) if r.get("recent") not in (None, "") else None})
+                "recent": float(r["recent"]) if r.get("recent") not in (None, "") else None,
+                "mkt": float(r["mkt"]) if r.get("mkt") not in (None, "") else None})
     # DK's competition id (production's `game`, which fixes the sim's random-number order)
     # where contests.db has the slate's players (every board with an exported contest)
     c = sqlite3.connect(SL.DB)
@@ -97,12 +102,23 @@ def logged_lineups() -> dict:
 
 
 # ---- variants: a pool transform applied before the sim (the cycle's candidates) ----
-VARIANTS: dict = {"shipped": None}
+def _production(pool: list[dict]) -> None:
+    """Today's production on a logged board: the props blend (edge/dfs_run_nba.blend_props,
+    PROPS_BLEND) with the logged market number, else the one replayed from the scan the board
+    could have seen (market_for_board). Boards are replayed from model_proj, so never twice."""
+    from edge import dfs_run_nba as R
+    mkt = {p["name"]: p["mkt"] for p in pool if p.get("mkt") is not None}
+    if not mkt and pool and pool[0].get("_gid"):
+        mkt = market_for_board(pool[0]["_gid"], pool)
+    R.blend_props(pool, mkt)
 
 
-def build(ps: list[dict], variant: str = "shipped") -> dict:
+VARIANTS: dict = {"shipped": _production, "model_only": None}
+
+
+def build(ps: list[dict], variant: str = "shipped", gid: int | None = None) -> dict:
     """{mode: [names]} for one board, production sim + optimizer."""
-    pool = [dict(p) for p in ps]
+    pool = [dict(p, _gid=gid) for p in ps]
     if VARIANTS.get(variant):
         VARIANTS[variant](pool)
     pool.sort(key=lambda p: (str(p.get("game") or ""), str(p.get("team") or ""), p["name"]))
@@ -123,7 +139,7 @@ def build(ps: list[dict], variant: str = "shipped") -> dict:
 # 16 workers + the cache take a full report from ~25 min to ~2 min cold, seconds warm.
 CACHE = ROOT / "data" / "nba_lineup_lab_cache"
 SOURCES = ("edge/dfs_nba_theory.py", "edge/dfs_opt_nba.py", "edge/dfs_opt_climb.py",
-           "edge/nba_ceiling_quantiles.py", "scripts/nba_lineup_lab.py")
+           "edge/nba_ceiling_quantiles.py", "edge/dfs_run_nba.py", "scripts/nba_lineup_lab.py")
 WORKERS = 16
 
 
@@ -138,7 +154,7 @@ def _key(ps: list[dict], variant: str) -> str:
 
 def _build_one(args):
     gid, ps, variant = args
-    return gid, build(ps, variant)
+    return gid, build(ps, variant, gid)
 
 
 def build_all(B: dict, variant: str = "shipped", workers: int = WORKERS) -> dict:
@@ -239,7 +255,10 @@ def rows(variant: str = "shipped") -> list[dict]:
 def parity() -> int:
     B, L = boards(), logged_lineups()
     B = {g: ps for g, ps in B.items() if (g, "cash") in L}
-    built = build_all(B)
+    # a board logged before the props blend (no mkt column) was built by the model alone
+    with_mkt = {g: ps for g, ps in B.items() if any(p.get("mkt") is not None for p in ps)}
+    built = {**build_all({g: ps for g, ps in B.items() if g not in with_mkt}, "model_only"),
+             **build_all(with_mkt, "shipped")}
     same = {"cash": [0, 0], "gpp": [0, 0]}
     for gid, ps in B.items():
         lu = built[gid]
@@ -282,7 +301,187 @@ def report(variants: list[str]) -> int:
     return 0
 
 
-def field_rank(variant: str = "shipped") -> list[dict]:
+# ---- DK props (critique cycle 27): the market's DK points as the board could have seen them
+PROP_CUT_MIN = 25          # the last dfs_nba scan FINISHED >= 25 min before the slate's first
+                           # commence time (DK locks ~10 min before the books' commence; the
+                           # autolog builds ~12 min before lock): no post-lock price leaks in
+
+
+def market_for_board(gid: int, ps: list[dict]) -> dict:
+    """{name: market DK points} through production's edge.dfs_run_nba.market_points on the
+    replayed scan; cached (prices are history: they never change)."""
+    from datetime import datetime, timedelta, timezone
+    from edge import dfs_run_nba as R
+    from edge.odds.source import ScrapedOddsClient
+    from edge.odds.store import OddsStore
+    CACHE.mkdir(parents=True, exist_ok=True)
+    f = CACHE / f"mkt-{gid}-{PROP_CUT_MIN}-{R.PROP_SD_K}.json"
+    if f.exists():
+        return json.loads(f.read_text())
+    store = OddsStore(ROOT / "data" / "odds.db")
+    d0 = datetime.fromisoformat(ps[0]["date"] + "T14:00:00+00:00")
+    scans = [(r["id"], r["finished_at"]) for r in store.conn.execute(
+        "select id, finished_at from scan where profile='dfs_nba' and ok=1 and started_at >= ? and started_at <= ? "
+        "order by id", (d0.isoformat(), (d0 + timedelta(hours=16)).isoformat()))]
+    teams = {frozenset((p["team"], p["opp"])) for p in ps}
+    out: dict = {}
+    if scans:
+        # the night's FIRST scan lists tonight's games; later ones drop a game once it starts
+        cl = ScrapedOddsClient(store, "dfs_nba", scan_id=scans[0][0])
+        starts = [ev.get("commence_time") for ev in cl.get_events(R.SPORT)
+                  if frozenset((R.TEAM_NAME_TO_ABBR.get(ev.get("home_team") or ""),
+                                R.TEAM_NAME_TO_ABBR.get(ev.get("away_team") or ""))) in teams]
+        if starts:
+            first = min(datetime.fromisoformat(t.replace("Z", "+00:00")) for t in starts if t)
+            cut = (first - timedelta(minutes=PROP_CUT_MIN)).astimezone(timezone.utc).isoformat()
+            ok = [i for i, fin in scans if fin and fin <= cut]
+            if ok:
+                out = R.market_points(ScrapedOddsClient(store, "dfs_nba", scan_id=ok[-1]), ps)
+    f.write_text(json.dumps(out))
+    return out
+
+
+def market_all(B: dict) -> dict:
+    from concurrent.futures import ProcessPoolExecutor
+    with ProcessPoolExecutor(max_workers=8) as ex:
+        return dict(zip(B, ex.map(market_for_board, B, B.values())))
+
+
+def props_rows(B: dict | None = None) -> list[dict]:
+    """Player rows with a market number: date, proj, mkt, actual (DK's points, else box)."""
+    B = B or {g: ps for g, ps in boards().items() if g in fields()}
+    M = market_all(B)
+    out = []
+    for gid, ps in B.items():
+        for p in ps:
+            if p["name"] in M[gid]:
+                out.append({"gid": gid, "date": p["date"], "proj": p["proj"], "mkt": M[gid][p["name"]],
+                            "actual": player_points(gid, p["date"], p["name"])})
+    return out
+
+
+def props_fit(rows: list[dict]) -> tuple:
+    X = np.c_[np.ones(len(rows)), [r["proj"] for r in rows], [r["mkt"] for r in rows]]
+    return tuple(float(x) for x in np.linalg.lstsq(X, np.array([r["actual"] for r in rows]), rcond=None)[0])
+
+
+def _props_variant(blend):
+    def f(pool):
+        from edge import dfs_run_nba as R
+        gid = pool[0].get("_gid")
+        mkt = _MKT.get(gid) or {}
+        R.blend_props(pool, mkt, blend)
+    return f
+
+
+_MKT: dict = {}
+
+
+def register_props(B: dict) -> dict:
+    """Fit the blend on TRAIN dates and register variants 'props' (train-fitted blend) and
+    'props_market' (the market alone, 0 + 0 proj + 1 mkt)."""
+    M = market_all(B)
+    _MKT.update(M)
+    rows = props_rows(B)
+    blend = props_fit([r for r in rows if r["date"] < SPLIT])
+    VARIANTS["props"] = _props_variant(blend)
+    VARIANTS["props_market"] = _props_variant((0.0, 0.0, 1.0))
+    # the market runs low against DK points (turnovers / double-doubles are not in it, and
+    # the 1.1 sqrt spread is a heuristic): one offset, fitted on TRAIN, keeps prop-covered
+    # players level with the model's numbers for the uncovered ones
+    tr = [r for r in rows if r["date"] < SPLIT]
+    off = float(np.mean([r["actual"] - r["mkt"] for r in tr]))
+    VARIANTS["props_market_off"] = _props_variant((off, 0.0, 1.0))
+    return {"blend": blend, "rows": rows, "offset": off}
+
+
+def props_report() -> int:
+    """Cycle 27: the DK-props blend, fitted on TRAIN; player error, the field ranking, and
+    leave-one-date-out (each date's blend fitted on every other date) for the thin cash set."""
+    B = {g: ps for g, ps in boards().items() if g in fields()}
+    reg = register_props(B)
+    a, b, c = reg["blend"]
+    rows = reg["rows"]
+    print(f"# DK props blend (cycle 27): proj' = {a:+.3f} + {b:.3f} proj + {c:.3f} mkt  "
+          f"(fit on {sum(r['date'] < SPLIT for r in rows)} train player rows)\n")
+    te = [r for r in rows if r["date"] >= SPLIT]
+    A = np.array([r["actual"] for r in te]); P = np.array([r["proj"] for r in te])
+    M = np.array([r["mkt"] for r in te]); BL = np.maximum(0.1, a + b * P + c * M)
+    cl = np.array([r["date"] for r in te])
+    print(f"player level, test (n {len(te)}, {len(set(cl))} dates, prop-covered players):")
+    for name, pr in (("model", P), ("market", M), ("blend", BL)):
+        m, lo, hi = _boot(cl, np.abs(A - pr) - np.abs(A - P))
+        print(f"  {name:7} MAE {np.abs(A - pr).mean():.3f}  bias {(A - pr).mean():+.2f}  "
+              f"diff vs model {m:+.3f} [{lo:+.3f}, {hi:+.3f}]")
+    print()
+    print(f"market offset (train mean actual - mkt): {reg['offset']:+.3f}\n")
+    field_report(["model_only", "shipped", "props", "props_market", "props_market_off"])
+    # leave-one-date-out on the field ranking
+    dates = sorted({ps[0]["date"] for ps in B.values()})
+    lodo = {}
+    for d in dates:
+        bl = props_fit([r for r in rows if r["date"] != d])
+        VARIANTS["_lodo"] = _props_variant(bl)
+        Bd = {g: ps for g, ps in B.items() if ps[0]["date"] == d}
+        lodo.update({(r["mode"], r["contest"]): r for r in field_rank("_lodo", Bd)})
+    base = {(r["mode"], r["contest"]): r for r in field_rank("model_only", B)}
+    print("\nleave-one-date-out, every date (blend refit without that date):\n")
+    print("| mode | contests | dates | top-10% shipped -> props | diff [90%, by date] | Spearman shipped -> props | diff [90%] | dates better (rho) |")
+    print("|---|---|---|---|---|---|---|---|")
+    for mode in ("cash", "gpp"):
+        ks = [k for k in lodo if k[0] == mode]
+        cl = np.array([lodo[k]["date"] for k in ks])
+        d10 = np.array([lodo[k]["top10"] - base[k]["top10"] for k in ks])
+        drho = np.array([lodo[k]["rho"] - base[k]["rho"] for k in ks])
+        m, lo, hi = _boot(cl, d10); m2, lo2, hi2 = _boot(cl, drho)
+        by = defaultdict(list)
+        for k, x in zip(ks, drho):
+            by[lodo[k]["date"]].append(x)
+        print(f"| {mode} | {len(ks)} | {len(set(cl))} | {np.mean([base[k]['top10'] for k in ks]):.3f} -> "
+              f"{np.mean([lodo[k]['top10'] for k in ks]):.3f} | {m:+.3f} [{lo:+.3f}, {hi:+.3f}] | "
+              f"{np.mean([base[k]['rho'] for k in ks]):.3f} -> {np.mean([lodo[k]['rho'] for k in ks]):.3f} | "
+              f"{m2:+.3f} [{lo2:+.3f}, {hi2:+.3f}] | {sum(np.mean(v) > 0 for v in by.values())} of {len(by)} |")
+    return 0
+
+
+def props_lodo_lineups() -> int:
+    """The honest lineup test for the train-fitted blend: for every date, refit the blend
+    WITHOUT that date and replay that date's boards with it -- every cash contest held out."""
+    B = {g: ps for g, ps in boards().items() if g in fields()}
+    reg = register_props(B)
+    rows, F = reg["rows"], fields()
+    base_lu = build_all(B, "model_only")
+    lodo_lu = {}
+    for d in sorted({ps[0]["date"] for ps in B.values()}):
+        bl = props_fit([r for r in rows if r["date"] != d])
+        name = "props[" + ",".join(f"{x:.4f}" for x in bl) + "]"
+        VARIANTS[name] = _props_variant(bl)
+        lodo_lu.update(build_all({g: ps for g, ps in B.items() if ps[0]["date"] == d}, name))
+    out = defaultdict(list)
+    for gid, ps in B.items():
+        for mode in ("cash", "gpp"):
+            a_, b_ = score(gid, ps, base_lu[gid][mode]), score(gid, ps, lodo_lu[gid][mode])
+            for cid, typ, field, line in F[gid]:
+                if typ == mode and a_ is not None and b_ is not None:
+                    out[mode].append({"date": ps[0]["date"], "a": float((field < a_).mean()), "b": float((field < b_).mean()),
+                                      "ca": a_ >= line, "cb": b_ >= line, "pa": a_, "pb": b_})
+    print("# Optimizer replay, props blend refit without each date (every contest held out)\n")
+    print("| mode | contests | dates | field pctile model only -> props | diff [90%, by date] | cashed | points | dates better |")
+    print("|---|---|---|---|---|---|---|---|")
+    for mode, rs in out.items():
+        cl = np.array([r["date"] for r in rs]); d = np.array([r["b"] - r["a"] for r in rs])
+        m, lo, hi = _boot(cl, d)
+        by = defaultdict(list)
+        for r in rs:
+            by[r["date"]].append(r["b"] - r["a"])
+        print(f"| {mode} | {len(rs)} | {len(set(cl))} | {np.mean([r['a'] for r in rs]):.3f} -> {np.mean([r['b'] for r in rs]):.3f} | "
+              f"{m:+.3f} [{lo:+.3f}, {hi:+.3f}] | {np.mean([r['ca'] for r in rs]):.0%} -> {np.mean([r['cb'] for r in rs]):.0%} | "
+              f"{np.mean([r['pa'] for r in rs]):.1f} -> {np.mean([r['pb'] for r in rs]):.1f} | "
+              f"{sum(np.mean(v) > 0 for v in by.values())} better, {sum(np.mean(v) < 0 for v in by.values())} worse of {len(by)} |")
+    return 0
+
+
+def field_rank(variant: str = "shipped", B: dict | None = None) -> list[dict]:
     """The lower-variance companion (critic, cycle 26): per exported contest, rank the REAL
     field's lineups by the variant's projection (sum over the 8 players; an entry with a
     player off our board is skipped) and score that ranking against the points the entries
@@ -290,13 +489,14 @@ def field_rank(variant: str = "shipped") -> list[dict]:
     rank correlation. Thousands of lineups a slate instead of our one; no optimizer run.
     It measures the projection's ordering of LINEUPS, where the optimizer works."""
     from scipy.stats import spearmanr
-    B, F = boards(), fields()
+    F = fields()
+    B = B if B is not None else boards()
     c = sqlite3.connect(SL.DB)
     out = []
     for gid, ps in B.items():
         if gid not in F:
             continue
-        pool = [dict(p) for p in ps]
+        pool = [dict(p, _gid=gid) for p in ps]
         if VARIANTS.get(variant):
             VARIANTS[variant](pool)
         proj = {norm(p["name"]): p["proj"] for p in pool}
@@ -309,15 +509,22 @@ def field_rank(variant: str = "shipped") -> list[dict]:
                     "and e.points is not null", (cid,)):
                 ent[eid].append(pn)
                 pts[eid] = points
-            ids = [e for e, pl in ent.items() if len(pl) == 8 and all(x in proj for x in pl)]
+            # a player off our board counts 0 -- what the board says, and the optimizer could
+            # not pick him (cycle 27: skipping such entries dropped 891 of 1,149 lineups in
+            # 10/26's cash contest, the night Jaylin Williams was 77% owned and off our board)
+            ids = [e for e, pl in ent.items() if len(pl) == 8]
             if len(ids) < 20:
                 continue
-            pj = np.array([sum(proj[x] for x in ent[e]) for e in ids])
+            pj = np.array([sum(proj.get(x, 0.0) for x in ent[e]) for e in ids])
             act = np.array([pts[e] for e in ids])
             pct = (np.argsort(np.argsort(act)) / (len(act) - 1))
-            top = pj >= np.quantile(pj, 0.95)
+            # ties in projection (duplicated lineups) share the cut: rank with a stable jitter-free
+            # quantile; top 10% as well (a 23-entry cash field's top 5% is one lineup)
+            top5, top10 = pj >= np.quantile(pj, 0.95), pj >= np.quantile(pj, 0.90)
             out.append({"contest": cid, "gid": gid, "date": ps[0]["date"], "mode": typ, "n": len(ids),
-                        "top5": float(pct[top].mean()), "rho": float(spearmanr(pj, act)[0]),
+                        "top5": float(pct[top5].mean()), "top10": float(pct[top10].mean()),
+                        "rho": float(spearmanr(pj, act)[0]),
+                        "off_board": int(sum(any(x not in proj for x in ent[e]) for e in ids)),
                         "test": ps[0]["date"] >= SPLIT})
     return out
 
@@ -326,20 +533,22 @@ def field_report(variants: list[str]) -> int:
     res = {v: {(r["mode"], r["contest"]): r for r in field_rank(v)} for v in variants}
     base = res[variants[0]]
     print("# The field's real lineups ranked by each variant's projection (per contest)\n")
-    print(f"| variant | split | mode | contests | dates | lineups | top-5% field pctile | Spearman | "
-          f"top-5% diff vs {variants[0]} [90%, by date] |")
-    print("|---|---|---|---|---|---|---|---|---|")
+    print(f"| variant | split | mode | contests | dates | lineups | top-5% pctile | top-10% pctile | Spearman | "
+          f"top-10% diff vs {variants[0]} [90%, by date] | Spearman diff [90%] |")
+    print("|---|---|---|---|---|---|---|---|---|---|---|")
     for v, rs in res.items():
         for split in ("train", "test"):
             for mode in ("cash", "gpp"):
                 s_ = [r for r in rs.values() if r["mode"] == mode and r["test"] == (split == "test")]
                 if not s_:
                     continue
-                d = np.array([r["top5"] - base[(r["mode"], r["contest"])]["top5"] for r in s_])
-                m, lo, hi = _boot(np.array([r["date"] for r in s_]), d)
-                print(f"| {v} | {split} | {mode} | {len(s_)} | {len({r['date'] for r in s_})} | "
+                cl = np.array([r["date"] for r in s_])
+                m, lo, hi = _boot(cl, np.array([r["top10"] - base[(r["mode"], r["contest"])]["top10"] for r in s_]))
+                m2, lo2, hi2 = _boot(cl, np.array([r["rho"] - base[(r["mode"], r["contest"])]["rho"] for r in s_]))
+                print(f"| {v} | {split} | {mode} | {len(s_)} | {len(set(cl))} | "
                       f"{sum(r['n'] for r in s_):,} | {np.mean([r['top5'] for r in s_]):.3f} | "
-                      f"{np.mean([r['rho'] for r in s_]):.3f} | {m:+.3f} [{lo:+.3f}, {hi:+.3f}] |")
+                      f"{np.mean([r['top10'] for r in s_]):.3f} | {np.mean([r['rho'] for r in s_]):.3f} | "
+                      f"{m:+.3f} [{lo:+.3f}, {hi:+.3f}] | {m2:+.3f} [{lo2:+.3f}, {hi2:+.3f}] |")
     return 0
 
 
@@ -362,6 +571,9 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("parity")
+    sub.add_parser("props", help="cycle 27: the DK-props blend, train fit, test + leave-one-date-out")
+    sub.add_parser("props-lineups", help="cycle 27: the optimizer replay with each props variant")
+    sub.add_parser("props-lodo", help="cycle 27: optimizer replay, blend refit without each date")
     fr = sub.add_parser("field", help="the field's lineups ranked by each variant (no optimizer)")
     fr.add_argument("--variant", action="append")
     r = sub.add_parser("report")
@@ -371,8 +583,15 @@ def main() -> int:
     a = ap.parse_args()
     if a.cmd == "parity":
         return parity()
+    if a.cmd == "props-lodo":
+        return props_lodo_lineups()
+    if a.cmd == "props-lineups":
+        register_props({g: ps for g, ps in boards().items() if g in fields()})
+        return report(["model_only", "shipped", "props", "props_market", "props_market_off"])
     if a.cmd == "gate":
         return gate(a.out)
+    if a.cmd == "props":
+        return props_report()
     if a.cmd == "field":
         return field_report(["shipped"] + [v for v in (a.variant or []) if v != "shipped"])
     return report(["shipped"] + [v for v in (a.variant or []) if v != "shipped"])

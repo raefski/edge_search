@@ -573,3 +573,54 @@ def test_an_expected_starter_on_the_report_is_hedged_a_confirmed_one_is_not(monk
     monkeypatch.setattr(R, "EXPECTED_HEDGE", False)
     off, _, unc_off = R.team_minutes(_board_team("Questionable"), True)
     assert not unc_off and off["p0"]["minutes"] == plain["p0"]["minutes"]
+
+
+# ---- DK props -> the market's DK points, blended (critique cycle 27, 2026-11-08) ----
+def _m(point, over=1.9, under=1.9):
+    return {"Over": over, "Under": under, "point": point}
+
+
+def test_market_dk_converts_main_lines_to_dk_points():
+    from edge import dfs_run_nba as R
+    pm = {"player_points": _m(20.5), "player_rebounds": _m(6.5), "player_assists": _m(4.5)}
+    assert R.market_dk(pm) == round(20.5 + 1.25 * 6.5 + 1.5 * 4.5, 2)       # even prices: mean = line
+    assert R.market_dk({"player_points": _m(20.5)}) is None                  # needs pts + reb + ast
+    shaded = {**pm, "player_points": _m(20.5, over=1.6, under=2.4)}           # over favoured -> mean above
+    assert R.market_dk(shaded) > R.market_dk(pm)
+
+
+class _FakeClient:
+    """Two events: tonight's ATL @ WAS and a tomorrow game holding a namesake."""
+    def get_events(self, sport):
+        return [{"id": "e1", "home_team": "Washington Wizards", "away_team": "Atlanta Hawks"},
+                {"id": "e2", "home_team": "Boston Celtics", "away_team": "Miami Heat"}]
+
+    def get_event_odds(self, sport, eid, markets, regions):
+        lines = {"e1": {"Alex Sarr": 20.5, "Trae Young": 25.5}, "e2": {"Trae Young": 99.5}}[eid]
+        outs = []
+        for name, pts in lines.items():
+            for m, pt in (("player_points", pts), ("player_rebounds", 5.5), ("player_assists", 3.5)):
+                outs.append((m, [{"name": "Over", "price": 1.9, "point": pt, "description": name},
+                                 {"name": "Under", "price": 1.9, "point": pt, "description": name}]))
+        return {"bookmakers": [{"key": "draftkings", "markets": [{"key": m, "outcomes": o} for m, o in outs]}]}
+
+
+def test_market_points_joins_own_game_only_and_dk_spelling():
+    from edge import dfs_run_nba as R
+    rows = [{"name": "Alexandre Sarr", "team": "WAS", "opp": "ATL", "proj": 30.0},
+            {"name": "Trae Young", "team": "ATL", "opp": "WAS", "proj": 40.0},
+            {"name": "Bam Adebayo", "team": "MIA", "opp": "NYK", "proj": 35.0}]
+    got = R.market_points(_FakeClient(), rows)
+    assert got["Alexandre Sarr"] == round(20.5 + 1.25 * 5.5 + 1.5 * 3.5, 2)   # "Alex Sarr", same event
+    assert got["Trae Young"] == round(25.5 + 1.25 * 5.5 + 1.5 * 3.5, 2)       # not the other event's 99.5
+    assert "Bam Adebayo" not in got                                          # no event of his game
+
+
+def test_blend_props_blends_only_players_with_a_market():
+    from edge import dfs_run_nba as R
+    rows = [{"name": "A", "proj": 30.0}, {"name": "B", "proj": 20.0}, {"name": "C", "proj": 0.0}]
+    n = R.blend_props(rows, {"A": 40.0, "C": 10.0}, (4.0, 0.1, 0.8))
+    assert n == 1
+    assert rows[0]["proj"] == round(4.0 + 3.0 + 32.0, 2) and rows[0]["model_proj"] == 30.0
+    assert rows[0]["proj_source"] == "props" and rows[1]["proj_source"] == "model"
+    assert rows[1]["proj"] == 20.0 and rows[2]["proj"] == 0.0                # no market / not projected

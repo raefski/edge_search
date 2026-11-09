@@ -197,6 +197,95 @@ def _sig(name: str) -> tuple:
     return (norm(parts[-1]), parts[0][:1].lower()) if len(parts) >= 2 else (norm(name), "")
 
 
+# ---- DK player props -> the market's DK points (critique cycle 27, 2026-11-08) ----
+# The critic found the board ignored the props the dfs_nba scan has collected since 10/15:
+# on prop-covered players, actual ~ 4.23 + 0.06 proj + 0.843 mkt (train < 10/31) -- given the
+# market our projection added almost nothing. mkt = sum of DK weights x each stat's implied
+# mean (its main line + PROP_SD_K * sqrt(line + .5) * z(no-vig P(over))); turnovers and
+# double-double bonuses are absorbed by the blend's intercept. PROPS_BLEND is fitted in
+# scripts/nba_lineup_lab.py (`props-fit`, train dates only); None = off.
+PROP_MARKETS = ["player_points", "player_rebounds", "player_assists", "player_threes",
+                "player_steals", "player_blocks"]
+PROP_DK = {"player_points": 1.0, "player_rebounds": 1.25, "player_assists": 1.5,
+           "player_threes": 0.5, "player_steals": 2.0, "player_blocks": 2.0}
+PROP_REQUIRED = ("player_points", "player_rebounds", "player_assists")
+PROP_SD_K = 1.1            # critic's spread heuristic (a stat's sd ~ 1.1 sqrt(line)); not fitted
+# proj' = a + b proj + c mkt. Fitted 2026-11-08 by scripts/nba_lineup_lab.py on 1,436 prop-covered
+# board players, 16 dates 10/20-11/7 (DK's own points by draft group); the train-only fit
+# (< 10/31, 838 rows) was 5.68 / 0.141 / 0.714. Validated leave-one-date-out through the
+# production optimizer (`props-lodo`, every contest held out): CASH lineups' field percentile
+# .275 -> .541 (+.265 [90% +.111, +.436] by date), cashed 24% -> 65%, 17 contests / 12 dates,
+# 8 dates better / 3 worse; GPP .475 -> .601 (+.126 [-.068, +.332]), 33 contests / 16 dates.
+# Player MAE on test dates 8.72 -> 8.23 (-.49 [-.78, -.12], 598 players / 6 dates).
+PROPS_BLEND: tuple | None = (4.401, 0.139, 0.762)
+
+
+def market_dk(pm: dict) -> float | None:
+    """The market's DK points from one player's main lines, or None without points,
+    rebounds and assists."""
+    from edge import dfs_project as DP
+    if not all(m in pm for m in PROP_REQUIRED):
+        return None
+    tot = 0.0
+    for m, w in PROP_DK.items():
+        mk = pm.get(m)
+        pair = DP._pair(mk) if mk else None
+        if not pair or mk.get("point") is None:
+            continue
+        line = float(mk["point"])
+        tot += w * DP.implied_mean(pair[0], pair[1], line, PROP_SD_K * (line + 0.5) ** 0.5)
+    return round(tot, 2)
+
+
+def market_points(client, rows: list[dict]) -> dict:
+    """{row name: market DK points} for board rows whose own game's event has DK props.
+    A player takes lines only from the event between his team and his opponent (a scan
+    can hold two nights), matched by norm name, else by (last name, first initial) when
+    exactly one subject of that event fits (DK "Alexandre Sarr" / a book's "Alex Sarr")."""
+    by_event, _ = dfs_slate.player_markets_by_event(client, SPORT, PROP_MARKETS)
+    teams_of = {}
+    for ev in client.get_events(SPORT):
+        h, a = TEAM_NAME_TO_ABBR.get(ev.get("home_team") or ""), TEAM_NAME_TO_ABBR.get(ev.get("away_team") or "")
+        if h and a:
+            teams_of[ev["id"]] = frozenset((h, a))
+    out = {}
+    for r in rows:
+        mine = frozenset((r.get("team"), r.get("opp")))
+        evs = [e for e, t in teams_of.items() if t == mine and e in by_event]
+        if len(evs) != 1:
+            continue
+        subjects = by_event[evs[0]]
+        pm = next((v for k, v in subjects.items() if norm(k) == norm(r["name"])), None)
+        if pm is None:
+            alt = [v for k, v in subjects.items() if _sig(k) == _sig(r["name"])]
+            pm = alt[0] if len(alt) == 1 else None
+        got = market_dk(pm) if pm else None
+        if got is not None:
+            out[r["name"]] = got
+    return out
+
+
+def blend_props(rows: list[dict], mkt: dict, blend: tuple | None = None) -> int:
+    """proj' = a + b proj + c mkt on every projected row with a market number; the rest
+    keep the model's. Marks r["mkt"] and r["proj_source"]. Returns the count blended."""
+    blend = PROPS_BLEND if blend is None else blend
+    n = 0
+    for r in rows:
+        if not r.get("proj") or r["name"] not in mkt:
+            r.setdefault("proj_source", "model")
+            continue
+        r["mkt"] = mkt[r["name"]]
+        r["model_proj"] = r["proj"]          # logged: the lab replays from the model's number
+        if blend:
+            a, b, c = blend
+            r["proj"] = round(max(0.1, a + b * r["proj"] + c * r["mkt"]), 2)
+            r["proj_source"] = "props"
+            n += 1
+        else:
+            r["proj_source"] = "model"
+    return n
+
+
 def tonight_status(date: str) -> dict:
     """{(norm name, team): {"starter", "confirmed", "inactive", "id"}} from NBA.com."""
     raw = nba_lineups.tonight(date)
@@ -446,6 +535,15 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
                 r["proj"] = r["usual"] = round(r["salary"] / 1000.0 * IMPUTED_PER_K, 2)
                 r["imputed"].append("no NBA history")
                 info["imputed"].append(r["name"])
+    # DK props (critique cycle 27): the market's DK points, blended where posted
+    if client is not None:
+        try:
+            mkt = market_points(client, [r for r in rows if not r["out"] and r.get("proj")])
+        except Exception as exc:                            # noqa: BLE001 -- props are optional
+            log.warning("nba: no props (%s)", exc)
+            mkt = {}
+        info["props_blended"] = blend_props([r for r in rows if not r["out"]], mkt)
+        info["props_players"] = len(mkt)
     # Every priced player's salary / position / tip, so a late swap can hold the
     # slot of an entered player who is OUT but already locked (late_swap below).
     info["priced_rows"] = {r["name"]: {"salary": r["salary"], "dk_pos": r["dk_pos"], "team": r["team"],
@@ -527,7 +625,10 @@ def late_swap(pool: list, sim, entered: list[str], priced: dict, mode: str = "gp
 
 
 PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp", "dk_pos", "salary", "minutes", "proj",
-                 "sd", "floor", "ceil", "own", "promoted", "lineup", "imputed", "source", "starter", "recent")
+                 "sd", "floor", "ceil", "own", "promoted", "lineup", "imputed", "source", "starter", "recent",
+                 # critique cycle 27: the projection before the props blend + the market's DK points,
+                 # so a replay never blends a logged (already blended) proj twice
+                 "model_proj", "mkt", "proj_source")
 
 
 def optimal_columns(pool: list, sim, nights: int | None = None) -> dict:
@@ -563,7 +664,9 @@ def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None,
              "source": "live",
              # ownership inputs (SLATE_OWN, CHEAP_STARTER) so the lab replays them
              "starter": int(bool(p.get("starter"))),
-             "recent": "" if p.get("recent") is None else round(p["recent"], 2)} for p in pool]
+             "recent": "" if p.get("recent") is None else round(p["recent"], 2),
+             "model_proj": p.get("model_proj", ""), "mkt": p.get("mkt", ""),
+             "proj_source": p.get("proj_source", "")} for p in pool]
     lineups = [{"mode": mode, "slot": slot, "player": p["name"], "team": p["team"],
                 "salary": p["salary"], "proj": p["proj"], "own": p.get("own")}
                for mode, res in (("cash", cash), ("gpp", gpp))

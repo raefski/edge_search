@@ -17,7 +17,24 @@
 | history | `scripts/nba_history_publish.py` + `nba-history-publish.timer` (06:00, 14:00) | `data/nba_player_history.json` for desktop + cloud |
 | odds | `odds-collect-dfs-nba.timer`, `odds-publish-dfs-nba.timer` | game lines (implied totals); props collected, NOT yet used |
 
-## Why NBA loses: the optimizer selects our errors (2026-11-08) -- not fixed yet
+## DK props blended into the projection (2026-11-08, critique cycle 27) -- SHIPPED
+
+The board ignored the DK player props the dfs_nba scan collects (since 10/15). Now
+`edge/dfs_run_nba.market_points` turns each player's main lines (his own game's event only;
+alias fallback for DK / book spellings) into the market's DK points (`market_dk`: line +
+1.1 sqrt(line+.5) z(no-vig over), DK weights), and `blend_props` sets
+proj = 4.401 + 0.139 model + 0.762 market (PROPS_BLEND) wherever points / rebounds / assists
+are posted (~90% of players projected 20+); others keep the model. Given the market, our
+model's weight is ~0.14. The log keeps `model_proj`, `mkt`, `proj_source`; the page shows
+"DK props: N players blended" or "none posted yet (model only)" (props post on game day).
+Evidence (scripts/nba_lineup_lab.py `props-lodo`: the production optimizer replayed with the
+blend refit WITHOUT each date): cash lineups' field percentile .275 -> .541 (+.265 [90% +.111,
++.436]), cashed 24% -> 65%, 17 contests / 12 dates; GPP .475 -> .601 (+.126, noise), cashed
+21% -> 52%, 33 / 16. Player MAE (test dates) 8.72 -> 8.23 (-.49 [-.78, -.12], 598 players).
+Watch: the props-free 10% (bench), late scratches with stale props, and refit PROPS_BLEND as
+contests accumulate (`props`, `props-lodo`).
+
+## Why NBA loses: the optimizer selects our errors (2026-11-08) -- cash fixed by props, cycle 27
 
 Adam asked why NBA loses (model era -57%, 58 entries / 16 nights). In the 57 entries in
 exported contests (26 draft groups): by OUR projection his lineup sat at the field's 96th
