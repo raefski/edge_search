@@ -17,6 +17,31 @@
 | history | `scripts/nba_history_publish.py` + `nba-history-publish.timer` (06:00, 14:00) | `data/nba_player_history.json` for desktop + cloud |
 | odds | `odds-collect-dfs-nba.timer`, `odds-publish-dfs-nba.timer` | game lines (implied totals); props collected, NOT yet used |
 
+## Why NBA loses: the optimizer selects our errors (2026-11-08) -- not fixed yet
+
+Adam asked why NBA loses (model era -57%, 58 entries / 16 nights). In the 57 entries in
+exported contests (26 draft groups): by OUR projection his lineup sat at the field's 96th
+(cash) / 99th (GPP) percentile, then scored -35.6 (cash, 17 contests) / -34.9 (GPP, 33)
+under it, while the field's lineups scored +0.7 / -4.9 against the same projection. Players:
+unbiased overall (+0.00 on 1,825 we did not use), but the top decile of projected value
+(pts per $1k) missed -5.2 a player and supplied 57% of our picks. Scratches (0 points) were
+83 of the 841 points short.
+
+`scripts/nba_salary_shrink_lab.py` (box-score DK points for every logged board, train dates
+< 10/31, test 7 dates / 21 draft groups):
+- `report`: proj' = -8.10 + 0.599 proj + 3.10 salary_k cuts test MAE 7.063 -> 6.915 (abs diff
+  -0.148 [90% -0.314, -0.005] by date) and the top-decile miss -5.24 -> -0.85. Real, but:
+- `lineups`: it does not change the lineup. A linear blend rescales proj and adds a salary
+  term that is ~constant for a lineup spending the whole $50k: actual +0.8 [-1.0, +3.1] a
+  lineup (51 draft groups). A promoted-player term: no better. Recent DK avg / minutes /
+  own_pred in the blend: within-slate rank correlation .800 -> .807 at most.
+- Field percentile of the single max-projection lineup (cash 17 contests / GPP 33): ours
+  24th / 44th; ours tilted to our own ownership guess 33rd / 35th; DK recent average 16th /
+  25th; HINDSIGHT field ownership 40th / 44th. NBA small cash fields are sharp: even the
+  field's own chalk finishes below their median. Not enough contests to ship the chalk tilt.
+Not shipped. What would move money: a better ranking signal (the critic's target should be
+lineup-level, actual points of the optimizer's lineup vs the field), not player MAE.
+
 ## Late swap after lock (2026-11-02)
 
 11/1 Night 2g (156049) locked 8:30; Poeltl first showed out 8:44 (not on the 8:30 official report; NBA.com had a confirmed start at 8:42); TOR@LAL tipped 9:00. The build was not wrong, but the 14 minutes were lost: Adam got the "high" push and did not see it, and the swap could not have been done on the phone anyway. n = 1 night, a replay of one incident, not a measurement. All of it had to change together:
