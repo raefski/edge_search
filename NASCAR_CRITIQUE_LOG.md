@@ -271,3 +271,5 @@ beside nascar_lab.py's driver rows once >= 5 races have fields.
 **For the next cycle:** (1) import the 11/8 export if Adam has one -> 4 races; (2) rerun
 `report` + `lodo` after every 2027 race; cash pct 10 is the reading to confirm or kill at
 >= 5 races; (3) runner-ups above, start-curve first (testable on 66 races now).
+
+Unattended gate (20261109-0751): **not shipped (log / harness only, verified)**
