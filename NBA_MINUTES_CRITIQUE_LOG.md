@@ -1396,3 +1396,28 @@ Judgment calls:
 - Tooling: `nba_minutes_lab.fetch_tips` now merges seasons (it overwrote the file);
   2026-27 tips fetched. The lab cache key moves with every 15-min report, so a night
   of experiments should load once (`nba_expected_replay.py --lab <pickle>`).
+
+## Cycle 26 (lineups) -- 2026-11-08, hand-run (`/dfs-critique nba lineups`)
+
+Target replaced for this cycle: **the lineups we enter**, not minutes. Metric: the
+production sim + optimizer replayed on every logged pre-lock board with an exported contest
+(`scripts/nba_lineup_lab.py`, built this cycle), scored with box-score DK points: the lineup's
+percentile in the real field and whether it clears the cash line; cash lineup vs cash
+contests, GPP vs GPP; cluster = date; train < 2026-10-31 <= test. Why: Adam's NBA -57%
+while player metrics looked fine (NBA_STATUS.md, "Why NBA loses").
+
+Parity: replay == logged lineup on every graded board since 10/31 (11/11 cash, 11/11 GPP);
+earlier boards differ by ~1 player in 10 (code changed since: starter flags logged from 10/28,
+empirical ceilings 10/30) -- today's code on old boards is what a candidate is judged on.
+Replays run in parallel (16 workers) with a source-hashed per-board cache: ~3 min cold.
+
+Baseline (shipped):
+
+| split | mode | contests | dates | mean field pctile | cashed | mean points |
+|---|---|---|---|---|---|---|
+| train | cash | 13 | 8 | 0.255 | 23% | 241.2 |
+| train | gpp | 21 | 10 | 0.388 | 10% | 240.8 |
+| test | cash | 4 | 4 | 0.319 | 25% | 260.6 |
+| test | gpp | 12 | 6 | 0.576 | 33% | 260.0 |
+
+Test cash is 4 contests: not enough data alone.

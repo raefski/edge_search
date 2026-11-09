@@ -225,6 +225,9 @@ data/nba_injury_reports/
 # raw HTML cache of scripts/nba_rewind_scrape.py (Wayback pages, ~400 KB each)
 data/nba_rewind/raw/
 
+# scripts/nba_lineup_lab.py: per-board build cache (keyed by board + source hash; rebuildable)
+data/nba_lineup_lab_cache/
+
 # Timer feeds live on the `data` branch, not main (edge/data_branch.FEEDS,
 # 2026-10-16). The desktop keeps them on disk; Streamlit Cloud reads them off
 # GitHub (edge/repo_files.py); a fresh clone gets them with
@@ -253,3 +256,4 @@ data/ncaaf_qb_rush_td.json
 data/mma_rogan/*
 !data/mma_rogan/episodes.json
 !data/mma_rogan/grade.json
+
