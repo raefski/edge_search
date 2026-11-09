@@ -5,6 +5,7 @@ pre-lock board, scored with box-score DK points against the real contest fields.
     python3 scripts/nba_lineup_lab.py parity                 # replayed lineups == the logged ones?
     python3 scripts/nba_lineup_lab.py report [--variant V]   # field percentile / cash line, by split
     python3 scripts/nba_lineup_lab.py field [--variant V]    # the field's lineups ranked by our proj
+    python3 scripts/nba_lineup_lab.py sets [--n 20]          # 20-lineup sets per board, every date held out
     python3 scripts/nba_lineup_lab.py gate OUT               # rows for harness/critique_gate.py
 
 Why it exists (critique cycle "nba lineups", 2026-11-08). Adam's NBA entries lost -57%
@@ -481,6 +482,189 @@ def props_lodo_lineups() -> int:
     return 0
 
 
+# ---- lineup SETS (Adam 2026-11-08, cycle 28's runner-up): one seeded lineup a board gives a
+# date-level SE of ~.08-.15 in field percentile, so 16 dates could not confirm a +4-point
+# change. Each board now gets SET_N lineups per mode through production's multi-entry builder
+# (edge/dfs_opt_climb.portfolio: each new lineup bans the last one's top projection, at most
+# 5 players shared): the mean over the set averages away which players happened to boom, and
+# variants are compared on the same boards (paired). One (board, mode) per process.
+SET_N = 20
+SET_ITERS = 60                     # edge/dfs_opt_nba.portfolio's production default
+
+
+SET_KIND = "seeds"
+
+
+def build_set(ps: list[dict], variant: str, gid: int, mode: str, n: int = SET_N,
+              kind: str = SET_KIND) -> list[list[str]]:
+    """`kind` "seeds" (default): n INDEPENDENT best lineups -- sim seed k, climb seed k, no
+    exclusions -- each one a lineup the single-entry build could have given; their mean is
+    the expected result of our one entry with the optimizer's own luck averaged out.
+    "portfolio": production's multi-entry builder (NHL / NCAAB / MMA pages). It bans each
+    lineup's top projection cumulatively, so lineup 20 is built without the 19 best-projected
+    players: on NBA (11/8, 33 GPP contests / 16 dates) the set averaged the 29th field
+    percentile and 200 pts vs the 60th and ~260 for the single best lineup."""
+    from functools import partial
+    from edge import dfs_opt_climb as climb
+    pool = [dict(p, _gid=gid) for p in ps]
+    if VARIANTS.get(variant):
+        VARIANTS[variant](pool)
+    pool.sort(key=lambda p: (str(p.get("game") or ""), str(p.get("team") or ""), p["name"]))
+    if kind == "portfolio":
+        sim = theory.simulate(pool, n_sims=N_SIMS, seed=0)
+        theory.summarise(sim, pool)
+        res = climb.portfolio(partial(dfs_opt_nba.optimize, pool, sim, mode, SET_ITERS), n, max_overlap=5, seed=0)
+        return [[p["name"] for p in r["lineup"]] for r in res]
+    out = []
+    for k in range(n):
+        sim = theory.simulate(pool, n_sims=N_SIMS, seed=k)
+        theory.summarise(sim, pool)
+        r = dfs_opt_nba.optimize(pool, sim, mode=mode, iters=SET_ITERS, seed=k)
+        if r:
+            out.append([p["name"] for _, p in r["slots"]])
+    return out
+
+
+def _set_one(args):
+    gid, ps, variant, mode, n = args
+    return gid, mode, build_set(ps, variant, gid, mode, n)
+
+
+def build_sets(B: dict, variant: str, n: int = SET_N, workers: int = WORKERS) -> dict:
+    """{gid: {mode: [lineups]}}, cached per (board, variant, mode, n) like build_all."""
+    from concurrent.futures import ProcessPoolExecutor
+    CACHE.mkdir(parents=True, exist_ok=True)
+    out, todo = defaultdict(dict), []
+    for gid, ps in B.items():
+        for mode in ("cash", "gpp"):
+            f = CACHE / f"set{SET_KIND}{n}-{mode}-{gid}-{_key(ps, variant)}.json"
+            if f.exists():
+                out[gid][mode] = json.loads(f.read_text())
+            else:
+                todo.append((gid, ps, variant, mode, n))
+    if todo:
+        todo.sort(key=lambda t: -len(t[1]))
+        with ProcessPoolExecutor(max_workers=min(workers, len(todo))) as ex:
+            for gid, mode, lus in ex.map(_set_one, todo):
+                out[gid][mode] = lus
+                (CACHE / f"set{SET_KIND}{n}-{mode}-{gid}-{_key(B[gid], variant)}.json").write_text(json.dumps(lus))
+    return out
+
+
+def set_rows(built: dict, B: dict) -> dict:
+    """{(mode, contest): {date, pctile, cashed, points, n}}: the set's means per contest."""
+    F = fields()
+    out = {}
+    for gid, ps in B.items():
+        for mode in ("cash", "gpp"):
+            pts = [x for x in (score(gid, ps, lu) for lu in built.get(gid, {}).get(mode, [])) if x is not None]
+            if not pts:
+                continue
+            for cid, typ, field, line in F.get(gid, []):
+                if typ == mode:
+                    out[(mode, cid)] = {"date": ps[0]["date"], "n": len(pts),
+                                        "pctile": float(np.mean([(field < x).mean() for x in pts])),
+                                        "cashed": float(np.mean([x >= line for x in pts])),
+                                        "points": float(np.mean(pts))}
+    return out
+
+
+def _lodo_names(B: dict, rows: list[dict], free_rows: list[dict] | None) -> dict:
+    """{date: variant name} -- the props blend (and the props-free calibration when
+    free_rows is given) refit WITHOUT that date, registered in VARIANTS."""
+    names = {}
+    for d in sorted({ps[0]["date"] for ps in B.values()}):
+        bl = props_fit([r for r in rows if r["date"] != d])
+        fr = None
+        if free_rows is not None:
+            fr = _free_fit([r for r in free_rows if r["date"] != d])
+        name = "props[" + ",".join(f"{x:.4f}" for x in bl) + "]" + \
+               ("" if fr is None else "free[" + ",".join(f"{x:.4f}" for x in fr) + "]")
+        VARIANTS[name] = _props_free_variant(bl, fr)
+        names[d] = name
+    return names
+
+
+def free_rows(B: dict) -> list[dict]:
+    """Props-free board rows (no market number on the replayed scan): model proj, salary,
+    actual -- cycle 28's critic: they ran 3-4 pts high and the optimizer leaned on them."""
+    M = market_all(B)
+    out = []
+    for gid, ps in B.items():
+        for p in ps:
+            if p["name"] not in M[gid]:
+                out.append({"date": p["date"], "proj": p["proj"], "sal": p["salary"] / 1000,
+                            "actual": player_points(gid, p["date"], p["name"])})
+    return out
+
+
+def _free_fit(rows: list[dict]) -> tuple:
+    X = np.c_[np.ones(len(rows)), [r["proj"] for r in rows], [r["sal"] for r in rows]]
+    return tuple(float(x) for x in np.linalg.lstsq(X, np.array([r["actual"] for r in rows]), rcond=None)[0])
+
+
+def _props_free_variant(blend, free):
+    def f(pool):
+        from edge import dfs_run_nba as R
+        mkt = _MKT.get(pool[0].get("_gid")) or {}
+        R.blend_props(pool, mkt, blend)
+        if free:
+            a, b, c = free
+            for p in pool:
+                if p["name"] not in mkt and p.get("proj"):
+                    p["proj"] = round(max(0.1, a + b * p["proj"] + c * p["salary"] / 1000), 2)
+    return f
+
+
+def sets_lodo(with_free: bool = True, n: int = SET_N) -> int:
+    """Lineup SETS, every date held out: the props blend alone (= production, refit without
+    the date) vs + the props-free calibration (cycle 28). Paired by contest, bootstrap by date."""
+    B = {g: ps for g, ps in boards().items() if g in fields()}
+    reg = register_props(B)
+    rows = reg["rows"]
+    base_names = _lodo_names(B, rows, None)
+    cand_names = _lodo_names(B, rows, free_rows(B)) if with_free else {}
+    res = {}
+    for label, names in (("props blend (production)", base_names), ("+ props-free calibration", cand_names)):
+        if not names:
+            continue
+        built = {}
+        for d, name in names.items():
+            built.update(build_sets({g: ps for g, ps in B.items() if ps[0]["date"] == d}, name, n))
+        res[label] = set_rows(built, B)
+    labels = list(res)
+    base = res[labels[0]]
+    print(f"# Lineup sets ({n} per board per mode, kind={SET_KIND}), every date held out\n")
+    print("| variant | mode | contests | dates | lineups | field pctile | cashed | points | "
+          f"diff vs {labels[0]} [90%, by date] | dates better / worse |")
+    print("|---|---|---|---|---|---|---|---|---|---|")
+    for lab in labels:
+        for mode in ("cash", "gpp"):
+            ks = [k for k in res[lab] if k[0] == mode and k in base]
+            if not ks:
+                continue
+            cl = np.array([res[lab][k]["date"] for k in ks])
+            d = np.array([res[lab][k]["pctile"] - base[k]["pctile"] for k in ks])
+            m, lo, hi = _boot(cl, d)
+            by = defaultdict(list)
+            for k, x in zip(ks, d):
+                by[res[lab][k]["date"]].append(x)
+            print(f"| {lab} | {mode} | {len(ks)} | {len(set(cl))} | {sum(res[lab][k]['n'] for k in ks):,} | "
+                  f"{np.mean([res[lab][k]['pctile'] for k in ks]):.3f} | {np.mean([res[lab][k]['cashed'] for k in ks]):.0%} | "
+                  f"{np.mean([res[lab][k]['points'] for k in ks]):.1f} | {m:+.3f} [{lo:+.3f}, {hi:+.3f}] | "
+                  f"{sum(np.mean(v) > 0 for v in by.values())} / {sum(np.mean(v) < 0 for v in by.values())} |")
+    # how much the set tightens the date-level spread of the field percentile
+    for mode in ("cash", "gpp"):
+        ks = [k for k in base if k[0] == mode]
+        dm = defaultdict(list)
+        for k in ks:
+            dm[base[k]["date"]].append(base[k]["pctile"])
+        v = [np.mean(x) for x in dm.values()]
+        print(f"\n{mode}: sd of the date-level field percentile across {len(v)} dates = {np.std(v, ddof=1):.3f} "
+              f"(SE of the mean {np.std(v, ddof=1) / np.sqrt(len(v)):.3f})")
+    return 0
+
+
 def field_rank(variant: str = "shipped", B: dict | None = None) -> list[dict]:
     """The lower-variance companion (critic, cycle 26): per exported contest, rank the REAL
     field's lineups by the variant's projection (sum over the 8 players; an entry with a
@@ -574,6 +758,11 @@ def main() -> int:
     sub.add_parser("props", help="cycle 27: the DK-props blend, train fit, test + leave-one-date-out")
     sub.add_parser("props-lineups", help="cycle 27: the optimizer replay with each props variant")
     sub.add_parser("props-lodo", help="cycle 27: optimizer replay, blend refit without each date")
+    st = sub.add_parser("sets", help="20-lineup sets per board, every date held out (production vs + props-free)")
+    st.add_argument("--n", type=int, default=SET_N)
+    st.add_argument("--base-only", action="store_true", help="production only (the baseline)")
+    st.add_argument("--kind", choices=["seeds", "portfolio"], default=SET_KIND,
+                    help="seeds: n independent best lineups (single-entry); portfolio: production multi-entry")
     fr = sub.add_parser("field", help="the field's lineups ranked by each variant (no optimizer)")
     fr.add_argument("--variant", action="append")
     r = sub.add_parser("report")
@@ -585,6 +774,9 @@ def main() -> int:
         return parity()
     if a.cmd == "props-lodo":
         return props_lodo_lineups()
+    if a.cmd == "sets":
+        globals()["SET_KIND"] = a.kind
+        return sets_lodo(with_free=not a.base_only, n=a.n)
     if a.cmd == "props-lineups":
         register_props({g: ps for g, ps in boards().items() if g in fields()})
         return report(["model_only", "shipped", "props", "props_market", "props_market_off"])

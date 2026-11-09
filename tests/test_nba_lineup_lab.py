@@ -32,3 +32,11 @@ def test_every_source_the_build_runs_is_hashed():
     for mod in (T, O, T.CQ, O.climb):
         rel = str(Path(mod.__file__).resolve().relative_to(L.ROOT))
         assert rel in L.SOURCES, rel
+
+
+def test_lineup_sets_use_production_portfolio_settings():
+    import inspect
+    from edge import dfs_opt_nba
+    sig = inspect.signature(dfs_opt_nba.portfolio)
+    assert L.SET_ITERS == sig.parameters["iters"].default
+    assert sig.parameters["max_overlap"].default == 5          # build_set passes 5 too
