@@ -30,3 +30,11 @@ def test_norm_does_not_strip_a_real_surname_ending_in_a_suffix_letter():
 
 def test_norm_handles_both_diacritics_and_suffix_together():
     assert norm("José Ramírez Jr.") == norm("Jose Ramirez")
+
+
+def test_book_vs_dk_first_names_from_the_2026_11_08_audit():
+    from edge.names import first_names_agree
+    for a, b in (("Yegor", "Egor"), ("Janis", "J.J."), ("GG", "Gregory"), ("Evgeny", "Evgeni"),
+                 ("Dmitri", "Dmitry"), ("Alexei", "Aleksei")):
+        assert first_names_agree(a, b), (a, b)
+    assert not first_names_agree("Mike", "Malik")

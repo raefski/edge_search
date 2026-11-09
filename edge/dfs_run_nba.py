@@ -38,7 +38,7 @@ from edge import nba_project as NP
 from edge.dfs_slate import parse_time as _parse_time, slate_games
 from edge import nba
 from edge.nba import TEAM_NAME_TO_ABBR
-from edge.names import norm
+from edge.names import first_names_agree, norm
 
 log = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parents[1]
@@ -241,7 +241,8 @@ def market_points(client, rows: list[dict]) -> dict:
     """{row name: market DK points} for board rows whose own game's event has DK props.
     A player takes lines only from the event between his team and his opponent (a scan
     can hold two nights), matched by norm name, else by (last name, first initial) when
-    exactly one subject of that event fits (DK "Alexandre Sarr" / a book's "Alex Sarr")."""
+    agreeing first names (nicknames / prefixes, never a bare initial) when exactly one
+    subject of that event fits (DK "Alexandre Sarr" / a book's "Alex Sarr")."""
     by_event, _ = dfs_slate.player_markets_by_event(client, SPORT, PROP_MARKETS)
     teams_of = {}
     for ev in client.get_events(SPORT):
@@ -257,7 +258,11 @@ def market_points(client, rows: list[dict]) -> dict:
         subjects = by_event[evs[0]]
         pm = next((v for k, v in subjects.items() if norm(k) == norm(r["name"])), None)
         if pm is None:
-            alt = [v for k, v in subjects.items() if _sig(k) == _sig(r["name"])]
+            # same surname and first names that agree (nicknames, Alex / Alexandre, GG /
+            # Gregory: edge.names.first_names_agree), exactly one in his game -- never an
+            # initial alone (Adam 11/2: Mike / Malik Williams)
+            alt = [v for k, v in subjects.items() if _sig(k)[0] == _sig(r["name"])[0]
+                   and first_names_agree(k.split()[0], r["name"].split()[0])]
             pm = alt[0] if len(alt) == 1 else None
         got = market_dk(pm) if pm else None
         if got is not None:
@@ -286,6 +291,19 @@ def blend_props(rows: list[dict], mkt: dict, blend: tuple | None = None) -> int:
     return n
 
 
+def _agree(a: str, b: str) -> bool:
+    """Same surname and first names that could be one person (edge.names.first_names_agree
+    with the one-slip typo rule: every caller joins inside ONE team). The bare (last name,
+    first initial) signature was the test until 2026-11-08; Adam's rule is that an initial
+    alone never names a player (Mike / Malik Williams)."""
+    pa = [w for w in (a or "").replace(".", " . ").split() if w != "."]
+    pb = [w for w in (b or "").replace(".", " . ").split() if w != "."]
+    if _sig(a)[0] != _sig(b)[0] or not pa or not pb:
+        return False
+    fa, fb = (a.split()[0], b.split()[0])
+    return first_names_agree(fa, fb, typo=True)
+
+
 def tonight_status(date: str) -> dict:
     """{(norm name, team): {"starter", "confirmed", "inactive", "id"}} from NBA.com."""
     raw = nba_lineups.tonight(date)
@@ -294,12 +312,12 @@ def tonight_status(date: str) -> dict:
         for p in g["players"]:
             out[(norm(p["name"]), p["team"])] = {"starter": p["starter"], "confirmed": p["confirmed"],
                                                  "inactive": p["inactive"], "id": str(p["id"]),
-                                                 "sig": _sig(p["name"])}
+                                                 "sig": _sig(p["name"]), "name": p["name"]}
     return out
 
 
 def official_index(rows, known: set) -> tuple[dict, dict]:
-    """({norm name: status}, {(last, first initial): [status]}) from the official
+    """({norm name: status}, {(last, first initial): [(report name, status)]}) from the official
     injury report's rows. The initial fallback exists for a name the report and DK
     spell differently (Alex / Alexandre Sarr); the report carries no team, so a
     report name that is itself a known NBA player is never offered to it.
@@ -312,7 +330,7 @@ def official_index(rows, known: set) -> tuple[dict, dict]:
         full = nba_injury_report.full_name(last, first)
         official[norm(full)] = st_
         if norm(full) not in known:
-            official_sig.setdefault(_sig(full), []).append(st_)
+            official_sig.setdefault(_sig(full), []).append((full, st_))
     return official, official_sig
 
 
@@ -396,7 +414,9 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
     info["injuries_source"] = nba_availability.LAST_SOURCE if espn_rows or date >= datetime.now(ET).date().isoformat() \
         else "past slate (not read)"
     espn_out = {(norm(n), t) for n, t in espn_rows}
-    espn_sig = {(_sig(n), t) for n, t in espn_rows}
+    espn_sig: dict = {}
+    for n, t in espn_rows:
+        espn_sig.setdefault((_sig(n), t), []).append(n)
     # Critique cycle 7: the NBA's official injury report (every 15 min) -- Out, plus
     # Doubtful / Questionable / Probable, two-ways included -- keyed by norm name and,
     # for a name the two spell differently, (last name, first initial) when unique.
@@ -412,7 +432,7 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
     def report_status(name, sig_ok=True):
         if norm(name) in official:
             return official[norm(name)]
-        alt = official_sig.get(_sig(name), []) if sig_ok else []
+        alt = [st_ for full, st_ in official_sig.get(_sig(name), []) if _agree(full, name)] if sig_ok else []
         return alt[0] if len(alt) == 1 else None
     implied = game_lines(client, games) if client is not None else {}
     league_pm = hist.get("league_pm")
@@ -441,7 +461,8 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         # starter left off the board): same team, last name and first initial,
         # and only if exactly one player fits -- never a guess.
         sig = _sig(name)
-        alt = [i for i, hp in hist["players"].items() if hp.get("team") == t and _sig(hp.get("name") or "") == sig]
+        alt = [i for i, hp in hist["players"].items() if hp.get("team") == t and _sig(hp.get("name") or "") == sig
+               and _agree(hp.get("name") or "", name)]
         return alt[0] if len(alt) == 1 else None
 
     def status_of(key, t, name, sig_ok=True):
@@ -450,7 +471,8 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         if not sig_ok:
             return {}
         sig = _sig(name)
-        alt = [v for (k2, t2), v in status.items() if t2 == t and v.get("sig") == sig]
+        alt = [v for (k2, t2), v in status.items() if t2 == t and v.get("sig") == sig
+               and _agree(v.get("name") or "", name)]
         return alt[0] if len(alt) == 1 else {}
 
     # The (last name, first initial) fallbacks below may only name a DK player
@@ -474,7 +496,8 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
         h = hist["players"].get(pid, {}) if pid else {}
         opp = next((team(g["away"]) if team(g["home"]) == t else team(g["home"])
                     for g in games.values() if t in (team(g["home"]), team(g["away"]))), None)
-        espn = (key, t) in espn_out or (sig_ok and (_sig(sal["name"]), t) in espn_sig)
+        espn = (key, t) in espn_out or (sig_ok and any(_agree(n, sal["name"])
+                                                       for n in espn_sig.get((_sig(sal["name"]), t), [])))
         injury = report_status(sal["name"], sig_ok)
         out = bool(st.get("inactive")) or sal.get("dk_status") in ("OUT", "O") or espn or injury == "Out"
         # `start` lets the optimiser put the LATEST tips in G / F / UTIL (DK's

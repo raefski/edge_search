@@ -382,7 +382,9 @@ def test_an_injured_namesake_on_another_team_does_not_take_a_player_off_the_boar
     official, sig = official_index(rows, {norm("Justin Champagnie"), norm("Julian Champagnie")})
     assert official[norm("Justin Champagnie")] == "Out"
     assert _sig("Julian Champagnie") not in sig       # a real other player: exact name only
-    assert sig[_sig("Alexandre Sarr")] == ["Out"]     # not a known name: initial fallback kept
+    assert sig[_sig("Alexandre Sarr")] == [("Alex Sarr", "Out")]   # not a known name: fallback kept
+    from edge.dfs_run_nba import _agree                # ... and it now needs agreeing first names
+    assert _agree("Alex Sarr", "Alexandre Sarr") and not _agree("Mike Sarr", "Malik Sarr")
 
 
 def test_recent_dk_skips_dnps_and_a_rookies_trailing_preseason_rows():
@@ -624,3 +626,17 @@ def test_blend_props_blends_only_players_with_a_market():
     assert rows[0]["proj"] == round(4.0 + 3.0 + 32.0, 2) and rows[0]["model_proj"] == 30.0
     assert rows[0]["proj_source"] == "props" and rows[1]["proj_source"] == "model"
     assert rows[1]["proj"] == 20.0 and rows[2]["proj"] == 0.0                # no market / not projected
+
+
+def test_market_points_never_joins_on_an_initial_alone():
+    from edge import dfs_run_nba as R
+
+    class C(_FakeClient):
+        def get_event_odds(self, sport, eid, markets, regions):
+            out = super().get_event_odds(sport, eid, markets, regions)
+            for m in out["bookmakers"][0]["markets"]:
+                for o in m["outcomes"]:
+                    o["description"] = o["description"].replace("Alex Sarr", "Mike Sarr")
+            return out
+    got = R.market_points(C(), [{"name": "Malik Sarr", "team": "WAS", "opp": "ATL", "proj": 20.0}])
+    assert got == {}

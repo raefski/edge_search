@@ -57,7 +57,6 @@ NICKNAMES = (
     ("christopher", "chris", "topher"),
     ("nicholas", "nick", "nico", "nicolas", "nikolas", "nicky"),
     ("stephen", "steve", "steven", "stevie", "stefan"),
-    ("gregory", "greg"),
     ("kenneth", "ken", "kenny"),
     ("ronald", "ron", "ronnie"),
     ("donald", "don", "donnie"),
@@ -73,6 +72,24 @@ NICKNAMES = (
     ("demetrius", "meech"),
     ("dominic", "dom", "dominick", "dominik"),
     ("tre", "trey", "tray"),
+    # 2026-11-08 audit (book prop subject vs DK name, every sport, last 10 slates): DK's
+    # sportsbook lists "Yegor Chinakhov" (DK DFS: Egor, props lost 5 NHL nights), "Janis
+    # Moser" (DFS: J.J. -- his given name is Janis), "GG Jackson" (DFS: Gregory). Russian
+    # transliterations fail the same way, so their usual pairs are listed with them.
+    ("gregory", "greg", "gg"),
+    ("janis", "jj"),
+    ("yegor", "egor"),
+    ("evgeny", "evgeni", "evgenii", "yevgeny", "yevgeni", "yevgenii"),
+    ("dmitri", "dmitry", "dmitrii", "dmitrij"),
+    ("alexei", "aleksei", "alexey", "aleksey", "alexej"),
+    ("sergei", "sergey"),
+    ("andrei", "andrey"),
+    ("nikolai", "nikolay"),
+    ("artemi", "artemy", "artem"),
+    ("ilya", "ilia"),
+    ("yaroslav", "jaroslav"),
+    ("mikhail", "michail"),
+    ("vasili", "vasily", "vasiliy", "vasilii"),
 )
 _NICK = {}
 for _row in NICKNAMES:
