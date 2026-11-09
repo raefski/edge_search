@@ -175,6 +175,22 @@ def test_a_model_change_that_also_fixes_its_lab_goes_to_adam_not_fail(tmp_path, 
     assert "scripts/nhl_skater_lab.py" in G.judge_files("nhl") and G.judge_files("mma") == set()
 
 
+def test_a_model_change_aimed_at_a_target_the_gate_does_not_measure_goes_to_adam(tmp_path, monkeypatch):
+    """11/8: the scout can aim NBA at cash lineups; the NBA gate measures minutes."""
+    monkeypatch.setattr(C, "worktree", lambda *a, **k: tmp_path)
+    monkeypatch.setattr(C, "drop_worktree", lambda *a, **k: None)
+    monkeypatch.setattr(C, "link_data", lambda *a, **k: None)
+    monkeypatch.setattr(C, "classify", lambda *a, **k: "model")
+    monkeypatch.setattr(C, "verify", lambda wt, paths: (True, "ok"))
+    monkeypatch.setattr(G, "run", lambda *a, **k: {"verdict": "unchanged", "table": "", "reasons": []})
+    assert C.judge("nba", tmp_path, ["edge/dfs_run_nba.py"], "cash lineups")[0] == "review"
+    assert C.judge("nba", tmp_path, ["edge/dfs_run_nba.py"], "minutes at tip-90")[0] == "unchanged"
+    assert C.judge("nba", tmp_path, ["edge/dfs_run_nba.py"])[0] == "unchanged"
+    monkeypatch.setattr(G, "run", lambda *a, **k: {"verdict": "pass", "table": "", "reasons": []})
+    assert C.judge("nba", tmp_path, ["edge/dfs_run_nba.py"], "cash lineups")[0] == "pass"
+    assert all(G.SPECS[s].get("measures") for s in G.SPECS)
+
+
 def test_rotation_skips_paused_pending_out_of_season_and_done():
     now = datetime(2026, 11, 8, tzinfo=timezone.utc)
     st = {"next": 0, "sports": {}}

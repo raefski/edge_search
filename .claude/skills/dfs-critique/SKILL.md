@@ -18,6 +18,23 @@ pooled), say which metric you chose, give the critic THAT metric and only that, 
 log the cycle under the sport's log with the target in its heading. Ownership
 targets use contests.db exports (scripts/model_accuracy.py), held out by slate.
 
+**Auto target** (`/dfs-critique <sport> auto`; the nightly loop always passes it). Pick the
+target before any critic, in two parts:
+1. `python3 scripts/dfs_target_scout.py <sport> --rebuild` (seconds, no tokens): money by
+   cash / GPP with n, which labs score what we enter, odds collected but unread, name
+   suspects, top-salary players without props, the critique history.
+2. Spawn `dfs-target-scout` (fresh agent; if not registered, `general-purpose` with
+   `.claude/agents/dfs-target-scout.md`'s body) with the sport and a scratch dir
+   (`<scratchpad>/scout-<sport>-<n>`). It returns a JSON block: target, metric, harness,
+   split, why, money_at_stake, runner_ups.
+Use its target exactly as a Target override (below): the critic gets THAT metric and
+harness; "build: ..." means building the harness is this cycle's work (section 1). Log the
+scout's JSON at the top of the cycle's log entry, and put `"target"` in
+critique_result.json. Why (2026-11-08): 25 NBA cycles aimed at minutes while cash lost
+-67%; the target that paid (cash lineups, props) came from asking where the money goes.
+A name suspect that is one player spelled two ways is fixed right away (edge/names.py,
+every sport), whatever the target.
+
 **Availability target** (`/dfs-critique <sport> availability`): who the board had as
 out vs. playing and as starting / in the role at build time, vs. what happened. Metric
 per held-out slate: false active (projected, didn't play: count + projected points and
@@ -51,7 +68,8 @@ in a fresh worktree on a `critique/<sport>-<stamp>` branch). Nobody is watching,
   adding it to the gate. A harness-only branch merges after the tests pass; a model
   change for a sport without a gate goes to Adam with your numbers.
 - Last step: write `critique_result.json` at the worktree root (do NOT commit it):
-  `{"sport", "cycle", "hole": one line, "fix": one line, "shipped": bool, "summary":
+  `{"sport", "cycle", "target": the cycle's target (auto: the scout's), "hole": one line,
+  "fix": one line, "shipped": bool, "summary":
   3-5 lines with the before/after numbers}` -- it becomes the push to Adam's phone.
 
 ## 1. The sport's target metric and where things are

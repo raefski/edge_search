@@ -75,6 +75,10 @@ JOBS: dict[str, Job] = {j.name: j for j in [
     _j("critique-ledger-rows", "evaluate", "scripts/critique_ledger_rows.py",
        doc="the critique loop's ledger -> data/harness/dfs_roi/critique_cycles.json, the dashboard's "
            "'Is the model improving?' rows (upload with the ROI rows); `-- add ...` records a hand-run cycle"),
+    _j("dfs-target-scout", "evaluate", "scripts/dfs_target_scout.py", "--rebuild",
+       doc="what the next critique cycle should aim at, per sport (no tokens): money by cash/GPP with n, "
+           "labs that score what we enter, odds collected but unread, name suspects, critique history "
+           "-> data/harness/dfs_targets.json; the dfs-target-scout agent picks from it"),
     _j("dfs-scorecard", "evaluate", "scripts/dfs_scorecard.py",
        doc="every DFS result number for a script or LLM -> data/dfs_scorecard.json: ROI by period/sport/"
            "type, contest groups (field/cap/games/overlay/alert), per-slate series, code updates, "

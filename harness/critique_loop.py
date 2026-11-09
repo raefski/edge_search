@@ -285,7 +285,9 @@ def run_agent(sport: str, wt: Path, stamp: str) -> dict:
     through the gate. Returns the agent's critique_result.json (its claim, used for the
     push text only)."""
     RUNS.mkdir(parents=True, exist_ok=True)
-    cmd = [claude_bin(), "-p", f"/dfs-critique {sport} unattended", "--permission-mode", "bypassPermissions",
+    # `auto`: the dfs-target-scout picks the cycle's target first (scripts/dfs_target_scout.py +
+    # the agent; Adam 2026-11-08 -- 25 NBA cycles aimed at minutes while cash lost -67%)
+    cmd = [claude_bin(), "-p", f"/dfs-critique {sport} auto unattended", "--permission-mode", "bypassPermissions",
            "--output-format", "json"]
     if os.environ.get("EDGE_CRITIQUE_BUDGET"):
         cmd += ["--max-budget-usd", os.environ["EDGE_CRITIQUE_BUDGET"]]
@@ -319,8 +321,10 @@ def ledger(entry: dict) -> None:
         fh.write(json.dumps({"at": _now().isoformat(), **entry}, default=str) + "\n")
 
 
-def judge(sport: str, cand: Path, paths: list[str]) -> tuple[str, dict]:
-    """(verdict, gate) for a candidate: pass / fail / review / record."""
+def judge(sport: str, cand: Path, paths: list[str], target: str | None = None) -> tuple[str, dict]:
+    """(verdict, gate) for a candidate: pass / fail / review / record. `target` = the cycle's
+    target (critique_result.json): a model change aimed at something the sport's gate does
+    not measure, and not passing it, goes to Adam (review) with the cycle's own numbers."""
     from harness import critique_gate
     stamp = _now().strftime("%Y%m%d-%H%M%S")
     base = worktree(f"critique-{sport}-{stamp}-main", None)
@@ -345,6 +349,11 @@ def judge(sport: str, cand: Path, paths: list[str]) -> tuple[str, dict]:
         # not .get(kind, gate["verdict"]): the default is evaluated first, and a record /
         # protected candidate has no gate run (11/8: the NHL record cycle crashed the night)
         verdict = {"protected": "review", "record": "record"}.get(kind) or gate["verdict"]
+        if kind == "model" and verdict != "pass" and target and not critique_gate.measures(sport, target):
+            verdict = "review"
+            gate["reasons"].append(f"the cycle aimed at '{target}', which this gate does not measure "
+                                   f"({', '.join(critique_gate.SPECS[sport].get('measures', ()))}); gate said "
+                                   f"{gate['verdict']}: Adam decides on the cycle's held-out numbers")
         lab = sorted(set(paths) & critique_gate.judge_files(sport))
         if kind == "model" and verdict != "pass" and lab:
             # the candidate changed how its own lab scores and main's lab disagrees with it:
@@ -391,7 +400,7 @@ def cycle(sport: str, st: dict) -> str:
         notify(f"{sport} critique: no result", f"the agent committed nothing (rc {res['rc']}). "
                f"Run log: data/harness/critique/{stamp}-{sport}.json", "high")
         return "no commits"
-    verdict, gate = judge(sport, cand, paths)
+    verdict, gate = judge(sport, cand, paths, claim.get("target"))
     if verdict in ("pass", "review"):
         extra = (f" -- re-gated after {WAIT_DAYS} forward days, then merged unless vetoed" if verdict == "pass"
                  else " -- waiting for Adam: harness critique-loop --merge / --drop")
@@ -411,6 +420,7 @@ def cycle(sport: str, st: dict) -> str:
     entry = {"at": stamp, "outcome": verdict, "hole": head, "paths": paths}
     sp["history"].append(entry)
     ledger({"event": "cycle", "sport": sport, "verdict": verdict, "hole": head, "fix": claim.get("fix"),
+            "target": claim.get("target"),
             "agent_shipped": claim.get("shipped"), "summary": claim.get("summary"), "cycle": claim.get("cycle"),
             "loss": (critique_gate.SPECS.get(sport) or {}).get("loss"), "groups": gate.get("groups", []),
             "reasons": gate.get("reasons", [])[:6], "minutes": res["minutes"], "cost_est": res["cost"],

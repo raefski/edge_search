@@ -59,19 +59,24 @@ SPECS = {
     # state replayed: NBA.com's five + the report as of tip-45 / tip-90 (2026-27 only)
     "nba": {"cmd": [["scripts/nba_minutes_ml_fit.py", "--gate", "{out}"],
                     ["scripts/nba_expected_replay.py", "gate", "{out}"]],
-            "judge": "scripts/nba_minutes_ml_fit.py", "loss": "sq", "min_clusters": 5},
+            "judge": "scripts/nba_minutes_ml_fit.py", "loss": "sq", "min_clusters": 5,
+            "measures": ("minutes",)},
     "ncaab": {"cmd": [["scripts/ncaab_lab.py", "gate", "{out}"]],
-              "judge": "scripts/ncaab_lab.py", "loss": "abs", "min_clusters": 5},
+              "judge": "scripts/ncaab_lab.py", "loss": "abs", "min_clusters": 5,
+              "measures": ("dk points", "minutes", "projection")},
     # held-out slates (on/after 10/11) rebuilt from their raw ladders by today's code;
     # truth = DK FPTS from the contest exports, by draft group
     "ncaaf": {"cmd": [["scripts/ncaaf_lab.py", "gate", "{out}"]],
-              "judge": "scripts/ncaaf_lab.py", "loss": "abs", "min_clusters": 5},
+              "judge": "scripts/ncaaf_lab.py", "loss": "abs", "min_clusters": 5,
+              "measures": ("dk points", "projection")},
     # 2025-26 Cup races, production simulate() with 2022-24-fitted tables, DK points
     "nascar": {"cmd": [["scripts/nascar_lab.py", "gate", "{out}"]],
-               "judge": "scripts/nascar_lab.py", "loss": "sq", "min_clusters": 5},
+               "judge": "scripts/nascar_lab.py", "loss": "sq", "min_clusters": 5,
+               "measures": ("dk points", "driver", "projection")},
     "nhl": {"cmd": [["scripts/nhl_skater_lab.py", "gate", "{out}"]],
             "prepare": ["scripts/nhl_skater_lab.py", "cache"],
-            "judge": "scripts/nhl_skater_lab.py", "loss": "sq", "min_clusters": 5},
+            "judge": "scripts/nhl_skater_lab.py", "loss": "sq", "min_clusters": 5,
+            "measures": ("skater", "dk points", "projection")},
 }
 COVERAGE = 0.99
 GUARD_REL = 0.01
@@ -108,6 +113,14 @@ def _gate_source(path: Path) -> str | None:
         if isinstance(node, ast.FunctionDef) and node.name == "gate":
             return ast.dump(node)
     return None
+
+
+def measures(sport: str, target: str) -> bool:
+    """Does the sport's gate measure this target? (its SPECS "measures" words appear in it;
+    a target outside them -- NBA "cash lineups" on a minutes gate -- is not judged here)."""
+    words = (SPECS.get(sport) or {}).get("measures", ())
+    t = (target or "").lower()
+    return any(w in t for w in words)
 
 
 def judge_files(sport: str) -> set[str]:
