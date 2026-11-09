@@ -198,3 +198,76 @@ corr 0.32), starts 3-10 over-projected 3-5 pts and the pole's finish low
 (20.4 vs 27.6) -- a start-curve shape / front-row term in fit_running is the
 next cycle; (2) lead/fast form multipliers 8.0/4.0 never fitted (~0.03 RMSE);
 (3) loop-data cache stops at 10/11 -- the 10/18 and 10/25 races are not in it.
+
+---
+
+# Target: the lineups we enter, vs the real field (from 2026-11-09)
+
+## Cycle 5 (auto: lineups vs the field) -- harness built; nothing shipped (2026-11-09, unattended)
+
+Scout (dfs_target_scout.py + dfs-target-scout agent):
+
+```json
+{"sport": "nascar", "target": "build lineup harness (cash + GPP lineups vs the real field)",
+ "metric": "Per Cup contest, on the lineup production builds: cash = points vs the real cash line and cashed y/n; GPP = $ returned per $1 under the real payout table. Per slate, with n, cash and GPP apart",
+ "harness": "build: scripts/nascar_lab.py lineups -- rebuild_board(logged salaries, real grid, form before the race) -> production cash + GPP builders -> score vs contests.db fields",
+ "split": "leave-one-slate-out over the exported Cup races; 'not enough data' (<5 slates)",
+ "why": "Same lineup in cash and GPP on all 4 slates; cash missed the line by 58/22/23 pts in the 101-500 double-ups (beat 31% of the field, -50% ROI, 4e/4s). Cycles 1-4 improved driver-level error but no harness scores what we enter",
+ "money_at_stake": "cash -50% [-100%,+32%] 4e/4s; GPP -54% [-100%,+18%] 4e/4s; net -$4",
+ "runner_ups": ["start-curve / front-row finish term (cycle 4 runner-up)", "collect NASCAR outright / top-N / H2H odds before Daytona", "superspeedway drafting partners"]}
+```
+
+**The cycle's work was the harness** (built as its own script, not a `nascar_lab.py`
+subcommand, so the gate's judge file is untouched): `scripts/nascar_lineup_lab.py`
+(`report`, `parity`, `lodo`, `gate OUT`). Per Cup draft group in the projection log it
+rebuilds the post-qualifying board with production `rebuild_board` (logged salaries, the
+real grid, form from earlier races only, the CURRENT model), runs production
+`dfs_opt_nascar.optimize` at the phone page's defaults (1,500 sims, effort 250, seed 0,
+own_weight 0) and scores the cash and GPP lineups with DK's own FPTS against every exported
+contest on that draft group: field percentile, cash line, $ at the rank taken. Truth check:
+DK FPTS == results-feed recompute on all 113 exported drivers (max |diff| 0.00).
+
+**Coverage:** 6 Cup boards rebuild (9/27, 10/11, 10/18, 10/25, 11/1, 11/8); 3 have real
+fields (9/27 intermediate, 10/25 superspeedway, 11/1 short). 10/4 (dg 154134) has exports
+but no logged board -- no salaries on this machine -- so it is excluded rather than guessed.
+11/8 has no export imported yet. **Not enough data (3 races < 5).**
+
+Baseline, shipped model + objectives (3 races, 1 cash + 1 GPP contest each):
+
+| lineup | contests | cashed | mean field pctile | mean points | ROI ($ at rank taken) | pctile vs replay [90%, by race] |
+|---|---|---|---|---|---|---|
+| cash replay (CASH_PCT 25) | 3 | 0/3 | 0.394 | 211.2 | -100% | |
+| cash, Adam's real entry | 3 | 1/3 | 0.286 | 197.0 | -33% | -0.108 [-0.251, +0.035] |
+| GPP replay (GPP_PCT 90) | 3 | 1/3 | 0.487 | 208.5 | -78% | |
+| GPP, Adam's real entry | 3 | 0/3 | 0.410 | 194.2 | -100% | -0.077 [-0.119, -0.035] |
+
+Per contest the cash replay missed the line by 7.6 (9/27, 274.4 vs 282.0), 23.4 (10/25)
+and 0.7 points (11/1, a 19-entry field). Lineup points vs the hindsight best 6 under the
+cap: 135.8 of 368 at Talladega, 85.1 (GPP) / 170.8 (cash) of 343 at the 11/8 championship.
+
+Parity (replay vs what was entered): 10/25 6/6 cash and GPP (the model has not moved for a
+superspeedway); 9/27 4/6 (Adam's lineups came from the pre-cycle-1 model); 11/1 2/6 cash,
+3/6 GPP. Not a strict parity target: the replay runs today's model on the real grid; the
+local log is often a pre-qualifying build and Adam builds on the phone.
+
+**Objective percentiles, leave-one-race-out** (grids: cash {10,25,40,50}, GPP {75,90,95};
+chosen on the other 2 races by mean field percentile, ties to production):
+
+| | shipped pctile | chosen held out | diff [90%, by race] |
+|---|---|---|---|
+| cash | 0.394 | 0.394 | -0.000 [-0.035, +0.035] |
+| GPP | 0.487 | 0.417 | -0.069 [-0.138, +0.000] |
+
+In-sample, cash pct 10 reads +0.198 [-0.018, +0.413] (1/3 cashed) -- on 3 races it is a
+reading, not a result; the held-out choice flips between 10 and 50 race to race.
+
+**Decision: not shipped.** No model or objective change: nothing beats shipped held out, and
+3 races cannot carry one. No critic was spawned (unattended, conservative): with 3 fielded
+races any hole it named could not be verified, and the season is over (next Cup slate:
+Daytona, February). `gate OUT` writes one row per (mode, contest), pred = 1 - field
+percentile, cluster = race date, state = mode -- for Adam to add to harness/critique_gate.py
+beside nascar_lab.py's driver rows once >= 5 races have fields.
+
+**For the next cycle:** (1) import the 11/8 export if Adam has one -> 4 races; (2) rerun
+`report` + `lodo` after every 2027 race; cash pct 10 is the reading to confirm or kill at
+>= 5 races; (3) runner-ups above, start-curve first (testable on 66 races now).

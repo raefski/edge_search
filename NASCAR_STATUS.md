@@ -180,6 +180,16 @@ Held out (2025-26, 66 races, 2461 driver-races): DK RMSE 24.48 -> 24.14, MAE
 FINISH is projected low (20.4 vs 27.6 pts) and the finish component carries
 most of the error (RMSE 20.6) -- the next cycle's lead.
 
+## 4d. Lineups vs the real field (critique cycle 5, 2026-11-09)
+
+`scripts/nascar_lineup_lab.py report` replays the production optimizer (page defaults:
+1,500 sims, effort 250, seed 0) on every logged Cup board rebuilt post-qualifying with the
+current model, and scores the cash and GPP lineups against the exported contests: field
+percentile, cash line, $ at the rank taken; Adam's real entry beside it. 3 races have
+fields (9/27, 10/25, 11/1; 10/4 has no logged board): cash replay 0/3 cashed, mean pctile
+0.394; GPP 1/3, 0.487. NOT ENOUGH DATA. `lodo` picks CASH_PCT / GPP_PCT leave-one-race-out
+-- nothing beat 25 / 90 held out. Rerun after every race; log: NASCAR_CRITIQUE_LOG.md.
+
 ## 5. The two theories are percentiles, not mean ± k·sd
 
 ```
@@ -331,4 +341,5 @@ say that.
 | `scripts/dfs_lineups_nascar.py` | the CLI |
 | `scripts/nascar_fit.py` | every constant, plus a held-out simulator check |
 | `scripts/nascar_calibration.py` | predicted vs actual, from a contest export |
+| `scripts/nascar_lineup_lab.py` | production lineups replayed vs the real contest fields (cycle 5) |
 | `tests/test_dfs_nascar.py` | scoring, track types, simulator invariants, optimiser |
