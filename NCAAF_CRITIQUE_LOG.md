@@ -755,3 +755,107 @@ Unattended gate (20261108-1255): **fail**
 |---|---|---|---|---|---|---|---|
 | primary | all | 545 | 10 | 6.2173 | 6.1902 | -0.0272 [-0.0544, +0.0155] | noise |
 - no primary state better beyond noise
+
+## Cycle 7 (auto: cash lineups) — 2026-11-09 (unattended): built the cash-lineup harness; salary calibration NOT SHIPPED
+
+**Target (dfs-target-scout):**
+
+```json
+{"target": "build cash lineup harness",
+ "metric": "replayed production CASH lineup per held-out board, scored with DK FPTS vs that draft group's real double-up fields: cash rate (>= last paid score), field percentile; secondary mean points; GPP separately, never pooled",
+ "harness": "build: scripts/ncaaf_lineup_lab.py (modelled on nba_lineup_lab.py), with parity vs the logged cash lineup and a lodo subcommand",
+ "split": "leave one slate out over the cash draft groups with a logged board + cash export (154582 has no logged board: excluded)",
+ "why": "cash ROI -63% [-98%, -27%], 12 entries / 9 slates, 25% cashed; Z_CASH and the cash objective never backtested; ncaaf_lab.py scores players only",
+ "money_at_stake": "NCAAF cash net -$8.77 on 12 entries; 11/5-11/7 each lost 100%",
+ "runner_ups": ["gate scores MAE only (protected file)", "QB projections low (bias +1.6), top-salary QBs without ladders", "GPP lineups in the same lab"]}
+```
+
+**The harness (this cycle's work):** `scripts/ncaaf_lineup_lab.py`.
+
+- `parity`: the replay equals the logged lineup on **29 of 29 boards, cash and
+  GPP**, at 700 and at 350 iterations.
+- `report [--z]`: field percentile, cash line, $ at the rank taken, and Adam's
+  real entry beside the replay.
+- `lodo`: Z_CASH chosen leave-one-slate-out.
+- `calibrate [--forward]`: the cycle's candidate.
+- `gate OUT`: one row per (mode, contest), pred = 1 − field percentile, state =
+  mode, cluster = date. Adam decides whether it joins `critique_gate`.
+
+Builds are cached in `data/harness/ncaaf_lineup_lab/`, keyed on the board and
+on the source of the modules the build runs.
+
+**Baseline (Cycle 0 of this target):**
+
+| lineup | contests | slates | cashed | field pctile | mean pts | ROI |
+|---|---|---|---|---|---|---|
+| shipped cash (z 0.75) | 11 | 8 | 18% | 0.253 | 134.1 | −69% |
+| Adam's real cash entries | 11 | 8 | 18% | 0.257 | 137.4 | −69% |
+| shipped GPP | 13 | 11 | 23% | 0.487 | 137.4 | +46% |
+| Adam's real GPP entries | 13 | 11 | 23% | 0.556 | 146.1 | +172% |
+
+Excluded: 10/10 (dg 154582), which has no logged board. Every lineup player
+had a DK score. 11/7 holds 3 of the 11 cash contests on one lineup.
+
+**Z_CASH is not the lever.**
+
+- Chosen leave-one-slate-out from {0, .25, .5, .75, 1, 1.5}: pctile 0.253 →
+  0.241 (−0.012 [−0.030, +0.000]).
+- In-sample the grid is non-monotonic: 0.296 / 0.272 / 0.253 / 0.253 / 0.312 /
+  0.274.
+
+**Hole (dfs-model-critic):** the cash climb ranks players on the ladder
+projection alone, and that projection is compressed against salary.
+
+- Within position, (FPTS − proj) per $1k: QB **+1.80** (positive on 7 of 7
+  dates), RB +0.35, WR +0.14.
+- QBs over $8k run +4.2 and QBs under $5k run −4.1.
+- Our picks run −0.24 actual − proj (n=72), against +1.24 for the pool (n=613).
+- Against the cashing lineups in the same contest, we are −22.9 points at RB
+  while spending $1.9k less there.
+
+**Candidate:** `proj' = max(0, a_pos + b_pos·proj + c_pos·salary_k)`, least
+squares on player rows (every logged board with an export), excluding the
+held-out date. Implemented as `calibrate`; it reproduces the critic exactly.
+
+| variant | contests / slates | cashed | field pctile | mean pts | ROI | pctile diff [90%, by slate] |
+|---|---|---|---|---|---|---|
+| shipped | 11 / 8 | 18% | 0.253 | 134.1 | −69% | |
+| calibrated, fit on every other date | 11 / 8 | 18% | 0.344 | 144.4 | −69% | +0.091 [−0.011, +0.187] |
+| calibrated, fit on **earlier dates only** (live-faithful) | 11 / 8 | **0%** | 0.286 | 144.2 | −100% | +0.033 [−0.118, +0.192] |
+
+Per held-out date (every other date): 5 of 8 better, 2 worse (9/26, 10/22), 1 even.
+
+The forward fit's QB salary slope is 0.10–0.65 through 11/6. It only reaches
+1.2–1.7 once later dates are in. Using every other date leans on the future.
+
+**Decision: NOT SHIPPED.**
+
+- Cash rate and ROI are unchanged, or worse in the live-faithful version.
+- Every interval includes zero, and optimizer seeds alone move the percentile
+  by ±0.02.
+- The critic measured player MAE worse (LODO 6.68 → 6.82, n=738), so the
+  NCAAF gate (player MAE) would reject it anyway.
+- 8 slates is not enough data. Conservative call (unattended).
+
+**Runner-ups (critic):**
+
+1. **Field chalk in cash.**
+   - Adding w·own/100 to the projection, w chosen leave-one-slate-out: pctile
+     0.318, 4 of 11 cashed.
+   - But w jumps between 5 and 40, and combined with the calibration it
+     collapses to 0.251.
+   - On 9/26, 11/5 and 11/7, our summed ownership sat at the field's 9th–17th
+     percentile.
+2. **Players with no ladder that cash fields build around.** They take 3–36%
+   of cash ownership: Easton Messer 96% (38.9 pts) on 11/5, Isaiah Marshall and
+   Trelain Maddox on 10/17, Landon Sides on 11/6. Their points per $1k beat the
+   pool's on only 5 of 11 contests.
+3. **The 9/26 board predates the suffix fix** (Hawkins Jr. is missing), so the
+   replay understates today's production on that date.
+
+**For the next cycle:**
+
+- Rerun `report` and `calibrate --forward` as cash exports arrive. The QB
+  salary signal is the cleanest single piece (7 of 7 dates).
+- `gate OUT` is ready for Adam to add to `critique_gate` as a lineup-level gate
+  next to player MAE.

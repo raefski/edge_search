@@ -446,3 +446,34 @@ Known limits: 63 test QBs is thin; held-out QB bias went +0.54 → −0.34; and
 early-season rates rest on 2–4 games. QB projections are still compressed
 (slope ~1.45 after the fix). A college anytime-TD market would price this
 directly: none is collected.
+
+## 13. The cash lineup, replayed against the field (2026-11-09)
+
+Critique cycle 7 (NCAAF_CRITIQUE_LOG.md). Every earlier cycle scored player DK
+points. `scripts/ncaaf_lineup_lab.py` scores what we ENTER. It replays the
+production optimizer on each logged pre-lock board, and the replay is exact:
+29 of 29 boards match the logged cash and GPP lineups (`parity`). It scores the
+lineup with DK's FPTS for that draft group against every exported contest on
+it: field percentile, cash line, and $ at the rank taken.
+
+Shipped cash lineup: 11 cash contests on 8 slates.
+
+- Cashed 18%, at the field's 25th percentile, ROI −69%.
+- Adam's real entries are near-identical (pctile +0.004).
+- GPP: 13 contests, 49th percentile, +46%. Adam's own edits do better there
+  (+172%, pctile +0.07, inside noise).
+
+What is NOT the lever:
+
+- **Z_CASH.** Chosen leave-one-slate-out it scores −0.012 in field percentile,
+  and in-sample the z grid is non-monotonic noise.
+- **A salary-aware projection calibration**, `max(0, a + b·proj + c·salary)`
+  per position. The critic's lead: QBs over $8k run +4.2 actual − proj.
+  - Fitted on every other date: pctile +0.091 [−0.011, +0.187], cash rate
+    unchanged.
+  - Fitted on earlier dates only (live-faithful): +0.033 [−0.118, +0.192], and
+    cashes 0 of 11.
+  - Not shipped.
+
+Rerun `report` / `calibrate --forward` as cash exports arrive. 8 slates is
+not enough data.
