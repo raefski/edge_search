@@ -228,6 +228,12 @@ data/nba_rewind/raw/
 # scripts/nba_lineup_lab.py: per-board build cache (keyed by board + source hash; rebuildable)
 data/nba_lineup_lab_cache/
 
+# scripts/mma_rogan.py: claims.csv carries transcript excerpts (public repo) and
+# the YouTube listings are re-fetchable; only the episode list and the grade are kept.
+data/mma_rogan/*
+!data/mma_rogan/episodes.json
+!data/mma_rogan/grade.json
+
 # Timer feeds live on the `data` branch, not main (edge/data_branch.FEEDS,
 # 2026-10-16). The desktop keeps them on disk; Streamlit Cloud reads them off
 # GitHub (edge/repo_files.py); a fresh clone gets them with
@@ -251,9 +257,3 @@ data/overlay_payouts_live.json
 data/ncaaf_availability/
 data/ncaaf_depth/
 data/ncaaf_qb_rush_td.json
-# scripts/mma_rogan.py: claims.csv carries transcript excerpts (public repo) and
-# the YouTube listings are re-fetchable; only the episode list and the grade are kept.
-data/mma_rogan/*
-!data/mma_rogan/episodes.json
-!data/mma_rogan/grade.json
-
