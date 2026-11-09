@@ -62,6 +62,12 @@ them go stale):**
    `scripts/nfl_lineup_backtest.py --z-grid ...` as real 2026 slates accumulate, or
    settle it faster with a real DK contest-standings export (which would also fit the
    ownership model, the other unvalidated NFL piece).
+   **2026-11-09 (NFL critique cycle 1, NFL_CRITIQUE_LOG.md):** real DK cash fields now
+   score it -- `scripts/nfl_lineup_lab.py` replays the production optimizer on every
+   logged board. Still unsettled: z chosen leave-one-slate-out on 7 slates / 11 contests
+   = -0.047 [-0.171, +0.054] field pctile vs 0.75. And the cash search does not converge
+   at 700 iterations: the shipped lineup's field pctile runs 0.507-0.822 across seeds
+   (mean 0.648), so compare constructions on the 8-seed mean, never one build.
 4. **Does the model add real value beyond DK's own salary?** Re-run 2026-07-23 at n=11
    slates (up from 6): now significant for both hitters (t=2.98) and pitchers (t=2.79),
    but a split-sample check shows the effect is concentrated in the more recent slates,
