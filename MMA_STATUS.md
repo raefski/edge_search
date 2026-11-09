@@ -234,7 +234,7 @@ constants are one grid search away from fitted.
 | **Lineup head-to-head** | the objectives are argued from a calibrated simulation, not from a backtest against real contest results. No historical DK MMA salaries were found. |
 | **Market constants on DK's own lines** | fitted on `ufc-master.csv` prices (a consensus source), applied to DraftKings'. DK's own pre-lock lines are now archived every capture for a refit. |
 | **Salary-implied fallback** | one card, eleven bouts |
-| **Sig-strike / takedown props** | parsed and captured but NOT used: their calibration is unmeasured. Displayed for reference in the log only |
+| **Sig-strike / takedown props** | captured, **measured 2026-11-09 and NOT used**: `scripts/mma_lab.py report` (6 cards, 90 fighters, leave one card out). Blending them in adds +0.16 DK MAE; prop stat points correlate 0.50 with actual vs the model's 0.57, and the sig lines run ~19% above actual sig strikes (MMA_CRITIQUE_LOG.md cycle 1) |
 | **Round-and-Method grid** | parsed, not used for timing: the fitted hazard is validated, the grid's pricing is not |
 | **Captain Mode (169)** | built 2026-09-26 (exhaustive, 48,048 lineups on 8 fights). Same model; the CPT's field ownership is a prior like the rest |
 | **Weight-miss / short-notice effects** | not modelled beyond what the market prices |
