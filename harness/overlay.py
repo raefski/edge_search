@@ -49,7 +49,7 @@ from harness.registry import ROOT
 from harness.runner import STATE
 
 sys.path.insert(0, str(ROOT))
-from edge.dfs_entry_edge import (_median, entry_ev, fit_pace, pace_v,  # noqa: E402
+from edge.dfs_entry_edge import (_median, entry_ev, fit_pace, pace_spread, pace_v,  # noqa: E402
                                  entry_edge, fill_basis, fit_late_fill,  # noqa: E402
                                   likely_at_lock, projected_fill, weekday)
 from scripts import dfs_overlay as O  # noqa: E402
@@ -402,8 +402,7 @@ def assess(found: list[dict], tables: dict, history: dict, now: datetime, hours:
         if pace and c and c.get("points") and mins <= FINAL_MIN and r["nt"] < r["m"]:
             cc = {**c, "cap": r["m"], "fee": r["fee"], "prize_pool": r["po"],
                   "points": {**c["points"], mins: r["nt"]}}
-            v = pace_v(cc, mins)
-            share = pace["share"][sum(v >= x for x in pace["cuts"])] if v is not None else _median(pace["all"])
+            share = _median(pace_spread(cc, mins, pace))   # pace bin / late-listed / all (cycle 3)
             n_lock = min(r["m"], round(r["nt"] + min(1.0, share) * (r["m"] - r["nt"])))
             ev, _ = entry_ev(cc, mins, pace, pt["tiers"])
             lock_e = {**entry_edge(pt["tiers"], n_lock, r["fee"]), "roi": ev / r["fee"]}

@@ -423,3 +423,31 @@ def test_the_final_call_uses_the_lab_pace_and_ev():
     early = overlay.assess([{**f, "lock": T0 + timedelta(minutes=14)}], tiers, {}, T0, 2.5, 25,
                            0.10, False, None, pace, logged)[0]
     assert early["fill_basis"] != "same-pace"
+
+
+def test_a_contest_listed_late_is_priced_on_late_listed_contests():
+    """Cycle 3: a contest with no snapshot >= PACE_LO before the call (a DK re-post that
+    first showed up near lock) draws from the late-listed spread, which fills ~0.88 of its
+    room; one whose earlier snapshots are merely missing keeps the pooled `all` spread."""
+    from edge.dfs_entry_edge import NEW_MIN_N, PACE_LO, fit_pace, is_new, pace_spread
+    pace = {"cuts": [0.05], "share": [0.2, 0.9], "spread": [[0.1, 0.3], [0.8, 1.0]],
+            "all": [0.1, 0.3], "n": 200, "new": [1.0] * NEW_MIN_N}
+    late = {"points": {8.0: 40}, "cap": 100}                     # first seen at the call
+    gap = {"points": {60.0: 20, 8.0: 40}, "cap": 100}            # seen an hour out, then a gap
+    assert is_new(late, 8.0) and not is_new(gap, 8.0)
+    assert pace_spread(late, 8.0, pace) == pace["new"]
+    assert pace_spread(gap, 8.0, pace) == pace["all"]
+    assert pace_spread(late, 8.0, {**pace, "new": [1.0]}) == pace["all"]   # too few to trust
+    # live: the late-listed contest is forecast full, so no overlay call
+    logged = {"1": {"points": {}, "cap": 100, "lock": T0 + timedelta(minutes=8)}}
+    f = {**_found("1", 40, 100, 1.0, 8), "po": 90.0}
+    tiers = {"1": {"tiers": [[1, 30, 3.0]], "resizable": False}}
+    logged["1"]["points"] = {8.0 + PACE_LO - 1: 35}
+    r = overlay.assess([f], tiers, {}, T0, 2.5, 25, 0.10, False, None, pace, logged)[0]
+    assert r["n_lock"] == 100 and not r["alert"]
+    # fit_pace collects the late-listed shares from train
+    lock = T0
+    train = {str(i): {"points": {27.0: 10 + i, 7.0: 50}, "cap": 100, "lock": lock} for i in range(5)}
+    train["a"] = {"points": {7.0: 50}, "cap": 100, "lock": lock}
+    finals = {k: 60 for k in train} | {"a": 100}
+    assert fit_pace(train, finals, 9.5, 4.5)["new"] == [1.0]

@@ -167,3 +167,41 @@ No critic this cycle: the open candidate was decided first. The next cycle spawn
 on the new model. Leads from earlier cycles: the tail share is pooled across sports
 and drifts; fast fillers are under-represented in finals; the warning still uses
 the old forecast.
+
+## Cycle 3 -- NFL false calls: late-listed contests (2026-11-09): SHIPPED
+
+Target (Adam, 11/9): NFL's final calls. Held out from 10/31, NFL was the one sport
+losing money: n=801 contests over 4 lock days, $ -13, 109 false calls. All sports made +$857.
+
+**Hole (critic).** 237 contests in train first appeared in the lobby only 5-17 minutes
+before lock, with no snapshot PACE_LO (12 min) or more before the call. They are mostly
+DK re-posting a contest that just filled.
+- They have no pace, so the EV call priced them on the pooled spread (`all`, mean share 0.57).
+- They actually fill 0.88 of their empty room in train. Held out: NFL 0.87, NBA 0.91, CFB 0.92. Paced contests fill about 0.44.
+- NFL held out: 79 such contests. 71 were called overlays, losing $106, with 47 of the 109 false calls. The other 722 NFL contests made +$93.
+- Contests whose earlier snapshots are merely missing (a logging gap: 20 CBB, 6 NHL) fill slowly. They stay on `all`, so skipping every unpaced contest would have cost CBB $95.
+
+**Fix.** In `edge/dfs_entry_edge.py`:
+- `is_new`: the contest has no snapshot at least PACE_LO before the call.
+- `fit_pace` keeps `new`, the train call-to-final shares of such contests.
+- `pace_spread`: pace bin, else `new` (when it has at least NEW_MIN_N=30), else `all`.
+
+`entry_ev` and assess()'s point share (`harness/overlay.py`) both read `pace_spread`, and the lab does too (`--no-new-bin` gives the old behaviour). There is no new fitted constant. The critic found a 15 or 25 min cutoff gives the same result. Live today fits on 411 late-listed contests, median share 1.0.
+
+**Held out** (pace + EV, Classic, call 4.5-9.5 min out):
+
+| test from | slice | n | $ before -> after | false | missed | MAE |
+|---|---|---|---|---|---|---|
+| 10/31 (10 days) | NFL | 801 / 4 lock days | -13 -> **+93** | 109 -> 62 | 114 -> 138 | 0.085 -> 0.070 |
+| 10/31 | all | 2,830 | +857 -> **+1,006** | 261 -> 159 | 429 -> 479 | 0.070 -> 0.062 |
+| 10/22 (19 days) | NFL | 1,212 | +76 -> **+235** | 198 -> 121 | 160 -> 192 | 0.085 -> 0.071 |
+| 10/22 | all | 5,142 | +2,734 -> **+2,973** | 485 -> 308 | 708 -> 789 | 0.067 -> 0.061 |
+
+- **By lock day** (10/22 split): 14 days better, 2 worse ($1, $2), 3 unchanged. NFL Sundays: 11/1 +40 -> +96, 11/8 +208 -> +260, 10/25 +197 -> +246.
+- **By sport, 10/31 split:** no sport loses money (CBB +1, CFB +23, MMA +1, NAS 0, NBA +15, NHL +5).
+- **By sport, 10/22 split:** NASCAR gives back $15 (+178 -> +163).
+- **Missed overlays rise** (about +50). These are contests where we now say "it will fill" and it didn't, but the $ that counts goes up.
+
+**Runner-ups.**
+1. The lab scores contests live never alerts on, because it ignores max_fee 25, min_roi 0.10, tickets and resizable contests. NFL contests over $25 net about -$131, one $1,500 contest at -$209. Scored the way live filters, NFL's baseline was about +$118. The lab should apply live's filters.
+2. Fills ran slower in the test period (NFL share 0.58 on train vs 0.48 on test), and the spread pools all sports. NFL called contests expected +$1,088 and realised -$13. Shrink the spread or weight it toward recent days, and consider per-sport spreads.

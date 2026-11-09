@@ -297,6 +297,20 @@ def call_point(c, first: float, last: float):
 
 
 PACE_LO, PACE_HI = 12.0, 25.0   # earlier snapshot this far before the call sets the pace
+#: A "new" contest has no snapshot at least PACE_LO before the call at all: it first
+#: appeared in the lobby inside ~5-17 min of lock -- mostly DK re-posting a contest that
+#: just filled. These fill ~0.88 of their room (train, locks < 10/31, n=237; 0.87 NFL /
+#: 0.91 NBA / 0.92 CFB held out) vs ~0.44 for paced ones, so pricing them on the pooled
+#: spread (`all`, mean 0.57) called them overlays and lost: NFL 71 calls, -$106, 47 of
+#: NFL's 109 false calls held out 10/31-11/9 (OVERLAY_CRITIQUE_LOG.md cycle 3). Contests
+#: whose earlier snapshots are merely missing (a logging gap) are slow fillers and keep
+#: `all`. NEW_MIN_N: below this many train "new" contests, fall back to `all`.
+NEW_MIN_N = 30
+
+
+def is_new(c, m_call) -> bool:
+    """No snapshot at least PACE_LO minutes before the call: listed late (a re-post)."""
+    return max(c["points"]) < m_call + PACE_LO
 
 
 def pace_v(c, m_call):
@@ -312,7 +326,7 @@ def pace_v(c, m_call):
 
 def fit_pace(train, finals, first, last, k=5):
     """Quintile edges of pace v and the median realised call->final share in each."""
-    xs, every = [], []
+    xs, every, new = [], [], []
     for cid, c in train.items():
         if cid not in finals or c["cap"] < 10:
             continue
@@ -325,6 +339,8 @@ def fit_pace(train, finals, first, last, k=5):
         v = pace_v(c, m)
         if v is not None:
             xs.append((v, share))
+        elif is_new(c, m):
+            new.append(share)
     xs.sort()
     n = len(xs)
     cuts = [xs[n * i // k][0] for i in range(1, k)]
@@ -333,7 +349,18 @@ def fit_pace(train, finals, first, last, k=5):
     # The whole spread per bin is kept for the EV call; contests with no pace
     # snapshot draw from every train share.
     return {"cuts": cuts, "share": [_median(b) for b in bins], "spread": bins,
-            "all": every, "n": n}
+            "all": every, "n": n, "new": new}
+
+
+def pace_spread(c, m_call, pace) -> list:
+    """The train call->final shares this contest is priced on: its pace bin, else the
+    late-listed ("new") contests' spread, else every train share."""
+    v = pace_v(c, m_call)
+    if v is not None:
+        return pace["spread"][sum(v >= x for x in pace["cuts"])]
+    if len(pace.get("new") or ()) >= NEW_MIN_N and is_new(c, m_call):
+        return pace["new"]
+    return pace["all"]
 
 
 def entry_value(c, field: float, tiers=None) -> float:
@@ -349,8 +376,7 @@ def entry_ev(c, m_call, pace, tiers=None) -> tuple[float, float]:
     """(expected value of one entry, P(overlay at lock)) over the train spread of
     call->final shares in this contest's pace bin."""
     e, cap, pp, fee = c["points"][m_call], c["cap"], c["prize_pool"], c["fee"]
-    v = pace_v(c, m_call)
-    ss = pace["all"] if v is None else pace["spread"][sum(v >= x for x in pace["cuts"])]
+    ss = pace_spread(c, m_call, pace)
     fields = [e + min(1.0, x) * (cap - e) for x in ss]
     return (sum(entry_value(c, f, tiers) for f in fields) / len(fields),
             sum(pp > fee * f for f in fields) / len(fields))

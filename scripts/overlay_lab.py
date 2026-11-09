@@ -62,6 +62,8 @@ def forecast(c, cid, hist, model, m_call, pace=None):
         if v is not None:
             i = sum(v >= x for x in pace["cuts"])
             return min(c["cap"], round(e + min(1.0, pace["share"][i]) * (c["cap"] - e)))
+        if len(pace.get("new") or ()) >= E.NEW_MIN_N and E.is_new(c, m_call):   # cycle 3
+            return min(c["cap"], round(e + min(1.0, E._median(pace["new"])) * (c["cap"] - e)))
     t_call = c["lock"] - timedelta(minutes=m_call)
     h = [(t, x) for t, x in hist.get(cid, []) if t <= t_call]
     proj = E.projected_fill(h, c["cap"], m_call)
@@ -70,7 +72,8 @@ def forecast(c, cid, hist, model, m_call, pace=None):
     return max(floor, likely)
 
 
-def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None, pace=False, ev=False):
+def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None, pace=False, ev=False,
+             new_bin=True):
     hist, contests = H.load_log()
     finals = H.load_finals()
     keep = classic_ids()
@@ -78,6 +81,8 @@ def evaluate(cutoff: date, first: float = 9.5, last: float = 4.5, model_fn=None,
     train = {k: v for k, v in contests.items() if lock_day(v) < cutoff}
     model = (model_fn or E.fit_late_fill)(train, {k: v for k, v in finals.items() if k in train})
     pace = fit_pace(train, finals, first, last) if (pace or ev) else None
+    if pace and not new_bin:                       # before cycle 3: late-listed priced on `all`
+        pace = {**pace, "new": []}
     tabs = tables()
     rows = []
     for cid, c in contests.items():
@@ -127,8 +132,8 @@ def fmt(label, s) -> str:
             f"  overlays {s['ov_n']:>4}  missed {s['missed']:>3}  false {s['false']:>3}  $/1-entry-each {s['ev']:+8.0f}  tiered {s['priced']}/{s['n']}{flag}")
 
 
-def report(cutoff: date, first: float, last: float, pace=False, ev=False) -> list[str]:
-    rows, model = evaluate(cutoff, first, last, pace=pace, ev=ev)
+def report(cutoff: date, first: float, last: float, pace=False, ev=False, new_bin=True) -> list[str]:
+    rows, model = evaluate(cutoff, first, last, pace=pace, ev=ev, new_bin=new_bin)
     days = sorted({r["cid"] for r in rows})
     out = [f"overlay lab: Classic, call {last}-{first} min out, fit locks < {cutoff} "
            f"(model n={model['n']}, tail {model['tail']:.2f} n={model['tail_n']}), test >= {cutoff}",
@@ -149,11 +154,13 @@ def main(argv=None) -> int:
     ap.add_argument("--cutoff", default="2026-10-18")
     ap.add_argument("--first", type=float, default=9.5)
     ap.add_argument("--last", type=float, default=4.5)
+    ap.add_argument("--no-new-bin", action="store_true",
+                    help="before cycle 3: price late-listed contests on every train share")
     ap.add_argument("--pace", action="store_true", help="cycle 1 candidate: pace-binned share")
     ap.add_argument("--ev", action="store_true",
                     help="cycle 2 candidate: call on expected entry value over the pace bin's spread")
     a = ap.parse_args(argv)
-    print("\n".join(report(date.fromisoformat(a.cutoff), a.first, a.last, a.pace, a.ev)))
+    print("\n".join(report(date.fromisoformat(a.cutoff), a.first, a.last, a.pace, a.ev, not a.no_new_bin)))
     return 0
 
 
