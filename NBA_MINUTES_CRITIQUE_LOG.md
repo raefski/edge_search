@@ -1497,3 +1497,46 @@ all-dates fit (1,436 rows / 16 dates; LODO is the validation). Log gains model_p
 proj_source; the lab replays from model_proj and its "shipped" variant is production's blend
 ("model_only" = before). Live check 11/8 for 11/9's slate: props not posted yet (day-of), the
 page says "none posted yet (model only)". DFS suite 511 passed, verify clean, page AppTest clean.
+
+## Cycle 28 (auto: GPP lineups after the props blend) -- 2026-11-08, hand-run (`/dfs-critique nba auto`)
+
+Scout (dfs-target-scout, run 21:4x; scripts/dfs_target_scout.py re-run 22:00, same facts):
+```json
+{"sport": "nba", "target": "GPP lineups after the props blend (sim spread / ceiling refit to the blended projection)",
+ "metric": "mean field percentile + cash rate of the replayed GPP lineup in each exported NBA GPP contest (33 / 16 dates), clustered by date; cash lineups (.541) the guard",
+ "harness": "scripts/nba_lineup_lab.py props-lodo (+ variants for SD_A/SD_B, empirical ceiling bands, GPP_PCT refit on the blended projection's residuals)",
+ "split": "leave-one-date-out over all 16 GPP dates; also train < 10/31 <= test (12 contests / 6 dates)",
+ "why": "cycle 27 fixed cash in replay (.275 -> .541) but GPP only .475 -> .601 (+.126 [-.068, +.332], noise); the sim's sd (5.91 + 0.202 proj) and ceiling bands were fitted on the old model's errors",
+ "money_at_stake": "NBA GPP -55% [-80%, -30%], 41 entries / 16 slates, net -$52.5",
+ "runner_ups": ["combo props unread (PRA etc., turnovers)", "stale props on late scratches", "first live check of cycle 27"]}
+```
+Baseline (production = the cycle-27 blend, refit without each date; `props-lodo`): GPP field
+percentile .601, cashed 52% (33 contests / 16 dates); cash .541, cashed 65% (17 / 12).
+
+**Critic (dfs-model-critic, ~40 min).** Hole: the ~10% of board players with NO DK props
+(promoted bench, late-news starters) keep the model's raw projection while every prop-covered
+player is pulled to the market, so the optimizer leans on them: in the replayed GPP lineups
+(23 boards) the 31 props-free picks missed -3.79 a player vs +0.02 for the 153 prop-covered;
+cash -4.08 (20) vs -0.90 (100). Props-free bias grows with projection (-1.47 at 10-20, -2.82 at
+20-30, -4.98 above 30). Fix tested: proj' = a + b model + c salary_k on props-free rows (all-dates
+-7.64 / 0.639 / 2.94, 1,791 rows; LODO fits stable).
+
+| test | props-free fix |
+|---|---|
+| player, props-free proj 15+, LODO (334 rows / 16 dates) | bias -2.43 -> -0.03, MAE 7.86 -> 7.34 (-.52 [-.89, -.14]) |
+| GPP lineups, LODO (33 contests / 16 dates) | .601 -> .688 (+.086 [-.042, +.228]), cashed 52% -> 64%, 7 better / 8 worse |
+| cash guard, LODO (17 / 12) | .541 -> .604 (+.063 [-.048, +.186]) |
+| GPP lineups, fixed split TEST (12 / 6) | .678 -> .632 (-.047 [-.302, +.042]), 2 better / 4 worse |
+| field ranking, GPP Spearman (31 contests) | -.018 [-.038, -.002] |
+
+Also tested: sim spread refit to the blended residuals (GPP +.021 [-.001, +.058], cash -.028
+[-.067, -.003]); entering the cash-objective lineup in GPPs (+.017 [-.061, +.100]) -- the 90th
+percentile GPP objective adds nothing over cash today.
+
+**Decision: NOT SHIPPED.** The target (GPP lineups) does not improve beyond noise and the fixed
+test split points the other way; the player-level gain alone is not the target (cycle 26's
+salary blend was the same shape). Runner-ups: (1) the evaluation's power -- one seeded lineup a
+board gives a date SE ~.08-.15; scoring 20-lineup portfolios per board would roughly halve it
+and is the next cycle's enabler; (2) the GPP objective is indistinguishable from cash; (3) the
+sim's sd is too wide for the blended projection (45+: realised 10.7 vs 16.2 assumed). Re-test
+the props-free calibration once (1) exists.
