@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-09T19:31:12+00:00",
+"generated_at": "2026-11-09T19:59:02+00:00",
 "goalies": {
 "2026-11-09": {
 "EDM": {
@@ -10344,74 +10344,6 @@
 }
 },
 "STL": {
-"Adam Ji\u0159\u00ed\u010dek": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 154,
-"toiSeconds": 0
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 82,
-"toiSeconds": 38
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
-"Aleksanteri Kaskimaki": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 17,
-"toiMinutes": 126,
-"toiSeconds": 57
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 58,
-"toiSeconds": 57
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Alexey Toropchenko": {
 "gtd": false,
 "injury": null,
@@ -10475,7 +10407,7 @@
 "toiMinutes": 94,
 "toiSeconds": 58
 },
-"line": "D1",
+"line": "D3",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -10754,6 +10686,40 @@
 "pos": "g",
 "pp": null
 },
+"Jonatan Berggren": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 16,
+"toiMinutes": 142,
+"toiSeconds": 29
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 69,
+"toiSeconds": 12
+},
+"line": "F2",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Jordan Binnington": {
 "gtd": false,
 "injury": null,
@@ -10822,6 +10788,40 @@
 "line": "D2",
 "pk": null,
 "pos": "ld",
+"pp": null
+},
+"Logan Mailloux": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 17,
+"toiMinutes": 196,
+"toiSeconds": 39
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 96,
+"toiSeconds": 58
+},
+"line": "D1",
+"pk": null,
+"pos": "rd",
 "pp": null
 },
 "Mason McTavish": {
