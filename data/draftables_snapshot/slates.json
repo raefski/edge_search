@@ -46,26 +46,6 @@
 "StartDateEst": "2026-11-08T19:00:00.0000000",
 "last_start": "2026-11-09T02:00:00.0000000Z"
 },
-"156349": {
-"ContestStartTimeSuffix": " (Turbo)",
-"DraftGroupId": 156349,
-"DraftGroupTag": "",
-"GameCount": 2,
-"GameTypeId": 70,
-"StartDate": "2026-11-09T00:30:00.0000000Z",
-"StartDateEst": "2026-11-08T19:30:00.0000000",
-"last_start": "2026-11-09T01:00:00.0000000Z"
-},
-"156350": {
-"ContestStartTimeSuffix": " (BOS @ MIL)",
-"DraftGroupId": 156350,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 81,
-"StartDate": "2026-11-09T01:00:00.0000000Z",
-"StartDateEst": "2026-11-08T20:00:00.0000000",
-"last_start": "2026-11-09T01:00:00.0000000Z"
-},
 "156351": {
 "ContestStartTimeSuffix": " (Night)",
 "DraftGroupId": 156351,
@@ -208,16 +188,6 @@
 "StartDateEst": "2026-11-08T20:20:00.0000000",
 "last_start": "2026-11-10T01:15:00.0000000Z"
 },
-"156013": {
-"ContestStartTimeSuffix": " (TB @ CHI)",
-"DraftGroupId": 156013,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-09T01:20:00.0000000Z",
-"StartDateEst": "2026-11-08T20:20:00.0000000",
-"last_start": "2026-11-09T01:20:00.0000000Z"
-},
 "156014": {
 "ContestStartTimeSuffix": " (BUF @ MIN)",
 "DraftGroupId": 156014,
@@ -234,8 +204,8 @@
 "DraftGroupTag": "",
 "GameCount": 1,
 "GameTypeId": 108,
-"StartDate": "2026-11-09T02:20:00.0000000Z",
-"StartDateEst": "2026-11-08T21:20:00.0000000",
+"StartDate": "2026-11-09T02:46:00.0000000Z",
+"StartDateEst": "2026-11-08T21:46:00.0000000",
 "last_start": "2026-11-09T02:20:00.0000000Z"
 },
 "156019": {
@@ -300,26 +270,6 @@
 }
 },
 "NHL": {
-"156270": {
-"ContestStartTimeSuffix": null,
-"DraftGroupId": 156270,
-"DraftGroupTag": "Featured",
-"GameCount": 4,
-"GameTypeId": 125,
-"StartDate": "2026-11-08T23:00:00.0000000Z",
-"StartDateEst": "2026-11-08T18:00:00.0000000",
-"last_start": "2026-11-09T01:00:00.0000000Z"
-},
-"156274": {
-"ContestStartTimeSuffix": " (PIT @ ANA)",
-"DraftGroupId": 156274,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 127,
-"StartDate": "2026-11-09T01:00:00.0000000Z",
-"StartDateEst": "2026-11-08T20:00:00.0000000",
-"last_start": "2026-11-09T01:00:00.0000000Z"
-},
 "156276": {
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 156276,
