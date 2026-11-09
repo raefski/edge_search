@@ -30,7 +30,9 @@ unbiased overall (+0.00 on 1,825 we did not use), but the top decile of projecte
 `scripts/nba_salary_shrink_lab.py` (box-score DK points for every logged board, train dates
 < 10/31, test 7 dates / 21 draft groups):
 - `report`: proj' = -8.10 + 0.599 proj + 3.10 salary_k cuts test MAE 7.063 -> 6.915 (abs diff
-  -0.148 [90% -0.314, -0.005] by date) and the top-decile miss -5.24 -> -0.85. Real, but:
+  -0.148 [90% -0.314, -0.005] by date) and the top-decile miss -5.24 -> -0.85. CORRECTED 11/8
+  (cycle 26): that truth scored DK's "Alexandre Sarr" (NBA.com "Alex Sarr") as 0; with the
+  alias-aware join it is 7.022 -> 6.902, -0.120 [-0.293, +0.030]: within noise. And:
 - `lineups`: it does not change the lineup. A linear blend rescales proj and adds a salary
   term that is ~constant for a lineup spending the whole $50k: actual +0.8 [-1.0, +3.1] a
   lineup (51 draft groups). A promoted-player term: no better. Recent DK avg / minutes /

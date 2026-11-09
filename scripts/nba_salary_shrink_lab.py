@@ -56,10 +56,39 @@ def dk(r: dict) -> float:
             + (1.5 if dd >= 2 else 0) + (3 if dd >= 3 else 0))
 
 
+def _sig(name: str) -> tuple:
+    from edge.dfs_run_nba import _sig as sig        # production's fallback join (Alexandre / Alex)
+    return sig(name)
+
+
+_BOX: dict = {}
+
+
+def box_points() -> dict:
+    """{(date, norm name): DK points} from the box score, plus {(date, ("sig", last, initial)):
+    points} where that signature is unique on the date: DK spells some first names
+    differently ("Alexandre Sarr" = NBA.com "Alex Sarr" scored 0 here until 2026-11-08,
+    critique cycle 26) -- edge/dfs_run_nba._sig is production's same fallback."""
+    if not _BOX:
+        sigs: dict = {}
+        for r in json.loads(BOX.read_text()):
+            pts = dk(r)
+            _BOX[(r["GAME_DATE"], norm(r["PLAYER_NAME"]))] = pts
+            sigs.setdefault((r["GAME_DATE"], _sig(r["PLAYER_NAME"])), []).append(pts)
+        for (d, sg), v in sigs.items():
+            if len(v) == 1:
+                _BOX[(d, ("sig",) + sg)] = v[0]
+    return _BOX
+
+
+def box_lookup(date: str, name: str) -> float | None:
+    b = box_points()
+    got = b.get((date, norm(name)))
+    return got if got is not None else b.get((date, ("sig",) + _sig(name)))
+
+
 def load() -> list[dict]:
-    box = {}
-    for r in json.loads(BOX.read_text()):
-        box[(r["GAME_DATE"], norm(r["PLAYER_NAME"]))] = dk(r)
+    box = box_points()
     played = {d for d, _ in box}
     c = sqlite3.connect(DB)
     out = []
@@ -73,7 +102,7 @@ def load() -> list[dict]:
         out.append({"dg": dg, "date": d, "player": name, "pn": pn, "team": team, "opp": opp,
                     "pos": pos or "", "salary": float(sal), "proj": float(proj),
                     "promoted": ex.get("promoted") in ("1", "True", True),
-                    "actual": box.get((d, pn), 0.0)})
+                    "actual": box_lookup(d, name) or 0.0})
     return out
 
 

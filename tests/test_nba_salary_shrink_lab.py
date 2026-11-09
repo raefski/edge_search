@@ -23,3 +23,13 @@ def test_optimizer_fills_every_slot_legally_under_the_cap():
     pick = L.optimize(pool, np.arange(len(pool), dtype=float))
     assert pick is not None and len(set(pick)) == 8
     assert sum(pool[i]["salary"] for i in pick) <= L.CAP
+
+
+def test_box_truth_joins_a_first_name_dk_spells_differently(monkeypatch):
+    """Cycle 26: DK 'Alexandre Sarr' = NBA.com 'Alex Sarr' scored 0 in the labs."""
+    monkeypatch.setattr(L, "_BOX", {})
+    rows = [{"GAME_DATE": "2026-11-07", "PLAYER_NAME": "Alex Sarr", "PTS": 20, "FG3M": 0, "REB": 10,
+             "AST": 0, "STL": 0, "BLK": 0, "TOV": 0}]
+    monkeypatch.setattr(L.BOX.__class__, "read_text", lambda self: __import__("json").dumps(rows))
+    assert L.box_lookup("2026-11-07", "Alexandre Sarr") == 20 + 12.5 + 1.5
+    assert L.box_lookup("2026-11-07", "Alex Smith") is None

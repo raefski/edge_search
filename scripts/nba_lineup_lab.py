@@ -4,6 +4,7 @@ pre-lock board, scored with box-score DK points against the real contest fields.
 
     python3 scripts/nba_lineup_lab.py parity                 # replayed lineups == the logged ones?
     python3 scripts/nba_lineup_lab.py report [--variant V]   # field percentile / cash line, by split
+    python3 scripts/nba_lineup_lab.py field [--variant V]    # the field's lineups ranked by our proj
     python3 scripts/nba_lineup_lab.py gate OUT               # rows for harness/critique_gate.py
 
 Why it exists (critique cycle "nba lineups", 2026-11-08). Adam's NBA entries lost -57%
@@ -20,8 +21,9 @@ pre-lock build, edge/dfs_forward_log.py):
   - edge.dfs_nba_theory.simulate (3,000 sims, seed 0) and edge.dfs_opt_nba.optimize for
     cash and GPP (200 iters, seed 0, own_weight 0: production defaults);
   - a VARIANT (--variant) transforms the pool before the sim; "shipped" leaves it alone.
-Truth: DK points from the NBA box score (nba_salary_shrink_lab.dk); a logged player with
-no box row did not play = 0. Field: every exported contest on that draft group
+Truth: DK's own points for the draft group (contests.db player_result: what the field was
+scored with), else the box score (nba_salary_shrink_lab.box_lookup, alias-aware), else 0 =
+did not play; `report` prints how many lineup players each source scored. Field: every exported contest on that draft group
 (data/contests.db): the lineup's percentile among the field's live entries and whether it
 clears the cash line (points of the last paid place). Cash lineup vs cash contests, GPP
 lineup vs GPP contests, never pooled. Cluster: the slate date.
@@ -160,18 +162,34 @@ def build_all(B: dict, variant: str = "shipped", workers: int = WORKERS) -> dict
     return out
 
 
-def truth() -> dict:
-    return {(d, n): v for (d, n), v in _box().items()}
+_DK: dict = {}
 
 
-_BOX: dict = {}
+def dk_points(gid: int) -> dict:
+    """{norm name: DK's own points} for the draft group, from any exported contest on it
+    (contests.db player_result): the truth the field was scored with. Critique cycle 26:
+    box-score truth joined by name scored "Alexandre Sarr" (NBA.com "Alex Sarr") 0 in two
+    of six test dates' lineups while the field got his real points."""
+    if gid not in _DK:
+        c = sqlite3.connect(SL.DB)
+        _DK[gid] = {pn: f for pn, f in c.execute(
+            "select pr.player_norm, max(pr.fpts) from player_result pr join contest k using(contest_id) "
+            "where k.draft_group=? and pr.fpts is not null group by pr.player_norm", (gid,))}
+    return _DK[gid]
 
 
-def _box() -> dict:
-    if not _BOX:
-        for r in json.loads(SL.BOX.read_text()):
-            _BOX[(r["GAME_DATE"], norm(r["PLAYER_NAME"]))] = SL.dk(r)
-    return _BOX
+SOURCE_COUNT: dict = defaultdict(int)
+
+
+def player_points(gid: int, date: str, name: str) -> float:
+    """DK's points for the draft group, else the box score (alias-aware), else 0 (did not play)."""
+    got = dk_points(gid).get(norm(name))
+    if got is not None:
+        SOURCE_COUNT["dk"] += 1
+        return float(got)
+    got = SL.box_lookup(date, name)
+    SOURCE_COUNT["box" if got is not None else "none (0)"] += 1
+    return float(got or 0.0)
 
 
 def fields() -> dict:
@@ -191,10 +209,9 @@ def score(gid: int, ps: list[dict], lineup: list[str]) -> float | None:
     if len(lineup) != 8:
         return None
     d = ps[0]["date"]
-    box = _box()
-    if not any(k[0] == d for k in box):
-        return None                                  # box not collected yet
-    return float(sum(box.get((d, norm(n)), 0.0) for n in lineup))
+    if not dk_points(gid) and not any(k[0] == d for k in SL.box_points()):
+        return None                                  # no truth yet
+    return float(sum(player_points(gid, d, n) for n in lineup))
 
 
 def rows(variant: str = "shipped") -> list[dict]:
@@ -247,6 +264,7 @@ def report(variants: list[str]) -> int:
     res = {v: rows(v) for v in variants}
     base = {(r["mode"], r["contest"]): r for r in res[variants[0]]}
     print(f"# NBA lineups replayed (production sim + optimizer), scored vs the real field\n")
+    print("truth per lineup player: " + ", ".join(f"{k} {v}" for k, v in SOURCE_COUNT.items()) + "\n")
     print("| variant | split | mode | contests | dates | mean field pctile | cashed | mean points | "
           f"pctile diff vs {variants[0]} [90%, by date] |")
     print("|---|---|---|---|---|---|---|---|---|")
@@ -261,6 +279,67 @@ def report(variants: list[str]) -> int:
                 print(f"| {v} | {split} | {mode} | {len(s)} | {len({r['date'] for r in s})} | "
                       f"{np.mean([r['pctile'] for r in s]):.3f} | {np.mean([r['cashed'] for r in s]):.0%} | "
                       f"{np.mean([r['points'] for r in s]):.1f} | {m:+.3f} [{lo:+.3f}, {hi:+.3f}] |")
+    return 0
+
+
+def field_rank(variant: str = "shipped") -> list[dict]:
+    """The lower-variance companion (critic, cycle 26): per exported contest, rank the REAL
+    field's lineups by the variant's projection (sum over the 8 players; an entry with a
+    player off our board is skipped) and score that ranking against the points the entries
+    actually got: the mean field percentile of the top 5% by our ranking, and the Spearman
+    rank correlation. Thousands of lineups a slate instead of our one; no optimizer run.
+    It measures the projection's ordering of LINEUPS, where the optimizer works."""
+    from scipy.stats import spearmanr
+    B, F = boards(), fields()
+    c = sqlite3.connect(SL.DB)
+    out = []
+    for gid, ps in B.items():
+        if gid not in F:
+            continue
+        pool = [dict(p) for p in ps]
+        if VARIANTS.get(variant):
+            VARIANTS[variant](pool)
+        proj = {norm(p["name"]): p["proj"] for p in pool}
+        for cid, typ, _field, _line in F[gid]:
+            ent = defaultdict(list)
+            pts = {}
+            for eid, pn, points in c.execute(
+                    "select ep.entry_id, ep.player_norm, e.points from entry_player ep join entry e "
+                    "on e.contest_id=ep.contest_id and e.entry_id=ep.entry_id where ep.contest_id=? "
+                    "and e.points is not null", (cid,)):
+                ent[eid].append(pn)
+                pts[eid] = points
+            ids = [e for e, pl in ent.items() if len(pl) == 8 and all(x in proj for x in pl)]
+            if len(ids) < 20:
+                continue
+            pj = np.array([sum(proj[x] for x in ent[e]) for e in ids])
+            act = np.array([pts[e] for e in ids])
+            pct = (np.argsort(np.argsort(act)) / (len(act) - 1))
+            top = pj >= np.quantile(pj, 0.95)
+            out.append({"contest": cid, "gid": gid, "date": ps[0]["date"], "mode": typ, "n": len(ids),
+                        "top5": float(pct[top].mean()), "rho": float(spearmanr(pj, act)[0]),
+                        "test": ps[0]["date"] >= SPLIT})
+    return out
+
+
+def field_report(variants: list[str]) -> int:
+    res = {v: {(r["mode"], r["contest"]): r for r in field_rank(v)} for v in variants}
+    base = res[variants[0]]
+    print("# The field's real lineups ranked by each variant's projection (per contest)\n")
+    print(f"| variant | split | mode | contests | dates | lineups | top-5% field pctile | Spearman | "
+          f"top-5% diff vs {variants[0]} [90%, by date] |")
+    print("|---|---|---|---|---|---|---|---|---|")
+    for v, rs in res.items():
+        for split in ("train", "test"):
+            for mode in ("cash", "gpp"):
+                s_ = [r for r in rs.values() if r["mode"] == mode and r["test"] == (split == "test")]
+                if not s_:
+                    continue
+                d = np.array([r["top5"] - base[(r["mode"], r["contest"])]["top5"] for r in s_])
+                m, lo, hi = _boot(np.array([r["date"] for r in s_]), d)
+                print(f"| {v} | {split} | {mode} | {len(s_)} | {len({r['date'] for r in s_})} | "
+                      f"{sum(r['n'] for r in s_):,} | {np.mean([r['top5'] for r in s_]):.3f} | "
+                      f"{np.mean([r['rho'] for r in s_]):.3f} | {m:+.3f} [{lo:+.3f}, {hi:+.3f}] |")
     return 0
 
 
@@ -283,6 +362,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("parity")
+    fr = sub.add_parser("field", help="the field's lineups ranked by each variant (no optimizer)")
+    fr.add_argument("--variant", action="append")
     r = sub.add_parser("report")
     r.add_argument("--variant", action="append", help="variants to compare (shipped is always first)")
     g = sub.add_parser("gate")
@@ -292,6 +373,8 @@ def main() -> int:
         return parity()
     if a.cmd == "gate":
         return gate(a.out)
+    if a.cmd == "field":
+        return field_report(["shipped"] + [v for v in (a.variant or []) if v != "shipped"])
     return report(["shipped"] + [v for v in (a.variant or []) if v != "shipped"])
 
 

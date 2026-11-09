@@ -1421,3 +1421,40 @@ Baseline (shipped):
 | test | gpp | 12 | 6 | 0.576 | 33% | 260.0 |
 
 Test cash is 4 contests: not enough data alone.
+
+**Critic (dfs-model-critic, ~31 min).** Hole: the EVALUATION. `score` took truth from box
+scores joined by name; DK's "Alexandre Sarr" is NBA.com's "Alex Sarr", so he scored 0 -- and he
+was in the shipped lineups on 2 of the 6 test dates -- while the field's entries carry DK's own
+points. Rescored the same builds with DK's points (player_result, same draft group): test GPP
+pctile .576 -> .625, cashed 33% -> 42%; test cash unchanged; train within .007. It flipped
+candidate verdicts (cal_lin test cash .272 -> .390). Second half: power -- by-date SE of the
+mean pctile .07-.08 train, .14-.16 test; none of 10 train-fitted variants (recalibration
+linear / value curvature / slope, recent-DK blends 25/50%, ownership chalk tilt 5/15, cash/GPP
+percentiles 50/70 and 15/97) beat shipped on train AND test. Runner-ups: (1) the projection
+loses signal at the top of real fields (residual +4.7 bottom half -> -27.9 top 1% cash; ~0.5
+actual pts per projected pt within a contest); (2) hindsight field ownership flags our bad
+picks (< 5% owned GPP picks -6.8 pts each vs -1.7 for > 30%); (3) negative weight on projected
+minutes at fixed projection (-0.23 to -0.31 pts per summed projected minute).
+
+**Fix (harness only).** `nba_lineup_lab.player_points`: DK's points for the draft group
+(contests.db player_result), else the box score via `nba_salary_shrink_lab.box_lookup`, which
+adds production's `_sig` fallback (last name + first initial, unique on the date), else 0;
+`report` prints the source counts (412 DK / 3 box / 1 zero of 416 lineup players). New
+`field` command (the critic's companion metric): each contest's real lineups ranked by a
+variant's projection -- top-5% field percentile + Spearman -- thousands of lineups a slate,
+~2 s, no optimizer. Corrected baseline:
+
+| split | mode | contests | dates | lineup pctile | cashed | field top-5% pctile | Spearman |
+|---|---|---|---|---|---|---|---|
+| train | cash | 13 | 8 | 0.262 | 23% | 0.455 (11 contests, 1,280 lineups) | 0.156 |
+| train | gpp | 21 | 10 | 0.389 | 10% | 0.550 (20, 15,847) | 0.181 |
+| test | cash | 4 | 4 | 0.319 | 25% | 0.430 (3, 186) | 0.149 |
+| test | gpp | 12 | 6 | 0.625 | 42% | 0.594 (11, 5,806) | 0.304 |
+
+Candidates on `field` (train-fitted): salary blend +0.009 train cash / -0.004 train GPP /
++0.000 test cash / +0.008 test GPP (all noise); recent-DK 25% -0.056 train cash; 50% -0.090;
+minutes penalty 0.25/min -0.036. **Decision: no model change shipped**; the lab fix ships.
+The earlier salary-shrink claim (NBA_STATUS.md) is corrected: with the alias-aware truth its
+player MAE gain is -0.120 [-0.293, +0.030], within noise. Reading: our projection ranks cash
+lineups barely better than chance (top 5% of the field by our numbers finish at the 43-46th
+percentile); the next cycle should target that ordering, judged on `field` first.
