@@ -859,3 +859,5 @@ The forward fit's QB salary slope is 0.10–0.65 through 11/6. It only reaches
   salary signal is the cleanest single piece (7 of 7 dates).
 - `gate OUT` is ready for Adam to add to `critique_gate` as a lineup-level gate
   next to player MAE.
+
+Unattended gate (20261109-0726): **not shipped (log / harness only, verified)**
