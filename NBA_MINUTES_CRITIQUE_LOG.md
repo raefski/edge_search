@@ -1540,3 +1540,17 @@ board gives a date SE ~.08-.15; scoring 20-lineup portfolios per board would rou
 and is the next cycle's enabler; (2) the GPP objective is indistinguishable from cash; (3) the
 sim's sd is too wide for the blended projection (45+: realised 10.7 vs 16.2 assumed). Re-test
 the props-free calibration once (1) exists.
+
+**Addendum 2026-11-09 (Adam: score 20-lineup sets).** `nba_lineup_lab.py sets` (20 lineups per
+board per mode, every date held out, paired by contest):
+- kind=portfolio (production's multi-entry builder: cumulative ban of each lineup's top
+  projection): the set averaged GPP .292 / 200 pts vs ~.60 / 260 for the single lineup -- it
+  scores a degraded portfolio, not our entry. On it the props-free calibration read GPP +.026
+  [+.005, +.047] -- an artifact of cheap props-free fills in the late lineups.
+- kind=seeds (20 independent best lineups: sim + climb seed k, no exclusions = our single entry
+  with the optimizer's luck averaged): production GPP .648 (cashed 47%, 33 contests / 16 dates),
+  cash .540 (55%, 17 / 12). Props-free calibration: GPP -.017 [-.058, +.020], 7 better / 9
+  worse; cash +.055 [-.041, +.154]. **Stays NOT SHIPPED.** Paired GPP 90% range ~+-.04 (single
+  lineup ~+-.13): the harness can now see GPP changes of a few percentile points.
+Note for NHL / NCAAB / MMA (their pages build GPP portfolios with the same cumulative ban):
+measure the per-lineup decay before multi-entering there.
