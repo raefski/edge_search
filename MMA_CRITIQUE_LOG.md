@@ -81,3 +81,5 @@ adjustment would be measured by it.
 - Overall DK bias of -2.06: the model under-projects total points, so the win-bonus side
   runs low.
 - Grade 11/07 once the UFCStats mirror has it (a 7th card).
+
+Unattended gate (20261109-0843): **not shipped (log / harness only, verified)**
