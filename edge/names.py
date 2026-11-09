@@ -20,7 +20,16 @@ import unicodedata
 _SUFFIX_RE = re.compile(r"\s+(jr\.?|sr\.?|i{2,3}|iv|v)$", re.IGNORECASE)
 
 
+_NICK_PAREN = re.compile(r"^\S[^()]*\(([^()]+)\)\s+(\S.*)$")
+
+
 def norm(name: str) -> str:
+    # "Anthony-John (AJ) Greer" (NHL.com) is DK's "A.J. Greer": a nickname in parentheses
+    # BEFORE the surname is the name he plays under (2026-11-08: Greer ran on default rates,
+    # 18 NHL board rows). A trailing tag ("Sebastian Aho (CAR)") is left for SalaryLookup.
+    m = _NICK_PAREN.match((name or "").strip())
+    if m:
+        name = f"{m.group(1)} {m.group(2)}"
     s = _SUFFIX_RE.sub("", (name or "").strip())
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
     return "".join(c for c in s.lower() if c.isalnum())

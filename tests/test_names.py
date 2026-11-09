@@ -38,3 +38,9 @@ def test_book_vs_dk_first_names_from_the_2026_11_08_audit():
                  ("Dmitri", "Dmitry"), ("Alexei", "Aleksei")):
         assert first_names_agree(a, b), (a, b)
     assert not first_names_agree("Mike", "Malik")
+
+
+def test_a_parenthetical_nickname_before_the_surname_is_the_playing_name():
+    from edge.names import norm
+    assert norm("Anthony-John (AJ) Greer") == norm("A.J. Greer")     # NHL.com vs DK, 2026-11-08
+    assert norm("Sebastian Aho (CAR)") == "sebastianahocar"           # trailing tag: untouched
