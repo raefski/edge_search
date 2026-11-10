@@ -83,3 +83,77 @@ adjustment would be measured by it.
 - Grade 11/07 once the UFCStats mirror has it (a 7th card).
 
 Unattended gate (20261109-0843): **not shipped (log / harness only, verified)**
+
+## Cycle 2 (auto: field model refit, GPP/cash ownership + the field's lines), 2026-11-10, unattended
+
+Scout JSON:
+```json
+{"sport": "mma",
+ "target": "field model refit (GPP/cash ownership + the field's lines) on the unused exports",
+ "metric": "Leave-one-slate-out error of the simulated field against each real DK field, cash and GPP kept separate. Primary: per-fighter ownership MAE (points of ownership) per contest. Secondary: the simulated cash line (field 56th percentile) and GPP top-1% line against the real contest's line, in DK points. Shipped (tau 16 GPP / 8 cash, FPPF weight 0.15) against the refit.",
+ "harness": "build: extend scripts/mma_calibration.py --fit-ownership into a held-out mode; contest type from contests.db; rebuild the 10/03 and 10/10 boards (gid 154125, 154571) with mma_lab's archived-book path; grid tau and FPPF weight on n-1 slates, score the held-out slate.",
+ "split": "Leave one slate out over 4 slates: 9/26 Captain (154126), 10/03 (154125), 10/10 (154571), 11/07 (156055). GPP 4 contests, cash 6 contests on 4 slates. 'Not enough data' (<5 slates); ship only if better on at least 3 of 4 held-out slates in each type.",
+ "why": "Both objectives score lineups against a simulated field whose two temperatures were fitted on ONE 118-entry Captain slate; 3 Classic GPP fields (2,935 entries) and 4 more cash fields have come in and been used for nothing.",
+ "money_at_stake": "GPP -$3 (-100%, 3 entries / 3 slates, beat 34%). Cash +$8 (+100%, 6 entries / 4 slates). Both thin.",
+ "runner_ups": ["build lineup harness: replay production cash/GPP lineups against the 4 real fields (revisit at 5+ slates)", "Grade 11/07 as a 7th lab card when the UFCStats mirror has it", "DK total bias -2.06 and stat bias +3.05 on fighters with props"]}
+```
+
+**The cycle's work was building the harness**, as the scout specified. Ownership had
+no held-out lab. The new script is `scripts/mma_own_lab.py`, with `report`, `fppf`,
+`rebuild` and `gate OUT`, and tests in `tests/test_mma_own_lab.py`.
+- Contests and contest types come from contests.db, as tagged by DK. The scout noted
+  that `--fit-ownership` reads 11/07 as "unknown" from contest_meta.json; this lab
+  never uses that file.
+- 9/26 and 11/07 use the logged live board, with salary from the log, because
+  slate_player holds the 1.5x CPT price on a Captain slate.
+- 10/03 and 10/10 are rebuilt with `mma_lab.load_rows`, which matched 28/28 and
+  24/24 DK names. Their DK FPPF is the UFC career mean before the card. The
+  rebuilt FPPF against DK's logged FPPF: n=180, mean +0.10, MAE 0.61, corr 0.996.
+- The secondary metric scores the field model's weighted lineup distribution on DK's
+  realised FPTS, at the contest's own paid fraction (cash) or top 1% (GPP).
+
+As in cycle 1, **no critic was spawned**. The scout's target was itself the hypothesis
+(refit the three constants), so it was tested directly in the new lab. This was the
+conservative choice for an unattended run: 8 of the last 9 MMA loop runs died on the
+usage limit.
+
+**Results, leave one slate out.** 4 slates, so every row is **not enough data**.
+
+| type | variant | own MAE | own bias | mean line err (sim - real) | Δ MAE vs shipped | slates better |
+|---|---|---|---|---|---|---|
+| cash (6 contests, 371 entries) | shipped (0.15, τ 8) | 10.79 | +0.11 | -25.3 | - | - |
+| | tau refit | 10.79 | +0.11 | -25.3 | +0.00 | 0/4 (picks 8 every fold) |
+| | joint (FPPF weight + τ) | 10.79 | +0.11 | -25.3 | +0.00 | 0/4 |
+| GPP (4 contests, 2,053 entries) | shipped (0.15, τ 16) | 7.50 | +0.18 | +8.7 | - | - |
+| | tau refit | 8.04 | +0.18 | +8.4 | +0.53 | 0/4 |
+| | joint | 8.04 | +0.18 | +8.4 | +0.53 | 0/4 |
+
+Per held-out GPP slate, shipped vs refit: 10/03 4.69 vs 5.78 (refit τ 20); 9/26 9.80
+for both; 10/10 7.22 vs 8.26 (τ 12); 11/07 8.31 for both. Pooled in-sample, cash
+(0.15, τ 8) = 10.79 is the grid minimum. GPP (0.15, τ 16) = 7.50; the in-sample
+minimum is (0.3, τ 16) = 7.36, a gap of 0.14 that does not survive leave-one-out.
+
+**Decision: NOT SHIPPED.** The one-slate fit from 9/26 generalises to the three
+Classic cards. No refit beats it on any held-out slate.
+
+**New finding, not addressed: the simulated cash line runs low on every slate.**
+Scored on the realised points, the modelled field's cash line sits below the real
+contest's line by 11, 31, 49 and 10 pts (10/03, 9/26, 10/10, 11/07), mean -25. The
+real cash field builds better lineups than a softmax on our public projection, even
+though its ownership MAE is fine. The cash objective therefore aims at a bar about
+25 pts too low. That favours safe lineups which clear the modelled line and miss the
+real one. GPP top-1% has no consistent sign (+39, +26, +3, -34).
+
+**Gate.** `python3 scripts/mma_own_lab.py gate OUT` writes 248 rows: key =
+contest|fighter, cluster = draft group, split primary, state cash / gpp, pred =
+production's field ownership from the module constants, actual = %Drafted. Adam
+has to approve adding it to `harness/critique_gate.py` as a second MMA gate. It
+needs no UFCStats refresh.
+
+**Runner-ups for the next cycle:**
+- The cash line bias of -25 (4/4 slates). Target: the cash objective's line against
+  the real cash line, held out by slate. A fix could be a field-skill term or a line
+  shift fitted on train.
+- The lineup harness: replay production's cash and GPP lineups against the 4 real
+  fields (scout runner-up). Revisit at 5+ slates.
+- Grade 11/07 as a 7th projection card once the UFCStats mirror has it.
