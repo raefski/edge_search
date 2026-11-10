@@ -436,3 +436,50 @@ def test_lab_shots_power_moves_only_imputed_shots():
     before = np.mean([p["means"]["shots"] for p in out[:2]])
     lab.shrink_imputed_shots(s, 0.5)
     assert np.mean([p["means"]["shots"] for p in s["pool"][:2]]) == pytest.approx(before, abs=0.05)
+
+
+def test_lineup_lab_replays_a_cached_board_and_scores_it_against_the_field(monkeypatch):
+    """Cycle 13 (lineup harness, scripts/nhl_lineup_lab.py): a cached pre-sim board is
+    simulated and run through production's three optimizers (legal 9s); each lineup is
+    scored in its own contest type only (cash and cash_floor vs cash, gpp vs GPPs), by field
+    percentile, cash line and the payout table, on DK points with a box-score fallback."""
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location(
+        "nhl_lineup_lab_t", Path(__file__).resolve().parents[1] / "scripts" / "nhl_lineup_lab.py")
+    L = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(L)
+    pool, _ = _slate()
+    for p in pool:
+        for k in ("proj", "sd", "floor", "ceil", "p99", "own", "leverage"):
+            p.pop(k, None)
+    games = {g: {"home": h, "away": a, "lam_home": 3.1, "lam_away": 3.0}
+             for g, (h, a) in {"g1": ("AAA", "BBB"), "g2": ("CCC", "DDD"),
+                               "g3": ("EEE", "FFF")}.items()}
+    board = {"gid": 1, "date": "2026-10-20", "games": games, "pool": pool}
+    monkeypatch.setattr(L, "N_SIMS", 400)
+    monkeypatch.setattr(L, "ITERS", 10)
+    monkeypatch.setattr(L, "_BOARDS", {1: board})
+    _, _, _, lus = L._job(("shipped", 1, 0))
+    for mode in L.MODES:
+        lu = lus[mode]
+        assert len(lu) == 9 and sum(p["salary"] for p in lu) <= nhl.SALARY_CAP
+        assert Counter(p["pos"] for p in lu)["G"] == 1
+
+    field = np.array([300.0, 250.0, 200.0, 150.0, 100.0])
+    monkeypatch.setattr(L, "fields", lambda: {1: [(11, "cash", field, 200.0), (12, "gpp", field, 300.0)]})
+    gpp = lus["gpp"]
+    monkeypatch.setattr(L, "_DK", {1: {L.norm(p["name"]): 30.0 for p in gpp[1:]}})
+    goalie_in_box = gpp[0]
+    from scripts.nhl_ownership_signal import box_key
+    bk = box_key(goalie_in_box["team"], goalie_in_box["name"])
+    if goalie_in_box["pos"] == "G":
+        bk = ("G",) + bk
+    monkeypatch.setattr(L, "_BOX", [{"2026-10-20": {bk: 10.0}}, box_key])
+    monkeypatch.setattr(L, "_PAY", {12: {"fee": 1.0, "tiers": [(1, 3, 2.0)]}})
+    out = L.contest_rows(1, "gpp", [gpp], "t")
+    assert len(out) == 1 and out[0]["contest"] == 12                      # never the cash contest
+    r = out[0]
+    assert r["points"] == 250.0 and r["cashed"] == 0.0 and r["ret"] == 2.0   # rank 2 (tie not split)
+    assert r["pctile"] == pytest.approx(3 / 5) and r["split"] == "test"
+    assert [x["contest"] for x in L.contest_rows(1, "cash_floor", [lus["cash_floor"]], "t")] == [11]
