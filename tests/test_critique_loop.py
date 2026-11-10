@@ -172,7 +172,7 @@ def test_a_model_change_that_also_fixes_its_lab_goes_to_adam_not_fail(tmp_path, 
         assert C.judge("ncaab", tmp_path, ["edge/dfs_run_ncaab.py", "scripts/ncaab_lab.py"])[0] == want
     monkeypatch.setattr(G, "run", lambda *a, **k: {"verdict": "fail", "table": "", "reasons": []})
     assert C.judge("ncaab", tmp_path, ["edge/dfs_run_ncaab.py"])[0] == "fail"
-    assert "scripts/nhl_skater_lab.py" in G.judge_files("nhl") and G.judge_files("mma") == set()
+    assert "scripts/nhl_skater_lab.py" in G.judge_files("nhl") and G.judge_files("nfl") == set()
 
 
 def test_a_model_change_aimed_at_a_target_the_gate_does_not_measure_goes_to_adam(tmp_path, monkeypatch):
