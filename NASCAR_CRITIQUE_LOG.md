@@ -273,3 +273,86 @@ beside nascar_lab.py's driver rows once >= 5 races have fields.
 >= 5 races; (3) runner-ups above, start-curve first (testable on 66 races now).
 
 Unattended gate (20261109-0751): **not shipped (log / harness only, verified)**
+
+---
+
+# Target: the start-to-finish curve (driver DK points by grid slot), from 2026-11-10
+
+## Cycle 6 (auto: start curve / grid-slot bias in DK points) -- not shipped (2026-11-10, unattended)
+
+Scout (dfs_target_scout.py + dfs-target-scout agent):
+
+```json
+{"sport": "nascar",
+ "target": "cash lineups via the start-to-finish curve (front-row / place-differential bias in the driver means the cash build adds up)",
+ "metric": "Primary: DK points per driver-race on the 2025-26 Cup test seasons: RMSE, bias by grid slot (P1, P2, P3-10, P11-25, P26+), 10-90 band, MAE reported. Guard: nascar_lineup_lab.py cash lineup pctile must not drop (5 cash contests / 4 races).",
+ "harness": "python3 scripts/nascar_lab.py dk [--variant NAME]; python3 scripts/nascar_lineup_lab.py report && lodo",
+ "split": "fit 2022-24, choose constants on the inner 2022-23 -> 2024 split only, report 2025-26 (race = unit, paired per-race squared error)",
+ "why": "Cash is the losing line with enough slates (-67% [-100%,-9%], 6e/5s); the replayed cash lineup cashed 0/5 (mean pctile 0.313), below the line every race. It is a sum of driver means, and cycle 4 left a measured start-curve bias (starts 3-10 high, pole finish low), testable on 70 held-out races where lineups (4 races) are not.",
+ "money_at_stake": "cash -67% [-100%,-9%] 6e/5s, net -$4; GPP -54% 4e/4s thin",
+ "runner_ups": ["recover the 10/4 board (dg 154134 salaries) -> 5 cash races in the lineup lab",
+                "collect NASCAR outright / top-N / H2H odds before Daytona",
+                "cash objective percentile (pct 10) -- rerun lodo at >= 5 fielded races"]}
+```
+
+Baseline (shipped, `nascar_lab.py dk`, 400 sims; the test set is now 70 races / 2,614
+driver-races, up from 66 in cycle 4): RMSE 24.27, MAE 18.68, bias +0.22, Spearman 0.345,
+band 81.1%. At 2,000 sims: RMSE 24.19, band 82.2%.
+
+Bias by grid slot, DK points (pred - actual), 2,000 sims:
+
+| slot | inner 2024 (fit 22-23) | test 2025-26 (fit 22-24) |
+|---|---|---|
+| P1 | +7.8 | -10.9 |
+| P2 | -4.5 | -4.1 |
+| P3-10 | +2.9 | +2.4 |
+| P11-25 | +1.0 | +0.4 |
+| P26+ | -2.1 | -0.1 |
+
+**Hole (critic):** the start curve is *not* a big hole. The pole bias changes sign
+between splits (se ~4.5-4.9), so it is noise. Correcting every slot's bias with the test
+data's own numbers (an oracle) only gets RMSE from 24.22 to 24.10. The same correction fitted on inner makes test
+worse (24.37, +269 +- 122 per race). The one flaw with the same sign on both splits is at **short tracks**: the
+simulated mean finish is too steep in start (P3-10 -1.7/-1.9 places, P26+ +1.0/+1.2,
+inner/test; DK P3-10 +3.5/+3.8, P26+ -2.2/-2.8). Null on test: shrinking the whole
+field's mean, lap-led decay x1.5/x2, lead-form multiplier 16/32, FRONT_A/FRONT_S, a
+logistic DNF model (AUC 0.609 vs current 0.615), practice speed (24.22 -> 24.21).
+Where the error is: DNFs are 13% of rows but 27% of the squared error; drivers who led 40+
+laps are 5.5% of rows but 24% of it.
+
+**Fix tried:** `START_SHRINK[short]` scales the start term toward the field mean inside
+simulate(): `mu -= (1 - s) * b_start * (start - mean start)`. It sits outside FINISH_MODEL,
+so the lab picks it up unchanged.
+Chosen on inner (2,000 sims): s 1.0 / .75 / .5 / .25 -> RMSE 23.508 / 23.467 / 23.463 /
+23.501. **Judgment call, logged:** 0.5 and 0.75 tie (0.004). I chose 0.75: the smaller
+move, with the tighter paired se (-72 +- 53 vs -79 +- 108 per race).
+
+| variant, test 2025-26 (70 races) | sims | RMSE | MAE | bias | band | dSSE/race vs shipped | short only (19 races) |
+|---|---|---|---|---|---|---|---|
+| shipped | 2000 | 24.192 | 18.670 | +0.22 | 82.2% | | |
+| START_SHRINK short .75 | 2000 | 24.163 | 18.649 | +0.22 | 82.6% | -51.9 +- 46.7 | -191 +- 168 |
+| (s .5, not chosen) | 2000 | 24.161 | 18.647 | +0.22 | 83.1% | -55.3 +- 96.5 | -204 +- 353 |
+| shipped | 400 (gate) | 24.268 | 18.676 | +0.22 | 81.1% | | |
+| START_SHRINK short .75 | 400 (gate) | 24.247 | 18.657 | +0.22 | 81.6% | -37.4 +- 51.5 | -138 +- 188 |
+
+Slot bias with .75 on test: P3-10 +2.35 -> +1.91 and P26+ -0.08 -> +0.31, but P1
+-10.9 -> -11.9 and P2 -4.1 -> -4.9.
+
+**Decision: not shipped.** The gain is 0.03 RMSE, 1.1 se at 2,000 sims and 0.7 se at the
+gate's 400, so its 90% interval includes 0, and it moves the front row the wrong way. The
+gate would refuse it, and the fix is too small to change a cash lineup. I did not run the
+lineup-lab guard (no production change). Production code is unchanged.
+
+**What this cycle settles:** the driver-mean start curve is close to the best these inputs
+allow (oracle ceiling -0.1 RMSE). Cash losses are not explained by a biased driver mean.
+The remaining error is DNFs and dominators, and nothing on the board predicts either.
+
+**For the next cycle:** (1) new INFORMATION, not reshaping: collect NASCAR outright / top-N /
+H2H odds before Daytona (the dominator / laps-led tail is the error mass; the market prices
+it); (2) recover the 10/4 board (dg 154134 salaries) so the lineup lab reaches 5 cash
+races; (3) gate noise: 400 sims leave ~1.2 DK pts of sim noise per driver, about the size
+of the effects being judged -- the gate's sim count is a judge-file change (Adam);
+(4) critic runner-up: P2 laps-led pts under-projected (6.7 vs 10.7 test, 6.0 vs 11.3
+inner), but every reweighting tried is null held out; (5) COND_K = 0.85 may spread the
+finishes too wide (slope of actual on simulated mean 0.85 inner / 0.92 test). The critic
+could not test it because its value lives in the lab.
