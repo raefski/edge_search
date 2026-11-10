@@ -182,3 +182,9 @@ Runner-ups (critic):
 3. Stale pre-lock prices are not the hole: 24 late-game RBs priced early vs late, RMSE
    6.946 vs 6.966.
 WR/TE probably carry the same skew (+0.83 / +1.29 bias). Untested; fit their own constants.
+
+Unattended gate (20261110-1028): **review** -- waiting for Adam: harness critique-loop --merge / --drop
+
+
+- no gate for nfl yet (a lab gate() + critique_gate.SPECS entry): the agent's own numbers are in the log
+- touches the loop's own judge (skill / critic / hooks / gate): Adam decides
