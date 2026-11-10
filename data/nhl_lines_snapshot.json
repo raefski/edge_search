@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-10T13:59:09+00:00",
+"generated_at": "2026-11-10T15:27:22+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
@@ -51,8 +51,8 @@
 "status": null
 },
 "WPG": {
-"goalie": "Stuart Skinner",
-"status": null
+"goalie": "Nico Daws",
+"status": "Likely"
 },
 "WSH": {
 "goalie": "Logan Thompson",
@@ -85,7 +85,7 @@
 "status": null
 },
 "PHI": {
-"goalie": "Joseph Woll",
+"goalie": "Dan Vladar",
 "status": null
 },
 "PIT": {
@@ -4200,7 +4200,7 @@
 "toiSeconds": 32
 },
 "line": "F3",
-"pk": null,
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 },
@@ -4372,7 +4372,7 @@
 "toiSeconds": 58
 },
 "line": "F3",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": null
 },
@@ -4406,7 +4406,7 @@
 "toiSeconds": 24
 },
 "line": "F2",
-"pk": "PK2",
+"pk": null,
 "pos": "lw",
 "pp": "PP2"
 },
@@ -4576,7 +4576,7 @@
 "toiSeconds": 45
 },
 "line": "F4",
-"pk": "PK1",
+"pk": null,
 "pos": "c",
 "pp": null
 },
@@ -10408,7 +10408,7 @@
 "toiSeconds": 26
 },
 "line": "F1",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "c",
 "pp": "PP2"
 },
@@ -10443,7 +10443,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10547,7 +10547,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10718,7 +10718,7 @@
 "toiSeconds": 49
 },
 "line": "F4",
-"pk": null,
+"pk": "PK1",
 "pos": "rw",
 "pp": null
 },
@@ -11024,7 +11024,7 @@
 "toiSeconds": 45
 },
 "line": "F2",
-"pk": "PK2",
+"pk": null,
 "pos": "lw",
 "pp": "PP2"
 }
@@ -12258,7 +12258,7 @@
 "toiSeconds": 33
 },
 "line": "F3",
-"pk": "PK2",
+"pk": null,
 "pos": "c",
 "pp": null
 },
@@ -12396,7 +12396,7 @@
 "toiSeconds": 37
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": null
 }
