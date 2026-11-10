@@ -39,6 +39,26 @@
 "StartDate": "2026-11-10T23:00:00.0000000Z",
 "StartDateEst": "2026-11-10T18:00:00.0000000",
 "last_start": "2026-11-11T02:20:00.0000000Z"
+},
+"156570": {
+"ContestStartTimeSuffix": " (MSU vs DUKE)",
+"DraftGroupId": 156570,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 97,
+"StartDate": "2026-11-11T00:00:00.0000000Z",
+"StartDateEst": "2026-11-10T19:00:00.0000000",
+"last_start": "2026-11-11T00:00:00.0000000Z"
+},
+"156571": {
+"ContestStartTimeSuffix": " (KU vs UK)",
+"DraftGroupId": 156571,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 97,
+"StartDate": "2026-11-11T02:20:00.0000000Z",
+"StartDateEst": "2026-11-10T21:20:00.0000000",
+"last_start": "2026-11-11T02:20:00.0000000Z"
 }
 },
 "CFB": {
@@ -108,16 +128,6 @@
 },
 "NAS": {},
 "NBA": {
-"156410": {
-"ContestStartTimeSuffix": " (2H NOP @ GSW)",
-"DraftGroupId": 156410,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 112,
-"StartDate": "2026-11-10T04:12:00.0000000Z",
-"StartDateEst": "2026-11-09T23:12:00.0000000",
-"last_start": "2026-11-10T04:00:00.0000000Z"
-},
 "156485": {
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 156485,
