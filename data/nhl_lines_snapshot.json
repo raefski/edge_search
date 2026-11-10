@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-10T18:57:01+00:00",
+"generated_at": "2026-11-10T18:59:37+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
@@ -5642,40 +5642,6 @@
 "line": "F1",
 "pk": null,
 "pos": "c",
-"pp": "PP1"
-},
-"Alex Turcotte": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 10,
-"toiMinutes": 121,
-"toiSeconds": 34
-},
-"last5": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 5,
-"toiMinutes": 66,
-"toiSeconds": 32
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
 "pp": "PP2"
 },
 "Andre Lee": {
@@ -5743,7 +5709,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5915,7 +5881,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5955,7 +5921,7 @@
 "pp": "PP2"
 },
 "Erik Gustafsson": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 4,
@@ -6019,7 +5985,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Joel Armia": {
@@ -6051,7 +6017,7 @@
 "toiMinutes": 62,
 "toiSeconds": 3
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -6085,7 +6051,7 @@
 "toiMinutes": 88,
 "toiSeconds": 5
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -6124,6 +6090,40 @@
 "pos": "c",
 "pp": null
 },
+"Mats Zuccarello": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 5,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 6,
+"powerplayAssists": 3,
+"powerplayGoals": 1,
+"powerplayPoints": 4,
+"shots": 10,
+"toiMinutes": 171,
+"toiSeconds": 55
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 4,
+"toiMinutes": 80,
+"toiSeconds": 16
+},
+"line": "F2",
+"pk": null,
+"pos": "lw",
+"pp": "PP1"
+},
 "Mikey Anderson": {
 "gtd": false,
 "injury": null,
@@ -6153,7 +6153,7 @@
 "toiMinutes": 92,
 "toiSeconds": 55
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -6255,7 +6255,7 @@
 "toiMinutes": 85,
 "toiSeconds": 59
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
