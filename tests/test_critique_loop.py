@@ -274,3 +274,24 @@ def test_ledger_rows_keep_every_cycle_and_a_merge_updates_its_cycle(tmp_path):
     assert nba["result"] == "Shipped" and nba["state"] == "tip-90 expected"
     assert nba["before"] == 6.0 and nba["after"] == 5.0 and nba["beyond_noise"]
     assert nhl["result"] == "Not shipped" and nhl["before"] is None
+
+
+def test_the_0705_run_skips_sports_already_run_tonight():
+    now = datetime(2026, 11, 10, 12, 5, tzinfo=timezone.utc)
+    st = {"next": 0, "sports": {}}
+    C._sport(st, "nba")["history"].append({"at": "20261110-0700", "outcome": "fail"})
+    C._sport(st, "nhl")["history"].append({"at": "20261110-0900", "outcome": "regate pass"})
+    C._sport(st, "ncaaf")["history"].append({"at": "20261109-0700", "outcome": "fail"})   # last night
+    assert C.ran_tonight(st, now) == {"nba"}
+    season = lambda s: s != "mlb"                                    # noqa: E731
+    assert C.pick(st, now, C.ran_tonight(st, now), season=season) == "ncaab"
+
+
+def test_the_5_hour_limit_message_is_a_usage_stop_with_its_reset_time():
+    """11/9 06:31: this exact text was logged as two failed cycles instead of a stop."""
+    msg = "You've hit your 5-hour limit · resets 7:50am (America/New_York)"
+    assert C.re.search(r"hit your .{0,20}limit|\d-hour limit", msg, C.re.I)
+    t = C.reset_time(msg, datetime(2026, 11, 9, 6, 31))
+    assert (t.hour, t.minute, t.day) == (7, 50, 9)
+    assert C.reset_time("resets 12:15am", datetime(2026, 11, 9, 23, 0)).day == 10
+    assert C.reset_time("no time here") is None

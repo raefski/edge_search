@@ -1,8 +1,13 @@
 [Unit]
-Description=Nightly 02:30 local: one unattended DFS critique cycle (after the last West-coast tip, hours before any lock)
+Description=Nightly 02:00 local DFS critique cycles, resumed 07:05 if the Claude usage limit stopped them
 
 [Timer]
-OnCalendar=*-*-* 02:30:00
+# 02:00 (moved from 02:30, 11/9): the Claude 5-hour usage window that starts with the
+# night's first cycle resets by ~07:00. The 07:05 run skips sports already run tonight
+# (harness/critique_loop.py ran_tonight) and starts with the one the limit stopped;
+# if the 02:00 run is still going it holds the lock and 07:05 exits.
+OnCalendar=*-*-* 02:00:00
+OnCalendar=*-*-* 07:05:00
 # not Persistent: a cycle caught up at boot could run into the afternoon's locks
 Persistent=false
 

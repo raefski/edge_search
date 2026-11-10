@@ -307,9 +307,40 @@ def run_agent(sport: str, wt: Path, stamp: str) -> dict:
     except ValueError:
         res = {}
     text = str(res.get("result", "")) + (out or "")[-2000:]
-    limited = rc not in (0,) and bool(re.search(r"usage limit|rate limit|limit reached|out of extra usage", text, re.I))
-    return {"rc": rc, "claim": claim, "limited": limited, "cost": res.get("total_cost_usd"),
+    # 11/9 06:31: "You've hit your 5-hour limit · resets 7:50am (America/New_York)" was
+    # not matched, so NCAAB and NHL were logged as failed cycles and the night just ended.
+    limited = rc not in (0,) and bool(re.search(
+        r"usage limit|rate limit|limit reached|out of extra usage|hit your .{0,20}limit|\d-hour limit", text, re.I))
+    return {"rc": rc, "claim": claim, "limited": limited, "resets": reset_time(text) if limited else None, "cost": res.get("total_cost_usd"),
             "minutes": round(res.get("duration_ms", 0) / 60000, 1) if res.get("duration_ms") else None}
+
+
+def reset_time(text: str, now: datetime | None = None) -> datetime | None:
+    """Local time the usage limit resets, from "... resets 7:50am (...)"; None if absent."""
+    m = re.search(r"resets\s+(\d{1,2})(?::(\d{2}))?\s*([ap]m)", text, re.I)
+    if not m:
+        return None
+    h = int(m.group(1)) % 12 + (12 if m.group(3).lower() == "pm" else 0)
+    now = now or datetime.now()
+    t = now.replace(hour=h, minute=int(m.group(2) or 0), second=0, microsecond=0)
+    return t if t > now else t + timedelta(days=1)
+
+
+def schedule_resume(at: datetime) -> str:
+    """A one-shot user timer that reruns the loop 5 min after the limit resets (the fixed
+    07:05 run covers a reset before 07:00; this covers a later one, e.g. 7:50 on 11/9).
+    The loop's own guards still apply: no cycle after NIGHT_END_HOUR or near a lock."""
+    when = at + timedelta(minutes=5)
+    if when.hour >= NIGHT_END_HOUR:
+        return f"limit resets {at:%H:%M}, after the night ends: no resume"
+    subprocess.run(["systemctl", "--user", "stop", "edge-critique-resume.timer"], capture_output=True)
+    r = subprocess.run(["systemd-run", "--user", "--unit", "edge-critique-resume",
+                        f"--on-calendar={when:%Y-%m-%d %H:%M:00}", "--timer-property=AccuracySec=1s",
+                        f"--working-directory={ROOT}", "--property=Nice=15",
+                        "/usr/bin/env", "python3", "-m", "harness", "critique-loop"],
+                       capture_output=True, text=True)
+    return (f"resumes at {when:%H:%M}" if r.returncode == 0
+            else f"resume not scheduled ({(r.stderr or '').strip()[:120]})")
 
 
 def ledger(entry: dict) -> None:
@@ -390,6 +421,7 @@ def cycle(sport: str, st: dict) -> str:
     if res["limited"] and not paths:
         drop_worktree(cand, branch)
         ledger({"event": "cycle", "sport": sport, "verdict": "usage limit", "minutes": res["minutes"]})
+        st["resets"] = res["resets"].isoformat() if res.get("resets") else None
         return "usage limit"
     if not paths:
         drop_worktree(cand, branch)
@@ -523,6 +555,22 @@ def pick(st: dict, now: datetime, done: set = frozenset(), season=in_season) -> 
     return None
 
 
+#: A second timer run at 07:05 picks the night back up after the Claude 5-hour usage
+#: window resets (11/9: the 02:00 start means a limit hit at ~04:00-07:00 resets by
+#: ~07:00). A sport whose cycle already ran in this window is not run again.
+NIGHT_WINDOW_H = 12
+_NOT_A_CYCLE = ("regate", "merged", "vetoed")
+
+
+def ran_tonight(st: dict, now: datetime) -> set:
+    """Sports whose critique cycle already ran (any outcome but a usage-limit stop, which
+    is not recorded in history) within NIGHT_WINDOW_H hours of `now`."""
+    since = (now - timedelta(hours=NIGHT_WINDOW_H)).strftime("%Y%m%d-%H%M")
+    return {s for s, sp in st.get("sports", {}).items()
+            if any(h.get("at", "") >= since and not str(h.get("outcome", "")).startswith(_NOT_A_CYCLE)
+                   for h in sp.get("history", []))}
+
+
 def status(st: dict) -> str:
     out = [f"rotation {', '.join(ROTATION)}; next: {ROTATION[st['next'] % len(ROTATION)]}"]
     for s in ROTATION:
@@ -598,6 +646,7 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
             print(f"would run, in order: {', '.join(plan) or 'nothing'} (claude: {claude_bin()})\n{status(st)}")
             return 0
         done, results = set(), []
+        earlier = set() if sport else ran_tonight(st, _now())
         while True:
             soon = locks_soon(CYCLE_LOCK_H)
             if soon:
@@ -606,7 +655,7 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
             if done and datetime.now().hour >= NIGHT_END_HOUR and datetime.now().hour < 23:
                 results.append(f"stopped: past {NIGHT_END_HOUR}:00")
                 break
-            s = (sport if sport and not done else None) or (None if sport else pick(st, _now(), done))
+            s = (sport if sport and not done else None) or (None if sport else pick(st, _now(), done | earlier))
             if not s:
                 break
             done.add(s)
@@ -622,7 +671,14 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
             results.append(f"{s}: {v}")
             print(results[-1], flush=True)
             if v == "usage limit":
-                results.append("stopped: Claude usage limit reached")
+                # this sport goes first when the 07:05 run resumes the night
+                st["next"] = ROTATION.index(s)
+                save_state(st)
+                rs = st.pop("resets", None)
+                when = (schedule_resume(datetime.fromisoformat(rs)) if rs
+                        else "resumes at 07:05" if datetime.now().hour < 7 else "no resume scheduled")
+                save_state(st)
+                results.append(f"stopped: Claude usage limit reached -- {when}")
                 break
         try:                                # the dashboard's rows (uploaded at the next refresh)
             sys.path.insert(0, str(ROOT / "scripts"))
