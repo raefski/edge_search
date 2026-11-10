@@ -39,7 +39,7 @@ import json
 import os
 import sqlite3
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 # one BLAS thread per process: the lab parallelises across processes (all cores), and
@@ -231,16 +231,21 @@ def player_points(gid: int, date: str, name: str) -> float:
     return float(got or 0.0)
 
 
+_FIELDS: dict = {}
+
+
 def fields() -> dict:
-    """{gid: [(contest id, type, sorted points desc, cash line)]}."""
+    """{gid: [(contest id, type, sorted points desc, cash line)]}; read once per process."""
+    if _FIELDS:
+        return _FIELDS
     c = sqlite3.connect(SL.DB)
-    out = defaultdict(list)
+    out = _FIELDS
     for cid, dg, typ, paid in c.execute("select contest_id, draft_group, type, places_paid from contest "
                                         "where sport='NBA' and slate_date >= '2026-10-01' and places_paid > 0"):
         pts = np.array(sorted((p for (p,) in c.execute(
             "select points from entry where contest_id=? and points is not null", (cid,))), reverse=True))
         if len(pts):
-            out[dg].append((cid, typ, pts, pts[min(paid, len(pts)) - 1]))
+            out.setdefault(dg, []).append((cid, typ, pts, pts[min(paid, len(pts)) - 1]))
     return out
 
 
@@ -552,12 +557,37 @@ def _set_pool(ps: list[dict], variant: str, gid: int) -> list[dict]:
     return pool
 
 
-def seed_lineup(pool: list[dict], mode: str, seed: int) -> list[str] | None:
-    """One seeded best lineup: sim seed k, climb seed k (a set's k-th lineup)."""
+def seed_lineup(pool: list[dict], mode: str, seed: int, spec: dict | None = None) -> list[str] | None:
+    """One seeded best lineup: sim seed k, climb seed k (a set's k-th lineup). `spec` (a
+    CONSTRUCT entry) swaps production's optimize for climb.search with that construction."""
     sim = theory.simulate(pool, n_sims=N_SIMS, seed=seed)
     theory.summarise(sim, pool)
-    r = dfs_opt_nba.optimize(pool, sim, mode=mode, iters=SET_ITERS, seed=seed)
+    if not spec:
+        r = dfs_opt_nba.optimize(pool, sim, mode=mode, iters=SET_ITERS, seed=seed)
+        return [p["name"] for _, p in r["slots"]] if r else None
+    from edge import dfs_opt_climb as climb
+    dfs_opt_nba.prepare(pool)
+    pct = spec.get("pct") or (theory.GPP_PCT if mode == "gpp" else theory.CASH_PCT)
+    excl = {p["name"] for p in pool if spec.get("minmin") and (p.get("minutes") or 0) < spec["minmin"]}
+    best = climb.search(pool, sim, dfs_opt_nba.NBA, pct, key="ceil" if mode == "gpp" else "floor",
+                        iters=SET_ITERS, seed=seed, own_weight=spec.get("own_weight", 0.0),
+                        exclude=excl or None, extra_valid=_valid(spec))
+    if best is None:
+        return None
+    r = climb.result(pool, sim, best, dfs_opt_nba.NBA, theory.describe)
     return [p["name"] for _, p in r["slots"]] if r else None
+
+
+def _valid(spec: dict):
+    cap, stack = spec.get("cap"), spec.get("stack")
+    if not cap and not stack:
+        return None
+
+    def ok(rows):
+        if cap and max(Counter(r["team"] for r in rows).values()) > cap:
+            return False
+        return not stack or max(Counter(r["game"] for r in rows).values()) >= stack
+    return ok
 
 
 def _set_job(args):
@@ -565,7 +595,21 @@ def _set_job(args):
     gid, ps, variant, mode, n, seed, kind = args
     if kind == "portfolio":
         return build_set(ps, variant, gid, mode, n, kind)
-    return seed_lineup(_set_pool(ps, variant, gid), mode, seed)
+    return seed_lineup(_set_pool(ps, variant, gid), mode, seed, CONSTRUCT.get(variant))
+
+
+#: {variant name: construction spec} -- {"modes", "pct", "own_weight", "cap", "stack", "minmin"};
+#: see `construct` (props-era rerun #3). A spec'd variant builds only its modes.
+CONSTRUCT: dict = {}
+
+
+def _wanted(gid: int, variant: str, mode: str) -> bool:
+    """Build a mode only where it is scored (a contest of that type on the board) and,
+    for a construction variant, only the modes it changes."""
+    spec = CONSTRUCT.get(variant)
+    if spec and mode not in spec["modes"]:
+        return False
+    return any(t == mode for _, t, _, _ in fields().get(gid, []))
 
 
 def _set_file(gid: int, ps: list[dict], variant: str, mode: str, n: int, seed0: int, kind: str) -> Path:
@@ -592,6 +636,8 @@ def build_sets_many(jobs: list[tuple[dict, str]], n: int = SET_N, seeds: tuple =
         for s0 in seeds:
             for gid, ps in B.items():
                 for mode in ("cash", "gpp"):
+                    if not _wanted(gid, variant, mode):
+                        continue
                     f = _set_file(gid, ps, variant, mode, n, s0, kind)
                     if f.exists():
                         out[(variant, s0)][gid][mode] = json.loads(f.read_text())
@@ -733,7 +779,7 @@ def compare_sets(B: dict, labelled: list[tuple[str, dict]], n: int = SET_N, seed
     seeds = sorted({s for _, s in built})
     res = {}
     for label, nm in labelled:
-        res[label] = pool_rows([set_rows({g: lu for name in nm.values() for g, lu in built[(name, s)].items()}, B)
+        res[label] = pool_rows([set_rows({g: lu for name in nm.values() for g, lu in built.get((name, s), {}).items()}, B)
                                 for s in seeds])
     labels = list(res)
     base = res[labels[0]]
@@ -842,6 +888,56 @@ def spread(n: int = SET_N, seeds: tuple = SET_SEEDS) -> int:
                         n, seeds, title="Sim spread on the props blend")
 
 
+# ---- lineup construction on the props blend (props-era rerun #3, 11/9) ----
+# The 10/30 overnight study (scripts/nba_construction_backtest.py) and cycle 26 found nothing
+# that beat shipped construction while our projection ranked lineups near chance (field top-5%
+# at the 43-55th percentile). With the props blend shipped they are re-run on 40 seed lineups
+# a board, the blend refit without each date. Each spec builds only the mode it changes.
+# Fades/tilts use ownership recomputed on the blended projection (production's order since
+# cycle 27; NBA_OWNERSHIP_CRITIQUE_LOG cycle 3: MAE 4.17 vs 4.72 on the model number) --
+# without buzz, which the logged boards do not carry (weight 0.19).
+CONSTRUCTIONS = {
+    "cash: team cap 3": {"modes": {"cash"}, "cap": 3},
+    "cash: team cap 4": {"modes": {"cash"}, "cap": 4},
+    "cash: 50th pct": {"modes": {"cash"}, "pct": 50},
+    "cash: 24+ min only": {"modes": {"cash"}, "minmin": 24},
+    "gpp: fade own x5": {"modes": {"gpp"}, "own_weight": 5.0},
+    "gpp: fade own x15": {"modes": {"gpp"}, "own_weight": 15.0},
+    "gpp: chalk own x5": {"modes": {"gpp"}, "own_weight": -5.0},
+    "gpp: 99th pct": {"modes": {"gpp"}, "pct": 99},
+    "gpp: 4+ one game": {"modes": {"gpp"}, "stack": 4},
+    "gpp: team cap 3": {"modes": {"gpp"}, "cap": 3},
+}
+
+
+def _construct_variant(blend, own: bool):
+    def f(pool):
+        from edge import dfs_run_nba as R
+        R.blend_props(pool, _MKT.get(pool[0].get("_gid")) or {}, blend)
+        if own:
+            theory.add_ownership(pool)
+    return f
+
+
+def construct(n: int = SET_N, seeds: tuple = SET_SEEDS, only: list[str] | None = None) -> int:
+    B = {g: ps for g, ps in boards().items() if g in fields()}
+    rows = register_props(B)["rows"]
+    base = _lodo_names(B, rows, None)
+    labelled = [("production", base)]
+    for label, spec in CONSTRUCTIONS.items():
+        if only and not any(o in label for o in only):
+            continue
+        nm = {}
+        for d in base:
+            bl = props_fit([r for r in rows if r["date"] != d])
+            name = f"{base[d]}|{label}"
+            VARIANTS[name] = _construct_variant(bl, bool(spec.get("own_weight")))
+            CONSTRUCT[name] = spec
+            nm[d] = name
+        labelled.append((label, nm))
+    return compare_sets(B, labelled, n, seeds, title="Lineup construction on the props blend")
+
+
 def field_rank(variant: str = "shipped", B: dict | None = None) -> list[dict]:
     """The lower-variance companion (critic, cycle 26): per exported contest, rank the REAL
     field's lineups by the variant's projection (sum over the 8 players; an entry with a
@@ -944,6 +1040,9 @@ def main() -> int:
                     help="seeds: n independent best lineups (single-entry); portfolio: production multi-entry")
     sp = sub.add_parser("spread", help="sim spread rescaled to the props-blended projection's misses")
     sp.add_argument("--seeds", default=",".join(map(str, SET_SEEDS)))
+    cn = sub.add_parser("construct", help="lineup construction variants (caps, percentiles, fades, stacks)")
+    cn.add_argument("--seeds", default=",".join(map(str, SET_SEEDS)))
+    cn.add_argument("--only", action="append", help="substring of a construction label (repeatable)")
     fr = sub.add_parser("field", help="the field's lineups ranked by each variant (no optimizer)")
     fr.add_argument("--variant", action="append")
     r = sub.add_parser("report")
@@ -958,6 +1057,8 @@ def main() -> int:
     if a.cmd == "sets":
         globals()["SET_KIND"] = a.kind
         return sets_lodo(with_free=not a.base_only, n=a.n, seeds=tuple(int(x) for x in a.seeds.split(",")))
+    if a.cmd == "construct":
+        return construct(seeds=tuple(int(x) for x in a.seeds.split(",")), only=a.only)
     if a.cmd == "spread":
         return spread(seeds=tuple(int(x) for x in a.seeds.split(",")))
     if a.cmd == "props-lineups":

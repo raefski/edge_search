@@ -1692,3 +1692,40 @@ narrowing 45+ costs GPP dollars; cycle 28's x0.8 cash lead does not replicate on
 Kept: `simulate` honours an optional per-player `sd_scale` (absent = 1, production unchanged --
 baseline reproduced exactly, .633 / .542) for lab variants; the lab's `compare_sets` now prints
 $ per $1 (contests.db payouts) beside percentile. Revisit 45+ at ~150 prop rows.
+
+## Cycle 31 (hand-run, 2026-11-09) -- props-era rerun #3: lineup construction
+
+**Why:** the construction/leverage studies (10/30 overnight, cycle 26: chalk tilt, ownership
+fades, game stacks, team caps, minute floors, percentile targets) all "beat nothing" while our
+projection ranked lineups near chance. With the props blend shipped (cycle 27), re-run them on
+40 seed lineups a board.
+
+**How:** `nba_lineup_lab.py construct`. Every rule goes through the production climb
+(`climb.search`, same iters/sim): team caps / game stack as `extra_valid`, minute floor as
+`exclude`, ownership via `theory.add_ownership` + `own_weight` (negative = chalk), percentile
+target via `pct`. Props blend refit without each date; each rule built only in the mode it
+applies to and only where that mode has a contest. 20 seeds x seed sets 0 + 1000 a board; 34
+GPP contests / 17 dates (11/8 GPP added), 17 cash / 12; 9,720 lineups, 61 min on 20 cores.
+Paired by contest vs production, 90% bootstrap by date; test = dates >= 10/31.
+
+| rule | mode | pctile (prod .536 cash / .622 gpp) | diff [90%, by date] | dates +/- | $ per $1 diff [90%] | test diff |
+|---|---|---|---|---|---|---|
+| team cap 3 | cash | .558 | +.022 [-.001, +.044] | 7 / 4 | +.04 [-.02, +.12] | +.003 (1 / 3) |
+| team cap 4 | cash | .541 | +.004 [-.001, +.009] | 4 / 3 | +.02 [+.00, +.04] | +.006 |
+| 50th pct target | cash | .539 | +.002 [-.011, +.016] | 7 / 4 | +.01 | +.008 |
+| 24+ min only | cash | .484 | -.052 [-.125, +.031] | 6 / 6 | **-.25 [-.41, -.05]** | -.119 |
+| fade own x5 | gpp | .625 | +.003 [-.025, +.029] | 6 / 11 | +.03 [-.25, +.30] | +.027 |
+| fade own x15 | gpp | .618 | -.004 [-.066, +.042] | 6 / 11 | +.12 [-.36, +.52] | +.022 |
+| chalk own x5 | gpp | .623 | +.001 [-.014, +.021] | 9 / 8 | -.01 | +.003 |
+| 99th pct target | gpp | .588 | **-.034 [-.070, -.007]** | 5 / 12 | -.16 [-.50, +.10] | -.017 |
+| 4+ from one game | gpp | .594 | **-.028 [-.059, -.004]** | 4 / 10 | -.12 [-.35, +.07] | -.001 |
+| team cap 3 | gpp | .596 | -.025 [-.050, +.004] | 5 / 11 | -.17 [-.41, +.14] | -.051 |
+
+**Decision: NOTHING SHIPPED -- production construction stands.** No rule beats production
+outside noise. Cash team cap 3 is the only lead (+.022, interval touches 0) and it does not
+hold on the test dates (+.003, 1 / 3); recheck at ~25 cash dates. Ownership fades / chalk tilt
+stay null with the better projection (fade x15's $ swing is two nights; 6 / 11 dates). Forcing
+structure on GPP *costs*: the 99th-pct target and 4+ game stacks are worse beyond noise, team
+cap 3 likely too. A 24-minute floor in cash loses money (-$.25 per $1). The props blend did not
+turn any of the old construction ideas into wins; the projection is where the edge is.
+Kept: the lab's `construct` command (`--only`, `--seeds`) and per-variant `CONSTRUCT` specs.

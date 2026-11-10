@@ -47,13 +47,15 @@ def test_sets_pool_one_lineup_per_job_and_match_build_set(tmp_path, monkeypatch)
     exactly build_set's lineups (seed k = the set's k-th); seed set s0 runs seeds s0..s0+n-1."""
     calls = []
 
-    def fake_seed_lineup(pool, mode, seed):
+    def fake_seed_lineup(pool, mode, seed, spec=None):
         calls.append((pool[0]["_gid"], mode, seed))
         return [f"{mode}-{seed}"] * 8
 
     monkeypatch.setattr(L, "seed_lineup", fake_seed_lineup)
     monkeypatch.setattr(L, "CACHE", tmp_path)
     monkeypatch.setattr(L, "_pool", lambda fn, todo, workers=1: map(fn, todo))
+    both = [(9, "gpp", None, None), (8, "cash", None, None)]
+    monkeypatch.setattr(L, "fields", lambda: {1: both, 2: both})
     B1 = {1: [{"name": "A", "proj": 30.0, "salary": 6000, "date": "2026-11-01"}]}
     B2 = {2: [{"name": "B", "proj": 20.0, "salary": 5000, "date": "2026-11-02"}]}
     out = L.build_sets_many([(B1, "model_only"), (B2, "model_only")], n=3, seeds=(0, 1000))
@@ -71,3 +73,28 @@ def test_pool_rows_weights_by_lineups():
     b = {("gpp", 9): {"date": "d", "n": 20, "pctile": 0.4, "cashed": 0.3, "points": 250.0, "ret": 0.0}}
     r = L.pool_rows([a, b])[("gpp", 9)]
     assert r["n"] == 40 and abs(r["pctile"] - 0.5) < 1e-12 and abs(r["points"] - 255.0) < 1e-9
+
+
+def test_construction_variant_builds_only_its_modes_where_scored(tmp_path, monkeypatch):
+    """A spec'd variant builds only the modes it changes, and only on boards with a contest of
+    that type; the spec reaches seed_lineup."""
+    seen = []
+    monkeypatch.setattr(L, "seed_lineup", lambda pool, mode, seed, spec=None: seen.append((pool[0]["_gid"], mode, spec)) or ["x"] * 8)
+    monkeypatch.setattr(L, "CACHE", tmp_path)
+    monkeypatch.setattr(L, "_pool", lambda fn, todo, workers=1: map(fn, todo))
+    monkeypatch.setattr(L, "fields", lambda: {1: [(9, "gpp", None, None)], 2: [(8, "cash", None, None)]})
+    monkeypatch.setitem(L.CONSTRUCT, "fade", {"modes": {"gpp"}, "own_weight": 5.0})
+    B = {g: [{"name": "A", "proj": 30.0, "salary": 6000, "date": "2026-11-01"}] for g in (1, 2)}
+    out = L.build_sets_many([(B, "fade")], n=2, seeds=(0,))
+    assert {(g, m) for g, m, _ in seen} == {(1, "gpp")}
+    assert all(sp == {"modes": {"gpp"}, "own_weight": 5.0} for _, _, sp in seen)
+    assert out[("fade", 0)][1] == {"gpp": [["x"] * 8, ["x"] * 8]}
+
+
+def test_team_cap_and_game_stack_rules():
+    rows = [{"team": "A", "game": "g1"}] * 3 + [{"team": "B", "game": "g1"}] + [{"team": "C", "game": "g2"}] * 4
+    assert L._valid({"cap": 3})(rows) is False                 # C has 4
+    assert L._valid({"cap": 4})(rows) is True
+    assert L._valid({"stack": 4})(rows) is True                # g1 has 4
+    assert L._valid({"stack": 5})(rows) is False
+    assert L._valid({}) is None
