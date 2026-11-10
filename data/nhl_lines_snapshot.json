@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-10T20:29:06+00:00",
+"generated_at": "2026-11-10T20:31:25+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
@@ -5644,39 +5644,39 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Alex Turcotte": {
+"Andre Lee": {
 "gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
-"blocks": 9,
+"blocks": 6,
 "gamesPlayed": 10,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 1,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
 "powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 10,
-"toiMinutes": 121,
-"toiSeconds": 34
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 112,
+"toiSeconds": 49
 },
 "last5": {
-"assists": 2,
+"assists": 1,
 "blocks": 3,
 "gamesPlayed": 5,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 1,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
 "powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 5,
-"toiMinutes": 66,
-"toiSeconds": 32
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 50,
+"toiSeconds": 34
 },
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Anton Forsberg": {
 "gtd": false,
@@ -5983,7 +5983,7 @@
 "toiMinutes": 70,
 "toiSeconds": 7
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
@@ -6017,7 +6017,7 @@
 "toiMinutes": 62,
 "toiSeconds": 3
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "rw",
 "pp": null
@@ -6085,7 +6085,7 @@
 "toiMinutes": 65,
 "toiSeconds": 25
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -6119,7 +6119,7 @@
 "toiMinutes": 80,
 "toiSeconds": 16
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -6221,7 +6221,7 @@
 "toiMinutes": 65,
 "toiSeconds": 58
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -6255,10 +6255,10 @@
 "toiMinutes": 85,
 "toiSeconds": 59
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 }
 },
 "MIN": {
