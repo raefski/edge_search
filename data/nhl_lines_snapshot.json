@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-10T15:27:22+00:00",
+"generated_at": "2026-11-10T15:57:09+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
@@ -48,7 +48,7 @@
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
-"status": null
+"status": "Confirmed"
 },
 "WPG": {
 "goalie": "Nico Daws",
@@ -13912,40 +13912,6 @@
 "pos": "rd",
 "pp": null
 },
-"Colton Sissons": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 142,
-"toiSeconds": 47
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 66,
-"toiSeconds": 48
-},
-"line": "F1",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Dakota Joshua": {
 "gtd": false,
 "injury": null,
@@ -14111,9 +14077,43 @@
 "toiMinutes": 77,
 "toiSeconds": 41
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
+"pp": "PP2"
+},
+"Jack Roslovic": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 7,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 5,
+"points": 12,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 21,
+"toiMinutes": 170,
+"toiSeconds": 40
+},
+"last5": {
+"assists": 3,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 3,
+"points": 6,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 10,
+"toiMinutes": 92,
+"toiSeconds": 16
+},
+"line": "F1",
+"pk": null,
+"pos": "rw",
 "pp": "PP1"
 },
 "Jake McCabe": {
@@ -14252,6 +14252,40 @@
 "pos": "ld",
 "pp": "PP2"
 },
+"Ryan Tverberg": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 6,
+"toiMinutes": 71,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 6,
+"toiMinutes": 62,
+"toiSeconds": 43
+},
+"line": "F2",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Sergei Bobrovsky": {
 "gtd": false,
 "injury": null,
@@ -14354,40 +14388,6 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "rd",
-"pp": "PP2"
-},
-"Vinni Lettieri": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 13,
-"toiMinutes": 107,
-"toiSeconds": 22
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 48,
-"toiSeconds": 26
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
 "pp": "PP2"
 },
 "William Nylander": {
