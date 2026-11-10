@@ -861,3 +861,85 @@ The forward fit's QB salary slope is 0.10–0.65 through 11/6. It only reaches
   next to player MAE.
 
 Unattended gate (20261109-0726): **not shipped (log / harness only, verified)**
+
+## Cycle 8 (auto: unladdered players missing from the cash pool) — 2026-11-10 (unattended): target is not the hole — NOT SHIPPED
+
+**Scout:**
+
+```json
+{"sport": "ncaaf", "target": "unladdered players missing from the cash pool",
+ "metric": "replayed production CASH lineup per held-out draft group vs the real Double Up / 50-50 fields: field percentile, share cashed, $ per $1; mean points and the share of field cash ownership our pool can see. GPP separate.",
+ "harness": "scripts/ncaaf_lineup_lab.py report + a candidate mode; scripts/ncaaf_lab.py gate must not get worse on laddered rows",
+ "split": "leave one slate out over 8 cash slates / 11 contests; anything fitted on earlier dates only",
+ "why": "cash ROI -63% [-98%, -27%] (12 entries / 9 slates); build_pool drops every player without a DK ladder, yet they hold 3-36% of cash-field ownership (Easton Messer 96% owned, 38.9 pts on 11/5)",
+ "money_at_stake": "NCAAF cash net -$8.77 on 12 entries / 9 slates; 11/5, 11/6, 11/7 each lost 100%",
+ "runner_ups": ["QB salary compression (cycle 7, failed live-faithful; retry after 11/15+ exports)",
+                "GPP lineups in the same lab (+140% rests on two small-field wins)",
+                "gate scores player MAE only; lineup gate OUT awaits Adam"]}
+```
+
+The 5 name suspects were checked: all are different players (Jaden/Jeremiah Smith,
+Jai'Den/Ja'Cory Thomas, Tavorus/Tramell Jones). Nothing to fix in edge/names.py.
+
+**Baseline** (`ncaaf_lineup_lab.py report`, unchanged since cycle 7): cash 11 contests /
+8 slates, cashed 18%, field pctile 0.253, 134.1 pts, ROI −69%.
+
+**Critic (dfs-model-critic):** the target is not where the hole is.
+
+- *Pre-lock source.* The `data` branch history of `data/draftables_snapshot/<gid>.json`,
+  last commit before the first kickoff. It covers 6 of the 9 cash boards; 9/26, 10/3 and
+  10/16 have none. Each record has salary, DK FPPG (stat 174) and DK's injury status.
+- *Field cash ownership our pool can see:* 64% (9/26, the pre-fix suffix bug), 97%, 77%,
+  80%, 90%, 92%, 79% (11/5, Messer), 72% (11/6), 93% (11/7).
+- *A missing ladder mostly means out or a small role.* Players with FPPG ≥ 8 on the 6
+  boards: laddered with no status scored 295 of 302; unladdered with no status 57 of 86;
+  DK OUT 0 of 42, D 0 of 5, Q 1 of 4.
+- *Held-out replay* (added players at proj = k_pos × FPPG, k fitted on earlier dates only,
+  ~0.75-0.91; FPPG alone is close to the ladder as a predictor, MAE WR 6.0 vs 5.7, QB 6.8
+  vs 6.8, RB 6.8 vs 6.5, n=474):
+
+| variant | contests / slates | cashed | field pctile | ROI | pctile diff vs shipped [90%, by slate] |
+|---|---|---|---|---|---|
+| shipped | 11 / 8 | 18% | 0.253 | −69% | |
+| add every unladdered draftable | 11 / 8 | 9% | 0.187 | −85% | −0.066 [−0.170, +0.039] |
+| … minus DK OUT / D / Q | 11 / 8 | 0% | 0.145 | −100% | −0.107 [−0.218, −0.001] |
+| … × P(play) fitted on earlier dates | 11 / 8 | 27% | 0.324 | −23% | +0.071 (no added player is ever picked) |
+| oracle: only unladdered players who scored (look-ahead) | 11 / 8 | 27% | 0.343 | −23% | +0.090 [+0.004, +0.233] |
+
+  The live-faithful versions pick busts (Elston 0.0, Jordan Thompson 0.0, Kelley −0.4,
+  Engleman 0.6). Messer on 11/5 lifts the lineup 127 → 144 points, still the 9th
+  percentile. On 11/7 the oracle is worse.
+- *Where the +0.07 comes from: optimizer search, not the pool.* Each cash board rebuilt
+  with seeds 0-9 (verified by me, same numbers): seed 0 falls short of the best objective
+  only on 11/6 (102.06 vs 103.16), and that better lineup scores 190.3 instead of 161.3
+  (pctile 0.83 vs 0.04). Unpicked extra rows just knock the climb onto it. With the search
+  effect removed, the oracle's ceiling is about +0.017 pctile and no extra cash.
+- *The losses are in-pool chalk we skipped:* 10/3 Aiden Flora (52.1 pts, 77% owned) and
+  Jeremiah Smith (46.6, 40%); 11/7 Caleb Hawkins (57.6, 89%); 11/6 Kevin Jennings (33.7,
+  65%). All sat about $1k below their price on our projection per dollar, which is cycle 7's
+  salary compression again.
+
+**Critic's fix:** don't add unladdered players; restart the cash build (seeds 0-4, keep the
+best objective); log unladdered draftables (proj blank, `dk_status`, `dk_fppg`) and show
+high-FPPG unladdered players with a blank status in the app as "no ladder: check news".
+
+**Decision: NOT SHIPPED (conservative, unattended).**
+
+- Adding unladdered players loses held out in every live-faithful version.
+- Restarts change 1 of 9 cash boards (11/6), where a 1.1-point objective gap flips 161 →
+  190 points. One slate is luck in direction, not evidence. It also costs 5× build time on
+  the phone page, and the NCAAF gate (player MAE) cannot see it.
+- Logging unladdered rows changes the forward log every consumer reads. It is worth doing,
+  but it is a format change for Adam to approve, not an unattended commit.
+
+**For the next cycle:**
+
+1. In-pool chalk / salary compression (Flora, Hawkins, Jennings) is the lead again. Retry
+   cycle 7's `calibrate --forward` once the 11/14-11/15 cash exports arrive.
+2. Cash restarts: re-measure seeds 0-9 per board as slates arrive. Ship only if
+   best-objective beats seed 0 on several slates.
+3. Pre-lock draftables are in `git log origin/data -- data/draftables_snapshot/<gid>.json`
+   (6 of 9 cash boards). 10/16 had 23% of field cash ownership with no ladder and no record
+   of why (Hunter Tipton 62%, Dominic Lee Knicely 38%).
+4. A lab lineup player nobody drafted is scored 0. That is harmless for the shipped pool
+   but biases any pool expansion (6 such players in "add every").
