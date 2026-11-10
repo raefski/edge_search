@@ -355,6 +355,20 @@ posted. If ESPN is unreachable the page says removal is OFF.
 2025 player-games are frozen in `data/nfl_player_games_2025.csv` (394 KB) so
 a cold Cloud build does not download 2025's 8.7 MB box scores (23 s here).
 
+### RB yardage lines read as medians, shifted to means (2026-11-10, NFL critique cycle 2)
+
+A back's rush / rec yardage is right-skewed, and `dfs_project.implied_mean` reads a line on
+a symmetric normal, i.e. the MEDIAN. Backs ran +1.22 DK pts under-projected on the 2026
+boards, in every scoring part, most for cheap backs and not at all for 80+ yd bell-cows.
+`dfs_sport.NFL_RB_YDS_SKEW` adds max(0, c + b*median) to a back's rush yds (7.38 - 0.0855m)
+and rec yds (4.79 - 0.0950m) before TDs are imputed (new `Sport.mean_shift` hook; NFL backs
+only, NCAAF untouched). Fitted on nflverse 2023-25 only. Held out, `scripts/nfl_rb_lab.py
+report` (437 RBs, 8 slates, DK FPTS by draft group): bias +1.22 -> +0.35, RMSE 7.231 ->
+7.129, SSE -641 [90% -1353, -3]; most of the gain is on 3 slates. Replayed lineups (8-seed
+mean, not enough data): cash pctile -0.042 [-0.112, +0.012], GPP +0.075 [-0.013, +0.160].
+WR/TE (+0.83 / +1.29 bias) were not tested for the same skew. Rushing TDs from the
+rush-attempts prop were tested and are noise (SSE -16 [-72, +37]).
+
 ### Still missing for NFL
 
 - **Ownership without buzz is still a prior.** Three GPP exports now exist

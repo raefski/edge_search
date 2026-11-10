@@ -106,7 +106,13 @@ def project(player_markets: dict, sport: Sport,
         if stat.is_probability:
             probs[stat.market] = _fair_over(*pair)
         elif md.get("point") is not None:
-            means[stat.market] = implied_mean(*pair, float(md["point"]), stat.sigma)
+            mean = implied_mean(*pair, float(md["point"]), stat.sigma)
+            if sport.mean_shift is not None:
+                # the line's median -> the stat's mean, for skewed stats (NFL backs'
+                # yardage: dfs_sport.NFL_RB_YDS_SKEW). Before imputation, which
+                # scales TDs off the mean.
+                mean = sport.mean_shift(stat.market, mean, position)
+            means[stat.market] = mean
 
     return points_from_means(means, probs, sport, position)
 

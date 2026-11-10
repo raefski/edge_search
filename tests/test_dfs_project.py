@@ -132,6 +132,34 @@ def test_nfl_requires_only_one_of_its_position_markets():
     assert dfs_project.project({}, NFL)["proj"] is None
 
 
+def test_nfl_back_yardage_line_is_read_as_median_and_shifted_to_mean():
+    """NFL critique cycle 2 (2026-11-10): a back's yardage is right-skewed, so the
+    line (a median) sits below his mean. Backs get max(0, c + b*median) added to
+    rush and rec yards before TDs are imputed; receivers, QBs and 80+ yard
+    bell-cows do not move (NFL_RB_YDS_SKEW, fitted on nflverse 2023-25)."""
+    from dataclasses import replace
+    rb = {"player_rush_yds": {"Over": 1.91, "Under": 1.91, "point": 40.5},
+          "player_reception_yds": {"Over": 1.91, "Under": 1.91, "point": 15.5}}
+    c, b = dfs_sport.NFL_RB_YDS_SKEW["player_rush_yds"]
+    shifted = dfs_project.project(rb, NFL, position="RB")
+    plain = dfs_project.project(rb, replace(NFL, mean_shift=None), position="RB")
+    assert shifted["means"]["player_rush_yds"] == pytest.approx(40.5 + c + b * 40.5, abs=0.01)
+    assert shifted["proj"] > plain["proj"]
+    # TDs scale off the shifted mean
+    assert shifted["means"]["player_rush_tds"] > plain["means"]["player_rush_tds"]
+    # not a back: unchanged
+    assert dfs_project.project(rb, NFL, position="WR")["proj"] == \
+        dfs_project.project(rb, replace(NFL, mean_shift=None), position="WR")["proj"]
+    assert dfs_project.project(WR, NFL, position="WR")["proj"] == \
+        dfs_project.project(WR, replace(NFL, mean_shift=None), position="WR")["proj"]
+    # a bell-cow's line is already near his mean: the shift floors at 0
+    big = {"player_rush_yds": {"Over": 1.91, "Under": 1.91, "point": 110.5}}
+    assert dfs_project.project(big, NFL, position="RB")["means"]["player_rush_yds"] == \
+        pytest.approx(110.5, abs=0.01)
+    # NCAAF is a separate model and is not shifted
+    assert dfs_sport.get("americanfootball_ncaaf").mean_shift is None
+
+
 def test_threshold_bonus_is_an_expectation_not_a_step():
     """A back projected at 99 and one at 101 must not differ by the whole 3
     points -- the bonus is P(>= 100) * 3, off the same fitted normal."""

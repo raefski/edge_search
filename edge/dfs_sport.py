@@ -130,6 +130,11 @@ class Sport:
     #: projected innings and a strikeout-implied skill factor, NFL scales
     #: touchdowns off yardage at a rate that depends on the position.
     impute: Callable[[dict, str | None], dict] | None = None
+    #: corrects a market's implied MEDIAN to its mean, (market, implied, position)
+    #: -> mean. dfs_project.implied_mean reads the line on a symmetric normal, which
+    #: is the middle outcome; for a right-skewed stat the mean sits above it. NFL
+    #: backs' yardage only (see NFL_RB_YDS_SKEW); None = the implied value as is.
+    mean_shift: Callable[[str, float, str | None], float] | None = None
     #: DK position strings that map onto roster slots
     positions: Callable[[str], set] | None = None
     flex: dict = field(default_factory=dict)  # slot -> eligible positions
@@ -293,6 +298,34 @@ def _nfl_impute(means: dict, position: str | None = None) -> dict:
     return out
 
 
+#: A BACK'S YARDAGE LINE IS HIS MEDIAN, NOT HIS MEAN. Rushing and receiving yards are
+#: right-skewed (a few long runs / screens a season), and dfs_project.implied_mean reads
+#: the line on a symmetric normal, so what it returns is the middle outcome. Every
+#: scoring part of a back's projection ran low on the 2026 boards (rush yds, rec yds,
+#: and the TDs imputed off them), most for cheap backs and not at all for the 80+
+#: yard bell-cows -- the skew signature (NFL critique cycle 2, 2026-11-10).
+#:
+#: shift = max(0, c + b * implied median), added to the implied value before the TDs
+#: are imputed (the TD rates were fitted per MEAN yard, scripts/nfl_td_fit.py).
+#: FITTED 2026-11-10 on nflverse 2023-25 regular seasons, RB/FB player-seasons with
+#: >= 8 games: season mean - season median regressed on the median, over medians
+#: 15-120 rush yds (n 176) and 3-50 rec yds (n 177) -- `scripts/nfl_rb_lab.py skew`
+#: refits it. Nothing from 2026 went into it. Held out on the 2026 boards (437 RBs,
+#: 8 slates 9/13-11/08, DK FPTS by draft group): bias +1.22 -> +0.35, RMSE 7.231 ->
+#: 7.128, SSE -648 [90% over slates -1355, -15]; 10/18-11/08 alone 7.391 -> 7.248.
+#: Backs only: WR/TE were not tested and are deliberately not shifted.
+NFL_RB_YDS_SKEW = {"player_rush_yds": (7.38, -0.0855),
+                   "player_reception_yds": (4.79, -0.0950)}
+
+
+def _nfl_mean_shift(market: str, value: float, position: str | None = None) -> float:
+    """A back's yardage median -> mean (NFL_RB_YDS_SKEW); everything else unchanged."""
+    cb = NFL_RB_YDS_SKEW.get(market)
+    if cb is None or not (_pos_parts(position) & _BACKS):
+        return value
+    return value + max(0.0, cb[0] + cb[1] * value)
+
+
 NFL = Sport(
     key="americanfootball_nfl", dk_sport="NFL",
     roster={"QB": 1, "RB": 2, "WR": 3, "TE": 1, "FLEX": 1, "DST": 1},
@@ -325,6 +358,7 @@ NFL = Sport(
     # disjoint markets -- see dfs_project.project.
     required=("player_pass_yds", "player_rush_yds", "player_reception_yds"),
     impute=_nfl_impute,
+    mean_shift=_nfl_mean_shift,
     notes="TD rates and sigmas fitted 2026-09-06 against 11,017 nflverse "
           "player-weeks (scripts/nfl_td_fit.py, scripts/nfl_sigma_fit.py). "
           "DST is still a prior: it has no prop market at all and is projected "

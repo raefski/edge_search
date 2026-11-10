@@ -91,3 +91,94 @@ Runner-ups (critic):
    hot. Untested on lineups.
 
 Unattended gate (20261109-0817): **not shipped (log / harness only, verified)**
+
+## Cycle 2 (auto: RB DK points; scout: rush-TD imputation from the rush-attempts prop) -- 2026-11-10, unattended
+
+Scout:
+```json
+{"sport": "nfl", "target": "RB rushing-TD imputation: use the player_rush_attempts props we collect and never read",
+ "metric": "Held-out DK points error for RBs (then RB+TE) on the graded 2026 boards, matched by draft group: bias and SSE per slate vs the shipped projection, 90% bootstrap over slates; must not lower the 8-seed cash field pctile on replayed lineups. GPP $ separately.",
+ "harness": "build: rebuild each board's RB projection from the pre-lock props (OddsStore history + F: archive), TD = f(yds, att) fitted on nflverse 2023-25; lineup check via nfl_lineup_lab with the rebuilt proj",
+ "split": "fit nflverse 2023-25, test the 2026 live boards 9/13-11/08; lineup check leave-one-slate-out, 7 cash slates",
+ "why": "RBs +1.3 pts under-projected (440 player-slates); rushing TDs scaled off yards alone while attempt lines sit unread",
+ "money_at_stake": "cash +29% [-33%,+92%] 13e/8s (+$5); GPP +212% [+95%,+329%] 26e/9s (+$121, mostly 11/01)",
+ "runner_ups": ["cash ownership tie-break (least-owned near-ties 0.705 vs 0.504, not held out)",
+                "late-scratch check for cheap chalk (Hurst 10/25, Otton/Godwin 11/01)",
+                "GPP lineups in the lab, scored in $"]}
+```
+Name suspects (2): different players (Brian Robinson Jr. / Bijan Robinson, Mike Washington Jr. /
+Malik Washington); nothing to fix.
+
+**Harness built: `scripts/nfl_rb_lab.py`** (`extract`, `parity`, `fit`, `skew`, `report`,
+`gate OUT`). Per logged board: the last dfs_nfl scan >= 40 min before the board's first
+kickoff (closer in, books have pulled the starting games' props: 52 of 160 priced 1 min
+out on 9/13), DraftKings' book, each player's markets from his own game's event only.
+Cached in data/harness/nfl_rb_lab_boards.json (gitignored; ~40 min cold, mostly the F:
+archive). Parity, rebuilt vs logged proj: mean |diff| 0.03-0.21 pts per board. Truth = DK
+FPTS by draft group; 33 projected RBs with no export score dropped and counted.
+
+Baseline (model before this cycle), held out, 2026 boards 9/13-11/08:
+
+| pos | n | slates | bias | MAE | RMSE |
+|---|---|---|---|---|---|
+| RB | 437 | 8 | +1.22 | 5.243 | 7.231 |
+| TE | 355 | 8 | +1.29 | 5.103 | 6.748 |
+| WR | 727 | 8 | +0.83 | 5.416 | 7.322 |
+| QB | 235 | 8 | +0.17 | 6.293 | 7.993 |
+
+**The scout's hypothesis: noise.** Rush TDs = a*yds + b*att, fitted on nflverse 2023-25 (2,687
+RB-weeks; in-sample SSE 981.3 -> 981.0): RB RMSE 7.231 -> 7.229, SSE -16 [-72, +37] (314 of
+437 backs had an attempts line). Not shipped.
+
+**Critic's hole (dfs-model-critic, fresh): a back's yardage line is read as his mean, but it
+is his median.** `implied_mean` solves a symmetric normal, so it returns the middle
+outcome; RB yardage is right-skewed. Evidence: actual - projected is positive in every
+scoring part (rush yds, rec, rec yds, rush TD, rec TD, +0.1 to +0.25 pts each; 2026 weeks
+1-5, n 168, diagnostic only); bias by salary quintile +1.8, +1.9, +1.1, +1.6, -0.4 (none for
+bell-cows, as skew predicts). Fix fitted on nflverse 2023-25 only: per RB/FB player-season
+with >= 8 games, (mean - median) on the median: rush yds 7.38 - 0.0855m (n 176, medians
+15-120), rec yds 4.79 - 0.0950m (n 177, 3-50), floored at 0, added before TDs are imputed.
+Scale 1.0 as fitted (a scale chosen on the 9/13-10/11 slates is flat 0.75-1.0). Judgment
+call recorded: the critic picked the hole type after looking at 2026 bias; the constants
+never saw 2026.
+
+**Shipped (to the branch):** `dfs_sport.NFL_RB_YDS_SKEW` + `_nfl_mean_shift` through a new
+`Sport.mean_shift` hook applied in `dfs_project.project` after `implied_mean`. NFL backs only;
+QB/WR/TE and NCAAF unchanged (tested). The lab's refit reproduces the constants exactly
+(test).
+
+| RBs, held out | n | slates | bias | MAE | RMSE | SSE change [90% over slates] |
+|---|---|---|---|---|---|---|
+| before, 9/13-11/08 | 437 | 8 | +1.22 | 5.243 | 7.231 | |
+| after, 9/13-11/08 | 437 | 8 | +0.35 | 5.270 | 7.129 | **-641 [-1353, -3]** |
+| before, 10/18-11/08 | 268 | 4 | +1.40 | 5.349 | 7.391 | |
+| after, 10/18-11/08 | 268 | 4 | +0.53 | 5.303 | 7.250 | -553 [-1158, +72] |
+
+Per slate SSE: -179, +91, -11, +10, +31, -280, -317, +14 -- 10/25 and 11/01 carry most of
+it; 8 slates is thin. MAE rises slightly on all 8 (MAE rewards the median; the target is
+the mean).
+
+Lineups (nfl_lineup_lab, RB proj shifted by the rebuilt delta, everything else logged,
+8-seed mean; not enough data either way):
+
+| lineup | contests | slates | cashed | field pctile | ROI | pctile diff [90%] |
+|---|---|---|---|---|---|---|
+| cash before | 11 | 7 | 62% | 0.648 | +12% | |
+| cash after | 11 | 7 | 59% | 0.606 | -7% | -0.042 [-0.112, +0.012] |
+| GPP before | 22 | 8 | 63% | 0.795 | +174% | |
+| GPP after | 22 | 8 | 77% | 0.870 | +272% | +0.075 [-0.013, +0.160] |
+
+Unattended decision: NFL has no gate in harness/critique_gate yet, so this model change goes
+to Adam with these numbers. The cash lean (-0.042, interval spans 0) is the reason to look before
+merging. `nfl_rb_lab.py gate OUT` writes the rows (437, pred = production on the checkout)
+for adding it to the gate.
+
+Runner-ups (critic):
+1. Backs with a rush prop and no receiving prop get no receiving points: 90 rows, bias
+   +1.86 (+1.07 after the shift); 12 receiving-only backs +4.15. Impute rec / rec yds
+   from rush yds, fitted on nflverse.
+2. Receptions read off a normal instead of a Poisson: SSE -151 [-331, +15] on 8 slates,
+   -111 on 10/18-11/08; -677 combined with the shift.
+3. Stale pre-lock prices are not the hole: 24 late-game RBs priced early vs late, RMSE
+   6.946 vs 6.966.
+WR/TE probably carry the same skew (+0.83 / +1.29 bias). Untested; fit their own constants.

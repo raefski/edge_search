@@ -66,7 +66,9 @@ HARNESS = {
     "nhl": [("scripts/nhl_skater_lab.py", "player", "skater DK points")],
     "ncaaf": [("scripts/ncaaf_lab.py", "player", "DK points per player")],
     "nascar": [("scripts/nascar_lab.py", "player", "DK points per driver")],
-    "nfl": [], "mma": [], "mlb": [("scripts/dfs_hitter_backtest.py", "player", "hitter DK points")],
+    "nfl": [("scripts/nfl_lineup_lab.py", "entered", "cash / GPP lineup field percentile, cash line, $"),
+            ("scripts/nfl_rb_lab.py", "player", "RB DK points vs pre-lock props projection")],
+    "mma": [], "mlb": [("scripts/dfs_hitter_backtest.py", "player", "hitter DK points")],
 }
 PROFILE = {s: f"dfs_{s}" for s in SPORTS}
 DISPLAY_ONLY = {"spreads", "totals", "h2h"}       # game lines: read for implied totals, if at all
