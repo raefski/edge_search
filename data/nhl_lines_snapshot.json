@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-11-10T15:57:09+00:00",
+"generated_at": "2026-11-10T16:30:42+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
 "goalie": "Cam Talbot",
-"status": null
+"status": "Likely"
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
@@ -28,7 +28,7 @@
 },
 "MTL": {
 "goalie": "Jacob Fowler",
-"status": null
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Jake Allen",
@@ -39,8 +39,8 @@
 "status": null
 },
 "OTT": {
-"goalie": "Linus Ullmark",
-"status": null
+"goalie": "Samuel Ersson",
+"status": "Confirmed"
 },
 "STL": {
 "goalie": "Joel Hofer",
@@ -9828,6 +9828,42 @@
 "pos": "lw",
 "pp": "PP2"
 },
+"Jackson Parsons": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 1,
+"goalieGoalsAgainst": 0,
+"goalieGoalsAgainstAvg": "0.0",
+"goalieLosses": 0,
+"goalieMinutes": 13,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "1.0",
+"goalieSaves": 9,
+"goalieSeconds": 50,
+"goalieShotsAgainst": 9,
+"goalieShutouts": 0,
+"goalieWins": 0
+},
+"last5": {
+"gamesPlayed": 1,
+"goalieGoalsAgainst": 0,
+"goalieGoalsAgainstAvg": "0.0",
+"goalieLosses": 0,
+"goalieMinutes": 13,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "1.0",
+"goalieSaves": 9,
+"goalieSeconds": 50,
+"goalieShotsAgainst": 9,
+"goalieShutouts": 0,
+"goalieWins": 0
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Jake Sanderson": {
 "gtd": false,
 "injury": null,
@@ -9894,42 +9930,6 @@
 "line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": null
-},
-"Linus Ullmark": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 16,
-"goalieGoalsAgainstAvg": "1.69",
-"goalieLosses": 2,
-"goalieMinutes": 568,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.93",
-"goalieSaves": 212,
-"goalieSeconds": 43,
-"goalieShotsAgainst": 228,
-"goalieShutouts": 0,
-"goalieWins": 8
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 7,
-"goalieGoalsAgainstAvg": "1.44",
-"goalieLosses": 1,
-"goalieMinutes": 290,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.939",
-"goalieSaves": 107,
-"goalieSeconds": 4,
-"goalieShotsAgainst": 114,
-"goalieShutouts": 0,
-"goalieWins": 4
-},
-"line": "G1",
-"pk": null,
-"pos": "g",
 "pp": null
 },
 "Michael Amadio": {
@@ -10167,7 +10167,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -16209,7 +16209,7 @@
 "pp": null
 },
 "Josh Morrissey": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 5,
