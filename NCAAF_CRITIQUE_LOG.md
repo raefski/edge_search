@@ -943,3 +943,5 @@ high-FPPG unladdered players with a blank status in the app as "no ladder: check
    of why (Hunter Tipton 62%, Dominic Lee Knicely 38%).
 4. A lab lineup player nobody drafted is scored 0. That is harmless for the shipped pool
    but biases any pool expansion (6 such players in "add every").
+
+Unattended gate (20261110-0951): **not shipped (log / harness only, verified)**
