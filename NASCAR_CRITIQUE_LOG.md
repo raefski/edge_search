@@ -356,3 +356,5 @@ of the effects being judged -- the gate's sim count is a judge-file change (Adam
 inner), but every reweighting tried is null held out; (5) COND_K = 0.85 may spread the
 finishes too wide (slope of actual on simulated mean 0.85 inner / 0.92 test). The critic
 could not test it because its value lives in the lab.
+
+Unattended gate (20261110-1014): **not shipped (log / harness only, verified)**
