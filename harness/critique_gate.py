@@ -77,6 +77,13 @@ SPECS = {
             "prepare": ["scripts/nhl_skater_lab.py", "cache"],
             "judge": "scripts/nhl_skater_lab.py", "loss": "sq", "min_clusters": 5,
             "measures": ("skater", "dk points", "projection")},
+    # MMA field OWNERSHIP per fighter-contest (production's constants), every DK MMA field
+    # in contests.db, cluster = slate (draft group), state = cash / gpp (never pooled).
+    # Added by Adam's OK 2026-11-10 (MMA critique cycle 2): 248 rows / 4 slates today,
+    # so a pass needs a 5th card -- below that the verdict is "not enough data".
+    "mma": {"cmd": [["scripts/mma_own_lab.py", "gate", "{out}"]],
+            "judge": "scripts/mma_own_lab.py", "loss": "abs", "min_clusters": 5,
+            "measures": ("ownership", "field")},
 }
 COVERAGE = 0.99
 GUARD_REL = 0.01
