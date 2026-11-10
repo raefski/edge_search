@@ -84,3 +84,34 @@ ownership for non-starters. (2) buzz agrees with residuals on train (+0.35 among
 not test (−0.01): BUZZ weight unstable. Still −14 on cheap chalk (Reed 66% vs 12%, Ajay 63 vs
 8, Schroder): what the field reads that we don't — likely projected-lineup sites before
 NBA.com posts, the same gap as the minutes "backup starts" fix queued next.
+
+## Cycle 3 — props-era rerun: ownership on the props-blended projection (2026-11-09, hand-run, Adam): NOT SHIPPED (production already right)
+
+Why: SLATE_OWN / CHEAP_STARTER were fitted 10/28 on 4 slates of MODEL-ONLY projections; since
+critique cycle 27 (11/8) `build_slate` blends DK props into `proj` before `add_ownership`, so
+the constants now see inputs they were not fitted on. `scripts/nba_ownership_lab.py props`:
+every logged pre-lock board with a GPP export (23 slates / 16 dates / 33 GPPs, 10/20-11/7;
+before 11/8 the log holds the model number, so the props are replayed from the scan the board
+could see, `nba_lineup_lab.market_for_board`), blend AND ownership constants refit without
+each date; 44% of board players carry props. Player MAE vs %Drafted, paired by slate, 90% by date:
+
+| variant | split | slates / dates | MAE | diff vs A [90%] | better / worse | rank corr | chalk (>=20%) MAE |
+|---|---|---|---|---|---|---|---|
+| A blended, shipped constants (production) | all | 23 / 16 | 4.167 | -- | -- | .891 | 14.93 |
+| B model number, shipped constants | all | 23 / 16 | 4.724 | +.556 [+.257, +.797] | 3 / 20 | .881 | 17.14 |
+| C blended, constants refit | all | 23 / 16 | 4.121 | -.046 [-.181, +.067] | 13 / 10 | .885 | 14.16 |
+| D model number, refit (control) | all | 23 / 16 | 4.758 | +.591 [+.320, +.815] | 3 / 20 | .880 | 17.43 |
+| B | test >= 10/31 | 10 / 6 | 5.592 | +.902 [+.408, +1.119] | 0 / 10 | .864 | 19.26 |
+| C | test >= 10/31 | 10 / 6 | 4.611 | -.080 [-.300, +.022] | 6 / 4 | .871 | 15.60 |
+
+**Reading.** The field's ownership tracks the market-like number: feeding the props blend into
+the shipped constants cut ownership MAE by .56 (20 of 23 slates; test 10 / 10), and refitting
+on the model number (D) does not recover it -- the gain is the input, not more slates. So the
+"mismatch" is a gain; computing ownership from the model number (as cycle 29's bench rule did
+for benched players) would be wrong. Refitting on the blend moves the value weight 3.77 -> 6.46
+(folds 6.17-6.63; salary 1.42 -> 1.17, promoted .58 -> .22, cheap starter .48 -> .32) but the
+MAE gain is noise (-.046 [-.181, +.067], 13 / 10; chalk MAE 14.93 -> 14.16).
+**Decision: NOT SHIPPED** -- constants stay; production (blend -> ownership) confirmed.
+Ownership does not move default NBA lineups (own_weight 0); it drives the leverage chart,
+contest picker and the page's ownership slider. Re-run `props` weekly: the value-weight shift
+is consistent, so C is the first refit to try once ~30 slates exist.

@@ -199,8 +199,127 @@ def parity():
         print(s["date"], s["gid"], "n", len(rows), "max |replay-logged| %.2f mean %.2f" % (np.abs(d).max(), np.abs(d).mean()))
 
 
+# ---- ownership on the props-blended projection (props-era rerun #2, 2026-11-09) ----
+# SLATE_OWN / CHEAP_STARTER were fitted 10/28 on 4 slates of MODEL-ONLY projections; since
+# cycle 27 (11/8) production feeds add_ownership the props blend. Four variants, every slate
+# scored with constants (and blend) fitted WITHOUT its date:
+#   A blended proj, shipped constants (production now)   B model proj, shipped constants
+#   C blended proj, constants refit                       D model proj, constants refit (control:
+#     the gain from refitting on 4x the slates alone)
+def _own_with(pool, k):
+    a, b, c, d, e, g = k
+    old = T.CHEAP_STARTER
+    T.CHEAP_STARTER = (g, old[1])
+    try:
+        T._slate_ownership(pool, (a, b, c, d, e))
+    finally:
+        T.CHEAP_STARTER = old
+    return pool
+
+
+def _mae(pools, k):
+    err, n = 0.0, 0
+    for pool, field in pools:
+        for p in _own_with(pool, k):
+            err += abs(p["own"] - field.get(norm(p["name"]), 0.0))
+            n += 1
+    return err / max(n, 1)
+
+
+def _fit(args):
+    from scipy.optimize import minimize
+    pools, k0 = args
+    r = minimize(lambda k: _mae(pools, k), k0, method="Powell",
+                 options={"xtol": 1e-3, "ftol": 1e-5, "maxfev": 4000})
+    return tuple(float(x) for x in r.x)
+
+
+def props_report(workers: int | None = None):
+    import os
+    from concurrent.futures import ProcessPoolExecutor
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import nba_lineup_lab as L
+    from edge import dfs_run_nba as R
+    conn = sqlite3.connect(DB)
+    sl = slates(conn)
+    B = L.boards()
+    LB = {g: ps for g, ps in B.items() if g in L.fields()}
+    rows = L.register_props(LB)["rows"]                   # blend-fitting rows (16 dates)
+    M = L.market_all({s["gid"]: B[s["gid"]] for s in sl})
+    for s in sl:
+        attach_buzz(s["pool"], s["date"])
+    dates = sorted({s["date"] for s in sl})
+    k_ship = (*T.SLATE_OWN, T.CHEAP_STARTER[0])
+
+    def pools_for(d, blended):
+        out = {}
+        bl = L.props_fit([r for r in rows if r["date"] != d])
+        for s in sl:
+            pool = [dict(p) for p in s["pool"]]
+            if blended:
+                R.blend_props(pool, M.get(s["gid"]) or {}, bl)
+            out[s["date"], s["gid"]] = (pool, s["field"])
+        return out
+
+    P = {(d, bl): pools_for(d, bl) for d in dates for bl in (False, True)}
+    cov = np.mean([p.get("proj_source") == "props" for (_, bl), ps in P.items() if bl
+                   for pool, _ in ps.values() for p in pool])
+    jobs = [([v for (dd, _), v in P[(d, bl)].items() if dd != d], k_ship) for d in dates for bl in (False, True)]
+    print(f"{len(sl)} GPP slates / {len(dates)} dates / {sum(s['contests'] for s in sl)} GPPs; "
+          f"{cov:.0%} of board players carry props; {len(jobs)} leave-one-date-out refits on "
+          f"{workers or os.cpu_count()} processes", flush=True)
+    with ProcessPoolExecutor(max_workers=workers or os.cpu_count()) as ex:
+        fits = dict(zip([(d, bl) for d in dates for bl in (False, True)], ex.map(_fit, jobs)))
+    res = defaultdict(dict)            # variant -> (date, gid) -> {mae, rank, n}
+    from scipy.stats import spearmanr
+    for d in dates:
+        for lab, bl, k in (("A blended, shipped", True, k_ship), ("B model, shipped", False, k_ship),
+                           ("C blended, refit", True, fits[(d, True)]), ("D model, refit", False, fits[(d, False)])):
+            for key, (pool, field) in P[(d, bl)].items():
+                if key[0] != d:
+                    continue
+                pool = _own_with([dict(p) for p in pool], k)
+                o = np.array([p["own"] for p in pool]); f = np.array([field.get(norm(p["name"]), 0.0) for p in pool])
+                chalk = f >= CHALK
+                res[lab][key] = {"date": d, "mae": float(np.abs(o - f).mean()), "n": len(pool),
+                                 "rank": float(spearmanr(o, f)[0]),
+                                 "chalk": float(np.abs(o - f)[chalk].mean()) if chalk.any() else np.nan}
+
+    def boot(cl, x, n=2000):
+        ids, inv = np.unique(cl, return_inverse=True)
+        s_, c_ = np.bincount(inv, weights=x), np.bincount(inv).astype(float)
+        k_ = np.random.default_rng(0).integers(0, len(ids), (n, len(ids)))
+        b_ = s_[k_].sum(1) / c_[k_].sum(1)
+        return float(x.mean()), float(np.percentile(b_, 5)), float(np.percentile(b_, 95))
+
+    base = res["A blended, shipped"]
+    print("\n| variant | split | slates / dates | player MAE (pts of %Drafted) | diff vs A [90%, by date] | "
+          "slates better / worse | rank corr | MAE on field chalk >=20% |")
+    print("|---|---|---|---|---|---|---|---|")
+    for lab, r in res.items():
+        for split, keep in (("all", lambda d: True), ("test >= 10/31", lambda d: d >= "2026-10-31")):
+            ks = [k for k in r if keep(k[0])]
+            cl = np.array([k[0] for k in ks]); x = np.array([r[k]["mae"] - base[k]["mae"] for k in ks])
+            m, lo, hi = boot(cl, x)
+            print(f"| {lab} | {split} | {len(ks)} / {len(set(cl))} | {np.mean([r[k]['mae'] for k in ks]):.3f} | "
+                  f"{m:+.3f} [{lo:+.3f}, {hi:+.3f}] | {int((x < -1e-9).sum())} / {int((x > 1e-9).sum())} | "
+                  f"{np.mean([r[k]['rank'] for k in ks]):.3f} | {np.nanmean([r[k]['chalk'] for k in ks]):.2f} |")
+    allk = {bl: _fit(([v for v in P[(dates[-1], bl)].values()], k_ship)) for bl in (False, True)}
+    print("\nall-slate refits (a value, b salary, c promoted, d buzz, e recent, g cheap starter):")
+    print("  shipped        ", tuple(round(x, 3) for x in k_ship))
+    print("  blended refit  ", tuple(round(x, 3) for x in allk[True]))
+    print("  model refit    ", tuple(round(x, 3) for x in allk[False]))
+    for bl in (True, False):
+        v = [fits[(d, bl)] for d in dates]
+        print(f"  fold range ({'blended' if bl else 'model'}): " +
+              ", ".join(f"{min(x[i] for x in v):.2f}..{max(x[i] for x in v):.2f}" for i in range(6)))
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=("report", "parity"))
+    ap.add_argument("cmd", choices=("report", "parity", "props"))
     a = ap.parse_args()
-    report() if a.cmd == "report" else parity()
+    if a.cmd == "props":
+        props_report()
+    else:
+        report() if a.cmd == "report" else parity()
