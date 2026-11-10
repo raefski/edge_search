@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-10T18:59:37+00:00",
+"generated_at": "2026-11-10T19:29:19+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
@@ -246,40 +246,6 @@
 "line": "D1",
 "pk": null,
 "pos": "rd",
-"pp": null
-},
-"Frank Vatrano": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 116,
-"toiSeconds": 6
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 57,
-"toiSeconds": 40
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
 "pp": null
 },
 "Jackson Lacombe": {
@@ -656,7 +622,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Tim Washe": {
 "gtd": false,
@@ -758,6 +724,40 @@
 "line": "D3",
 "pk": "PK1",
 "pos": "rd",
+"pp": "PP2"
+},
+"Troy Terry": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 6,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 7,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 20,
+"toiMinutes": 180,
+"toiSeconds": 10
+},
+"last5": {
+"assists": 3,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 8,
+"toiMinutes": 89,
+"toiSeconds": 53
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
 "pp": "PP2"
 },
 "Ville Husso": {
@@ -5644,39 +5644,39 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Andre Lee": {
+"Alex Turcotte": {
 "gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
-"blocks": 6,
+"blocks": 9,
 "gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
+"goals": 2,
+"points": 4,
+"powerplayAssists": 1,
 "powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 112,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 50,
+"powerplayPoints": 1,
+"shots": 10,
+"toiMinutes": 121,
 "toiSeconds": 34
 },
+"last5": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 5,
+"toiMinutes": 66,
+"toiSeconds": 32
+},
 "line": "F4",
-"pk": "PK1",
+"pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Anton Forsberg": {
 "gtd": false,
@@ -5777,10 +5777,10 @@
 "toiMinutes": 90,
 "toiSeconds": 42
 },
-"line": "D1",
+"line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Brian Dumoulin": {
 "gtd": false,
@@ -5813,6 +5813,40 @@
 },
 "line": "D3",
 "pk": "PK2",
+"pos": "ld",
+"pp": null
+},
+"Cody Ceci": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 11,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 170,
+"toiSeconds": 22
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 79,
+"toiSeconds": 37
+},
+"line": "D3",
+"pk": null,
 "pos": "rd",
 "pp": null
 },
@@ -5915,44 +5949,10 @@
 "toiMinutes": 111,
 "toiSeconds": 10
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP2"
-},
-"Erik Gustafsson": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 5,
-"powerplayAssists": 3,
-"powerplayGoals": 1,
-"powerplayPoints": 4,
-"shots": 7,
-"toiMinutes": 206,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 3,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 2,
-"powerplayGoals": 0,
-"powerplayPoints": 2,
-"shots": 4,
-"toiMinutes": 109,
-"toiSeconds": 32
-},
-"line": "D1",
-"pk": null,
-"pos": "ld",
-"pp": "PP1"
 },
 "Erik Haula": {
 "gtd": false,
@@ -6018,7 +6018,7 @@
 "toiSeconds": 3
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": null
 },
@@ -6051,7 +6051,7 @@
 "toiMinutes": 88,
 "toiSeconds": 5
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -6153,7 +6153,7 @@
 "toiMinutes": 92,
 "toiSeconds": 55
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -6256,7 +6256,7 @@
 "toiSeconds": 59
 },
 "line": "F3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 }
