@@ -746,3 +746,5 @@ the NHL lists him "Anthony-John (AJ) Greer" and both the exact and the initial +
 Unattended gate (20261108-0638): **not shipped (log / harness only, verified)** -- the night's
 "fail / does not compile" was the loop compiling this .md (fixed 11/8); the lab variant + tests
 landed by hand after harness verify + the NHL suite passed.
+
+Unattended gate (20261110-0714): **not shipped (log / harness only, verified)**
