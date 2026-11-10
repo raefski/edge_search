@@ -1554,3 +1554,106 @@ board per mode, every date held out, paired by contest):
   lineup ~+-.13): the harness can now see GPP changes of a few percentile points.
 Note for NHL / NCAAB / MMA (their pages build GPP portfolios with the same cumulative ban):
 measure the per-lineup decay before multi-entering there.
+
+
+## Cycle 29 (auto: GPP lineups -- props-free bench players) -- 2026-11-09, unattended (`/dfs-critique nba auto unattended`)
+
+Scout (dfs-target-scout):
+```json
+{"sport": "nba", "target": "GPP lineups: make the GPP objective differ from cash (sim spread / ceiling refit to the props-blended projection)",
+ "metric": "paired change in mean real-field percentile of 20 independent seed lineups per board, every exported NBA GPP contest (33 / 16 dates), clustered by date; + GPP cashed rate and $ per $1 from contests.db payouts; guard: cash seeds (.540, 17 / 12)",
+ "harness": "scripts/nba_lineup_lab.py sets --kind seeds; gate OUT for the unattended gate",
+ "split": "leave-one-date-out over 16 GPP dates (constants refit without the held-out date); fixed train < 10/31 <= test (12 / 6) alongside",
+ "why": "cycle 28: the GPP objective adds nothing over cash (+.017 [-.061, +.100]); sim sd too wide for the blended projection (45+: 10.7 realised vs 16.2 assumed); seeds harness now resolves ~+-.04",
+ "money_at_stake": "NBA GPP -55% [-80%, -30%], 41 entries / 16 slates, net -$52.5",
+ "runner_ups": ["combo props unread (PRA, P+R, P+A, R+A, blk+stl, turnovers)", "the unattended gate scores ONE lineup per contest (date SE ~.08-.15)", "first live check of the cycle-27 blend"]}
+```
+Baseline (`sets --kind seeds --base-only`, production): GPP .648, cashed 47% (33 / 16); cash .540,
+55% (17 / 12). The critic's scratch replay (market replayed fresh) read .627 / .526; every
+comparison below is paired against that replay.
+
+**Critic (dfs-model-critic, ~66 min).** The scout's lever is flat: GPP objective at the 70th / 50th
+percentile +.000 [-.020, +.019] / +.000 [-.024, +.025]; sim sd x0.8 +.000 [-.012, +.015] (cash
++.020 [+.008, +.033], 9 / 3 -- a cash-side lead). After the props blend the GPP lineup is decided
+by the mean. The hole: props-free BENCH players keep the model's raw number and the optimizer
+takes them in nearly every seed. Of 3,680 GPP picks (20 seeds x 26 boards): prop-covered +0.08 a
+pick (3,120), props-free -4.62 (560), props-free not starter / not promoted **-8.75** (223) --
+the whole ~5-pt lineup shortfall. Jaylin Williams 36.1 -> 0, Keldon Johnson 28.5 -> 19, Kenrich
+Williams 26.4 -> 15.8, each in 20 of 20 seeds. Recalibrating those rows (cycle 28) barely moves
+picks because 1,100 low bench projections (+0.23) dominate the fit (+.015 / +.009, noise).
+Fix: project 0.1 for a props-free non-starter projected >= T, for the optimizer only.
+
+**Threshold, nested held out (mine; the critic picked 15 looking at all dates).** Sweep T in
+{10, 15, 20, 25} on the seeds harness, then for each date choose T from {off, 10, 15, 20, 25} by
+GPP percentile on the other 15 dates: picks 15 x9, 10 x7, never off.
+
+| variant (seeds, paired) | mode | split | contests / dates | pctile | diff [90%, by date] | better / worse | cashed | $ per $1 (diff) |
+|---|---|---|---|---|---|---|---|---|
+| **nested T** | gpp | all held out | 33 / 16 | .627 -> .653 | **+.026 [-.008, +.065]** | 10 / 6 | 44 -> 46% | 1.107 -> 1.622 (+.52 [+.01, +.95]) |
+| nested T | gpp | test >= 10/31 | 12 / 6 | .610 -> .618 | +.008 [-.016, +.023] | 3 / 3 | 36 -> 41% | 0.641 -> 1.767 |
+| nested T | cash | all held out | 17 / 12 | .526 -> .561 | +.035 [-.031, +.115] | 8 / 4 | 52 -> 53% | 0.975 -> 1.010 |
+| T=15 | gpp | all held out | 33 / 16 | .627 -> .666 | +.039 [+.003, +.083] | 11 / 5 | 44 -> 46% | 1.107 -> 1.606 |
+| T=15 | gpp | train / test | 21/10, 12/6 | | +.054 / +.012 [-.007, +.029] | 7/3, 4/2 | | |
+| T=10 | gpp | all held out | 33 / 16 | .627 -> .666 | +.039 [+.005, +.075] | 11 / 5 | 44 -> 48% | 1.107 -> 1.779 |
+| T=20 | gpp | all held out | 33 / 16 | .627 -> .640 | +.012 [-.011, +.044] | 8 / 5 | | |
+| T=25 | gpp | all held out | 33 / 16 | .627 -> .653 | +.026 [-.001, +.063] | 5 / 3 | | |
+
+Single-lineup gate rows (`gate`, what harness/critique_gate measures), rule off -> on:
+primary (test dates) GPP .699 -> .656 (12 contests), cash .385 -> .441 (4); guard (train) GPP
+.580 -> .731 (21), cash .609 -> .555 (13). One lineup a contest, date SE ~.08-.15: the gate may
+read this either way.
+
+**Decision: SHIPPED TO THE GATE (judgment call, unattended).** PROPS_FREE_BENCH_MIN = 15 (the
+fold favourite; 10 and 15 tie on all dates, 15 benches fewer), PROPS_FREE_GAME_MIN = 5 (applies
+only where DK has props up for the game -- every lab game had >= 5; before props post nothing
+changes, checked live 11/9 05:28: no props yet, nothing benched). The percentile gain is NOT
+beyond noise (+.026 [-.008, +.065]); the dollar gain is (+.52 [+.01, +.95]) but rides a few big
+finishes. Why ship anyway: every fold chose the rule, every threshold is positive on GPP, the
+cash guard rises, and the mechanism is direct (-8.75 a pick). The gate decides; if it fails,
+nothing merges. Production: `edge/dfs_run_nba.bench_props_free` after the pool sort in
+`build_slate`; ownership from the model's number (the field still plays them); log keeps
+`model_proj`, `proj_source` = "no props: benched"; the page names them. Parity: production's
+function vs the lab transform on 26 boards: 303 benched rows, 0 mismatches. The lab's
+production replay and LODO variants now include the rule (its cache key carries the threshold).
+Tests: DFS suite 514 passed (before the lab cache-key tweak), verify clean after, page AppTest clean.
+
+Runner-ups: (1) the unattended gate scores one lineup a contest -- moving `gate` to seeds sets
+needs Adam (protected); (2) sim sd x0.8 helps CASH +.020 [+.008, +.033], 9 / 3 -- test as a
+cash-only cycle; (3) 35 of 3,680 GPP picks scored 0 (~-2.3 pts a lineup), mostly props-free
+bench -- partly addressed here; (4) where the blend sits > 3 pts below the model, picks still
+run -1.98 (the model's 0.139 weight too high when they disagree); (5) combo props unread.
+
+Unattended gate (20261109-0855): **review** -- waiting for Adam: harness critique-loop --merge / --drop
+
+| split | state | n | clusters | main RMSE | candidate RMSE | loss diff [90%] | verdict |
+|---|---|---|---|---|---|---|---|
+| guard | confirmed | 3,314 | 17 | 6.0475 | 6.0475 | +0.0000 [+0.0000, +0.0000] | holds |
+| guard | inactives | 3,314 | 17 | 6.3435 | 6.3435 | +0.0000 [+0.0000, +0.0000] | holds |
+| primary | confirmed | 31,183 | 164 | 6.0960 | 6.0960 | +0.0000 [+0.0000, +0.0000] | unchanged |
+| primary | inactives | 31,183 | 164 | 6.4941 | 6.4941 | +0.0000 [+0.0000, +0.0000] | unchanged |
+| primary | tip-45 confirmed | 71 | 4 | 5.3272 | 5.3272 | +0.0000 [+0.0000, +0.0000] | unchanged |
+| primary | tip-45 expected | 3,729 | 15 | 5.5018 | 5.5018 | +0.0000 [+0.0000, +0.0000] | unchanged |
+| primary | tip-90 confirmed | 35 | 2 | 5.8327 | 5.8327 | +0.0000 [+0.0000, +0.0000] | unchanged |
+| primary | tip-90 expected | 3,765 | 15 | 5.7099 | 5.7099 | +0.0000 [+0.0000, +0.0000] | unchanged |
+- no primary state better beyond noise
+- the cycle aimed at 'GPP lineups: make the GPP objective differ from cash (sim spread / ceiling refit to the props-blended projection)', which this gate does not measure (minutes); gate said fail: Adam decides on the cycle's held-out numbers
+
+**Judged by Claude on Adam's request (2026-11-09), 20-lineup seed sets, rule off vs T=15**, main's
+props blend refit without each date, paired by contest, 90% by date (33 GPP contests / 16 dates,
+17 cash / 12). Built as one 4,160-lineup process pool over 20 cores (~20 min; the lab's `sets`
+builds one date per pool and used ~5 cores):
+
+| seeds | GPP pctile off -> on | diff [90%] | dates +/- | $ per $1 | cash pctile diff |
+|---|---|---|---|---|---|
+| 0-19 (the lab's seeds; main = .648 as in cycle 28) | .648 -> .639 | -.009 [-.040, +.023] | 10 / 6 | 1.36 -> 1.64 | -.008 |
+| 1000-1019 (fresh) | .618 -> .642 | +.024 [-.002, +.046] | 11 / 5 | 1.42 -> 1.64 | +.005 |
+| pooled, 40 a board | .633 -> .640 | **+.008 [-.016, +.031]** | 7 / 9 | 1.39 -> 1.64 (+.25 [-.49, +.83]) | -.001 [-.070, +.072] |
+| pooled, test >= 10/31 | .609 -> .629 | +.019 [-.011, +.029] | 3 / 3 | 0.74 -> 1.70 | +.012 |
+
+The cycle's +.026 was paired against a scratch replay of main (.627), not main's own seeds
+(.648); on those the rule is -.009. Pooled it is noise, cash cashed rate 54% -> 50%, the dollar
+gain is 10/21 + 11/4 against 10/24 (-$4.13 per $1). **Dropped by Adam.** Revisit with >= 10 test
+dates (>= 10/31) on 40 seeds a board; the mechanism (-8.75 pts a props-free bench pick) is real
+but the lineups barely change.
+
+Vetoed by Adam (2026-11-10): not merged.
