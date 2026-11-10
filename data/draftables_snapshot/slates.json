@@ -505,7 +505,7 @@
 "156286": {
 "ContestStartTimeSuffix": " (COL @ TOR)",
 "DraftGroupId": 156286,
-"DraftGroupTag": "Featured",
+"DraftGroupTag": "",
 "GameCount": 1,
 "GameTypeId": 127,
 "StartDate": "2026-11-11T00:00:00.0000000Z",
@@ -540,6 +540,36 @@
 "GameTypeId": 125,
 "StartDate": "2026-11-12T00:00:00.0000000Z",
 "StartDateEst": "2026-11-11T19:00:00.0000000",
+"last_start": "2026-11-12T03:00:00.0000000Z"
+},
+"156294": {
+"ContestStartTimeSuffix": " (NYR @ CGY)",
+"DraftGroupId": 156294,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-12T00:30:00.0000000Z",
+"StartDateEst": "2026-11-11T19:30:00.0000000",
+"last_start": "2026-11-12T00:30:00.0000000Z"
+},
+"156295": {
+"ContestStartTimeSuffix": " (Late)",
+"DraftGroupId": 156295,
+"DraftGroupTag": "",
+"GameCount": 3,
+"GameTypeId": 125,
+"StartDate": "2026-11-12T02:30:00.0000000Z",
+"StartDateEst": "2026-11-11T21:30:00.0000000",
+"last_start": "2026-11-12T03:00:00.0000000Z"
+},
+"156296": {
+"ContestStartTimeSuffix": " (NSH @ ANA)",
+"DraftGroupId": 156296,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-12T03:00:00.0000000Z",
+"StartDateEst": "2026-11-11T22:00:00.0000000",
 "last_start": "2026-11-12T03:00:00.0000000Z"
 }
 }
