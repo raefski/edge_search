@@ -36,12 +36,18 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import sqlite3
 import sys
 from collections import defaultdict
 from pathlib import Path
 
-import numpy as np
+# one BLAS thread per process: the lab parallelises across processes (all cores), and
+# numpy's own threads on top of 20 workers only oversubscribe
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")
+
+import numpy as np  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT), str(ROOT / "scripts")]
@@ -141,7 +147,19 @@ def build(ps: list[dict], variant: str = "shipped", gid: int | None = None) -> d
 CACHE = ROOT / "data" / "nba_lineup_lab_cache"
 SOURCES = ("edge/dfs_nba_theory.py", "edge/dfs_opt_nba.py", "edge/dfs_opt_climb.py",
            "edge/nba_ceiling_quantiles.py", "edge/dfs_run_nba.py", "scripts/nba_lineup_lab.py")
-WORKERS = 16
+# every core (Adam 11/9: "maximize my computer's hardware"; the desktop has 20). Work goes to
+# ONE pool as small jobs -- a board for single builds, a single lineup for sets -- across every
+# date and variant at once: pooling one date at a time (2-6 jobs a date) kept ~5 of 20 cores
+# busy; flattened, the cycle-29 judge (4,160 seed lineups) ran in ~20 min at load ~20.
+WORKERS = os.cpu_count() or 16
+
+
+def _pool(fn, todo: list, workers: int = WORKERS):
+    """Run fn over todo in one process pool (fork: the parent's registered VARIANTS and
+    market caches are inherited), yielding results as they finish in order."""
+    from concurrent.futures import ProcessPoolExecutor
+    with ProcessPoolExecutor(max_workers=max(1, min(workers, len(todo)))) as ex:
+        yield from ex.map(fn, todo, chunksize=1)
 
 
 def _key(ps: list[dict], variant: str) -> str:
@@ -160,22 +178,26 @@ def _build_one(args):
 
 def build_all(B: dict, variant: str = "shipped", workers: int = WORKERS) -> dict:
     """{gid: {mode: [names]}} for every board, cached and in parallel."""
-    from concurrent.futures import ProcessPoolExecutor
+    return build_all_many([(B, variant)], workers)[variant]
+
+
+def build_all_many(jobs: list[tuple[dict, str]], workers: int = WORKERS) -> dict:
+    """{variant: {gid: {mode: [names]}}} for every (boards, variant) job in ONE pool -- a
+    leave-one-date-out run passes each date's boards with that date's variant."""
     CACHE.mkdir(parents=True, exist_ok=True)
-    out, todo = {}, []
-    for gid, ps in B.items():
-        f = CACHE / f"{gid}-{_key(ps, variant)}.json"
-        if f.exists():
-            out[gid] = json.loads(f.read_text())
-        else:
-            todo.append((gid, ps, variant))
-    if todo:
-        # biggest boards first so one 2-minute board does not start last
-        todo.sort(key=lambda t: -len(t[1]))
-        with ProcessPoolExecutor(max_workers=min(workers, len(todo))) as ex:
-            for gid, lu in ex.map(_build_one, todo):
-                out[gid] = lu
-                (CACHE / f"{gid}-{_key(B[gid], variant)}.json").write_text(json.dumps(lu))
+    out, todo = defaultdict(dict), []
+    for B, variant in jobs:
+        for gid, ps in B.items():
+            f = CACHE / f"{gid}-{_key(ps, variant)}.json"
+            if f.exists():
+                out[variant][gid] = json.loads(f.read_text())
+            else:
+                todo.append((gid, ps, variant))
+    # biggest boards first so one 2-minute board does not start last
+    todo.sort(key=lambda t: -len(t[1]))
+    for (gid, ps, variant), (_, lu) in zip(todo, _pool(_build_one, todo, workers)):
+        out[variant][gid] = lu
+        (CACHE / f"{gid}-{_key(ps, variant)}.json").write_text(json.dumps(lu))
     return out
 
 
@@ -258,8 +280,9 @@ def parity() -> int:
     B = {g: ps for g, ps in B.items() if (g, "cash") in L}
     # a board logged before the props blend (no mkt column) was built by the model alone
     with_mkt = {g: ps for g, ps in B.items() if any(p.get("mkt") is not None for p in ps)}
-    built = {**build_all({g: ps for g, ps in B.items() if g not in with_mkt}, "model_only"),
-             **build_all(with_mkt, "shipped")}
+    many = build_all_many([({g: ps for g, ps in B.items() if g not in with_mkt}, "model_only"),
+                           (with_mkt, "shipped")])
+    built = {**many.get("model_only", {}), **many.get("shipped", {})}
     same = {"cash": [0, 0], "gpp": [0, 0]}
     for gid, ps in B.items():
         lu = built[gid]
@@ -451,13 +474,15 @@ def props_lodo_lineups() -> int:
     B = {g: ps for g, ps in boards().items() if g in fields()}
     reg = register_props(B)
     rows, F = reg["rows"], fields()
-    base_lu = build_all(B, "model_only")
-    lodo_lu = {}
+    jobs = [(B, "model_only")]
     for d in sorted({ps[0]["date"] for ps in B.values()}):
         bl = props_fit([r for r in rows if r["date"] != d])
         name = "props[" + ",".join(f"{x:.4f}" for x in bl) + "]"
         VARIANTS[name] = _props_variant(bl)
-        lodo_lu.update(build_all({g: ps for g, ps in B.items() if ps[0]["date"] == d}, name))
+        jobs.append(({g: ps for g, ps in B.items() if ps[0]["date"] == d}, name))
+    built = build_all_many(jobs)
+    base_lu = built["model_only"]
+    lodo_lu = {g: lu for _, name in jobs[1:] for g, lu in built[name].items()}
     out = defaultdict(list)
     for gid, ps in B.items():
         for mode in ("cash", "gpp"):
@@ -487,12 +512,16 @@ def props_lodo_lineups() -> int:
 # change. Each board now gets SET_N lineups per mode through production's multi-entry builder
 # (edge/dfs_opt_climb.portfolio: each new lineup bans the last one's top projection, at most
 # 5 players shared): the mean over the set averages away which players happened to boom, and
-# variants are compared on the same boards (paired). One (board, mode) per process.
+# variants are compared on the same boards (paired). One lineup per pool job, every date and variant in one pool (build_sets_many).
 SET_N = 20
 SET_ITERS = 60                     # edge/dfs_opt_nba.portfolio's production default
 
 
 SET_KIND = "seeds"
+# Seed sets judged together (cycle 29 judge, 11/9): ONE 20-seed set read the same rule -.009 on
+# seeds 0-19 and +.024 on seeds 1000-1019 (33 GPP contests / 16 dates); pooled 40 a board it was
+# +.008 [-.016, +.031]. A lineup cycle is judged on both, pooled per contest.
+SET_SEEDS = (0, 1000)
 
 
 def build_set(ps: list[dict], variant: str, gid: int, mode: str, n: int = SET_N,
@@ -506,49 +535,85 @@ def build_set(ps: list[dict], variant: str, gid: int, mode: str, n: int = SET_N,
     percentile and 200 pts vs the 60th and ~260 for the single best lineup."""
     from functools import partial
     from edge import dfs_opt_climb as climb
-    pool = [dict(p, _gid=gid) for p in ps]
-    if VARIANTS.get(variant):
-        VARIANTS[variant](pool)
-    pool.sort(key=lambda p: (str(p.get("game") or ""), str(p.get("team") or ""), p["name"]))
+    pool = _set_pool(ps, variant, gid)
     if kind == "portfolio":
         sim = theory.simulate(pool, n_sims=N_SIMS, seed=0)
         theory.summarise(sim, pool)
         res = climb.portfolio(partial(dfs_opt_nba.optimize, pool, sim, mode, SET_ITERS), n, max_overlap=5, seed=0)
         return [[p["name"] for p in r["lineup"]] for r in res]
-    out = []
-    for k in range(n):
-        sim = theory.simulate(pool, n_sims=N_SIMS, seed=k)
-        theory.summarise(sim, pool)
-        r = dfs_opt_nba.optimize(pool, sim, mode=mode, iters=SET_ITERS, seed=k)
-        if r:
-            out.append([p["name"] for _, p in r["slots"]])
-    return out
+    return [lu for lu in (seed_lineup(pool, mode, k) for k in range(n)) if lu]
 
 
-def _set_one(args):
-    gid, ps, variant, mode, n = args
-    return gid, mode, build_set(ps, variant, gid, mode, n)
+def _set_pool(ps: list[dict], variant: str, gid: int) -> list[dict]:
+    pool = [dict(p, _gid=gid) for p in ps]
+    if VARIANTS.get(variant):
+        VARIANTS[variant](pool)
+    pool.sort(key=lambda p: (str(p.get("game") or ""), str(p.get("team") or ""), p["name"]))
+    return pool
+
+
+def seed_lineup(pool: list[dict], mode: str, seed: int) -> list[str] | None:
+    """One seeded best lineup: sim seed k, climb seed k (a set's k-th lineup)."""
+    sim = theory.simulate(pool, n_sims=N_SIMS, seed=seed)
+    theory.summarise(sim, pool)
+    r = dfs_opt_nba.optimize(pool, sim, mode=mode, iters=SET_ITERS, seed=seed)
+    return [p["name"] for _, p in r["slots"]] if r else None
+
+
+def _set_job(args):
+    """One pool job: a single seed lineup (kind seeds) or a whole portfolio set."""
+    gid, ps, variant, mode, n, seed, kind = args
+    if kind == "portfolio":
+        return build_set(ps, variant, gid, mode, n, kind)
+    return seed_lineup(_set_pool(ps, variant, gid), mode, seed)
+
+
+def _set_file(gid: int, ps: list[dict], variant: str, mode: str, n: int, seed0: int, kind: str) -> Path:
+    # seed set 0 keeps its pre-11/9 name, so existing caches stay warm
+    return CACHE / (f"set{kind}{n}-{mode}-{gid}-{_key(ps, variant)}"
+                    + (f"-s{seed0}" if seed0 else "") + ".json")
 
 
 def build_sets(B: dict, variant: str, n: int = SET_N, workers: int = WORKERS) -> dict:
     """{gid: {mode: [lineups]}}, cached per (board, variant, mode, n) like build_all."""
-    from concurrent.futures import ProcessPoolExecutor
+    return build_sets_many([(B, variant)], n, (0,), workers)[(variant, 0)]
+
+
+def build_sets_many(jobs: list[tuple[dict, str]], n: int = SET_N, seeds: tuple = (0,),
+                    workers: int = WORKERS, kind: str | None = None) -> dict:
+    """{(variant, seed0): {gid: {mode: [lineups]}}} for every (boards, variant) job and seed
+    set (seeds seed0 .. seed0+n-1), all in ONE pool of single-lineup jobs (kind seeds; a
+    portfolio is sequential, so it stays one job per set and seed set 0 only)."""
+    kind = kind or SET_KIND
+    seeds = (0,) if kind == "portfolio" else tuple(seeds)
     CACHE.mkdir(parents=True, exist_ok=True)
-    out, todo = defaultdict(dict), []
-    for gid, ps in B.items():
-        for mode in ("cash", "gpp"):
-            f = CACHE / f"set{SET_KIND}{n}-{mode}-{gid}-{_key(ps, variant)}.json"
-            if f.exists():
-                out[gid][mode] = json.loads(f.read_text())
-            else:
-                todo.append((gid, ps, variant, mode, n))
+    out, todo, sets_todo = defaultdict(lambda: defaultdict(dict)), [], []
+    for B, variant in jobs:
+        for s0 in seeds:
+            for gid, ps in B.items():
+                for mode in ("cash", "gpp"):
+                    f = _set_file(gid, ps, variant, mode, n, s0, kind)
+                    if f.exists():
+                        out[(variant, s0)][gid][mode] = json.loads(f.read_text())
+                        continue
+                    sets_todo.append((variant, s0, gid, ps, mode, f))
+                    if kind == "portfolio":
+                        todo.append((gid, ps, variant, mode, n, 0, kind))
+                    else:
+                        todo += [(gid, ps, variant, mode, n, s0 + k, kind) for k in range(n)]
     if todo:
-        todo.sort(key=lambda t: -len(t[1]))
-        with ProcessPoolExecutor(max_workers=min(workers, len(todo))) as ex:
-            for gid, mode, lus in ex.map(_set_one, todo):
-                out[gid][mode] = lus
-                (CACHE / f"set{SET_KIND}{n}-{mode}-{gid}-{_key(B[gid], variant)}.json").write_text(json.dumps(lus))
-    return out
+        print(f"lineup lab: {len(todo):,} {'lineups' if kind == 'seeds' else 'sets'} to build on "
+              f"{min(workers, len(todo))} processes", file=sys.stderr, flush=True)
+    todo.sort(key=lambda t: -len(t[1]))           # biggest boards first
+    got = {(t[0], t[2], t[3], t[5]): r for t, r in zip(todo, _pool(_set_job, todo, workers))}
+    for variant, s0, gid, ps, mode, f in sets_todo:
+        if kind == "portfolio":
+            lus = got[(gid, variant, mode, 0)]
+        else:
+            lus = [lu for lu in (got[(gid, variant, mode, s0 + k)] for k in range(n)) if lu]
+        out[(variant, s0)][gid][mode] = lus
+        f.write_text(json.dumps(lus))
+    return {k: dict(v) for k, v in out.items()}
 
 
 def set_rows(built: dict, B: dict) -> dict:
@@ -616,7 +681,18 @@ def _props_free_variant(blend, free):
     return f
 
 
-def sets_lodo(with_free: bool = True, n: int = SET_N) -> int:
+def pool_rows(per_seed: list[dict]) -> dict:
+    """Per-contest set rows from several seed sets pooled: the mean over every lineup."""
+    out = {}
+    for k in per_seed[0]:
+        rs = [r[k] for r in per_seed if k in r]
+        n = sum(r["n"] for r in rs)
+        out[k] = {"date": rs[0]["date"], "n": n,
+                  **{f: sum(r[f] * r["n"] for r in rs) / n for f in ("pctile", "cashed", "points")}}
+    return out
+
+
+def sets_lodo(with_free: bool = True, n: int = SET_N, seeds: tuple = SET_SEEDS) -> int:
     """Lineup SETS, every date held out: the props blend alone (= production, refit without
     the date) vs + the props-free calibration (cycle 28). Paired by contest, bootstrap by date."""
     B = {g: ps for g, ps in boards().items() if g in fields()}
@@ -624,17 +700,19 @@ def sets_lodo(with_free: bool = True, n: int = SET_N) -> int:
     rows = reg["rows"]
     base_names = _lodo_names(B, rows, None)
     cand_names = _lodo_names(B, rows, free_rows(B)) if with_free else {}
+    labelled = [(lab, nm) for lab, nm in (("props blend (production)", base_names),
+                                          ("+ props-free calibration", cand_names)) if nm]
+    by_date = lambda d: {g: ps for g, ps in B.items() if ps[0]["date"] == d}    # noqa: E731
+    built = build_sets_many([(by_date(d), name) for _, nm in labelled for d, name in nm.items()], n, seeds)
+    seeds = sorted({s for _, s in built})
     res = {}
-    for label, names in (("props blend (production)", base_names), ("+ props-free calibration", cand_names)):
-        if not names:
-            continue
-        built = {}
-        for d, name in names.items():
-            built.update(build_sets({g: ps for g, ps in B.items() if ps[0]["date"] == d}, name, n))
-        res[label] = set_rows(built, B)
+    for label, nm in labelled:
+        res[label] = pool_rows([set_rows({g: lu for name in nm.values() for g, lu in built[(name, s)].items()}, B)
+                                for s in seeds])
     labels = list(res)
     base = res[labels[0]]
-    print(f"# Lineup sets ({n} per board per mode, kind={SET_KIND}), every date held out\n")
+    print(f"# Lineup sets ({n} per board per mode x seed sets {', '.join(map(str, seeds))}, "
+          f"kind={SET_KIND}), every date held out\n")
     print("| variant | mode | contests | dates | lineups | field pctile | cashed | points | "
           f"diff vs {labels[0]} [90%, by date] | dates better / worse |")
     print("|---|---|---|---|---|---|---|---|---|---|")
@@ -761,6 +839,8 @@ def main() -> int:
     st = sub.add_parser("sets", help="20-lineup sets per board, every date held out (production vs + props-free)")
     st.add_argument("--n", type=int, default=SET_N)
     st.add_argument("--base-only", action="store_true", help="production only (the baseline)")
+    st.add_argument("--seeds", default=",".join(map(str, SET_SEEDS)),
+                    help="first seed of each seed set, pooled (default %(default)s; '0' = one set)")
     st.add_argument("--kind", choices=["seeds", "portfolio"], default=SET_KIND,
                     help="seeds: n independent best lineups (single-entry); portfolio: production multi-entry")
     fr = sub.add_parser("field", help="the field's lineups ranked by each variant (no optimizer)")
@@ -776,7 +856,7 @@ def main() -> int:
         return props_lodo_lineups()
     if a.cmd == "sets":
         globals()["SET_KIND"] = a.kind
-        return sets_lodo(with_free=not a.base_only, n=a.n)
+        return sets_lodo(with_free=not a.base_only, n=a.n, seeds=tuple(int(x) for x in a.seeds.split(",")))
     if a.cmd == "props-lineups":
         register_props({g: ps for g, ps in boards().items() if g in fields()})
         return report(["model_only", "shipped", "props", "props_market", "props_market_off"])
