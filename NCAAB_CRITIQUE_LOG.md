@@ -303,3 +303,5 @@ from noise, and the skill puts the harness first.
 **Next critic (lineups):** cash target = the shipped set20 pctile / $ per $1 by slate; start with 11/5
 (cash line 250, every lineup 214-232). Re-run `report` as each new Double Up lands; at 5+ cash slates
 propose the gate wiring.
+
+Unattended gate (20261110-0658): **not shipped (log / harness only, verified)**
