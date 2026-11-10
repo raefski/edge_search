@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-10T19:28:14+00:00",
+"generated_at": "2026-11-10T19:58:53+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
@@ -24,7 +24,7 @@
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
-"status": null
+"status": "Confirmed"
 },
 "MTL": {
 "goalie": "Jacob Fowler",
@@ -4257,10 +4257,44 @@
 "toiMinutes": 57,
 "toiSeconds": 32
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
+},
+"Colton Dach": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 23,
+"toiMinutes": 146,
+"toiSeconds": 43
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 78,
+"toiSeconds": 21
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": "PP2"
 },
 "Connor McDavid": {
 "gtd": false,
@@ -4531,7 +4565,7 @@
 "toiMinutes": 60,
 "toiSeconds": 10
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
 "pos": "rw",
 "pp": null
@@ -4569,40 +4603,6 @@
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
-},
-"Max Jones": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 87,
-"toiSeconds": 41
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 35,
-"toiSeconds": 23
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Owen Michaels": {
 "gtd": false,
@@ -4769,10 +4769,10 @@
 "toiMinutes": 42,
 "toiSeconds": 59
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Tristan Jarry": {
 "gtd": false,
