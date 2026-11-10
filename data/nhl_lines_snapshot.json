@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-10T16:27:47+00:00",
+"generated_at": "2026-11-10T16:58:59+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
@@ -44,7 +44,7 @@
 },
 "STL": {
 "goalie": "Joel Hofer",
-"status": null
+"status": "Likely"
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
@@ -2233,10 +2233,44 @@
 "toiMinutes": 66,
 "toiSeconds": 33
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
+},
+"Brennan Othmann": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 10,
+"toiMinutes": 93,
+"toiSeconds": 26
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 45,
+"toiSeconds": 30
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Devin Cooley": {
 "gtd": false,
@@ -2475,7 +2509,7 @@
 "toiMinutes": 68,
 "toiSeconds": 37
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -2543,7 +2577,7 @@
 "toiMinutes": 81,
 "toiSeconds": 51
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -2611,7 +2645,7 @@
 "toiMinutes": 74,
 "toiSeconds": 58
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -2645,7 +2679,7 @@
 "toiMinutes": 67,
 "toiSeconds": 40
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -2683,16 +2717,6 @@
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
-},
-"William Stromgren": {
-"gtd": false,
-"injury": null,
-"last10": {},
-"last5": {},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Yan Kuznetsov": {
 "gtd": false,
@@ -2757,7 +2781,7 @@
 "toiMinutes": 81,
 "toiSeconds": 33
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
@@ -5062,40 +5086,6 @@
 "pos": "lw",
 "pp": "PP1"
 },
-"Cole Reinhardt": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 7,
-"points": 9,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 18,
-"toiMinutes": 133,
-"toiSeconds": 21
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 59,
-"toiSeconds": 56
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Cole Schwindt": {
 "gtd": false,
 "injury": null,
@@ -5128,6 +5118,40 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
+"pp": null
+},
+"Dmitry Kulikov": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 146,
+"toiSeconds": 23
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 74,
+"toiSeconds": 12
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
 "pp": null
 },
 "Eetu Luostarinen": {
@@ -5231,6 +5255,16 @@
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
+},
+"Jack Devine": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Jacob Markstrom": {
 "gtd": false,
@@ -5505,40 +5539,6 @@
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP1"
-},
-"Uvis Balinskis": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 143,
-"toiSeconds": 55
-},
-"last5": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 74,
-"toiSeconds": 43
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
 }
 },
 "LAK": {
@@ -6366,39 +6366,39 @@
 "pos": "c",
 "pp": "PP2"
 },
-"David Spacek": {
+"Jared Spurgeon": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 1,
-"blocks": 9,
+"assists": 4,
+"blocks": 19,
 "gamesPlayed": 10,
-"goals": 0,
-"points": 1,
+"goals": 1,
+"points": 5,
 "powerplayAssists": 1,
 "powerplayGoals": 0,
 "powerplayPoints": 1,
-"shots": 8,
-"toiMinutes": 127,
-"toiSeconds": 50
+"shots": 13,
+"toiMinutes": 205,
+"toiSeconds": 26
 },
 "last5": {
-"assists": 1,
-"blocks": 4,
+"assists": 0,
+"blocks": 8,
 "gamesPlayed": 5,
 "goals": 0,
-"points": 1,
-"powerplayAssists": 1,
+"points": 0,
+"powerplayAssists": 0,
 "powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 1,
-"toiMinutes": 58,
-"toiSeconds": 2
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 94,
+"toiSeconds": 48
 },
-"line": "D3",
+"line": "D1",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Jesper Wallstedt": {
 "gtd": false,
@@ -6499,7 +6499,7 @@
 "toiMinutes": 122,
 "toiSeconds": 17
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -6808,7 +6808,7 @@
 "line": "D1",
 "pk": null,
 "pos": "ld",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Ryan Hartman": {
 "gtd": false,
@@ -6907,7 +6907,7 @@
 "toiMinutes": 81,
 "toiSeconds": 35
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
