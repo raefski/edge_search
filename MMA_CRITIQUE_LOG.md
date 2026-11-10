@@ -157,3 +157,5 @@ needs no UFCStats refresh.
 - The lineup harness: replay production's cash and GPP lineups against the 4 real
   fields (scout runner-up). Revisit at 5+ slates.
 - Grade 11/07 as a 7th projection card once the UFCStats mirror has it.
+
+Unattended gate (20261110-1345): **not shipped (log / harness only, verified)**
