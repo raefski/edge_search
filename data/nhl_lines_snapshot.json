@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-10T16:57:54+00:00",
+"generated_at": "2026-11-10T17:27:18+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
@@ -8,7 +8,7 @@
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
-"status": null
+"status": "Likely"
 },
 "DET": {
 "goalie": "John Gibson",
@@ -16,7 +16,7 @@
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
-"status": null
+"status": "Confirmed"
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
@@ -3845,10 +3845,10 @@
 "toiMinutes": 80,
 "toiSeconds": 32
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "John Gibson": {
 "gtd": true,
@@ -3949,7 +3949,7 @@
 "toiMinutes": 46,
 "toiSeconds": 52
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "rw",
 "pp": null
@@ -3987,6 +3987,74 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
+},
+"Marco Kasper": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 22,
+"toiMinutes": 136,
+"toiSeconds": 0
+},
+"last5": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 79,
+"toiSeconds": 2
+},
+"line": "F3",
+"pk": null,
+"pos": "c",
+"pp": "PP2"
+},
+"Mason Appleton": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 126,
+"toiSeconds": 15
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 67,
+"toiSeconds": 4
+},
+"line": "F4",
+"pk": "PK1",
+"pos": "rw",
+"pp": null
 },
 "Michael Brandsegg-Nyg\u00e5rd": {
 "gtd": false,
@@ -4089,40 +4157,6 @@
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP1"
-},
-"Sheldon Dries": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 103,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 52,
-"toiSeconds": 40
-},
-"line": "F4",
-"pk": "PK1",
-"pos": "c",
-"pp": null
 },
 "Viktor Arvidsson": {
 "gtd": false,
@@ -4307,9 +4341,9 @@
 "goalieMinutes": 604,
 "goalieOvertimeLosses": 0,
 "goalieSavePercentage": "0.903",
-"goalieSaves": 242,
+"goalieSaves": 244,
 "goalieSeconds": 41,
-"goalieShotsAgainst": 268,
+"goalieShotsAgainst": 269,
 "goalieShutouts": 0,
 "goalieWins": 9
 },
@@ -4320,10 +4354,10 @@
 "goalieLosses": 1,
 "goalieMinutes": 305,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.893",
-"goalieSaves": 117,
+"goalieSavePercentage": "0.894",
+"goalieSaves": 119,
 "goalieSeconds": 45,
-"goalieShotsAgainst": 131,
+"goalieShotsAgainst": 132,
 "goalieShutouts": 0,
 "goalieWins": 4
 },
@@ -7765,7 +7799,7 @@
 "toiMinutes": 59,
 "toiSeconds": 19
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -7799,7 +7833,7 @@
 "toiMinutes": 77,
 "toiSeconds": 8
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -7939,7 +7973,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Jack Hughes": {
@@ -8041,7 +8075,7 @@
 "toiMinutes": 63,
 "toiSeconds": 13
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -9566,7 +9600,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 1,
 "powerplayPoints": 1,
-"shots": 23,
+"shots": 24,
 "toiMinutes": 180,
 "toiSeconds": 10
 },
@@ -9579,7 +9613,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 1,
 "powerplayPoints": 1,
-"shots": 12,
+"shots": 13,
 "toiMinutes": 100,
 "toiSeconds": 17
 },
@@ -10146,10 +10180,10 @@
 "goalieLosses": 4,
 "goalieMinutes": 477,
 "goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.884",
-"goalieSaves": 199,
+"goalieSavePercentage": "0.885",
+"goalieSaves": 200,
 "goalieSeconds": 16,
-"goalieShotsAgainst": 225,
+"goalieShotsAgainst": 226,
 "goalieShutouts": 0,
 "goalieWins": 3
 },
@@ -10161,9 +10195,9 @@
 "goalieMinutes": 267,
 "goalieOvertimeLosses": 1,
 "goalieSavePercentage": "0.922",
-"goalieSaves": 118,
+"goalieSaves": 119,
 "goalieSeconds": 24,
-"goalieShotsAgainst": 128,
+"goalieShotsAgainst": 129,
 "goalieShutouts": 0,
 "goalieWins": 3
 },
@@ -11275,7 +11309,7 @@
 "injury": null,
 "last10": {
 "assists": 7,
-"blocks": 7,
+"blocks": 8,
 "gamesPlayed": 10,
 "goals": 3,
 "points": 10,
@@ -11288,7 +11322,7 @@
 },
 "last5": {
 "assists": 4,
-"blocks": 1,
+"blocks": 2,
 "gamesPlayed": 5,
 "goals": 1,
 "points": 5,
@@ -11726,10 +11760,10 @@
 "goalieLosses": 3,
 "goalieMinutes": 607,
 "goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.911",
-"goalieSaves": 267,
+"goalieSavePercentage": "0.912",
+"goalieSaves": 268,
 "goalieSeconds": 25,
-"goalieShotsAgainst": 293,
+"goalieShotsAgainst": 294,
 "goalieShutouts": 1,
 "goalieWins": 6
 },
@@ -11741,9 +11775,9 @@
 "goalieMinutes": 301,
 "goalieOvertimeLosses": 1,
 "goalieSavePercentage": "0.881",
-"goalieSaves": 140,
+"goalieSaves": 141,
 "goalieSeconds": 29,
-"goalieShotsAgainst": 159,
+"goalieShotsAgainst": 160,
 "goalieShutouts": 0,
 "goalieWins": 1
 },
@@ -14533,7 +14567,7 @@
 "injury": null,
 "last10": {
 "assists": 1,
-"blocks": 9,
+"blocks": 8,
 "gamesPlayed": 8,
 "goals": 1,
 "points": 2,
@@ -14546,7 +14580,7 @@
 },
 "last5": {
 "assists": 1,
-"blocks": 9,
+"blocks": 8,
 "gamesPlayed": 5,
 "goals": 1,
 "points": 2,
@@ -14950,7 +14984,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 23,
+"shots": 24,
 "toiMinutes": 120,
 "toiSeconds": 11
 },
@@ -14963,7 +14997,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 10,
+"shots": 11,
 "toiMinutes": 56,
 "toiSeconds": 54
 },
