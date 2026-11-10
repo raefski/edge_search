@@ -331,6 +331,10 @@ def schedule_resume(at: datetime) -> str:
     07:05 run covers a reset before 07:00; this covers a later one, e.g. 7:50 on 11/9).
     The loop's own guards still apply: no cycle after NIGHT_END_HOUR or near a lock."""
     when = at + timedelta(minutes=5)
+    if when <= datetime.now() + timedelta(minutes=2):
+        # 11/10 07:03-07:05: a resume set for a time already past fired at once, hit the
+        # limit again and rescheduled -- 8 runs in 2 minutes. Leave it to the 07:05 run.
+        return f"limit resets {at:%H:%M}, already past: no resume"
     if when.hour >= NIGHT_END_HOUR:
         return f"limit resets {at:%H:%M}, after the night ends: no resume"
     subprocess.run(["systemctl", "--user", "stop", "edge-critique-resume.timer"], capture_output=True)
@@ -549,12 +553,18 @@ def pick(st: dict, now: datetime, done: set = frozenset(), season=in_season) -> 
         s = ROTATION[(st["next"] + k) % len(ROTATION)]
         sp = _sport(st, s)
         paused = sp["paused_until"] and datetime.fromisoformat(sp["paused_until"]) > now
-        if not paused and not sp["pending"] and s not in done and season(s):
+        if not paused and not sp["pending"] and s not in done and s not in SKIP and season(s):
             st["next"] = (st["next"] + k + 1) % len(ROTATION)
             return s
     return None
 
 
+#: Cycles per night and sports left out (Adam 11/10: weekly Claude usage nearly spent --
+#: one sport a night; NFL is profitable, focus on the others; reassess Monday 11/16 from
+#: the ROI dashboard). A resumed run (07:05 / after the usage limit) only finishes a
+#: night whose cycle did not complete.
+MAX_PER_NIGHT = 1
+SKIP = ("nfl",)
 #: A second timer run at 07:05 picks the night back up after the Claude 5-hour usage
 #: window resets (11/9: the 02:00 start means a limit hit at ~04:00-07:00 resets by
 #: ~07:00). A sport whose cycle already ran in this window is not run again.
@@ -647,7 +657,12 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
             return 0
         done, results = set(), []
         earlier = set() if sport else ran_tonight(st, _now())
+        if len(earlier) >= MAX_PER_NIGHT:
+            print(f"tonight's {MAX_PER_NIGHT} cycle(s) already ran: {', '.join(sorted(earlier))}")
+            return 0
         while True:
+            if not sport and len(done | earlier) >= MAX_PER_NIGHT and done:
+                break
             soon = locks_soon(CYCLE_LOCK_H)
             if soon:
                 results.append(f"stopped: {soon[0]['sport']} {soon[0]['label']} locks {soon[0]['lock']:%H:%M} UTC")

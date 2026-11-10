@@ -202,7 +202,7 @@ def test_rotation_skips_paused_pending_out_of_season_and_done():
     st["next"] = 0
     while (s := C.pick(st, now, set(night), season=season)):
         night.append(s)
-    assert night == ["nhl", "ncaaf", "nascar", "nfl", "mma"]         # each once, no MLB
+    assert night == ["nhl", "ncaaf", "nascar", "mma"]                # each once, no MLB, no NFL (11/10)
     C._sport(st, "nba")["paused_until"] = (now - timedelta(days=1)).isoformat()
     assert C.pick(st, now, season=season) == "nba"
 
@@ -295,3 +295,10 @@ def test_the_5_hour_limit_message_is_a_usage_stop_with_its_reset_time():
     assert (t.hour, t.minute, t.day) == (7, 50, 9)
     assert C.reset_time("resets 12:15am", datetime(2026, 11, 9, 23, 0)).day == 10
     assert C.reset_time("no time here") is None
+
+
+def test_one_sport_a_night_and_nfl_skipped(monkeypatch):
+    now = datetime(2026, 11, 10, 7, 0, tzinfo=timezone.utc)
+    st = {"next": C.ROTATION.index("nfl"), "sports": {}}
+    assert C.pick(st, now, season=lambda s: True) == "mma"          # NFL left out (11/10)
+    assert C.MAX_PER_NIGHT == 1
