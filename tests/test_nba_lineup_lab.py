@@ -67,7 +67,7 @@ def test_sets_pool_one_lineup_per_job_and_match_build_set(tmp_path, monkeypatch)
 
 
 def test_pool_rows_weights_by_lineups():
-    a = {("gpp", 9): {"date": "d", "n": 20, "pctile": 0.6, "cashed": 0.5, "points": 260.0}}
-    b = {("gpp", 9): {"date": "d", "n": 20, "pctile": 0.4, "cashed": 0.3, "points": 250.0}}
+    a = {("gpp", 9): {"date": "d", "n": 20, "pctile": 0.6, "cashed": 0.5, "points": 260.0, "ret": 2.0}}
+    b = {("gpp", 9): {"date": "d", "n": 20, "pctile": 0.4, "cashed": 0.3, "points": 250.0, "ret": 0.0}}
     r = L.pool_rows([a, b])[("gpp", 9)]
     assert r["n"] == 40 and abs(r["pctile"] - 0.5) < 1e-12 and abs(r["points"] - 255.0) < 1e-9

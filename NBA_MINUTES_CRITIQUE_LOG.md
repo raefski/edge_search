@@ -1657,3 +1657,38 @@ dates (>= 10/31) on 40 seeds a board; the mechanism (-8.75 pts a props-free benc
 but the lineups barely change.
 
 Vetoed by Adam (2026-11-10): not merged.
+
+## Cycle 30 (props-era rerun #1: sim spread on the props blend) -- 2026-11-09, hand-run (Adam) -- NOT SHIPPED
+
+Why: the sim's spread (`theory.sd_for` x the bucket error shapes in `edge/nba_ceiling_quantiles`)
+was fitted on 2024-25 MODEL-ONLY errors; since cycle 27 the projection is ~76% the DK props.
+Cycle 28 had read sd x0.8 as a cash lead (+.020 [+.008, +.033], one seed lineup a board).
+
+**Calibration first** (16 dates, blend refit without each date; ratio = rms miss / effective sim
+sd; PIT tails should be 10% / 10%). Prop-covered: 10-20 0.92 (n 215), 20-30 1.00 (586, tails
+10.1% / 9.0%), 30-45 0.96 (556), **45+ 0.83 (62; 1.6% below the 10th, 6.5% above the 90th)**.
+Props-free model rows stay calibrated (<10 0.96, 10-20 1.07 with 18% below the 10th: the
+props-free bench over-projection of cycles 28-29). The "16.2 assumed" in cycle 28 was the raw
+sd_for; the error-shape table already narrows it -- only 45+ is materially too wide.
+
+**Lineups** (`nba_lineup_lab.py spread`: 20 seed lineups x seed sets 0 + 1000 a board, ratios
+and blend refit without each date; 33 GPP contests / 16 dates, 17 cash / 12; 8,320 lineups,
+55 min on 20 cores). LODO ratios: 10+ .91-.97, 20+ .97-1.00, 30+ .93-.98, 45+ .78-.87.
+
+| variant | mode | pctile | diff [90%, by date] | dates +/- | $ per $1 (diff [90%]) |
+|---|---|---|---|---|---|
+| production | gpp / cash | .633 / .542 | -- | -- | 1.39 / 1.08 |
+| prop players 45+ refit | gpp | .627 | -.006 [-.018, +.006] | 11 / 5 | 1.19 (-.20 [-.40, -.06]) |
+| prop players 45+ refit | cash | .531 | -.011 [-.032, +.010] | 4 / 7 | 1.06 (-.02) |
+| prop players by bucket | gpp | .629 | -.004 [-.014, +.007] | 8 / 8 | 1.24 (-.15 [-.34, -.01]) |
+| prop players by bucket | cash | .538 | -.004 [-.017, +.008] | 6 / 6 | 1.10 (+.02) |
+| everyone x0.8 (cycle 28) | gpp | .631 | -.002 [-.020, +.016] | 9 / 7 | 1.33 (-.06) |
+| everyone x0.8 (cycle 28) | cash | .535 | **-.007 [-.019, +.007]** | 6 / 6 | 1.09 (+.01) |
+
+Test dates >= 10/31 alone (12 GPP / 6, 4 cash / 4) lean the other way (x0.8 GPP +.026 [+.008,
++.035], 45+ GPP +.012, 6 / 0) but the full held-out run is flat-to-negative: noise.
+**Decision: NOT SHIPPED.** The spread was already calibrated where lineups are picked (20-45);
+narrowing 45+ costs GPP dollars; cycle 28's x0.8 cash lead does not replicate on 40 seeds (-.007).
+Kept: `simulate` honours an optional per-player `sd_scale` (absent = 1, production unchanged --
+baseline reproduced exactly, .633 / .542) for lab variants; the lab's `compare_sets` now prints
+$ per $1 (contests.db payouts) beside percentile. Revisit 45+ at ~150 prop rows.

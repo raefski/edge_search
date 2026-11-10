@@ -125,7 +125,9 @@ def simulate(pool: list, n_sims: int = 3000, seed: int = 0) -> np.ndarray:
         u = np.clip(norm.cdf(z), 1e-9, 1 - 1e-9)
         for col, j in enumerate(js):
             mu = max(0.1, float(pool[j]["proj"]))
-            sd = sd_for(mu)
+            # sd_scale: a per-player multiplier on the spread (absent = 1; the lineup lab's
+            # spread variants set it, production does not unless a variant ships)
+            sd = sd_for(mu) * float(pool[j].get("sd_scale") or 1.0)
             if EMPIRICAL_TAILS:
                 # the projection bucket's real error quantiles (edge/nba_ceiling_quantiles.py):
                 # a gamma gave every tier one tail shape -- stars' 90th ran ~4.5 pts high,

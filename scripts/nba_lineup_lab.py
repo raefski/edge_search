@@ -616,8 +616,26 @@ def build_sets_many(jobs: list[tuple[dict, str]], n: int = SET_N, seeds: tuple =
     return {k: dict(v) for k, v in out.items()}
 
 
+_PAY: dict = {}
+
+
+def payout(cid: int, field: np.ndarray, x: float) -> float:
+    """$ returned per $1 entry for a lineup scoring x in the contest (its rank among the real
+    field's points; contests.db payout table). 0 when the payout table is missing."""
+    if not _PAY:
+        c = sqlite3.connect(SL.DB)
+        fee = dict(c.execute("select contest_id, entry_fee from contest where sport='NBA'"))
+        for k, lo, hi, amt in c.execute("select contest_id, rank_lo, rank_hi, amount from payout"):
+            _PAY.setdefault(k, {"fee": fee.get(k) or 0, "tiers": []})["tiers"].append((lo, hi, amt))
+    pay = _PAY.get(cid)
+    if not pay or not pay["fee"]:
+        return 0.0
+    rank = 1 + int((field > x).sum())
+    return next((amt for lo, hi, amt in pay["tiers"] if lo <= rank <= hi), 0.0) / pay["fee"]
+
+
 def set_rows(built: dict, B: dict) -> dict:
-    """{(mode, contest): {date, pctile, cashed, points, n}}: the set's means per contest."""
+    """{(mode, contest): {date, pctile, cashed, points, ret, n}}: the set's means per contest."""
     F = fields()
     out = {}
     for gid, ps in B.items():
@@ -630,7 +648,8 @@ def set_rows(built: dict, B: dict) -> dict:
                     out[(mode, cid)] = {"date": ps[0]["date"], "n": len(pts),
                                         "pctile": float(np.mean([(field < x).mean() for x in pts])),
                                         "cashed": float(np.mean([x >= line for x in pts])),
-                                        "points": float(np.mean(pts))}
+                                        "points": float(np.mean(pts)),
+                                        "ret": float(np.mean([payout(cid, field, x) for x in pts]))}
     return out
 
 
@@ -688,7 +707,7 @@ def pool_rows(per_seed: list[dict]) -> dict:
         rs = [r[k] for r in per_seed if k in r]
         n = sum(r["n"] for r in rs)
         out[k] = {"date": rs[0]["date"], "n": n,
-                  **{f: sum(r[f] * r["n"] for r in rs) / n for f in ("pctile", "cashed", "points")}}
+                  **{f: sum(r[f] * r["n"] for r in rs) / n for f in ("pctile", "cashed", "points", "ret")}}
     return out
 
 
@@ -702,6 +721,13 @@ def sets_lodo(with_free: bool = True, n: int = SET_N, seeds: tuple = SET_SEEDS) 
     cand_names = _lodo_names(B, rows, free_rows(B)) if with_free else {}
     labelled = [(lab, nm) for lab, nm in (("props blend (production)", base_names),
                                           ("+ props-free calibration", cand_names)) if nm]
+    return compare_sets(B, labelled, n, seeds)
+
+
+def compare_sets(B: dict, labelled: list[tuple[str, dict]], n: int = SET_N, seeds: tuple = SET_SEEDS,
+                 title: str = "") -> int:
+    """Build + score seed sets for labelled variants -- each {date: variant name}, the first
+    is the baseline -- in one all-core pool; print the paired table (by date) incl. $ per $1."""
     by_date = lambda d: {g: ps for g, ps in B.items() if ps[0]["date"] == d}    # noqa: E731
     built = build_sets_many([(by_date(d), name) for _, nm in labelled for d, name in nm.items()], n, seeds)
     seeds = sorted({s for _, s in built})
@@ -711,26 +737,29 @@ def sets_lodo(with_free: bool = True, n: int = SET_N, seeds: tuple = SET_SEEDS) 
                                 for s in seeds])
     labels = list(res)
     base = res[labels[0]]
-    print(f"# Lineup sets ({n} per board per mode x seed sets {', '.join(map(str, seeds))}, "
+    print(f"# {title or 'Lineup sets'} ({n} per board per mode x seed sets {', '.join(map(str, seeds))}, "
           f"kind={SET_KIND}), every date held out\n")
-    print("| variant | mode | contests | dates | lineups | field pctile | cashed | points | "
-          f"diff vs {labels[0]} [90%, by date] | dates better / worse |")
-    print("|---|---|---|---|---|---|---|---|---|---|")
+    print("| variant | split | mode | contests | dates | lineups | field pctile | cashed | points | $ per $1 | "
+          f"pctile diff vs {labels[0]} [90%, by date] | dates better / worse | $ diff [90%] |")
+    print("|---|---|---|---|---|---|---|---|---|---|---|---|---|")
     for lab in labels:
-        for mode in ("cash", "gpp"):
-            ks = [k for k in res[lab] if k[0] == mode and k in base]
-            if not ks:
-                continue
-            cl = np.array([res[lab][k]["date"] for k in ks])
-            d = np.array([res[lab][k]["pctile"] - base[k]["pctile"] for k in ks])
-            m, lo, hi = _boot(cl, d)
-            by = defaultdict(list)
-            for k, x in zip(ks, d):
-                by[res[lab][k]["date"]].append(x)
-            print(f"| {lab} | {mode} | {len(ks)} | {len(set(cl))} | {sum(res[lab][k]['n'] for k in ks):,} | "
-                  f"{np.mean([res[lab][k]['pctile'] for k in ks]):.3f} | {np.mean([res[lab][k]['cashed'] for k in ks]):.0%} | "
-                  f"{np.mean([res[lab][k]['points'] for k in ks]):.1f} | {m:+.3f} [{lo:+.3f}, {hi:+.3f}] | "
-                  f"{sum(np.mean(v) > 0 for v in by.values())} / {sum(np.mean(v) < 0 for v in by.values())} |")
+        for split, keep in (("all", lambda d: True), ("test", lambda d: d >= SPLIT)):
+            for mode in ("cash", "gpp"):
+                ks = [k for k in res[lab] if k[0] == mode and k in base and keep(res[lab][k]["date"])]
+                if not ks:
+                    continue
+                cl = np.array([res[lab][k]["date"] for k in ks])
+                d = np.array([res[lab][k]["pctile"] - base[k]["pctile"] for k in ks])
+                m, lo, hi = _boot(cl, d)
+                mr, lor, hir = _boot(cl, np.array([res[lab][k]["ret"] - base[k]["ret"] for k in ks]))
+                by = defaultdict(list)
+                for k, x in zip(ks, d):
+                    by[res[lab][k]["date"]].append(x)
+                mean = lambda f: np.mean([res[lab][k][f] for k in ks])    # noqa: E731
+                print(f"| {lab} | {split} | {mode} | {len(ks)} | {len(set(cl))} | {sum(res[lab][k]['n'] for k in ks):,} | "
+                      f"{mean('pctile'):.3f} | {mean('cashed'):.0%} | {mean('points'):.1f} | {mean('ret'):.2f} | "
+                      f"{m:+.3f} [{lo:+.3f}, {hi:+.3f}] | {sum(np.mean(v) > 1e-9 for v in by.values())} / "
+                      f"{sum(np.mean(v) < -1e-9 for v in by.values())} | {mr:+.2f} [{lor:+.2f}, {hir:+.2f}] |")
     # how much the set tightens the date-level spread of the field percentile
     for mode in ("cash", "gpp"):
         ks = [k for k in base if k[0] == mode]
@@ -741,6 +770,76 @@ def sets_lodo(with_free: bool = True, n: int = SET_N, seeds: tuple = SET_SEEDS) 
         print(f"\n{mode}: sd of the date-level field percentile across {len(v)} dates = {np.std(v, ddof=1):.3f} "
               f"(SE of the mean {np.std(v, ddof=1) / np.sqrt(len(v)):.3f})")
     return 0
+
+
+# ---- sim spread on the props-blended projection (rerun #1 after the props blend, 11/9) ----
+# The sim's spread (theory.sd_for x the bucket's error-shape table, edge/nba_ceiling_quantiles)
+# was fitted on 2024-25 MODEL-ONLY errors. `spread` measures it against the blended projection's
+# real misses and replays lineups with it rescaled, every ratio refit without the held-out date.
+SPREAD_BUCKETS = (10, 20, 30, 45)                # lower edges; < 10 (n 17 prop rows) keeps 1.0
+
+
+def _bucket_zsd(mu: float) -> float:
+    from edge import nba_ceiling_quantiles as CQ
+    b = max(0, min(len(CQ.BINS) - 2, int(np.searchsorted(CQ.BINS, mu, side="right")) - 1))
+    return float(np.std(np.interp(np.linspace(0.0005, 0.9995, 2000), CQ.QGRID, CQ.ZQ[b])))
+
+
+def spread_ratios(rows: list[dict], blend: tuple) -> dict:
+    """{bucket lower edge: rms(actual - blended proj) / rms(sim sd)} on prop-covered rows."""
+    a, b, c = blend
+    acc = defaultdict(lambda: [0.0, 0.0, 0])
+    for r in rows:
+        mu = max(0.1, a + b * r["proj"] + c * r["mkt"])
+        lo = max([x for x in SPREAD_BUCKETS if mu >= x], default=None)
+        if lo is None:
+            continue
+        acc[lo][0] += (r["actual"] - mu) ** 2
+        acc[lo][1] += (theory.sd_for(mu) * _bucket_zsd(mu)) ** 2
+        acc[lo][2] += 1
+    return {lo: float(np.sqrt(e / v)) for lo, (e, v, n) in acc.items() if n >= 20}
+
+
+def _spread_variant(blend, scales: dict | None, everyone: float | None = None):
+    def f(pool):
+        from edge import dfs_run_nba as R
+        mkt = _MKT.get(pool[0].get("_gid")) or {}
+        R.blend_props(pool, mkt, blend)
+        for p in pool:
+            if everyone is not None:
+                p["sd_scale"] = everyone
+            elif scales and p["name"] in mkt and p.get("proj"):
+                lo = max([x for x in SPREAD_BUCKETS if p["proj"] >= x], default=None)
+                if lo in scales:
+                    p["sd_scale"] = round(scales[lo], 4)
+    return f
+
+
+def spread(n: int = SET_N, seeds: tuple = SET_SEEDS) -> int:
+    B = {g: ps for g, ps in boards().items() if g in fields()}
+    rows = register_props(B)["rows"]
+    base = _lodo_names(B, rows, None)                       # production, blend refit without the date
+    v45, vall, v08, fitted = {}, {}, {}, {}
+    for d in base:
+        tr = [r for r in rows if r["date"] != d]
+        bl = props_fit(tr)
+        rat = spread_ratios(tr, bl)
+        fitted[d] = rat
+        for out, scales, ev, tag in ((v45, {45: rat[45]} if 45 in rat else {}, None, "sd45"),
+                                     (vall, rat, None, "sdall"), (v08, None, 0.8, "sd08")):
+            name = f"{base[d]}{tag}[" + ",".join(f"{k}:{v:.3f}" for k, v in sorted((scales or {}).items())) + \
+                   (f"{ev}" if ev else "") + "]"
+            VARIANTS[name] = _spread_variant(bl, scales, ev)
+            out[d] = name
+    print("spread ratios refit without each date (bucket: min..max over folds; all dates):")
+    allr = spread_ratios(rows, props_fit(rows))
+    for lo in SPREAD_BUCKETS:
+        v = [f[lo] for f in fitted.values() if lo in f]
+        print(f"  {lo}+: {min(v):.3f}..{max(v):.3f}; all {allr.get(lo, float('nan')):.3f}")
+    print()
+    return compare_sets(B, [("production", base), ("prop players 45+ spread refit", v45),
+                            ("prop players spread refit by bucket", vall), ("everyone x0.8 (cycle 28)", v08)],
+                        n, seeds, title="Sim spread on the props blend")
 
 
 def field_rank(variant: str = "shipped", B: dict | None = None) -> list[dict]:
@@ -843,6 +942,8 @@ def main() -> int:
                     help="first seed of each seed set, pooled (default %(default)s; '0' = one set)")
     st.add_argument("--kind", choices=["seeds", "portfolio"], default=SET_KIND,
                     help="seeds: n independent best lineups (single-entry); portfolio: production multi-entry")
+    sp = sub.add_parser("spread", help="sim spread rescaled to the props-blended projection's misses")
+    sp.add_argument("--seeds", default=",".join(map(str, SET_SEEDS)))
     fr = sub.add_parser("field", help="the field's lineups ranked by each variant (no optimizer)")
     fr.add_argument("--variant", action="append")
     r = sub.add_parser("report")
@@ -857,6 +958,8 @@ def main() -> int:
     if a.cmd == "sets":
         globals()["SET_KIND"] = a.kind
         return sets_lodo(with_free=not a.base_only, n=a.n, seeds=tuple(int(x) for x in a.seeds.split(",")))
+    if a.cmd == "spread":
+        return spread(seeds=tuple(int(x) for x in a.seeds.split(",")))
     if a.cmd == "props-lineups":
         register_props({g: ps for g, ps in boards().items() if g in fields()})
         return report(["model_only", "shipped", "props", "props_market", "props_market_off"])
