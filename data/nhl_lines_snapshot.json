@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-10T23:28:53+00:00",
+"generated_at": "2026-11-10T23:43:51+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
@@ -9862,6 +9862,40 @@
 "pos": "lw",
 "pp": "PP2"
 },
+"Hayden Hodgson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 62,
+"toiSeconds": 17
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 25,
+"toiSeconds": 11
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Jackson Parsons": {
 "gtd": false,
 "injury": null,
@@ -10099,7 +10133,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Ridly Greig": {
@@ -10134,40 +10168,6 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "c",
-"pp": null
-},
-"Sammy Blais": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 94,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 51,
-"toiSeconds": 0
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
 "pp": null
 },
 "Samuel Ersson": {
