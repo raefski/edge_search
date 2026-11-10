@@ -188,3 +188,9 @@ Unattended gate (20261110-1028): **review** -- waiting for Adam: harness critiqu
 
 - no gate for nfl yet (a lab gate() + critique_gate.SPECS entry): the agent's own numbers are in the log
 - touches the loop's own judge (skill / critic / hooks / gate): Adam decides
+
+**Adam, 2026-11-10: merged GPP ONLY.** Cash leaned worse (-0.042 [-0.112, +0.012], 11 contests /
+7 slates) while NFL cash is profitable, so cash keeps the unshifted projection (`proj`) and every
+GPP build reads `proj_gpp` (`edge/dfs_run_nfl.gpp_pool`: GPP lineup, page QB stacks, leverage
+chart, contest EV). The forward log carries both columns; re-test cash on the shift when the
+cash slates reach ~12.

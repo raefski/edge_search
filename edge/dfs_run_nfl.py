@@ -57,6 +57,8 @@ slate.
 """
 from __future__ import annotations
 
+import dataclasses
+
 import csv
 import logging
 import re
@@ -233,6 +235,14 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
     opponent because the optimizer's DST rule is only enforceable if he does.
     """
     sport = dfs_sport.get(SPORT)
+    # CASH projects off the books' lines as they stand; only GPP reads a back's
+    # yardage line as a median and shifts it to the mean (dfs_sport.NFL_RB_YDS_SKEW).
+    # Adam 2026-11-10: the shift helped RB points (437 RBs / 8 slates, SSE -641
+    # [-1353, -3]) and GPP lineups (+0.075 field pctile [-0.013, +0.160], 22 contests /
+    # 8 slates) but leaned cash lineups worse (-0.042 [-0.112, +0.012], 11 / 7 slates,
+    # NFL cash profitable) -- so cash keeps the unshifted projection until the cash
+    # evidence says otherwise (NFL_CRITIQUE_LOG.md cycle 2).
+    cash_sport = dataclasses.replace(sport, mean_shift=None)
     games = slate_games(salaries)
     opponents = team_opponents(games)
     lines, line_report = game_lines(client, games)
@@ -258,10 +268,13 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
             continue
         team = info.get("team")
         opp, gid = opponents.get(team, (None, info.get("game")))
-        res = dfs_project.project(markets, sport, position=info.get("position"))
+        res = dfs_project.project(markets, cash_sport, position=info.get("position"))
         if res["proj"] is None:
             stats["no_proj"] += 1
             continue
+        gpp_proj = res["proj"]
+        if sport.mean_shift is not None:
+            gpp_proj = dfs_project.project(markets, sport, position=info.get("position"))["proj"]
         line = lines.get(gid)
         implied = None
         if line:
@@ -275,7 +288,7 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
             "opp_team": opp, "game": gid, "dk_pos": info.get("position") or "",
             "components": res.get("components", {}), "means": res.get("means", {}),
             "imputed": res.get("imputed", []), "dk_fppg": info.get("dk_fppg"),
-            "implied": implied,
+            "implied": implied, "proj_gpp": gpp_proj,
         })
         stats["offense"] += 1
 
@@ -311,7 +324,13 @@ def build_pool(client, salaries: dict, book: str = "draftkings") -> tuple[list, 
 #: different sport's columns (dk_pos, opp_team, leverage in place of MLB's
 #: pitcher-specific outs_mean/k_mean).
 PROJ_LOG_COLS = ("date", "gid", "player", "team", "opp_team", "dk_pos", "salary",
-                 "proj", "sd", "own", "leverage", "game", "games")
+                 "proj", "sd", "own", "leverage", "game", "games", "proj_gpp")
+
+
+def gpp_pool(pool: list) -> list:
+    """The pool GPP lineups are built on: each player's `proj_gpp` (a back's yardage
+    median shifted to its mean, build_pool) as `proj`; cash keeps `proj`."""
+    return [{**p, "proj": p["proj_gpp"]} if p.get("proj_gpp") is not None else p for p in pool]
 
 
 def _slate_date(meta: dict) -> str | None:
@@ -346,7 +365,8 @@ def log_forward_test(pool: list, cash: dict | None, gpp: dict | None,
              "opp_team": p.get("opp_team", ""), "dk_pos": p.get("dk_pos", ""),
              "salary": p.get("salary", ""), "proj": p.get("proj", ""), "sd": p.get("_sd", ""),
              "own": p.get("own", ""), "leverage": p.get("leverage", ""),
-             "game": p.get("game", ""), "games": games if games is not None else ""}
+             "game": p.get("game", ""), "games": games if games is not None else "",
+             "proj_gpp": p.get("proj_gpp", "")}
             for p in pool]
     lineups = None
     if cash or gpp:
@@ -467,7 +487,8 @@ def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftki
                          **({"gamma": own_gamma} if own_gamma else {}))
 
     cash = dfs_opt_nfl.optimize(pool, mode="cash", iters=iters, seed=0)
-    gpp = dfs_opt_nfl.optimize(pool, mode="gpp", iters=iters, seed=0,
+    gpool = gpp_pool(pool)
+    gpp = dfs_opt_nfl.optimize(gpool, mode="gpp", iters=iters, seed=0,
                                stack_n=stack_n, bring_back=bring_back,
                                own_weight=own_weight)
     log_result = None
@@ -480,7 +501,7 @@ def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftki
             log.warning("dfs_run_nfl: forward-test logging failed: %s", exc)
     return {
         "gid": gid, "meta": meta, "slates": slates, "pool": pool,
-        "stats": stats, "cash": cash, "gpp": gpp, "games": games,
+        "stats": stats, "cash": cash, "gpp": gpp, "games": games, "gpp_pool": gpool,
         "teams": sorted({p["team"] for p in pool if p.get("team")}),
         "log": log_result,
     }

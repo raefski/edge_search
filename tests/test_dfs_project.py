@@ -313,3 +313,12 @@ def test_every_sport_declares_the_markets_it_needs():
         assert sport.market_keys()
         for required in sport.required:
             assert sport.stat_for(required) is not None, (key, required)
+
+
+def test_nfl_cash_keeps_the_line_gpp_gets_the_backs_mean():
+    """Adam 11/10: the RB median->mean shift is GPP only (cash leaned worse, 7 slates)."""
+    from edge import dfs_run_nfl
+    pool = [{"name": "RB", "proj": 10.0, "proj_gpp": 11.5}, {"name": "DST", "proj": 6.0}]
+    g = dfs_run_nfl.gpp_pool(pool)
+    assert [p["proj"] for p in g] == [11.5, 6.0] and pool[0]["proj"] == 10.0
+    assert "proj_gpp" in dfs_run_nfl.PROJ_LOG_COLS

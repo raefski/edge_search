@@ -355,7 +355,12 @@ posted. If ESPN is unreachable the page says removal is OFF.
 2025 player-games are frozen in `data/nfl_player_games_2025.csv` (394 KB) so
 a cold Cloud build does not download 2025's 8.7 MB box scores (23 s here).
 
-### RB yardage lines read as medians, shifted to means (2026-11-10, NFL critique cycle 2)
+### RB yardage lines read as medians, shifted to means -- GPP ONLY (2026-11-10, NFL critique cycle 2)
+
+**Adam 11/10: GPP only.** Cash builds on the unshifted projection (`proj`); GPP lineups, the
+per-QB stacks, the leverage chart and contest EV build on `proj_gpp`
+(`dfs_run_nfl.gpp_pool`). Both are in the forward log, so cash can be re-tested on the
+shift once more NFL cash slates are exported (the cash lean below was 7 slates).
 
 A back's rush / rec yardage is right-skewed, and `dfs_project.implied_mean` reads a line on
 a symmetric normal, i.e. the MEDIAN. Backs ran +1.22 DK pts under-projected on the 2026

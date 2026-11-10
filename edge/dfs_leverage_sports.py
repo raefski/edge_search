@@ -282,7 +282,8 @@ def nfl(res: dict, contest: dict | None = None, iters: int = 300, seed: int = 0,
         extra: list | None = None, n_sims: int = 3000, n_field: int = N_FIELD) -> dict:
     """`extra`: more GPP results to place on the chart (the page's per-QB stacks)."""
     from edge import dfs_nfl_contest as nc, dfs_nfl_theory as theory, dfs_opt_nfl as opt
-    pool, chalk = res["pool"], res.get("gpp")
+    # GPP pool: backs' yardage medians shifted to means (dfs_run_nfl.gpp_pool, 11/10)
+    pool, chalk = res.get("gpp_pool") or res["pool"], res.get("gpp")
     if not chalk:
         return {"cands": [], "field": [], "best": None, "contest": contest}
     ix = _key_index(pool)

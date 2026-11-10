@@ -111,7 +111,8 @@ def _nfl_build(gid, iters: int, _nonce: int):
 def _nfl_stack(gid, iters: int, _nonce: int, qb: str):
     """The best GPP lineup stacked around one chosen quarterback."""
     from edge import dfs_opt_nfl
-    pool = _nfl_build(gid, iters, _nonce)["pool"]
+    b = _nfl_build(gid, iters, _nonce)
+    pool = b.get("gpp_pool") or b["pool"]           # GPP projections (backs' yardage mean, 11/10)
     return dfs_opt_nfl.optimize(pool, mode="gpp", stack_qb=qb, iters=iters, seed=0)
 
 
@@ -129,7 +130,8 @@ def _nfl_leverage_for(gid, iters: int, _nonce: int, qbs: tuple, contest: dict):
     """The same lineups ranked by expected payout in one contest -- the same
     simulated worlds edge/dfs_leverage_sports.nfl drew (3,000, seed 1)."""
     from edge import dfs_leverage as lev, dfs_nfl_contest as nc
-    pool = _nfl_build(gid, iters, _nonce)["pool"]
+    b = _nfl_build(gid, iters, _nonce)
+    pool = b.get("gpp_pool") or b["pool"]
     return lev.with_contest(_nfl_leverage(gid, iters, _nonce, qbs),
                             nc.scores(pool, n_sims=3000, seed=1), contest)
 
