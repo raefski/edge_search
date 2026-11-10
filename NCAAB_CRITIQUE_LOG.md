@@ -238,3 +238,68 @@ changes nothing by design, hence "unchanged"; the slate it corrects, 11/7, is in
 |---|---|---|---|---|---|---|---|
 | primary | all | 1,137 | 5 | 6.2493 | 6.2493 | +0.0000 [+0.0000, +0.0000] | unchanged |
 - no primary state better beyond noise
+
+## Cycle 4 (target: cash lineups -- build the lineup harness) — 2026-11-10, unattended
+
+Scout (dfs-target-scout, `scripts/dfs_target_scout.py ncaab --rebuild` first):
+```json
+{"sport": "ncaab", "target": "build cash lineup harness",
+ "metric": "Cash lineups replayed from the as-run board on each graded slate, scored on DK points against every real NCAAB Double Up field on that slate: share at or above the cash line and $ ROI per entry; GPP percentile secondary; never pooled.",
+ "harness": "build: scripts/ncaab_lineup_lab.py, ported from scripts/nba_lineup_lab.py",
+ "split": "Leave one slate out over the 4 slates with cash fields (11/2 155565, 11/4 156123, 11/5 156240, 11/7 156344).",
+ "why": "Cash lost -67% [-100%,-6%] (6 entries/4 slates) while three cycles improved player MAE (pooled 6.35 -> 6.09); nothing scores the lineups we enter.",
+ "money_at_stake": "NCAAB cash -67%, 6 entries / 4 slates in 17-23 entrant Double Ups; GPP -44% [-100%,+40%] 6 entries / 4 slates.",
+ "runner_ups": ["last game's started flag as a fifth LAST_GAME term (retest at 6+ slates)",
+                "GPP ownership whole-slate refit (waits for a 5th GPP slate)",
+                "grade 11/8 + 11/9 and commit 156344's box on main (prerequisite)"]}
+```
+
+**This cycle is the harness (skill section 1); no critic, no model change.** New
+`scripts/ncaab_lineup_lab.py` (`parity | report | rows | gate`): each logged board with a contest
+field, in log order (= production's pool order), turned into production's pool (means_from_total on
+the position profile, rescaled once so each player's 2,000-sim mean = the variant's projection),
+`ncaab_sim.simulate` with the logged / backfilled implied points, `add_ownership`,
+`dfs_opt_ncaab.optimize` (150 iters, own_weight 0). Scored with DK's own points (2,752 of 2,752
+lineup-player lookups) in every contest of the lineup's type on its draft group: field percentile,
+cashed, $ back per $1 from the payout table. Variants: `shipped` = ncaab_lab's base + LAST_GAME refit
+leave-one-slate-out (today's production, held out); `as_logged` = the board as it ran. Single lineup
+(seed 0) and 20 independent seeds. ~3.5 min on all cores.
+
+**Parity** (seed-0 replay of the logged board vs the logged lineup, players shared of 8):
+155565 cash 6 / gpp 5, 156039 6/5, 156123 6/5, 156240 5/6, 156342 6/6, 156344 8/5, 156346 8/7,
+156355 8/8. Not exact: props players' stat split, Torvik splits and each game's home/away side are not
+logged (the sim's RNG order and the props' shape follow them). Logging the matchup + means would make
+it exact -- a cheap next step if a lineup cycle needs to separate optimizer effects of < 1 player.
+
+**Baseline (4 slates, 6 cash / 6 GPP contests: NOT ENOUGH DATA):**
+
+| variant | mode | field pctile [90%, by slate] | cashed | mean pts | $ back per $1 |
+|---|---|---|---|---|---|
+| shipped / set20 | cash | .417 [.300, .674] | 41% | 216.8 | 0.82 |
+| shipped / single | cash | .412 [.259, .731] | 33% | 218.0 | 0.67 |
+| as_logged / set20 | cash | .299 [.205, .489] | 32% | 201.9 | 0.63 |
+| as_run (logged lineups) | cash | .334 [.190, .611] | 33% | 208.5 | 0.67 |
+| Adam's entries | cash | .285 [.076, .611] | 33% | 199.8 | 0.67 |
+| shipped / set20 | gpp | .576 [.523, .631] | 22% | 210.8 | 0.44 |
+| as_logged / set20 | gpp | .523 [.455, .597] | 23% | 204.9 | 0.49 |
+| Adam's entries | gpp | .482 [.260, .703] | 33% | 198.5 | 0.74 |
+
+Per cash slate (shipped set20): 11/2 pctile .35, cashed 5% (line 209.5); 11/4 .66, 95%; 11/5 three
+Double Ups .18-.33, 15% (lines 242.75-249.75: the night the field ran far above every board);
+11/7 .71, 100%. What it says, as a hypothesis: today's production (LAST_GAME on) builds better cash
+lineups than the boards that ran (+.12 pctile, +15 pts) -- 11/4 carries most of it (as run 0.25 ->
+0.66 by set). 11/5 is the loss either way: Adam's entry (196.2) scored 20 under the replay and 50
+under the line, so construction on that night is the first thing to look at.
+
+**Gate:** `python3 scripts/ncaab_lineup_lab.py gate OUT` writes 12 rows (one per mode x contest, cluster
+= slate, pred = 1 - field pctile of the shipped 20-lineup set, actual 0, loss "abs"), deterministic.
+Not added to harness/critique_gate.py (conservative, unattended: Adam approves; under 5 slates it would
+refuse anyway). Test: `test_lineup_lab_replays_a_logged_board_and_scores_it_against_the_field`.
+
+**Conservative calls (unattended):** 11/8 / 11/9 not box-graded (no contest field on either; grading
+writes data/ncaab_box, done on main). No critic this cycle: 4 slates cannot separate a lineup change
+from noise, and the skill puts the harness first.
+
+**Next critic (lineups):** cash target = the shipped set20 pctile / $ per $1 by slate; start with 11/5
+(cash line 250, every lineup 214-232). Re-run `report` as each new Double Up lands; at 5+ cash slates
+propose the gate wiring.

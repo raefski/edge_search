@@ -373,6 +373,14 @@ exact: re-applied it reproduces the log to 1e-14) and the log carries `base_proj
 every build since. If LAST_GAME's constants change, slates logged without `base_proj` need their window
 added to `BAKED`. 11/7 (156344) forward with cycle 2's constants: all MAE 5.13 as run -> 5.06, priced
 7.16 -> 6.96, rho .573 -> .610 (one slate).
+**Lineups are scored now** (cycle 4, 2026-11-10): `scripts/ncaab_lineup_lab.py report` replays the
+production sim + optimizer on each logged board with a contest field and scores the lineups against
+the real Double Ups / GPPs (field percentile, cashed, $ back per $1; DK's own points). `shipped` =
+today's production with LAST_GAME refit leave-one-slate-out; `as_logged` = the board as it ran; also
+the logged lineups and Adam's entries. Parity with the logged lineups 5-8 of 8 players (8/8 on 11/7-11/9;
+props / Torvik splits and home/away are not logged). 4 cash slates (6 Double Ups): shipped 20-lineup
+sets field pctile .417 / cashed 41% / $0.82 per $1 vs the boards as run .299 / 32% / $0.63 -- not
+enough data. `gate OUT` writes critique-gate rows (pred = 1 - field pctile), not wired into the gate yet.
 
 **After each contest:**
 1. `harness run import-contests`, then `harness run ncaab-box-grade -- <gid>`, then `--fit`.

@@ -445,3 +445,45 @@ def test_last_games_never_reads_the_slate_day_and_a_refused_school_keeps_searchi
                        validate=lambda code, rows: rows[0]["name"].startswith("Boise"))
     assert set(got) == {"BSU"}                                   # UH's only game unfinished
     assert got["BSU"]["date"] == "2026-11-05" and got["BSU"]["rows"][0]["min"] == 20.0
+
+
+def _lineup_lab():
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location(
+        "ncaab_lineup_lab_t", Path(__file__).resolve().parents[1] / "scripts" / "ncaab_lineup_lab.py")
+    L = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(L)
+    return L
+
+
+def test_lineup_lab_replays_a_logged_board_and_scores_it_against_the_field(monkeypatch):
+    """Cycle 4 (lineup harness): a logged board becomes production's pool (sim means = the
+    variant's projection), the optimizer gives a legal 8, and the lineup is scored in its own
+    contest type only, by field percentile, cash line and the payout table."""
+    L = _lineup_lab()
+    monkeypatch.setattr(L, "N_SIMS", 400)
+    monkeypatch.setattr(L, "_comp_ids", lambda: {})
+    teams = [("AAA", "BBB"), ("BBB", "AAA"), ("CCC", "DDD"), ("DDD", "CCC")]
+    rows = []
+    for t, o in teams:
+        for i in range(8):
+            rows.append({"player": f"{t} P{i}", "team": t, "opp": o, "dk_pos": "G" if i % 2 else "F",
+                         "salary": str(3000 + 900 * i), "proj": str(6.0 + 4.0 * i), "implied": "72.5"})
+    proj = L._as_logged(1, rows, {})
+    pool, games = L.make_pool(1, rows, proj)
+    assert len(pool) == 32 and len(games) == 2
+    sim = L.simulate([dict(p) for p in pool], games, seed=0)
+    assert sim.mean(axis=0)[5] == pytest.approx(proj["AAA P5|AAA"], rel=0.1)
+    lu = L.lineup(pool, games, "cash", seed=0)
+    assert len(lu) == 8 and sum(int(next(r["salary"] for r in rows if r["player"] == n)) for n in lu) <= 50000
+
+    field = np.array([300.0, 250.0, 200.0, 150.0, 100.0])
+    monkeypatch.setattr(L, "fields", lambda: {1: [(11, "cash", field, 200.0), (12, "gpp", field, 300.0)]})
+    monkeypatch.setattr(L, "truth", lambda gid: ({L.norm(n): 30.0 for n in lu}, {}))
+    monkeypatch.setattr(L, "_PAY", {11: {"fee": 1.0, "tiers": [(1, 3, 2.0)]}})
+    out = L.contest_rows(1, "cash", [lu], "2026-11-02", "t")
+    assert len(out) == 1 and out[0]["contest"] == 11                     # never the GPP
+    r = out[0]
+    assert r["points"] == 240.0 and r["cashed"] == 1.0 and r["ret"] == 2.0
+    assert r["pctile"] == pytest.approx(3 / 5)
