@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-10T17:27:18+00:00",
+"generated_at": "2026-11-10T17:59:11+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
@@ -12,7 +12,7 @@
 },
 "DET": {
 "goalie": "John Gibson",
-"status": null
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
@@ -2239,7 +2239,7 @@
 "pp": "PP2"
 },
 "Brennan Othmann": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 3,
