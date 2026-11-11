@@ -31,6 +31,10 @@ MARKS_MIN = (15, 10, 5)
 #: A mark still fires if the timer wakes this late (WSL timers drift ~1 min);
 #: past it the next mark is closer and that one fires instead.
 GRACE = timedelta(minutes=3)
+#: Start this far ahead so the props LAND on the mark: a dfs_nba collect+push
+#: took 61 s on 2026-11-10 (scans 25574-25575), and the 7:25 mark that night
+#: started at 7:26:46 without a lead.
+SCAN_LEAD = timedelta(seconds=75)
 #: Tip times are re-read this often; NBA.com rarely moves one on the day.
 REFETCH = timedelta(minutes=60)
 UNIT = "odds-publish@dfs_nba.service"
@@ -40,7 +44,8 @@ def due_marks(tips: list[datetime], fired: set[str], now: datetime) -> list[date
     """Marks whose time has come (within GRACE) and that have not fired yet."""
     marks = {t - timedelta(minutes=m) for t in tips for m in MARKS_MIN}
     return sorted(m for m in marks
-                  if m <= now < m + GRACE and m.isoformat() not in fired)
+                  if m - SCAN_LEAD <= now < m - SCAN_LEAD + GRACE
+                  and m.isoformat() not in fired)
 
 
 def _load() -> dict:
