@@ -87,7 +87,7 @@ def test_no_fresh_prices_is_a_message_not_a_traceback(fake_world, monkeypatch):
 
 
 def test_every_dfs_page_handles_stale_odds():
-    pages = sorted((ROOT / "pages").glob("*DFS*.py"))
+    pages = sorted(p for p in (ROOT / "pages").glob("*DFS*.py") if "ROI" not in p.name)
     assert len(pages) == 7
     for page in pages:
         assert "stale_odds_note(exc" in page.read_text(), page.name

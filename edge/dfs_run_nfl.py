@@ -474,7 +474,9 @@ def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftki
         # and is not the same thing as an empty board.
         return {"unpriced": True, "gid": gid, "meta": meta, "slates": slates}
 
-    pool, stats = build_pool(client, salaries, book=book)
+    active, dk_out = dfs.drop_dk_out(salaries)
+    pool, stats = build_pool(client, active, book=book)
+    stats["dk_out"] = dk_out
     games = slate_games(salaries)
     pool = attach_intel(pool, meta, stats)
     try:

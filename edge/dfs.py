@@ -235,6 +235,17 @@ def fetch_draftables(draft_group_id: int) -> dict[str, dict]:
     return out
 
 
+#: DraftKings' own "ruled out" tags. DK still lets you roster these players,
+#: so a board that skips this check hands Adam a dead slot (A. Dendy, CFB 11/10).
+DK_OUT_TAGS = ("OUT", "O", "IR")
+
+
+def drop_dk_out(salaries: dict) -> tuple[dict, list]:
+    """(salaries without DK-ruled-out players, their sorted names)."""
+    out = sorted(v["name"] for v in salaries.values() if v.get("dk_status") in DK_OUT_TAGS)
+    return {k: v for k, v in salaries.items() if v.get("dk_status") not in DK_OUT_TAGS}, out
+
+
 _SNAP_DIR = __import__("pathlib").Path(__file__).resolve().parents[1] / "data" / "draftables_snapshot"
 #: {lobby code: {gid: lobby row + last_start}} in that directory, written by
 #: scripts/draftables_publish.py. DK drops a slate from the lobby at its FIRST tip, so

@@ -250,8 +250,10 @@ def build_board(gid: int, meta: dict, n_sims: int = 2000, seed: int = 0):
     except dfs.DraftablesUnavailable as exc:
         return [], None, {"priced": 0, "listed": 0, "provisional": True,
                           "unpriced": True, "unpriced_reason": str(exc)}
-    priced = {k: v for k, v in salaries.items() if v.get("salary")}
-    info = {"priced": len(priced), "listed": len(salaries), "provisional": True}
+    active, dk_out = dfs.drop_dk_out(salaries)
+    priced = {k: v for k, v in active.items() if v.get("salary")}
+    info = {"priced": len(priced), "listed": len(salaries), "provisional": True,
+            "dk_out": dk_out}
     if not priced:
         return [], None, {**info, "unpriced": True}
 

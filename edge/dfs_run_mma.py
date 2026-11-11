@@ -132,7 +132,8 @@ def read_board(gid: int) -> tuple[list[dict], list[dict], list[str]]:
     scratched = []
     for p in raw:
         comp = p.get("competition") or {}
-        if not comp.get("competitionId") or p.get("isDisabled"):
+        if (not comp.get("competitionId") or p.get("isDisabled")
+                or str(p.get("status") or "").upper() in dfs.DK_OUT_TAGS):
             scratched.append(p.get("displayName"))
             continue
         st = {a.get("id"): a.get("value") for a in p.get("draftStatAttributes") or []}
