@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-11T16:31:15+00:00",
+"generated_at": "2026-11-11T16:59:17+00:00",
 "goalies": {
 "2026-11-11": {
 "ANA": {
@@ -11,8 +11,8 @@
 "status": "Likely"
 },
 "CGY": {
-"goalie": "Dustin Wolf",
-"status": "Likely"
+"goalie": "Devin Cooley",
+"status": "Confirmed"
 },
 "EDM": {
 "goalie": "Tristan Jarry",
@@ -24,7 +24,7 @@
 },
 "NYR": {
 "goalie": "Joonas Korpisalo",
-"status": null
+"status": "Likely"
 },
 "PHI": {
 "goalie": "Dan Vladar",
@@ -3707,7 +3707,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -3743,7 +3743,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12500,7 +12500,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Alexis Lafreni\u00e8re": {
 "gtd": false,
@@ -12674,6 +12674,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Glenn Gawdin": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 49,
+"toiSeconds": 5
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 41,
+"toiSeconds": 30
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "J.T. Miller": {
 "gtd": false,
 "injury": null,
@@ -12776,40 +12810,6 @@
 "line": "G1",
 "pk": null,
 "pos": "g",
-"pp": null
-},
-"Luke Glendening": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 117,
-"toiSeconds": 17
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 49,
-"toiSeconds": 31
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
 "pp": null
 },
 "Marcus Pettersson": {
@@ -13048,7 +13048,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Tye Kartye": {
 "gtd": false,
@@ -18607,7 +18607,7 @@
 "pp": "PP1"
 },
 "Zack MacEwen": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
