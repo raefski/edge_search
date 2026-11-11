@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-11T00:43:59+00:00",
+"generated_at": "2026-11-11T00:58:51+00:00",
 "goalies": {
 "2026-11-10": {
 "CBJ": {
@@ -3707,7 +3707,7 @@
 "toiMinutes": 104,
 "toiSeconds": 3
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -3813,7 +3813,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "John Gibson": {
@@ -3955,7 +3955,7 @@
 "pp": "PP1"
 },
 "Marco Kasper": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 3,
@@ -3985,7 +3985,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
 },
 "Mason Appleton": {
@@ -4221,7 +4221,7 @@
 "toiMinutes": 94,
 "toiSeconds": 34
 },
-"line": "D2",
+"line": "D1",
 "pk": null,
 "pos": "ld",
 "pp": null
