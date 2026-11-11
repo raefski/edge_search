@@ -581,6 +581,46 @@
 "StartDate": "2026-11-13T00:00:00.0000000Z",
 "StartDateEst": "2026-11-12T19:00:00.0000000",
 "last_start": "2026-11-13T03:00:00.0000000Z"
+},
+"156595": {
+"ContestStartTimeSuffix": " (DET @ FLA)",
+"DraftGroupId": 156595,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-13T00:30:00.0000000Z",
+"StartDateEst": "2026-11-12T19:30:00.0000000",
+"last_start": "2026-11-13T00:30:00.0000000Z"
+},
+"156596": {
+"ContestStartTimeSuffix": " (Late)",
+"DraftGroupId": 156596,
+"DraftGroupTag": "",
+"GameCount": 4,
+"GameTypeId": 125,
+"StartDate": "2026-11-13T01:00:00.0000000Z",
+"StartDateEst": "2026-11-12T20:00:00.0000000",
+"last_start": "2026-11-13T03:00:00.0000000Z"
+},
+"156597": {
+"ContestStartTimeSuffix": " (Later)",
+"DraftGroupId": 156597,
+"DraftGroupTag": "",
+"GameCount": 2,
+"GameTypeId": 125,
+"StartDate": "2026-11-13T02:00:00.0000000Z",
+"StartDateEst": "2026-11-12T21:00:00.0000000",
+"last_start": "2026-11-13T03:00:00.0000000Z"
+},
+"156598": {
+"ContestStartTimeSuffix": " (NYI @ LAK)",
+"DraftGroupId": 156598,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-13T03:00:00.0000000Z",
+"StartDateEst": "2026-11-12T22:00:00.0000000",
+"last_start": "2026-11-13T03:00:00.0000000Z"
 }
 }
 }
