@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-11T22:44:44+00:00",
+"generated_at": "2026-11-11T23:44:14+00:00",
 "goalies": {
 "2026-11-11": {
 "ANA": {
@@ -8,7 +8,7 @@
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CGY": {
 "goalie": "Devin Cooley",
@@ -40,7 +40,7 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": "Likely"
+"status": "Confirmed"
 },
 "UTA": {
 "goalie": "Sebastian Cossa",
@@ -17405,7 +17405,7 @@
 },
 "line": "D2",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": "PP1"
 },
 "Conor Geekie": {
@@ -17679,7 +17679,7 @@
 },
 "line": "D2",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": "PP2"
 },
 "Nikita Kucherov": {
@@ -17815,7 +17815,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP1"
 },
 "Scott Sabourin": {
@@ -17917,7 +17917,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Zemgus Girgensons": {
