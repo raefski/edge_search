@@ -7,7 +7,7 @@ LATE = TIP + timedelta(hours=3)
 
 
 def test_each_mark_fires_once_in_its_window():
-    for m in (15, 10, 5):
+    for m in (60, 30, 15, 10, 5):
         now = TIP - timedelta(minutes=m) + timedelta(seconds=30)
         assert due_marks([TIP, LATE], set(), now) == [TIP - timedelta(minutes=m)]
         assert due_marks([TIP, LATE], {(TIP - timedelta(minutes=m)).isoformat()}, now) == []

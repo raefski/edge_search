@@ -1,5 +1,5 @@
 [Unit]
-Description=Every minute: NBA props refresh at 15/10/5 min before each tip
+Description=Every minute: NBA props refresh at 60/30/15/10/5 min before each tip
 
 [Timer]
 # An interval, not a calendar: see edge-nba-scratch.timer for the WSL refire bug.

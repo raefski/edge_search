@@ -1,4 +1,4 @@
-"""Fresh NBA props at 15, 10 and 5 minutes before every tip.
+"""Fresh NBA props at 60, 30, 15, 10 and 5 minutes before every tip.
 
 The calendar timers (odds-publish-dfs-nba.timer) publish every 30 minutes in
 the evening, so a phone build at lock could read props up to ~30 min old and
@@ -27,7 +27,9 @@ from edge.nba_lineups import fetch, parse  # noqa: E402
 from harness.nba_scratch import ET, tip_time  # noqa: E402
 
 STATE = ROOT / "data" / "harness" / "nba_props_lock_state.json"
-MARKS_MIN = (15, 10, 5)
+#: Adam 11/10: an hour out, half an hour out, then every 5 min from 15. Earlier
+#: than an hour stays on the calendar timers (odds-publish-dfs-nba.timer).
+MARKS_MIN = (60, 30, 15, 10, 5)
 #: A mark still fires if the timer wakes this late (WSL timers drift ~1 min);
 #: past it the next mark is closer and that one fires instead.
 GRACE = timedelta(minutes=3)
