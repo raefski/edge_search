@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-11T16:59:17+00:00",
+"generated_at": "2026-11-11T17:31:10+00:00",
 "goalies": {
 "2026-11-11": {
 "ANA": {
@@ -40,7 +40,7 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": null
+"status": "Likely"
 },
 "UTA": {
 "goalie": "Sebastian Cossa",
@@ -280,6 +280,40 @@
 "pos": "rd",
 "pp": null
 },
+"Frank Vatrano": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 116,
+"toiSeconds": 6
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 57,
+"toiSeconds": 40
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Jackson Lacombe": {
 "gtd": false,
 "injury": null,
@@ -485,40 +519,6 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
-},
-"Nico Myatovic": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 97,
-"toiSeconds": 5
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 53,
-"toiSeconds": 54
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Nikita Nesterenko": {
 "gtd": false,
@@ -18089,8 +18089,42 @@
 "toiMinutes": 81,
 "toiSeconds": 4
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
+"pos": "rd",
+"pp": null
+},
+"Cole McWard": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 72,
+"toiSeconds": 59
+},
+"last5": {
+"assists": 0,
+"blocks": 10,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 72,
+"toiSeconds": 59
+},
+"line": "D4",
+"pk": null,
 "pos": "rd",
 "pp": null
 },
@@ -18125,7 +18159,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Dakota Mermis": {
@@ -18261,7 +18295,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Jack Roslovic": {
@@ -18567,7 +18601,7 @@
 "toiMinutes": 86,
 "toiSeconds": 56
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -18605,40 +18639,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
-},
-"Zack MacEwen": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 89,
-"toiSeconds": 33
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 48,
-"toiSeconds": 59
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 }
 },
 "UTA": {
