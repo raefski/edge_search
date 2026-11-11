@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-11T14:02:23+00:00",
+"generated_at": "2026-11-11T14:30:06+00:00",
 "goalies": {
 "2026-11-11": {
 "ANA": {
@@ -8449,7 +8449,7 @@
 "toiMinutes": 53,
 "toiSeconds": 28
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -8761,7 +8761,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Joel Armia": {
@@ -8793,7 +8793,7 @@
 "toiMinutes": 61,
 "toiSeconds": 32
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
 "pos": "rw",
 "pp": null
@@ -8897,7 +8897,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Mikey Anderson": {
@@ -10507,9 +10507,9 @@
 "toiMinutes": 70,
 "toiSeconds": 4
 },
-"line": "D4",
+"line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Brett Pesce": {
@@ -10578,7 +10578,7 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Connor Brown": {
 "gtd": false,
@@ -10750,7 +10750,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Jack Hughes": {
 "gtd": false,
@@ -10891,7 +10891,7 @@
 "pp": "PP1"
 },
 "Johnathan Kovacevic": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -10919,9 +10919,9 @@
 "toiMinutes": 62,
 "toiSeconds": 40
 },
-"line": "D3",
+"line": "D4",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Jonas Siegenthaler": {
@@ -19633,7 +19633,7 @@
 "toiMinutes": 87,
 "toiSeconds": 59
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -19774,36 +19774,36 @@
 "pos": "c",
 "pp": null
 },
-"Noah Hanifin": {
-"gtd": false,
+"Parker Wotherspoon": {
+"gtd": true,
 "injury": null,
 "last10": {
-"assists": 2,
-"blocks": 16,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 17,
-"toiMinutes": 206,
-"toiSeconds": 21
-},
-"last5": {
 "assists": 1,
-"blocks": 11,
-"gamesPlayed": 5,
+"blocks": 12,
+"gamesPlayed": 10,
 "goals": 0,
 "points": 1,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 103,
-"toiSeconds": 49
+"shots": 11,
+"toiMinutes": 195,
+"toiSeconds": 15
 },
-"line": "D3",
+"last5": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 89,
+"toiSeconds": 26
+},
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -20115,42 +20115,6 @@
 "pk": null,
 "pos": "c",
 "pp": "PP2"
-},
-"Clay Stevenson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 29,
-"goalieGoalsAgainstAvg": "3.07",
-"goalieLosses": 5,
-"goalieMinutes": 565,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.89",
-"goalieSaves": 234,
-"goalieSeconds": 43,
-"goalieShotsAgainst": 263,
-"goalieShutouts": 0,
-"goalieWins": 4
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 16,
-"goalieGoalsAgainstAvg": "3.61",
-"goalieLosses": 3,
-"goalieMinutes": 265,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.871",
-"goalieSaves": 108,
-"goalieSeconds": 59,
-"goalieShotsAgainst": 124,
-"goalieShutouts": 0,
-"goalieWins": 1
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
 },
 "Cole Koepke": {
 "gtd": false,
@@ -20593,6 +20557,42 @@
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP2"
+},
+"Nico Daws": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 26,
+"goalieGoalsAgainstAvg": "2.89",
+"goalieLosses": 4,
+"goalieMinutes": 538,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.881",
+"goalieSaves": 192,
+"goalieSeconds": 11,
+"goalieShotsAgainst": 218,
+"goalieShutouts": 0,
+"goalieWins": 4
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 8,
+"goalieGoalsAgainstAvg": "1.87",
+"goalieLosses": 1,
+"goalieMinutes": 256,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.922",
+"goalieSaves": 95,
+"goalieSeconds": 44,
+"goalieShotsAgainst": 103,
+"goalieShutouts": 0,
+"goalieWins": 3
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
 },
 "Stuart Skinner": {
 "gtd": false,
