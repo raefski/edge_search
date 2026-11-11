@@ -8,6 +8,30 @@ repo, finds the single biggest hole in the minutes model. The hole is then fixed
 the standard table (`python3 scripts/nba_minutes_lab.py report`). MAE (bias) in minutes
 by slice; RMSE over all active player-games.
 
+## Ruled out -- do not re-explore as a gap
+
+Measured and too small to be the biggest hole. A critic or scout should skip these
+unless the model's recency weighting (`DECAY`) changes.
+
+- **Next game after foul trouble** (2026-11-10, Adam's question; 45,015 player-games,
+  575 players averaging >= 15 min, 2023-24..2025-26 game logs; next game vs the
+  player's prior 10-game average, controlling for game-t minutes, player-clustered 90%
+  bootstrap). No bounce-back: 5 fouls +0.07 min [-0.16, +0.31]; 4 fouls +0.19
+  [+0.04, +0.34]; fouled out +0.87 [+0.45, +1.29] (n 458). Raw PF is not a minutes cut:
+  4-5 foul games ran +1.6 min ABOVE average. The one difference: a short game (>= 5 min
+  under average) caused by 4-5 fouls carries less forward (-2.0 next game, n 854) than
+  other short games (-2.7, n 7,494), ~0.7 min on one game, about 0.14 min after the 0.8
+  per-game decay -- noise.
+- **Next game after a blowout, winner or loser** (2026-11-10; 20,232 starter-games,
+  332 players averaging >= 28 min; margin from summed box-score points). No bounce-back
+  and no winner/loser difference: next game -0.38 after a 20+ win, -0.46 after a 20+
+  loss, -0.55 after a game within 9 (all vs the 10-game average; the common negative is
+  the selection on a high average). Restricting to next games decided by < 10: +1.52 /
+  +1.33 / +1.15. A blowout-shortened game carries less forward (-1.3 next, n 932 wins /
+  717 losses) than a close-game short one (-3.2, n 1,388): ~2 min on one game, about
+  0.4 min after decay. Agrees with Cycle 6's null ("prior-game blowout or overtime: bias
+  shifts under 0.7 minutes") and Cycle 11 (blowout potential, not shipped).
+
 ## Cycle 0: the starting point (v2, shipped 2026-10-21, `f6a3104f`)
 
 | mode | season | n | RMSE all | all | opening (team games 1-5) | rookie / no NBA history | lottery rookie | new team (first 5) | back from 5+ missed | teammate of a scratch | promoted starter | high role (base 28+) | roles/240 >1.15, starter |

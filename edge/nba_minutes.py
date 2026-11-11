@@ -91,7 +91,9 @@ STARTER_MIN = 31.0
 # confirmed, 5.831 -> 5.624 inactives only. `scripts/nba_minutes_lab.py ablate` regenerates all of it.
 # Tried and NOT kept (no held-out gain): back-to-back and blowout (expected
 # margin) adjustments, an overflow-dependent starter tilt, splitting the 240
-# excess between starter and bench pools, a flat-power 240 share.
+# excess between starter and bench pools, a flat-power 240 share. Measured as too
+# small to chase: next-game minutes after foul trouble or a blowout (2026-11-10,
+# NBA_MINUTES_CRITIQUE_LOG.md "Ruled out").
 #: Weight per game of this season's games, newest = 1 (0.8: about the last 5).
 DECAY = 0.8
 #: Last season's role (all of it, flat: PRIOR_DECAY 1.0) as a prior worth this many
