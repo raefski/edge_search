@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-11-11T18:29:05+00:00",
+"generated_at": "2026-11-11T18:59:12+00:00",
 "goalies": {
 "2026-11-11": {
 "ANA": {
 "goalie": "Laurent Brossoit",
-"status": null
+"status": "Confirmed"
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
@@ -36,7 +36,7 @@
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
-"status": null
+"status": "Confirmed"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -19633,7 +19633,7 @@
 "toiMinutes": 87,
 "toiSeconds": 59
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -19803,7 +19803,7 @@
 "toiMinutes": 89,
 "toiSeconds": 26
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
