@@ -178,6 +178,9 @@ JOBS: dict[str, Job] = {j.name: j for j in [
        timer="draftables-publish.timer"),
     _j("nhl-lines-publish", "publish", "scripts/nhl_lines_publish.py", "--push", sport="nhl",
        timer="nhl-lines-publish.timer"),
+    _j("nba-props-lock", "publish", "scripts/nba_props_lock.py", sport="nba",
+       timer="edge-nba-props-lock.timer",
+       doc="fresh NBA props 60/30/15/10/5 min before every tip (starts odds-publish@dfs_nba)"),
     *[_j(f"mirror-{a}", "publish", "scripts/mirror_app.py", "--app", a, "--push", sport=a,
          doc=f"regenerate + push the standalone {a} app repo (never edit the mirror)")
       for a in ("nhl", "ncaaf", "nascar", "mma")],

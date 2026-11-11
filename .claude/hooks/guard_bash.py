@@ -132,6 +132,12 @@ def _check_git(toks: list[str]) -> str | None:
         return "git clean -f deletes untracked data files (contest exports, proj logs)"
     if sub == "checkout" and "." in rest:
         return "git checkout . discards every uncommitted change in the tree"
+    if sub in ("checkout", "switch") and "--" not in rest and any(
+            r in ("data", "origin/data") for r in rest):
+        # 2026-11-10: switching this tree to data and back deleted 205 data-only files
+        # and the timers then published truncated proj logs over the branch.
+        return ("switching the working tree to the data branch deletes its timer files on "
+                "the way back; publish with edge.data_branch.publish (git plumbing) instead")
     if sub == "restore" and "." in rest and "--staged" not in rest:
         return "git restore . discards every uncommitted change in the tree"
     if sub == "push" and any(r in ("-f", "--force", "--force-with-lease") or r.startswith("--force")

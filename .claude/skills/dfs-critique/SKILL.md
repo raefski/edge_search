@@ -60,6 +60,13 @@ in a fresh worktree on a `critique/<sport>-<stamp>` branch). Nobody is watching,
   passing branch is re-gated after 7 forward days before it merges. Don't edit a lab's
   `gate()` function, the skill, the critic prompts, `.claude/` or `harness/critique_*`:
   any of those sends the branch to Adam for review instead of merging.
+- Never end a turn while a job is still running: under `claude -p` nothing wakes you
+  when a background job finishes, so ending the turn ends the cycle. Wait on long
+  replays with repeated FOREGROUND Bash polls (each under 10 min, e.g.
+  `timeout 540 bash -c 'while pgrep -f "<job>" >/dev/null; do sleep 20; done'`) until
+  the job is done. (NBA 2026-11-11: a 21-minute replay finished at 03:34, the agent had
+  ended its turn at 03:13 "waiting" on it, and the 2.5 h limit killed it at 04:28 with
+  nothing committed.)
 - Not shipped: commit the log entry anyway (it is the next critic's memory).
 - No held-out harness for the sport's metric (NFL, MMA tonight): building it is the
   cycle (section 1). Commit it with a `gate OUT` command that writes one JSON line per

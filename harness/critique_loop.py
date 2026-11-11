@@ -297,7 +297,15 @@ def run_agent(sport: str, wt: Path, stamp: str) -> dict:
     except subprocess.TimeoutExpired as e:
         out = e.stdout.decode(errors="replace") if isinstance(e.stdout, bytes) else (e.stdout or "")
         rc = "timeout"
-    (RUNS / f"{stamp}-{sport}.json").write_text(out or "")
+    if not out:
+        # --output-format json prints only at exit, so a killed agent leaves nothing:
+        # point the log at its session transcript instead of writing an empty file.
+        slug = "".join(c if c.isalnum() else "-" for c in str(wt))
+        tx = sorted((Path.home() / ".claude" / "projects" / slug).glob("*.jsonl"),
+                    key=lambda p: p.stat().st_mtime)
+        out = json.dumps({"rc": rc, "result": f"no output (rc {rc})",
+                          "transcript": str(tx[-1]) if tx else None})
+    (RUNS / f"{stamp}-{sport}.json").write_text(out)
     try:
         claim = json.loads((wt / "critique_result.json").read_text())
     except (OSError, ValueError):
