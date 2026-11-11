@@ -1,0 +1,17 @@
+# Fresh NBA props 15, 10 and 5 minutes before every tip (scripts/nba_props_lock.py).
+# It starts odds-publish@dfs_nba.service, which collects and pushes the snapshot.
+#
+#   cp deploy/edge-nba-props-lock.service deploy/edge-nba-props-lock.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now edge-nba-props-lock.timer
+#   journalctl --user -u edge-nba-props-lock -n 50
+[Unit]
+Description=Start an NBA props publish at 15/10/5 min before each tip
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/nba_props_lock.py
+Restart=no
+TimeoutStartSec=60
