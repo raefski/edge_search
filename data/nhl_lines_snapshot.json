@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-11T17:31:10+00:00",
+"generated_at": "2026-11-11T17:58:57+00:00",
 "goalies": {
 "2026-11-11": {
 "ANA": {
@@ -28,7 +28,7 @@
 },
 "PHI": {
 "goalie": "Dan Vladar",
-"status": null
+"status": "Likely"
 },
 "PIT": {
 "goalie": "Sergei Murashov",
@@ -98,7 +98,7 @@
 },
 "MTL": {
 "goalie": "Jacob Fowler",
-"status": null
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Jake Allen",
@@ -14320,6 +14320,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Rasmus Ristolainen": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 14,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 15,
+"toiMinutes": 207,
+"toiSeconds": 35
+},
+"last5": {
+"assists": 0,
+"blocks": 9,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 87,
+"toiSeconds": 33
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Sean Couturier": {
 "gtd": false,
 "injury": null,
@@ -14352,40 +14386,6 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "c",
-"pp": null
-},
-"Simon Benoit": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 146,
-"toiSeconds": 1
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 73,
-"toiSeconds": 52
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
 "pp": null
 },
 "Travis Konecny": {
@@ -17512,40 +17512,6 @@
 "pos": "rd",
 "pp": null
 },
-"Gage Goncalves": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 11,
-"toiMinutes": 153,
-"toiSeconds": 4
-},
-"last5": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 3,
-"toiMinutes": 70,
-"toiSeconds": 6
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Ilya Mikheyev": {
 "gtd": false,
 "injury": null,
@@ -17847,10 +17813,44 @@
 "toiMinutes": 88,
 "toiSeconds": 47
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
+},
+"Scott Sabourin": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 88,
+"toiSeconds": 53
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 46,
+"toiSeconds": 49
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Victor Hedman": {
 "gtd": false,
