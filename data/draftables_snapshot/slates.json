@@ -198,26 +198,6 @@
 },
 "NAS": {},
 "NBA": {
-"156581": {
-"ContestStartTimeSuffix": " (Night)",
-"DraftGroupId": 156581,
-"DraftGroupTag": "Featured",
-"GameCount": 2,
-"GameTypeId": 70,
-"StartDate": "2026-11-12T02:30:00.0000000Z",
-"StartDateEst": "2026-11-11T21:30:00.0000000",
-"last_start": "2026-11-12T03:00:00.0000000Z"
-},
-"156584": {
-"ContestStartTimeSuffix": " (OKC @ POR)",
-"DraftGroupId": 156584,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 81,
-"StartDate": "2026-11-12T03:00:00.0000000Z",
-"StartDateEst": "2026-11-11T22:00:00.0000000",
-"last_start": "2026-11-12T03:00:00.0000000Z"
-},
 "156586": {
 "ContestStartTimeSuffix": " (2H OKC @ POR)",
 "DraftGroupId": 156586,
@@ -280,26 +260,6 @@
 }
 },
 "NFL": {
-"156322": {
-"ContestStartTimeSuffix": " (Madden Stream)",
-"DraftGroupId": 156322,
-"DraftGroupTag": "Featured",
-"GameCount": 3,
-"GameTypeId": 158,
-"StartDate": "2026-11-11T23:00:00.0000000Z",
-"StartDateEst": "2026-11-11T18:00:00.0000000",
-"last_start": "2026-11-12T03:00:00.0000000Z"
-},
-"156325": {
-"ContestStartTimeSuffix": " (Madden Stream DEN @ JAX)",
-"DraftGroupId": 156325,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 159,
-"StartDate": "2026-11-12T03:00:00.0000000Z",
-"StartDateEst": "2026-11-11T22:00:00.0000000",
-"last_start": "2026-11-12T03:00:00.0000000Z"
-},
 "156326": {
 "ContestStartTimeSuffix": " (Madden Stream)",
 "DraftGroupId": 156326,
@@ -532,36 +492,6 @@
 }
 },
 "NHL": {
-"156290": {
-"ContestStartTimeSuffix": null,
-"DraftGroupId": 156290,
-"DraftGroupTag": "Featured",
-"GameCount": 6,
-"GameTypeId": 125,
-"StartDate": "2026-11-12T00:00:00.0000000Z",
-"StartDateEst": "2026-11-11T19:00:00.0000000",
-"last_start": "2026-11-12T03:00:00.0000000Z"
-},
-"156295": {
-"ContestStartTimeSuffix": " (Late)",
-"DraftGroupId": 156295,
-"DraftGroupTag": "",
-"GameCount": 3,
-"GameTypeId": 125,
-"StartDate": "2026-11-12T02:30:00.0000000Z",
-"StartDateEst": "2026-11-11T21:30:00.0000000",
-"last_start": "2026-11-12T03:00:00.0000000Z"
-},
-"156296": {
-"ContestStartTimeSuffix": " (NSH @ ANA)",
-"DraftGroupId": 156296,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 127,
-"StartDate": "2026-11-12T03:00:00.0000000Z",
-"StartDateEst": "2026-11-11T22:00:00.0000000",
-"last_start": "2026-11-12T03:00:00.0000000Z"
-},
 "156590": {
 "ContestStartTimeSuffix": " (CAR @ SEA)",
 "DraftGroupId": 156590,
