@@ -305,6 +305,14 @@ def simulate(pool: list[dict], games: dict, n_sims: int = 2000, seed: int = 0) -
                     sa = sa * (target + ga_.mean()) / expected_sa
                 saves = np.maximum(np.rint(sa) - ga_, 0)
                 out[:, i] = nhl.goalie_points(saves, ga_, won[t], ot_loss[t], ga_ == 0)
+    # A goalie who may not start (p_start < 1, edge/dfs_run_nhl.goalie_start_prob) scores 0 in
+    # 1 - p of the sims. His own RNG, so every other draw (games, skaters) is the stream it was
+    # without it: skater projections do not move, and a board of confirmed goalies is unchanged.
+    for i, p in enumerate(pool):
+        ps = p.get("p_start")
+        if p["pos"] == "G" and ps is not None and ps < 1.0:
+            g_rng = np.random.default_rng([seed, 7919, i]) if seed is not None else np.random.default_rng()
+            out[g_rng.random(n_sims) >= ps, i] = 0.0
     skaters = [i for i, p in enumerate(pool) if p["pos"] != "G"]
     out[:, skaters] *= SKATER_SCALE
     return out

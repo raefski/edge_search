@@ -110,6 +110,15 @@ LESSONS = [
      "evidence": "book spellings and nicknames (DK Freddy / DFO Frederick) left stars without props or lines; "
                  "fixed in every sport; the scout audits name suspects each cycle",
      "covers": []},
+    {"id": "L13", "from": "nhl", "mechanism": "a feed's no-news default is a guess whose miss rate depends on WHOM "
+                                            "it defaults to: fit P(in the role | status, context) and draw the miss "
+                                            "as a zero inside the lineup simulation, not as full credit",
+     "ref": "NHL critique cycle 14 (11/12, availability goalies; T01)",
+     "evidence": "DailyFaceoff 'Projected' goalies: the one who started the team's last game, on rest, started "
+                 "17/28 held out (fit 0.586 on 9/29-10/20), the other goalie on a back-to-back 14/14; Brier "
+                 "0.048 -> 0.034 at T-180 (292 team-games, 22 nights); dead G slots in replayed test lineups "
+                 "cash 13/90 -> 0 (early), 17/140 -> 0 (lock); lineup points within noise (GPP -1.1 to -1.6)",
+     "covers": [("nhl", "2026-11-12")]},
     {"id": "L12", "from": "overlay", "mechanism": "late-listed re-posts priced on a pooled curve (overlay only)",
      "ref": "overlay cycle (11/9)", "evidence": "re-posts fill 0.88 of room; no DFS-model analogue",
      "covers": [("overlay", "2026-11-09")]},
@@ -123,17 +132,19 @@ LESSONS = [
 #: measured: the probe's numbers (date, n). pts_lineup = DK points per entered lineup the hole
 #: costs (held out where stated; "upper bound" when re-optimising would recover less).
 TRANSFERS = [
-    {"id": "T01", "lesson": "L01", "sport": "nhl", "kind": "availability", "status": "open",
+    {"id": "T01", "lesson": "L01", "sport": "nhl", "kind": "availability", "status": "handled",
      "idea": "a DailyFaceoff goalie with no news ('Projected') gets full starter credit: give him P(start)",
-     "where": "edge/dfs_run_nhl.py:579 stores starter_status; nothing reads it",
-     "data": "690 DailyFaceoff snapshots on the data branch (10/16-), box-score starters (NHL API)",
-     "probe": "goalies", "target": "availability goalies (queued for the 11/12 night)",
-     "measured": {"at": "2026-11-11", "pts_lineup": 0.75,
-                  "note": "status 90 min before puck drop vs who started, 10/17-11/10: Projected wrong 12/59 "
-                          "(20%), Likely 0/56, Confirmed 0/229. Our logged lineups: 25 of 132 goalie slots "
-                          "Projected at T-60, 8 did not start (Kuemper 10/24, Saros 11/5) -> 8 x ~12.3 pts / "
-                          "132 lineups = 0.75 pts/lineup if not swapped. Adam swapped both by hand (0 entered), "
-                          "so the realised cost was his time before lock, not points."}},
+     "where": "edge/dfs_run_nhl.py GOALIE_START_P / goalie_start_prob (branch critique/nhl-20261112-0800, "
+              "Adam reviews: the skater gate does not measure goalies); edge/nhl_sim.simulate zeroes 1 - p",
+     "data": "1,075 DailyFaceoff snapshots (git, 9/28-), box-score starters; scripts/nhl_goalie_lab.py",
+     "probe": "goalies", "target": "availability goalies (NHL cycle 14, 11/12)",
+     "measured": {"at": "2026-11-12", "pts_lineup": 1.2,
+                  "note": "NHL cycle 14: Projected wrong ~20% at every lead (train 14/66, test 14/73 at T-180), "
+                          "Likely / Confirmed 0 of 600+; the real starter named a median T-15 (warmups). Cells "
+                          "(fit 9/29-10/20): started-last on rest 0.586 (test 17/28), b2b backup 0.969 (14/14), "
+                          "other 0.785 (28/31). Replayed test lineups (early boards, 10 seeds): dead G slots "
+                          "cash 13/90 -> 0, GPP 19/140 -> 5; G-slot points +1.2 / lineup cash, but lineup totals "
+                          "within noise (cash -0.2, GPP -1.6 [-4.1, +1.0]); lock: cash +1.5, GPP -1.1."}},
     {"id": "T02", "lesson": "L05", "sport": "nba", "kind": "projection", "status": "open",
      "idea": "the top projection tier is overrated: a knot on projection level (NHL cycle 10's shape), "
              "plausibly from turnovers + double-doubles left in the blend's constant (T03) and count "
@@ -229,6 +240,21 @@ TRANSFERS = [
     {"id": "T19", "lesson": "L09", "sport": "nhl", "kind": "ownership", "status": "measure",
      "idea": "a skater promoted to PP1 / the top line by news becomes chalk", "where": "edge/dfs_nhl_theory.py",
      "data": "28 GPP slates; DFO line snapshots", "probe": None, "target": "ownership: promotions (GPP only)"},
+    {"id": "T21", "lesson": "L13", "sport": "nba", "kind": "availability", "status": "measure",
+     "idea": "a Questionable / GTD player's DNP chance drawn as a zero in the lineup sim (cash floor / GPP "
+             "percentiles see it), split by whom the feed defaults to (Expected starter vs bench)",
+     "where": "edge/dfs_run_nba.py (minutes hedge shrinks the mean; is the DNP a mixture in the sim?)",
+     "data": "NBA official injury report + RotoWire logs since 10/22, box-score DNPs", "probe": None,
+     "target": "availability: questionable DNP mixture"},
+    {"id": "T22", "lesson": "L13", "sport": "nfl", "kind": "availability", "status": "measure",
+     "idea": "a Questionable player kept at full projection: P(active | tag, practice report) as a zero draw "
+             "in the lineup sim (T05 is the played-but-limited half)",
+     "where": "edge/dfs_run_nfl.py (Q kept at full projection)", "data": "nflverse injuries 2023-26 + inactives",
+     "probe": "nfl-questionable", "target": "availability: questionable inactives"},
+    {"id": "T23", "lesson": "L13", "sport": "mlb", "kind": "availability", "status": "waiting",
+     "idea": "a projected (unposted) batting order or probable pitcher treated as certain; P(in lineup | "
+             "source status, platoon / rest-day context) as a zero draw",
+     "where": "edge/dfs.py lineup source", "data": "no MLB slates until spring 2027", "probe": None, "target": None},
     {"id": "T20", "lesson": "L10", "sport": "nba", "kind": "ownership", "status": "measure",
      "idea": "DK FPPG as an ownership input (NHL, NFL, NCAAF, NCAAB, NASCAR boards carry it; NBA's theory does not)",
      "where": "edge/dfs_nba_theory.py", "data": "26 GPP slates", "probe": None, "target": "ownership: dk fppg (GPP only)"},

@@ -19,7 +19,9 @@ league average, so a depth player on a favourite is not priced like one on an
 underdog. Every fallback is flagged `imputed` in the app.
 
 Goalies: the starter's saves come from his opponents' simulated shots, rescaled
-to his DraftKings Saves O/U when one is posted.
+to his DraftKings Saves O/U when one is posted. He is not certain to start: his
+draws are zeroed in 1 - p_start of the sims, p_start from DailyFaceoff's news
+strength and whether he started the team's last game (GOALIE_START_P).
 
 11 F / 7 D LINEUPS
 A team that dresses seven defencemen splits the blue line's minutes seven
@@ -132,6 +134,41 @@ RATE_K = 30.0
 ROLE_K = 5.0
 ROLE_LAST = 5
 ROLE_POWER = {"goals": 2.0, "assists": 2.0, "shots": 2.0, "blocks": 2.5}
+#: P(the goalie DailyFaceoff names starts), by DFO's news strength and -- when it has no news
+#: ("Projected") -- by whom it names. DFO's no-news default for a team on rest is the goalie
+#: who started its last game, and a backup's start there is announced at warmups (median
+#: T-15 before puck drop, after every build); its pick for the second night of a back-to-back
+#: (the goalie who did NOT start last night) is reliable. Until 2026-11-12 every board goalie
+#: got full starter credit and the row's starter_status was read by nothing: Kuemper 10/24
+#: and Saros 11/5 sat in 8 of 117 test-period logged G slots (0 points each).
+#: FITTED 2026-11-12 (NHL critique cycle 14, scripts/nhl_goalie_lab.py) on TRAIN nights
+#: 9/29-10/20 (302 team-games; DFO's state at T-240..T-15 pooled, n = team-games, 2 pseudo-
+#: games toward the status rate). Held out 10/21-11/11 (292 team-games, 22 nights), at T-180:
+#: started_last 17 of 28 started (fit 0.586), b2b_backup 14/14 (0.969), other 28/31 (0.785);
+#: Confirmed 168/168, Likely 51/51 (train 0 misses in 251). Brier 0.048 -> 0.034, log loss
+#: 0.331 -> 0.105. "Projected" alone (0.758, the status rate) is used when the last start is
+#: unknown (no box scores reachable). Refit at ~40 nights.
+GOALIE_START_P = {"Confirmed": 1.0, "Likely": 1.0, "Projected": 0.758,
+                  "Projected/started_last": 0.586, "Projected/b2b_backup": 0.969,
+                  "Projected/other": 0.785}
+
+
+def goalie_cell(status: str | None, started_last: bool | None, back_to_back: bool | None) -> str:
+    """The GOALIE_START_P key. Any status other than Confirmed / Likely (DFO's None = no news,
+    or a label it adds later) is treated as Projected; context unknown -> the status rate."""
+    if status in ("Confirmed", "Likely"):
+        return status
+    if started_last is None:
+        return "Projected"
+    if back_to_back and not started_last:
+        return "Projected/b2b_backup"
+    return "Projected/started_last" if started_last else "Projected/other"
+
+
+def goalie_start_prob(status: str | None, started_last: bool | None = None,
+                      back_to_back: bool | None = None) -> float:
+    """P(DFO's goalie starts tonight); nhl_sim.simulate zeroes his draws with 1 - p."""
+    return GOALIE_START_P[goalie_cell(status, started_last, back_to_back)]
 
 
 def classic_groups(groups: list[dict] | None = None) -> list[dict]:
@@ -511,6 +548,12 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
     except Exception as exc:                                # noqa: BLE001
         log.warning("nhl: no starting goalies (%s)", exc)
         starters = {}
+    try:
+        # each team's previous start: which "Projected" goalie DFO is guessing about
+        last_starts = nhl.last_starts(date, teams)
+    except Exception as exc:                                # noqa: BLE001
+        log.warning("nhl: no previous starts (%s)", exc)
+        last_starts = None
     rates = _season_rates()
     toi_rows = current_toi(date)
     toi_now = group_toi(toi_rows) if toi_rows is not None else None
@@ -541,6 +584,8 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
             "seven_d": sorted(seven_d & teams),
             "missing_lines": sorted(teams - set(implied)), "date": date,
             "starters": starters, "no_lineup": [], "imputed": 0, "line_alias": [],
+            "p_start": {}, "last_start_source": "NHL box scores" if last_starts is not None
+            else "unavailable (Projected goalies at the status rate)",
             "wrong_game": wrong_game,
             "role_source": "this season's ice time" if toi_now is not None else "unavailable",
             "season_source": "this season's production" if produced is not None else "unavailable"}
@@ -577,6 +622,14 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
                     continue
                 info["line_alias"].append(f"{sal['name']} = {g_name}")
             row["starter_status"] = st.get("status") or "Projected"
+            prev = (last_starts or {}).get(t)
+            started_last = None if last_starts is None else (
+                bool(prev) and _initial_last(t, prev["goalie"]) == _initial_last(t, g_name or sal["name"]))
+            b2b = bool(prev) and (datetime.strptime(date, "%Y-%m-%d").date()
+                                  - datetime.strptime(prev["date"], "%Y-%m-%d").date()).days == 1
+            row["start_cell"] = goalie_cell(st.get("status"), started_last, b2b)
+            row["p_start"] = GOALIE_START_P[row["start_cell"]]
+            info["p_start"][t] = row["p_start"]
             saves = nhl_sim.market_mean((props.get(skey) or {}).get("player_total_saves"))
             row["means"] = {"saves": saves} if saves else {}
             pool.append(row)

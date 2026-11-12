@@ -166,13 +166,20 @@ st.markdown(
 
 # 1. Goalies: the late news that decides a slate.
 starters = info.get("starters") or {}
-unconfirmed = [f"{t} {v.get('goalie')}" for t, v in sorted(starters.items())
+p_start = info.get("p_start") or {}
+unconfirmed = [f"{t} {v.get('goalie')}"
+               + (f" ({p_start[t]:.0%} to start)" if p_start.get(t, 1.0) < 1.0 else "")
+               for t, v in sorted(starters.items())
                if t in imp and (v.get("status") or "").lower() != "confirmed"]
 if unconfirmed:
     st.markdown("<div class='warn'>⚠️ <b>Unconfirmed goalies:</b> " + ", ".join(unconfirmed)
-                + "<br>These are DailyFaceoff's projected starters. Goalies are usually "
-                "confirmed 1–2 hours before puck drop — <b>Refresh</b> then, and use late "
-                "swap if one changes (DK NHL allows it).</div>", unsafe_allow_html=True)
+                + "<br>These are DailyFaceoff's projected starters. A no-news goalie who started "
+                "his team's last game sits ~40% of the time and the switch comes out at warmups; "
+                "the projections and lineups already price the chance he sits. <b>Refresh</b> "
+                "near puck drop and use late swap if one changes (DK NHL allows it)."
+                + (f"<br>Last starts: {info['last_start_source']}" if "unavailable" in
+                   (info.get("last_start_source") or "") else "")
+                + "</div>", unsafe_allow_html=True)
 else:
     st.markdown("<div class='ok'>✅ Every starting goalie on the slate is confirmed.</div>",
                 unsafe_allow_html=True)

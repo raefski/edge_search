@@ -80,6 +80,29 @@ DailyFaceoff's projected lineup plus anyone a book priced, and only the projecte
 starting goalie — a priced healthy scratch or IR player is dropped (and DK's
 own OUT/IR status is honoured).
 
+**Starting goalies are priced by how sure DailyFaceoff is (2026-11-12, critique cycle 14).**
+Each board goalie carries `p_start` = P(the goalie DFO names starts), and `nhl_sim.simulate`
+zeroes his draws in 1 − p of the sims (his own RNG: skaters do not move), so his mean, the cash
+25th percentile and the GPP 95th all carry the risk. `GOALIE_START_P` (edge/dfs_run_nhl.py),
+fitted on 9/29-10/20 (302 team-games), held out 10/21-11/11 (292, 22 nights):
+
+| DFO says | cell | P(start) | test, T-180: started / n |
+|---|---|---|---|
+| Confirmed / Likely | — | 1.0 | 219 / 219 (train 0 misses in 251) |
+| no news ("Projected"), he started the team's last game, on rest | started_last | 0.586 | 17 / 28 |
+| no news, the other goalie on the 2nd night of a back-to-back | b2b_backup | 0.969 | 14 / 14 |
+| no news, anything else | other | 0.785 | 28 / 31 |
+| no news, last start unknown (no box scores reachable) | Projected | 0.758 | status rate |
+
+The last start comes from `nhl.last_starts` (NHL schedule + cached box scores; shown as
+`last_start_source` when unavailable). Why it matters: the switch to the backup is announced
+at warmups — DFO had the real starter for good a median 15 minutes before puck drop, after
+every build — so neither a later rebuild nor the goalie-change push reliably beats it. Before
+this, Kuemper (10/24) and Saros (11/5) sat in 8 of 117 test-period logged G slots, 0 points
+each. The phone page lists unconfirmed goalies with their start chance. Harness:
+`scripts/nhl_goalie_lab.py` (`rows`, `report`, `parity`, `lineups --state lock|early`,
+`gate`); NHL_CRITIQUE_LOG.md cycle 14. Refit the cells at ~40 nights.
+
 ## 5. The two theories (edge/dfs_nhl_theory.py, edge/dfs_opt_nhl.py)
 
 - **cash** = 25th percentile of the lineup's own simulated total. No stack rule.
@@ -292,7 +315,8 @@ What is worth watching:
   ceiling, which is the 90th percentile, target 10%. Floor 26% (target 25). No
   simulator change.
 - **Wrong starters cost the most per case:** 4 of 171 (2%) projected starters
-  did not play (0 points); 7 more were pulled.
+  did not play (0 points); 7 more were pulled. **Priced since 2026-11-12** (§4, P(start) by
+  DFO status and the goalie's last start).
 
 ## 6f. Ownership refits re-checked with whole days held out (2026-10-19)
 

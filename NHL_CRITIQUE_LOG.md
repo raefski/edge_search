@@ -748,3 +748,116 @@ Unattended gate (20261108-0638): **not shipped (log / harness only, verified)** 
 landed by hand after harness verify + the NHL suite passed.
 
 Unattended gate (20261110-0714): **not shipped (log / harness only, verified)**
+
+
+## Cycle 14 (availability: goalies -- queued by Adam; transfer T01 from nba L01) -- SHIPPED on the branch (Adam reviews)
+
+Unattended, 2026-11-12. (Cycle 13, 11/10, built scripts/nhl_lineup_lab.py; its log entry never
+landed here -- the commit message `0ade87d1` holds its baseline.) Target, as queued: who the board
+had in the G slot, and how sure, at build time vs who started. Metric per held-out night: starter
+precision by DailyFaceoff status and minutes to puck drop (Brier / log loss of the start belief),
+false actives (board goalie who did not start: count, projected points, our G slots), lead time.
+The T01 probe numbers were kept from the critic.
+
+**Harness built first** (none existed): `scripts/nhl_goalie_lab.py`. Every committed version of
+data/nhl_lines_snapshot.json (`git log --all`: main 9/28-10/16, data branch since; 1,075 versions,
+`generated_at` stamps) gives DFO's goalie + status for every team-game at T-240 .. T-15 before ITS
+puck drop; truth = the box-score starter (data/nhl_cache/box). 594 team-games 9/29-11/11. TRAIN <
+2026-10-21 <= TEST (the middle of the history, fixed before any test row was read): 302 / 292
+team-games, 22 / 22 nights. Also scored: our logged lineups' G slots (build time from
+dfs_proj_history_nhl.csv since 10/29, else lock - 15 min) and Adam's entered goalies (contests.db).
+
+**Cycle 0 for this target (shipped = every DFO goalie a certain starter):**
+
+| split | lead | Confirmed n / wrong | Likely | Projected |
+|---|---|---|---|---|
+| train | T-180 | 165 / 0 | 71 / 0 | 66 / 14 (21%) |
+| train | T-60 | 191 / 0 | 66 / 0 | 45 / 12 (27%) |
+| test | T-180 | 168 / 0 | 51 / 0 | 73 / 14 (19%) |
+| test | T-60 | 201 / 0 | 46 / 0 | 45 / 9 (20%) |
+
+The real starter was named for good a median T-15 / T-16 (train / test; 10th pct T-0 / T-1): the
+switch comes out at warmups, after every build. Our logged lineups, test: 117 G slots, 8 did not
+start (Kuemper 10/24 x3 at T-165, Saros 11/5 x5 at T-163 / T-103), 97.2 projected points on zeros;
+train 0 / 48. Adam's entries: 1 of 63 entered goalies did not start (Merilainen 10/17, one $1 GPP);
+he swapped Kuemper and Saros by hand.
+
+**Critic #14 (dfs-availability-critic): "Projected" is three different claims.** DFO's no-news
+default for a team on rest is the goalie who started its last game, and that is the one that
+fails: he started 58% train / 61% test (17/28 at T-180). Its pick of the OTHER goalie on the second
+night of a back-to-back is its rotation call and held 14/14 (train 18/18). Everything else
+"Projected" ran 83% / 90%. All 29 misses were dressed as the backup in the box (not a name join).
+The monitor's live poll had the flips at T-21..T-28; the 30-minute snapshot timer at T-16..T-1.
+Fix specified: p_start per goalie from (status, started last game, back-to-back), fitted on TRAIN;
+the simulator zeroes the goalie in 1 - p of the sims so cash floors and GPP ceilings price it.
+
+**Fix (no judgment on test):** the critic's cells re-fitted on TRAIN in the lab (leads pooled with
+weight 1/7 so n = team-games, 2 pseudo-games toward the status rate): Confirmed 1.0, Likely 1.0,
+Projected/started_last **0.586** (train n 19.9), Projected/b2b_backup **0.969** (13.1),
+Projected/other **0.785** (17.4); unknown last start -> the status rate 0.758. Production:
+`GOALIE_START_P` + `goalie_cell` / `goalie_start_prob` (edge/dfs_run_nhl.py), `nhl.last_starts`
+(schedule + cached box scores, looking back two weeks), `row["p_start"]`, and `nhl_sim.simulate`
+zeroing the goalie's column from its OWN RNG (`[seed, 7919, i]`), so skater draws and every
+confirmed-goalie board are bit-identical to before (tested). Parity: production's cell == the
+lab's on 594 / 594 team-games (`nhl_goalie_lab.py parity`). The page lists unconfirmed goalies
+with their start chance.
+
+**Held out, TEST (292 team-games, 22 nights), start belief:**
+
+| lead | wrong | Brier ship / status-only / cells | log loss ship / status / cells | goalie pts RMSE ship / cells | dSE cells [90%, by night] |
+|---|---|---|---|---|---|
+| T-180 | 14 | 0.0479 / 0.0394 / **0.0337** | 0.331 / 0.124 / **0.105** | 9.635 / 9.585 | -0.97 [-3.25, +1.81] |
+| T-60 | 9 | 0.0308 / 0.0249 / **0.0222** | 0.213 / 0.078 / **0.068** | 9.574 / 9.497 | -1.47 [-3.32, +0.50] |
+| T-15 | 5 | 0.0171 / 0.0137 / **0.0119** | 0.118 / 0.042 / **0.037** | 9.557 / 9.508 | -0.94 [-2.40, +0.72] |
+
+(pts = train starter mean 10.10 x p vs what DFO's goalie scored, 0 if he sat: the availability
+part only; goalie points themselves barely beat a constant, cycle 7.)
+
+**Lineups replayed** (`nhl_goalie_lab.py lineups`: nhl_lineup_lab's production sim + optimizers
+on the skater lab's cached boards, scored with DK FPTS against every real contest field of the
+type; a goalie who sat scores 0, late swap not modelled). Only slates where some goalie has p < 1
+are rebuilt (elsewhere both arms are identical). TEST = slates on/after 10/21.
+
+| state (seeds) | mode | test slates | dead G slots full -> p_start | mean pts full -> p_start [90% by slate] | pctile | $ per $1 |
+|---|---|---|---|---|---|---|
+| lock (20) | cash | 7 | 17/140 -> 0 | 95.58 -> 97.04, +1.46 [-3.09, +6.12] | .598 -> .607 | 1.136 -> 1.145 |
+| lock (20) | cash_floor | 7 | 18/140 -> 0 | +0.23 [-3.68, +4.68] | .603 -> .610 | 1.164 -> 1.173 |
+| lock (20) | gpp | 10 | 37/200 -> 10 | 85.94 -> 84.85, -1.08 [-3.95, +2.70] | .433 -> .428 | 1.187 -> 0.546 |
+| early (10) | cash | 9 | 13/90 -> 0 | 90.60 -> 90.39, -0.22 [-4.86, +4.23] | .466 -> .476 | 0.785 -> 0.738 |
+| early (10) | cash_floor | 9 | 15/90 -> 0 | -0.65 [-2.72, +1.79] | .475 -> .465 | 0.831 -> 0.723 |
+| early (10) | gpp | 14 | 19/140 -> 5 | 89.17 -> 87.54, -1.64 [-4.09, +0.96] | .461 -> .445 | 1.154 -> 1.341 |
+
+Train (slates < 10/21): lock cash -0.21, floor -0.50, gpp -0.62; early cash -0.18, floor +2.72,
+gpp -1.44 -- all inside noise. Early-state decomposition (test, 14 moved slates): the G slot gains
+**+1.21** pts / lineup in cash and +1.29 in cash_floor (the avoided zeros, ~13 x 9 / 90), skaters
++0.14 / +0.21; GPP G slot +0.34, skaters **-1.62** (the goalie change re-picks the stacks). On train
+the cash G slot ran -0.94 (full-credit Projected goalies who did start scored well): goalie points
+(sd ~9.8) swamp a 30-slate replay either way. The lock-state GPP $ drop is one top-heavy slate.
+
+**Decision: SHIPPED on the branch, for Adam's review** (the NHL gate scores skaters, whose rows
+are bit-identical; a goalie change goes to Adam on these numbers). The target improves in both
+information states and at every lead (Brier -30%, log loss -68%, dead G slots in replayed cash
+lineups 30 -> 0 across the two states), and the expected-value case is direct: a 59% goalie is
+worth ~0.59 of his projection, and projections barely separate starters (sd 1.1 vs 9.8 realised).
+NOT shown: a lineup-dollar gain. Realised lineup points are within noise in every cell, and GPP ran
+-1.1 / -1.6 per lineup in both test states (4 of 4 GPP cells negative, none significant) -- watch it
+forward; if GPP keeps losing at ~20 more slates, give GPP the full-credit sim (the 95th percentile
+may want the cheap risky goalie). Conservative choices (unattended): no change to the monitor or
+the snapshot cadence; mirrors not regenerated (no pushes) -- `harness run mirror-nhl` after merge.
+
+Morning builds (outside the fitted leads; DFO's state at T-900 .. T-600, checked after the fit with
+the lab's LEADS extended): started_last started 94/183 train, 102/184 test (51-55%), other 73/83 and
+77/88, b2b_backup 9/9 and 4/4 -- the cells hold before any news (started_last slightly optimistic),
+so an early phone build is not over-penalised. AppTest of the page at 04:47 (one lobby listing, no
+exception): every goalie on the 11/12 slate was still Projected and listed with its start chance.
+
+Side effect to know: a Projected goalie's proj (and so his predicted ownership and the simulated
+cash field's use of him) drops by 1 - p; the real field's discount for unconfirmed goalies is
+unmeasured (the field had Kuemper 6-8% on 10/24 while we had him in 100%).
+
+Runner-ups: (1) the 30-minute DFO snapshot after 8 PM publishes warmup flips at T-1 while the live
+poll had them at T-21: poll every 5 min from T-35 to each puck drop (cloud fallback + the lab's
+lead times); (2) the build-time goalie state is not logged (45 of 117 test slots have an assumed
+build time): log starter_status + p_start in the projection history; (3) logged != entered (11/5:
+log Saros x5, Adam entered Hellebuyck) -- T17. Refit the cells at ~40 nights (`nhl_goalie_lab.py
+report`); lead time did not move P(start) enough to fit (Projected 0.71-0.79 across leads, train).

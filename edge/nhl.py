@@ -34,6 +34,7 @@ import json
 import re
 import time
 import urllib.request
+from datetime import datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -173,6 +174,39 @@ def schedule(date: str) -> list[dict]:
                      "home": g["homeTeam"]["abbrev"], "start": g.get("startTimeUTC"),
                      "type": g.get("gameType")} for g in day.get("games", [])]
     return []
+
+
+def last_starts(date: str, teams=None) -> dict:
+    """{team: {"date": its last regular-season game before `date`, "goalie": that game's
+    starting goalie as the box prints him ("J. Swayman")}}, looking back up to two weeks.
+    The context edge/dfs_run_nhl.goalie_start_prob needs: which goalie DailyFaceoff's
+    no-news "Projected" pick is. One schedule call per week + one box score per team
+    (cached forever); a past game's starter is known before tonight, so a rebuild is
+    leak-free."""
+    want = set(teams) if teams else None
+    out: dict = {}
+    d0 = datetime.strptime(date, "%Y-%m-%d")
+    for back in (7, 14):
+        start = (d0 - timedelta(days=back)).strftime("%Y-%m-%d")
+        data = _cached_json(f"https://api-web.nhle.com/v1/schedule/{start}", None)
+        days = sorted((d for d in data.get("gameWeek", []) if d.get("date", "") < date),
+                      key=lambda d: d["date"], reverse=True)
+        for day in days:
+            for g in day.get("games", []):
+                if g.get("gameType") != 2:
+                    continue
+                todo = [g[s]["abbrev"] for s in ("awayTeam", "homeTeam")
+                        if g[s]["abbrev"] not in out and (want is None or g[s]["abbrev"] in want)]
+                if not todo:
+                    continue
+                box = boxscore(g["id"])
+                for t in todo:
+                    st = [x for x in box.get("goalies", []) if x["team"] == t and x.get("starter")]
+                    if st:
+                        out[t] = {"date": day["date"], "goalie": st[0]["name"]}
+        if want is not None and want <= set(out):
+            break
+    return out
 
 
 def boxscore(game_id: int, refresh: bool = False) -> dict:

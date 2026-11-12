@@ -45,7 +45,8 @@ def test_a_shipped_fix_no_lesson_covers_is_shown_to_the_other_sports(monkeypatch
 
 def test_for_sport_gives_the_scout_open_rows_and_the_graveyard():
     nhl = T.for_sport("nhl")
-    assert "T01" in [r["id"] for r in nhl["open"]]                                   # tonight's target, 11/12
+    assert "T01" not in [r["id"] for r in nhl["open"]]                               # NHL cycle 14 (11/12)
+    assert any(x.startswith("T01 handled") for x in nhl["settled"])
     assert all(r["status"] in ("open", "measure", "audit") for r in nhl["open"])
     assert any("goalie DK points" in g["idea"] for g in nhl["graveyard"])           # NHL cycle 7: null
     assert all(any(s in g["sports"] for s in ("nhl", "all")) for g in nhl["graveyard"])
