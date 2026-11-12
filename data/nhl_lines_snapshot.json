@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-12T16:29:03+00:00",
+"generated_at": "2026-11-12T16:58:49+00:00",
 "goalies": {
 "2026-11-12": {
 "BOS": {
@@ -7,12 +7,12 @@
 "status": "Confirmed"
 },
 "BUF": {
-"goalie": "Colten Ellis",
+"goalie": "Alex Lyon",
 "status": null
 },
 "CAR": {
 "goalie": "Brandon Bussi",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CBJ": {
 "goalie": "Jet Greaves",
@@ -23,12 +23,12 @@
 "status": null
 },
 "COL": {
-"goalie": "Mackenzie Blackwood",
-"status": null
+"goalie": "Scott Wedgewood",
+"status": "Confirmed"
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": null
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "Daniil Tarasov",
@@ -44,7 +44,7 @@
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
-"status": null
+"status": "Confirmed"
 },
 "MTL": {
 "goalie": "Jacob Fowler",
@@ -64,7 +64,7 @@
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
-"status": "Likely"
+"status": "Confirmed"
 },
 "STL": {
 "goalie": "Joel Hofer",
@@ -76,7 +76,7 @@
 },
 "TOR": {
 "goalie": "Anthony Stolarz",
-"status": "Likely"
+"status": "Confirmed"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -798,6 +798,42 @@
 }
 },
 "BUF": {
+"Alex Lyon": {
+"gtd": true,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 23,
+"goalieGoalsAgainstAvg": "3.08",
+"goalieLosses": 4,
+"goalieMinutes": 447,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.887",
+"goalieSaves": 181,
+"goalieSeconds": 21,
+"goalieShotsAgainst": 204,
+"goalieShutouts": 0,
+"goalieWins": 3
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 13,
+"goalieGoalsAgainstAvg": "5.53",
+"goalieLosses": 2,
+"goalieMinutes": 140,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.814",
+"goalieSaves": 57,
+"goalieSeconds": 32,
+"goalieShotsAgainst": 70,
+"goalieShutouts": 0,
+"goalieWins": 0
+},
+"line": "G1",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Beck Malenstyn": {
 "gtd": false,
 "injury": null,
@@ -863,7 +899,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -1376,42 +1412,6 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "c",
-"pp": null
-},
-"Ukko-Pekka Luukkonen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 32,
-"goalieGoalsAgainstAvg": "3.4",
-"goalieLosses": 3,
-"goalieMinutes": 564,
-"goalieOvertimeLosses": 3,
-"goalieSavePercentage": "0.878",
-"goalieSaves": 231,
-"goalieSeconds": 16,
-"goalieShotsAgainst": 263,
-"goalieShutouts": 0,
-"goalieWins": 4
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 16,
-"goalieGoalsAgainstAvg": "3.39",
-"goalieLosses": 2,
-"goalieMinutes": 282,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.876",
-"goalieSaves": 113,
-"goalieSeconds": 33,
-"goalieShotsAgainst": 129,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
 "pp": null
 },
 "Zach Benson": {
@@ -3913,7 +3913,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -4187,7 +4187,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -11871,7 +11871,7 @@
 "toiMinutes": 78,
 "toiSeconds": 11
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -11973,7 +11973,7 @@
 "toiMinutes": 87,
 "toiSeconds": 45
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
@@ -12041,7 +12041,7 @@
 "toiMinutes": 59,
 "toiSeconds": 25
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -12179,7 +12179,7 @@
 "toiMinutes": 76,
 "toiSeconds": 22
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -12213,7 +12213,7 @@
 "toiMinutes": 79,
 "toiSeconds": 8
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -12247,7 +12247,7 @@
 "toiMinutes": 67,
 "toiSeconds": 50
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
