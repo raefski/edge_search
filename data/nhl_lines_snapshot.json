@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-12T13:59:03+00:00",
+"generated_at": "2026-11-12T14:58:54+00:00",
 "goalies": {
 "2026-11-12": {
 "BOS": {
@@ -93,7 +93,7 @@
 },
 "2026-11-13": {
 "NSH": {
-"goalie": "Justus Annunen",
+"goalie": "Juuse Saros",
 "status": null
 },
 "NYR": {
@@ -9309,7 +9309,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9345,7 +9345,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -10410,7 +10410,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Alexis Lafreni\u00e8re": {
 "gtd": false,
@@ -10958,7 +10958,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Tye Kartye": {
 "gtd": false,
@@ -14526,7 +14526,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Andrew Peeke": {
 "gtd": false,
@@ -14628,7 +14628,7 @@
 "line": "F3",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Clayton Keller": {
 "gtd": false,
