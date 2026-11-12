@@ -24,6 +24,9 @@ Per sport:
             (same initial, or first names within two edits): each a possible dropped player
   coverage  board players in the top 20% of salary with no prop subject (props sports)
   history   the critique ledger: cycles, results, the last holes tried
+  transfers lessons PROVEN in another sport whose hole is open here, lessons shipped since
+            that nobody has mapped yet, and the cross-sport graveyard (scripts/dfs_transfer.py;
+            Adam 2026-11-11: "methods that worked in one sport that can apply in others")
 """
 from __future__ import annotations
 
@@ -197,6 +200,11 @@ def scout(sport: str, card: dict, names: bool = True) -> dict:
            "harness": [{"lab": a, "scores": b, "what": c} for a, b, c in h],
            "harness_scores_entered": any(b == "entered" for _, b, _ in h),
            "unused_odds": unused_markets(sport), "history": history(sport)}
+    try:
+        import dfs_transfer
+        out["transfers"] = dfs_transfer.for_sport(sport)
+    except Exception as exc:                          # noqa: BLE001 -- the rest still stands
+        out["transfers"] = {"error": str(exc)}
     if names and out["unused_odds"].get("collected") and sport != "mma":
         try:
             out["names"] = names_and_coverage(sport)
@@ -207,7 +215,7 @@ def scout(sport: str, card: dict, names: bool = True) -> dict:
 
 def table(rs: list[dict]) -> str:
     lines = ["| sport | cash ROI [90%] (n) | GPP ROI [90%] (n) | contests c/g | lab scores what we enter | "
-             "unused odds | name suspects | cycles (results) |", "|---|---|---|---|---|---|---|---|"]
+             "unused odds | name suspects | transfers open | cycles (results) |", "|---|---|---|---|---|---|---|---|---|"]
 
     def m(r, t):
         x = next((y for y in r["money"] if y["type"] == t), None)
@@ -220,9 +228,11 @@ def table(rs: list[dict]) -> str:
         un = "NOT COLLECTED" if not u.get("collected") else (", ".join(u["unused"]) or "none")
         ns = len((r.get("names") or {}).get("name_suspects", []))
         h = r["history"]
+        tr = r.get("transfers") or {}
+        to = ", ".join(t["id"] for t in tr.get("open", []) if t["status"] in ("open", "measure")) or "-"
         lines.append(f"| {r['sport'].upper()} | {m(r, 'cash')} | {m(r, 'gpp')} | "
                      f"{r['data']['contests_cash']}/{r['data']['contests_gpp']} | "
-                     f"{'yes' if r['harness_scores_entered'] else 'no'} | {un} | {ns} | "
+                     f"{'yes' if r['harness_scores_entered'] else 'no'} | {un} | {ns} | {to} | "
                      f"{h['cycles']} {h.get('results', {})} |")
     return "\n".join(lines)
 

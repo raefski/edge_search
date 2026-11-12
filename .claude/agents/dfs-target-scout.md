@@ -44,6 +44,13 @@ questions for the sport you are given, every time.
    different now (more data, a new input, a broken evaluation).
 6. Prefer the target with the largest plausible $ effect per cycle that a held-out test can
    actually confirm with the data on hand.
+7. Cross-sport transfers (the script's `transfers`; scripts/dfs_transfer.py, Adam 2026-11-11).
+   A lesson PROVEN in another sport (shipped held out) whose hole is open in this one is a
+   strong candidate: it arrives with a mechanism and often a measurement (`measured`, with n).
+   Read the code it points at to confirm the hole is really here. `unmapped_lessons` are fixes
+   shipped elsewhere that nobody has checked across sports yet: say in one line whether each
+   could exist in this sport. Before naming ANY target, check `graveyard`: an idea tested null
+   (in any sport) is not a target unless you can say what is different now.
 
 ## Deliverable (final message, at most ~350 words)
 First a fenced JSON block, exactly these keys:
@@ -54,6 +61,7 @@ First a fenced JSON block, exactly these keys:
  "split": "the held-out split (dates / slates), and leave-one-slate-out if data is thin",
  "why": "one sentence with the numbers and n that make this the target",
  "money_at_stake": "the losing / winning line it addresses, with n",
+ "transfer": "the T-id from scripts/dfs_transfer.py this target comes from, or null",
  "runner_ups": ["two or three other targets, one line each"]}
 ```
 Then at most ten lines of reasoning: what you ruled out and why.

@@ -35,6 +35,19 @@ critique_result.json. Why (2026-11-08): 25 NBA cycles aimed at minutes while cas
 A name suspect that is one player spelled two ways is fixed right away (edge/names.py,
 every sport), whatever the target.
 
+**Queued target** (`harness critique-loop --queue <sport> "<target>"`): the nightly loop passes
+Adam's queued target instead of `auto` -- treat it exactly as a Target override. If it matches a
+row of `python3 scripts/dfs_transfer.py <sport>` (a lesson proven in another sport), log that
+T-id and its `from` in the cycle heading; its `measured` note is for you and the log, NOT for the
+critic (never tell the critic what you suspect).
+
+**Cross-sport lessons** (scripts/dfs_transfer.py, Adam 2026-11-11: "methods that worked in one
+sport that can apply in others"). When a cycle SHIPS, add its lesson to LESSONS there (the
+general mechanism, not this sport's symptom, with `covers` = this sport + date) and a TRANSFERS
+row for each other sport where the same hole could exist (`where` = the code to check). Until
+someone does, the shipped fix shows up as `unmapped_lessons` in every other sport's scout. A
+cycle that tests a transfer and finds nothing sets that row's status to "null" with its numbers.
+
 **Availability target** (`/dfs-critique <sport> availability`): who the board had as
 out vs. playing and as starting / in the role at build time, vs. what happened. Metric
 per held-out slate: false active (projected, didn't play: count + projected points and
