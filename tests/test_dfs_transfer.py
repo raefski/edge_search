@@ -52,8 +52,9 @@ def test_for_sport_gives_the_scout_open_rows_and_the_graveyard():
 
 
 def test_pareto_prices_only_measured_open_holes_and_ranks_them():
-    doc = T.pareto(live_money=False)
-    rows = doc["rows"]
+    doc = T.pareto(live_money=False, probes=False)
+    rows = doc["ideas"]
+    assert [r["rank"] for r in rows] == list(range(1, len(rows) + 1))
     priced = [r for r in rows if r["usd_week"] is not None]
     assert priced and rows[:len(priced)] == priced                                   # priced first
     assert [r["usd_week"] for r in priced] == sorted((r["usd_week"] for r in priced), reverse=True)

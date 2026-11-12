@@ -4,7 +4,8 @@
     python3 scripts/dfs_transfer.py                  # table of every transfer -> data/harness/dfs_transfers.json
     python3 scripts/dfs_transfer.py nhl              # one sport: open transfers, new lessons to map, the graveyard
     python3 scripts/dfs_transfer.py probe goalies    # re-measure one probe (money|pot|tiers|goalies|nfl-questionable|all)
-    python3 scripts/dfs_transfer.py pareto           # ideas ranked by $/week -> data/harness/dfs_transfer_pareto.json
+    python3 scripts/dfs_transfer.py pareto           # ideas ranked by $/week + the selection gap + the goalie table
+                                                     # -> data/harness/dfs_transfer_pareto.json (the dashboard's file)
 
 Why it exists (Adam, 2026-11-11, after looking at an LLM "idea generator" that breeds ideas
 and lets another LLM score them): "using methods that worked in one sport that can apply in
@@ -568,9 +569,11 @@ DPPW_2026_11_11 = {"NBA": 2.17, "NHL": 1.44, "NFL": 1.23, "NCAAF": 0.70, "NCAAB"
                    "NASCAR": 0.03, "MMA": 0.01, "MLB": 0.0}
 
 
-def pareto(live_money: bool = True) -> dict:
+def pareto(live_money: bool = True, probes: bool = True) -> dict:
     """Every transfer ranked: priced ones by $/week (measured points x the sport's $/point-week),
-    then the unpriced open ones by how much a point is worth in their sport."""
+    then the unpriced open ones by how much a point is worth in their sport. With `probes`, also
+    the selection gap by sport and the NHL goalie table, so this one file is exactly what the
+    "DFS Idea Pareto" dashboard shows (its machine-readable twin; Adam 11/11)."""
     dppw = DPPW_2026_11_11
     source = "constant 2026-11-11"
     if live_money:
@@ -596,12 +599,28 @@ def pareto(live_money: bool = True) -> dict:
     rows.sort(key=lambda r: (r["usd_week"] is None, -(r["usd_week"] or 0), order[r["status"]], -r["usd_per_point_week"]))
     total = sum(r["usd_week"] or 0 for r in rows)
     cum = 0.0
-    for r in rows:
+    for i, r in enumerate(rows):
+        r["rank"] = i + 1
+        r["cum_share"] = None
         if r["usd_week"] is not None:
             cum += r["usd_week"]
             r["cum_share"] = round(cum / total, 3) if total else None
-    return {"generated_at": datetime.now().astimezone().isoformat(timespec="seconds"), "dppw": dppw,
-            "dppw_source": source, "rows": rows, "graveyard": GRAVEYARD, "unmapped_lessons": unmapped()}
+    doc = {"generated_at": datetime.now().astimezone().isoformat(timespec="seconds"), "dppw": dppw,
+           "dppw_source": source, "ideas": rows, "graveyard": GRAVEYARD, "unmapped_lessons": unmapped()}
+    if probes:
+        pot = probe_pot()
+        doc["selection"] = [{"sport": s, **v, "usd_per_point_week": round(dppw.get(s, 0), 2),
+                             "enough_data": v["slates"] >= 5} for s, v in sorted(pot.items(), key=lambda kv: kv[1]["gap"])]
+        try:
+            g = probe_goalies()
+            doc["goalies"] = [{"key": f"{lead} {st_}", "lead": lead, "status": st_, "n": x["n"], "wrong": x["wrong"],
+                               "wrong_share": round(x["wrong"] / x["n"], 3) if x["n"] else None}
+                              for lead in ("T-90", "T-60")
+                              for st_ in ("Confirmed", "Likely", "Projected")
+                              for x in [g["by_status"][lead].get(st_, {"n": 0, "wrong": 0})]]
+        except Exception as exc:                              # noqa: BLE001 -- NHL API down: say so, keep the rest
+            doc["goalies"], doc["goalies_error"] = [], str(exc)
+    return doc
 
 
 def table() -> str:
@@ -628,7 +647,7 @@ def main(argv: list[str]) -> int:
         doc = pareto()
         PARETO.parent.mkdir(parents=True, exist_ok=True)
         PARETO.write_text(json.dumps(doc, indent=1))
-        for r in doc["rows"]:
+        for r in doc["ideas"]:
             usd = f"${r['usd_week']:.2f}/wk" if r["usd_week"] is not None else "-"
             print(f"{r['id']} {r['sport']:6s} {r['status']:8s} {usd:>11s}  {r['idea'][:100]}")
         print(f"-> {PARETO.relative_to(ROOT)}")
