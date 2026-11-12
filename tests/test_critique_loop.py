@@ -302,3 +302,57 @@ def test_one_sport_a_night_and_nfl_skipped(monkeypatch):
     st = {"next": C.ROTATION.index("nfl"), "sports": {}}
     assert C.pick(st, now, season=lambda s: True) == "mma"          # NFL left out (11/10)
     assert C.MAX_PER_NIGHT == 1
+
+
+def test_a_queued_target_runs_first_through_pause_and_skip_but_not_past_pending():
+    """Adam 2026-11-11: "NHL goalie question should be tonight's NHL critique target"."""
+    now = datetime(2026, 11, 12, 7, 0, tzinfo=timezone.utc)
+    season = lambda s: s != "mlb"                                    # noqa: E731
+    st = {"next": 0, "sports": {}}
+    C._sport(st, "nhl")["paused_until"] = (now + timedelta(days=3)).isoformat()
+    C.enqueue(st, "nhl", "  availability   goalies ")
+    assert st["queue"]["nhl"]["target"] == "availability goalies"
+    assert C.pick(st, now, season=season) == "nhl" and st["next"] == 0     # rotation untouched
+    assert C.pick(st, now, {"nhl"}, season=season) == "nba"                # then the rotation
+    C.enqueue(st, "nfl", "rb")                                             # NFL is in SKIP
+    assert C.pick(st, now, {"nhl"}, season=season) == "nfl"
+    C._sport(st, "nhl")["pending"] = {"branch": "x"}
+    st["next"] = 0
+    assert C.pick(st, now, {"nfl"}, season=season) == "nba"                # pending blocks it
+    assert "queued: nhl -> 'availability goalies'" in C.status(st)
+    for bad in (("xfl", "t"), ("nhl", "   ")):
+        try:
+            C.enqueue(st, *bad)
+            raise AssertionError("accepted a bad queue entry")
+        except ValueError:
+            pass
+
+
+def test_a_queued_target_replaces_auto_and_is_used_once(tmp_path, monkeypatch):
+    calls = []
+
+    class R:
+        returncode, stdout, stderr = 0, '{"result": "ok"}', ""
+    monkeypatch.setattr(C, "RUNS", tmp_path)
+    monkeypatch.setattr(C, "claude_bin", lambda: "claude")
+    monkeypatch.setattr(C.subprocess, "run", lambda cmd, **k: calls.append(cmd) or R())
+    C.run_agent("nhl", tmp_path, "s1", "availability goalies")
+    C.run_agent("nba", tmp_path, "s2")
+    assert calls[0][2] == "/dfs-critique nhl availability goalies unattended"
+    assert calls[1][2] == "/dfs-critique nba auto unattended"
+    # cycle(): the queue entry is consumed when the cycle ran, kept on a usage-limit stop
+    st = {"next": 0, "sports": {}}
+    C.enqueue(st, "nhl", "availability goalies")
+    monkeypatch.setattr(C, "worktree", lambda *a: tmp_path)
+    monkeypatch.setattr(C, "drop_worktree", lambda *a: None)
+    monkeypatch.setattr(C, "changed", lambda wt: [])
+    monkeypatch.setattr(C, "ledger", lambda e: None)
+    monkeypatch.setattr(C, "notify", lambda *a: None)
+    seen = []
+    monkeypatch.setattr(C, "run_agent", lambda s, wt, stamp, target=None: seen.append(target) or
+                        {"rc": 1, "claim": {}, "limited": True, "resets": None, "cost": None, "minutes": 1})
+    assert C.cycle("nhl", st) == "usage limit" and "nhl" in st["queue"]
+    monkeypatch.setattr(C, "run_agent", lambda s, wt, stamp, target=None: seen.append(target) or
+                        {"rc": 0, "claim": {}, "limited": False, "resets": None, "cost": None, "minutes": 1})
+    assert C.cycle("nhl", st) == "no commits" and "nhl" not in st["queue"]
+    assert seen == ["availability goalies", "availability goalies"]

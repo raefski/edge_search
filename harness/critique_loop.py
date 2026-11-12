@@ -7,6 +7,7 @@
     python3 -m harness critique-loop --drop nba      # veto a pending candidate (Adam)
     python3 -m harness critique-loop --merge nba     # approve one now (a "review" verdict waits for this)
     python3 -m harness critique-loop --resume nba    # lift a pause early
+    python3 -m harness critique-loop --queue nhl "availability goalies"   # pin a target: runs next night
 
 Why it is built this way (asked for 2026-11-07, after 24 hand-run NBA cycles):
 
@@ -278,7 +279,7 @@ def land_log(sport: str, cand: Path, note: str) -> None:
 
 # ── one cycle ───────────────────────────────────────────────────────────────
 
-def run_agent(sport: str, wt: Path, stamp: str) -> dict:
+def run_agent(sport: str, wt: Path, stamp: str, target: str | None = None) -> dict:
     """The skill, headless. Permissions are bypassed (nobody is there to approve); the
     project's PreToolUse guard (.claude/hooks/guard_bash.py) and Stop-hook verify still
     run, the agent works in its own worktree, and nothing it does reaches main except
@@ -287,7 +288,9 @@ def run_agent(sport: str, wt: Path, stamp: str) -> dict:
     RUNS.mkdir(parents=True, exist_ok=True)
     # `auto`: the dfs-target-scout picks the cycle's target first (scripts/dfs_target_scout.py +
     # the agent; Adam 2026-11-08 -- 25 NBA cycles aimed at minutes while cash lost -67%)
-    cmd = [claude_bin(), "-p", f"/dfs-critique {sport} auto unattended", "--permission-mode", "bypassPermissions",
+    # a queued target (Adam's `--queue`) replaces `auto`: the skill reads it as a Target override
+    target = " ".join((target or "").split()) or "auto"
+    cmd = [claude_bin(), "-p", f"/dfs-critique {sport} {target} unattended", "--permission-mode", "bypassPermissions",
            "--output-format", "json"]
     if os.environ.get("EDGE_CRITIQUE_BUDGET"):
         cmd += ["--max-budget-usd", os.environ["EDGE_CRITIQUE_BUDGET"]]
@@ -426,10 +429,15 @@ def cycle(sport: str, st: dict) -> str:
     stamp = _now().strftime("%Y%m%d-%H%M")
     branch = f"critique/{sport}-{stamp}"
     cand = worktree(f"critique-{sport}-{stamp}", branch)
-    res = run_agent(sport, cand, stamp)
+    queued = (st.get("queue") or {}).get(sport) or {}
+    res = run_agent(sport, cand, stamp, queued.get("target"))
     claim = res["claim"]
+    if queued and not claim.get("target"):
+        claim["target"] = queued["target"]
     head = claim.get("hole") or "(no critique_result.json)"
     paths = changed(cand)
+    if queued and not (res["limited"] and not paths):
+        st["queue"].pop(sport, None)           # used; a usage-limit stop with nothing done keeps it
     if res["limited"] and not paths:
         drop_worktree(cand, branch)
         ledger({"event": "cycle", "sport": sport, "verdict": "usage limit", "minutes": res["minutes"]})
@@ -556,7 +564,16 @@ def in_season(sport: str, now: datetime | None = None) -> bool:
 
 def pick(st: dict, now: datetime, done: set = frozenset(), season=in_season) -> str | None:
     """The next sport in the rotation that is in season, not paused, not waiting on a
-    pending candidate and not already run tonight."""
+    pending candidate and not already run tonight.
+
+    A sport Adam queued a target for (`--queue`) goes first, ahead of the rotation and
+    through a pause or SKIP -- he asked for that cycle (2026-11-11: "NHL goalie question
+    should be tonight's NHL critique target") -- but never past a pending candidate (two
+    branches of one sport would collide at merge) or out of season (no slates to test on).
+    The rotation pointer does not move for it."""
+    for s in (st.get("queue") or {}):
+        if s not in done and not _sport(st, s)["pending"] and season(s):
+            return s
     for k in range(len(ROTATION)):
         s = ROTATION[(st["next"] + k) % len(ROTATION)]
         sp = _sport(st, s)
@@ -591,6 +608,8 @@ def ran_tonight(st: dict, now: datetime) -> set:
 
 def status(st: dict) -> str:
     out = [f"rotation {', '.join(ROTATION)}; next: {ROTATION[st['next'] % len(ROTATION)]}"]
+    for s, q in (st.get("queue") or {}).items():
+        out.append(f"  queued: {s} -> {q['target']!r} (added {q.get('added', '?')[:16]}; runs ahead of the rotation)")
     for s in ROTATION:
         sp = _sport(st, s)
         last = sp["history"][-1] if sp["history"] else {}
@@ -601,8 +620,19 @@ def status(st: dict) -> str:
     return "\n".join(out)
 
 
+def enqueue(st: dict, sport: str, target: str) -> None:
+    """Pin the next cycle of `sport` to `target` (replaces an earlier queued target)."""
+    if sport not in ROTATION:
+        raise ValueError(f"unknown sport {sport!r}: one of {', '.join(ROTATION)}")
+    target = " ".join(target.split())
+    if not target:
+        raise ValueError("an empty target: give the words /dfs-critique would take after the sport")
+    st.setdefault("queue", {})[sport] = {"target": target, "added": _now().isoformat()}
+
+
 def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
-         drop: str | None = None, resume: str | None = None, merge: str | None = None) -> int:
+         drop: str | None = None, resume: str | None = None, merge: str | None = None,
+         queue: list[str] | None = None) -> int:
     RUNS.mkdir(parents=True, exist_ok=True)
     with open(RUNS / ".lock", "w") as lk:
         try:
@@ -611,7 +641,10 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
             print("another critique-loop run holds the lock")
             return 1
         st = load_state()
-        if show:
+        if queue:
+            enqueue(st, queue[0], queue[1])
+            save_state(st)
+        if show or queue:
             print(status(st))
             return 0
         if merge:
@@ -694,8 +727,10 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
             results.append(f"{s}: {v}")
             print(results[-1], flush=True)
             if v == "usage limit":
-                # this sport goes first when the 07:05 run resumes the night
-                st["next"] = ROTATION.index(s)
+                # this sport goes first when the 07:05 run resumes the night (a queued
+                # one already does, and leaves the rotation where it was)
+                if s not in (st.get("queue") or {}):
+                    st["next"] = ROTATION.index(s)
                 save_state(st)
                 rs = st.pop("resets", None)
                 when = (schedule_resume(datetime.fromisoformat(rs)) if rs

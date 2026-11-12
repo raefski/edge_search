@@ -10,6 +10,7 @@
     python3 -m harness nba-scratch [--push] [--date YYYY-MM-DD]          NBA late scratches / promoted starters
     python3 -m harness navigate <url> [--match S] [--click TEXT] [--wait S] [--profile DIR]
     python3 -m harness critique-loop [--sport S] [--dry-run] [--status] [--drop|--merge|--resume S]
+                                     [--queue S "TARGET"]   pin a sport's next nightly cycle to a target
     python3 -m harness critique-gate <sport> <candidate checkout>   held-out gate vs main
 """
 from __future__ import annotations
@@ -79,6 +80,8 @@ def main(argv=None) -> int:
     s.add_argument("--drop", metavar="SPORT", help="veto a pending candidate")
     s.add_argument("--merge", metavar="SPORT", help="approve a pending candidate now")
     s.add_argument("--resume", metavar="SPORT", help="lift a pause")
+    s.add_argument("--queue", nargs=2, metavar=("SPORT", "TARGET"),
+                   help="run SPORT's next cycle on TARGET (ahead of the rotation)")
     s = sub.add_parser("critique-gate", help="candidate checkout vs main, held out (harness/critique_gate.py)")
     s.add_argument("sport")
     s.add_argument("candidate")
@@ -145,7 +148,7 @@ def main(argv=None) -> int:
     if a.cmd == "critique-loop":
         from harness import critique_loop
         return critique_loop.main(sport=a.sport, dry_run=a.dry_run, show=a.status, drop=a.drop,
-                                  resume=a.resume, merge=a.merge)
+                                  resume=a.resume, merge=a.merge, queue=a.queue)
     if a.cmd == "critique-gate":
         from harness import critique_gate
         return critique_gate.main([a.sport, a.candidate])
