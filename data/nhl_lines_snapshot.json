@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-12T23:13:55+00:00",
+"generated_at": "2026-11-12T23:43:57+00:00",
 "goalies": {
 "2026-11-12": {
 "BOS": {
@@ -7658,40 +7658,6 @@
 }
 },
 "MTL": {
-"Adam Engstrom": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 118,
-"toiSeconds": 29
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 59,
-"toiSeconds": 9
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Alex Newhook": {
 "gtd": false,
 "injury": null,
@@ -7755,7 +7721,7 @@
 "toiMinutes": 110,
 "toiSeconds": 37
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -8171,6 +8137,40 @@
 "pk": null,
 "pos": "ld",
 "pp": "PP1"
+},
+"Mike Matheson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 6,
+"blocks": 14,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 7,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 20,
+"toiMinutes": 239,
+"toiSeconds": 53
+},
+"last5": {
+"assists": 2,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 116,
+"toiSeconds": 0
+},
+"line": "D2",
+"pk": null,
+"pos": "rd",
+"pp": null
 },
 "Nick Suzuki": {
 "gtd": false,
@@ -13936,40 +13936,6 @@
 "pos": "lw",
 "pp": null
 },
-"Chris Tanev": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 23,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 178,
-"toiSeconds": 38
-},
-"last5": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 81,
-"toiSeconds": 4
-},
-"line": "D3",
-"pk": "PK1",
-"pos": "rd",
-"pp": null
-},
 "Cole McWard": {
 "gtd": false,
 "injury": null,
@@ -13999,7 +13965,7 @@
 "toiMinutes": 72,
 "toiSeconds": 59
 },
-"line": "D4",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -14068,7 +14034,7 @@
 "toiSeconds": 39
 },
 "line": "D3",
-"pk": null,
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -14478,7 +14444,7 @@
 "toiSeconds": 56
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 },
@@ -14515,6 +14481,40 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
+},
+"Zack MacEwen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 89,
+"toiSeconds": 33
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 48,
+"toiSeconds": 59
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 }
 },
 "UTA": {
