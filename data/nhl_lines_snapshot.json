@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-12T17:02:14+00:00",
+"generated_at": "2026-11-12T17:29:13+00:00",
 "goalies": {
 "2026-11-12": {
 "BOS": {
@@ -3162,7 +3162,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Ian Cole": {
 "gtd": false,
@@ -3228,7 +3228,7 @@
 "toiSeconds": 31
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": null
 },
@@ -3265,6 +3265,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
+},
+"Patrick Kane": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 7,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 7,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 19,
+"toiMinutes": 171,
+"toiSeconds": 38
+},
+"last5": {
+"assists": 3,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 6,
+"toiMinutes": 74,
+"toiSeconds": 38
+},
+"line": "F2",
+"pk": null,
+"pos": "rw",
+"pp": "PP1"
 },
 "Roman Kantserov": {
 "gtd": false,
@@ -3437,40 +3471,6 @@
 "pk": null,
 "pos": "g",
 "pp": null
-},
-"Teuvo Teravainen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 6,
-"toiMinutes": 153,
-"toiSeconds": 22
-},
-"last5": {
-"assists": 0,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 70,
-"toiSeconds": 18
-},
-"line": "F2",
-"pk": "PK2",
-"pos": "rw",
-"pp": "PP2"
 },
 "Tyler Bertuzzi": {
 "gtd": false,
@@ -5012,9 +5012,9 @@
 "toiSeconds": 38
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Anton Johansson": {
 "gtd": false,
@@ -5082,6 +5082,40 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
+"pp": null
+},
+"Carter Mazur": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 84,
+"toiSeconds": 33
+},
+"last5": {
+"assists": 2,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 39,
+"toiSeconds": 48
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Daniil Tarasov": {
@@ -5425,40 +5459,6 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
-"Michael Rasmussen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 18,
-"toiMinutes": 149,
-"toiSeconds": 2
-},
-"last5": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 70,
-"toiSeconds": 53
-},
-"line": "F3",
-"pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
 },
@@ -11361,7 +11361,7 @@
 "pp": null
 },
 "Linus Ullmark": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
@@ -11391,7 +11391,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -11597,7 +11597,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
