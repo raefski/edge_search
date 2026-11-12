@@ -320,26 +320,6 @@
 }
 },
 "NFL": {
-"156326": {
-"ContestStartTimeSuffix": " (Madden Stream)",
-"DraftGroupId": 156326,
-"DraftGroupTag": "Featured",
-"GameCount": 3,
-"GameTypeId": 158,
-"StartDate": "2026-11-12T17:00:00.0000000Z",
-"StartDateEst": "2026-11-12T12:00:00.0000000",
-"last_start": "2026-11-12T21:00:00.0000000Z"
-},
-"156329": {
-"ContestStartTimeSuffix": " (Madden Stream LAR @ ATL)",
-"DraftGroupId": 156329,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 159,
-"StartDate": "2026-11-12T21:00:00.0000000Z",
-"StartDateEst": "2026-11-12T16:00:00.0000000",
-"last_start": "2026-11-12T21:00:00.0000000Z"
-},
 "156330": {
 "ContestStartTimeSuffix": " (Madden Stream)",
 "DraftGroupId": 156330,
@@ -569,6 +549,26 @@
 "StartDate": "2026-11-15T21:25:00.0000000Z",
 "StartDateEst": "2026-11-15T16:25:00.0000000",
 "last_start": "2026-11-15T21:25:00.0000000Z"
+},
+"156433": {
+"ContestStartTimeSuffix": " (PIT @ CIN)",
+"DraftGroupId": 156433,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 96,
+"StartDate": "2026-11-16T01:20:00.0000000Z",
+"StartDateEst": "2026-11-15T20:20:00.0000000",
+"last_start": "2026-11-16T01:20:00.0000000Z"
+},
+"156434": {
+"ContestStartTimeSuffix": " (LAC @ BAL)",
+"DraftGroupId": 156434,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 96,
+"StartDate": "2026-11-17T01:15:00.0000000Z",
+"StartDateEst": "2026-11-16T20:15:00.0000000",
+"last_start": "2026-11-17T01:15:00.0000000Z"
 },
 "156435": {
 "ContestStartTimeSuffix": " (2H WAS @ NYG)",
