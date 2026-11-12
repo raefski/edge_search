@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-12T17:58:46+00:00",
+"generated_at": "2026-11-12T18:29:08+00:00",
 "goalies": {
 "2026-11-12": {
 "BOS": {
@@ -2441,7 +2441,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Ivan Provorov": {
@@ -2817,7 +2817,7 @@
 },
 "line": "F2",
 "pk": "PK1",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Zach Werenski": {
@@ -15204,40 +15204,6 @@
 }
 },
 "VAN": {
-"Arshdeep Bains": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 104,
-"toiSeconds": 51
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 51,
-"toiSeconds": 4
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Brendan Gallagher": {
 "gtd": false,
 "injury": null,
@@ -15306,6 +15272,40 @@
 "pos": "rw",
 "pp": "PP1"
 },
+"Cameron Crotty": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 138,
+"toiSeconds": 15
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 67,
+"toiSeconds": 41
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Drew O'Connor": {
 "gtd": false,
 "injury": null,
@@ -15335,9 +15335,9 @@
 "toiMinutes": 73,
 "toiSeconds": 24
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Elias Nils Pettersson": {
@@ -15476,40 +15476,6 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Guillaume Brisebois": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 15,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 141,
-"toiSeconds": 30
-},
-"last5": {
-"assists": 1,
-"blocks": 8,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 79,
-"toiSeconds": 46
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
-"pp": null
-},
 "Jake DeBrusk": {
 "gtd": false,
 "injury": null,
@@ -15573,9 +15539,9 @@
 "toiMinutes": 75,
 "toiSeconds": 39
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Jonathan Lekkerimaki": {
@@ -15718,6 +15684,40 @@
 "pos": "lw",
 "pp": "PP2"
 },
+"Linus Karlsson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 145,
+"toiSeconds": 27
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 69,
+"toiSeconds": 44
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Marco Rossi": {
 "gtd": false,
 "injury": null,
@@ -15821,7 +15821,7 @@
 "pp": "PP2"
 },
 "Tom Willander": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 0,
@@ -15849,8 +15849,8 @@
 "toiMinutes": 101,
 "toiSeconds": 53
 },
-"line": "D3",
-"pk": null,
+"line": "D2",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
