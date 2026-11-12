@@ -2126,3 +2126,125 @@ date,gid,player,team,opp,dk_pos,salary,proj,sd,floor,ceil,own,proj_source,impute
 2026-11-11,156549,John Mattingly,NEV,UCSB,G,3000,0.24,0.75,0.0,1.25,0.2,bench,all,Q,0,,,,live,,0.735
 2026-11-11,156549,Jonathan Niv,COLG,STJN,G,3000,0.41,0.96,0.0,2.0,0.2,bench,all,,0,Colgate,3.1,,live,64.5,1.226
 2026-11-11,156549,Dionycius Bakare,CAL,USC,G/F,3000,0.37,0.9,0.0,1.5,0.2,bench,all,,0,,,,live,76.0,1.084
+2026-11-12,156551,Robert Wright III,BYU,MONTS,G,10000,33.89,9.99,26.5,47.25,16.6,blend,all,,1,BYU,34.82,35.0,live,92.0,36.636
+2026-11-12,156551,Jeremiah Davis,MONTS,BYU,G,9700,28.16,10.09,20.75,41.25,11.2,blend,all,,0,,,34.9,live,70.5,28.254
+2026-11-12,156551,Jaxon Kohler,BYU,MONTS,F,8900,26.65,8.64,20.5,38.0,15.9,blend,all,,1,Michigan St.,27.729,26.8,live,92.0,27.165
+2026-11-12,156551,Bruce Branch III,BYU,MONTS,F,8500,28.34,8.86,22.0,39.78,20.4,blend,all,,1,,,28.1,live,92.0,26.572
+2026-11-12,156551,Derin Saran,RICH,SIU,G,8200,26.76,8.58,20.94,37.5,11.6,blend,all,,0,,,35.8,live,,26.565
+2026-11-12,156551,Jamie Kaiser Jr.,RICH,SIU,G/F,8100,26.04,8.57,20.0,37.25,10.9,blend,all,,0,,,29.7,live,,24.402
+2026-11-12,156551,Markus Burton,IU,TNTC,G,7900,29.78,9.31,23.25,41.75,16.2,props,stl|blk|tov,,1,,,26.6,live,96.25,29.502
+2026-11-12,156551,PJ Haggerty,TA&M,OKST,G,7600,35.3,10.56,28.0,49.5,30.5,props,fg3|stl|blk|tov,,0,,,27.5,live,93.5,35.174
+2026-11-12,156551,Jordan Pope,TA&M,OKST,G,7500,24.23,8.7,18.0,35.53,9.5,props,stl|blk|tov,,0,,,28.3,live,93.5,24.28
+2026-11-12,156551,Jacob Walker,OKST,TA&M,G,7400,21.3,7.66,15.75,31.5,7.0,blend,all,,1,,,28.4,live,85.5,24.359
+2026-11-12,156551,Collin Chandler,BYU,MONTS,G,7300,25.77,8.35,19.75,36.75,11.5,blend,all,,1,,,27.8,live,92.0,24.662
+2026-11-12,156551,Jaeden Mustaf,IU,TNTC,G,7200,30.53,9.02,24.0,42.5,19.9,blend,all,,1,Georgia Tech,27.735,21.0,live,96.25,23.549
+2026-11-12,156551,Aiden Argabright,RICH,SIU,G,7100,23.82,7.73,18.5,34.0,9.5,blend,all,,0,Richmond,23.348,24.9,live,,21.436
+2026-11-12,156551,Jalen Shelley,TA&M,OKST,F,7000,25.02,7.96,19.25,35.75,18.5,blend,all,,0,,,29.9,live,93.5,25.15
+2026-11-12,156551,Amon Dorries,RICH,SIU,F,6900,19.32,6.5,14.75,27.5,10.1,blend,all,,0,,,26.8,live,,21.647
+2026-11-12,156551,Julius Halaifonua,OKST,TA&M,F,6800,15.15,5.83,11.0,23.0,6.4,props,reb|ast|fg3|stl|blk|tov,,1,Georgetown,19.756,18.9,live,85.5,15.07
+2026-11-12,156551,Samet Yigitoglu,IU,TNTC,F,6700,25.23,7.76,19.75,35.5,19.4,blend,all,,1,,,18.0,live,96.25,20.462
+2026-11-12,156551,Howie Keene,MONTS,BYU,G,6600,19.93,8.09,14.25,30.5,6.4,blend,all,,0,,,23.5,live,70.5,19.9
+2026-11-12,156551,Kashie Natt,OKST,TA&M,G,6500,23.95,8.21,18.25,34.5,10.7,props,ast|fg3|stl|blk|tov,,1,,,18.8,live,85.5,24.109
+2026-11-12,156551,Kanye Clary,OKST,TA&M,G,6400,11.34,5.27,7.5,18.5,2.2,blend,all,,0,Oklahoma St.,28.188,6.0,live,85.5,24.723
+2026-11-12,156551,Tyshawn Archie,TA&M,OKST,G,6300,22.5,7.97,16.75,33.25,9.3,blend,all,,0,McNeese St.,25.706,24.7,live,93.5,22.303
+2026-11-12,156551,Latrell Allmond,OKST,TA&M,F,6200,18.95,7.03,14.0,28.25,9.9,blend,all,,0,,,21.5,live,85.5,20.089
+2026-11-12,156551,Cbo Newton,TNTC,IU,G,6100,20.96,8.03,15.0,31.75,7.9,blend,all,,0,,,28.5,live,71.75,20.923
+2026-11-12,156551,Jalen Haynes,SIU,RICH,G,6100,23.42,7.96,17.5,34.0,11.0,blend,all,,0,,,35.4,live,,23.286
+2026-11-12,156551,Anthony Felesi,OKST,TA&M,G,6000,19.46,7.4,14.0,29.25,6.6,props,ast|fg3|stl|blk|tov,,1,,,15.9,live,85.5,19.425
+2026-11-12,156551,Jordan Burks,OKST,TA&M,F,5900,29.27,9.4,22.75,41.5,36.8,props,ast|stl|blk|tov,,1,,,20.0,live,85.5,29.209
+2026-11-12,156551,Dominick Stewart,RICH,SIU,G,5800,14.82,5.99,10.5,22.5,3.6,blend,all,,0,,,28.0,live,,20.395
+2026-11-12,156551,Cade Phillips,TA&M,OKST,F,5700,14.42,6.13,10.25,22.5,5.7,blend,all,Q,0,,,22.5,live,93.5,14.301
+2026-11-12,156551,Parker Robinson,OKST,TA&M,G,5600,16.78,6.51,12.5,25.03,4.9,blend,all,,0,,,20.1,live,85.5,18.688
+2026-11-12,156551,Damien Mayo Jr.,SIU,RICH,G,5500,18.16,6.79,13.25,26.75,6.1,blend,all,,0,,,22.8,live,,18.23
+2026-11-12,156551,Andrija Grbovic,OKST,TA&M,F,5400,18.27,6.51,13.5,27.0,9.8,blend,all,,0,,,23.3,live,85.5,19.535
+2026-11-12,156551,Caleb Sanders,TNTC,IU,F,5300,22.03,8.04,16.25,33.0,16.9,blend,all,,0,,,35.5,live,71.75,22.022
+2026-11-12,156551,Andrew Ball,RICH,SIU,F,5200,17.03,6.25,12.75,25.25,8.5,blend,all,,0,,,20.6,live,,17.054
+2026-11-12,156551,Christian King,MONTS,BYU,F,5100,17.08,7.28,11.75,26.75,8.7,blend,all,,0,Montana St.,27.286,21.0,live,70.5,17.127
+2026-11-12,156551,Rylan Griffen,TA&M,OKST,G,5100,18.17,7.4,12.75,27.75,6.9,blend,all,,0,,,18.5,live,93.5,18.032
+2026-11-12,156551,Ty Owens,TNTC,IU,G,5000,14.17,6.14,9.75,22.25,3.7,blend,all,,0,,,13.5,live,71.75,14.351
+2026-11-12,156551,Darren Harris,IU,TNTC,G,5000,28.54,9.1,22.0,40.75,37.8,blend,all,,1,,,24.0,live,96.25,20.195
+2026-11-12,156551,Aiden Sherrell,IU,TNTC,F,4900,17.87,7.59,12.25,28.0,10.2,blend,all,,1,,,20.9,live,96.25,18.867
+2026-11-12,156551,Jaden Steppe,MONTS,BYU,F,4900,15.7,6.29,11.25,24.0,7.4,blend,all,,0,,,18.3,live,70.5,15.661
+2026-11-12,156551,Luka Bogavac,OKST,TA&M,G,4800,14.52,6.15,10.0,22.75,4.1,props,reb|ast|fg3|stl|blk|tov,,0,North Carolina,24.336,17.8,live,85.5,14.744
+2026-11-12,156551,Jeremiah Jackson,SIU,RICH,G,4800,17.9,6.87,12.75,26.75,7.3,blend,all,,0,,,24.9,live,,17.874
+2026-11-12,156551,Trent Mosquera,TNTC,IU,G,4700,16.87,6.87,11.94,26.0,6.4,blend,all,,0,,,22.3,live,71.75,16.79
+2026-11-12,156551,Benjamin Ahmed,OKST,TA&M,F,4700,12.6,4.88,9.25,18.78,4.7,blend,all,,0,Oklahoma St.,12.591,8.0,live,85.5,13.714
+2026-11-12,156551,Max Pikaar,SIU,RICH,F,4600,18.32,6.67,13.5,27.03,12.0,blend,all,,0,,,27.3,live,,18.366
+2026-11-12,156551,Will Harper III,RICH,SIU,G,4600,9.1,4.6,5.75,15.0,1.7,blend,all,,0,Richmond,10.279,13.8,live,,10.221
+2026-11-12,156551,Jed Miller,MONTS,BYU,G,4500,15.31,6.57,10.5,24.0,5.2,blend,all,,0,,,18.3,live,70.5,15.061
+2026-11-12,156551,Zach Clemence,TA&M,OKST,F,4500,17.67,7.45,12.44,27.5,11.1,blend,all,,0,Texas A&M,16.924,14.1,live,93.5,17.573
+2026-11-12,156551,Bryce Lindsay,IU,TNTC,G,4400,22.19,7.89,16.75,32.25,19.1,blend,all,,0,Villanova,28.621,19.5,live,96.25,19.211
+2026-11-12,156551,Mackenzie Mgbako,TA&M,OKST,F,4400,24.76,8.01,19.0,35.75,37.9,props,stl|blk|tov,,0,,,27.0,live,93.5,24.679
+2026-11-12,156551,Sam Alexis,IU,TNTC,F,4300,14.73,6.3,10.0,23.0,7.2,blend,all,,0,Indiana,21.3,12.7,live,96.25,19.863
+2026-11-12,156551,Jalen Montonati,OKST,TA&M,G,4300,9.72,4.8,6.25,16.0,2.0,blend,all,,0,,,11.5,live,85.5,13.658
+2026-11-12,156551,Jaheem Webber,SIU,RICH,F,4200,13.36,5.37,9.5,20.75,5.9,blend,all,,0,,,14.0,live,,13.378
+2026-11-12,156551,Kamai Samuels,TNTC,IU,G,4200,14.44,6.05,10.0,22.28,5.0,blend,all,,0,,,18.0,live,71.75,14.629
+2026-11-12,156551,Jake Wahlin,BYU,MONTS,F,4100,18.91,7.68,13.5,29.0,16.4,blend,all,,0,,,14.3,live,92.0,14.85
+2026-11-12,156551,Collin Tanner,RICH,SIU,G,4100,10.39,4.7,7.0,16.75,2.3,blend,all,,0,Richmond,18.514,12.3,live,,12.965
+2026-11-12,156551,Caleb Hollenbeck,TNTC,IU,G,4000,15.11,6.51,10.5,23.75,6.2,blend,all,,0,,,19.9,live,71.75,14.953
+2026-11-12,156551,Josh Irving,TA&M,OKST,F,4000,13.28,5.67,9.25,21.0,6.1,blend,all,,0,,,10.3,live,93.5,13.311
+2026-11-12,156551,Trevor Manhertz,IU,TNTC,F,4000,13.35,6.0,9.0,21.75,6.2,blend,all,,0,,,15.1,live,96.25,15.314
+2026-11-12,156551,Jalen Reece,TA&M,OKST,G,3900,13.19,6.11,9.0,21.25,4.4,blend,all,,0,,,10.6,live,93.5,13.274
+2026-11-12,156551,Nate Pickens,BYU,MONTS,G,3900,15.65,7.11,10.5,25.0,7.3,bench,all,,0,,,12.2,live,92.0,6.134
+2026-11-12,156551,Seth Amunrud,MONTS,BYU,G,3900,9.89,5.0,6.25,16.28,2.2,blend,all,,0,,,4.9,live,70.5,9.802
+2026-11-12,156551,Tyler Betsey,BYU,MONTS,F,3800,19.1,6.45,14.5,27.0,20.2,blend,all,,1,,,21.7,live,92.0,17.15
+2026-11-12,156551,De'ante Green,TNTC,IU,F,3800,14.86,6.13,10.25,23.25,8.9,blend,all,,0,,,20.1,live,71.75,14.719
+2026-11-12,156551,Jaxson Fugate,SIU,RICH,G/F,3800,13.66,5.86,9.5,21.75,5.1,blend,all,,0,,,16.3,live,,13.538
+2026-11-12,156551,London Praytor,MONTS,BYU,F,3700,12.33,5.34,8.5,19.25,5.6,blend,all,,0,,,13.0,live,70.5,12.138
+2026-11-12,156551,Luke Susko,SIU,RICH,G,3700,13.0,5.78,9.0,20.75,4.7,blend,all,,0,,,15.6,live,,13.157
+2026-11-12,156551,Khadim Mboup,BYU,MONTS,F,3700,12.17,5.66,8.19,19.75,5.4,bench,all,,0,BYU,15.629,11.5,live,92.0,5.895
+2026-11-12,156551,Ryan Crotty,OKST,TA&M,G,3600,8.65,4.57,5.5,14.75,1.9,bench,all,,0,Oklahoma St.,10.014,14.0,live,85.5,1.911
+2026-11-12,156551,Cavin Holden,MONTS,BYU,G,3600,12.51,5.66,8.25,20.25,4.4,blend,all,,0,,,14.5,live,70.5,12.476
+2026-11-12,156551,Chad Cook,RICH,SIU,F,3600,10.49,4.73,7.0,17.0,4.0,blend,all,,0,,,10.7,live,,11.39
+2026-11-12,156551,Trent Sisley,IU,TNTC,F,3500,7.65,4.35,4.5,13.25,2.3,bench,all,,0,Indiana,13.207,7.8,live,96.25,6.21
+2026-11-12,156551,Darnez Slater,MONTS,BYU,G,3500,10.8,5.35,6.94,18.0,3.1,blend,all,,0,,,10.0,live,70.5,10.862
+2026-11-12,156551,Neiko Mundey,TA&M,OKST,G,3500,11.85,5.47,8.0,19.0,4.0,blend,all,,0,,,8.6,live,93.5,11.925
+2026-11-12,156551,Sam Simmons Jr.,RICH,SIU,G,3500,7.86,4.32,4.75,13.5,1.6,blend,all,,0,,,6.6,live,,9.888
+2026-11-12,156551,Pietro Ranieri,SIU,RICH,F,3400,10.54,4.82,7.0,17.25,4.3,blend,all,,0,,,9.3,live,,10.629
+2026-11-12,156551,Luke Walsh,SIU,RICH,G,3400,11.85,5.34,8.0,19.25,4.2,blend,all,,0,,,13.1,live,,11.883
+2026-11-12,156551,Brooks Bahr,BYU,MONTS,G,3400,8.56,4.78,5.19,15.0,1.9,bench,all,,0,,,8.8,live,92.0,5.613
+2026-11-12,156551,Dylan Homenick,RICH,SIU,F,3400,3.69,2.73,1.5,7.25,1.0,blend,all,,0,,,3.4,live,,8.682
+2026-11-12,156551,Kirby Mooney,RICH,SIU,G,3300,0.62,1.13,0.0,2.0,0.3,bench,all,,0,Richmond,3.867,3.0,live,,0.66
+2026-11-12,156551,Shaun Arnold,TNTC,IU,F,3300,10.59,4.73,7.25,17.0,4.5,blend,all,,0,,,9.8,live,71.75,10.589
+2026-11-12,156551,Brody Kozlowski,BYU,MONTS,F,3300,1.55,1.74,0.0,4.0,0.6,bench,all,,0,,,5.0,live,92.0,5.031
+2026-11-12,156551,Clemens Sokolov,IU,TNTC,F,3300,2.12,2.09,0.0,4.75,0.7,bench,all,,0,,,7.5,live,96.25,6.898
+2026-11-12,156551,Caden Hawkins,SIU,RICH,G,3200,10.57,5.02,7.0,17.25,3.5,blend,all,,0,,,9.8,live,,10.494
+2026-11-12,156551,Brock McClure,SIU,RICH,G/F,3200,8.5,4.56,5.25,14.5,2.1,blend,all,,0,,,4.0,live,,8.58
+2026-11-12,156551,Davante Hackett,TNTC,IU,G,3200,9.0,4.74,5.5,15.0,2.3,blend,all,,0,,,5.9,live,71.75,9.159
+2026-11-12,156551,Isaiah Lewis,TA&M,OKST,G,3200,10.86,5.38,7.0,18.0,3.7,blend,all,,0,,,6.8,live,93.5,10.801
+2026-11-12,156551,Isaiah Crane,MONTS,BYU,G,3100,10.25,5.15,6.5,17.25,3.4,blend,all,,0,,,9.8,live,70.5,10.198
+2026-11-12,156551,Mekhi Ragland,OKST,TA&M,F,3100,0.37,0.85,0.0,1.5,0.4,bench,all,Q,0,Oklahoma St.,5.693,,live,85.5,1.201
+2026-11-12,156551,Donovan Richardson,RICH,SIU,G,3100,3.06,2.67,1.25,6.75,0.5,blend,all,,0,,,5.1,live,,8.794
+2026-11-12,156551,Mekhi Turner,TNTC,IU,F,3100,8.53,4.4,5.44,14.5,3.0,blend,all,,0,,,4.4,live,71.75,8.517
+2026-11-12,156551,Jamie Vinson,TA&M,OKST,F,3100,10.34,4.98,6.75,16.5,4.7,blend,all,,0,,,5.9,live,93.5,10.314
+2026-11-12,156551,Petar Ostojic,BYU,MONTS,F,3000,1.52,1.73,0.0,4.0,0.6,bench,all,,0,,,4.8,live,92.0,5.0
+2026-11-12,156551,Dean Rueckert,BYU,MONTS,F,3000,3.49,2.7,1.5,7.25,0.9,bench,all,,0,,,5.8,live,92.0,5.154
+2026-11-12,156551,Dawson Baker,BYU,MONTS,G,3000,1.89,2.28,0.0,5.0,0.4,bench,all,,0,BYU,19.817,,live,92.0,6.078
+2026-11-12,156551,Dovydas Buika,BYU,MONTS,G,3000,0.57,1.14,0.0,2.0,0.3,bench,all,,0,,,,live,92.0,1.739
+2026-11-12,156551,Vaughn Karvala,IU,TNTC,F,3000,1.74,1.85,0.0,4.25,0.6,bench,all,,0,,,0.8,live,96.25,5.586
+2026-11-12,156551,Ben Winker,IU,TNTC,F,3000,0.75,1.17,0.0,2.0,0.5,bench,all,,0,,,,live,96.25,2.174
+2026-11-12,156551,Justin Monden,IU,TNTC,G,3000,1.64,1.9,0.0,4.25,0.4,bench,all,,0,,,0.6,live,96.25,5.547
+2026-11-12,156551,Drew Snively,IU,TNTC,G,3000,0.26,0.73,0.0,1.25,0.2,bench,all,,0,Indiana,1.71,3.9,live,96.25,0.725
+2026-11-12,156551,Ian Stephens,IU,TNTC,G,3000,0.22,0.71,0.0,1.25,0.2,bench,all,,0,Indiana,1.733,,live,96.25,0.725
+2026-11-12,156551,Jordan Rayford,IU,TNTC,G,3000,0.47,1.01,0.0,2.0,0.3,bench,all,Q,0,,,,live,96.25,1.522
+2026-11-12,156551,Hale Hansen,MONTS,BYU,F,3000,7.37,3.87,4.5,12.5,2.4,blend,all,,0,,,1.8,live,70.5,7.445
+2026-11-12,156551,Waka Mbatch,MONTS,BYU,F,3000,1.08,1.44,0.0,3.25,0.5,bench,all,,0,,,,live,70.5,1.05
+2026-11-12,156551,James Steward,MONTS,BYU,F,3000,1.1,1.42,0.0,3.25,0.5,bench,all,,0,,,,live,70.5,1.05
+2026-11-12,156551,Calum Rutherfurd,MONTS,BYU,F,3000,1.02,1.4,0.0,3.25,0.5,bench,all,,0,,,,live,70.5,1.05
+2026-11-12,156551,DJ Johnson,MONTS,BYU,G,3000,1.06,1.45,0.0,3.25,0.3,bench,all,,0,,,0.0,live,70.5,1.05
+2026-11-12,156551,CJ Purdie,MONTS,BYU,G,3000,1.08,1.55,0.0,3.5,0.3,bench,all,,0,,,0.0,live,70.5,1.05
+2026-11-12,156551,Dane Caldwell,RICH,SIU,F,3000,0.33,0.79,0.0,1.25,0.4,bench,all,,0,,,,live,,1.05
+2026-11-12,156551,Jaden Shoultz,RICH,SIU,G,3000,0.35,0.87,0.0,1.5,0.3,bench,all,,0,,,,live,,1.05
+2026-11-12,156551,Daniel Pauliukonis,SIU,RICH,F,3000,7.95,4.13,5.0,13.5,2.7,blend,all,,0,,,3.0,live,,7.951
+2026-11-12,156551,Ty Laur,SIU,RICH,F,3000,8.1,4.16,5.0,14.0,2.8,blend,all,,0,,,3.3,live,,8.05
+2026-11-12,156551,Donovan Hill,SIU,RICH,F,3000,1.06,1.42,0.0,3.25,0.5,bench,all,,0,,,,live,,1.05
+2026-11-12,156551,Kyler Fox,TNTC,IU,F,3000,1.08,1.44,0.0,3.25,0.5,bench,all,,0,,,,live,71.75,1.05
+2026-11-12,156551,Dane Christensen,TNTC,IU,F,3000,1.0,1.38,0.0,3.0,0.5,bench,all,,0,,,,live,71.75,1.05
+2026-11-12,156551,Jake Pampolina,TNTC,IU,G,3000,1.07,1.5,0.0,3.5,0.3,bench,all,,0,,,,live,71.75,1.05
+2026-11-12,156551,Harrison Stewart,TNTC,IU,G,3000,1.05,1.53,0.0,3.25,0.3,bench,all,,0,,,,live,71.75,1.05
+2026-11-12,156551,CohenJ Gonzales,TNTC,IU,G,3000,1.04,1.54,0.0,3.25,0.3,bench,all,,0,,,,live,71.75,1.05
+2026-11-12,156551,Chris McDermott,TA&M,OKST,F,3000,12.07,5.38,8.25,19.28,7.5,blend,all,,0,Texas A&M,2.541,1.5,live,93.5,11.996
+2026-11-12,156551,Preston Clark,TA&M,OKST,F,3000,1.03,1.4,0.0,3.03,0.5,bench,all,,0,,,,live,93.5,1.05
+2026-11-12,156551,Jeremiah Green,TA&M,OKST,G,3000,1.11,1.55,0.0,3.5,0.3,bench,all,,0,,,0.0,live,93.5,1.05
+2026-11-12,156551,Kyle Moran,TA&M,OKST,G,3000,8.17,4.55,4.75,14.03,2.1,blend,all,,0,,,0.8,live,93.5,8.253
+2026-11-12,156551,Lukas Walls,TA&M,OKST,G,3000,8.6,4.63,5.19,14.53,2.3,blend,all,,0,,,1.8,live,93.5,8.628
