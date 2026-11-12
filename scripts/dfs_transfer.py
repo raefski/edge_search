@@ -140,12 +140,13 @@ TRANSFERS = [
              "props read through a normal (T04)",
      "where": "edge/dfs_run_nba.py PROPS_BLEND / market_dk", "data": "contests.db: 18 graded slates with our entries",
      "probe": "tiers", "target": "projection tier / stars overrated (lineup lab)",
-     "measured": {"at": "2026-11-11", "pts_lineup": 5.0, "upper_bound": True,
-                  "note": "train 10 slates -> test 8 slates (20 entered lineups, mostly before the 11/8 props "
-                          "blend): our rostered players ran -10.2 pts/lineup below the slate's own miss; "
-                          "projection-quintile correction fitted on train explains -5.0 of it (top quintile "
-                          "-1.74/player relative); salary quintiles do not (+2.4, wrong sign). NBA cycle 20 "
-                          "found no SALARY-tier bias: this is projection level. Re-measure on post-blend slates."}},
+     "measured": {"at": "2026-11-11", "pts_lineup": 4.46, "upper_bound": True,
+                  "note": "train 11 slates -> test 8 (21 entered lineups, through 11/10, mostly before the 11/8 "
+                          "props blend): our rostered players ran -9.6 pts/lineup below the slate's own miss; a "
+                          "projection-quintile correction fitted on train explains -4.5 of it (top quintile "
+                          "-1.58/player relative; -5.0 of -10.2 without 11/10); salary quintiles do not (wrong "
+                          "sign). NBA cycle 20 found no SALARY-tier bias: this is projection level. Post-blend "
+                          "selection gap: 11/9 -20.6, 11/10 +0.2 (2 slates; re-measure at 5)."}},
     {"id": "T03", "lesson": "L03", "sport": "nba", "kind": "market", "status": "measure",
      "idea": "turnovers (-0.5 DK each; stars 3-4 a game, bench ~0.7) and double-double odds are left in the "
              "blend's constant; player_turnovers and the combo markets are collected, never read",
@@ -178,8 +179,14 @@ TRANSFERS = [
     {"id": "T08", "lesson": "L05", "sport": "ncaab", "kind": "projection", "status": "waiting",
      "idea": "tier / skew knot; our rostered players ran -37 pts/lineup vs the field's, scored on the same "
              "projection (the largest gap of any sport)",
-     "data": "5 graded slates: needs ~10 for a 60/40 held-out split (about 11/20 at the current pace)",
-     "probe": "tiers", "target": None},
+     "data": "6 graded slates (11/10 added): the split runs but 3 test slates / 7 lineups is a reading; ~10 "
+             "slates for a held-out answer (about 11/20 at the current pace)",
+     "probe": "tiers", "target": None,
+     "measured": {"at": "2026-11-11", "pts_lineup": 15.1, "upper_bound": True,
+                  "note": "READING, not enough data: train 3 / test 3 slates, 7 lineups. Projection quintiles "
+                          "(relative): +5.9 +1.0 -1.6 -3.6 -1.8 -- cheap / low projections run under, high ones "
+                          "over (spread too wide); train fit says -15.1 of the -31.7/lineup realised. Selection "
+                          "gap -36.8 [-45.2, -28.4] over 6 slates, 11/10 -36.9."}},
     {"id": "T09", "lesson": "L03", "sport": "nascar", "kind": "market", "status": "waiting",
      "idea": "no odds are collected at all (win / top-5 / top-10 / H2H); markets beat our model in NBA and NCAAF, "
              "and NASCAR's selection gap is -55 pts/lineup (4 slates)",
@@ -589,7 +596,7 @@ def pareto(live_money: bool = True, probes: bool = True) -> dict:
         sports = [t["sport"].upper()] if t["sport"] != "all" else []
         k = dppw.get(sports[0], 0.0) if sports else 0.0
         priced = bool(m) and t["status"] == "open"
-        rows.append({"id": t["id"], "sport": t["sport"], "kind": t["kind"], "status": t["status"],
+        rows.append({"id": t["id"], "sport": t["sport"].upper(), "kind": t["kind"], "status": t["status"],
                      "idea": t["idea"], "from": f"{lessons[t['lesson']]['from'].upper()}: {lessons[t['lesson']]['ref']}",
                      "mechanism": lessons[t["lesson"]]["mechanism"], "data": t["data"], "target": t.get("target"),
                      "pts_lineup": m.get("pts_lineup"), "upper_bound": bool(m.get("upper_bound")),
