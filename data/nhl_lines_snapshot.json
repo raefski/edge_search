@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-12T23:44:42+00:00",
+"generated_at": "2026-11-12T23:58:53+00:00",
 "goalies": {
 "2026-11-12": {
 "BOS": {
@@ -7687,9 +7687,9 @@
 "toiMinutes": 80,
 "toiSeconds": 22
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Alexandre Carrier": {
@@ -7823,7 +7823,7 @@
 "toiMinutes": 61,
 "toiSeconds": 26
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -7927,7 +7927,7 @@
 "toiMinutes": 87,
 "toiSeconds": 11
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -7997,7 +7997,7 @@
 "toiMinutes": 73,
 "toiSeconds": 26
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "rw",
 "pp": null
@@ -8099,9 +8099,9 @@
 "toiMinutes": 63,
 "toiSeconds": 33
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Lane Hutson": {
@@ -8269,7 +8269,7 @@
 "toiMinutes": 52,
 "toiSeconds": 37
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -13245,7 +13245,7 @@
 "toiMinutes": 97,
 "toiSeconds": 27
 },
-"line": "D2",
+"line": "D1",
 "pk": null,
 "pos": "ld",
 "pp": "PP1"
@@ -13279,9 +13279,9 @@
 "toiMinutes": 55,
 "toiSeconds": 59
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Dennis Hildeby": {
@@ -13320,6 +13320,40 @@
 "pos": "g",
 "pp": null
 },
+"Emil Lilleberg": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 148,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 65,
+"toiSeconds": 43
+},
+"line": "D4",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Gage Goncalves": {
 "gtd": false,
 "injury": null,
@@ -13349,7 +13383,7 @@
 "toiMinutes": 70,
 "toiSeconds": 6
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -13383,7 +13417,7 @@
 "toiMinutes": 74,
 "toiSeconds": 33
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -13417,7 +13451,7 @@
 "toiMinutes": 88,
 "toiSeconds": 3
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -13451,9 +13485,9 @@
 "toiMinutes": 105,
 "toiSeconds": 54
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": "PP1"
 },
 "Jeffrey Viel": {
@@ -13519,7 +13553,7 @@
 "toiMinutes": 101,
 "toiSeconds": 18
 },
-"line": "D2",
+"line": "D1",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -13621,7 +13655,7 @@
 "toiMinutes": 71,
 "toiSeconds": 3
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
@@ -13655,7 +13689,7 @@
 "toiMinutes": 88,
 "toiSeconds": 55
 },
-"line": "D1",
+"line": "D3",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -13689,7 +13723,7 @@
 "toiMinutes": 79,
 "toiSeconds": 37
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -13757,44 +13791,10 @@
 "toiMinutes": 87,
 "toiSeconds": 47
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
-},
-"Yanni Gourde": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 159,
-"toiSeconds": 0
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 74,
-"toiSeconds": 54
-},
-"line": "F1",
-"pk": null,
-"pos": "c",
-"pp": null
 },
 "Zemgus Girgensons": {
 "gtd": false,
@@ -13825,7 +13825,7 @@
 "toiMinutes": 74,
 "toiSeconds": 55
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": null
