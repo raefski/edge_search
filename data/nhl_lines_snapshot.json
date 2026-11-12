@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-11-12T15:58:56+00:00",
+"generated_at": "2026-11-12T16:29:03+00:00",
 "goalies": {
 "2026-11-12": {
 "BOS": {
 "goalie": "Jeremy Swayman",
-"status": null
+"status": "Confirmed"
 },
 "BUF": {
 "goalie": "Colten Ellis",
@@ -16,7 +16,7 @@
 },
 "CBJ": {
 "goalie": "Jet Greaves",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -36,7 +36,7 @@
 },
 "FLA": {
 "goalie": "Akira Schmid",
-"status": null
+"status": "Confirmed"
 },
 "LAK": {
 "goalie": "Anton Forsberg",
@@ -59,8 +59,8 @@
 "status": null
 },
 "OTT": {
-"goalie": "Samuel Ersson",
-"status": null
+"goalie": "Linus Ullmark",
+"status": "Confirmed"
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
@@ -5976,16 +5976,6 @@
 "pos": "ld",
 "pp": "PP2"
 },
-"Jack Devine": {
-"gtd": false,
-"injury": null,
-"last10": {},
-"last5": {},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Jacob Markstrom": {
 "gtd": false,
 "injury": null,
@@ -6225,6 +6215,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP1"
+},
+"Sandis Vilmanis": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 6,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 15,
+"toiMinutes": 125,
+"toiSeconds": 33
+},
+"last5": {
+"assists": 3,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 57,
+"toiSeconds": 54
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Seth Jones": {
 "gtd": false,
