@@ -566,3 +566,38 @@ def test_goalie_lab_cells_mirror_production():
     assert fit["_n"]["Projected/started_last"] == 10.0
     assert 0.6 < fit["Projected/started_last"] < 0.67
     assert fit["Confirmed"] == 1.0
+
+
+def test_lab_pinned_store_keeps_each_querys_rows_in_the_stores_order(tmp_path, monkeypatch):
+    """scripts/nhl_skater_lab._PinnedStore (2026-11-12): an archived scan is read from F: once
+    per distinct query, then from local disk, rows in the store's own order (a filtered full
+    read reordered the 621 h2h/totals rows and moved a skater 10.34 -> 10.58)."""
+    from scripts import nhl_skater_lab as L
+    monkeypatch.setattr(L, "SCANS", tmp_path)
+
+    class Store:
+        calls = 0
+        conn = "conn"
+
+        def quotes(self, scan_id, sport_key=None, markets=None, event_ids=None):
+            Store.calls += 1
+            rows = [{"event_id": e, "market": m, "sport_key": "icehockey_nhl"}
+                    for e in ("b", "a") for m in ("totals", "h2h")]
+            return [r for r in rows if (not markets or r["market"] in markets)
+                    and (not event_ids or r["event_id"] in event_ids)][::-1]   # the store's own order
+
+        def events(self, scan_id, sport_key=None):
+            Store.calls += 1
+            return [{"event_id": "b"}, {"event_id": "a"}]
+
+    real = Store()
+    first = L._PinnedStore(real, 7)
+    want = real.quotes(7, "icehockey_nhl", ["h2h"])
+    Store.calls = 0
+    assert first.quotes(7, "icehockey_nhl", ["h2h"]) == want and Store.calls == 1
+    assert first.events(7, "icehockey_nhl") == [{"event_id": "b"}, {"event_id": "a"}] and Store.calls == 2
+    again = L._PinnedStore(Store(), 7)                       # a new process: read from disk
+    assert again.quotes(7, "icehockey_nhl", ["h2h"]) == want and again.events(7, "icehockey_nhl")
+    assert Store.calls == 2
+    again.quotes(8, "icehockey_nhl")                         # another scan: the real store
+    assert Store.calls == 3 and again.conn == "conn"         # anything else passes through

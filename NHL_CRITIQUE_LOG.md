@@ -861,3 +861,17 @@ lead times); (2) the build-time goalie state is not logged (45 of 117 test slots
 build time): log starter_status + p_start in the projection history; (3) logged != entered (11/5:
 log Saros x5, Adam entered Hellebuyck) -- T17. Refit the cells at ~40 nights (`nhl_goalie_lab.py
 report`); lead time did not move P(start) enough to fit (Projected 0.71-0.79 across leads, train).
+
+## Gate fix (2026-11-12, hand-made at Adam's OK): the lab cache outran the gate
+
+The 11/12 night's cycle 14 (goalies) finished its work, then the gate crashed: `nhl_skater_lab.py
+cache` on main's side ran past the gate's 3-hour limit. Cause: scans older than 14 days are read
+from the F: archive (WSL /mnt/f, ~20 s a cold query) and one board asks the store 29 times -- an
+October slate took 323-536 s, and the cache rebuilds 69 slates x 2 states in each checkout. Fix:
+each distinct store query of a pinned scan is kept in data/nhl_cache/lab/scans/<id>.json.gz (rows
+in the store's own order: a filtered full read reordered the h2h/totals rows and moved a skater
+10.34 -> 10.58), and `cache` builds across processes (all cores but two; `--workers`). Parity on
+10/1 (gid 154311): real store == cache fill == from cache, 536 s -> 11 s. The gate's worktrees copy
+data/nhl_cache, so they start warm once main's cache is filled. Separately found: a slate whose
+games are live while it is cached does not rebuild identically (two real-store builds of 11/12
+differed in blocks / role); past slates are deterministic. Cycle 14 itself was merged by Adam.

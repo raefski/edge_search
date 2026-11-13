@@ -42,15 +42,23 @@ from __future__ import annotations
 import argparse
 import contextlib
 import copy
+import gzip
 import io
 import json
+import os
 import sys
+from concurrent.futures import ProcessPoolExecutor
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
+# one BLAS thread per process: `cache` builds slates across processes (all cores); numpy's own
+# threads on top of ~18 workers only oversubscribe (as scripts/nba_lineup_lab.py)
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")
+
+import numpy as np  # noqa: E402
+import pandas as pd  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -71,6 +79,63 @@ N_SIMS = 2000
 # ──────────────────────────────────────────────────────────────────────────────
 # cache: rebuild each logged slate, keep the board before simulation
 # ──────────────────────────────────────────────────────────────────────────────
+SCANS = LAB / "scans"
+
+
+class _PinnedStore:
+    """The OddsStore for one pinned scan, each query's answer kept on local disk.
+
+    Why (2026-11-12): scans older than 14 days live in the F: archive (edge/odds/archive.py),
+    and WSL reads /mnt/f cold at ~20 s a query. One board's build asks the store 29 times
+    (events() re-reads the whole scan each call), so an October slate took 323 s, and the
+    gate's `cache` of 69 slates x 2 states ran past its 3-hour limit and crashed the night's
+    NHL cycle. A scan never changes once taken, so each distinct query's rows are kept in
+    data/nhl_cache/lab/scans/<id>.json.gz and served from there afterwards; the gate's
+    worktrees copy data/nhl_cache, so they start warm.
+
+    EACH QUERY'S ROWS, IN THE STORE'S OWN ORDER -- not one read of the scan filtered here.
+    The same 621 h2h/totals rows came back in a different order, the odds client's payload
+    follows row order, and the board moved (a skater 10.34 -> 10.58). Kept per exact call,
+    a rebuild is the original build by construction (parity: `cache` twice, compare)."""
+
+    def __init__(self, store, scan_id: int):
+        self._store, self._scan = store, scan_id
+        self._path = SCANS / f"{scan_id}.json.gz"
+        try:
+            self._memo = json.loads(gzip.decompress(self._path.read_bytes()))
+        except (OSError, ValueError):
+            self._memo = {}
+
+    def _ask(self, key: list, fetch):
+        k = json.dumps(key)
+        if k not in self._memo:
+            self._memo[k] = [dict(r) for r in fetch()]
+            try:                                # merge with what other workers wrote meanwhile
+                on_disk = json.loads(gzip.decompress(self._path.read_bytes()))
+            except (OSError, ValueError):
+                on_disk = {}
+            self._memo = {**on_disk, **self._memo}
+            self._path.parent.mkdir(parents=True, exist_ok=True)
+            tmp = self._path.with_suffix(f".{os.getpid()}.tmp")
+            tmp.write_bytes(gzip.compress(json.dumps(self._memo).encode()))
+            tmp.replace(self._path)             # whole file or none
+        return self._memo[k]
+
+    def quotes(self, scan_id, sport_key=None, markets=None, event_ids=None):
+        if scan_id != self._scan:
+            return self._store.quotes(scan_id, sport_key, markets, event_ids)
+        args = (sport_key, list(markets) if markets else None, list(event_ids) if event_ids else None)
+        return self._ask(["quotes", *args], lambda: self._store.quotes(scan_id, *args))
+
+    def events(self, scan_id, sport_key=None):
+        if scan_id != self._scan:
+            return self._store.events(scan_id, sport_key)
+        return self._ask(["events", sport_key], lambda: self._store.events(scan_id, sport_key))
+
+    def __getattr__(self, name):
+        return getattr(self._store, name)
+
+
 def _capture(gid: int, hours_before: int) -> dict:
     lock = RB.lock_time(gid)
     at = RB.utc((datetime.fromisoformat(lock.rstrip("Z")) - timedelta(hours=hours_before))
@@ -98,7 +163,7 @@ def _capture(gid: int, hours_before: int) -> dict:
         return real_sim(pool, games, **k)
     R.player_props, R.nhl_sim.simulate = props, sim
     try:
-        client = RB.ScrapedOddsClient(RB.OddsStore(), prof.name, scan_id=scan_id,
+        client = RB.ScrapedOddsClient(_PinnedStore(RB.OddsStore(), scan_id), prof.name, scan_id=scan_id,
                                       main_line_only=not prof.full_ladders)
         with contextlib.redirect_stdout(io.StringIO()):
             pool, _, info = R.build_board(gid, {"gid": gid, "start": lock, "label": "lab"}, client,
@@ -120,18 +185,39 @@ def _capture(gid: int, hours_before: int) -> dict:
             "pool": rows}
 
 
-def cache(gids: list[int], states=STATES) -> None:
-    for state, hrs in states.items():
+def _cache_one(job: tuple) -> str:
+    """Build one (state, slate) board and write it; the line to print. A worker process: the
+    pinned inputs _capture sets are module globals, so slates never share a process mid-build."""
+    state, hrs, gid = job
+    try:
+        d = _capture(gid, hrs)
+    except (SystemExit, Exception) as e:  # noqa: BLE001 -- a slate without pinned inputs is skipped
+        return f"{state} {gid}: skipped ({e})"
+    (LAB / state / f"{gid}.json").write_text(json.dumps(d, default=sorted))   # slots: a set
+    return f"{state} {gid} {d['date']}: {len(d['pool'])} on board, scan {d['scan'][1][:16]}"
+
+
+def cache(gids: list[int], states=STATES, workers: int | None = None) -> None:
+    """Rebuild every (state, slate) board. Across processes, all cores but two: the critique
+    gate runs this in BOTH checkouts before it can compare them, and on 2026-11-12 the serial
+    loop (69 slates x 2 states) outran the gate's 3-hour limit on main's side and crashed the
+    night's NHL cycle. Each board is built and written independently, so the files are the
+    same whatever the order."""
+    for state in states:
         (LAB / state).mkdir(parents=True, exist_ok=True)
-        for gid in gids:
-            try:
-                d = _capture(gid, hrs)
-            except (SystemExit, Exception) as e:  # noqa: BLE001 -- a slate without pinned inputs is skipped
-                print(f"{state} {gid}: skipped ({e})", file=sys.stderr)
-                continue
-            (LAB / state / f"{gid}.json").write_text(json.dumps(d, default=sorted))   # slots: a set
-            print(f"{state} {gid} {d['date']}: {len(d['pool'])} on board, scan {d['scan'][1][:16]}",
-                  file=sys.stderr)
+    jobs = [(state, hrs, int(gid)) for state, hrs in states.items() for gid in gids]
+    workers = workers or max(1, min(len(jobs), (os.cpu_count() or 2) - 2))
+    if workers == 1:
+        lines = map(_cache_one, jobs)
+    else:
+        ex = ProcessPoolExecutor(workers)
+        lines = ex.map(_cache_one, jobs)
+    try:
+        for line in lines:
+            print(line, file=sys.stderr, flush=True)
+    finally:
+        if workers != 1:
+            ex.shutdown()
 
 
 def load(state: str) -> list[dict]:
@@ -534,6 +620,7 @@ def main() -> int:
     c = sub.add_parser("cache")
     c.add_argument("gids", nargs="*", type=int)
     c.add_argument("--state", choices=list(STATES))
+    c.add_argument("--workers", type=int, help="processes (default: all cores but two; 1 = serial)")
     r = sub.add_parser("report")
     r.add_argument("--variant", action="append", default=[])
     r.add_argument("--state", choices=list(STATES))
@@ -551,7 +638,7 @@ def main() -> int:
         return gate(a.out)
     if a.cmd == "cache":
         gids = a.gids or sorted(pd.read_csv(ROOT / "data" / "dfs_proj_log_nhl.csv").gid.unique())
-        cache([int(g) for g in gids], {a.state: STATES[a.state]} if a.state else STATES)
+        cache([int(g) for g in gids], {a.state: STATES[a.state]} if a.state else STATES, workers=a.workers)
     elif a.cmd == "report":
         names = ["shipped"] + [v for v in a.variant if v != "shipped"]
         if a.lab:
