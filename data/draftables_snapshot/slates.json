@@ -270,16 +270,6 @@
 "StartDateEst": "2026-11-13T12:00:00.0000000",
 "last_start": "2026-11-13T21:00:00.0000000Z"
 },
-"156331": {
-"ContestStartTimeSuffix": " (Madden Stream PHI @ SEA)",
-"DraftGroupId": 156331,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 159,
-"StartDate": "2026-11-13T17:00:00.0000000Z",
-"StartDateEst": "2026-11-13T12:00:00.0000000",
-"last_start": "2026-11-13T17:00:00.0000000Z"
-},
 "156332": {
 "ContestStartTimeSuffix": " (Madden Stream WAS @ NYG)",
 "DraftGroupId": 156332,
@@ -511,6 +501,26 @@
 "StartDate": "2026-11-14T03:00:00.0000000Z",
 "StartDateEst": "2026-11-13T22:00:00.0000000",
 "last_start": "2026-11-14T03:00:00.0000000Z"
+},
+"156605": {
+"ContestStartTimeSuffix": " (Early)",
+"DraftGroupId": 156605,
+"DraftGroupTag": "",
+"GameCount": 2,
+"GameTypeId": 125,
+"StartDate": "2026-11-14T18:00:00.0000000Z",
+"StartDateEst": "2026-11-14T13:00:00.0000000",
+"last_start": "2026-11-14T20:30:00.0000000Z"
+},
+"156607": {
+"ContestStartTimeSuffix": null,
+"DraftGroupId": 156607,
+"DraftGroupTag": "Featured",
+"GameCount": 12,
+"GameTypeId": 125,
+"StartDate": "2026-11-15T00:00:00.0000000Z",
+"StartDateEst": "2026-11-14T19:00:00.0000000",
+"last_start": "2026-11-15T03:00:00.0000000Z"
 }
 }
 }
