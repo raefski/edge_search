@@ -340,16 +340,6 @@
 "StartDateEst": "2026-11-13T12:00:00.0000000",
 "last_start": "2026-11-13T21:00:00.0000000Z"
 },
-"156332": {
-"ContestStartTimeSuffix": " (Madden Stream WAS @ NYG)",
-"DraftGroupId": 156332,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 159,
-"StartDate": "2026-11-13T19:00:00.0000000Z",
-"StartDateEst": "2026-11-13T14:00:00.0000000",
-"last_start": "2026-11-13T19:00:00.0000000Z"
-},
 "156333": {
 "ContestStartTimeSuffix": " (Madden Stream DET @ CHI)",
 "DraftGroupId": 156333,
@@ -602,6 +592,16 @@
 "StartDateEst": "2026-11-14T13:00:00.0000000",
 "last_start": "2026-11-14T20:30:00.0000000Z"
 },
+"156606": {
+"ContestStartTimeSuffix": " (WPG @ CHI)",
+"DraftGroupId": 156606,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-14T20:30:00.0000000Z",
+"StartDateEst": "2026-11-14T15:30:00.0000000",
+"last_start": "2026-11-14T20:30:00.0000000Z"
+},
 "156607": {
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 156607,
@@ -611,6 +611,16 @@
 "StartDate": "2026-11-15T00:00:00.0000000Z",
 "StartDateEst": "2026-11-14T19:00:00.0000000",
 "last_start": "2026-11-15T03:00:00.0000000Z"
+},
+"156611": {
+"ContestStartTimeSuffix": " (BUF @ DAL)",
+"DraftGroupId": 156611,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-15T01:00:00.0000000Z",
+"StartDateEst": "2026-11-14T20:00:00.0000000",
+"last_start": "2026-11-15T01:00:00.0000000Z"
 },
 "156613": {
 "ContestStartTimeSuffix": " (Late)",
