@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-13T14:29:07+00:00",
+"generated_at": "2026-11-13T14:59:22+00:00",
 "goalies": {
 "2026-11-13": {
 "NSH": {
@@ -113,7 +113,7 @@
 "status": null
 },
 "TBL": {
-"goalie": "Dennis Hildeby",
+"goalie": "Andrei Vasilevskiy",
 "status": null
 },
 "TOR": {
@@ -3016,7 +3016,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP1"
 },
 "Damon Severson": {
 "gtd": false,
@@ -3118,7 +3118,7 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Dmitri Voronkov": {
 "gtd": false,
@@ -3460,7 +3460,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP1"
+"pp": null
 },
 "Steven Lorentz": {
 "gtd": false,
@@ -3562,7 +3562,7 @@
 "line": "D1",
 "pk": null,
 "pos": "ld",
-"pp": "PP1"
+"pp": "PP2"
 }
 },
 "CGY": {
@@ -4281,7 +4281,7 @@
 "toiMinutes": 111,
 "toiSeconds": 28
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -4352,7 +4352,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Artyom Levshunov": {
 "gtd": false,
@@ -4383,7 +4383,7 @@
 "toiMinutes": 103,
 "toiSeconds": 53
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
@@ -4521,9 +4521,9 @@
 "toiMinutes": 62,
 "toiSeconds": 8
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Frank Nazar": {
@@ -4558,7 +4558,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Ian Cole": {
 "gtd": false,
@@ -4591,7 +4591,7 @@
 },
 "line": "D1",
 "pk": "PK1",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Jordan Greenway": {
@@ -4691,7 +4691,7 @@
 "toiMinutes": 71,
 "toiSeconds": 56
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -4759,7 +4759,7 @@
 "toiMinutes": 65,
 "toiSeconds": 51
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -4827,7 +4827,7 @@
 "toiMinutes": 99,
 "toiSeconds": 11
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -5935,7 +5935,7 @@
 "pp": "PP2"
 },
 "Lian Bichsel": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -6410,7 +6410,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Anton Johansson": {
 "gtd": false,
@@ -6512,7 +6512,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Daniil Tarasov": {
 "gtd": false,
@@ -6615,7 +6615,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
 },
 "John Gibson": {
@@ -6785,9 +6785,9 @@
 "toiMinutes": 76,
 "toiSeconds": 7
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Mason Appleton": {
@@ -6955,7 +6955,7 @@
 "toiMinutes": 89,
 "toiSeconds": 13
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -12412,7 +12412,7 @@
 "line": "F1",
 "pk": "PK1",
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Tony DeAngelo": {
 "gtd": false,
@@ -12480,7 +12480,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 }
 },
 "NYR": {
@@ -16700,7 +16700,7 @@
 "line": "D3",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Colton Parayko": {
 "gtd": false,
@@ -17078,7 +17078,7 @@
 "line": "D1",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Mason McTavish": {
 "gtd": false,
@@ -17317,7 +17317,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -17419,9 +17419,9 @@
 "toiMinutes": 56,
 "toiSeconds": 18
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Dennis Hildeby": {
@@ -17455,7 +17455,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -18690,7 +18690,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Andrew Peeke": {
 "gtd": false,
@@ -18962,7 +18962,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": null
 },
 "Kailer Yamamoto": {
 "gtd": false,
@@ -18996,7 +18996,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Karel Vejmelka": {
 "gtd": false,
@@ -19100,7 +19100,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Liam O'Brien": {
 "gtd": false,
@@ -20921,7 +20921,7 @@
 "pp": "PP2"
 },
 "Dylan DeMelo": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 5,
