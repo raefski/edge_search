@@ -237,12 +237,14 @@ def market_dk(pm: dict) -> float | None:
     return round(tot, 2)
 
 
-def market_points(client, rows: list[dict]) -> dict:
+def market_points(client, rows: list[dict], priced: set | None = None) -> dict:
     """{row name: market DK points} for board rows whose own game's event has DK props.
     A player takes lines only from the event between his team and his opponent (a scan
     can hold two nights), matched by norm name, else by (last name, first initial) when
     agreeing first names (nicknames / prefixes, never a bare initial) when exactly one
-    subject of that event fits (DK "Alexandre Sarr" / a book's "Alex Sarr")."""
+    subject of that event fits (DK "Alexandre Sarr" / a book's "Alex Sarr").
+    `priced`, when given, collects every row name with ANY of PROP_MARKETS posted (a market
+    number needs points + rebounds + assists; shrink_props_free needs to know who has none)."""
     by_event, _ = dfs_slate.player_markets_by_event(client, SPORT, PROP_MARKETS)
     teams_of = {}
     for ev in client.get_events(SPORT):
@@ -264,6 +266,8 @@ def market_points(client, rows: list[dict]) -> dict:
             alt = [v for k, v in subjects.items() if _sig(k)[0] == _sig(r["name"])[0]
                    and first_names_agree(k.split()[0], r["name"].split()[0])]
             pm = alt[0] if len(alt) == 1 else None
+        if pm and priced is not None:
+            priced.add(r["name"])
         got = market_dk(pm) if pm else None
         if got is not None:
             out[r["name"]] = got
@@ -288,6 +292,73 @@ def blend_props(rows: list[dict], mkt: dict, blend: tuple | None = None) -> int:
             n += 1
         else:
             r["proj_source"] = "model"
+    return n
+
+
+# ---- players with NO DK prop at all (critique cycle 33, 2026-11-13) ----
+# The critic found the props-free players in a game DK HAS priced keep the model's raw number,
+# and it runs high exactly where the optimizer looks: at model 15+ the bias was -5.05 (229 rows /
+# 20 dates, 9% scored zero), at 4.5x+ salary value -6.9 to -10.8; production's cash seeds took
+# 0.31 of them a lineup at -17.3 DK points a pick (12 dates) while the cash fields owned them
+# 0-18%. A player DK prices nothing for, in a game it prices fully, is news the market has (a
+# minutes / role doubt), not a gap in collection. proj = max(0.1, a + b model + c salary_k),
+# least squares on 613 such rows (model >= 10, 21 dates 10/20-11/12, DK's points by draft
+# group); folds a -5.87..-0.96, b .27-.52, c 1.68-3.11; train-only (< 10/31, 290 rows) -2.93 /
+# .239 / 2.614. The model >= 10 floor and the 5-player game gate were fixed before any result.
+# Held out through the production optimizer (scripts/nba_lineup_lab.py sets: 40 seed lineups a
+# board, constants refit without each date): CASH field pctile .544 -> .628 (+.083 [90% +.031,
+# +.153] by date, 20 contests / 15 dates, 11 better / 2 worse), cashed 52% -> 62%, $ per $1
+# 1.05 -> 1.23; fixed split, fit < 10/31, test 7 / 7: +.023 [+.003, +.045]. GPP +.028 [-.005,
+# +.070] (40 / 21), test +.000 [-.020, +.019] (19 / 11). Without the 10/25 copied-projection
+# night: cash +.057 [+.021, +.110]. Re-measured by the repo lab after its market-cache fix
+# (`nba_lineup_lab.py sets`, blend + shrink refit without each date, vs the blend alone): cash
+# .548 -> .623 (+.075 [+.022, +.143], 9 better / 5 worse), $ per $1 1.06 -> 1.22; GPP +.020
+# [-.008, +.053]; test dates alone cash +.007 [-.023, +.039] (their lineups took 0.11 such
+# players each: little to win there). None = off.
+PROPS_FREE_SHRINK: tuple | None = (-4.603, 0.398, 2.643)
+PROPS_FREE_MIN = 10.0        # model points; below it the row keeps the model (fixed a priori)
+PROPS_FREE_GAME_MIN = 5      # players with a full market in his game: DK has priced it
+# Live only from lock - 90 min: the lab replays the last scan >= 25 min before the first tip (its
+# scans run every ~30 min), the autolog builds ~12 min before lock. Earlier in the day DK is still
+# posting: on 11/12 the rule flagged 23 players 10 h out, 12 at lock (Simons, Coulibaly, Wade got
+# props later); 11/10 72 -> 61, 11/11 41 -> 36. An early build is an unvalidated state, so it
+# keeps the model and the page says when the shrink starts.
+PROPS_FREE_LEAD_MIN = 90
+
+
+def props_free_starts(lock: datetime | None, now: datetime | None = None) -> datetime | None:
+    """None when shrink_props_free may run (within PROPS_FREE_LEAD_MIN of lock, or no lock
+    known), else the moment it will."""
+    from datetime import timedelta, timezone
+    if lock is None:
+        return None
+    at = lock - timedelta(minutes=PROPS_FREE_LEAD_MIN)
+    return None if (now or datetime.now(timezone.utc)) >= at else at
+
+
+def shrink_props_free(rows: list[dict], mkt: dict, priced: set, coef: tuple | None = None) -> int:
+    """proj = max(0.1, a + b model + c salary_k) for a projected row with none of PROP_MARKETS
+    posted (not in `priced`), projected >= PROPS_FREE_MIN, whose game has >= PROPS_FREE_GAME_MIN
+    players with a market number (`mkt`). Marks model_proj (logged: the lab replays from it)
+    and proj_source "no props: shrunk". Returns the count shrunk."""
+    coef = PROPS_FREE_SHRINK if coef is None else coef
+    if not coef:
+        return 0
+    priced = set(priced) | set(mkt)
+    games: dict = collections.defaultdict(int)
+    for r in rows:
+        if r["name"] in mkt:
+            games[frozenset((r.get("team"), r.get("opp")))] += 1
+    a, b, c = coef
+    n = 0
+    for r in rows:
+        if (r["name"] in priced or (r.get("proj") or 0) < PROPS_FREE_MIN
+                or games[frozenset((r.get("team"), r.get("opp")))] < PROPS_FREE_GAME_MIN):
+            continue
+        r["model_proj"] = r["proj"]
+        r["proj"] = round(max(0.1, a + b * r["proj"] + c * r["salary"] / 1000.0), 2)
+        r["proj_source"] = "no props: shrunk"
+        n += 1
     return n
 
 
@@ -560,13 +631,24 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
                 info["imputed"].append(r["name"])
     # DK props (critique cycle 27): the market's DK points, blended where posted
     if client is not None:
+        priced: set = set()
         try:
-            mkt = market_points(client, [r for r in rows if not r["out"] and r.get("proj")])
+            mkt = market_points(client, [r for r in rows if not r["out"] and r.get("proj")], priced)
         except Exception as exc:                            # noqa: BLE001 -- props are optional
             log.warning("nba: no props (%s)", exc)
-            mkt = {}
+            mkt, priced = {}, set()
         info["props_blended"] = blend_props([r for r in rows if not r["out"]], mkt)
         info["props_players"] = len(mkt)
+        # cycle 33: no prop at all in a game DK has priced -> shrunk (no props up: nothing moves),
+        # from lock - PROPS_FREE_LEAD_MIN (the state it was validated in)
+        wait = props_free_starts(start)
+        if wait is None:
+            shrunk = [r for r in rows if not r["out"]]
+            info["props_free_shrunk"] = shrink_props_free(shrunk, mkt, priced)
+            info["props_free_names"] = sorted(r["name"] for r in shrunk
+                                              if r.get("proj_source") == "no props: shrunk")
+        else:
+            info["props_free_wait"] = wait.astimezone(ET).strftime("%-I:%M %p ET")
     # Every priced player's salary / position / tip, so a late swap can hold the
     # slot of an entered player who is OUT but already locked (late_swap below).
     info["priced_rows"] = {r["name"]: {"salary": r["salary"], "dk_pos": r["dk_pos"], "team": r["team"],

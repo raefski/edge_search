@@ -119,6 +119,17 @@ LESSONS = [
                  "0.048 -> 0.034 at T-180 (292 team-games, 22 nights); dead G slots in replayed test lineups "
                  "cash 13/90 -> 0 (early), 17/140 -> 0 (lock); lineup points within noise (GPP -1.1 to -1.6)",
      "covers": [("nhl", "2026-11-12")]},
+    {"id": "L14", "from": "nba", "mechanism": "a player the books leave unpriced in a game they HAVE priced keeps the "
+                                            "raw model, which runs high exactly where the optimizer shops (cheap "
+                                            "value); the market's silence is news (role / minutes doubt): shrink "
+                                            "him a + b model + c salary, gated on the game being priced",
+     "ref": "NBA critique cycle 33 (11/13, hand-run, no-props players)",
+     "evidence": "NBA props-free rows at model 15+ ran -5.05 (229 rows / 20 dates); cash seeds took 0.31 a lineup at "
+                 "-17.3 a pick. Shrink refit without each date: cash field pctile .544 -> .628 (+.083 [+.031, +.153], "
+                 "20 contests / 15 dates, 11 better / 2 worse), test (fit < 10/31) +.023 [+.003, +.045]; GPP +.028 "
+                 "(noise). Across sports (scripts/dfs_props_roi.py, 11/13): cash slates with more of the board priced "
+                 "went better within a sport (+.09 share of field beaten per +10 coverage pts [+.05, +.15], 63 slates)",
+     "covers": [("nba", "2026-11-13")]},
     {"id": "L12", "from": "overlay", "mechanism": "late-listed re-posts priced on a pooled curve (overlay only)",
      "ref": "overlay cycle (11/9)", "evidence": "re-posts fill 0.88 of room; no DFS-model analogue",
      "covers": [("overlay", "2026-11-09")]},
@@ -160,7 +171,9 @@ TRANSFERS = [
                           "selection gap: 11/9 -20.6, 11/10 +0.2 (2 slates; re-measure at 5). Cycle 32 (11/12): "
                           "on the blend, full-props picks are unbiased (+0.24 a pick); the overrating sits in "
                           "players without a full market (partial props -2.99 / -4.09 a pick cash / GPP; no "
-                          "props -17.2 a cash pick) -- shrinking partial players did not move lineups (T24)."}},
+                          "props -17.2 a cash pick) -- shrinking partial players did not move lineups (T24). Cycle 33 (11/13): the no-props group SHIPPED (L14: shrink "
+                          "a + b model + c salary in priced games, cash +.075 [+.022, +.143] LODO, 20 contests / 15 dates); "
+                          "partial props (T24, -3.2 a pick, 1.06 a cash lineup) is the part left."}},
     {"id": "T03", "lesson": "L03", "sport": "nba", "kind": "market", "status": "null",
      "idea": "turnovers (-0.5 DK each; stars 3-4 a game, bench ~0.7) and double-double odds are left in the "
              "blend's constant; player_turnovers and the combo markets are collected, never read",
@@ -278,6 +291,34 @@ TRANSFERS = [
                   "note": "NBA cycle 32, NOT SHIPPED: LODO seed sets, cash .524 -> .577 (+.053 [-.023, +.142], 6 / 6 "
                           "dates, 19 contests / 14 dates), GPP .623 -> .616 (-.007 [-.019, +.006]); test dates flat. "
                           "Cash +2.1 lineup points is the lead."}},
+    {"id": "T25", "lesson": "L14", "sport": "nhl", "kind": "market", "status": "measure",
+     "idea": "a skater with no props in a game DK has priced keeps last season's rate x role (SEASON_K / "
+             "ROLE_POWER): check his miss where the optimizer picks him, then shrink as NBA cycle 33",
+     "where": "edge/dfs_run_nhl.py (means no market sets) + scripts/nhl_skater_lab.py", "data": "29 graded slates",
+     "probe": None, "target": "projection: skaters without props",
+     "measured": {"at": "2026-11-13", "pts_lineup": 0.9,
+                  "note": "scripts/dfs_props_roi.py (pts_lineup: +0.87 a pick x ~1 unpriced pick a lineup, an upper "
+                          "bound inside noise): Adam's entered NHL skaters without props missed -0.93 vs -0.06 "
+                          "priced (+0.87 [-1.55, +3.02], 898 picks, 104 unpriced / 29 dates): noise so far; measure "
+                          "in the lab's seed lineups, not entered picks."}},
+    {"id": "T26", "lesson": "L14", "sport": "ncaab", "kind": "market", "status": "measure",
+     "idea": "a non-props row in a game whose props are up (DK ladders) keeps the carryover / salary blend",
+     "where": "edge/dfs_run_ncaab.py non-props rows (LAST_GAME, prior blend)", "data": "6 graded dates",
+     "probe": None, "target": "projection: non-props rows in priced games",
+     "measured": {"at": "2026-11-13", "pts_lineup": 0.0,
+                  "note": "only 29% of NCAAB board points are priced; entered picks without props -4.1 vs -4.4 "
+                          "with (128 picks / 6 dates): not enough data."}},
+    {"id": "T27", "lesson": "L14", "sport": "nfl", "kind": "market", "status": "null",
+     "idea": "an offensive player with no props keeps the fallback projection",
+     "where": "edge/dfs_run_nfl.py", "data": "10 graded slates", "probe": None, "target": None,
+     "measured": {"at": "2026-11-13", "pts_lineup": 0.0,
+                  "note": "91% of NFL board points are priced; the unpriced entered picks are mostly DST (no player "
+                          "props exist): +1.27 vs +1.33 priced (358 picks / 10 dates)."}},
+    {"id": "T28", "lesson": "L14", "sport": "ncaaf", "kind": "market", "status": "null",
+     "idea": "a college player without ladders keeps the fallback projection",
+     "where": "edge/dfs_run_ncaaf.py", "data": "12 graded slates", "probe": None, "target": None,
+     "measured": {"at": "2026-11-13", "pts_lineup": 0.0,
+                  "note": "98% of NCAAF board points carry DK ladders; 3 of Adam's 200 picks had none."}},
     {"id": "T20", "lesson": "L10", "sport": "nba", "kind": "ownership", "status": "null",
      "idea": "DK FPPG as an ownership input (NHL, NFL, NCAAF, NCAAB, NASCAR boards carry it; NBA's theory does not)",
      "where": "edge/dfs_nba_theory.py", "data": "26 GPP slates", "probe": None, "target": None,
@@ -313,6 +354,12 @@ GRAVEYARD = [
     {"idea": "goalie DK points from the saves prop / goal edge", "sports": "nhl",
      "evidence": "cycle 7: no fixable hole (projection sd 1.1 vs actual 9.8 caps rho ~0.11)", "when": "2026-10-28",
      "retest": "~40 slates (T01 is availability, not points)"},
+    {"idea": "a sport's ROI follows how much prop data it has (Adam 11/13: NFL wins because it has more props)",
+     "sports": "all", "evidence": "scripts/dfs_props_roi.py (slates 9/6-11/12): NFL 91% of board points priced "
+     "(+52% cash / +247% GPP), but NCAAF 98% loses cash (-63%) and NBA 77% with the most markets a player "
+     "(9.7 vs NFL 5.3) loses -56% / -58%; within a sport GPP slates with more coverage did no better (-.04 "
+     "beat per +10 pts [-.10, +.02], 76 slates). The cash within-sport link is real and is L14, not a sport effect",
+     "when": "2026-11-13", "retest": "-"},
     {"idea": "salary saver (Mans rule)", "sports": "nfl",
      "evidence": "loses in the 10/31-11/1 replay; dropping top chalk is the live lead (decide ~12/6)",
      "when": "2026-11-01", "retest": "~12/6 with the GPP dollar replay"},

@@ -234,6 +234,10 @@ st.markdown(
     f"injuries (Out): {info.get('injuries_source') or 'none'} · minutes: {info.get('minutes_source') or '?'} · "
     + (f"DK props: {info['props_blended']} players blended with the market · " if info.get("props_blended")
        else "DK props: none posted yet (model only) · ")
+    + (f"no DK props in a priced game, projection shrunk: {', '.join(info['props_free_names'])} · "
+       if info.get("props_free_names") else "")
+    + (f"no-props shrink starts {info['props_free_wait']} (DK still posting) · "
+       if info.get("props_free_wait") else "")
     + (f"buzz: {info['buzz_rows']} players named by today's shows (in ownership) · "
        if info.get("buzz_rows") else "buzz: none collected yet (ownership is the value prior) · ")
     + ("implied points: " + ", ".join(f"{t} {v:.0f}" for t, v in sorted(imp.items(), key=lambda kv: -kv[1]))

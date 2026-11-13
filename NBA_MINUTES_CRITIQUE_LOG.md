@@ -1830,3 +1830,66 @@ Runner-ups: (1) players with NO props at all are still the biggest cash leak -- 
 lineup at -17.2 a pick, ~7 points a lineup (cycles 28-29's group; revisit next); (2) one-sided
 milestone lines leave a stat out of the market number on 358 rows (21% of blended players), but the
 blend absorbs it (bias +0.92; combo fill MAE -0.003) -- ruled out.
+
+## Cycle 33 (no-props players: none of PROP_MARKETS posted -- cycle 32's runner-up; T02, lesson L14 new) -- 2026-11-13, hand-run (Adam: "run the scout's runner-up") -- SHIPPED
+
+Target (override): players with NO DK prop line keep the model's raw number while prop-covered
+players take the market. Metric: paired change in mean real-field percentile of 40 seed lineups a
+board (`nba_lineup_lab.py sets`, seed sets 0 + 1000), CASH primary, GPP guard, every date held out
+(constants refit without it), fixed split (< 10/31 fit, >= 10/31 test) alongside; $ per $1 from
+contests.db payouts. New since cycle 32: 11/11 GPP and 11/12 cash + GPP.
+
+Baseline (`sets --base-only`, production): cash .543 (53% cashed, 20 contests / 15 dates), GPP
+.621 (42%, 40 / 21); test cash .540 (7 / 7), GPP .620 (19 / 11).
+
+**Critic #33 (dfs-model-critic, ~53 min).** Hole: a player DK prices NOTHING for, in a game DK has
+priced (>= 5 players with a full P+R+A market), keeps the model, which runs high where the
+optimizer shops. LODO, 613 such rows at model 10+: at model 15+ (229 rows / 20 dates) bias -5.05,
+9% scored zero; at 4.5x+ salary value -6.9 to -10.8 (120 rows). In production's seed lineups cash
+takes 0.31 a lineup at -17.3 a pick (-5.4 a lineup, 12 dates), GPP 0.43 at -6.9; five
+player-nights took 40 of 40 cash seeds; the cash fields owned them 0-18%. Also found: the lab's
+market cache key (`mkt-{gid}-25-1.1`) did not carry the name-matching code, so boards cached before
+a join fix kept the old join -- Jaylin Williams carried Jalen Williams's 33-point market on 10/20
+and 10/25, looked prop-covered, and cycles 28-29's props-free rules never reached him. The logged
+10/25 board also copied Jalen's projection onto Jaylin (36.1 pts) through a since-fixed join.
+
+Fix: proj = max(0.1, a + b model + c salary_k) for those rows (model >= 10 and the 5-player game
+gate fixed a priori, never swept); all dates (-4.603, 0.398, 2.643), folds a -5.87..-0.96, b
+.27-.52, c 1.68-3.11; train-only (< 10/31, 290 rows) (-2.93, .239, 2.614). Salary in (B) vs model
+only (A) chosen nested: B in 14 / 15 cash folds, 20 / 21 GPP.
+
+| variant (40 seeds a board, paired) | mode | split | contests / dates | pctile | diff [90%, by date] | better / worse | cashed | $ per $1 |
+|---|---|---|---|---|---|---|---|---|
+| critic: B, LODO | cash | all | 20 / 15 | .544 -> .628 | **+.083 [+.031, +.153]** | 11 / 2 | 52 -> 62% | 1.05 -> 1.23 (+.19 [+.04, +.39]) |
+| critic: A / B / off chosen nested | cash | all | 20 / 15 | .544 -> .604 | +.060 [+.026, +.105] | 11 / 2 | 52 -> 59% | 1.05 -> 1.17 |
+| critic: B fit on train only | cash | test | 7 / 7 | .540 -> .563 | +.023 [+.003, +.045] | 4 / 2 | 51 -> 54% | 1.01 -> 1.08 |
+| critic: B, LODO | gpp | all | 40 / 21 | .624 -> .652 | +.028 [-.005, +.070] | 11 / 10 | 43 -> 46% | 1.41 -> 1.47 |
+| critic: B fit on train only | gpp | test | 19 / 11 | .620 -> .620 | +.000 [-.020, +.019] | 4 / 7 | 38% | 1.15 -> 1.20 |
+| repo lab `sets` (production vs blend only), LODO | cash | all | 20 / 15 | .548 -> .623 | +.075 [+.022, +.143] | 9 / 5 | 53 -> 61% | 1.06 -> 1.22 (+.16 [+.02, +.35]) |
+| repo lab, LODO | cash | test | 7 / 7 | .556 -> .564 | +.007 [-.023, +.039] | 2 / 4 | 55 -> 54% | 1.09 -> 1.09 |
+| repo lab, LODO | gpp | all | 40 / 21 | .619 -> .638 | +.020 [-.008, +.053] | 10 / 11 | 43 -> 45% | 1.42 -> 1.40 |
+| repo lab, LODO | gpp | test | 19 / 11 | .614 -> .606 | -.008 [-.029, +.008] | 4 / 7 | 38% | 1.15 -> 1.13 |
+
+Without the 10/25 copied-projection night: cash +.057 [+.021, +.110], 10 / 2. Props-free picks: cash
+0.31 -> 0.00 a lineup, GPP 0.43 -> 0.02. Player MAE at model 10+: 8.34 -> 7.11 (-1.23 [-1.86, -.47]).
+
+**Decision: SHIPPED.** The target (cash lineups) improves beyond noise on every all-dates cut (critic
+LODO, nested, repo re-run) and on the critic's train-only fixed split; GPP (guard) is not worse.
+Caveat for the next critic: the test dates gain little (+.007 to +.023) because their lineups took
+only 0.11 such players a lineup -- most of the gain is 10/20-10/30. Production:
+`edge/dfs_run_nba.shrink_props_free` after `blend_props` in `build_board`; `market_points(...,
+priced)` reports who has ANY prop. Parity: the lab's rebuilt market cache == the critic's inputs on
+33 boards (markets and has-any-prop sets 0 mismatches), the same 613 fit rows / constants, 0
+projection mismatches over 3,947 rows. **Live gate added (judgment call):** the rule runs only from
+90 min before lock (PROPS_FREE_LEAD_MIN), the state the lab replays (last scan >= 25 min before the
+first tip); a 9:10 AM build today flagged 28 players incl. Vucevic / Portis / Poole while DK was
+still posting, and on 11/12 the flagged set fell 23 -> 12 from 10 h out to lock (Simons, Coulibaly,
+Wade got props later). Earlier builds keep the model; the page says when the shrink starts. Lab:
+market cache keyed on the matching code (mkt2-*, `_market_code`), the production replay and every
+LODO / spread / construct variant include the shrink, `sets` now compares production with the blend
+alone. Tests: 47 NBA pass, verify clean, page AppTest clean (both before and after the gate).
+
+Runner-ups: (1) partial-props players (some lines, not P+R+A) are now the largest cash leak left:
+1.06 picks a cash lineup at -3.2 a pick (-3.4 a lineup; cycle 32, T24); (2) confirmed promoted
+starters inside the shrink (17 rows, still -5.6 biased: not enough data to exempt them); (3) on 11/2
+the shrink cost GPP when a props-free promoted starter boomed (Braden Smith 47; .714 -> .614).

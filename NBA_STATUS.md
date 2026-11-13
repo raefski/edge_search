@@ -15,7 +15,7 @@
 | lineups feed | `edge/nba_lineups.py` | NBA.com daily lineups JSON (Expected/Confirmed starters, inactive list); snapshot for the cloud |
 | scratch alerts | `harness/nba_scratch.py` + `edge-nba-scratch.timer` (2 min, interval) | 🔴 OUT / 🟢 STARTS pushes, urgent when ≤$5k reaches 6x; tap opens the app filtered |
 | history | `scripts/nba_history_publish.py` + `nba-history-publish.timer` (06:00, 14:00) | `data/nba_player_history.json` for desktop + cloud |
-| odds | `odds-collect-dfs-nba.timer`, `odds-publish-dfs-nba.timer` | game lines (implied totals); props collected, NOT yet used |
+| odds | `odds-collect-dfs-nba.timer`, `odds-publish-dfs-nba.timer` | game lines (implied totals); DK props blended (cycle 27); no-props players shrunk (cycle 33) |
 
 ## DK props blended into the projection (2026-11-08, critique cycle 27) -- SHIPPED
 
@@ -33,6 +33,25 @@ blend refit WITHOUT each date): cash lineups' field percentile .275 -> .541 (+.2
 21% -> 52%, 33 / 16. Player MAE (test dates) 8.72 -> 8.23 (-.49 [-.78, -.12], 598 players).
 Watch: the props-free 10% (bench), late scratches with stale props, and refit PROPS_BLEND as
 contests accumulate (`props`, `props-lodo`).
+
+## Players with NO DK prop in a priced game are shrunk (2026-11-13, critique cycle 33) -- SHIPPED
+
+A player DK prices nothing for (none of PROP_MARKETS), in a game where >= 5 players carry a full
+market, projected >= 10 by the model, kept the raw model -- which ran -5.05 at model 15+ (229 rows
+/ 20 dates) and worse at cheap value prices, so the cash optimizer took 0.31 of them a lineup at
+-17.3 points a pick. `edge/dfs_run_nba.shrink_props_free` now sets
+proj = max(0.1, -4.603 + 0.398 model + 2.643 salary_k) (PROPS_FREE_SHRINK; `market_points`
+reports who has ANY prop). Log: `model_proj`, `proj_source` = "no props: shrunk"; the page names
+them. Before props post nothing moves (the game gate), and the rule runs only from 90 min before
+lock (PROPS_FREE_LEAD_MIN: the state the lab validated; earlier, DK is still posting -- on 11/12 it
+flagged 23 players 10 h out, 12 at lock), the page saying when it starts. Evidence (`nba_lineup_lab.py sets`, 40
+seed lineups a board, blend + shrink refit without each date): cash field pctile .544 -> .628
+(+.083 [+.031, +.153], 20 contests / 15 dates, 11 better / 2 worse), cashed 52% -> 62%; fixed
+split (fit < 10/31) test +.023 [+.003, +.045] (7 / 7); GPP +.028 (noise), test +.000. The repo
+lab's re-run (`sets`: production vs the blend alone) reads cash +.075 [+.022, +.143], GPP +.020. The lab's
+market cache is now keyed on the matching code (a stale join had given Jaylin Williams Jalen
+Williams's market on 10/20 and 10/25). Next leak: partial props (some lines, not P+R+A), 1.06
+picks a cash lineup at -3.2 a pick (cycle 32's lead, T24).
 
 ## Why NBA loses: the optimizer selects our errors (2026-11-08) -- cash fixed by props, cycle 27
 

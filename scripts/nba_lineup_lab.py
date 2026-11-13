@@ -112,12 +112,17 @@ def logged_lineups() -> dict:
 def _production(pool: list[dict]) -> None:
     """Today's production on a logged board: the props blend (edge/dfs_run_nba.blend_props,
     PROPS_BLEND) with the logged market number, else the one replayed from the scan the board
-    could have seen (market_for_board). Boards are replayed from model_proj, so never twice."""
+    could have seen (market_for_board), then the props-free shrink (cycle 33,
+    R.shrink_props_free) on who had no prop at all on that scan. Boards are replayed from
+    model_proj, so never twice."""
     from edge import dfs_run_nba as R
     mkt = {p["name"]: p["mkt"] for p in pool if p.get("mkt") is not None}
-    if not mkt and pool and pool[0].get("_gid"):
-        mkt = market_for_board(pool[0]["_gid"], pool)
+    priced: set = set()
+    if pool and pool[0].get("_gid"):
+        m2, priced = market_and_priced(pool[0]["_gid"], pool)
+        mkt = mkt or m2
     R.blend_props(pool, mkt)
+    R.shrink_props_free(pool, mkt, priced)
 
 
 VARIANTS: dict = {"shipped": _production, "model_only": None}
@@ -340,17 +345,44 @@ PROP_CUT_MIN = 25          # the last dfs_nba scan FINISHED >= 25 min before the
                            # autolog builds ~12 min before lock): no post-lock price leaks in
 
 
+def _market_code() -> str:
+    """A hash of the code that turns a scan into market numbers and names: prices are history,
+    the MATCHING is not. The key was gid + cut + spread until 11/13, so boards cached before a
+    name-join fix kept the old join -- Jaylin Williams carried Jalen Williams's 33-point market
+    on 10/20 and 10/25, looked prop-covered, and cycles 28-29's props-free rules never reached
+    him (NBA critic, cycle 33)."""
+    import hashlib
+    import inspect
+    from edge import dfs_project as DP
+    from edge import dfs_run_nba as R
+    from edge import dfs_slate
+    h = hashlib.sha1((ROOT / "edge" / "names.py").read_bytes())
+    for fn in (R.market_points, R.market_dk, R._sig, dfs_slate.player_markets_by_event,
+               DP._pair, DP.implied_mean):
+        h.update(inspect.getsource(fn).encode())
+    h.update(repr(sorted(R.TEAM_NAME_TO_ABBR.items())).encode())
+    h.update(repr((R.PROP_MARKETS, R.PROP_DK, R.PROP_REQUIRED, R.PROP_SD_K)).encode())
+    return h.hexdigest()[:12]
+
+
 def market_for_board(gid: int, ps: list[dict]) -> dict:
     """{name: market DK points} through production's edge.dfs_run_nba.market_points on the
-    replayed scan; cached (prices are history: they never change)."""
+    replayed scan; cached by board + the matching code (prices never change, joins do)."""
+    return market_and_priced(gid, ps)[0]
+
+
+def market_and_priced(gid: int, ps: list[dict]) -> tuple[dict, set]:
+    """({name: market DK points}, {names with ANY of PROP_MARKETS posted}) on the scan the
+    board could have seen -- the second is who R.shrink_props_free leaves alone."""
     from datetime import datetime, timedelta, timezone
     from edge import dfs_run_nba as R
     from edge.odds.source import ScrapedOddsClient
     from edge.odds.store import OddsStore
     CACHE.mkdir(parents=True, exist_ok=True)
-    f = CACHE / f"mkt-{gid}-{PROP_CUT_MIN}-{R.PROP_SD_K}.json"
+    f = CACHE / f"mkt2-{gid}-{PROP_CUT_MIN}-{_market_code()}.json"
     if f.exists():
-        return json.loads(f.read_text())
+        got = json.loads(f.read_text())
+        return got["mkt"], set(got["priced"])
     store = OddsStore(ROOT / "data" / "odds.db")
     d0 = datetime.fromisoformat(ps[0]["date"] + "T14:00:00+00:00")
     scans = [(r["id"], r["finished_at"]) for r in store.conn.execute(
@@ -358,6 +390,7 @@ def market_for_board(gid: int, ps: list[dict]) -> dict:
         "order by id", (d0.isoformat(), (d0 + timedelta(hours=16)).isoformat()))]
     teams = {frozenset((p["team"], p["opp"])) for p in ps}
     out: dict = {}
+    priced: set = set()
     if scans:
         # the night's FIRST scan lists tonight's games; later ones drop a game once it starts
         cl = ScrapedOddsClient(store, "dfs_nba", scan_id=scans[0][0])
@@ -369,15 +402,19 @@ def market_for_board(gid: int, ps: list[dict]) -> dict:
             cut = (first - timedelta(minutes=PROP_CUT_MIN)).astimezone(timezone.utc).isoformat()
             ok = [i for i, fin in scans if fin and fin <= cut]
             if ok:
-                out = R.market_points(ScrapedOddsClient(store, "dfs_nba", scan_id=ok[-1]), ps)
-    f.write_text(json.dumps(out))
-    return out
+                out = R.market_points(ScrapedOddsClient(store, "dfs_nba", scan_id=ok[-1]), ps, priced)
+    f.write_text(json.dumps({"mkt": out, "priced": sorted(priced)}))
+    return out, priced
 
 
 def market_all(B: dict) -> dict:
+    """{gid: {name: market}} for every board (8 processes: archived scans read from F:); the
+    who-has-any-prop sets land in _PRICED."""
     from concurrent.futures import ProcessPoolExecutor
     with ProcessPoolExecutor(max_workers=8) as ex:
-        return dict(zip(B, ex.map(market_for_board, B, B.values())))
+        got = dict(zip(B, ex.map(market_and_priced, B, B.values())))
+    _PRICED.update({g: v[1] for g, v in got.items()})
+    return {g: v[0] for g, v in got.items()}
 
 
 def props_rows(B: dict | None = None) -> list[dict]:
@@ -408,6 +445,7 @@ def _props_variant(blend):
 
 
 _MKT: dict = {}
+_PRICED: dict = {}          # {gid: names with any DK prop} (market_all fills it before a fork)
 
 
 def register_props(B: dict) -> dict:
@@ -703,20 +741,41 @@ def set_rows(built: dict, B: dict) -> dict:
     return out
 
 
-def _lodo_names(B: dict, rows: list[dict], free_rows: list[dict] | None) -> dict:
-    """{date: variant name} -- the props blend (and the props-free calibration when
-    free_rows is given) refit WITHOUT that date, registered in VARIANTS."""
+def _lodo_names(B: dict, rows: list[dict], free_rows: list[dict] | None,
+                shrink: list[dict] | None = None) -> dict:
+    """{date: variant name} -- the props blend (and the cycle-28 props-free calibration when
+    free_rows is given, the cycle-33 props-free shrink when `shrink` rows are) refit WITHOUT
+    that date, registered in VARIANTS. Production = blend + shrink."""
     names = {}
     for d in sorted({ps[0]["date"] for ps in B.values()}):
         bl = props_fit([r for r in rows if r["date"] != d])
-        fr = None
+        fr = sh = None
         if free_rows is not None:
             fr = _free_fit([r for r in free_rows if r["date"] != d])
+        if shrink is not None:
+            sh = _free_fit([r for r in shrink if r["date"] != d])
         name = "props[" + ",".join(f"{x:.4f}" for x in bl) + "]" + \
-               ("" if fr is None else "free[" + ",".join(f"{x:.4f}" for x in fr) + "]")
-        VARIANTS[name] = _props_free_variant(bl, fr)
+               ("" if fr is None else "free[" + ",".join(f"{x:.4f}" for x in fr) + "]") + \
+               ("" if sh is None else "shrink[" + ",".join(f"{x:.4f}" for x in sh) + "]")
+        VARIANTS[name] = _props_free_variant(bl, fr, sh)
         names[d] = name
     return names
+
+
+def shrink_rows(B: dict) -> list[dict]:
+    """Rows R.shrink_props_free would touch (no prop at all, game priced, model >= the floor):
+    model proj, salary, actual -- what PROPS_FREE_SHRINK is fitted on (cycle 33)."""
+    from edge import dfs_run_nba as R
+    M = market_all(B)
+    out = []
+    for gid, ps in B.items():
+        pool = [dict(p) for p in ps]
+        R.shrink_props_free(pool, M[gid], _PRICED[gid], (0.0, 1.0, 0.0))      # identity: flags only
+        for p in pool:
+            if p.get("proj_source") == "no props: shrunk":
+                out.append({"date": p["date"], "proj": p["model_proj"], "sal": p["salary"] / 1000,
+                            "actual": player_points(gid, p["date"], p["name"])})
+    return out
 
 
 def free_rows(B: dict) -> list[dict]:
@@ -737,11 +796,13 @@ def _free_fit(rows: list[dict]) -> tuple:
     return tuple(float(x) for x in np.linalg.lstsq(X, np.array([r["actual"] for r in rows]), rcond=None)[0])
 
 
-def _props_free_variant(blend, free):
+def _props_free_variant(blend, free, shrink=None):
     def f(pool):
         from edge import dfs_run_nba as R
-        mkt = _MKT.get(pool[0].get("_gid")) or {}
+        gid = pool[0].get("_gid")
+        mkt = _MKT.get(gid) or {}
         R.blend_props(pool, mkt, blend)
+        R.shrink_props_free(pool, mkt, _PRICED.get(gid) or set(), shrink if shrink else ())
         if free:
             a, b, c = free
             for p in pool:
@@ -762,15 +823,16 @@ def pool_rows(per_seed: list[dict]) -> dict:
 
 
 def sets_lodo(with_free: bool = True, n: int = SET_N, seeds: tuple = SET_SEEDS) -> int:
-    """Lineup SETS, every date held out: the props blend alone (= production, refit without
-    the date) vs + the props-free calibration (cycle 28). Paired by contest, bootstrap by date."""
+    """Lineup SETS, every date held out: production (the props blend + the cycle-33 props-free
+    shrink, each refit without the date) vs the blend alone (production before 11/13). Paired
+    by contest, bootstrap by date."""
     B = {g: ps for g, ps in boards().items() if g in fields()}
     reg = register_props(B)
     rows = reg["rows"]
-    base_names = _lodo_names(B, rows, None)
-    cand_names = _lodo_names(B, rows, free_rows(B)) if with_free else {}
-    labelled = [(lab, nm) for lab, nm in (("props blend (production)", base_names),
-                                          ("+ props-free calibration", cand_names)) if nm]
+    base_names = _lodo_names(B, rows, None, shrink_rows(B))
+    cand_names = _lodo_names(B, rows, None) if with_free else {}
+    labelled = [(lab, nm) for lab, nm in (("production (blend + props-free shrink)", base_names),
+                                          ("blend only (before cycle 33)", cand_names)) if nm]
     return compare_sets(B, labelled, n, seeds)
 
 
@@ -853,8 +915,11 @@ def spread_ratios(rows: list[dict], blend: tuple) -> dict:
 def _spread_variant(blend, scales: dict | None, everyone: float | None = None):
     def f(pool):
         from edge import dfs_run_nba as R
-        mkt = _MKT.get(pool[0].get("_gid")) or {}
+        gid = pool[0].get("_gid")
+        mkt = _MKT.get(gid) or {}
         R.blend_props(pool, mkt, blend)
+        # production since 11/13 (cycle 33), at its all-dates constants; `sets` refits them per date
+        R.shrink_props_free(pool, mkt, _PRICED.get(gid) or set())
         for p in pool:
             if everyone is not None:
                 p["sd_scale"] = everyone
@@ -917,7 +982,11 @@ CONSTRUCTIONS = {
 def _construct_variant(blend, own: bool):
     def f(pool):
         from edge import dfs_run_nba as R
-        R.blend_props(pool, _MKT.get(pool[0].get("_gid")) or {}, blend)
+        gid = pool[0].get("_gid")
+        mkt = _MKT.get(gid) or {}
+        R.blend_props(pool, mkt, blend)
+        # production since 11/13 (cycle 33), at its all-dates constants; `sets` refits them per date
+        R.shrink_props_free(pool, mkt, _PRICED.get(gid) or set())
         if own:
             theory.add_ownership(pool)
     return f
@@ -1035,7 +1104,7 @@ def main() -> int:
     sub.add_parser("props", help="cycle 27: the DK-props blend, train fit, test + leave-one-date-out")
     sub.add_parser("props-lineups", help="cycle 27: the optimizer replay with each props variant")
     sub.add_parser("props-lodo", help="cycle 27: optimizer replay, blend refit without each date")
-    st = sub.add_parser("sets", help="20-lineup sets per board, every date held out (production vs + props-free)")
+    st = sub.add_parser("sets", help="20-lineup sets per board, every date held out (production vs the blend alone)")
     st.add_argument("--n", type=int, default=SET_N)
     st.add_argument("--base-only", action="store_true", help="production only (the baseline)")
     st.add_argument("--seeds", default=",".join(map(str, SET_SEEDS)),

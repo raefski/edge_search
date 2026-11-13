@@ -628,6 +628,44 @@ def test_blend_props_blends_only_players_with_a_market():
     assert rows[1]["proj"] == 20.0 and rows[2]["proj"] == 0.0                # no market / not projected
 
 
+def test_market_points_reports_who_has_any_prop():
+    from edge import dfs_run_nba as R
+
+    class C(_FakeClient):
+        def get_event_odds(self, sport, eid, markets, regions):
+            out = super().get_event_odds(sport, eid, markets, regions)
+            if eid == "e1":                     # Trae Young: a points line only (no market number)
+                for m in out["bookmakers"][0]["markets"]:
+                    m["outcomes"] = [o for o in m["outcomes"]
+                                     if o["description"] != "Trae Young" or m["key"] == "player_points"]
+            return out
+    rows = [{"name": "Alexandre Sarr", "team": "WAS", "opp": "ATL", "proj": 30.0},
+            {"name": "Trae Young", "team": "ATL", "opp": "WAS", "proj": 40.0},
+            {"name": "Onyeka Okongwu", "team": "ATL", "opp": "WAS", "proj": 25.0}]
+    priced: set = set()
+    got = R.market_points(C(), rows, priced)
+    assert set(got) == {"Alexandre Sarr"}
+    assert priced == {"Alexandre Sarr", "Trae Young"}                       # Okongwu: nothing posted
+
+
+def test_shrink_props_free_only_in_a_priced_game():
+    from edge import dfs_run_nba as R
+    full = [{"name": f"F{i}", "team": "ATL", "opp": "WAS", "proj": 25.0, "salary": 6000} for i in range(5)]
+    rows = full + [
+        {"name": "Free", "team": "WAS", "opp": "ATL", "proj": 30.0, "salary": 5000},     # shrunk
+        {"name": "Low", "team": "WAS", "opp": "ATL", "proj": 9.0, "salary": 3000},       # under the floor
+        {"name": "Part", "team": "WAS", "opp": "ATL", "proj": 30.0, "salary": 5000},     # a points line
+        {"name": "Other", "team": "BOS", "opp": "MIA", "proj": 30.0, "salary": 5000}]    # game unpriced
+    mkt = {r["name"]: 30.0 for r in full}
+    n = R.shrink_props_free(rows, mkt, {"Part"}, (-4.0, 0.4, 2.5))
+    assert n == 1
+    free = rows[5]
+    assert free["proj"] == round(-4.0 + 0.4 * 30.0 + 2.5 * 5.0, 2) and free["model_proj"] == 30.0
+    assert free["proj_source"] == "no props: shrunk"
+    assert [r["proj"] for r in rows[6:]] == [9.0, 30.0, 30.0]
+    assert R.shrink_props_free([dict(r) for r in rows], {}, set()) == 0      # no props up: nothing moves
+
+
 def test_market_points_never_joins_on_an_initial_alone():
     from edge import dfs_run_nba as R
 
@@ -640,3 +678,14 @@ def test_market_points_never_joins_on_an_initial_alone():
             return out
     got = R.market_points(C(), [{"name": "Malik Sarr", "team": "WAS", "opp": "ATL", "proj": 20.0}])
     assert got == {}
+
+
+def test_props_free_shrink_waits_for_the_last_90_minutes():
+    from datetime import datetime, timedelta, timezone
+    from edge import dfs_run_nba as R
+    lock = datetime(2026, 11, 13, 0, 10, tzinfo=timezone.utc)
+    early = lock - timedelta(minutes=R.PROPS_FREE_LEAD_MIN + 1)
+    assert R.props_free_starts(lock, early) == lock - timedelta(minutes=R.PROPS_FREE_LEAD_MIN)
+    assert R.props_free_starts(lock, lock - timedelta(minutes=R.PROPS_FREE_LEAD_MIN)) is None
+    assert R.props_free_starts(lock, lock + timedelta(hours=2)) is None        # late swap
+    assert R.props_free_starts(None, early) is None
