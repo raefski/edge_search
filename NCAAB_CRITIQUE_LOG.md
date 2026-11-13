@@ -438,3 +438,9 @@ page AppTest no exception (05:45: no fresh prices, nothing to build -- the build
 **Next critic:** the lineup lab's noise floor is the binding constraint: before another lineup cycle, average
 each variant over several perturbation seeds (or more sim seeds per lineup) so a paired difference can be told
 from optimizer chaos. Information at lock (runner-up 1) is the lead for cash.
+
+Unattended gate (20261113-0843): **pass** -- re-gated after 7 forward days, then merged unless vetoed
+
+| split | state | n | clusters | main MAE | candidate MAE | loss diff [90%] | verdict |
+|---|---|---|---|---|---|---|---|
+| primary | all | 1,282 | 6 | 6.0935 | 6.0391 | -0.0544 [-0.1013, -0.0221] | better |
