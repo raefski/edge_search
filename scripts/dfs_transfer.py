@@ -122,6 +122,22 @@ LESSONS = [
     {"id": "L12", "from": "overlay", "mechanism": "late-listed re-posts priced on a pooled curve (overlay only)",
      "ref": "overlay cycle (11/9)", "evidence": "re-posts fill 0.88 of room; no DFS-model analogue",
      "covers": [("overlay", "2026-11-09")]},
+    {"id": "L14", "from": "ncaab", "mechanism": "a team-code join that fails is silent: the team's rows run on "
+                                              "their stale prior with every per-team input missing",
+     "ref": "NCAAB cycle 5 (11/13)",
+     "evidence": "13 DK codes (CINCY, STJN, TA&M, UCSB...) matched no school on 11/9-11/12: 13 team-slates with "
+                 "no last game, no starters (cheap rows stayed 7-12 pt 'blend'), no tier, 3 games with no line; "
+                 "GWB was aliased to the wrong school. Audited every code on 11 boards against Torvik + ESPN; "
+                 "player MAE (LOSO, 11 slates) 5.954 -> 5.815, no slate worse",
+     "covers": [("ncaab", "2026-11-13")]},
+    {"id": "L15", "from": "ncaab", "mechanism": "a replayed-lineup comparison is chaotic in the projection: judge a "
+                                              "paired lineup-points difference against placebo nudges, not a "
+                                              "slate bootstrap alone",
+     "ref": "NCAAB cycle 5 (11/13)",
+     "evidence": "the same board x (1 + 0.01 N(0,1)) per player, 3 seeds, 20 lineups x 11 boards: paired cash points "
+                 "+4.1 [-0.3, +8.5], -0.6, +2.2; GPP +4.3 [+1.3, +7.4] (CI clear of 0 from noise alone); single "
+                 "slates +23 / -15. The cycle's two candidate changes (-2.5, -0.4) sat inside that range",
+     "covers": []},
 ]
 
 # ── each lesson, checked in the other sports ────────────────────────────────
@@ -196,17 +212,21 @@ TRANSFERS = [
      "idea": "RotoWire's projected college starters used as certain (NBA's Expected-five hole)",
      "where": "edge/dfs_run_ncaab.py rotowire starters", "data": "graded slates 5 (box scores via ncaab-box-grade)",
      "probe": None, "target": "availability starters"},
-    {"id": "T08", "lesson": "L05", "sport": "ncaab", "kind": "projection", "status": "waiting",
+    {"id": "T08", "lesson": "L05", "sport": "ncaab", "kind": "projection", "status": "null",
      "idea": "tier / skew knot; our rostered players ran -37 pts/lineup vs the field's, scored on the same "
              "projection (the largest gap of any sport)",
-     "data": "6 graded slates (11/10 added): the split runs but 3 test slates / 7 lineups is a reading; ~10 "
-             "slates for a held-out answer (about 11/20 at the current pace)",
-     "probe": "tiers", "target": None,
-     "measured": {"at": "2026-11-11", "pts_lineup": 15.1, "upper_bound": True,
-                  "note": "READING, not enough data: train 3 / test 3 slates, 7 lineups. Projection quintiles "
-                          "(relative): +5.9 +1.0 -1.6 -3.6 -1.8 -- cheap / low projections run under, high ones "
-                          "over (spread too wide); train fit says -15.1 of the -31.7/lineup realised. Selection "
-                          "gap -36.8 [-45.2, -28.4] over 6 slates, 11/10 -36.9."}},
+     "data": "11 graded boards (11/2-11/12), 8 Double Ups / 6 slates; scripts/ncaab_lineup_lab.py",
+     "probe": "tiers", "target": "cash lineups (NCAAB cycle 5, 11/13)",
+     "measured": {"at": "2026-11-13", "pts_lineup": -0.4,
+                  "note": "NCAAB cycle 5: per-tier recalibration after LAST_GAME (props; blend + salary: actual = "
+                          "a + b proj + c salary/$1K, refit per fold; bench as is) makes the cash lineups honest "
+                          "(projected 220 -> 198 vs 196 actual, 11 boards x 20 lineups) and player MAE 5.815 -> "
+                          "5.732, but picks no better players: paired cash points per lineup -0.4 [-5.7, +5.2] "
+                          "(5 of 11 boards better), Double Up pctile +0.064 [-0.022, +0.140] (6 slates; .396 -> "
+                          ".483 rides on 11/2, 11/5, 11/10), forward fit (11/2-11/7) cash -1.5, GPP -6.8 "
+                          "[-11.6, -2.3] on 11/8-11/12. Props-only shrink: +0.1. Not shipped. The gap is "
+                          "information the field has at lock (cash-field owned players beat proj + salary by "
+                          "11.2 pts per 100% owned, 780 rows, in sample), not calibration."}},
     {"id": "T09", "lesson": "L03", "sport": "nascar", "kind": "market", "status": "waiting",
      "idea": "no odds are collected at all (win / top-5 / top-10 / H2H); markets beat our model in NBA and NCAAF, "
              "and NASCAR's selection gap is -55 pts/lineup (4 slates)",
@@ -285,6 +305,32 @@ TRANSFERS = [
                   "note": "NBA target scout 11/12: NBA lineups are built with own_weight 0, so ownership moves no "
                           "lineup; a better ownership model has no money to win until a leverage term exists "
                           "(and ownership-as-ROI-signal is in the graveyard)."}},
+    {"id": "T25", "lesson": "L14", "sport": "ncaaf", "kind": "eval", "status": "audit",
+     "idea": "every DK team code on the logged NCAAF boards resolves to exactly one school in every source "
+             "joined by TEAM (history, game lines, box grading); props already join by players",
+     "where": "edge/dfs_run_ncaaf.py + edge/ncaaf.py team-keyed joins (NCAAB's check: roster overlap names the "
+              "school, then match each source; tests/test_dfs_ncaab.py test_every_aliased_code_names_one_torvik_school)",
+     "data": "data/dfs_proj_log_ncaaf.csv codes vs cfbfastR / ESPN team names", "probe": None, "target": None},
+    {"id": "T26", "lesson": "L15", "sport": "nba", "kind": "eval", "status": "audit",
+     "idea": "placebo-nudge the shipped board (x 1 + 0.01 N(0,1), a few seeds) in the lineup lab and report the "
+             "spread of paired lineup points beside any variant's difference",
+     "where": "scripts/nba_lineup_lab.py", "data": "the lab's own boards", "probe": None, "target": None},
+    {"id": "T27", "lesson": "L15", "sport": "nhl", "kind": "eval", "status": "audit",
+     "idea": "placebo-nudge the shipped board (x 1 + 0.01 N(0,1), a few seeds) in the lineup lab and report the "
+             "spread of paired lineup points beside any variant's difference",
+     "where": "scripts/nhl_lineup_lab.py", "data": "the lab's own boards", "probe": None, "target": None},
+    {"id": "T28", "lesson": "L15", "sport": "nfl", "kind": "eval", "status": "audit",
+     "idea": "placebo-nudge the shipped board (x 1 + 0.01 N(0,1), a few seeds) in the lineup lab and report the "
+             "spread of paired lineup points beside any variant's difference",
+     "where": "scripts/nfl_lineup_lab.py", "data": "the lab's own boards", "probe": None, "target": None},
+    {"id": "T29", "lesson": "L15", "sport": "ncaaf", "kind": "eval", "status": "audit",
+     "idea": "placebo-nudge the shipped board (x 1 + 0.01 N(0,1), a few seeds) in the lineup lab and report the "
+             "spread of paired lineup points beside any variant's difference",
+     "where": "scripts/ncaaf_lineup_lab.py", "data": "the lab's own boards", "probe": None, "target": None},
+    {"id": "T30", "lesson": "L15", "sport": "nascar", "kind": "eval", "status": "audit",
+     "idea": "placebo-nudge the shipped board (x 1 + 0.01 N(0,1), a few seeds) in the lineup lab and report the "
+             "spread of paired lineup points beside any variant's difference",
+     "where": "scripts/nascar_lineup_lab.py", "data": "the lab's own boards", "probe": None, "target": None},
 ]
 
 # ── what we tested and found null (do not re-propose without saying what changed) ──

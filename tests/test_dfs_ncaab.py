@@ -363,6 +363,50 @@ def test_match_team_codes_read_off_the_november_boards():
     assert all(m(c, n) == 0 for c, n in no)
 
 
+# Cycle 5 (2026-11-13): 13 team-slates on 11/9-11/12 found no last game, no RotoWire five and no
+# conference tier, and three slates could not be box-graded, because these codes matched nothing.
+@pytest.mark.parametrize("code,name", [
+    ("CINCY", "Cincinnati Bearcats"), ("MRSHL", "Marshall Thundering Herd"), ("NFLA", "North Florida Ospreys"),
+    ("RMU", "Robert Morris Colonials"), ("STC", "Santa Clara Broncos"), ("STJN", "St. John's Red Storm"),
+    ("UCSB", "UC Santa Barbara Gauchos"), ("UNT", "North Texas Mean Green"), ("JACST", "Jacksonville State Gamecocks"),
+    ("MONTS", "Montana State Bobcats"), ("SIU", "Southern Illinois Salukis"), ("TA&M", "Texas A&M Aggies"),
+    ("TNTC", "Tennessee Tech Golden Eagles"), ("MANN", "Manhattan Jaspers"), ("SELA", "SE Louisiana Lions"),
+    ("GWB", "Gardner-Webb Runnin' Bulldogs"), ("OMAHA", "Omaha Mavericks"), ("MISS", "Ole Miss Rebels"),
+    ("CS-NR", "Cal St. Northridge"), ("TA&M", "Texas A&M"), ("STJN", "St. John's"), ("UCSB", "UC Santa Barbara"),
+])
+def test_cycle5_codes_find_their_school(code, name):
+    assert ncaab.match_team(code, name) >= 0.9
+
+
+@pytest.mark.parametrize("code,name", [
+    ("GWB", "George Washington Revolutionaries"),        # GWB is Gardner-Webb (11/5 @ Texas)
+    ("UCSB", "Cal St. Bakersfield"), ("SIU", "SIU Edwardsville Cougars"), ("UNT", "UNT Dallas Trailblazers"),
+    ("UNC", "UNC Asheville Bulldogs"), ("UNC", "UNC Wilmington Seahawks"), ("IU", "IU Indy"),
+    ("PUR", "Purdue Fort Wayne"), ("NEB", "Nebraska Omaha"), ("TENN", "Tennessee Martin"), ("KU", "Kansas City Roos"),
+    ("TEX", "Texas Tech Red Raiders"), ("TEX", "Texas A&M Aggies"), ("TEX", "Texas Lutheran Bulldogs"),
+    ("TA&M", "Texas A&M-Kingsville Javelinas"), ("IOWA", "Iowa St."), ("COL", "Colgate Raiders"),
+    ("COL", "Colorado College Tigers"), ("CAL", "Cal Poly Mustangs"), ("CAL", "Cal St. Bakersfield"),
+    ("JAC", "Jacksonville State Gamecocks"), ("PENN", "Penn St."), ("MISS", "Mississippi Valley State Delta Devils"),
+    ("STMRY", "St. Mary's (MD) Seahawks"), ("UVA", "Virginia Lynchburg Dragons"), ("UGA", "Georgia Gwinnett Grizzlies"),
+    ("NW", "Northwestern (OK) Rangers"),
+])
+def test_cycle5_namesakes_do_not_match(code, name):
+    assert ncaab.match_team(code, name) < 0.6
+
+
+def test_every_aliased_code_names_one_torvik_school():
+    """A code that matched two schools split team_tiers' conference vote (TEX: six Texas schools)
+    and let a Torvik row of the wrong school carry a player. DK uses SDSU / BSU / USF for two."""
+    import json
+    from pathlib import Path
+    schools = {r["team"] for r in json.loads((Path(__file__).resolve().parents[1] / "data"
+                                               / "ncaab_torvik_2026.json").read_text())}
+    two = {"SDSU", "BSU", "USF"}
+    for code in ncaab.ALIASES:
+        hits = [s for s in schools if ncaab.match_team(code, s) >= 0.8]
+        assert len(hits) == (2 if code in two else 1), (code, hits)
+
+
 # ---------------------------------------------------------------------------
 # last game (edge/ncaab_espn.py, LAST_GAME): NCAAB_CRITIQUE_LOG.md cycle 1
 # ---------------------------------------------------------------------------

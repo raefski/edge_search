@@ -342,8 +342,16 @@ def contest_rows(gid: int, mode: str, lineups: list[list[str]], date: str, label
 
 
 def graded_gids() -> list[int]:
+    """Boards with a contest field AND an ESPN box ("shipped" refits LAST_GAME on the boxes).
+    A slate whose box is not saved yet is named on stderr and left out, not a crash: on
+    11/13 two Double Up slates (11/9, 11/10) had no box and `report` died on a KeyError."""
     B, F = boards(), fields()
-    return sorted(g for g in B if g in F)
+    gids = sorted(g for g in B if g in F)
+    boxed = set(_lab_rows())
+    if [g for g in gids if g not in boxed]:
+        print("left out, contest field but no ESPN box yet (harness run ncaab-box-grade -- <gid>): "
+              + ", ".join(str(g) for g in gids if g not in boxed), file=sys.stderr)
+    return [g for g in gids if g in boxed]
 
 
 def all_rows(variants: list[str], n: int = SET_N) -> list[dict]:

@@ -101,18 +101,53 @@ ALIASES = {
     "USF": ("south florida", "san francisco"), "JMU": "james madison",
     "MTSU": ("middle tennessee", "middle tennessee state"),
     # Last-game lookups (edge/ncaab_espn.py) across a whole day's scoreboard, 11/7.
-    "ARST": "arkansas state", "STL": ("saint louis", "st louis"), "GWB": "george washington",
+    "ARST": "arkansas state", "STL": ("saint louis", "st louis"),
     # BSU is also Ball St.: a box whose names are not the DK roster is refused, so the search goes on.
     "UH": "houston", "BSU": ("boise state", "ball state"),
     "GU": "georgetown", "UMD": "maryland", "NMST": "new mexico state",
+    # NCAAB cycle 5 (2026-11-13): every DK code on the 11 logged boards (11/2-11/12, 107 codes)
+    # checked against ESPN's scoreboards and Torvik's 365 schools, the true school taken from
+    # roster overlap (DK names vs Torvik's players). 13 team-slates on 11/9-11/12 ran with no
+    # last game, no RotoWire starters (so their $3,000 rows stayed "blend" at 7-12 points, not
+    # bench) and no conference tier: CINCY MRSHL NFLA / JACST RMU STC STJN UCSB UNT / MONTS SIU
+    # TA&M TNTC; and three slates could not be box-graded. GWB is GARDNER-WEBB (11/5 @ Texas;
+    # 3 of its DK names are Gardner-Webb's last season): the 11/7 "george washington" alias
+    # sent its last-game search to the wrong school, which the roster check then refused.
+    "CINCY": "cincinnati", "MRSHL": "marshall", "NFLA": "north florida", "RMU": "robert morris",
+    "STC": "santa clara", "STJN": ("st johns", "saint johns"), "UNT": "north texas",
+    "UCSB": ("uc santa barbara", "california santa barbara"),   # not Cal St. Bakersfield (CSB)
+    "JACST": "jacksonville state", "MONTS": "montana state", "SIU": "southern illinois",
+    "TA&M": "texas am", "TNTC": "tennessee tech", "MANN": "manhattan",
+    "SELA": ("se louisiana", "southeastern louisiana"), "GWB": "gardner webb",
+    "OMAHA": ("omaha", "nebraska omaha"),
+    # Codes whose letters also spell other schools (TEX matched all six Texas schools in
+    # Torvik, which split team_tiers' conference vote; IOWA matched Iowa St., COL Colgate /
+    # Columbia / Colorado St., CAL five Cal schools, JAC Jackson St. + Jacksonville St.).
+    "TEX": "texas", "IOWA": "iowa", "COL": "colorado", "CAL": "california",
+    "JAC": "jacksonville", "OAK": "oakland", "PENN": ("penn", "pennsylvania"),
 }
+# Torvik writes "Cal St. Northridge"; ESPN "Ole Miss" (cycle 5 audit).
+ALIASES["CS-NR"] = ALIASES["CS-NR"] + ("cal st northridge",)
+ALIASES["MISS"] = ("mississippi", "ole miss")
 #: What can follow a school's name and make it a DIFFERENT school: "Kansas" must not
 #: claim "Kansas St.", nor "Miami" claim "Miami (OH)", nor "Illinois" claim "Illinois St.",
 #: nor "Arkansas" claim "Arkansas-Pine Bluff" (11/3: all 12 UAPB box rows read as ARK).
 _OTHER_SCHOOL = {"state", "tech", "am", "at", "christian", "southern", "northern", "eastern",
                  "western", "central", "(oh)", "oh", "ohio", "international", "baptist",
                  "chicago", "wesleyan", "commonwealth", "gulf", "upstate", "atlantic", "new",
-                 "pine", "little", "corpus", "san"}
+                 "pine", "little", "corpus", "san",
+                 # cycle 5 audit (2026-11-13): UNC claimed UNC Asheville / Greensboro /
+                 # Wilmington, IU "IU Indy", PUR Purdue Fort Wayne, NEB Nebraska Omaha, TENN
+                 # Tennessee Martin, KU Kansas City, SIU "SIU Edwardsville", UVA / ARK / MICH /
+                 # STMRY / PSU ESPN's non-D1 namesakes (each split a conference vote or a search)
+                 "asheville", "greensboro", "wilmington", "pembroke", "indy", "indianapolis",
+                 "kokomo", "fort", "omaha", "martin", "city", "edwardsville", "lynchburg",
+                 "monticello", "dearborn", "(md)", "lehigh", "schuylkill", "shenango",
+                 # CAL claimed "Cal Poly" / "Cal St. Bakersfield" (Torvik keeps "St." mid-name),
+                 # COL "Colorado College", MISS Mississippi Valley St. / "Mississippi U for
+                 # Women", TA&M A&M-Kingsville, TEX Texas Lutheran, UNT "UNT Dallas"
+                 "poly", "st", "college", "valley", "u", "kingsville", "lutheran", "permian",
+                 "dallas", "(ok)", "gwinnett"}
 
 
 def _clean(name: str) -> str:

@@ -382,6 +382,22 @@ props / Torvik splits and home/away are not logged). 4 cash slates (6 Double Ups
 sets field pctile .417 / cashed 41% / $0.82 per $1 vs the boards as run .299 / 32% / $0.63 -- not
 enough data. `gate OUT` writes critique-gate rows (pred = 1 - field pctile), not wired into the gate yet.
 
+**Team codes, audited** (cycle 5, 2026-11-13): 13 DK codes from 11/9-11/12 matched no school (CINCY
+MRSHL NFLA, JACST RMU STC STJN UCSB UNT, MONTS SIU TA&M TNTC). Those 13 team-slates silently ran with
+no last game (LAST_GAME skipped), no RotoWire five (so their $3,000 rows stayed "blend" at 7-12 instead
+of "bench"), no conference tier, and 3 games with no line (ARK/RMU, NEV/UCSB, RICH/SIU at the league
+average). Three slates could not be box-graded. GWB is Gardner-Webb, not George Washington: the 11/7
+alias was wrong. Several codes also claimed a second school (UNC: UNC Asheville / Greensboro /
+Wilmington; TEX: six Texas schools in Torvik, which split team_tiers' vote; PUR, NEB, TENN, IU, KU, IOWA,
+COL, CAL, JAC). Fixed in `edge/ncaab.py` (aliases + `_OTHER_SCHOOL` words). Every code on the 11 boards
+now resolves to the one school its roster overlap names in Torvik's table, and to one ESPN team
+(BSU / SDSU / USF are two schools by DK's design; the roster check decides). Test:
+`test_every_aliased_code_names_one_torvik_school`. Player lab, LOSO on 11 slates, main's matcher ->
+fixed: all MAE 5.954 -> 5.815, priced 7.788 -> 7.596, bench 3.580 -> 3.510. 11/11 6.21 -> 5.55, 11/12
+5.70 -> 5.08, 11/9 5.62 -> 5.42, 11/5 5.56 -> 5.49 (GWB); no slate worse. That counts the last game only:
+the starters, tier and line effects are not replayable from the log. **A new code that matches nothing
+is silent**: the page's "last game: N teams" warning is the only sign. Check it each slate.
+
 **After each contest:**
 1. `harness run import-contests`, then `harness run ncaab-box-grade -- <gid>`, then `--fit`.
 2. `harness run calibrate-nba -- data/contest-standings-N.csv --sport ncaab` for floor/ceiling coverage;
