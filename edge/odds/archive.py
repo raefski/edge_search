@@ -132,6 +132,36 @@ def quotes(path: Path, scan_id: int, sport_key: str | None = None, markets=None,
         return [_row(sp, scan_id, ref["started_at"]) for sp in conn.execute(sql, args)]
 
 
+def scan_groups(path: Path, scan_ids, sport_key: str) -> dict[int, set[str]]:
+    """{scan_id: the group_keys of one sport alive in that archived scan}, for many scans in ONE
+    pass over the sport's runs in this file. quotes() answers the same question a scan at a
+    time, and each cold read on F: costs ~20 s; a reader that only needs which markets / players
+    were posted at a set of moments (scripts/dfs_props_roi.py: ~500 pre-lock scans) reads the
+    month once instead."""
+    import bisect
+    out: dict[int, set[str]] = {int(s): set() for s in scan_ids}
+    with closing(_open(path)) as conn:
+        want: dict[str, list[tuple[int, int]]] = {}
+        for s in out:
+            ref = _scan_ref(conn, s)
+            if ref is not None:
+                want.setdefault(ref["profile"], []).append((ref["seq"], s))
+        if not want:
+            return out
+        for v in want.values():
+            v.sort()
+        seqs = {p: [x[0] for x in v] for p, v in want.items()}
+        sql = (f"SELECT group_key, profile, first_seq, last_seq FROM span WHERE sport_key=? "
+               f"AND profile IN ({','.join('?' * len(want))})")
+        for gk, prof, s0, s1 in conn.execute(sql, [sport_key, *want]):
+            sq, v = seqs[prof], want[prof]
+            i = bisect.bisect_left(sq, s0)
+            while i < len(sq) and sq[i] <= s1:
+                out[v[i][1]].add(gk)
+                i += 1
+    return out
+
+
 def _row(sp, scan_id: int, scan_started: str) -> dict:
     if scan_id == sp["first_scan"]:
         captured = sp["first_captured"]

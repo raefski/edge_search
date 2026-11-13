@@ -235,6 +235,27 @@ class OddsStore:
             args.extend(event_ids)
         return self.conn.execute(sql, args).fetchall()
 
+    def scan_groups(self, scan_ids: Sequence[int], sport_key: str) -> dict[int, set[str]]:
+        """{scan_id: distinct group_keys ("event_id|market|subject|point") of one sport in that
+        scan}, hot or archived -- which markets and players were posted at each scan, without
+        reading every quote row. Archived scans are read one pass per month file
+        (archive.scan_groups), not one cold F: read per scan."""
+        out: dict[int, set[str]] = {}
+        by_file: dict[Path, list[int]] = {}
+        for s in scan_ids:
+            arch = self.archived_file(s)
+            if arch is not None:
+                by_file.setdefault(arch, []).append(s)
+            else:
+                out[s] = {r[0] for r in self.conn.execute(
+                    "SELECT DISTINCT group_key FROM quote WHERE scan_id=? AND sport_key=?",
+                    (s, sport_key))}
+        if by_file:
+            from edge.odds import archive
+            for path, ids in by_file.items():
+                out.update(archive.scan_groups(path, ids, sport_key))
+        return out
+
     def events(self, scan_id: int, sport_key: str | None = None) -> list[sqlite3.Row]:
         """Events that actually carry a quote in this scan, joined to their meta."""
         arch = self.archived_file(scan_id)

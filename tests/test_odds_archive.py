@@ -123,6 +123,19 @@ def test_iter_quotes_reads_hot_and_archived_alike(store, tmp_path):
     assert [r[:4] for r in after] == [r[:4] for r in full] and len(full) == 13
 
 
+def test_scan_groups_reads_hot_and_archived_alike(store, tmp_path):
+    ids = scans(store)
+    before = store.scan_groups(ids, "basketball_nba")
+    brown = "ev1|player_points|Jaylen Brown|20.5"
+    assert brown not in before[ids[0]] and brown in before[ids[3]]
+    assert before[ids[2]] == {"ev1|player_points|Jayson Tatum|24.5"}
+    (tmp_path / "arch").mkdir()
+    store.archive_old(hot_days=14, root=tmp_path / "arch", verify_sample=0, log=lambda m: None)
+    assert store.archived_file(ids[0]) is not None
+    assert store.scan_groups(ids, "basketball_nba") == before
+    assert store.scan_groups(ids, "icehockey_nhl") == {s: set() for s in ids}
+
+
 def test_prune_is_retired(store):
     with pytest.raises(RuntimeError, match="archive_old"):
         store.prune(30)
