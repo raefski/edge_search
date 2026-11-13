@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-13T17:00:35+00:00",
+"generated_at": "2026-11-13T17:29:12+00:00",
 "goalies": {
 "2026-11-13": {
 "NSH": {
@@ -992,40 +992,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Frederic Brunet": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 13,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 6,
-"toiMinutes": 155,
-"toiSeconds": 39
-},
-"last5": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 74,
-"toiSeconds": 31
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
-},
 "Hampus Lindholm": {
 "gtd": false,
 "injury": null,
@@ -1128,6 +1094,40 @@
 "line": "G1",
 "pk": null,
 "pos": "g",
+"pp": null
+},
+"Jonathan Aspirot": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 15,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 158,
+"toiSeconds": 45
+},
+"last5": {
+"assists": 0,
+"blocks": 10,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 78,
+"toiSeconds": 15
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
 "pp": null
 },
 "Marat Khusnutdinov": {
