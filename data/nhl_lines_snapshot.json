@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-13T13:59:17+00:00",
+"generated_at": "2026-11-13T14:29:07+00:00",
 "goalies": {
 "2026-11-13": {
 "NSH": {
@@ -117,7 +117,7 @@
 "status": null
 },
 "TOR": {
-"goalie": "Anthony Stolarz",
+"goalie": "Sergei Bobrovsky",
 "status": null
 },
 "UTA": {
@@ -5075,7 +5075,7 @@
 "pp": "PP2"
 },
 "Cale Makar": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 10,
@@ -5349,7 +5349,7 @@
 "pp": "PP1"
 },
 "Nathan MacKinnon": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 10,
@@ -9877,7 +9877,7 @@
 "pp": null
 },
 "Chris Kreider": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 3,
@@ -18003,7 +18003,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -18515,7 +18515,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
