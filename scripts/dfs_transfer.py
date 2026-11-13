@@ -157,7 +157,10 @@ TRANSFERS = [
                           "projection-quintile correction fitted on train explains -4.5 of it (top quintile "
                           "-1.58/player relative; -5.0 of -10.2 without 11/10); salary quintiles do not (wrong "
                           "sign). NBA cycle 20 found no SALARY-tier bias: this is projection level. Post-blend "
-                          "selection gap: 11/9 -20.6, 11/10 +0.2 (2 slates; re-measure at 5)."}},
+                          "selection gap: 11/9 -20.6, 11/10 +0.2 (2 slates; re-measure at 5). Cycle 32 (11/12): "
+                          "on the blend, full-props picks are unbiased (+0.24 a pick); the overrating sits in "
+                          "players without a full market (partial props -2.99 / -4.09 a pick cash / GPP; no "
+                          "props -17.2 a cash pick) -- shrinking partial players did not move lineups (T24)."}},
     {"id": "T03", "lesson": "L03", "sport": "nba", "kind": "market", "status": "null",
      "idea": "turnovers (-0.5 DK each; stars 3-4 a game, bench ~0.7) and double-double odds are left in the "
              "blend's constant; player_turnovers and the combo markets are collected, never read",
@@ -266,6 +269,15 @@ TRANSFERS = [
      "idea": "a projected (unposted) batting order or probable pitcher treated as certain; P(in lineup | "
              "source status, platoon / rest-day context) as a zero draw",
      "where": "edge/dfs.py lineup source", "data": "no MLB slates until spring 2027", "probe": None, "target": None},
+    {"id": "T24", "lesson": "L03", "sport": "nba", "kind": "market", "status": "waiting",
+     "idea": "players with SOME DK prop lines but not P + R + A keep the raw model (309 rows / 32 boards); shrink "
+             "them a + b model (their partial lines add nothing)",
+     "where": "edge/dfs_run_nba.py market_dk / PROP_REQUIRED", "data": "14 cash dates: re-run at ~25",
+     "probe": None, "target": "partial props (cash lineups)",
+     "measured": {"at": "2026-11-12", "pts_lineup": 2.1,
+                  "note": "NBA cycle 32, NOT SHIPPED: LODO seed sets, cash .524 -> .577 (+.053 [-.023, +.142], 6 / 6 "
+                          "dates, 19 contests / 14 dates), GPP .623 -> .616 (-.007 [-.019, +.006]); test dates flat. "
+                          "Cash +2.1 lineup points is the lead."}},
     {"id": "T20", "lesson": "L10", "sport": "nba", "kind": "ownership", "status": "null",
      "idea": "DK FPPG as an ownership input (NHL, NFL, NCAAF, NCAAB, NASCAR boards carry it; NBA's theory does not)",
      "where": "edge/dfs_nba_theory.py", "data": "26 GPP slates", "probe": None, "target": None,

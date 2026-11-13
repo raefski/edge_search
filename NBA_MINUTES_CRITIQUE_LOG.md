@@ -1753,3 +1753,80 @@ structure on GPP *costs*: the 99th-pct target and 4+ game stacks are worse beyon
 cap 3 likely too. A 24-minute floor in cash loses money (-$.25 per $1). The props blend did not
 turn any of the old construction ideas into wins; the projection is where the edge is.
 Kept: the lab's `construct` command (`--only`, `--seeds`) and per-variant `CONSTRUCT` specs.
+
+## Cycle 32 (auto: partial props -- players with some DK prop lines but not points + rebounds + assists) -- 2026-11-12, hand-run (`/dfs-critique nba auto`) -- NOT SHIPPED
+
+Scout (dfs-target-scout, transfer T03):
+```json
+{"sport": "nba", "target": "partial props: players with a DK points line but no full points/rebounds/assists set keep the raw model number",
+ "metric": "paired change in mean real-field percentile of 40 seed lineups per board (seed sets 0 + 1000), cash (19 contests / 14 dates) and GPP (39 / 20) reported separately, plus $ per $1 from contests.db payouts; mechanism: LODO player miss on the rows that gain a market number, and on those players when the optimizer picks them",
+ "harness": "scripts/nba_lineup_lab.py sets --kind seeds with a partial-market variant; scripts/nba_lineup_lab.py props for player level",
+ "split": "leave-one-date-out, blend and any partial-line fit refit without the held-out date; fixed test >= 10/31 alongside (GPP 18 / 10, cash 6 / 6)",
+ "why": "market_dk returns None unless P, R AND A are all posted: on 32 lab boards / 20 dates, 253 players (180 projected 15+) have a points line and are treated as props-free; for them actual ~ 15.6 + 0.01 model + 0.535 points-line mean (n 167). On the 3 live props-era nights all 9 props-free picks scored under projection (cash -7.4 a pick over 4, GPP -10.8 over 5); 5 of the 9 were Keldon Johnson / Julian Champagnie, who had DK points lines",
+ "money_at_stake": "NBA GPP -58% [-82%, -34%], 47 entries / 20 slates, net -$60; cash -62% [-88%, -35%], 19 / 14, net -$16",
+ "transfer": "T03"}
+```
+Scout notes: player_turnovers has 0 quotes in odds.db ever (T03's turnover idea is void; hot-store
+spot-check agrees); the double-double price adds +0.004 LODO; ownership moves no NBA lineup
+(own_weight 0, T20 null); 15 of 66 entries match a logged lineup, entered ones did as well or better.
+
+Baseline (`sets --kind seeds --base-only`, production, every date held out):
+
+| split | mode | contests / dates | lineups | field pctile | cashed | points | $ per $1 |
+|---|---|---|---|---|---|---|---|
+| all | cash | 19 / 14 | 760 | .524 | 50% | 270.3 | 1.01 |
+| all | gpp | 39 / 20 | 1,560 | .623 | 42% | 260.7 | 1.36 |
+| test | cash | 6 / 6 | 240 | .504 | 46% | 284.3 | 0.93 |
+| test | gpp | 18 / 10 | 720 | .604 | 35% | 259.7 | 1.04 |
+
+**Critic #32: the hole is real at player and pick level; its fix does not move lineups beyond
+noise, and the partial lines themselves add nothing.** All 32 lab boards rebuilt from the scan the
+lab uses (archived scans through archive.quotes; 0 two-sided mismatches on 2 hot boards): 309
+partial player-rows (214 model 15+, 93 model 20+), mostly $3-6K bigs / wings with points +
+rebounds but no assists market (178) or points only (67). They keep the raw model, which runs
+high exactly where the optimizer wants them:
+
+| rows (LODO) | model bias | model MAE | after shrink: bias | MAE |
+|---|---|---|---|---|
+| all dates, model 20+ (93 / 17 dates) | -2.68 | 7.40 | +0.04 | 6.94 |
+| test dates, model 20+ (44 / 9 dates) | -5.08 | 8.25 | -3.24 | 7.52 |
+
+The lines add nothing: at model 15+, a + b model + c (available market DK points) moves MAE
+-0.155 [-0.50, +0.27]; the shrink on the model alone -0.22 [-0.43, -0.00]; filling a missing stat
+from the combo markets (P+R, P+A, PRA) converts 14 of 309 rows (MAE -0.025). In production's seed
+sets partial players are 1.07 picks a cash lineup at -2.99 a pick [-5.19, -0.35] (726 picks / 9
+dates) and 0.77 a GPP lineup at -4.09 [-6.17, -1.75] (893 / 16); full-props players miss +0.24 /
++0.26 a pick.
+
+Candidate: proj = max(0.1, a + b model) for partial players (a, b least squares on partial rows,
+refit without each held-out date; folds a 9.4-10.7, b 0.43-0.52, 11/4 6.5 / 0.655; all dates
+9.766 / 0.491), kept in its own market cache. Baseline reproduced exactly.
+
+| mode | split | contests / dates | pctile | diff [90%, by date] | dates +/- | $ per $1 |
+|---|---|---|---|---|---|---|
+| cash | all | 19 / 14 | .524 -> .577 | +.053 [-.023, +.142] | 6 / 6 | 1.01 -> 1.19 (+.19 [-.09, +.55]) |
+| gpp | all | 39 / 20 | .623 -> .616 | -.007 [-.019, +.006] | 10 / 9 | 1.36 -> 1.67 (+.31 [-.29, +1.32]) |
+| cash | test | 6 / 6 | .504 -> .528 | +.024 | 3 / 3 | 0.93 -> 0.88 |
+| gpp | test | 18 / 10 | .604 -> .609 | +.005 | 6 / 4 | 1.04 -> 1.04 |
+
+It halves partial picks (cash 1.07 -> 0.46 a lineup, GPP 0.77 -> 0.43) for +2.1 lineup points in
+cash and +0.1 in GPP; in GPP the freed salary partly goes to players with NO props, so nothing is
+gained there.
+
+**Decision: NOT SHIPPED.** Neither mode improves beyond noise (cash interval spans 0 with 6 / 6
+dates; GPP slightly negative), and the test dates are flat. The shrink under-corrects recent dates
+(-3.24 left) and lifts low partial projections (model 15 -> 17.1). Partial status is partly timing:
+on 10/24 Sengun, Durant and Amen Thompson were partial only because DK had not finished posting,
+and the live build ~12 min before lock sees fewer partial players than the lab. Cash is a lead:
+re-run at ~25 cash dates (14 now) with the critic's variant (partial = an event with >= 1
+PROP_MARKETS key for the player but not all of PROP_REQUIRED; shrink fitted per held-out date).
+
+Fixed alongside (lab only, no verdict changes): nba_lineup_lab `_key` hashed `str(set)` for each
+player's eligible slots, which follows PYTHONHASHSEED, so the sim cache never hit across processes
+(the baseline's 92 cache files were unusable; ~20 min a run). Sets now serialise sorted; the key is
+the same under hash seeds 1 / 2 / 3.
+
+Runner-ups: (1) players with NO props at all are still the biggest cash leak -- 0.41 picks a cash
+lineup at -17.2 a pick, ~7 points a lineup (cycles 28-29's group; revisit next); (2) one-sided
+milestone lines leave a stat out of the market number on 358 rows (21% of blended players), but the
+blend absorbs it (bias +0.92; combo fill MAE -0.003) -- ruled out.

@@ -167,7 +167,11 @@ def _key(ps: list[dict], variant: str) -> str:
     h = hashlib.sha1(variant.encode())
     for f in SOURCES:
         h.update((ROOT / f).read_bytes())
-    h.update(json.dumps(ps, sort_keys=True, default=str).encode())
+    # sets (a player's eligible slots) as sorted lists: str(set) follows PYTHONHASHSEED, so
+    # every process hashed the same board differently and the cache never hit (NBA critic,
+    # cycle 32, 2026-11-12: ~20 min of rebuilds on every run)
+    h.update(json.dumps(ps, sort_keys=True,
+                        default=lambda o: sorted(o) if isinstance(o, (set, frozenset)) else str(o)).encode())
     return h.hexdigest()[:20]
 
 
