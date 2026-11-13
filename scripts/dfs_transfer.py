@@ -158,12 +158,18 @@ TRANSFERS = [
                           "-1.58/player relative; -5.0 of -10.2 without 11/10); salary quintiles do not (wrong "
                           "sign). NBA cycle 20 found no SALARY-tier bias: this is projection level. Post-blend "
                           "selection gap: 11/9 -20.6, 11/10 +0.2 (2 slates; re-measure at 5)."}},
-    {"id": "T03", "lesson": "L03", "sport": "nba", "kind": "market", "status": "measure",
+    {"id": "T03", "lesson": "L03", "sport": "nba", "kind": "market", "status": "null",
      "idea": "turnovers (-0.5 DK each; stars 3-4 a game, bench ~0.7) and double-double odds are left in the "
              "blend's constant; player_turnovers and the combo markets are collected, never read",
      "where": "edge/dfs_run_nba.py:204 ('turnovers and double-double bonuses are absorbed by the intercept')",
      "data": "odds.db dfs_nba scans since 10/15 (scout: 6 unused markets)",
-     "probe": None, "target": "unused props: turnovers (lineup lab props-fit)"},
+     "probe": None, "target": None,
+     "measured": {"at": "2026-11-12", "pts_lineup": 0.0,
+                  "note": "NBA target scout 11/12: player_turnovers has 0 quotes in odds.db, ever (the profile "
+                          "names the market; no book we scrape posts it), so there is no turnover input; the "
+                          "double-double price adds nothing leave-one-date-out (+0.004). The combo markets "
+                          "(P+R, P+A, PRA) matter only to fill a missing stat: NBA cycle 32's target (partial "
+                          "props)."}},
     {"id": "T04", "lesson": "L04", "sport": "nba", "kind": "market", "status": "measure",
      "idea": "count props (steals, blocks, threes, lines 0.5-2.5) read through a normal with sd 1.1 sqrt(line): "
              "NHL reads count props as a Poisson mean (nhl_sim.market_mean); NFL's median-vs-mean lesson",
@@ -232,7 +238,12 @@ TRANSFERS = [
     {"id": "T17", "lesson": "L08", "sport": "all", "kind": "eval", "status": "audit",
      "idea": "grade what was ENTERED (contests.db is_adam lineups), not what the app logged; report the share "
              "of entered lineups that match a logged one, per sport",
-     "data": "contests.db entry_player (is_adam) + data/dfs_lineups_<sport>_*.csv", "probe": None, "target": None},
+     "data": "contests.db entry_player (is_adam) + data/dfs_lineups_<sport>_*.csv", "probe": None, "target": None,
+     "measured": {"at": "2026-11-12", "pts_lineup": 0.0,
+                  "note": "NBA (target scout 11/12): 15 of 66 entries match a logged lineup exactly; the entered "
+                          "ones did as well or better (GPP field percentile .524 vs .402 logged, cash .275 vs "
+                          ".232), so grading logged lineups understates NBA a little and is not where money goes. "
+                          "Other sports not yet audited."}},
     {"id": "T18", "lesson": "L09", "sport": "nfl", "kind": "ownership", "status": "measure",
      "idea": "a backup RB / WR promoted by an Out tag becomes heavy GPP chalk; vacated() already measures the volume",
      "where": "edge/nfl_intel.py vacated() -> ownership?", "data": "15 GPP slates with field ownership",
@@ -255,9 +266,13 @@ TRANSFERS = [
      "idea": "a projected (unposted) batting order or probable pitcher treated as certain; P(in lineup | "
              "source status, platoon / rest-day context) as a zero draw",
      "where": "edge/dfs.py lineup source", "data": "no MLB slates until spring 2027", "probe": None, "target": None},
-    {"id": "T20", "lesson": "L10", "sport": "nba", "kind": "ownership", "status": "measure",
+    {"id": "T20", "lesson": "L10", "sport": "nba", "kind": "ownership", "status": "null",
      "idea": "DK FPPG as an ownership input (NHL, NFL, NCAAF, NCAAB, NASCAR boards carry it; NBA's theory does not)",
-     "where": "edge/dfs_nba_theory.py", "data": "26 GPP slates", "probe": None, "target": "ownership: dk fppg (GPP only)"},
+     "where": "edge/dfs_nba_theory.py", "data": "26 GPP slates", "probe": None, "target": None,
+     "measured": {"at": "2026-11-12", "pts_lineup": 0.0,
+                  "note": "NBA target scout 11/12: NBA lineups are built with own_weight 0, so ownership moves no "
+                          "lineup; a better ownership model has no money to win until a leverage term exists "
+                          "(and ownership-as-ROI-signal is in the graveyard)."}},
 ]
 
 # ── what we tested and found null (do not re-propose without saying what changed) ──
