@@ -35,6 +35,12 @@ from edge import dfs  # noqa: E402
 
 # NBA / CBB added 2026-10-22: the NBA season opened 10/20 and the page never listed it.
 SPORTS = ("NBA", "NHL", "NFL", "CFB", "NAS", "MMA", "MLB", "CBB")
+#: Sports scanned at EVERY entry fee: the max-fee cap (alerts' --max-fee, the page's fee
+#: slider ceiling) does not apply to them. Adam 2026-11-14: "search for all [NFL] contests
+#: regardless of the entry fee" -- NFL is the one sport in profit (scorecard 11/14), so its
+#: dearer overlays are worth seeing. The page's fee FLOOR still applies. Payout-table lookups
+#: stay capped at MAX_DETAILS per poll, so this adds no DK calls.
+NO_FEE_CAP = frozenset({"NFL"})
 FILL_LOG = ROOT / "data" / "contest_fill_log.csv"
 PAYOUTS = ROOT / "data" / "cache" / "contest_payouts.json"
 #: Prize-table lookups per run, best candidates first (one DK request each).
@@ -109,7 +115,7 @@ def rows_from(cs: list[dict], sport: str, now: datetime, max_fee: float, hours: 
         out.append({"sport": sport, "id": c["id"], "tmpl": c.get("tmpl"), "dg": c.get("dg"),
                     "name": c.get("n", ""), "fee": fee, "m": m, "nt": nt, "po": po, "lock": t,
                     "dbl": dbl, "game_type": c.get("gameType"),
-                    "ctype": contest_type(c), "slate": c.get("_slate", "Main"), "mec": int(c.get("mec") or 1), "fee_ok": fee <= max_fee,
+                    "ctype": contest_type(c), "slate": c.get("_slate", "Main"), "mec": int(c.get("mec") or 1), "fee_ok": sport in NO_FEE_CAP or fee <= max_fee,
                     "bound": po / (nt * fee), "places": places, "resizable": None,
                     "return": 2.0 * min(nt, places) / nt if places else None,
                     "cash_rate": min(1.0, places / nt) if places else None})

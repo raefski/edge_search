@@ -379,7 +379,7 @@ def assess(found: list[dict], tables: dict, history: dict, now: datetime, hours:
     snapshots; without a model it is the straight line alone."""
     out = []
     for r in found:
-        if not r["fee_ok"] or r["fee"] > max_fee:
+        if not r["fee_ok"] or (r["fee"] > max_fee and r["sport"] not in O.NO_FEE_CAP):
             continue
         cid = str(r["id"])
         mins = (r["lock"] - now).total_seconds() / 60.0

@@ -451,3 +451,14 @@ def test_a_contest_listed_late_is_priced_on_late_listed_contests():
     train["a"] = {"points": {7.0: 50}, "cap": 100, "lock": lock}
     finals = {k: 60 for k in train} | {"a": 100}
     assert fit_pace(train, finals, 9.5, 4.5)["new"] == [1.0]
+
+
+# ── fee cap: NFL is scanned at every fee (Adam 2026-11-14) ─────────────────
+def test_nfl_ignores_the_max_fee_other_sports_keep_it():
+    from scripts import dfs_overlay as O
+    lock_ms = int((T0 + timedelta(hours=1)).timestamp() * 1000)
+    c = {"id": 1, "n": "NFL $100 Double Up", "a": 100, "nt": 10, "m": 20, "po": 1800,
+         "sd": f"/Date({lock_ms})/", "gameType": "Classic", "attr": {"IsGuaranteed": "true"}}
+    nfl = O.rows_from([c], "NFL", T0, 5.0, 3, classic_only=True)
+    nba = O.rows_from([c], "NBA", T0, 5.0, 3, classic_only=True)
+    assert nfl[0]["fee_ok"] and not nba[0]["fee_ok"]
