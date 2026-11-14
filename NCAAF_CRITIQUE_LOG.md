@@ -945,3 +945,43 @@ high-FPPG unladdered players with a blank status in the app as "no ladder: check
    but biases any pool expansion (6 such players in "add every").
 
 Unattended gate (20261110-0951): **not shipped (log / harness only, verified)**
+
+## Cycle 9 (auto: cash lineups, salary compression) — 2026-11-14 (hand-run): salary blend wins held out but is thin — NOT SHIPPED
+
+Scout: `{"target": "cash lineups: salary compression (we skip in-pool cash chalk)", "metric": "replayed production cash lineup vs real cash fields: cash rate, mean field pctile, $/$1", "harness": "scripts/ncaaf_lineup_lab.py", "split": "forward + LOSO", "money_at_stake": "cash -$8.77 on 12 entries / 9 slates"}`
+
+**Hole (critic):** the ladder projection overrates cheap players relative to DK salary, and nothing pulls the projection back toward the price. As a result, the cash build skips priced chalk (Flora, Hawkins, Jennings, Jer. Smith) and buys cheap busts (Amador 3.8, Henderson 7.2, D. Robinson 3.8).
+
+**Candidate:** `proj' = (1-w)*proj + w*k_pos*salary_k`, cash only.
+- `k_pos` is DK points per $1k by position (QB/RB/WR), fitted on earlier dates.
+- For proj < 3 the salary term is scaled by proj/3.
+- Script: `scripts/critique_aux/ncaaf_salary_blend.py`.
+
+| variant (11 cash contests / 8 slates) | cashed | mean pctile | pts | $ per $1 | Δpctile [90% by slate] |
+|---|---|---|---|---|---|
+| shipped | 18% | 0.253 | 134.1 | 0.31 | |
+| w picked forward | 36% | 0.333 | 137.8 | 0.92 | +0.080 [+0.011, +0.178] |
+| w = 0.5 fixed, k forward | 27% | 0.376 | 143.3 | 0.77 | +0.123 [+0.028, +0.265] |
+| w by LOSO (always 0.5) | 36% | 0.407 | 145.7 | 0.92 | +0.155 [+0.050, +0.291] |
+
+Results by w (forward / LOSO mean pctile):
+
+| w | forward | LOSO |
+|---|---|---|
+| 0.25 | 0.252 | 0.268 |
+| 0.5 | 0.376 | 0.407 |
+| 0.75 | 0.328 | 0.211 |
+| 1.0 | 0.130 | 0.172 |
+
+**Decision: NOT SHIPPED.** This is the first cash candidate whose forward interval excludes zero, but:
+- The response across w is not smooth.
+- 11/6 drives part of the gain, and it flips on a 1-point search tie (cycle 8).
+- Per slate at w = 0.5 (forward): 4 better, 1 worse, 3 unchanged.
+- Player MAE was not checked, and cycle 7's salary refit hurt it.
+
+**Re-measure with fixed w = 0.5 on the 11/14–11/15 cash exports.** Ship (cash only, provenance n = 8 + new slates) if it stays ahead.
+
+**Runner-ups:**
+1. Stale boards: the 10/16 board gave WR Austin Simmons the Mizzou QB ladder (16.3 projected, 0 scored). That namesake bug predates cycle 2's fix, so rebuild or flag the 9/26 and 10/16 boards before judging any change.
+2. Cash restarts with seeds 0–4.
+3. Unladdered field chalk.
