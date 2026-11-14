@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-14T23:28:50+00:00",
+"generated_at": "2026-11-14T23:43:51+00:00",
 "goalies": {
 "2026-11-14": {
 "ANA": {
@@ -40,11 +40,11 @@
 },
 "DET": {
 "goalie": "Daniil Tarasov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "EDM": {
 "goalie": "Devon Levi",
-"status": null
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
@@ -96,7 +96,7 @@
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
-"status": "Likely"
+"status": "Confirmed"
 },
 "TOR": {
 "goalie": "Anthony Stolarz",
@@ -2969,7 +2969,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -3311,7 +3311,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9151,7 +9151,7 @@
 "toiMinutes": 134,
 "toiSeconds": 0
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
@@ -9255,9 +9255,9 @@
 "toiMinutes": 89,
 "toiSeconds": 24
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK2",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Jesper Wallstedt": {
@@ -9361,7 +9361,7 @@
 },
 "line": "D2",
 "pk": "PK1",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Kirill Kaprizov": {
@@ -16497,7 +16497,7 @@
 "pp": "PP1"
 },
 "Pius Suter": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -17110,7 +17110,7 @@
 "toiSeconds": 51
 },
 "line": "F2",
-"pk": "PK2",
+"pk": null,
 "pos": "rw",
 "pp": "PP2"
 },
@@ -17182,40 +17182,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Scott Sabourin": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 86,
-"toiSeconds": 39
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 44,
-"toiSeconds": 16
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Victor Hedman": {
 "gtd": false,
 "injury": null,
@@ -17249,6 +17215,40 @@
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
+},
+"Yanni Gourde": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 159,
+"toiSeconds": 0
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 74,
+"toiSeconds": 54
+},
+"line": "F3",
+"pk": "PK2",
+"pos": "lw",
+"pp": null
 },
 "Zemgus Girgensons": {
 "gtd": false,
@@ -20847,7 +20847,7 @@
 "toiMinutes": 59,
 "toiSeconds": 15
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -20883,7 +20883,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Charlie Lindgren": {
@@ -21121,7 +21121,7 @@
 "toiMinutes": 77,
 "toiSeconds": 38
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -21155,9 +21155,9 @@
 "toiMinutes": 69,
 "toiSeconds": 11
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Logan Thompson": {
@@ -21329,7 +21329,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Timothy Liljegren": {
@@ -21395,7 +21395,7 @@
 "toiMinutes": 76,
 "toiSeconds": 55
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "rw",
 "pp": "PP1"
