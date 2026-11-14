@@ -286,6 +286,20 @@ if stats.get("one_rung"):
         "and these projections are meaningless. See edge/dfs_run_ncaaf.py.</div>",
         unsafe_allow_html=True)
 
+# WHO THE FIELD CAN DRAFT THAT WE NEVER SEE (critique cycle 9 runner-up, 11/14).
+# Cycle 8: adding these to the pool loses held out, so they stay out -- but a
+# high-FPPG player with NO DK status and no ladder is either a quiet scratch or
+# field chalk we cannot price (Tipton 62% of 10/16 cash). One news check each.
+_nl = [r for r in res.get("unladdered") or []
+       if not r["dk_status"] and (r["dk_fppg"] or 0) >= 10][:10]
+if _nl:
+    st.markdown(
+        "<div class='lu-note'><b>No ladder: check news</b> (DK lists them, no status, "
+        "no prop, so not in our pool): "
+        + ", ".join(f"{r['player']} {r['dk_pos']} {r['team']} ${r['salary']/1000:.1f}k "
+                    f"({r['dk_fppg']:.1f} FPPG)" for r in _nl)
+        + "</div>", unsafe_allow_html=True)
+
 _age = None
 _is_snapshot = False
 try:

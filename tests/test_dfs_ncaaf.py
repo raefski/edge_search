@@ -509,3 +509,35 @@ def test_game_line_is_the_balanced_pair_not_the_first_alternate():
     assert R.main_line(ev, "totals", "Over") == 56.5
     assert R.main_line(ev, "spreads", "Ole Miss") == 3.5
     assert R.main_line(ev, "spreads", None) is None
+
+
+# ---- unladdered draftables (critique cycle 9 runner-up, 2026-11-14) ----
+def test_unladdered_lists_priced_players_off_the_pool_by_fppg():
+    from edge import dfs_run_ncaaf as R
+    active = {
+        1: {"name": "A One", "team": "UW", "position": "WR", "salary": 4000, "dk_fppg": 12.0, "dk_status": "NONE"},
+        2: {"name": "B Two", "team": "UW", "position": "RB", "salary": 5000, "dk_fppg": 20.0,
+            "dk_status": "Q"},
+        3: {"name": "A One", "team": "MIZZ", "position": "QB", "salary": 7000, "dk_fppg": 25.0},
+        4: {"name": "No Price", "team": "UW", "position": "WR", "salary": 0, "dk_fppg": 30.0},
+    }
+    pool = [{"name": "A One", "team": "MIZZ"}]          # the namesake on the other team
+    got = R.unladdered(active, pool)
+    assert [(r["player"], r["team"]) for r in got] == [("B Two", "UW"), ("A One", "UW")]
+    assert got[0]["dk_status"] == "Q" and got[1]["dk_status"] == ""
+
+
+def test_log_unladdered_replaces_its_draft_group_and_skips_past_dates(tmp_path, monkeypatch):
+    import csv
+    from edge import dfs_forward_log
+    from edge import dfs_run_ncaaf as R
+    monkeypatch.setattr(dfs_forward_log, "today_et", lambda: "2026-11-14")
+    monkeypatch.setattr(R, "_slate_date", lambda meta: meta["d"])
+    row = {"player": "A", "team": "UW", "dk_pos": "WR", "salary": 4000, "dk_fppg": None,
+           "dk_status": ""}
+    (tmp_path / "data").mkdir()
+    assert R.log_unladdered([row], 9, {"d": "2026-11-14"}, root=tmp_path)["logged"]
+    assert R.log_unladdered([row, dict(row, player="B")], 9, {"d": "2026-11-14"}, root=tmp_path)["n"] == 2
+    assert not R.log_unladdered([row], 9, {"d": "2026-11-13"}, root=tmp_path)["logged"]
+    rows = list(csv.DictReader((tmp_path / "data" / R.UNLADDERED_LOG).open()))
+    assert [r["player"] for r in rows] == ["A", "B"] and rows[0]["dk_fppg"] == ""

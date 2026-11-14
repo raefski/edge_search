@@ -477,3 +477,12 @@ What is NOT the lever:
 
 Rerun `report` / `calibrate --forward` as cash exports arrive. 8 slates is
 not enough data.
+
+
+## Unladdered draftables (2026-11-14, critique cycle 9 runner-up)
+
+`build_slate` returns `unladdered`: every priced, active DK player with no ladder, by DK FPPG. Each build logs them to `data/dfs_unladdered_ncaaf.csv` (date, gid, player, team, dk_pos, salary, dk_fppg, dk_status), a data-branch feed separate from the forward log. The page lists the top 10 with no DK status and FPPG ≥ 10 as "No ladder: check news".
+
+They are NOT added to the pool. Cycle 8 found every live-faithful version of adding them loses held out. The field put 3-36% of cash ownership on players missing from our board (NCAAF_CRITIQUE_LOG cycle 9 runner-ups).
+
+`scripts/ncaaf_lineup_lab.py --repair` drops board rows today's production would not build. That is `STALE_JOINS`: 10/16 Simmons only, verified by replaying `join_ladders`. With the repair, the cash baseline is 0.266 field percentile and 27% cashed (11 contests / 8 slates).

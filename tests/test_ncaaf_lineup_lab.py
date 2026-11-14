@@ -49,3 +49,15 @@ def test_calibration_leaves_thin_positions_alone():
     assert "QB" not in co
     p = {"name": "x", "dk_pos": "QB", "proj": 17.3, "salary": 7000}
     assert L.calibrate([p], co)[0]["proj"] == 17.3
+
+
+def test_repair_drops_only_stale_joins(monkeypatch):
+    """--repair removes the replay-verified wrong-game rows (10/16 Simmons) and nothing
+    else; without it the boards stay exactly as logged (parity)."""
+    monkeypatch.setattr(L, "REPAIR", False)
+    raw = L.boards()
+    monkeypatch.setattr(L, "REPAIR", True)
+    fixed = L.boards()
+    for gid, ps in raw.items():
+        bad = L.STALE_JOINS.get(gid, set())
+        assert [p for p in ps if (p["name"], p["team"]) not in bad] == fixed[gid]

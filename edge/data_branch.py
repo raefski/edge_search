@@ -64,6 +64,7 @@ FEEDS: tuple[str, ...] = (
     "data/dfs_proj_log*.csv",             # scripts/dfs_autolog.py (+ CLI builds)
     "data/dfs_proj_history_*.csv",        # every logged build, stamped built_at (dfs_forward_log)
     "data/dfs_lineups_*.csv",             # scripts/dfs_autolog.py
+    "data/dfs_unladdered_ncaaf.csv",      # edge/dfs_run_ncaaf.log_unladdered (who the field can draft that we never see)
     "data/overlay_payouts_live.json",     # harness/overlay.py (the page prices from it)
     "data/ncaaf_availability",            # scripts/ncaaf_availability_capture.py (history, not rebuildable)
     "data/ncaaf_depth",                   # scripts/ncaaf_depth_capture.py (history, not rebuildable)

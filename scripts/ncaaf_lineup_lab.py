@@ -70,8 +70,19 @@ def _f(x, default=0.0):
         return default
 
 
+#: Board rows today's production would not build (critique cycle 9 runner-up, 2026-11-14):
+#: wrong-game ladder joins logged before the own-game rule (124109fe, 10/17 09:33).
+#: Found by replaying production join_ladders at lock (stats["wrong_game"]) on every
+#: scored board logged before that commit (9/26, 10/3, 10/14, 10/15, 10/16, both 10/17):
+#: only 155112 Simmons is on a board (10/17 155010's Fredrick Moore never reached it).
+#: `--repair` drops them; parity and the gate use the boards as logged.
+STALE_JOINS = {155112: {("Austin Simmons", "UW")}}
+REPAIR = False
+
+
 def boards() -> dict:
-    """{gid: [pool rows]} from the projection log, in logged order."""
+    """{gid: [pool rows]} from the projection log, in logged order (minus STALE_JOINS
+    when REPAIR is set)."""
     by = defaultdict(list)
     with LOG.open(newline="") as fh:
         for r in csv.DictReader(fh):
@@ -87,6 +98,10 @@ def boards() -> dict:
                 "dk_pos": r["dk_pos"], "pos": dfs_opt_ncaaf.eligible_slots(r["dk_pos"]),
                 "salary": int(sal), "proj": proj, "game": r.get("game") or None,
                 "own": _f(r.get("own")), "leverage": _f(r.get("leverage")), "date": r["date"]})
+    if REPAIR:
+        for gid, bad in STALE_JOINS.items():
+            if gid in by:
+                by[gid] = [p for p in by[gid] if (p["name"], p["team"]) not in bad]
     return dict(by)
 
 
@@ -111,10 +126,23 @@ def logged_lineups(B: dict) -> dict:
     return out
 
 
-def build(ps: list[dict], mode: str, z_cash: float = theory.Z_CASH, iters: int = ITERS) -> list[str]:
+#: cash restarts: seeds 0..CASH_SEEDS-1, keep the best `proj - z*sd` (critique cycle 9
+#: runner-up; production runs seed 0 only, so 1 = production and keeps parity)
+CASH_SEEDS = 1
+
+
+def build(ps: list[dict], mode: str, z_cash: float = theory.Z_CASH, iters: int = ITERS,
+          seeds: int = 1) -> list[str]:
     pool = [dict(p, pos=set(p["pos"])) for p in ps]
-    res = dfs_opt_ncaaf.optimize(pool, mode=mode, iters=iters, seed=0, z_cash=z_cash)
-    return [p["name"] for p, _ in (res or {}).get("lineup") or []]
+    best, best_obj = None, None
+    for seed in range(seeds if mode == "cash" else 1):
+        res = dfs_opt_ncaaf.optimize(pool, mode=mode, iters=iters, seed=seed, z_cash=z_cash)
+        if not res:
+            continue
+        obj = res["proj"] - z_cash * res["sd"]
+        if best_obj is None or obj > best_obj + 1e-9:
+            best, best_obj = res, obj
+    return [p["name"] for p, _ in (best or {}).get("lineup") or []]
 
 
 # ---- a build is deterministic: cache on disk, keyed by the board, the arguments and
@@ -133,8 +161,8 @@ def _key(ps, *args) -> str:
 
 
 def _one(args):
-    gid, ps, mode, z, iters = args
-    return (gid, mode, z), build(ps, mode, z, iters)
+    gid, ps, mode, z, iters, seeds = args
+    return (gid, mode, z), build(ps, mode, z, iters, seeds)
 
 
 def build_all(B: dict, jobs: list[tuple], iters: int = ITERS, workers: int = 12) -> dict:
@@ -142,18 +170,20 @@ def build_all(B: dict, jobs: list[tuple], iters: int = ITERS, workers: int = 12)
     from concurrent.futures import ProcessPoolExecutor
     CACHE.mkdir(parents=True, exist_ok=True)
     out, todo = {}, []
+    seeds = CASH_SEEDS
+    kx = (seeds,) if seeds != 1 else ()      # seeds 1 keeps the old cache keys
     for gid, mode, z in jobs:
-        f = CACHE / f"{gid}-{mode}-{_key(B[gid], mode, z, iters)}.json"
+        f = CACHE / f"{gid}-{mode}-{_key(B[gid], mode, z, iters, *kx)}.json"
         if f.exists():
             out[(gid, mode, z)] = json.loads(f.read_text())
         else:
-            todo.append((gid, B[gid], mode, z, iters))
+            todo.append((gid, B[gid], mode, z, iters, seeds))
     if todo:
         with ProcessPoolExecutor(max_workers=min(workers, len(todo))) as ex:
             for k, lu in ex.map(_one, todo):
                 out[k] = lu
                 gid, mode, z = k
-                (CACHE / f"{gid}-{mode}-{_key(B[gid], mode, z, iters)}.json").write_text(json.dumps(lu))
+                (CACHE / f"{gid}-{mode}-{_key(B[gid], mode, z, iters, *kx)}.json").write_text(json.dumps(lu))
     return out
 
 
@@ -363,6 +393,31 @@ def lodo() -> int:
 CAL_MIN_ROWS = 30          # per position, else that position is left as projected
 
 
+def seeds_report(counts: list[int]) -> int:
+    """Critique cycle 9 runner-up: cash restarts. Seeds 0..N-1 per cash board, keep the
+    best objective; scored against the same cash fields as shipped (seed 0)."""
+    global CASH_SEEDS
+    B, F, T = boards(), fields(), dk_points()
+    base_rows = rows(theory.Z_CASH, ("cash",), B, F, T)
+    base = {r["contest"]: r for r in base_rows}
+    print(f"## CASH restarts\n\n{HEAD}")
+    print(summary(base_rows, "shipped (seed 0)"))
+    per = {}
+    for n in counts:
+        CASH_SEEDS = n
+        rs = rows(theory.Z_CASH, ("cash",), B, F, T)
+        per[n] = {r["contest"]: r for r in rs}
+        print(summary(rs, f"best of seeds 0-{n - 1}", base))
+    CASH_SEEDS = 1
+    print("\n| date | contest | shipped pts / pctile | " + " | ".join(f"{n} seeds" for n in counts)
+          + " |\n|---|---|---|" + "---|" * len(counts))
+    for r in base_rows:
+        c = r["contest"]
+        print(f"| {r['date']} | {c} | {r['points']:.1f} / {r['pctile']:.2f} | " + " | ".join(
+            f"{per[n][c]['points']:.1f} / {per[n][c]['pctile']:.2f}" for n in counts) + " |")
+    return 0
+
+
 def player_rows(B: dict, T: dict) -> list[tuple]:
     from edge.ncaaf import base_position
     out = []
@@ -441,15 +496,24 @@ def main() -> int:
     r = sub.add_parser("report")
     r.add_argument("--z", type=float, action="append", help="extra cash z values to compare")
     sub.add_parser("lodo")
+    sd = sub.add_parser("seeds", help="cash restarts: best objective over seeds 0..N-1")
+    sd.add_argument("--n", type=int, action="append", help="seed counts (default 5, 10)")
     c = sub.add_parser("calibrate", help="cycle 7 candidate: proj calibrated on salary, held out")
     c.add_argument("--forward", action="store_true", help="fit on earlier dates only")
+    for sp in (r, sd, c):
+        sp.add_argument("--repair", action="store_true",
+                        help="drop STALE_JOINS rows (boards as today's production would build them)")
     g = sub.add_parser("gate")
     g.add_argument("out")
     a = ap.parse_args()
+    global REPAIR
+    REPAIR = bool(getattr(a, "repair", False))
     if a.cmd == "parity":
         return parity()
     if a.cmd == "lodo":
         return lodo()
+    if a.cmd == "seeds":
+        return seeds_report(a.n or [5, 10])
     if a.cmd == "calibrate":
         return calibration_report(a.forward)
     if a.cmd == "gate":

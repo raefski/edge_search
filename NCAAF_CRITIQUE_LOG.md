@@ -985,3 +985,60 @@ Results by w (forward / LOSO mean pctile):
 1. Stale boards: the 10/16 board gave WR Austin Simmons the Mizzou QB ladder (16.3 projected, 0 scored). That namesake bug predates cycle 2's fix, so rebuild or flag the 9/26 and 10/16 boards before judging any change.
 2. Cash restarts with seeds 0–4.
 3. Unladdered field chalk.
+
+### Cycle 9 runner-ups, run 2026-11-14 (Adam asked for all three)
+
+**1. Stale boards: repaired in the lab, the judge unchanged.**
+- I replayed production's `join_ladders` at lock on every scored board logged before the own-game rule (124109fe, 10/17 09:33): 9/26, 10/3, 10/14, 10/15, 10/16 and both 10/17 boards. Each used the last scan before lock, from a local copy of the F: archive.
+- `stats["wrong_game"]` names two players: Austin Simmons (155112, 10/16) and Fredrick Moore (155010, 10/17). Moore never reached that board. 10/3's draft group 154161 is clean.
+- So only Simmons, a UW WR at $3,000 carrying the Mizzou QB's 16.3 ladder, is wrong on a scored board. It is listed in `STALE_JOINS` and dropped with `ncaaf_lineup_lab.py report|seeds|calibrate --repair`.
+- Parity and `gate` still use the boards exactly as logged.
+- The repaired 10/16 matches NCAAF_STATUS §10: cash 125.5 → 139.2 (cashes), GPP 119.6 → 143.6.
+
+| cash, 11 contests / 8 slates | cashed | mean pctile | ROI |
+|---|---|---|---|
+| shipped, boards as logged | 18% | 0.253 | -69% |
+| shipped, repaired boards (**the honest baseline**) | 27% | 0.266 | -54% |
+
+**Cycle 9's salary blend, re-measured on repaired boards:**
+
+| variant | cashed | mean pctile | Δ vs repaired shipped [90% by slate] |
+|---|---|---|---|
+| w picked forward | 27% | 0.280 | +0.015 [-0.088, +0.142] (was +0.080 on stale boards) |
+| w = 0.5 fixed, k forward | 27% | 0.339 | +0.073 [+0.013, +0.177] |
+| w by LOSO (always 0.5) | 45% | 0.421 | +0.156 [+0.049, +0.295] |
+
+The forward pick moved to 0.75 on 10/16-10/17 once Simmons was gone, and 0.75 loses. Part of cycle 9's forward gain came from the stale board. **Still NOT SHIPPED.** Only fixed w = 0.5 survives. Re-test it, unchanged, on 11/14-11/15 and later; don't re-fit w.
+
+**2. Cash restarts (`ncaaf_lineup_lab.py seeds [--repair]`, best `proj - z*sd` over seeds 0..N-1):**
+
+| cash, 11 contests / 8 slates | cashed | mean pctile | Δ [90% by slate] |
+|---|---|---|---|
+| seed 0, repaired | 27% | 0.266 | |
+| best of seeds 0-4, repaired | 36% | 0.337 | +0.071 [+0.000, +0.213] |
+
+Seeds 0-9 give the same result as 0-4. **Exactly one board changes:** 11/6 goes from 161.3 (0.04) to 190.3 (0.83). The other 7 slates have identical lineups. That is one slate of search luck, the same finding as cycle 8. **NOT SHIPPED**, re-measure per new slate.
+
+**3. Field chalk with no ladder: made visible, not added to the pool (cycle 8: adding loses).**
+
+Share of field ownership on players missing from our board, per contest:
+
+| slate | cash | GPP | heaviest (owned %, DK pts) |
+|---|---|---|---|
+| 9/26 | 36% | 25% | M. Hawkins 91%, 35.6 |
+| 10/3 | 3% | 4% | |
+| 10/16 | 23% | 24% | Tipton 62%, 4.3; Lee-Knicely 38%, 12.5 |
+| 10/17 | 20% / 10% | 12% / 9% | Marshall 74%, 23.7; Maddox 70%, 19.2 |
+| 10/22 | 8% | 15% | |
+| 11/5 | 21% | 21% | Messer 96%, 38.9 |
+| 11/6 | 28% | 27% | Faavae 48%, 13.4; Sides 43%, 40.6 |
+| 11/7 | 5-8% | 5-7% | |
+| 11/10 | | 48% | |
+
+The heaviest of these are a mix of hits (Messer, Sides, Hawkins) and busts (Tipton 4.3, Engleman 0.6). That is consistent with cycle 8: adding them to the pool is a coin flip.
+
+**Shipped:**
+- `edge/dfs_run_ncaaf.unladdered()` lists every priced, active draftable with no projection, keyed on (name, team), highest DK FPPG first. DK's status "NONE" is logged blank.
+- Each build writes those rows to a separate `data/dfs_unladdered_ncaaf.csv` (a data-branch feed), so the forward log's format is untouched.
+- The page shows a "No ladder: check news" line: the top 10 with no status and DK FPPG ≥ 10. On 11/14 that was Sheppard (DUKE RB $9.2k, 36.3), Mensah, Chambliss, Lagway and others.
+- The log builds the record cycle 8 asked for: who the field could draft that we never saw, and DK's status for them at build time.

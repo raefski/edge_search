@@ -700,6 +700,46 @@ def log_forward_test(pool: list, cash: dict | None, gpp: dict | None,
                                   "own"), lineups, root=root)
 
 
+#: Priced, active draftables our board has no ladder for (critique cycle 9 runner-up,
+#: Adam 2026-11-14). Cycle 8 showed ADDING them loses held out (every live-faithful
+#: version), but the field still drafts them: 23% of 10/16 cash ownership sat on
+#: players with no ladder and no record of why (Tipton 62%, Lee-Knicely 38%).
+#: Logged in a separate file so the forward log's format is untouched, and shown on
+#: the page so a blank-status, high-FPPG player gets a news check before lock.
+UNLADDERED_LOG = "dfs_unladdered_ncaaf.csv"
+UNLADDERED_COLS = ("date", "gid", "player", "team", "dk_pos", "salary", "dk_fppg", "dk_status")
+
+
+def unladdered(active: dict, pool: list) -> list[dict]:
+    """Priced players on the slate (DK OUT already removed) with no projection,
+    highest DK FPPG first. Keyed on (name, team): namesakes on two teams differ.
+    DK writes "no status" as the string NONE; it is logged blank."""
+    have = {(p["name"], p.get("team")) for p in pool}
+    out = [{"player": v["name"], "team": v.get("team") or "", "dk_pos": v.get("position") or "",
+            "salary": v["salary"], "dk_fppg": v.get("dk_fppg"), "dk_status": "" if (v.get("dk_status") or "NONE") == "NONE" else v["dk_status"]}
+           for v in active.values()
+           if v.get("salary") and (v["name"], v.get("team")) not in have]
+    return sorted(out, key=lambda r: (-(r["dk_fppg"] or 0.0), -r["salary"]))
+
+
+def log_unladdered(rows: list[dict], gid, meta: dict, root: Path | None = None) -> dict:
+    """Replace this draft group's rows in data/dfs_unladdered_ncaaf.csv. Same rule as
+    the forward log: a past date is never written."""
+    date = _slate_date(meta)
+    if not date or date < dfs_forward_log.today_et():
+        return {"logged": False, "n": 0}
+    f = (root or Path(__file__).resolve().parents[1]) / "data" / UNLADDERED_LOG
+    prior = list(csv.DictReader(f.open(newline=""))) if f.exists() else []
+    keep = [r for r in prior if not (r.get("date") == date and r.get("gid") == str(gid))]
+    with f.open("w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=UNLADDERED_COLS)
+        w.writeheader()
+        w.writerows(keep)
+        w.writerows({**r, "date": date, "gid": gid,
+                     "dk_fppg": "" if r["dk_fppg"] is None else r["dk_fppg"]} for r in rows)
+    return {"logged": True, "n": len(rows)}
+
+
 def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftkings",
                 stack_n: int | None = None, bring_back: int | None = None,
                 own_gamma: float | None = None, own_weight: float = 0.0,
@@ -733,6 +773,8 @@ def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftki
     active, dk_out = dfs.drop_dk_out(salaries)
     pool, stats = build_pool(client, active, book=book)
     stats["dk_out"] = dk_out
+    no_ladder = unladdered(active, pool)
+    stats["unladdered"] = len(no_ladder)
     games = slate_games(salaries)
     theory.add_ownership(pool, **({"gamma": own_gamma} if own_gamma else {}))
 
@@ -752,11 +794,15 @@ def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftki
         except Exception as exc:                            # noqa: BLE001
             # A logging failure must never take the lineups down with it.
             log.warning("dfs_run_ncaaf: forward-test logging failed: %s", exc)
+        try:
+            log_unladdered(no_ladder, gid, meta)
+        except Exception as exc:                            # noqa: BLE001
+            log.warning("dfs_run_ncaaf: unladdered logging failed: %s", exc)
     return {
         "gid": gid, "meta": meta, "slates": slates, "pool": pool,
         "stats": stats, "cash": cash, "gpp": gpp, "games": games,
         "teams": sorted({p["team"] for p in pool if p.get("team")}),
-        "log": log_result,
+        "log": log_result, "unladdered": no_ladder,
     }
 
 
