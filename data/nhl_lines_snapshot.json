@@ -1,9 +1,9 @@
 {
-"generated_at": "2026-11-14T19:59:10+00:00",
+"generated_at": "2026-11-14T20:29:03+00:00",
 "goalies": {
 "2026-11-14": {
 "ANA": {
-"goalie": "Ville Husso",
+"goalie": "Lukas Dostal",
 "status": null
 },
 "BOS": {
@@ -12,7 +12,7 @@
 },
 "BUF": {
 "goalie": "Alex Lyon",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
@@ -28,7 +28,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": null
+"status": "Confirmed"
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
@@ -108,7 +108,7 @@
 },
 "WPG": {
 "goalie": "Stuart Skinner",
-"status": null
+"status": "Confirmed"
 },
 "WSH": {
 "goalie": "Charlie Lindgren",
@@ -117,7 +117,7 @@
 },
 "2026-11-15": {
 "ANA": {
-"goalie": "Ville Husso",
+"goalie": "Lukas Dostal",
 "status": null
 },
 "CGY": {
@@ -497,7 +497,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -839,7 +839,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -4281,7 +4281,7 @@
 "toiMinutes": 111,
 "toiSeconds": 28
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -4315,9 +4315,9 @@
 "toiMinutes": 57,
 "toiSeconds": 9
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Anton Frondell": {
@@ -4383,7 +4383,7 @@
 "toiMinutes": 103,
 "toiSeconds": 53
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
@@ -4589,43 +4589,9 @@
 "toiMinutes": 95,
 "toiSeconds": 43
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
-},
-"Jordan Greenway": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 121,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 61,
-"toiSeconds": 14
-},
-"line": "F4",
-"pk": "PK2",
-"pos": "rw",
 "pp": null
 },
 "Oliver Moore": {
@@ -4762,7 +4728,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Ryan Greene": {
 "gtd": false,
@@ -4827,7 +4793,7 @@
 "toiMinutes": 99,
 "toiSeconds": 11
 },
-"line": "D2",
+"line": "D1",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -4867,6 +4833,40 @@
 "pk": null,
 "pos": "g",
 "pp": null
+},
+"Teuvo Teravainen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 6,
+"toiMinutes": 153,
+"toiSeconds": 22
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 70,
+"toiSeconds": 18
+},
+"line": "F2",
+"pk": "PK2",
+"pos": "lw",
+"pp": "PP2"
 },
 "Tyler Bertuzzi": {
 "gtd": false,
