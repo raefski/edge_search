@@ -900,3 +900,33 @@ this note. Scout fix worth making: "collected" should mean rows in odds.db, not 
 publish_markets. Next unattended NHL night: runner-up T25 (no-props shrink) in the lab.
 
 Unattended gate (20261114-0658): **not shipped (log / harness only, verified)**
+
+## Cycle 16 (hand-run 2026-11-14; target: projection of skaters without props, transfer T25 from L14 / NBA cycle 33) -- not shipped
+
+Metric: nhl_lineup_lab shipped/set20 (cash, GPP never pooled), test = 10/13 on, by slate; supporting:
+no-prop-in-priced-game skater DK points (skater lab lock/early).
+
+Baseline: cash test 24 contests / 19 slates pctile .594 [.535, .654], $1.07; GPP test 39 / 26
+pctile .541 [.467, .619], $1.42 (train GPP .717 -> test .541: bigger than any projection effect).
+
+**Critic #16 hole:** no-prop skaters' means are over-spread (slope 0.74-0.79) and the optimizer picks
+exactly the high-value tail: cash picks +1.48 pts over actual on test (n 571; +2.20 train, n 246),
+GPP +0.79 (n 404). The whole group is unbiased (test bias +0.05, n 2,720 / 29 nights); the bias lives in
+the top 30% by pts/$1k (+0.41..+0.81 both splits). Lineups take 1.10 (cash) / 0.78 (GPP) a lineup.
+
+**Fix tested:** gate = no shots AND no points/assists line in a game with props; within slate x
+(D, F): proj' = m + 0.74 (proj - m) (K fit on train lock, 849 rows / 11 nights, se .155; test refits .79).
+
+| mode (test, paired by slate) | pctile | $ per $1 | slates better / worse |
+|---|---|---|---|
+| cash | .594 -> .624, d +.020 [-.016, +.054] | 1.07 -> 1.07 | 13 / 6 |
+| cash_floor | .556 -> .593, d +.025 [-.009, +.061] | 0.97 -> 0.99 | 11 / 8 |
+| GPP | .541 -> .512, d **-.022 [-.041, -.003]** | 1.42 -> 2.05 (tail luck) | 10 / 16 |
+
+Player level test: RMSE 4.454 -> 4.445, MAE 3.339 -> 3.348 (cycle 9's split again). **Not shipped:**
+cash within noise, GPP percentile significantly worse. Open hypothesis: a cash-only shrink inside the
+optimizer's value ranking (cash train +.067 [.001, .138], 6/3) -- re-test with ~10 more test slates.
+
+Runner-ups: prop-but-no-shots skaters' imputed shots (cycle 12); the GPP train->test collapse
+(construction/ownership); no-prop F1s run under (-2.06, n 31, thin). Critic code: scratch np_variant.py
+(registers `np_shrink` in nhl_lineup_lab.VARIANTS).

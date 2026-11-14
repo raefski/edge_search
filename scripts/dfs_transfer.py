@@ -300,7 +300,7 @@ TRANSFERS = [
                   "note": "NBA cycle 32, NOT SHIPPED: LODO seed sets, cash .524 -> .577 (+.053 [-.023, +.142], 6 / 6 "
                           "dates, 19 contests / 14 dates), GPP .623 -> .616 (-.007 [-.019, +.006]); test dates flat. "
                           "Cash +2.1 lineup points is the lead."}},
-    {"id": "T25", "lesson": "L14", "sport": "nhl", "kind": "market", "status": "measure",
+    {"id": "T25", "lesson": "L14", "sport": "nhl", "kind": "market", "status": "null",
      "idea": "a skater with no props in a game DK has priced keeps last season's rate x role (SEASON_K / "
              "ROLE_POWER): check his miss where the optimizer picks him, then shrink as NBA cycle 33",
      "where": "edge/dfs_run_nhl.py (means no market sets) + scripts/nhl_skater_lab.py", "data": "29 graded slates",
@@ -309,7 +309,9 @@ TRANSFERS = [
                   "note": "scripts/dfs_props_roi.py (pts_lineup: +0.87 a pick x ~1 unpriced pick a lineup, an upper "
                           "bound inside noise): Adam's entered NHL skaters without props missed -0.93 vs -0.06 "
                           "priced (+0.87 [-1.55, +3.02], 898 picks, 104 unpriced / 29 dates): noise so far; measure "
-                          "in the lab's seed lineups, not entered picks."}},
+                          "in the lab's seed lineups, not entered picks. NHL cycle 16 (2026-11-14): lineup lab, "
+                          "K=0.74 slate x D/F shrink: cash pctile +.020 [-.016,+.054] (19 slates), GPP -.022 "
+                          "[-.041,-.003] (26): null board-wide; cash-only in-optimizer shrink to retest ~12/1."}},
     {"id": "T26", "lesson": "L14", "sport": "ncaab", "kind": "market", "status": "measure",
      "idea": "a non-props row in a game whose props are up (DK ladders) keeps the carryover / salary blend",
      "where": "edge/dfs_run_ncaab.py non-props rows (LAST_GAME, prior blend)", "data": "6 graded dates",
