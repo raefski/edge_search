@@ -128,6 +128,12 @@ JOBS: dict[str, Job] = {j.name: j for j in [
     _j("lineups-nhl", "optimize", "scripts/dfs_lineups_nhl.py", sport="nhl"),
     _j("lineups-nba", "optimize", "scripts/dfs_lineups_nba.py", sport="nba",
        tests=("tests/test_dfs_nba.py",)),
+    _j("pickem-polymarket", "ingest", "scripts/pickem_polymarket.py", "log", "--push", sport="pickem",
+       timer="pickem-polymarket.timer", timeout=3600, tests=("tests/test_pickem_polymarket.py",),
+       doc="Polymarket NFL spread at every pick'em reading + 1 min before each deadline "
+           "(backfills; logged, not used) -> data/pickem_polymarket_log.csv"),
+    _j("pickem-polymarket-report", "evaluate", "scripts/pickem_polymarket.py", "report", sport="pickem",
+       doc="shipped make_pick graded with books vs Polymarket as the live line"),
     _j("lineups-ncaab", "optimize", "scripts/dfs_lineups_ncaab.py", sport="ncaab",
        tests=("tests/test_dfs_ncaab.py", "tests/test_ncaab_names.py")),
     _j("ncaab-prior-fit", "evaluate", "scripts/ncaab_prior_fit.py", sport="ncaab",
@@ -238,6 +244,7 @@ EDGE_RULES: list[tuple[str, str]] = [
     (r"^dfs_forward_log$", "evaluate"),
     (r"^(dfs_run|dfs_slate|dfs_sport|repo_files|names|scanner|ncaab_names)", "optimize"),
     (r"^(client|dfs$|nfl$|nfl_intel$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
+    (r"^pickem_polymarket$", "ingest"),  # Polymarket NFL spread ladder -> a line (logged, not used)
      r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups|nba_availability|nba_injury_report|nba_rotowire|"
      r"ncaab_rotowire|ncaab_torvik|ncaab_espn)", "ingest"),
 ]

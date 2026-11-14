@@ -1,0 +1,9 @@
+[Unit]
+Description=Polymarket pick'em backfill, every 6 hours
+
+[Timer]
+OnCalendar=*-*-* 03,09,15,21:40
+Persistent=true
+
+[Install]
+WantedBy=timers.target

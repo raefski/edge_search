@@ -1,0 +1,21 @@
+# Log Polymarket's NFL spread beside every pick'em line reading
+# (scripts/pickem_polymarket.py, why in edge/pickem_polymarket.py). Lossless:
+# Polymarket keeps its full price history, so each run backfills every reading
+# still missing -- a missed run costs nothing, which is why this is its own
+# timer and not a step inside the deadline-critical pickem-capture@ unit.
+# Logged only; no pick reads it until the forward test decides (~8 more weeks).
+#
+#   cp deploy/pickem-polymarket.service deploy/pickem-polymarket.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now pickem-polymarket.timer
+[Unit]
+Description=Log Polymarket NFL spreads beside pick'em readings
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/pickem_polymarket.py log --push
+Restart=no
+Nice=15
+TimeoutStartSec=3600

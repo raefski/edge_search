@@ -1732,3 +1732,16 @@ public is on the dog, fading is 12-10). Where fading agrees with the market
 model: 28-12 (70%); where they disagree, the fade beat the market 29-25.
 One season, found by looking -- forward test from week 8 as a CONFIDENCE
 marker (market pick + public on the other side), not a pick rule.
+
+## 5s. Polymarket as the live line (Adam, 2026-11-14) -- LOGGING, not shipped
+
+`edge/pickem_polymarket.py` reads a fair home spread off Polymarket's NFL spread
+ladder (P(cover) per rung, interpolated to 50%); `scripts/pickem_polymarket.py log`
+(pickem-polymarket.timer, 6-hourly, lossless backfill) writes one reading per
+line-log reading plus one a minute before each deadline to
+`data/pickem_polymarket_log.csv` (data branch). Weeks 1-10 2026, 137 graded
+games, shipped `make_pick`: books 70-67 (51.1%), Polymarket at the same instant
+74-63 (54.0%), at deadline-1m 73-64 (53.3%). Mean |PM - books| 0.25 pt; 16 picks
+differ, 10-6. It mostly mirrors the books. Re-run `report` weekly; act only at
+30+ differing picks. Own handicaps (5a, 5q) remain dead for the reason above:
+the books already know team strength.
