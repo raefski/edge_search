@@ -30,7 +30,7 @@
 "GameTypeId": 94,
 "StartDate": "2026-11-14T17:00:00.0000000Z",
 "StartDateEst": "2026-11-14T12:00:00.0000000",
-"last_start": "2026-11-14T21:15:00.0000000Z"
+"last_start": "2026-11-15T00:00:00.0000000Z"
 },
 "156566": {
 "ContestStartTimeSuffix": " (Afternoon)",
@@ -40,7 +40,7 @@
 "GameTypeId": 94,
 "StartDate": "2026-11-14T20:30:00.0000000Z",
 "StartDateEst": "2026-11-14T15:30:00.0000000",
-"last_start": "2026-11-14T21:15:00.0000000Z"
+"last_start": "2026-11-15T00:00:00.0000000Z"
 },
 "156567": {
 "ContestStartTimeSuffix": " (Night)",
@@ -50,7 +50,7 @@
 "GameTypeId": 94,
 "StartDate": "2026-11-15T00:00:00.0000000Z",
 "StartDateEst": "2026-11-14T19:00:00.0000000",
-"last_start": "2026-11-15T00:45:00.0000000Z"
+"last_start": "2026-11-15T03:30:00.0000000Z"
 },
 "156568": {
 "ContestStartTimeSuffix": " (Late Night)",
@@ -138,16 +138,6 @@
 },
 "NAS": {},
 "NBA": {
-"156716": {
-"ContestStartTimeSuffix": " (2H OKC @ LAC)",
-"DraftGroupId": 156716,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 112,
-"StartDate": "2026-11-14T04:46:00.0000000Z",
-"StartDateEst": "2026-11-13T23:46:00.0000000",
-"last_start": "2026-11-14T04:30:00.0000000Z"
-},
 "156717": {
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 156717,
