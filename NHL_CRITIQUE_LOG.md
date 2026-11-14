@@ -898,3 +898,5 @@ To unblock: `scripts/dk_categories.py --sport icehockey_nhl` -> add the goalscor
 margin) -> collect ~10 nights -> rerun this target in the skater lab. T06 set to "waiting" with
 this note. Scout fix worth making: "collected" should mean rows in odds.db, not a name in
 publish_markets. Next unattended NHL night: runner-up T25 (no-props shrink) in the lab.
+
+Unattended gate (20261114-0658): **not shipped (log / harness only, verified)**
