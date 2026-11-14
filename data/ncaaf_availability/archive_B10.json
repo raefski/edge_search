@@ -1127,7 +1127,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Doubtful",
 "Number": "#1",
 "Opponent": "at UCLA",
@@ -1141,7 +1141,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#2",
 "Opponent": "at UCLA",
@@ -1155,7 +1155,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#5",
 "Opponent": "at UCLA",
@@ -1169,7 +1169,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#7",
 "Opponent": "at UCLA",
@@ -1183,7 +1183,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Questionable",
 "Number": "#8",
 "Opponent": "at UCLA",
@@ -1197,7 +1197,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#24",
 "Opponent": "at UCLA",
@@ -1211,7 +1211,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Questionable",
 "Number": "#24",
 "Opponent": "at UCLA",
@@ -1225,7 +1225,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#32",
 "Opponent": "at UCLA",
@@ -1239,7 +1239,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#33",
 "Opponent": "at UCLA",
@@ -1253,7 +1253,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#48",
 "Opponent": "at UCLA",
@@ -1267,7 +1267,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#53",
 "Opponent": "at UCLA",
@@ -1281,7 +1281,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Questionable",
 "Number": "#54",
 "Opponent": "at UCLA",
@@ -1295,7 +1295,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#55",
 "Opponent": "at UCLA",
@@ -1309,7 +1309,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Questionable",
 "Number": "#59",
 "Opponent": "at UCLA",
@@ -1323,7 +1323,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Questionable",
 "Number": "#87",
 "Opponent": "at UCLA",
@@ -1710,7 +1710,7 @@
 "Team": "Indiana",
 "TeamDisplay": "Indiana",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -1724,7 +1724,7 @@
 "Team": "Indiana",
 "TeamDisplay": "Indiana",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -1738,7 +1738,7 @@
 "Team": "Indiana",
 "TeamDisplay": "Indiana",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -1752,7 +1752,7 @@
 "Team": "Indiana",
 "TeamDisplay": "Indiana",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -1766,7 +1766,7 @@
 "Team": "Indiana",
 "TeamDisplay": "Indiana",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -2424,7 +2424,7 @@
 "Team": "Iowa",
 "TeamDisplay": "Iowa",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -2438,7 +2438,7 @@
 "Team": "Iowa",
 "TeamDisplay": "Iowa",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -2452,7 +2452,7 @@
 "Team": "Iowa",
 "TeamDisplay": "Iowa",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -2466,7 +2466,7 @@
 "Team": "Iowa",
 "TeamDisplay": "Iowa",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -2480,7 +2480,7 @@
 "Team": "Iowa",
 "TeamDisplay": "Iowa",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -2494,7 +2494,7 @@
 "Team": "Iowa",
 "TeamDisplay": "Iowa",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -2508,7 +2508,7 @@
 "Team": "Iowa",
 "TeamDisplay": "Iowa",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -2522,7 +2522,7 @@
 "Team": "Iowa",
 "TeamDisplay": "Iowa",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Doubtful",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -2536,7 +2536,7 @@
 "Team": "Iowa",
 "TeamDisplay": "Iowa",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4062,7 +4062,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4076,7 +4076,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4090,7 +4090,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4104,7 +4104,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4118,7 +4118,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Doubtful",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4132,7 +4132,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4146,7 +4146,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4160,7 +4160,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4174,7 +4174,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4188,7 +4188,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Doubtful",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4202,7 +4202,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4216,7 +4216,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4230,7 +4230,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4244,7 +4244,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -4258,7 +4258,7 @@
 "Team": "Maryland",
 "TeamDisplay": "Maryland",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5462,7 +5462,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5476,7 +5476,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5490,7 +5490,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5504,7 +5504,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Doubtful",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5518,7 +5518,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5532,7 +5532,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5546,7 +5546,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5560,7 +5560,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5574,7 +5574,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5588,7 +5588,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5602,7 +5602,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5616,7 +5616,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Doubtful",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5630,7 +5630,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -5644,7 +5644,7 @@
 "Team": "Michigan",
 "TeamDisplay": "Michigan",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -6862,7 +6862,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -6876,7 +6876,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -6890,7 +6890,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -6904,7 +6904,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -6918,7 +6918,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -6932,7 +6932,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Doubtful",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -6946,7 +6946,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -6960,7 +6960,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -6974,7 +6974,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -6988,7 +6988,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -7002,7 +7002,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -7016,7 +7016,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -7030,7 +7030,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -7044,7 +7044,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -7058,7 +7058,7 @@
 "Team": "Michigan St.",
 "TeamDisplay": "Michigan State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8010,7 +8010,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8024,7 +8024,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8038,7 +8038,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8052,7 +8052,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8066,7 +8066,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8080,7 +8080,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8094,7 +8094,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8108,7 +8108,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8122,7 +8122,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8136,7 +8136,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8150,7 +8150,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8164,7 +8164,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -8178,7 +8178,7 @@
 "Team": "Minnesota",
 "TeamDisplay": "Minnesota",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -9060,7 +9060,7 @@
 "Team": "Nebraska",
 "TeamDisplay": "Nebraska",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -9074,7 +9074,7 @@
 "Team": "Nebraska",
 "TeamDisplay": "Nebraska",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -9088,7 +9088,7 @@
 "Team": "Nebraska",
 "TeamDisplay": "Nebraska",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -9102,7 +9102,7 @@
 "Team": "Nebraska",
 "TeamDisplay": "Nebraska",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -9116,7 +9116,7 @@
 "Team": "Nebraska",
 "TeamDisplay": "Nebraska",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -9130,7 +9130,7 @@
 "Team": "Nebraska",
 "TeamDisplay": "Nebraska",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -9144,7 +9144,7 @@
 "Team": "Nebraska",
 "TeamDisplay": "Nebraska",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -9158,7 +9158,7 @@
 "Team": "Nebraska",
 "TeamDisplay": "Nebraska",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -9172,7 +9172,7 @@
 "Team": "Nebraska",
 "TeamDisplay": "Nebraska",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -9186,7 +9186,7 @@
 "Team": "Nebraska",
 "TeamDisplay": "Nebraska",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -9200,7 +9200,7 @@
 "Team": "Nebraska",
 "TeamDisplay": "Nebraska",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -10558,7 +10558,7 @@
 "Team": "Northwestern",
 "TeamDisplay": "Northwestern",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -10572,7 +10572,7 @@
 "Team": "Northwestern",
 "TeamDisplay": "Northwestern",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -10586,7 +10586,7 @@
 "Team": "Northwestern",
 "TeamDisplay": "Northwestern",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -10600,7 +10600,7 @@
 "Team": "Northwestern",
 "TeamDisplay": "Northwestern",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -10614,7 +10614,7 @@
 "Team": "Northwestern",
 "TeamDisplay": "Northwestern",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -10628,7 +10628,7 @@
 "Team": "Northwestern",
 "TeamDisplay": "Northwestern",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -10642,7 +10642,7 @@
 "Team": "Northwestern",
 "TeamDisplay": "Northwestern",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -10656,7 +10656,7 @@
 "Team": "Northwestern",
 "TeamDisplay": "Northwestern",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -10670,7 +10670,7 @@
 "Team": "Northwestern",
 "TeamDisplay": "Northwestern",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11622,7 +11622,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Available",
-"Update 2": "-",
+"Update 2": "Available",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11636,7 +11636,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11650,7 +11650,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11664,7 +11664,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Doubtful",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11678,7 +11678,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Doubtful",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11692,7 +11692,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11706,7 +11706,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11720,7 +11720,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Doubtful",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11734,7 +11734,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11748,7 +11748,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11762,7 +11762,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Doubtful",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11776,7 +11776,21 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
+"Week": "Sat, 14 Nov 2026 00:00:00 GMT",
+"WeekNum": 11
+},
+{
+"Game Day": "-",
+"Initial": "Available",
+"Number": "#70",
+"Opponent": "vs. Northwestern",
+"OpponentDisplay": "vs. Northwestern",
+"Player": "Phillip Daniels",
+"Team": "Ohio St.",
+"TeamDisplay": "Ohio State",
+"Update 1": "Available",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11790,7 +11804,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Doubtful",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11804,7 +11818,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -11818,7 +11832,7 @@
 "Team": "Ohio St.",
 "TeamDisplay": "Ohio State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -12602,7 +12616,7 @@
 "Team": "Oregon",
 "TeamDisplay": "Oregon",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -12616,7 +12630,7 @@
 "Team": "Oregon",
 "TeamDisplay": "Oregon",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -12630,7 +12644,7 @@
 "Team": "Oregon",
 "TeamDisplay": "Oregon",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -12644,7 +12658,7 @@
 "Team": "Oregon",
 "TeamDisplay": "Oregon",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -12658,7 +12672,7 @@
 "Team": "Oregon",
 "TeamDisplay": "Oregon",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -12672,7 +12686,7 @@
 "Team": "Oregon",
 "TeamDisplay": "Oregon",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Available",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -12686,7 +12700,7 @@
 "Team": "Oregon",
 "TeamDisplay": "Oregon",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -12700,7 +12714,7 @@
 "Team": "Oregon",
 "TeamDisplay": "Oregon",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -12714,7 +12728,7 @@
 "Team": "Oregon",
 "TeamDisplay": "Oregon",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -12728,7 +12742,7 @@
 "Team": "Oregon",
 "TeamDisplay": "Oregon",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14016,7 +14030,7 @@
 "Team": "Penn St.",
 "TeamDisplay": "Penn State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14030,7 +14044,7 @@
 "Team": "Penn St.",
 "TeamDisplay": "Penn State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14044,7 +14058,7 @@
 "Team": "Penn St.",
 "TeamDisplay": "Penn State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14058,7 +14072,7 @@
 "Team": "Penn St.",
 "TeamDisplay": "Penn State",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14072,7 +14086,7 @@
 "Team": "Penn St.",
 "TeamDisplay": "Penn State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14086,7 +14100,7 @@
 "Team": "Penn St.",
 "TeamDisplay": "Penn State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14100,7 +14114,7 @@
 "Team": "Penn St.",
 "TeamDisplay": "Penn State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14114,7 +14128,7 @@
 "Team": "Penn St.",
 "TeamDisplay": "Penn State",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14128,7 +14142,7 @@
 "Team": "Penn St.",
 "TeamDisplay": "Penn State",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14142,7 +14156,7 @@
 "Team": "Penn St.",
 "TeamDisplay": "Penn State",
 "Update 1": "Available",
-"Update 2": "-",
+"Update 2": "Available",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14534,7 +14548,7 @@
 "Team": "Purdue",
 "TeamDisplay": "Purdue",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14548,7 +14562,7 @@
 "Team": "Purdue",
 "TeamDisplay": "Purdue",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14562,7 +14576,7 @@
 "Team": "Purdue",
 "TeamDisplay": "Purdue",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -14576,7 +14590,7 @@
 "Team": "Purdue",
 "TeamDisplay": "Purdue",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15458,7 +15472,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15472,7 +15486,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15486,7 +15500,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15500,7 +15514,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15514,7 +15528,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15528,7 +15542,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15542,7 +15556,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15556,7 +15570,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15570,7 +15584,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15584,7 +15598,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15598,7 +15612,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15612,7 +15626,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15626,7 +15640,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -15640,7 +15654,7 @@
 "Team": "Rutgers",
 "TeamDisplay": "Rutgers",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -16606,7 +16620,7 @@
 "Team": "Southern California",
 "TeamDisplay": "USC",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -16620,7 +16634,7 @@
 "Team": "Southern California",
 "TeamDisplay": "USC",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -16634,7 +16648,7 @@
 "Team": "Southern California",
 "TeamDisplay": "USC",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -16648,7 +16662,7 @@
 "Team": "Southern California",
 "TeamDisplay": "USC",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -16662,7 +16676,7 @@
 "Team": "Southern California",
 "TeamDisplay": "USC",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -16676,7 +16690,7 @@
 "Team": "Southern California",
 "TeamDisplay": "USC",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -16690,7 +16704,7 @@
 "Team": "Southern California",
 "TeamDisplay": "USC",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -16704,7 +16718,7 @@
 "Team": "Southern California",
 "TeamDisplay": "USC",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -16718,7 +16732,7 @@
 "Team": "Southern California",
 "TeamDisplay": "USC",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -17479,7 +17493,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#7",
 "Opponent": "vs. Illinois",
@@ -17493,7 +17507,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#9",
 "Opponent": "vs. Illinois",
@@ -17507,7 +17521,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#19",
 "Opponent": "vs. Illinois",
@@ -17521,7 +17535,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Available",
 "Number": "#20",
 "Opponent": "vs. Illinois",
@@ -17535,7 +17549,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#24",
 "Opponent": "vs. Illinois",
@@ -17549,7 +17563,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#44",
 "Opponent": "vs. Illinois",
@@ -17563,7 +17577,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Questionable",
 "Number": "#51",
 "Opponent": "vs. Illinois",
@@ -17577,7 +17591,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#64",
 "Opponent": "vs. Illinois",
@@ -17591,7 +17605,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#65",
 "Opponent": "vs. Illinois",
@@ -17605,7 +17619,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#86",
 "Opponent": "vs. Illinois",
@@ -18594,7 +18608,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -18608,7 +18622,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -18622,7 +18636,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -18636,7 +18650,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -18650,7 +18664,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -18664,7 +18678,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -18678,7 +18692,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -18692,7 +18706,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -18706,7 +18720,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -18720,7 +18734,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -18734,7 +18748,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Probable",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -18748,7 +18762,7 @@
 "Team": "Washington",
 "TeamDisplay": "Washington",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -19420,7 +19434,7 @@
 "Team": "Wisconsin",
 "TeamDisplay": "Wisconsin",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -19434,7 +19448,21 @@
 "Team": "Wisconsin",
 "TeamDisplay": "Wisconsin",
 "Update 1": "Questionable",
-"Update 2": "-",
+"Update 2": "Questionable",
+"Week": "Sat, 14 Nov 2026 00:00:00 GMT",
+"WeekNum": 11
+},
+{
+"Game Day": "-",
+"Initial": "Available",
+"Number": "#15",
+"Opponent": "at Maryland",
+"OpponentDisplay": "at Maryland",
+"Player": "Sebastian Cheeks",
+"Team": "Wisconsin",
+"TeamDisplay": "Wisconsin",
+"Update 1": "Available",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -19448,7 +19476,7 @@
 "Team": "Wisconsin",
 "TeamDisplay": "Wisconsin",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -19462,7 +19490,7 @@
 "Team": "Wisconsin",
 "TeamDisplay": "Wisconsin",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Available",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -19476,7 +19504,7 @@
 "Team": "Wisconsin",
 "TeamDisplay": "Wisconsin",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -19490,7 +19518,7 @@
 "Team": "Wisconsin",
 "TeamDisplay": "Wisconsin",
 "Update 1": "Doubtful",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -19504,7 +19532,7 @@
 "Team": "Wisconsin",
 "TeamDisplay": "Wisconsin",
 "Update 1": "Out",
-"Update 2": "-",
+"Update 2": "Out",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 },
@@ -19518,10 +19546,10 @@
 "Team": "Wisconsin",
 "TeamDisplay": "Wisconsin",
 "Update 1": "Probable",
-"Update 2": "-",
+"Update 2": "Available",
 "Week": "Sat, 14 Nov 2026 00:00:00 GMT",
 "WeekNum": 11
 }
 ],
-"fetched_at": "2026-11-14T01:28:44+00:00"
+"fetched_at": "2026-11-14T12:03:38+00:00"
 }
