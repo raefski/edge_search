@@ -875,3 +875,26 @@ in the store's own order: a filtered full read reordered the h2h/totals rows and
 data/nhl_cache, so they start warm once main's cache is filled. Separately found: a slate whose
 games are live while it is cached does not rebuild identically (two real-store builds of 11/12
 differed in blocks / role); past slates are deterministic. Cycle 14 itself was merged by Adam.
+
+## Cycle 15 (unattended, 2026-11-14; auto target: unused anytime-goal props, transfer T06 from L03) -- not shipped: the input doesn't exist
+
+Scout: `{"target": "player props unused: anytime-goal (player_goals)", "metric": "skater DK-points
+RMSE per skater-game, held out (TEST 2026-10-13..11-13), all skaters + the goal-quoted subset",
+"harness": "scripts/nhl_skater_lab.py gate", "transfer": "T06", "money_at_stake": "GPP +1%
+[-63%, +65%] (67 entries / 29 slates); cash +21% [-11%, +54%] (35 / 25)", "runner_ups": ["T25
+no-props skater shrink (NBA c33), measure in the lab", "NHL lineup harness vs the real field",
+"T19 PP1/top-line promotions as GPP ownership chalk"]}`
+
+Checked before any critic: player_goals is not "collected and unread" -- it was never collected.
+0 rows in odds.db's hot store for any sport, 0 in the lab's pinned scans (11/12 scans 27355 /
+27418 / 27496 hold only player_points etc.). `profiles.dfs_nhl.publish_markets` names it, but
+the DK scraper fetches only categories 1189 / 1675 / 1676 / 1064 (SOG, Points, Assists, Goalie
+Props; edge/arb/draftkings_league.py). So no critic was spawned and nothing could be measured.
+
+Decision (conservative, unattended): not shipped; no model change. Finding a DK category id
+needs a live DK lookup, and adding a collector is ingest work an unattended cycle may not do.
+To unblock: `scripts/dk_categories.py --sport icehockey_nhl` -> add the goalscorer category
+(one-sided "Yes" prices: devig needs the book's overround from a two-sided market or a fixed
+margin) -> collect ~10 nights -> rerun this target in the skater lab. T06 set to "waiting" with
+this note. Scout fix worth making: "collected" should mean rows in odds.db, not a name in
+publish_markets. Next unattended NHL night: runner-up T25 (no-props shrink) in the lab.

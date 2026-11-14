@@ -201,10 +201,17 @@ TRANSFERS = [
                           "(n 195), RB -1.05 +-1.11 (n 106), TE -0.04. 2026 vs OUR projection: Questionable "
                           "-0.32 vs untagged +0.61 (n 66 / 1,360, 9 slates): -0.93 relative, not significant "
                           "alone. ~0.4 Q players per lineup x ~1 pt."}},
-    {"id": "T06", "lesson": "L03", "sport": "nhl", "kind": "market", "status": "measure",
+    {"id": "T06", "lesson": "L03", "sport": "nhl", "kind": "market", "status": "waiting",
      "idea": "anytime-goal props (player_goals) are collected and unread; goals come from points minus assists",
      "where": "edge/dfs_run_nhl.py skater_means (points, SOG, assists props)", "data": "odds.db dfs_nhl scans",
-     "probe": None, "target": "unused props: player_goals (skater lab)"},
+     "probe": None, "target": "unused props: player_goals (skater lab)",
+     "measured": {"at": "2026-11-14", "pts_lineup": 0.0,
+                  "note": "NHL cycle 15: NOT collected, not merely unread. 0 player_goals rows in odds.db (any "
+                          "sport) and 0 in the lab's pinned scans: profiles.dfs_nhl lists it in publish_markets "
+                          "but the DK scraper (edge/arb/draftkings_league.py) fetches only categories "
+                          "1189/1675/1676/1064 (SOG, Points, Assists, Goalie). Needs the goalscorer category id "
+                          "found live (scripts/dk_categories.py --sport icehockey_nhl), then ~10 nights collected "
+                          "before the skater lab can test it."}},
     {"id": "T07", "lesson": "L01", "sport": "ncaab", "kind": "availability", "status": "measure",
      "idea": "RotoWire's projected college starters used as certain (NBA's Expected-five hole)",
      "where": "edge/dfs_run_ncaab.py rotowire starters", "data": "graded slates 5 (box scores via ncaab-box-grade)",
