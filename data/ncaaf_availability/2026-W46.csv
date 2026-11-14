@@ -30140,3 +30140,463 @@ captured_at,conference,report_id,version,report_type,publish_date,posted_time,co
 2026-11-14T22:03:49+00:00,ACC,10003171,9d861eaa4c64,Game Day,2026-11-14,17:00:00,ET,2026-11-14,19:00:00,"Chapel Hill, NC",0,North Carolina,Louisville,second,DL,96,Nicco Maggio,niccomaggio,Available,NonExempt
 2026-11-14T22:03:49+00:00,ACC,10003171,9d861eaa4c64,Game Day,2026-11-14,17:00:00,ET,2026-11-14,19:00:00,"Chapel Hill, NC",0,North Carolina,Louisville,second,DL,97,Trey Giddens,treygiddens,Available,NonExempt
 2026-11-14T22:03:49+00:00,ACC,10003171,9d861eaa4c64,Game Day,2026-11-14,17:00:00,ET,2026-11-14,19:00:00,"Chapel Hill, NC",0,North Carolina,Louisville,second,K,97,David Green,davidgreen,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,LB,0,Jojo Hayden,jojohayden,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,0,Jaylan Hornsby,jaylanhornsby,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,QB,1,Evans Chuba,evanschuba,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,1,Smiley Bradford,smileybradford,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,RB,2,Fame Ijeboi,fameijeboi,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,2,Jaden Mangham,jadenmangham,Game Time Decision,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,3,Jett Goldsberry,jettgoldsberry,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,3,Xavier Townsend,xaviertownsend,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,4,Hudauri Hines,hudaurihines,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,RB,4,Jerrick Gibson,jerrickgibson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,5,Chauncey Magwood,chaunceymagwood,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,LB,5,Charles Correa,charlescorrea,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,6,Mister Clark,misterclark,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,TE,6,Ar'Mari Towns,armaritowns,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,QB,7,Garyt Odom,garytodom,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,7,Don Saunders,donsaunders,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,8,CJ Madden,cjmadden,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,8,De'Nylon Morrissette,denylonmorrissette,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DL,9,TJ Lindsey,tjlindsey,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,9,Jalil Hall,jalilhall,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,10,Jesse Watson,jessewatson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,10,Ta'Vari Hampton,tavarihampton,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,11,Tra'Mar Harris,tramarharris,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,11,Keyshawn Burgos,keyshawnburgos,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,12,Ryan Turner,ryanturner,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,12,Corey Smith,coreysmith,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,13,John Slaughter,johnslaughter,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,13,Ricky Sampson,rickysampson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,QB,14,Corin Berry,corinberry,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,14,Emoni Smith,emonismith,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,15,Vi'Naz Cobb,vinazcobb,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,QB,15,Ryan Browne,ryanbrowne,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,TE,16,Kylan Fox,kylanfox,Out,Out
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,LB,16,Anthony Speca,anthonyspeca,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,17,Traveon Wright,traveonwright,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,17,Bisi Owens,bisiowens,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,QB,18,Bennett Meredith,bennettmeredith,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,18,Elo Modozie,elomodozie,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,19,Landon Brooks,landonbrooks,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,19,Asaad Waseem,asaadwaseem,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,LB,20,Winston Berglund,winstonberglund,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,RB,20,Travis Terrell Jr.,travisterrell,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,21,Justin Denson Jr.,justindenson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,RB,22,Antonio Harris,antonioharris,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,22,Maxwell Barbee,maxwellbarbee,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,23,Trey Smith,treysmith,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,24,Raderrion Daniels,raderriondaniels,Out,Out
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,RB,24,Izaiah Wright,izaiahwright,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,LB,25,Hudson Miller,hudsonmiller,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,K,26,Jack Weeter,jackweeter,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,26,Dax Noles,daxnoles,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,28,Dana Greenhow,danagreenhow,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,29,Dee Newsome,deenewsome,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,LB,30,Parker Meese,parkermeese,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,31,Finn Goodman,finngoodman,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,RB,31,Carter Holsworth,carterholsworth,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,32,D'Mon Marable,dmonmarable,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,33,Quinn Rosenkranz,quinnrosenkranz,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,33,Jeremy Lewis,jeremylewis,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,LB,34,Tre Moore,tremoore,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,35,DJ Greene,djgreene,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,36,Kaleb Richmond,kalebrichmond,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,38,Zyntreacs Otey,zyntreacsotey,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,39,Isaiah Needam,isaiahneedam,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DL,40,Ian Jeffries,ianjeffries,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,TE,41,Jon Grimmett,jongrimmett,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,41,Mason Alnutt,masonalnutt,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,LB,42,Brayden Sweeney,braydensweeney,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,P,42,Dylan Drennan,dylandrennan,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,TE,43,Jackson Berryman,jacksonberryman,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DL,44,Kobe Cherry,kobecherry,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,K,45,Seth Turner,sethturner,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,45,Katrell Webb,katrellwebb,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,LS,46,Luke Raab,lukeraab,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,47,Braden Brown,bradenbrown,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DB,48,Donivan Taylor,donivantaylor,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,50,Boaz Stanley,boazstanley,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,51,Mason Vicari,masonvicari,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,LB,51,Jaxon Ott,jaxonott,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,52,Rocco Daly,roccodaly,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,56,Marques Easley,marqueseasley,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,57,Tom Ewing,tomewing,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,58,Breeon Ishmail,breeonishmail,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,58,James Williams Jr.,jameswilliams,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,59,Micah Banuelos,micahbanuelos,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,65,Brock Brownfield,brockbrownfield,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,68,Nuku Mafi,nukumafi,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,70,Max Parrott,maxparrott,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,71,Terrell Berryhill Jr.,terrellberryhill,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,72,Jude McCoskey,judemccoskey,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,73,Makai Saina,makaisaina,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,75,Rico Schrieber,ricoschrieber,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,76,Ethan Trent,ethantrent,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,77,Jatavius Shivers,jataviusshivers,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,78,Sankeerth Veluri,sankeerthveluri,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,79,Joey Tanona,joeytanona,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,80,Brandon Kinsey,brandonkinsey,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,TE,81,George Burhenn,georgeburhenn,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,83,Andrew Adkison,andrewadkison,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,84,Nolan Buckman,nolanbuckman,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,84,Maximilian Carmicle,maximiliancarmicle,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,TE,85,Luca Puccinelli,lucapuccinelli,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,TE,87,Cooper McCutchan,coopermccutchan,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,WR,88,Jojo Johnson,jojojohnson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,LS,89,Luke Klare,lukeklare,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DL,90,Elijah St. John,elijahstjohn,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,91,Aiden Solecki,aidensolecki,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DL,92,Curt Neal,curtneal,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,K,92,Jacobo Echeverria Lozano,jacoboecheverrialozano,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DE,93,Sam Goellner,samgoellner,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,TE,94,Luke Shorter,lukeshorter,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DL,94,Rodney Lora,rodneylora,Out,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,P,95,Sam Dubwig,samdubwig,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DL,96,Jordan Cree,jordancree,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DL,97,Wisdom Simms,wisdomsimms,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DL,98,Drake Carlson,drakecarlson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,OL,99,Hayden Timosciek,haydentimosciek,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Purdue,Iowa,first,DL,99,Josiah Hope,josiahhope,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,0,Jarriett Buie,jarriettbuie,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,0,Cody Haddad,codyhaddad,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,1,KJ Parker,kjparker,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,1,Darion Jones,darionjones,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,2,Reece Vander Zee,reecevanderzee,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,2,Tyler Brown,tylerbrown,Out,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,QB,3,Jimmy Sullivan,jimmysullivan,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,3,Jaylen Watson,jaylenwatson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,4,Julian Manson,julianmanson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,QB,4,Tradon Bessinger,tradonbessinger,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,RB,5,Nathan McNeil,nathanmcneil,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,5,Anthony Hawkins,anthonyhawkins,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,6,Zach Lutmer,zachlutmer,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,6,Xavier Stinson,xavierstinson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,7,"Rashad Godfrey, Jr.",rashadgodfrey,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,7,Dayton Howard,daytonhoward,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,8,Deshaun Lee,deshaunlee,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,8,Evan James,evanjames,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,QB,9,Hank Brown,hankbrown,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,9,Kasen Thomas,kasenthomas,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,10,Burke Gautcher,burkegautcher,Out,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,QB,10,Jeremy Hecklinski,jeremyhecklinski,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,11,Jacob Wallace,jacobwallace,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,11,Brody Schaffer,brodyschaffer,Out,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,12,Billy Weivoda,billyweivoda,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,12,Diondre Smith,diondresmith,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DE,13,Drew Campbell,drewcampbell,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,RB,13,Brevin Doll,brevindoll,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,14,Alex Mota,alexmota,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,14,Tony Diaz,tonydiaz,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,15,Carson Cooney,carsoncooney,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,RB,15,O’Lontae Dean,olontaedean,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,QB,16,Ryan Fitzgerald,ryanfitzgerald,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,16,Ronnie Hill,ronniehill,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,17,Alex Eichmann,alexeichmann,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,18,Xavier Styles,xavierstyles,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,TE,18,Luke Brewer,lukebrewer,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,19,Kyler Gerardy,kylergerardy,Out,Out
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,TE,19,Mason Woods,masonwoods,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,20,Ty Hudkins,tyhudkins,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,RB,21,L.J. Phillips Jr.,ljphillips,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,21,Marcello Vitti,marcellovitti,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,RB,22,Braeden Jackson,braedenjackson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,22,Derek Weisskopf,derekweisskopf,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,23,Landyn Van Kekerix,landynvankekerix,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,K,25,Eli Ozick,eliozick,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,RB,26,Xavier Williams,xavierwilliams,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,26,Eli Robbins,elirobbins,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,RB,28,Kamari Moulton,kamarimoulton,Out,Out
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,29,Noah Daniel,noahdaniel,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,30,Eli Kampman,elikampman,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,31,Nolan DeLong,nolandelong,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,32,Sawyer Jezierski,sawyerjezierski,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,33,Cam Buffington,cambuffington,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DB,34,Drew MacPherson,drewmacpherson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,P,35,Tanner Philpott,tannerphilpott,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,36,Jayden Montgomery,jaydenmontgomery,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,37,Brayton Alford,braytonalford,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DE,40,Chima Chineke,chimachineke,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,42,David Fason,davidfason,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,43,Kahmari Brown,kahmaribrown,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,44,Kenneth Merrieweather,kennethmerrieweather,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,45,Jack Janda,jackjanda,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,46,Preston Ries,prestonries,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LB,47,Jack Laughlin,jacklaughlin,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,TE,48,Zach Ortwerth,zachortwerth,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,P,49,Boston Everitt,bostoneveritt,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,50,Will Lockhart,willlockhart,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,51,Luke Gaffney,lukegaffney,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,52,Will Hahn,willhahn,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,53,Michael Myslinski,michaelmyslinski,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LS,54,Matty McLaughlin,mattymclaughlin,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,56,Maddux Borcherding-Johnson,madduxborcherdingjohnson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,57,Will Hubert,willhubert,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,58,Kade Pieper,kadepieper,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,59,Trevor Lauck,trevorlauck,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,60,Lucas Allgeyer,lucasallgeyer,Out,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,61,Cael Winter,caelwinter,Out,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,63,Josh Janowski,joshjanowski,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,64,Leighton Jones,leightonjones,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,65,Trent Wilson,trentwilson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,68,Will Nolan,willnolan,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,LS,69,Ike Speltz,ikespeltz,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,70,Hudson Parliament,hudsonparliament,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,71,Jack Dotzler,jackdotzler,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,72,Owen Linder,owenlinder,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,73,Colin Whitters,colinwhitters,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,74,Bodey McCaslin,bodeymccaslin,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,75,Cannon Leonard,cannonleonard,Out,Out
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,77,George Nahas,georgenahas,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,78,Gene Riordan,generiordan,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,OL,79,Carson Nielsen,carsonnielsen,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,TE,80,Michael Burt,michaelburt,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,TE,81,DJ Vonnahme,djvonnahme,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,TE,82,Dylan Stecker,dylanstecker,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,83,Jackson Naeve,jacksonnaeve,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DE,84,Joseph Anderson,josephanderson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,84,Apollo Payne,apollopayne,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,TE,85,Thomas Meyer,thomasmeyer,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,TE,86,Eli Johnson,elijohnson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,TE,87,Addison Ostrenga,addisonostrenga,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,88,Lance Beeghley,lancebeeghley,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,88,Emmanuel Olagbaju,emmanuelolagbaju,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,WR,89,Isaiah Oliver,isaiaholiver,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,91,Devan Kennedy,devankennedy,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,K,92,Caden Buhr,cadenbuhr,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,92,Brice Stevenson,bricestevenson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,95,Lance Ingold,lanceingold,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,96,Bryce Hawthorne,brycehawthorne,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,97,Iose Epenesa,ioseepenesa,Available,NonExempt
+2026-11-14T22:30:01+00:00,B10,10003187,a61ccee703b3,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:30:00,"Iowa City, IA",0,Iowa,Purdue,second,DL,99,Brad Fitzgibbon,bradfitzgibbon,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DL,0,Hosea Wheeler,hoseawheeler,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,1,Dre'lon Miller,drelonmiller,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,QB,2,DJ Lagway,djlagway,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,3,Jadon Porter,jadonporter,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,4,Louis Brown IV,louisbrown,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LB,5,Travion Barnes,travionbarnes,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,6,Gavin Freeman,gavinfreeman,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,CB,7,Devon Jordan,devonjordan,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,8,Jacob Redding,jacobredding,Out,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,JCK,9,Ryan Davis,ryandavis,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LB,10,Kyland Reed,kylandreed,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,TE,10,Tony Livingston,tonylivingston,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,11,Devin Turner,devinturner,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,RB,11,Caden Knighten,cadenknighten,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,CB,12,Kyler Beaty,kylerbeaty,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,QB,12,Nate Bennett,natebennett,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,QB,13,Quinn Murphy,quinnmurphy,Out,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,JCK,13,Garrick Ponder,garrickponder,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,14,Daniel Cobbs,danielcobbs,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,QB,14,Edward Griffin,edwardgriffin,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,15,Colby McCalister,colbymccalister,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,15,Jayden McGowan,jaydenmcgowan,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,16,London Smith,londonsmith,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,QB,17,Cade Tessier,cadetessier,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,17,Tyler Turner,tylerturner,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,18,Taz Williams Jr.,tazwilliams,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,19,Leo Almanza Jr.,leoalmanza,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,RB,20,Jacorey Watson,jacoreywatson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,21,Bo Onu,boonu,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,CB,22,Reggie Bush II,reggiebush,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,RB,23,Michael Turner,michaelturner,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,CB,23,Stilton McKelvey,stiltonmckelvey,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,24,Micah Gifford,micahgifford,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,CB,25,LeVar Thornton Jr.,levarthornton,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,RB,25,Ryelan Morris,ryelanmorris,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,26,Colin Peacock,colinpeacock,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,CB,27,Jayden Rowe,jaydenrowe,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,CB,28,Calvin Simpson-Hunt,calvinsimpsonhunt,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,29,Jordan Davis,jordandavis,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,30,Michael Allen,michaelallen,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LB,31,Anthony Crenshaw Jr.,anthonycrenshaw,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,32,Brody Day,brodyday,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,32,Austin Ausberry,austinausberry,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,RB,33,HD Davis,hddavis,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,CB,33,Kalique Cheeves,kaliquecheeves,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,CB,34,Daniel Edeni,danieledeni,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,34,Davion Peters,davionpeters,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,RB,35,Dawson Pendergrass,dawsonpendergrass,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LB,36,Kedrick Walker,kedrickwalker,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,37,Demetrius Brisbon,demetriusbrisbon,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,CB,38,Jamarion Richardson,jamarionrichardson,Out,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,39,Cole Redding,coleredding,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DE,40,Kyler Jordan,kylerjordan,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LB,41,Kaleb Burns,kalebburns,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LB,42,Jamarion Phillips,jamarionphillips,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,TE,43,Brody Wilhelm,brodywilhelm,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LB,44,JJ Shelton,jjshelton,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,TE,46,Parker Almanza,parkeralmanza,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LB,46,Jahiem Porter,jahiemporter,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,S,48,Jad Darkazalli,jaddarkazalli,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LB,49,Trey Laurence,treylaurence,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DL,52,Aleki Manutai,alekimanutai,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DE,53,Daemian Wimberly,daemianwimberly,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DL,54,Jae'Lin Battle,jaelinbattle,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,JCK,55,Jaylin Jones,jaylinjones,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LB,56,Kaleb Arterberry,kalebarterberry,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,56,Harrison Cluff,harrisoncluff,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DE,57,Christopher Johnson,christopherjohnson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,57,Journey Tala,journeytala,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,58,Cooper Lovelace,cooperlovelace,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DL,59,Devonte Tezino,devontetezino,Out,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LS,60,Brady Hibbard,bradyhibbard,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,61,Cayden Tone,caydentone,Out,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,62,Alessandro Lorenzetti,alessandrolorenzetti,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,63,Wyatt Swaner,wyattswaner,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,64,Jaydon Mendiola,jaydonmendiola,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,66,Koltin Sieracki,koltinsieracki,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,67,David Roberts Jr.,davidroberts,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,68,Yakiri Walker,yakiriwalker,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,69,Donel Robinson Jr.,donelrobinson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,70,Nate Kibble,natekibble,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,71,Matthew Parker,matthewparker,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,72,Asher Hale,asherhale,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,73,Keystone Allison,keystoneallison,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,74,Kaden Sieracki,kadensieracki,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,75,Muyont'a Maxwell,muyontamaxwell,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,76,Lawson Petty,lawsonpetty,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,76,Isaiah Robinson,isaiahrobinson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,77,Logan Moore,loganmoore,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,78,Cole Rhett,colerhett,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,OL,79,Connor Cameron,connorcameron,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,80,Jackson Baird,jacksonbaird,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,81,Ryne Shackelford,ryneshackelford,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,83,DeBraun Hampton,debraunhampton,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,84,Chase Collier,chasecollier,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,TE,85,Matthew Klopfenstein,matthewklopfenstein,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,TE,86,Hawkins Polley,hawkinspolley,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,87,Ashton Jones,ashtonjones,Out,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,TE,88,Kai Wesley,kaiwesley,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,WR,89,Michael Johnson Jr.,michaeljohnson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DL,90,Braylen Jackson,braylenjackson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DL,91,Traevon Mitchell,traevonmitchell,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DE,92,Trent Thomas,trentthomas,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,LS,93,Dylan Schaub,dylanschaub,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DE,93,Zavion Hardy,zavionhardy,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,P,94,Palmer Williams,palmerwilliams,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,JCK,94,Tyrone Morgan,tyronemorgan,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DL,96,Kamren Washington,kamrenwashington,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,K,96,Riley Sullivan,rileysullivan,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DE,97,Jordan Mack,jordanmack,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,K,97,Bronson Mueller,bronsonmueller,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,K,98,Rhett Armstrong,rhettarmstrong,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DL,98,Jackson Blackwell,jacksonblackwell,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,Baylor,BYU,first,DL,99,Jamaal Whyce Jr.,jamaalwhyce,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,CB,0,Evan Johnson,evanjohnson,Out,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,0,Tei Nacua,teinacua,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,CB,1,Therrian Alexander III,therrianalexander,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,1,Legend Glasker,legendglasker,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,CB,2,Jonathan Kabeya,jonathankabeya,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,TE,2,Roger Saleapaga II,rogersaleapaga,Out,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,3,Raider Damuni,raiderdamuni,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,3,Kyler Kasper,kylerkasper,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,RB,4,LJ Martin,ljmartin,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,4,Cade Uluave,cadeuluave,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,5,Nusi Taumoepeau,nusitaumoepeau,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,5,Jaron Pula,jaronpula,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,TE,7,Walker Lyons,walkerlyons,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,QB,10,Treyson Bourguet,treysonbourguet,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,10,Orion Maile-Kaufusi,orionmailekaufusi,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,11,Faletau Satuala,faletausatuala,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,RB,12,Preston Rex,prestonrex,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,13,Jojo Phillips,jojophillips,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,13,Tausili Akana,tausiliakana,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,CB,15,Jayven Williams,jayvenwilliams,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,QB,15,John Sanders,johnsanders,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,16,Isaiah Glasker,isaiahglasker,Out,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,QB,16,Owen Geilman,owengeilman,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,17,Jarinn Kalama,jarinnkalama,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,QB,17,Enoch Watson,enochwatson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,18,Ace Kaufusi,acekaufusi,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,18,Reggie Frischknecht,reggiefrischknecht,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,P,19,Fuller Shurtz,fullershurtz,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,19,Tiger Bachmeier,tigerbachmeier,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,CB,20,Kevin Doe,kevindoe,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,RB,20,Journee Tonga,journeetonga,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,21,Miles Hall,mileshall,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,21,Asher Young,asheryoung,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,22,Tommy Prassas,tommyprassas,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,22,Trey Roberts,treyroberts,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,23,Pierson Watson,piersonwatson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,23,Terrance Saryon,terrancesaryon,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,24,Payton VanSteenkiste,paytonvansteenkiste,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,TE,24,Ethan Wood,ethanwood,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,RB,25,Devaughn Eka,devaughneka,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,25,Kennan Pula,kennanpula,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,25,Lance Reynolds,lancereynolds,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,CB,26,Jordyn Criss,jordyncriss,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,26,Fisher Ingersoll,fisheringersoll,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,27,Matthias Leach,matthiasleach,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,RB,28,Jovesa Damuni,jovesadamuni,Exempt,Exempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,28,Crew Clark,crewclark,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,CB,29,Justice Brathwaite,justicebrathwaite,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,RB,30,Sione Moa,sionemoa,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,30,Braxton Lindsey,braxtonlindsey,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,31,Jake Clifton,jakeclifton,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,CB,32,Cannon DeVries,cannondevries,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,33,Maika Kaufusi,maikakaufusi,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,33,Jared Esplin,jaredesplin,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,RB,34,Charlie Miska,charliemiska,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,34,Daniel Taumoepeau,danieltaumoepeau,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,35,Matthew Mason,matthewmason,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,36,Antonio Johnson,antoniojohnson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,P,36,Cole Shulman,coleshulman,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,S,37,Joseph Douglas,josephdouglas,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,RB,38,Logan Payne,loganpayne,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,CB,39,Seth Shigg,sethshigg,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,RB,41,Lucky Finau,luckyfinau,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DT,41,Nehemiah Kolone,nehemiahkolone,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,RB,42,Micah Beckstead,micahbeckstead,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,42,Adney Reid,adneyreid,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DS,43,Ty Smith,tysmith,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,43,Owen Borg,owenborg,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,TE,44,Josh Davis,joshdavis,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DT,45,Viliami Po'uha,viliamipouha,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,46,Kendal Wall,kendalwall,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DS,47,Berkley Alfrey,berkleyalfrey,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,QB,47,Bear Bachmeier,bearbachmeier,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,48,Bodie Schoonover,bodieschoonover,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DS,49,Rayden Heintz,raydenheintz,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DT,50,Maverick McManus,maverickmcmanus,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,51,Sonny Makasini,sonnymakasini,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,51,Gage Tanner,gagetanner,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,52,Vincent Tautua,vincenttautua,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,52,Bott Mulitalo,bottmulitalo,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,53,Strantz Mangisi,strantzmangisi,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,54,Siale Esera,sialeesera,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,54,Jake Alexander,jakealexander,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,LB,55,Blake Lowe,blakelowe,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,56,Zak Yamauchi,zakyamauchi,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DT,57,Keanu Tanuvasa,keanutanuvasa,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,57,Talitu'i Pututau,talituipututau,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,58,Paki Finau,pakifinau,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DT,58,David Tangilanu,davidtangilanu,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,59,Siosefa Brown,siosefabrown,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,59,Siosiua Latu-Finau,siosiualatufinau,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,62,Jr Sia,jrsia,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,63,Bruce Mitchell,brucemitchell,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,64,Kyle Sfarcioc,kylesfarcioc,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,66,Brigham Alexander,brighamalexander,Exempt,Exempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,67,Trevor Pay,trevorpay,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,72,Joe Brown,joebrown,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,73,Caden McKee,cadenmckee,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,74,Trevin Ostler,trevinostler,Exempt,Exempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,75,Andrew Gentry,andrewgentry,Exempt,Exempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,76,Jeff Lewis,jefflewis,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,OL,78,Ethan Thomason,ethanthomason,Exempt,Exempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,TE,80,Jacob Nye,jacobnye,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,TE,82,Noah Moeaki,noahmoeaki,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,TE,83,Will Zundel,willzundel,Out,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,84,Kila Keone,kilakeone,Out,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,TE,87,Matthew Fredrick,matthewfredrick,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,WR,89,Jett Nelson,jettnelson,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,90,Hunter Clegg,hunterclegg,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DT,93,Kelepi Latu-Finau,kelepilatufinau,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DT,94,Anisi Purcell,anisipurcell,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DT,96,Justin Kirkland,justinkirkland,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,K,97,Matthias Dunn,matthiasdunn,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,97,Kinilau Fonohema,kinilaufonohema,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DE,98,Devoux Tuataga,devouxtuataga,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,DT,99,Ulavai Fetuli,ulavaifetuli,Available,NonExempt
+2026-11-14T22:30:01+00:00,B12,10003138,47559b5eb399,Game Day,2026-11-14,16:30:00,CT,2026-11-14,18:00:00,"Provo, UT",0,BYU,Baylor,second,K,99,Brody Laga,brodylaga,Available,NonExempt
