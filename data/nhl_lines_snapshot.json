@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-14T17:29:18+00:00",
+"generated_at": "2026-11-14T17:59:00+00:00",
 "goalies": {
 "2026-11-14": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CBJ": {
 "goalie": "Jet Greaves",
@@ -84,7 +84,7 @@
 },
 "SEA": {
 "goalie": "Joey Daccord",
-"status": "Likely"
+"status": "Confirmed"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -2489,7 +2489,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Jordan Staal": {
@@ -2797,7 +2797,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Shayne Gostisbehere": {
