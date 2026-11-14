@@ -212,6 +212,7 @@ RULES: list[tuple[str, str]] = [
     (r"(^|_)(collect|ingest|fetch|capture|scaffold|import|bootstrap|from_cookie|discover|"
      r"categories|tick|history_collect|odds_capture)", "ingest"),
     (r"^buzz_(?!fit)|^tout_|^pickem_pool|^pickem_session|^dfs_entry_history", "ingest"),
+    (r"^dfs_strategy_doe$", "evaluate"),  # construction arms scored in DK dollars vs the real fields
     (r"(publish|mirror_app)", "publish"),
     (r"(calibration|backtest|_fit\b|_fit_|fit$|grade|_eval|validate|replay|measure|"
      r"compare|parity|sweep|accuracy|trust|meta|contest_db|contest_stats|transferability|plot|"
