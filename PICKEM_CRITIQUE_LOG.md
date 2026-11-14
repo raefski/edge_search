@@ -50,3 +50,28 @@ not comparable to live -- a partial-drift pool proxy
 pool = open + 0.76*(close-open) would fix that; (2) the totals tiebreak on
 zero-move games is 57.3% train but 49.0% test -- possibly noise, but chalk is
 worse on train; (3) only 17-43% of games are open to change at all.
+
+## Cycle 2 (auto -> Cycle 1 forward check, 2026-11-14) -- NOT SHIPPED (yet)
+
+**Target:** `dfs_target_scout.py` has no pick'em mode, so the target was chosen
+by hand: the forward test Cycle 1 pre-registered (any_move vs shipped, live
+weeks 7+, paired, changed picks only). No critic was spawned -- the live
+weeks are the only data that can measure this hole, and a critic hunting a new
+hole on 10 live weeks would be fitting the same rows.
+
+| live 2026 (CBS) | weeks | games | shipped W-L | any_move W-L | vs random/wk |
+|---|---|---|---|---|---|
+| weeks 1-6 (found the hole) | 6 | 93 | 53-40 | 57-36 | +1.08 -> +1.75 |
+| weeks 7-10 (forward) | 4 | 44 | 17-27 | 22-22 | -- |
+| all 10 | 10 | 137 | 70-67 (51.1%) | 79-58 (57.7%) | +0.15 -> +1.05 (se 0.60) |
+
+Changed picks forward (weeks 7-10): **7 games, any_move 6-1** (shipped 1-6);
+ahead in all 3 forward weeks that had a changed pick (week 10 had none). At
+|edge| >= 0.2 forward: 3-0. All 10 weeks: changed picks 14-5.
+History unchanged (no sub-0.5 moves there).
+
+**Decision: not shipped** -- the pre-registered rule needs 10+ forward weeks;
+we have 4 (3 with changes). Direction holds out of sample (6-1, one-sided
+binomial p ~0.06). Shipped model is 51.1% live, barely above a coin flip; the
+gap is the 0.5 floor. Re-check weeks 7+ again; ship if still positive after
+the regular season (week 18) or ask Adam to waive the 10-week rule now.
