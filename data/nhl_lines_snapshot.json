@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-14T15:59:07+00:00",
+"generated_at": "2026-11-14T16:31:19+00:00",
 "goalies": {
 "2026-11-14": {
 "ANA": {
@@ -19,8 +19,8 @@
 "status": null
 },
 "CBJ": {
-"goalie": "Cam Talbot",
-"status": null
+"goalie": "Jet Greaves",
+"status": "Confirmed"
 },
 "CGY": {
 "goalie": "Devin Cooley",
@@ -72,7 +72,7 @@
 },
 "OTT": {
 "goalie": "Linus Ullmark",
-"status": null
+"status": "Confirmed"
 },
 "PHI": {
 "goalie": "Joseph Woll",
@@ -80,7 +80,7 @@
 },
 "PIT": {
 "goalie": "Sergei Murashov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "SEA": {
 "goalie": "Joey Daccord",
@@ -100,7 +100,7 @@
 },
 "TOR": {
 "goalie": "Anthony Stolarz",
-"status": "Likely"
+"status": "Confirmed"
 },
 "UTA": {
 "goalie": "Karel Vejmelka",
@@ -111,8 +111,8 @@
 "status": null
 },
 "WSH": {
-"goalie": "Logan Thompson",
-"status": null
+"goalie": "Charlie Lindgren",
+"status": "Confirmed"
 }
 },
 "2026-11-15": {
@@ -7781,7 +7781,7 @@
 "toiMinutes": 85,
 "toiSeconds": 19
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
@@ -8259,7 +8259,7 @@
 "toiMinutes": 80,
 "toiSeconds": 36
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -10009,7 +10009,7 @@
 "toiMinutes": 86,
 "toiSeconds": 19
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -10079,7 +10079,7 @@
 "toiMinutes": 70,
 "toiSeconds": 27
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
 "pos": "rw",
 "pp": null
@@ -10181,7 +10181,7 @@
 "toiMinutes": 64,
 "toiSeconds": 8
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -10221,7 +10221,7 @@
 "pp": "PP1"
 },
 "Mike Matheson": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 6,
@@ -10351,7 +10351,7 @@
 "toiMinutes": 54,
 "toiSeconds": 42
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
