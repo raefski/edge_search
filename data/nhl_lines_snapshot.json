@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-14T16:31:19+00:00",
+"generated_at": "2026-11-14T17:01:03+00:00",
 "goalies": {
 "2026-11-14": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
-"status": null
+"status": "Likely"
 },
 "CBJ": {
 "goalie": "Jet Greaves",
@@ -48,7 +48,7 @@
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
-"status": null
+"status": "Confirmed"
 },
 "LAK": {
 "goalie": "Anton Forsberg",
@@ -56,7 +56,7 @@
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
-"status": null
+"status": "Confirmed"
 },
 "MTL": {
 "goalie": "Jakub Dobes",
@@ -76,7 +76,7 @@
 },
 "PHI": {
 "goalie": "Joseph Woll",
-"status": null
+"status": "Confirmed"
 },
 "PIT": {
 "goalie": "Sergei Murashov",
@@ -91,8 +91,8 @@
 "status": null
 },
 "STL": {
-"goalie": "Jordan Binnington",
-"status": null
+"goalie": "Joel Hofer",
+"status": "Likely"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -16251,7 +16251,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -16321,7 +16321,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
