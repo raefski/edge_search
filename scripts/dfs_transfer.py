@@ -211,7 +211,9 @@ TRANSFERS = [
                           "but the DK scraper (edge/arb/draftkings_league.py) fetches only categories "
                           "1189/1675/1676/1064 (SOG, Points, Assists, Goalie). Needs the goalscorer category id "
                           "found live (scripts/dk_categories.py --sport icehockey_nhl), then ~10 nights collected "
-                          "before the skater lab can test it."}},
+                          "before the skater lab can test it. 2026-11-14: COLLECTING -- category 1190 added (Anytime "
+                          "Goalscorer split per skater = Over 0.5; Goal Milestones = 1.5/2.5); first scan 28757 "
+                          "wrote 881 rows. Rerun ~11/24 once ~10 nights are in."}},
     {"id": "T07", "lesson": "L01", "sport": "ncaab", "kind": "availability", "status": "measure",
      "idea": "RotoWire's projected college starters used as certain (NBA's Expected-five hole)",
      "where": "edge/dfs_run_ncaab.py rotowire starters", "data": "graded slates 5 (box scores via ncaab-box-grade)",

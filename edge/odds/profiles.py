@@ -246,7 +246,8 @@ PROFILES: dict[str, Profile] = {
             "player_shots_on_goal", "player_points", "player_assists",
             "player_total_saves", "player_goals", "spreads", "totals", "h2h"),
         notes="DraftKings NHL categories 1189/1675/1676/1064 (verified live "
-              "2026-09-28). Goals come from Points minus Assists; blocked shots "
+              "2026-09-28) + 1190 Goalscorer (anytime + milestones, added "
+              "2026-11-14; player_goals was never collected before). Goals come from Points minus Assists; blocked shots "
               "have no market at any book and are modelled from the NHL's own "
               "box scores -- see edge/nhl_sim.py.",
     ),

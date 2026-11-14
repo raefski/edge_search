@@ -416,6 +416,36 @@ def test_draftkings_milestones_become_over_lines():
     assert hr == [0.5, 1.5, 2.5], "1+/2+/3+ must become Over 0.5/1.5/2.5"
 
 
+
+def test_draftkings_anytime_goalscorer_splits_per_player():
+    """NHL Anytime Goalscorer is one market with a Yes per skater; it must
+    file each as player_goals Over 0.5, while scorer-order markets in the same
+    tab (First Goalscorer) still drop as multi-player. NHL cycle 15."""
+    from edge.arb.draftkings_nash import ingest_sportscontent
+    def sel(i, mid, name, odds):
+        return {"id": f"s{i}", "marketId": mid, "label": name, "trueOdds": odds,
+                "participants": [{"name": name, "type": "Player"}]}
+    payload = {
+        "markets": [{"id": "m1", "eventId": "e1", "name": "Anytime Goalscorer",
+                     "marketType": {"name": "Anytime Goalscorer"}},
+                    {"id": "m2", "eventId": "e1", "name": "First Goalscorer",
+                     "marketType": {"name": "First Goalscorer - In House"}}],
+        "selections": [sel(1, "m1", "Leon Draisaitl", 2.1),
+                       sel(2, "m1", "Connor McDavid", 2.2),
+                       sel(3, "m2", "Leon Draisaitl", 9.0),
+                       sel(4, "m2", "Connor McDavid", 8.5)],
+    }
+    ev = EventMeta("e1", "icehockey_nhl", "NHL",
+                   datetime.now(timezone.utc) + timedelta(hours=2),
+                   "Edmonton Oilers", "Calgary Flames")
+    board = Board(); board.events["e1"] = ev
+    stats = ingest_sportscontent(board, payload, sport_key="icehockey_nhl", event=ev)
+    assert stats["quotes"] == 2
+    keys = sorted((k.market, k.subject, k.point) for k in board.groups)
+    assert keys == [("player_goals", "Connor McDavid", 0.5),
+                    ("player_goals", "Leon Draisaitl", 0.5)]
+    assert any("First Goalscorer" in m for m in stats["markets_unmapped"])
+
 def _dk_total_payload(point: float) -> dict:
     return {
         "markets": [{"id": "m1", "eventId": "e1", "name": "Total",

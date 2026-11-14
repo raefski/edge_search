@@ -69,7 +69,17 @@ PROP_CATEGORIES = {
     # subcategory (Shots on Goal O/U 12040, Points O/U 16213, Assists O/U 16215,
     # Saves O/U 16550) plus a one-sided milestone ladder.
     1189: "Shots on Goal", 1675: "Points", 1676: "Assists", 1064: "Goalie Props",
+    # NHL Goalscorer -- verified live 2026-11-14 (dk_categories.py --sport
+    # icehockey_nhl --all). Missing until then, so player_goals was never
+    # collected (NHL critique cycle 15). Nine tabs; only the two in
+    # PROP_SUBCATEGORY_ALLOW below are pulled -- the rest are scorer-order,
+    # period, PP/SH and combined markets no model reads.
+    1190: "Goalscorer",
 }
+# Categories where only some tabs are worth a request: categoryId -> allowed
+# subcategory names (exact, case-insensitive). Anytime Goalscorer carries the
+# 1+ (Over 0.5) price; Player Goal Milestones carries 2+ / 3+.
+PROP_SUBCATEGORY_ALLOW = {1190: {"anytime goalscorer", "player goal milestones"}}
 # BASKETBALL IS ALSO SELECTED BY NAME, because its ids above are the unverified
 # kind (2026-10-13: NBA opening night ~10/20, college ~11/3) and a wrong id
 # filters to nothing silently. The league payload names every category, so a
@@ -382,6 +392,9 @@ class DraftKingsLeague:
         out = []
         for sc in payload.get("subcategories") or []:
             cid = sc.get("categoryId")
+            allow = PROP_SUBCATEGORY_ALLOW.get(cid)
+            if allow is not None and (sc.get("name") or "").strip().lower() not in allow:
+                continue
             if cid in wanted and sc.get("id"):
                 out.append((int(cid), int(sc["id"]), sc.get("name") or ""))
         out.sort(key=lambda t: (0 if _two_sided(t[2]) else 1, t[2]))

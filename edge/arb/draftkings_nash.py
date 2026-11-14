@@ -204,6 +204,10 @@ def milestone_point(sel: dict) -> float | None:
     return float(m.group(1)) - 0.5 if m else None
 
 
+# The one multi-player DK market split per selection (see ingest_sportscontent).
+ANYTIME_GOAL = re.compile(r"^\s*anytime goal\s*scorer\s*$", re.I)
+
+
 def market_players(sels: list[dict]) -> set[str]:
     """The players a market is about, read off the selections themselves.
 
@@ -269,6 +273,30 @@ def ingest_sportscontent(board: Board, payload: dict, book: str = "draftkings",
         # "Outs O/U" was read as a game total, as were Total Bases and every
         # other O/U prop tab.
         players = market_players(sels)
+        if len(players) > 1 and ANYTIME_GOAL.search(label):
+            # NHL "Anytime Goalscorer" is ONE market per game whose
+            # selections are every skater's Yes price, so it has many players
+            # but each selection is its own one-player bet: "scores 1+" is
+            # exactly Over 0.5 goals, the same key the Goal Milestones tab
+            # files 2+ / 3+ under (1.5 / 2.5). Split per selection rather than
+            # dropped -- it is the only place DK posts the 0.5 rung, and NHL
+            # cycle 15 (2026-11-14) found 0 player_goals rows ever collected
+            # because this market fell into the multi-player drop below.
+            # The scorer-ORDER markets sharing this tab (First Goalscorer,
+            # 2+ via "Player to Score") do not match and still drop.
+            # No is_full_game check: it refuses the word "anytime", and
+            # ANYTIME_GOAL already pins this exact full-game market.
+            for sel in sels:
+                price = _decimal(sel)
+                who = [p.get("name") for p in (sel.get("participants") or [])
+                       if p.get("type") == "Player" and p.get("name")]
+                if price is None or price <= 1.0 or len(who) != 1:
+                    continue
+                board.group(GroupKey(target.event_id, "player_goals", who[0], 0.5),
+                            target).add(Quote(book=book, side="over", decimal=price,
+                                              point=0.5, last_update=now))
+                stats["quotes"] += 1
+            continue
         if len(players) > 1:
             # "Combined Strikeouts", "Either Pitcher to record a win": no single
             # subject to key it by, and pairing it against a one-player line
