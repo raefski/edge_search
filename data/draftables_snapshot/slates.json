@@ -41,32 +41,11 @@
 "last_start": "2026-11-17T00:00:00.0000000Z"
 }
 },
-"CFB": {
-"156842": {
-"ContestStartTimeSuffix": " (MISS @ OU)",
-"DraftGroupId": 156842,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 95,
-"StartDate": "2026-11-15T18:00:00.0000000Z",
-"StartDateEst": "2026-11-15T13:00:00.0000000",
-"last_start": "2026-11-15T18:00:00.0000000Z"
-}
-},
+"CFB": {},
 "MLB": {},
 "MMA": {},
 "NAS": {},
 "NBA": {
-"156728": {
-"ContestStartTimeSuffix": " (IND @ PHI)",
-"DraftGroupId": 156728,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 81,
-"StartDate": "2026-11-15T18:00:00.0000000Z",
-"StartDateEst": "2026-11-15T13:00:00.0000000",
-"last_start": "2026-11-15T18:00:00.0000000Z"
-},
 "156730": {
 "ContestStartTimeSuffix": " (Early)",
 "DraftGroupId": 156730,
@@ -239,16 +218,6 @@
 "StartDateEst": "2026-11-15T13:00:00.0000000",
 "last_start": "2026-11-15T21:25:00.0000000Z"
 },
-"156417": {
-"ContestStartTimeSuffix": " (Early Only)",
-"DraftGroupId": 156417,
-"DraftGroupTag": "",
-"GameCount": 7,
-"GameTypeId": 1,
-"StartDate": "2026-11-15T18:00:00.0000000Z",
-"StartDateEst": "2026-11-15T13:00:00.0000000",
-"last_start": "2026-11-15T18:00:00.0000000Z"
-},
 "156418": {
 "ContestStartTimeSuffix": " (Sun-Mon)",
 "DraftGroupId": 156418,
@@ -278,76 +247,6 @@
 "StartDate": "2026-11-16T01:20:00.0000000Z",
 "StartDateEst": "2026-11-15T20:20:00.0000000",
 "last_start": "2026-11-17T01:15:00.0000000Z"
-},
-"156423": {
-"ContestStartTimeSuffix": " (MIA @ IND)",
-"DraftGroupId": 156423,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-15T18:00:00.0000000Z",
-"StartDateEst": "2026-11-15T13:00:00.0000000",
-"last_start": "2026-11-15T18:00:00.0000000Z"
-},
-"156424": {
-"ContestStartTimeSuffix": " (BUF @ NYJ)",
-"DraftGroupId": 156424,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-15T18:00:00.0000000Z",
-"StartDateEst": "2026-11-15T13:00:00.0000000",
-"last_start": "2026-11-15T18:00:00.0000000Z"
-},
-"156425": {
-"ContestStartTimeSuffix": " (CAR @ NO)",
-"DraftGroupId": 156425,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-15T18:00:00.0000000Z",
-"StartDateEst": "2026-11-15T13:00:00.0000000",
-"last_start": "2026-11-15T18:00:00.0000000Z"
-},
-"156426": {
-"ContestStartTimeSuffix": " (KC @ ATL)",
-"DraftGroupId": 156426,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-15T18:00:00.0000000Z",
-"StartDateEst": "2026-11-15T13:00:00.0000000",
-"last_start": "2026-11-15T18:00:00.0000000Z"
-},
-"156427": {
-"ContestStartTimeSuffix": " (MIN @ GB)",
-"DraftGroupId": 156427,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-15T18:00:00.0000000Z",
-"StartDateEst": "2026-11-15T13:00:00.0000000",
-"last_start": "2026-11-15T18:00:00.0000000Z"
-},
-"156428": {
-"ContestStartTimeSuffix": " (HOU @ CLE)",
-"DraftGroupId": 156428,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-15T18:00:00.0000000Z",
-"StartDateEst": "2026-11-15T13:00:00.0000000",
-"last_start": "2026-11-15T18:00:00.0000000Z"
-},
-"156429": {
-"ContestStartTimeSuffix": " (JAX @ TEN)",
-"DraftGroupId": 156429,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-15T18:00:00.0000000Z",
-"StartDateEst": "2026-11-15T13:00:00.0000000",
-"last_start": "2026-11-15T18:00:00.0000000Z"
 },
 "156430": {
 "ContestStartTimeSuffix": " (SEA @ LV)",
