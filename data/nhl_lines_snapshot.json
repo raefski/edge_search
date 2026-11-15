@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-15T21:28:41+00:00",
+"generated_at": "2026-11-15T22:28:27+00:00",
 "goalies": {
 "2026-11-15": {
 "ANA": {
@@ -5560,7 +5560,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Christian Dvorak": {
 "gtd": false,
@@ -5594,7 +5594,41 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
+},
+"Cole Knuble": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 17,
+"toiMinutes": 119,
+"toiSeconds": 36
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 61,
+"toiSeconds": 36
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Dan Vladar": {
 "gtd": false,
@@ -5631,40 +5665,6 @@
 "pk": null,
 "pos": "g",
 "pp": null
-},
-"Denver Barkey": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 4,
-"points": 6,
-"powerplayAssists": 1,
-"powerplayGoals": 2,
-"powerplayPoints": 3,
-"shots": 13,
-"toiMinutes": 149,
-"toiSeconds": 42
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 3,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 8,
-"toiMinutes": 75,
-"toiSeconds": 6
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": "PP1"
 },
 "Jamie Drysdale": {
 "gtd": false,
@@ -5906,40 +5906,6 @@
 "pos": "rw",
 "pp": null
 },
-"Oliver Bonk": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 12,
-"toiMinutes": 172,
-"toiSeconds": 16
-},
-"last5": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 4,
-"toiMinutes": 85,
-"toiSeconds": 47
-},
-"line": "D2",
-"pk": null,
-"pos": "rd",
-"pp": "PP2"
-},
 "Owen Tippett": {
 "gtd": false,
 "injury": null,
@@ -6074,6 +6040,40 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "c",
+"pp": "PP2"
+},
+"Simon Benoit": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 146,
+"toiSeconds": 1
+},
+"last5": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 73,
+"toiSeconds": 52
+},
+"line": "D2",
+"pk": null,
+"pos": "rd",
 "pp": null
 },
 "Travis Konecny": {
