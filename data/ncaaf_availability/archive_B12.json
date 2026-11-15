@@ -777,7 +777,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#5",
 "Opponent": "vs. Utah",
@@ -791,7 +791,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#8",
 "Opponent": "vs. Utah",
@@ -805,7 +805,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Questionable",
 "Number": "#8",
 "Opponent": "vs. Utah",
@@ -819,7 +819,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Questionable",
 "Number": "#13",
 "Opponent": "vs. Utah",
@@ -833,7 +833,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Questionable",
 "Number": "#15",
 "Opponent": "vs. Utah",
@@ -847,7 +847,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#21",
 "Opponent": "vs. Utah",
@@ -861,7 +861,21 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
+"Initial": "Available",
+"Number": "#27",
+"Opponent": "vs. Utah",
+"OpponentDisplay": "vs. Utah",
+"Player": "Keytrin Harris",
+"Team": "Arizona",
+"TeamDisplay": "Arizona",
+"Update 1": "Available",
+"Update 2": "Available",
+"Week": "Sat, 14 Nov 2026 00:00:00 GMT",
+"WeekNum": 11
+},
+{
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#28",
 "Opponent": "vs. Utah",
@@ -875,7 +889,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#35",
 "Opponent": "vs. Utah",
@@ -889,7 +903,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#38",
 "Opponent": "vs. Utah",
@@ -903,7 +917,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#92",
 "Opponent": "vs. Utah",
@@ -1701,7 +1715,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Exempt",
 "Initial": "Out",
 "Number": "#0",
 "Opponent": "at UCF",
@@ -1715,7 +1729,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#22",
 "Opponent": "at UCF",
@@ -1729,7 +1743,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#57",
 "Opponent": "at UCF",
@@ -1743,7 +1757,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Questionable",
 "Number": "#64",
 "Opponent": "at UCF",
@@ -1757,7 +1771,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#81",
 "Opponent": "at UCF",
@@ -1771,7 +1785,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#89",
 "Opponent": "at UCF",
@@ -2317,7 +2331,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#8",
 "Opponent": "at BYU",
@@ -2331,7 +2345,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#12",
 "Opponent": "at BYU",
@@ -2345,7 +2359,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Available",
 "Number": "#13",
 "Opponent": "at BYU",
@@ -2359,7 +2373,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#38",
 "Opponent": "at BYU",
@@ -2373,7 +2387,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#59",
 "Opponent": "at BYU",
@@ -2387,7 +2401,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#61",
 "Opponent": "at BYU",
@@ -2401,7 +2415,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#87",
 "Opponent": "at BYU",
@@ -3073,7 +3087,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Doubtful",
 "Number": "#0",
 "Opponent": "vs. Baylor",
@@ -3087,7 +3101,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Doubtful",
 "Number": "#2",
 "Opponent": "vs. Baylor",
@@ -3101,7 +3115,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#4",
 "Opponent": "vs. Baylor",
@@ -3115,7 +3129,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Questionable",
 "Number": "#16",
 "Opponent": "vs. Baylor",
@@ -3129,7 +3143,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#28",
 "Opponent": "vs. Baylor",
@@ -3143,7 +3157,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#83",
 "Opponent": "vs. Baylor",
@@ -3157,7 +3171,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Available",
 "Number": "#84",
 "Opponent": "vs. Baylor",
@@ -3647,7 +3661,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#3",
 "Opponent": "at Iowa St.",
@@ -3661,7 +3675,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#9",
 "Opponent": "at Iowa St.",
@@ -3675,7 +3689,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#11",
 "Opponent": "at Iowa St.",
@@ -3689,7 +3703,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#12",
 "Opponent": "at Iowa St.",
@@ -3703,7 +3717,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Exempt",
 "Initial": "Out",
 "Number": "#44",
 "Opponent": "at Iowa St.",
@@ -3717,7 +3731,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Exempt",
 "Initial": "Out",
 "Number": "#78",
 "Opponent": "at Iowa St.",
@@ -3731,7 +3745,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#99",
 "Opponent": "at Iowa St.",
@@ -6433,7 +6447,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#1",
 "Opponent": "vs. Cincinnati",
@@ -6447,7 +6461,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#2",
 "Opponent": "vs. Cincinnati",
@@ -6461,7 +6475,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#5",
 "Opponent": "vs. Cincinnati",
@@ -6475,7 +6489,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#5",
 "Opponent": "vs. Cincinnati",
@@ -6489,7 +6503,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#95",
 "Opponent": "vs. Cincinnati",
@@ -7427,7 +7441,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#4",
 "Opponent": "at West Virginia",
@@ -7441,7 +7455,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#12",
 "Opponent": "at West Virginia",
@@ -7455,7 +7469,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#12",
 "Opponent": "at West Virginia",
@@ -7469,7 +7483,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#15",
 "Opponent": "at West Virginia",
@@ -7483,7 +7497,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Questionable",
 "Number": "#23",
 "Opponent": "at West Virginia",
@@ -7497,7 +7511,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#35",
 "Opponent": "at West Virginia",
@@ -7511,7 +7525,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#51",
 "Opponent": "at West Virginia",
@@ -7525,7 +7539,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#71",
 "Opponent": "at West Virginia",
@@ -7539,7 +7553,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Doubtful",
 "Number": "#79",
 "Opponent": "at West Virginia",
@@ -7553,7 +7567,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#88",
 "Opponent": "at West Virginia",
@@ -7931,7 +7945,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Available",
 "Number": "#0",
 "Opponent": "at TCU",
@@ -7945,7 +7959,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#2",
 "Opponent": "at TCU",
@@ -7959,7 +7973,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#7",
 "Opponent": "at TCU",
@@ -7973,7 +7987,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Questionable",
 "Number": "#14",
 "Opponent": "at TCU",
@@ -7987,7 +8001,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Exempt",
 "Initial": "Out",
 "Number": "#19",
 "Opponent": "at TCU",
@@ -8001,7 +8015,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#26",
 "Opponent": "at TCU",
@@ -8015,7 +8029,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#88",
 "Opponent": "at TCU",
@@ -8421,7 +8435,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Doubtful",
 "Number": "#3",
 "Opponent": "vs. Texas Tech",
@@ -8435,7 +8449,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#19",
 "Opponent": "vs. Texas Tech",
@@ -8449,7 +8463,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Available",
 "Number": "#23",
 "Opponent": "vs. Texas Tech",
@@ -8463,7 +8477,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#44",
 "Opponent": "vs. Texas Tech",
@@ -8477,7 +8491,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#54",
 "Opponent": "vs. Texas Tech",
@@ -8491,7 +8505,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Doubtful",
 "Number": "#76",
 "Opponent": "vs. Texas Tech",
@@ -8505,7 +8519,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#88",
 "Opponent": "vs. Texas Tech",
@@ -9499,7 +9513,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#2",
 "Opponent": "vs. Kansas St.",
@@ -9513,7 +9527,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#4",
 "Opponent": "vs. Kansas St.",
@@ -9527,7 +9541,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#7",
 "Opponent": "vs. Kansas St.",
@@ -9541,7 +9555,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#15",
 "Opponent": "vs. Kansas St.",
@@ -9555,7 +9569,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#17",
 "Opponent": "vs. Kansas St.",
@@ -9569,7 +9583,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#60",
 "Opponent": "vs. Kansas St.",
@@ -9583,7 +9597,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#83",
 "Opponent": "vs. Kansas St.",
@@ -9597,7 +9611,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#84",
 "Opponent": "vs. Kansas St.",
@@ -9611,7 +9625,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#89",
 "Opponent": "vs. Kansas St.",
@@ -9625,7 +9639,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Available",
 "Number": "#92",
 "Opponent": "vs. Kansas St.",
@@ -10577,7 +10591,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#0",
 "Opponent": "at Oklahoma St.",
@@ -10591,7 +10605,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#3",
 "Opponent": "at Oklahoma St.",
@@ -10605,7 +10619,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#6",
 "Opponent": "at Oklahoma St.",
@@ -10619,7 +10633,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#8",
 "Opponent": "at Oklahoma St.",
@@ -10633,7 +10647,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#11",
 "Opponent": "at Oklahoma St.",
@@ -10647,7 +10661,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#15",
 "Opponent": "at Oklahoma St.",
@@ -10661,7 +10675,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Questionable",
 "Number": "#17",
 "Opponent": "at Oklahoma St.",
@@ -10675,7 +10689,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Questionable",
 "Number": "#21",
 "Opponent": "at Oklahoma St.",
@@ -10689,7 +10703,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#33",
 "Opponent": "at Oklahoma St.",
@@ -10703,7 +10717,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#79",
 "Opponent": "at Oklahoma St.",
@@ -11963,7 +11977,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#5",
 "Opponent": "vs. Arizona St.",
@@ -11977,7 +11991,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#7",
 "Opponent": "vs. Arizona St.",
@@ -11991,7 +12005,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#8",
 "Opponent": "vs. Arizona St.",
@@ -12005,7 +12019,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Doubtful",
 "Number": "#9",
 "Opponent": "vs. Arizona St.",
@@ -12019,7 +12033,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Questionable",
 "Number": "#12",
 "Opponent": "vs. Arizona St.",
@@ -12033,7 +12047,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#14",
 "Opponent": "vs. Arizona St.",
@@ -12047,7 +12061,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#18",
 "Opponent": "vs. Arizona St.",
@@ -12061,7 +12075,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#20",
 "Opponent": "vs. Arizona St.",
@@ -12075,7 +12089,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#21",
 "Opponent": "vs. Arizona St.",
@@ -12089,7 +12103,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#26",
 "Opponent": "vs. Arizona St.",
@@ -12103,7 +12117,21 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
+"Initial": "Available",
+"Number": "#32",
+"Opponent": "vs. Arizona St.",
+"OpponentDisplay": "vs. Arizona State",
+"Player": "Matthew Occhipinti",
+"Team": "UCF",
+"TeamDisplay": "UCF",
+"Update 1": "Available",
+"Update 2": "Available",
+"Week": "Sat, 14 Nov 2026 00:00:00 GMT",
+"WeekNum": 11
+},
+{
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#38",
 "Opponent": "vs. Arizona St.",
@@ -12117,7 +12145,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#41",
 "Opponent": "vs. Arizona St.",
@@ -12131,7 +12159,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Questionable",
 "Number": "#55",
 "Opponent": "vs. Arizona St.",
@@ -12145,7 +12173,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#75",
 "Opponent": "vs. Arizona St.",
@@ -12159,7 +12187,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#83",
 "Opponent": "vs. Arizona St.",
@@ -12495,7 +12523,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Questionable",
 "Number": "#1",
 "Opponent": "at Arizona",
@@ -12509,7 +12537,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#11",
 "Opponent": "at Arizona",
@@ -12523,7 +12551,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Game Time Decision",
 "Initial": "Doubtful",
 "Number": "#51",
 "Opponent": "at Arizona",
@@ -12537,7 +12565,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#65",
 "Opponent": "at Arizona",
@@ -13363,7 +13391,7 @@
 "WeekNum": 10
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#3",
 "Opponent": "vs. Kansas",
@@ -13377,7 +13405,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Available",
 "Initial": "Probable",
 "Number": "#6",
 "Opponent": "vs. Kansas",
@@ -13391,7 +13419,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#10",
 "Opponent": "vs. Kansas",
@@ -13405,7 +13433,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#23",
 "Opponent": "vs. Kansas",
@@ -13419,7 +13447,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#26",
 "Opponent": "vs. Kansas",
@@ -13433,7 +13461,21 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
+"Initial": "Available",
+"Number": "#30",
+"Opponent": "vs. Kansas",
+"OpponentDisplay": "vs. Kansas",
+"Player": "Jacorey Thomas",
+"Team": "West Virginia",
+"TeamDisplay": "West Virginia",
+"Update 1": "Available",
+"Update 2": "Available",
+"Week": "Sat, 14 Nov 2026 00:00:00 GMT",
+"WeekNum": 11
+},
+{
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#54",
 "Opponent": "vs. Kansas",
@@ -13447,7 +13489,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#56",
 "Opponent": "vs. Kansas",
@@ -13461,7 +13503,7 @@
 "WeekNum": 11
 },
 {
-"Game Day": "-",
+"Game Day": "Out",
 "Initial": "Out",
 "Number": "#91",
 "Opponent": "vs. Kansas",
@@ -13475,5 +13517,5 @@
 "WeekNum": 11
 }
 ],
-"fetched_at": "2026-11-14T12:03:38+00:00"
+"fetched_at": "2026-11-15T12:03:16+00:00"
 }
