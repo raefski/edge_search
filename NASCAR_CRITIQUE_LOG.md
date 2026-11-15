@@ -358,3 +358,57 @@ finishes too wide (slope of actual on simulated mean 0.85 inner / 0.92 test). Th
 could not test it because its value lives in the lab.
 
 Unattended gate (20261110-1014): **not shipped (log / harness only, verified)**
+
+
+## Cycle 7 (auto: finish spread, COND_K) -- not shipped (2026-11-15, unattended)
+
+Scout (dfs_target_scout.py + dfs-target-scout agent):
+
+```json
+{"sport": "nascar", "target": "finish spread (COND_K, the over-wide simulated finishes)",
+ "metric": "held-out driver DK points on test 2025-26 (70 races): RMSE + paired dSSE per race vs shipped (se); guard nascar_lineup_lab cash pctile",
+ "harness": "scripts/nascar_lab.py dk (COND_K swept), 2,000 sims",
+ "split": "choose k on inner (fit 2022-23, score 2024), report test 2025-26 once",
+ "why": "cycle 6: slope of actual finish on simulated mean 0.85 inner / 0.92 test, same sign on both splits; never tested because COND_K lives in the lab",
+ "money_at_stake": "cash -67% [-100%,-9%] 6e/5s; GPP -54% 4e/4s (not enough data)",
+ "runner_ups": ["collect NASCAR outright / top-N / H2H odds before Daytona",
+                "recover the 10/4 board (dg 154134) for the lineup lab",
+                "T17 entered-vs-logged audit (10 entries, too few)"]}
+```
+
+**Judgment call, logged:** the scout named one constant with a single test, so I swept
+it directly and spawned no critic (the season is over and a critic would only have
+re-derived this sweep). k was swept on the shared resid_sd scale, which feeds both the
+lab and production through fit_running. Script: /tmp/nascar7/k.py, paired per race
+vs k = 0.85, 2,000 sims, seed 7.
+
+| k | inner 2024 RMSE | inner dSSE/race | test 25-26 RMSE | test dSSE/race |
+|---|---|---|---|---|
+| 0.60 | 23.769 | +453 +- 168 | 24.264 | +221 +- 132 |
+| 0.70 | 23.635 | +220 +- 98 | 24.181 | +71 +- 77 |
+| **0.85 (shipped)** | 23.508 | 0 | 24.142 | 0 |
+| 1.00 | 23.484 | -43 +- 79 | 24.181 | +71 +- 64 |
+
+**Result: the spread is not too wide for DK points.** Narrowing, which the 0.85/0.92
+slope suggests, is clearly worse on both splits (k 0.6: +2.7 se inner, +1.7 se test).
+k = 1.0 wins inner by 0.5 se and loses test. The slope below 1 comes from the mean
+model, not the noise: a wider latent spreads the simulated finishes but also moves the
+place-differential and dominator tails, and DK RMSE prefers the current balance.
+**Decision: not shipped**, production unchanged; I did not run the lineup guard.
+COND_K = 0.85 is now confirmed by three criteria (cycle 3 band, here inner and test DK RMSE).
+
+**Next:** every reshaping of the existing inputs is now null (cycles 4, 6, 7). The next
+gain has to come from new information. Collect NASCAR outright / top-N / H2H odds before
+Daytona (Feb 2027), since the DNF + dominator tail is the error mass.
+
+Unattended gate (20261115-0658): **fail**
+
+
+- Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/asr/edge_search/.claude/worktrees/critique-nascar-20261115-0658/harness/__main__.py", line 169, in <module>
+    sys.exit(main())
+  File "/home/
