@@ -34,6 +34,10 @@ Real money, real prize structure ($50/week to 1st, $1,200/$450/$300/$150 season 
 - `|edge| >= 0.5`: follow the side the market moved toward. Below that: no validated
   edge (test-era unmoved games: 50.6%, a coin flip) — default to the live market's own
   favorite rather than manufacture a signal.
+- **Since 2026-11-15, any nonzero move below 0.5 also follows the move (LEAN)** --
+  live edges are a 3-book mean, so one book moving half a point reads ~0.125.
+  Live 14-5 on the changed picks (6-1 forward); shipped waiving the 10-week rule,
+  re-evaluated after week 18 (PICKEM_CRITIQUE_LOG.md cycle 2).
 - Favorite flips sides entirely -> automatic STRONG regardless of point size (the single
   strongest pattern in the data).
 - `P(cover) = Phi(|edge| / 13.45)` (Stern 1991's normal approximation of NFL margin vs.

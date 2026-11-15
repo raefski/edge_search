@@ -67,7 +67,19 @@ def pick_any_move(away, home, pool_line, live_line, total_open=None,
     return pk
 
 
-VARIANTS = {"shipped": make_pick, "any_move": pick_any_move}
+def pick_floor_only(*a, **k):
+    """The pre-2026-11-15 model: sub-0.5 moves go to the coin flip. Kept so the
+    week-18 re-evaluation can compare it against the shipped any-move rule."""
+    import edge.pickem as P
+    old, P.FOLLOW_ANY_MOVE = P.FOLLOW_ANY_MOVE, False
+    try:
+        return make_pick(*a, **k)
+    finally:
+        P.FOLLOW_ANY_MOVE = old
+
+
+VARIANTS = {"shipped": make_pick, "any_move": pick_any_move,
+            "floor_only": pick_floor_only}
 
 
 def history(split: Split) -> list[dict]:
@@ -145,7 +157,7 @@ def table(rows: list[tuple[str, dict]]) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["report"])
-    ap.add_argument("--variant", default="shipped", choices=sorted(VARIANTS))
+    ap.add_argument("--variant", default="shipped", choices=sorted(VARIANTS))  # any_move == shipped since 11/15
     ap.add_argument("--no-live", action="store_true",
                     help="skip the 2026 live weeks (needs nflverse)")
     a = ap.parse_args()

@@ -265,6 +265,23 @@ def contest_inbox() -> list[str]:
         return [f"(inbox unreadable: {exc})"]
 
 
+#: Decisions that were made on thin data and carry a date to look again. Each shows in
+#: `harness status` from its due date until the entry is removed here (with the outcome
+#: logged where `where` points). Add one whenever a rule is waived to ship early.
+REVIEWS = [
+    ("2027-01-05", "pickem",
+     "re-evaluate any_move (shipped 11/15, 10-week rule waived) after week 18: "
+     "`pickem_lab.py report` for shipped vs floor_only (+ median-book line, partial-drift "
+     "pool proxy, totals tiebreak) on weeks 7-18 paired; pick next season's rule",
+     "PICKEM_CRITIQUE_LOG.md cycle 2"),
+]
+
+
+def reviews_due(today=None) -> list[str]:
+    today = today or _now().astimezone(ET).date().isoformat()
+    return [f"{sport}: {what}  ({where})" for due, sport, what, where in REVIEWS if today >= due]
+
+
 def _git() -> list[str]:
     """Code vs origin/main (as of the last fetch -- edge-code-sync fetches every
     10 min) and the data branch's last publish (edge/data_branch.py)."""
@@ -335,6 +352,8 @@ def report(live: bool = False) -> str:
     if waiting:
         L.append(f"  ✗ {len(waiting)} contest export(s) waiting: {', '.join(waiting[:4])}"
                  f"{' …' if len(waiting) > 4 else ''} -- python3 -m harness run import-contests")
+    for item in reviews_due():
+        L.append(f"  ✗ review due: {item}")
     bad = [r for r in runs(since_hours=24) if r.get("rc")]
     L += ["", "## Odds store"] + ["  " + line for line in odds_storage()]
     L += ["", f"## harness runs, last 24h: {len(runs(since_hours=24))} ({len(bad)} failed)"]

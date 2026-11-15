@@ -303,9 +303,18 @@ def _ne_at_sea(season=2026, week=1, post=-3.188, lock=-3.188):
     Home margin +3 against a pool line of -3.5, so Seahawks -3.5 did NOT cover:
     the model's side loses, Adam's Patriots +3.5 wins.
     """
+    import edge.pickem as P
     from edge.pickem import ats_result, make_pick
 
-    pk = make_pick("Patriots", "Seahawks", -3.5, lock, 44.5, 44.5)
+    # The pick as it shipped in week 1: the -3.188 lock is a sub-0.5 move, which
+    # went to the coin flip (Seahawks) until FOLLOW_ANY_MOVE (2026-11-15) -- under
+    # which the model takes the Patriots and wins. These tests are about which
+    # column a verdict lands in, so they pin the week-1 rule.
+    old, P.FOLLOW_ANY_MOVE = P.FOLLOW_ANY_MOVE, False
+    try:
+        pk = make_pick("Patriots", "Seahawks", -3.5, lock, 44.5, 44.5)
+    finally:
+        P.FOLLOW_ANY_MOVE = old
     return {
         "season": season, "week": week, "home": "SEA", "away": "Patriots",
         "cbs": -3.5, "post": post, "lock": lock,

@@ -75,3 +75,13 @@ we have 4 (3 with changes). Direction holds out of sample (6-1, one-sided
 binomial p ~0.06). Shipped model is 51.1% live, barely above a coin flip; the
 gap is the 0.5 floor. Re-check weeks 7+ again; ship if still positive after
 the regular season (week 18) or ask Adam to waive the 10-week rule now.
+
+**Update 2026-11-15 -- SHIPPED on Adam's call.** Adam waived the 10-forward-week
+rule ("NFL has a small sample size"): `edge.pickem.FOLLOW_ANY_MOVE = True` --
+0 < |edge| < 0.5 now follows the move, tier LEAN, prob Phi(|edge|/13.45).
+Parity: `pickem_lab.py report` (shipped) == the any_move variant (live 79-58,
+history unchanged); the old rule stays as `--variant floor_only`.
+**Week-18 re-evaluation** (due 2027-01-05, shown by `harness status` from that
+date, `harness/status.py` REVIEWS): weeks 7-18 paired, shipped vs floor_only,
+plus median-book line, the partial-drift pool proxy (Cycle 1 runner-up 1) and
+the totals tiebreak (runner-up 2) -- choose the 2027 rule there.

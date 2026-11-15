@@ -46,7 +46,11 @@ def test_make_pick_below_move_floor_is_coin_flip_and_defaults_to_market_favorite
 
 
 def test_make_pick_tier_thresholds():
-    assert make_pick('A', 'B', 0, -0.4).tier == 'COIN FLIP'
+    assert make_pick('A', 'B', 0, 0).tier == 'COIN FLIP'
+    # sub-floor moves follow the market (cycle 2, 2026-11-15)
+    p = make_pick('A', 'B', 0, -0.125)
+    assert (p.tier, p.side) == ('LEAN', 'home')
+    assert make_pick('A', 'B', 0, 0.4).side == 'away'
     assert make_pick('A', 'B', 0, -0.5).tier == 'LEAN'
     assert make_pick('A', 'B', 0, -1.5).tier == 'SOLID'
     assert make_pick('A', 'B', 0, -3.0).tier == 'STRONG'

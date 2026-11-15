@@ -42,6 +42,16 @@ from dataclasses import dataclass
 SIGMA = 13.45  # points; normal-approx std dev of NFL margin vs. spread (Stern 1991)
 KEY_NUMBERS = (3, 7)  # most common NFL winning margins -- books resist crossing these
 MOVE_FLOOR = 0.5   # below this, no validated edge (test-era: 49.4%, ~coin flip)
+# Sub-floor moves (0 < |edge| < MOVE_FLOOR) still pick the side the market moved
+# toward, tier LEAN (critique cycle 1-2, shipped 2026-11-15 on Adam's call,
+# waiving the 10-forward-week rule). Why: MOVE_FLOOR was validated on one
+# book's half-point history, where 0.5 means "any move"; the live edge is a
+# 3-book weighted mean, so one book moving half a point reads ~0.125 and fell
+# to the coin flip. Evidence, live 2026 CBS only (history has no sub-0.5 moves):
+# changed picks 8-4 weeks 1-6 (in-sample), 6-1 weeks 7-10 (forward), 14-5 all;
+# full slate 70-67 -> 79-58 over 10 weeks / 137 games. Re-evaluate at week 18
+# (PICKEM_CRITIQUE_LOG.md, cycle 2).
+FOLLOW_ANY_MOVE = True
 SOLID_FLOOR = 1.5
 STRONG_FLOOR = 3.0
 
@@ -165,8 +175,9 @@ def make_pick(away: str, home: str, pool_line: float, live_line: float,
     eff = effective_edge(pool_line, live_line)
     flipped = favorite_flipped(pool_line, live_line)
     moved = mag >= MOVE_FLOOR
+    small_move = FOLLOW_ANY_MOVE and 0 < mag < MOVE_FLOOR
 
-    if moved:
+    if moved or small_move:
         side = 'home' if edge_pts < 0 else 'away'
     else:
         side = _coinflip_side(live_line, total_open, total_close)
@@ -179,7 +190,7 @@ def make_pick(away: str, home: str, pool_line: float, live_line: float,
         tier = 'STRONG'
     elif eff >= SOLID_FLOOR:
         tier = 'SOLID'
-    elif moved:
+    elif moved or small_move:
         tier = 'LEAN'
     else:
         tier = 'COIN FLIP'
@@ -188,7 +199,7 @@ def make_pick(away: str, home: str, pool_line: float, live_line: float,
         matchup=f'{away} @ {home}', pool_line=pool_line, live_line=live_line,
         edge_pts=edge_pts, key_number=key_number_crossed(pool_line, live_line),
         flipped=flipped, side=side, side_line=side_line,
-        prob=win_prob(eff) if moved else 0.5, tier=tier, eff_edge=eff,
+        prob=win_prob(eff) if (moved or small_move) else 0.5, tier=tier, eff_edge=eff,
     )
 
 
