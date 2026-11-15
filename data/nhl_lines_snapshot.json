@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-15T18:28:40+00:00",
+"generated_at": "2026-11-15T18:58:32+00:00",
 "goalies": {
 "2026-11-15": {
 "ANA": {
@@ -8,7 +8,7 @@
 },
 "CGY": {
 "goalie": "Devin Cooley",
-"status": null
+"status": "Confirmed"
 },
 "DAL": {
 "goalie": "Casey DeSmith",
@@ -3602,7 +3602,7 @@
 "toiSeconds": 27
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
 },
@@ -3812,40 +3812,6 @@
 "line": "G2",
 "pk": null,
 "pos": "g",
-"pp": null
-},
-"Josh Anderson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 4,
-"points": 6,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 16,
-"toiMinutes": 141,
-"toiSeconds": 52
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 66,
-"toiSeconds": 15
-},
-"line": "F4",
-"pk": "PK2",
-"pos": "rw",
 "pp": null
 },
 "Juraj Slafkovsky": {
@@ -4085,6 +4051,40 @@
 "pk": null,
 "pos": "c",
 "pp": "PP2"
+},
+"Owen Beck": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 99,
+"toiSeconds": 48
+},
+"last5": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 46,
+"toiSeconds": 50
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Phillip Danault": {
 "gtd": false,
