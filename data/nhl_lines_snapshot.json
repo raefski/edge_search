@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-15T22:43:58+00:00",
+"generated_at": "2026-11-15T23:28:33+00:00",
 "goalies": {
 "2026-11-15": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "EDM": {
 "goalie": "Tristan Jarry",
-"status": null
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Akira Schmid",
@@ -32,7 +32,7 @@
 },
 "SJS": {
 "goalie": "Alex Nedeljkovic",
-"status": null
+"status": "Confirmed"
 },
 "VAN": {
 "goalie": "Leevi Merilainen",
@@ -2161,9 +2161,9 @@
 "toiMinutes": 73,
 "toiSeconds": 46
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Connor McDavid": {
@@ -2304,6 +2304,40 @@
 "pos": "rd",
 "pp": "PP1"
 },
+"Filip Hallander": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 101,
+"toiSeconds": 54
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 46,
+"toiSeconds": 34
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Jason Dickinson": {
 "gtd": false,
 "injury": null,
@@ -2370,7 +2404,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Leon Draisaitl": {
 "gtd": false,
@@ -2508,40 +2542,6 @@
 "pos": "c",
 "pp": null
 },
-"Ryan Nugent-Hopkins": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 6,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 9,
-"powerplayAssists": 3,
-"powerplayGoals": 2,
-"powerplayPoints": 5,
-"shots": 14,
-"toiMinutes": 178,
-"toiSeconds": 24
-},
-"last5": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 2,
-"powerplayGoals": 0,
-"powerplayPoints": 2,
-"shots": 4,
-"toiMinutes": 79,
-"toiSeconds": 7
-},
-"line": "F2",
-"pk": null,
-"pos": "c",
-"pp": "PP1"
-},
 "Ryan Shea": {
 "gtd": false,
 "injury": null,
@@ -2642,7 +2642,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Tristan Jarry": {
 "gtd": false,
