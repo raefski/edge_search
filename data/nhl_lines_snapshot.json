@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-16T15:58:55+00:00",
+"generated_at": "2026-11-16T16:29:04+00:00",
 "goalies": {
 "2026-11-16": {
 "MTL": {
@@ -69,7 +69,7 @@
 "status": null
 },
 "NYI": {
-"goalie": "Semyon Varlamov",
+"goalie": "Ilya Sorokin",
 "status": null
 },
 "OTT": {
@@ -1002,40 +1002,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Frederic Brunet": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 13,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 6,
-"toiMinutes": 155,
-"toiSeconds": 8
-},
-"last5": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 74,
-"toiSeconds": 49
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": "PP2"
-},
 "Hampus Lindholm": {
 "gtd": false,
 "injury": null,
@@ -1172,7 +1138,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Mark Kastelic": {
 "gtd": false,
@@ -1208,38 +1174,38 @@
 "pos": "rw",
 "pp": null
 },
-"Matthew Poitras": {
+"Mason Lohrei": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 2,
-"blocks": 5,
+"assists": 0,
+"blocks": 6,
 "gamesPlayed": 10,
 "goals": 1,
-"points": 3,
+"points": 1,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 88,
-"toiSeconds": 47
+"shots": 8,
+"toiMinutes": 175,
+"toiSeconds": 52
 },
 "last5": {
 "assists": 0,
-"blocks": 2,
+"blocks": 3,
 "gamesPlayed": 5,
-"goals": 0,
-"points": 0,
+"goals": 1,
+"points": 1,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 40,
-"toiSeconds": 0
+"shots": 4,
+"toiMinutes": 89,
+"toiSeconds": 27
 },
-"line": "F4",
+"line": "D3",
 "pk": null,
-"pos": "c",
+"pos": "ld",
 "pp": "PP2"
 },
 "Michael DiPietro": {
@@ -1413,6 +1379,40 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
+},
+"Sean Kuraly": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 129,
+"toiSeconds": 7
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 59,
+"toiSeconds": 29
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
 },
 "Tanner Jeannot": {
 "gtd": false,
@@ -9069,9 +9069,9 @@
 "toiMinutes": 70,
 "toiSeconds": 11
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Ben Hutton": {
@@ -9109,7 +9109,7 @@
 "pp": null
 },
 "Bo Horvat": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 6,
@@ -9275,7 +9275,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9313,40 +9313,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
-},
-"Logan Stanley": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 21,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 207,
-"toiSeconds": 6
-},
-"last5": {
-"assists": 0,
-"blocks": 13,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 98,
-"toiSeconds": 52
-},
-"line": "D1",
-"pk": "PK1",
-"pos": "ld",
-"pp": null
 },
 "Mathew Barzal": {
 "gtd": false,
@@ -9411,10 +9377,44 @@
 "toiMinutes": 67,
 "toiSeconds": 2
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
+},
+"Matthew Kessel": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 127,
+"toiSeconds": 23
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 64,
+"toiSeconds": 5
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
 },
 "Matthew Schaefer": {
 "gtd": false,
@@ -9447,7 +9447,7 @@
 },
 "line": "D1",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": "PP1"
 },
 "Mitchell Chaffee": {
@@ -9547,8 +9547,8 @@
 "toiMinutes": 77,
 "toiSeconds": 41
 },
-"line": "D2",
-"pk": null,
+"line": "D1",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 },
@@ -9583,7 +9583,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9651,7 +9651,7 @@
 "toiMinutes": 92,
 "toiSeconds": 15
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -10412,40 +10412,6 @@
 "pos": "rd",
 "pp": null
 },
-"Carter Yakemchuk": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 15,
-"toiMinutes": 181,
-"toiSeconds": 57
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 77,
-"toiSeconds": 47
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": "PP2"
-},
 "Claude Giroux": {
 "gtd": false,
 "injury": null,
@@ -10582,40 +10548,6 @@
 "pos": "lw",
 "pp": "PP2"
 },
-"Hayden Hodgson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 59,
-"toiSeconds": 5
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 25,
-"toiSeconds": 46
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Jake Sanderson": {
 "gtd": false,
 "injury": null,
@@ -10682,7 +10614,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Linus Ullmark": {
 "gtd": false,
@@ -10752,6 +10684,40 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "lw",
+"pp": null
+},
+"Nikolas Matinpalo": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 152,
+"toiSeconds": 3
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 75,
+"toiSeconds": 17
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
 "pp": null
 },
 "Philip Tomasino": {
@@ -11027,6 +10993,40 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
+},
+"Tyler Boucher": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 9,
+"toiMinutes": 94,
+"toiSeconds": 52
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 7,
+"toiMinutes": 51,
+"toiSeconds": 49
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Tyler Kleven": {
 "gtd": false,
