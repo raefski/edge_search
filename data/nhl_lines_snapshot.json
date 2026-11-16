@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-16T16:29:04+00:00",
+"generated_at": "2026-11-16T16:58:55+00:00",
 "goalies": {
 "2026-11-16": {
 "MTL": {
@@ -1551,7 +1551,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Colten Ellis": {
@@ -1653,7 +1653,7 @@
 "toiMinutes": 89,
 "toiSeconds": 50
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -1687,9 +1687,9 @@
 "toiMinutes": 66,
 "toiSeconds": 15
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Jiri Kulich": {
@@ -1721,9 +1721,9 @@
 "toiMinutes": 66,
 "toiSeconds": 27
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Josh Doan": {
@@ -1755,10 +1755,10 @@
 "toiMinutes": 68,
 "toiSeconds": 34
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Josh Norris": {
 "gtd": false,
@@ -1789,9 +1789,9 @@
 "toiMinutes": 68,
 "toiSeconds": 20
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Louis Crevier": {
@@ -1891,10 +1891,10 @@
 "toiMinutes": 87,
 "toiSeconds": 42
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Olen Zellweger": {
 "gtd": false,
@@ -1993,7 +1993,7 @@
 "toiMinutes": 83,
 "toiSeconds": 58
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -2061,9 +2061,9 @@
 "toiMinutes": 69,
 "toiSeconds": 16
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Tage Thompson": {
@@ -2131,7 +2131,7 @@
 },
 "line": "F4",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Zach Benson": {
@@ -16616,9 +16616,9 @@
 "toiSeconds": 21
 },
 "line": "F3",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Brayden Yager": {
 "gtd": false,
@@ -16649,7 +16649,7 @@
 "toiMinutes": 55,
 "toiSeconds": 23
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -16717,7 +16717,7 @@
 "toiMinutes": 84,
 "toiSeconds": 55
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -16753,7 +16753,7 @@
 },
 "line": "F2",
 "pk": "PK1",
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Dylan Samberg": {
@@ -16790,6 +16790,40 @@
 "pos": "ld",
 "pp": null
 },
+"Elias Salomonsson": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 16,
+"toiMinutes": 163,
+"toiSeconds": 23
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 92,
+"toiSeconds": 18
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Gabriel Vilardi": {
 "gtd": false,
 "injury": null,
@@ -16819,7 +16853,7 @@
 "toiMinutes": 97,
 "toiSeconds": 38
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -16853,7 +16887,7 @@
 "toiMinutes": 56,
 "toiSeconds": 6
 },
-"line": "D3",
+"line": "D4",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -16890,40 +16924,6 @@
 "line": "D1",
 "pk": null,
 "pos": "ld",
-"pp": "PP1"
-},
-"Kyle Connor": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 6,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 8,
-"points": 14,
-"powerplayAssists": 1,
-"powerplayGoals": 3,
-"powerplayPoints": 4,
-"shots": 40,
-"toiMinutes": 218,
-"toiSeconds": 19
-},
-"last5": {
-"assists": 5,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 4,
-"points": 9,
-"powerplayAssists": 1,
-"powerplayGoals": 1,
-"powerplayPoints": 2,
-"shots": 21,
-"toiMinutes": 109,
-"toiSeconds": 46
-},
-"line": "F1",
-"pk": "PK2",
-"pos": "lw",
 "pp": "PP1"
 },
 "Mario Ferraro": {
@@ -17023,9 +17023,9 @@
 "toiMinutes": 73,
 "toiSeconds": 22
 },
-"line": "F2",
+"line": "F4",
 "pk": "PK2",
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Neal Pionk": {
@@ -17127,10 +17127,10 @@
 "toiMinutes": 47,
 "toiSeconds": 28
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
-"pos": "rw",
-"pp": null
+"pos": "lw",
+"pp": "PP2"
 },
 "Stuart Skinner": {
 "gtd": false,
@@ -17231,7 +17231,7 @@
 "toiMinutes": 74,
 "toiSeconds": 34
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
