@@ -175,3 +175,18 @@ def test_small_slates_may_concentrate_past_the_main_slate_cap():
     assert theory.slate_cap(13) == pytest.approx(theory.MAX_OWN, abs=1.0)
     assert theory.slate_cap(2) > 85
     assert theory.slate_cap(None) == theory.MAX_OWN
+
+
+def test_initial_plus_surname_counts_when_unambiguous():
+    # Captions write "T. Higgins" for Tee Higgins (1,100x in the 11/15 cache);
+    # bare "Higgins" is off because Elijah shares the surname.
+    board = [{"name": "Tee Higgins", "pos": "WR"}, {"name": "Elijah Higgins", "pos": "TE"},
+             {"name": "Jonathan Taylor", "pos": "RB"}, {"name": "Jordan Taylor", "pos": "WR"}]
+    a = build_aliases(board)
+    c = count_mentions("Give me T. Higgins over 55, and T Higgins again. Then J. Taylor.", a)
+    assert c == Counter({"Tee Higgins": 2})      # J. Taylor is two players: no credit
+
+
+def test_caption_nickname_george_kd():
+    a = build_aliases([{"name": "George Kittle", "pos": "TE"}, {"name": "George Pickens", "pos": "WR"}])
+    assert count_mentions("You spend for George KD at 66.", a) == Counter({"George Kittle": 1})

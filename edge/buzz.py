@@ -38,6 +38,12 @@ NICKNAMES = {
     "travisetienne": ["ETN"],
     "deandrehopkins": ["Nuk"],
     "marquisebrown": ["Hollywood Brown"],
+    # Auto-captions hear "Kittle" as "KD": 928 "George KD" vs 6 "George
+    # Kittle" in the NFL transcript cache (2026-11-15). Two letters, so
+    # learn_variants (3+ letters, must resemble the name) can never learn it;
+    # he logged 0 mentions all season and 1.4% projected ownership on
+    # 2026-11-08 against 25.8% actual.
+    "georgekittle": ["George KD"],
 }
 
 DST_WORDS = [("defense",), ("d",), ("dst",), ("def",), ("d", "st")]
@@ -172,6 +178,18 @@ def build_aliases(board: list[dict], first_name_counts: Counter | None = None) -
         aliases[first + last] = (name, FULL)
         for nick in NICKNAMES.get(bare_name(name), []):
             aliases[tuple(t for t, _, _ in tokenize(nick))] = (name, NICK)
+    # "T. Higgins": captions and touts initial the first name. 1,100 of the
+    # cache's Tee Higgins mentions were written that way (2026-11-15) and none
+    # counted -- bare "Higgins" is off whenever Elijah Higgins shares the
+    # board. Initial + surname is kept only when no other board player has
+    # the same initial and surname, so it is as unambiguous as a full name.
+    # "A"/"I" are words before they are initials ("a Moore-ish catch").
+    initials: Counter = Counter((f[0][0], l) for f, l in parts.values() if f)
+    for name, (first, last) in parts.items():
+        key = ((first[0][0],) + last) if first else None
+        if (key and first[0][0] not in ("a", "i")
+                and initials[(first[0][0], last)] == 1 and key not in aliases):
+            aliases[key] = (name, FULL)
     for name, (first, last) in parts.items():
         if surnames[last] == 1 and last not in aliases and not _is_place(last):
             aliases[last] = (name, LAST)
