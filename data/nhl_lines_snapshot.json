@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-11-15T23:58:31+00:00",
+"generated_at": "2026-11-16T00:43:29+00:00",
 "goalies": {
 "2026-11-15": {
 "ANA": {
 "goalie": "Ville Husso",
-"status": null
+"status": "Confirmed"
 },
 "CGY": {
 "goalie": "Devin Cooley",
@@ -129,7 +129,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Cutter Gauthier": {
@@ -200,6 +200,40 @@
 "pos": "rd",
 "pp": null
 },
+"Ian Moore": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 101,
+"toiSeconds": 4
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 50,
+"toiSeconds": 25
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Jackson Lacombe": {
 "gtd": false,
 "injury": null,
@@ -263,7 +297,7 @@
 "toiMinutes": 50,
 "toiSeconds": 50
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -542,40 +576,6 @@
 "pos": "c",
 "pp": null
 },
-"Sam Colangelo": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 99,
-"toiSeconds": 27
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 42,
-"toiSeconds": 10
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Tim Washe": {
 "gtd": false,
 "injury": null,
@@ -673,7 +673,7 @@
 "toiMinutes": 77,
 "toiSeconds": 34
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -3055,7 +3055,7 @@
 },
 "line": "D3",
 "pk": "PK2",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Eetu Luostarinen": {
@@ -3298,40 +3298,6 @@
 "pos": "ld",
 "pp": null
 },
-"Radko Gudas": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 11,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 144,
-"toiSeconds": 1
-},
-"last5": {
-"assists": 0,
-"blocks": 8,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 72,
-"toiSeconds": 2
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Sam Bennett": {
 "gtd": false,
 "injury": null,
@@ -3467,6 +3433,40 @@
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
+},
+"Uvis Balinskis": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 143,
+"toiSeconds": 55
+},
+"last5": {
+"assists": 1,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 74,
+"toiSeconds": 43
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
 }
 },
 "MTL": {
