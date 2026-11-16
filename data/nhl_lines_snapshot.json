@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-16T13:58:49+00:00",
+"generated_at": "2026-11-16T15:28:56+00:00",
 "goalies": {
 "2026-11-16": {
 "MTL": {
@@ -21,7 +21,7 @@
 },
 "2026-11-17": {
 "ANA": {
-"goalie": "Ville Husso",
+"goalie": "Lukas Dostal",
 "status": null
 },
 "BOS": {
@@ -45,15 +45,15 @@
 "status": null
 },
 "DAL": {
-"goalie": "Casey DeSmith",
+"goalie": "Jake Oettinger",
 "status": null
 },
 "EDM": {
-"goalie": "Tristan Jarry",
+"goalie": "Devon Levi",
 "status": null
 },
 "FLA": {
-"goalie": "Akira Schmid",
+"goalie": "Jacob Markstrom",
 "status": null
 },
 "LAK": {
@@ -243,9 +243,9 @@
 "toiMinutes": 96,
 "toiSeconds": 9
 },
-"line": "D1",
-"pk": "PK1",
-"pos": "rd",
+"line": "D4",
+"pk": null,
+"pos": "ld",
 "pp": null
 },
 "Ian Moore": {
@@ -277,9 +277,9 @@
 "toiMinutes": 54,
 "toiSeconds": 39
 },
-"line": "D4",
-"pk": null,
-"pos": "ld",
+"line": "D1",
+"pk": "PK1",
+"pos": "rd",
 "pp": null
 },
 "Jackson Lacombe": {
@@ -312,7 +312,7 @@
 "toiSeconds": 34
 },
 "line": "D1",
-"pk": null,
+"pk": "PK1",
 "pos": "ld",
 "pp": "PP1"
 },
@@ -449,7 +449,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -586,7 +586,7 @@
 "toiSeconds": 56
 },
 "line": "D2",
-"pk": "PK1",
+"pk": null,
 "pos": "ld",
 "pp": null
 },
@@ -791,7 +791,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -3060,7 +3060,7 @@
 "toiSeconds": 5
 },
 "line": "F1",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "lw",
 "pp": "PP1"
 },
@@ -3094,7 +3094,7 @@
 "toiSeconds": 16
 },
 "line": "D2",
-"pk": "PK2",
+"pk": null,
 "pos": "ld",
 "pp": null
 },
@@ -3162,7 +3162,7 @@
 "toiSeconds": 19
 },
 "line": "F2",
-"pk": "PK1",
+"pk": null,
 "pos": "c",
 "pp": null
 },
@@ -3264,7 +3264,7 @@
 "toiSeconds": 10
 },
 "line": "F1",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": null
 },
@@ -3366,7 +3366,7 @@
 "toiSeconds": 30
 },
 "line": "D2",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
 },
@@ -3444,7 +3444,7 @@
 "toiSeconds": 38
 },
 "line": "F3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
 },
@@ -4235,7 +4235,7 @@
 },
 "line": "F2",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Casey DeSmith": {
@@ -4269,7 +4269,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -4304,7 +4304,7 @@
 "toiSeconds": 30
 },
 "line": "F4",
-"pk": "PK2",
+"pk": null,
 "pos": "lw",
 "pp": null
 },
@@ -4407,7 +4407,7 @@
 "goalieShutouts": 1,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -4441,9 +4441,9 @@
 "toiMinutes": 65,
 "toiSeconds": 53
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Jason Robertson": {
@@ -4510,7 +4510,7 @@
 "toiSeconds": 38
 },
 "line": "F3",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP2"
 },
@@ -4787,7 +4787,7 @@
 "pp": null
 },
 "Tyler Myers": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -4849,7 +4849,7 @@
 "toiMinutes": 71,
 "toiSeconds": 44
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -4988,7 +4988,7 @@
 "toiSeconds": 5
 },
 "line": "F1",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": "PP1"
 },
@@ -5057,7 +5057,7 @@
 "goalieShutouts": 1,
 "goalieWins": 5
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5160,7 +5160,7 @@
 "toiSeconds": 19
 },
 "line": "F3",
-"pk": "PK1",
+"pk": null,
 "pos": "c",
 "pp": null
 },
@@ -5196,7 +5196,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Leon Draisaitl": {
 "gtd": false,
@@ -5467,7 +5467,7 @@
 "goalieShutouts": 2,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5538,7 +5538,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Zach Hyman": {
 "gtd": false,
@@ -5641,7 +5641,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -5950,7 +5950,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Jacob Markstrom": {
 "gtd": false,
@@ -5983,7 +5983,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6018,9 +6018,9 @@
 "toiSeconds": 12
 },
 "line": "F2",
-"pk": "PK2",
+"pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Matthew Tkachuk": {
 "gtd": false,
@@ -6154,7 +6154,7 @@
 "toiSeconds": 34
 },
 "line": "F2",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
 },
@@ -11094,7 +11094,7 @@
 "toiSeconds": 50
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": "PP2"
 },
@@ -11231,7 +11231,7 @@
 "toiMinutes": 114,
 "toiSeconds": 37
 },
-"line": "D1",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -11474,7 +11474,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Porter Martone": {
 "gtd": false,
@@ -11539,8 +11539,8 @@
 "toiMinutes": 84,
 "toiSeconds": 42
 },
-"line": "D3",
-"pk": "PK1",
+"line": "D1",
+"pk": null,
 "pos": "rd",
 "pp": null
 },
@@ -11608,7 +11608,7 @@
 "toiSeconds": 17
 },
 "line": "D2",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -11678,7 +11678,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Trevor Zegras": {
 "gtd": false,
@@ -11782,7 +11782,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Alex Nedeljkovic": {
 "gtd": false,
@@ -11850,7 +11850,7 @@
 "toiSeconds": 21
 },
 "line": "F4",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 },
@@ -11884,7 +11884,7 @@
 "toiSeconds": 15
 },
 "line": "F2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rw",
 "pp": null
 },
@@ -11988,7 +11988,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Ivar Stenberg": {
 "gtd": false,
@@ -12056,7 +12056,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "rd",
-"pp": null
+"pp": "PP1"
 },
 "Kiefer Sherwood": {
 "gtd": true,
@@ -12090,7 +12090,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": null
 },
 "Macklin Celebrini": {
 "gtd": false,
@@ -12158,7 +12158,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Michael Kesselring": {
 "gtd": false,
@@ -12362,7 +12362,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Yaroslav Askarov": {
 "gtd": false,
@@ -15654,7 +15654,7 @@
 "toiSeconds": 12
 },
 "line": "F3",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
 },
@@ -15722,7 +15722,7 @@
 "toiSeconds": 54
 },
 "line": "F4",
-"pk": "PK2",
+"pk": null,
 "pos": "c",
 "pp": null
 },
@@ -15794,7 +15794,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Tom Willander": {
 "gtd": false,
@@ -15828,7 +15828,7 @@
 "line": "D2",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Zeev Buium": {
 "gtd": false,
@@ -15931,9 +15931,9 @@
 "toiMinutes": 61,
 "toiSeconds": 31
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Brayden McNabb": {
@@ -15999,9 +15999,9 @@
 "toiMinutes": 71,
 "toiSeconds": 52
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Carter Hart": {
@@ -16103,7 +16103,7 @@
 "toiMinutes": 73,
 "toiSeconds": 26
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -16308,7 +16308,7 @@
 "toiSeconds": 20
 },
 "line": "D3",
-"pk": null,
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -16410,7 +16410,7 @@
 "toiSeconds": 53
 },
 "line": "D1",
-"pk": "PK2",
+"pk": null,
 "pos": "rd",
 "pp": "PP2"
 },
@@ -16477,7 +16477,7 @@
 "toiMinutes": 70,
 "toiSeconds": 49
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
