@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-16T17:30:53+00:00",
+"generated_at": "2026-11-16T18:28:49+00:00",
 "goalies": {
 "2026-11-16": {
 "MTL": {
@@ -11,12 +11,12 @@
 "status": "Confirmed"
 },
 "UTA": {
-"goalie": "Sebastian Cossa",
-"status": null
+"goalie": "Karel Vejmelka",
+"status": "Likely"
 },
 "VAN": {
 "goalie": "Nikita Tolopilo",
-"status": null
+"status": "Likely"
 }
 },
 "2026-11-17": {
@@ -14730,7 +14730,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Dmitri Simashev": {
 "gtd": false,
@@ -15176,7 +15176,7 @@
 "line": "D3",
 "pk": null,
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 }
 },
 "VAN": {
