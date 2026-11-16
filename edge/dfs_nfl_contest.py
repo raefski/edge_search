@@ -54,7 +54,22 @@ FIELD_STACK_2 = 0.15
 #: bug; dfs_leverage.tilt). Refitted leave-one-slate-out on those 8 exports
 #: (stack shares + p50-p99 projection quantiles), SHARP_SHARE 0.45 was chosen
 #: on 7 of 8 held-out slates, SHARP_BETA 0.4 on 7 of 8, stack rates unchanged.
-SHARP_SHARE = 0.45
+#: Refitted again the same day jointly with FIELD_BRING_BACK (stack shares,
+#: bring-back share, p50-p99 projection quantiles; grid .30/.45/.60): .60 on 7
+#: of 8 held-out slates. .60 is the grid's top and the field's p99 projection
+#: still sits ~4 pts under the real one, so the sharp end may want more.
+SHARP_SHARE = 0.60
+
+#: Draw rate of one opposing WR/TE (a "bring-back") into a field lineup, on
+#: top of those ownership draws land by accident. Real Main-slate GPP fields
+#: carry an opposing WR/TE of their QB in 26-48% of lineups (8 exports
+#: 9/13-11/08); without this term the sim had 12-26% and paired opposing
+#: players LESS than independent (lift .57-.79 vs real 1.07-1.35). Fitted
+#: leave-one-slate-out on those 8 exports (grid 0-.4): 0.2 on 8 of 8, held-out
+#: field-shape loss down 2-4x on every slate (11/08: 386 -> 92). Mass-150
+#: replay on the same slates (scratch, 2026-11-15): EV ranking +65% -> +104%,
+#: 29 -> 36 top-1% finishes.
+FIELD_BRING_BACK = 0.2
 SHARP_BETA = 0.4
 RAW_MULT = 6
 
@@ -83,6 +98,9 @@ def _draws(pool: list, n: int, rng: random.Random) -> list:
             j = rng.choices(mates, weights=[w[i] for i in mates])[0]
             mates.remove(j)
             picked.append(j)
+        backs = by_team.get(pool[q].get("opp_team"), [])
+        if FIELD_BRING_BACK and backs and rng.random() < FIELD_BRING_BACK:
+            picked.append(rng.choices(backs, weights=[w[i] for i in backs])[0])
         open_slots = list(order)
         for j in picked[1:]:      # a stacked catcher takes his own slot, else FLEX
             s = next((s for s in open_slots if s in pool[j]["pos"] and s != "FLEX"), "FLEX")

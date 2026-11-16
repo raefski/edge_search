@@ -39,9 +39,12 @@ def test_field_lineups_are_legal_and_stacked():
     assert stacked / len(field) > 0.5
 
 
-def test_field_resample_does_not_clone_the_sharp_lineups():
+def test_field_resample_does_not_clone_the_sharp_lineups(monkeypatch):
     # 2026-11-15: resampling WITH replacement made 24-32% of the simulated
     # field exact duplicates (real NFL GPP fields: 3-7%).
+    # the toy pool is small: with bring-backs on, too few legal draws survive
+    # for a without-replacement sample, so this checks the resample alone
+    monkeypatch.setattr(nc, "FIELD_BRING_BACK", 0.0)
     ps = owned_pool()
     field = nc.sample_field(ps, 25, seed=1)
     keys = [tuple(sorted(lu)) for lu in field]
@@ -66,3 +69,16 @@ def test_rank_returns_one_row_per_candidate():
     res = nc.rank(ps, cands, 5000, entry_fee=5.0, n_sims=300, n_field=200)
     assert len(res) == 2
     assert all(r["ev"] >= 0 and 0 <= r["p_cash"] <= 1 for r in res)
+
+
+def test_field_brings_back_an_opposing_catcher(monkeypatch):
+    ps = owned_pool()
+    def share(rate):
+        monkeypatch.setattr(nc, "FIELD_BRING_BACK", rate)
+        field = nc.sample_field(ps, 150, seed=3)
+        hit = 0
+        for lu in field:
+            qb = next(i for i in lu if "QB" in ps[i]["pos"])
+            hit += any(ps[i]["team"] == ps[qb].get("opp_team") and ps[i]["pos"] & opt.CATCHERS for i in lu)
+        return hit / len(field)
+    assert share(0.6) > share(0.0)
