@@ -88,6 +88,10 @@ GRADERS = {"NHL": ["scripts/nhl_calibration.py", "{f}", "--fit-ownership"],
            "NFL": ["scripts/dfs_calibration_nfl.py"],
            "MLB": ["scripts/dfs_calibration.py"]}
 
+#: run once per import after the sport's grader: does the simulated GPP field
+#: still look like the real ones (scripts/nfl_field_calibration.py, 2026-11-15)
+FOLLOW_UPS = {"NFL": [["scripts/nfl_field_calibration.py"]]}
+
 
 # ---------------------------------------------------------------- one download
 def export_id(name: str) -> str | None:
@@ -345,6 +349,12 @@ def grade(report: list[tuple]) -> None:
         print(f"\n== {cid} {sport} {info['type']}: {cmd[0]}", flush=True)
         f = str(path.relative_to(ROOT) if path.is_relative_to(ROOT) else path)
         subprocess.run([sys.executable] + [c.replace("{f}", f) for c in cmd], cwd=ROOT)
+    gpp_sports = {info["sport"] for _cid, info, _me, is_logged, _p in report
+                  if is_logged and info["type"] == "gpp"}
+    for sport in sorted(gpp_sports & set(FOLLOW_UPS)):
+        for extra in FOLLOW_UPS[sport]:
+            print(f"\n== {sport} follow-up: {extra[0]}", flush=True)
+            subprocess.run([sys.executable] + extra, cwd=ROOT)
 
 
 def main() -> int:

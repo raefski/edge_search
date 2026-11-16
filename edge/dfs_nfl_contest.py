@@ -46,7 +46,15 @@ FIELD_STACK_2 = 0.15
 #: resampled from the raw draws with weight exp(SHARP_BETA * proj); fitted on
 #: the p50-p99 quantiles of the same three exports (sse 372 -> 48, every
 #: quantile within ~3 points). RAW_MULT raw draws per field lineup.
-SHARP_SHARE = 0.30
+#:
+#: 2026-11-15: the resample is now WITHOUT replacement (below). With
+#: replacement, the sharp share kept re-picking the same few best-projected
+#: draws: 24-32% of simulated lineups were exact duplicates on the 8 Main-slate
+#: GPP exports 9/13-11/08, against 3-7% in the real fields (NHL had the same
+#: bug; dfs_leverage.tilt). Refitted leave-one-slate-out on those 8 exports
+#: (stack shares + p50-p99 projection quantiles), SHARP_SHARE 0.45 was chosen
+#: on 7 of 8 held-out slates, SHARP_BETA 0.4 on 7 of 8, stack rates unchanged.
+SHARP_SHARE = 0.45
 SHARP_BETA = 0.4
 RAW_MULT = 6
 
@@ -109,8 +117,15 @@ def sample_field(pool: list, n: int, seed: int = 0) -> list:
     proj = np.array([sum(pool[i]["proj"] or 0.0 for i in lu) for lu in raw])
     tilt = np.exp(SHARP_BETA * (proj - proj.max()))
     w = (1 - SHARP_SHARE) / len(raw) + SHARP_SHARE * tilt / tilt.sum()
-    pick = np.random.default_rng(seed).choice(len(raw), size=n, p=w / w.sum())
-    return [raw[i] for i in pick]
+    if len(raw) <= n:
+        # a pool too small for n distinct draws (tests, tiny showdown-like
+        # slates): every draw once, the rest weighted with replacement
+        extra = np.random.default_rng(seed).choice(len(raw), size=n - len(raw), p=w / w.sum())
+        return list(raw) + [raw[i] for i in extra]
+    # Gumbel top-k: a weighted draw WITHOUT replacement, so duplicates come
+    # only from ownership draws that coincide, which is how real ones arise.
+    keys = np.log(w) + np.random.default_rng(seed).gumbel(size=len(raw))
+    return [raw[i] for i in np.argsort(-keys)[:n]]
 
 
 #: The tail fit, payout smoothing and EV now live in edge/dfs_leverage.py,

@@ -39,6 +39,17 @@ def test_field_lineups_are_legal_and_stacked():
     assert stacked / len(field) > 0.5
 
 
+def test_field_resample_does_not_clone_the_sharp_lineups():
+    # 2026-11-15: resampling WITH replacement made 24-32% of the simulated
+    # field exact duplicates (real NFL GPP fields: 3-7%).
+    ps = owned_pool()
+    field = nc.sample_field(ps, 25, seed=1)
+    keys = [tuple(sorted(lu)) for lu in field]
+    raw = nc._draws(ps, 25 * nc.RAW_MULT, __import__("random").Random(1))
+    raw_dup = 1 - len({tuple(sorted(lu)) for lu in raw}) / len(raw)
+    assert 1 - len(set(keys)) / len(keys) <= raw_dup + 0.05
+
+
 def test_tail_never_ranks_a_field_beater_first_of_everyone():
     rng = np.random.default_rng(0)
     totals = rng.normal(120, 10, (50, 1000))
