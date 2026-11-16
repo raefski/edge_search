@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-16T19:58:52+00:00",
+"generated_at": "2026-11-16T21:59:03+00:00",
 "goalies": {
 "2026-11-16": {
 "MTL": {
@@ -7360,6 +7360,40 @@
 "pos": "rw",
 "pp": "PP1"
 },
+"Matt Kiersted": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 13,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 126,
+"toiSeconds": 25
+},
+"last5": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 62,
+"toiSeconds": 24
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Maxim Shabanov": {
 "gtd": false,
 "injury": null,
@@ -7460,40 +7494,6 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
-},
-"Olli Maatta": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 20,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 184,
-"toiSeconds": 2
-},
-"last5": {
-"assists": 2,
-"blocks": 9,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 1,
-"toiMinutes": 86,
-"toiSeconds": 47
-},
-"line": "D3",
-"pk": "PK1",
-"pos": "ld",
 "pp": null
 },
 "Quinn Hughes": {
@@ -7628,7 +7628,7 @@
 "toiSeconds": 8
 },
 "line": "D3",
-"pk": null,
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 }
