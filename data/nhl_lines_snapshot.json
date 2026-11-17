@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T17:59:04+00:00",
+"generated_at": "2026-11-17T18:28:48+00:00",
 "goalies": {
 "2026-11-17": {
 "ANA": {
@@ -39,8 +39,8 @@
 "status": "Confirmed"
 },
 "LAK": {
-"goalie": "Anton Forsberg",
-"status": null
+"goalie": "Darcy Kuemper",
+"status": "Likely"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -2381,7 +2381,7 @@
 },
 "line": "D3",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Denton Mateychuk": {
@@ -2452,6 +2452,40 @@
 "pos": "lw",
 "pp": "PP2"
 },
+"Erik Gudbranson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 19,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 147,
+"toiSeconds": 34
+},
+"last5": {
+"assists": 0,
+"blocks": 9,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 62,
+"toiSeconds": 40
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Ivan Provorov": {
 "gtd": false,
 "injury": null,
@@ -2518,40 +2552,6 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": null
-},
-"Jake Christiansen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 14,
-"toiMinutes": 149,
-"toiSeconds": 51
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 74,
-"toiSeconds": 49
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
 "pp": null
 },
 "Jet Greaves": {
