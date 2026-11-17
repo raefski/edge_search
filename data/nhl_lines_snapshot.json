@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T23:28:45+00:00",
+"generated_at": "2026-11-17T23:44:10+00:00",
 "goalies": {
 "2026-11-17": {
 "ANA": {
@@ -12,7 +12,7 @@
 },
 "BUF": {
 "goalie": "Alex Lyon",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CBJ": {
 "goalie": "Cam Talbot",
@@ -40,7 +40,7 @@
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
-"status": "Likely"
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -7079,7 +7079,7 @@
 "toiMinutes": 82,
 "toiSeconds": 8
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
@@ -7181,7 +7181,7 @@
 "toiMinutes": 92,
 "toiSeconds": 52
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -7283,7 +7283,7 @@
 "toiMinutes": 76,
 "toiSeconds": 26
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
@@ -7421,9 +7421,9 @@
 "toiMinutes": 83,
 "toiSeconds": 12
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
 },
 "Matthew Tkachuk": {
@@ -7523,7 +7523,7 @@
 "toiMinutes": 82,
 "toiSeconds": 9
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -7559,7 +7559,7 @@
 },
 "line": "F2",
 "pk": "PK2",
-"pos": "c",
+"pos": "rw",
 "pp": "PP1"
 },
 "Sandis Vilmanis": {
@@ -12565,7 +12565,7 @@
 "toiMinutes": 56,
 "toiSeconds": 6
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -12607,7 +12607,7 @@
 "pp": null
 },
 "Denver Barkey": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -12635,7 +12635,7 @@
 "toiMinutes": 75,
 "toiSeconds": 6
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -17435,10 +17435,44 @@
 "toiMinutes": 84,
 "toiSeconds": 55
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Danny Zhilkin": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 53,
+"toiSeconds": 36
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 38,
+"toiSeconds": 43
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Dawson Mercer": {
 "gtd": false,
@@ -17508,40 +17542,6 @@
 "pos": "ld",
 "pp": null
 },
-"Elias Salomonsson": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 16,
-"toiMinutes": 163,
-"toiSeconds": 23
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 92,
-"toiSeconds": 18
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
-},
 "Gabriel Vilardi": {
 "gtd": false,
 "injury": null,
@@ -17605,7 +17605,7 @@
 "toiMinutes": 83,
 "toiSeconds": 30
 },
-"line": "D4",
+"line": "D3",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -17673,7 +17673,7 @@
 "toiMinutes": 109,
 "toiSeconds": 46
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
