@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-16T12:29:04+00:00",
+"generated_at": "2026-11-17T12:30:26+00:00",
 "players": {
 "aaronball": {
 "player": "Aaron Ball",
@@ -38,10 +38,10 @@
 },
 "aaronfrye": {
 "player": "Aaron Frye",
-"rate": 0.3333,
-"rush_td": 3.0,
+"rate": 0.4,
+"rush_td": 4.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "aarongregory": {
 "player": "Aaron Gregory",
@@ -300,7 +300,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "aedanmccarthy": {
 "player": "Aedan McCarthy",
@@ -496,7 +496,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "aidansullivan": {
 "player": "Aidan Sullivan",
@@ -836,10 +836,10 @@
 },
 "albertgooden": {
 "player": "Albert Gooden III",
-"rate": 0.1,
+"rate": 0.0909,
 "rush_td": 1.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "albertomendoza": {
 "player": "Alberto Mendoza",
@@ -923,7 +923,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "alexhonig": {
 "player": "Alex Honig",
@@ -951,7 +951,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "alexorji": {
 "player": "Alex Orji",
@@ -1000,7 +1000,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "alexvoss": {
 "player": "Alex Voss",
@@ -1156,6 +1156,13 @@
 "team": "Houston",
 "team_games": 10
 },
+"amareuswalker": {
+"player": "Amareus Walker",
+"rate": 0.0,
+"rush_td": 0.0,
+"team": "Stephen F. Austin",
+"team_games": 11
+},
 "amariclayton": {
 "player": "Amari Clayton",
 "rate": 0.0,
@@ -1210,7 +1217,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "amarionjackson": {
 "player": "Amarion Jackson",
@@ -1385,7 +1392,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "andrewbond": {
 "player": "Andrew Bond",
@@ -1511,7 +1518,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "andrewtabor": {
 "player": "Andrew Tabor",
@@ -1532,7 +1539,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "aneyaswilliams": {
 "player": "Aneyas Williams",
@@ -1697,10 +1704,10 @@
 },
 "anthonyhall": {
 "player": "Anthony Hall",
-"rate": 0.1,
+"rate": 0.0909,
 "rush_td": 1.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "anthonyice": {
 "player": "Anthony Ice",
@@ -1935,8 +1942,8 @@
 },
 "antoniomartin": {
 "player": "Antonio Martin",
-"rate": 0.1,
-"rush_td": 1.0,
+"rate": 0.2,
+"rush_td": 2.0,
 "team": "Middle Tennessee",
 "team_games": 10
 },
@@ -1963,10 +1970,10 @@
 },
 "antuangardner": {
 "player": "Antuan Gardner",
-"rate": 0.3,
+"rate": 0.2727,
 "rush_td": 3.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "antwanraymond": {
 "player": "Antwan Raymond",
@@ -2106,7 +2113,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "arthurlewis": {
 "player": "Arthur Lewis IV",
@@ -2155,7 +2162,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "asherweiner": {
 "player": "Asher Weiner",
@@ -2197,7 +2204,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "ashtonbethelroman": {
 "player": "Ashton Bethel-Roman",
@@ -2358,7 +2365,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "austincameron": {
 "player": "Austin Cameron",
@@ -2712,10 +2719,10 @@
 },
 "beaubrungard": {
 "player": "Beau Brungard",
-"rate": 1.1,
-"rush_td": 11.0,
+"rate": 1.1818,
+"rush_td": 13.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "beaucochran": {
 "player": "Beau Cochran",
@@ -2747,10 +2754,10 @@
 },
 "beckhampellant": {
 "player": "Beckham Pellant",
-"rate": 0.1,
-"rush_td": 1.0,
+"rate": 0.1818,
+"rush_td": 2.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "benalvarez": {
 "player": "Ben Alvarez",
@@ -2911,7 +2918,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "bennyadams": {
 "player": "Benny Adams",
@@ -3226,7 +3233,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "brachrice": {
 "player": "Brach Rice",
@@ -3338,7 +3345,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "bradybidwell": {
 "player": "Brady Bidwell",
@@ -3450,7 +3457,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "bradyscheier": {
 "player": "Brady Scheier",
@@ -4612,7 +4619,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "bryanjackson": {
 "player": "Bryan Jackson",
@@ -5200,7 +5207,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "calebflagg": {
 "player": "Caleb Flagg",
@@ -5319,7 +5326,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "calebreslin": {
 "player": "Cale Breslin",
@@ -5428,10 +5435,10 @@
 },
 "calvinsmith": {
 "player": "Calvin Smith Jr.",
-"rate": 0.5,
-"rush_td": 5.0,
+"rate": 0.5455,
+"rush_td": 6.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "calzimmerman": {
 "player": "Cal Zimmerman",
@@ -5897,10 +5904,10 @@
 },
 "carontyler": {
 "player": "Caron Tyler",
-"rate": 0.1111,
+"rate": 0.1,
 "rush_td": 1.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "carsonboyd": {
 "player": "Carson Boyd",
@@ -6394,10 +6401,10 @@
 },
 "chadelzy": {
 "player": "Chad Elzy Jr",
-"rate": 0.4,
+"rate": 0.3636,
 "rush_td": 4.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "chadmartin": {
 "player": "Chad Martin",
@@ -6814,10 +6821,10 @@
 },
 "chasekwiatkowski": {
 "player": "Chase Kwiatkowski",
-"rate": 0.4,
+"rate": 0.3636,
 "rush_td": 4.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "chaseloftin": {
 "player": "Chase Loftin",
@@ -8098,7 +8105,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "collinfasse": {
 "player": "Collin Fasse",
@@ -8329,7 +8336,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "connorwalendzak": {
 "player": "Connor Walendzak",
@@ -8420,7 +8427,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "cooperlehman": {
 "player": "Cooper Lehman",
@@ -8735,7 +8742,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "curtiskimmons": {
 "player": "Curtis Kimmons IV",
@@ -8875,7 +8882,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "daishaundavis": {
 "player": "Daishaun Davis",
@@ -8959,7 +8966,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "dallasboozer": {
 "player": "Dallas Boozer",
@@ -9610,7 +9617,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "darrellsmith": {
 "player": "Darrell Smith",
@@ -9715,7 +9722,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "dashawnmartin": {
 "player": "Dashawn Martin",
@@ -10254,7 +10261,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "deanwarjohnson": {
 "player": "Deanwar Johnson",
@@ -10807,7 +10814,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "desminjackson": {
 "player": "Desmin Jackson",
@@ -10842,7 +10849,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "deucebailey": {
 "player": "Deuce Bailey",
@@ -10860,10 +10867,10 @@
 },
 "deuceknight": {
 "player": "Deuce Knight",
-"rate": 0.2222,
+"rate": 0.2,
 "rush_td": 2.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "deucelawrence": {
 "player": "Deuce Lawrence",
@@ -11014,10 +11021,10 @@
 },
 "devinlippold": {
 "player": "Devin Lippold",
-"rate": 0.1,
+"rate": 0.0909,
 "rush_td": 1.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "devinmccuin": {
 "player": "Devin Mccuin",
@@ -11185,7 +11192,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "dilloncompton": {
 "player": "Dillon Compton",
@@ -11290,7 +11297,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "djbutler": {
 "player": "DJ Butler",
@@ -11444,6 +11451,13 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
+"team_games": 11
+},
+"dkkency": {
+"player": "DK Kency",
+"rate": 0.1,
+"rush_td": 1.0,
+"team": "Texas Southern",
 "team_games": 10
 },
 "dmariunperteet": {
@@ -11584,7 +11598,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "donaldchaney": {
 "player": "Donald Chaney Jr.",
@@ -11843,7 +11857,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "draetyme": {
 "player": "Drae Tyme",
@@ -12214,7 +12228,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "dylanmagazu": {
 "player": "Dylan Magazu",
@@ -12306,6 +12320,13 @@
 "rush_td": 0.0,
 "team": "Tennessee State",
 "team_games": 11
+},
+"dylanvickerson": {
+"player": "Dylan Vickerson",
+"rate": 0.0,
+"rush_td": 0.0,
+"team": "Alabama State",
+"team_games": 10
 },
 "dylanvokal": {
 "player": "Dylan Vokal",
@@ -12837,7 +12858,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "elijahtidwell": {
 "player": "Elijah Tidwell",
@@ -12900,7 +12921,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "elisisson": {
 "player": "Eli Sisson",
@@ -12981,10 +13002,10 @@
 },
 "emarimatthews": {
 "player": "Emari Matthews",
-"rate": 0.2222,
+"rate": 0.2,
 "rush_td": 2.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "emazonlittlejohn": {
 "player": "Emazon Littlejohn",
@@ -13089,7 +13110,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "ericjones": {
 "player": "Eric Jones",
@@ -13299,7 +13320,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "ethanmedley": {
 "player": "Ethan Medley",
@@ -13698,7 +13719,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "frankabreu": {
 "player": "Frank Abreu",
@@ -13922,7 +13943,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "gagesliter": {
 "player": "Gage Sliter",
@@ -14860,7 +14881,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "haydengeorge": {
 "player": "Hayden George",
@@ -14874,7 +14895,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "haydenjohnson": {
 "player": "Hayden Johnson",
@@ -14983,8 +15004,8 @@
 },
 "herschelturner": {
 "player": "Herschel Turner",
-"rate": 0.4,
-"rush_td": 4.0,
+"rate": 0.6,
+"rush_td": 6.0,
 "team": "Nevada",
 "team_games": 10
 },
@@ -15035,7 +15056,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "houstonthomas": {
 "player": "Houston Thomas",
@@ -15228,10 +15249,10 @@
 },
 "hutchswilley": {
 "player": "Hutch Swilley",
-"rate": 0.2,
+"rate": 0.1818,
 "rush_td": 2.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "ianfinch": {
 "player": "Ian Finch",
@@ -15280,14 +15301,14 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "ikennanwobu": {
 "player": "Ikenna Nwobu",
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "imariconely": {
 "player": "Imari Conely",
@@ -15651,7 +15672,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "isaiahscott": {
 "player": "Isaiah Scott",
@@ -15715,6 +15736,13 @@
 "rush_td": 0.0,
 "team": "Georgia",
 "team_games": 10
+},
+"isiahdougan": {
+"player": "Isiah Dougan",
+"rate": 0.0,
+"rush_td": 0.0,
+"team": "Hampton",
+"team_games": 11
 },
 "isiahjones": {
 "player": "Isiah Jones",
@@ -15791,7 +15819,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "issacglaudin": {
 "player": "Issac Glaudin",
@@ -15805,7 +15833,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "issaiahspivey": {
 "player": "Issaiah Spivey",
@@ -15819,7 +15847,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "ivanhoyt": {
 "player": "Ivan Hoyt",
@@ -15896,7 +15924,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "jabarilewis": {
 "player": "Jabari Lewis",
@@ -16099,6 +16127,13 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "South Dakota State",
+"team_games": 11
+},
+"jackhunter": {
+"player": "Jack Hunter",
+"rate": 0.0,
+"rush_td": 0.0,
+"team": "SE Louisiana",
 "team_games": 11
 },
 "jackjacobs": {
@@ -16708,7 +16743,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "jacobkania": {
 "player": "Jacob Kania",
@@ -16929,10 +16964,10 @@
 },
 "jadengilbert": {
 "player": "Jaden Gilbert",
-"rate": 0.9,
-"rush_td": 9.0,
+"rate": 0.9091,
+"rush_td": 10.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "jadengreathouse": {
 "player": "Jaden Greathouse",
@@ -17002,7 +17037,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "jadenmcgill": {
 "player": "Jaden McGill",
@@ -17156,7 +17191,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "jaevionelliott": {
 "player": "Jaevion Elliott",
@@ -17534,7 +17569,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "jaketaylor": {
 "player": "Jake Taylor",
@@ -17881,10 +17916,10 @@
 },
 "jamaallevi": {
 "player": "Jamaal Levi",
-"rate": 0.1,
+"rate": 0.0909,
 "rush_td": 1.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "jamaieast": {
 "player": "Jamai East",
@@ -17979,10 +18014,10 @@
 },
 "jamariehostzclaw": {
 "player": "Jamarie Hostzclaw",
-"rate": 0.7778,
+"rate": 0.7,
 "rush_td": 7.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "jamariendalton": {
 "player": "Jamarien Dalton",
@@ -18059,7 +18094,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "jamariperson": {
 "player": "Jamari Person",
@@ -18154,8 +18189,8 @@
 },
 "jamelljames": {
 "player": "Jamell James",
-"rate": 0.6364,
-"rush_td": 7.0,
+"rate": 0.7273,
+"rush_td": 8.0,
 "team": "Fordham",
 "team_games": 11
 },
@@ -18497,10 +18532,10 @@
 },
 "jaredlockhart": {
 "player": "Jared Lockhart",
-"rate": 0.2222,
+"rate": 0.2,
 "rush_td": 2.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "jaredporter": {
 "player": "Jared Porter",
@@ -18532,10 +18567,10 @@
 },
 "jareesehoward": {
 "player": "Jareese Howard",
-"rate": 0.8889,
+"rate": 0.8,
 "rush_td": 8.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "jarellgary": {
 "player": "Jarell Gary",
@@ -18637,10 +18672,10 @@
 },
 "jartavioussmart": {
 "player": "Jartavious Smart",
-"rate": 0.1111,
+"rate": 0.1,
 "rush_td": 1.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "jarvisdavis": {
 "player": "Jarvis Davis",
@@ -19624,8 +19659,8 @@
 },
 "jaylenjenkins": {
 "player": "Jaylen Jenkins",
-"rate": 0.5455,
-"rush_td": 6.0,
+"rate": 0.7273,
+"rush_td": 8.0,
 "team": "Stephen F. Austin",
 "team_games": 11
 },
@@ -20047,7 +20082,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "jeremiahbeck": {
 "player": "Jeremiah Beck Jr.",
@@ -20173,7 +20208,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "jeremiahscoby": {
 "player": "Jeremiah Scoby",
@@ -20278,7 +20313,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "jeromebettis": {
 "player": "Jerome Bettis Jr.",
@@ -20607,7 +20642,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "jobebryant": {
 "player": "Jobe Bryant",
@@ -20789,7 +20824,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "johnbargen": {
 "player": "John Bargen",
@@ -20891,10 +20926,10 @@
 },
 "johnmateer": {
 "player": "John Mateer",
-"rate": 0.0,
-"rush_td": 0.0,
+"rate": 0.1,
+"rush_td": 1.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "johnmcauliffe": {
 "player": "John McAuliffe",
@@ -20992,7 +21027,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "johnthompson": {
 "player": "John Thompson",
@@ -21129,10 +21164,10 @@
 },
 "jonathanhatton": {
 "player": "Jonathan Hatton Jr.",
-"rate": 0.0,
-"rush_td": 0.0,
+"rate": 0.1,
+"rush_td": 1.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "jonathanhorton": {
 "player": "Jonathan Horton",
@@ -21286,7 +21321,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "jordanchamberssmith": {
 "player": "Jordan Chambers-Smith",
@@ -21580,7 +21615,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "jordinthomas": {
 "player": "Jordin Thomas",
@@ -21962,10 +21997,10 @@
 },
 "joshuadye": {
 "player": "Joshua Dye",
-"rate": 0.0,
-"rush_td": 0.0,
+"rate": 0.1,
+"rush_td": 1.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "joshuaguerin": {
 "player": "Joshua Guerin",
@@ -22245,7 +22280,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "jtfayard": {
 "player": "JT Fayard",
@@ -22273,7 +22308,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "jtsmith": {
 "player": "J.T. Smith Jr.",
@@ -23232,7 +23267,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "kameranshanks": {
 "player": "Kameran Shanks",
@@ -23267,6 +23302,13 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Virginia",
+"team_games": 10
+},
+"kameronpittman": {
+"player": "Kameron Pittman",
+"rate": 0.0,
+"rush_td": 0.0,
+"team": "Alabama State",
 "team_games": 10
 },
 "kameronthomas": {
@@ -23428,7 +23470,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "kariashley": {
 "player": "Kari Ashley",
@@ -23659,7 +23701,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "keeganpatterson": {
 "player": "Keegan Patterson",
@@ -23785,7 +23827,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "keithwheeler": {
 "player": "Keith Wheeler",
@@ -24107,7 +24149,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "kentrellwhite": {
 "player": "Kentrell White",
@@ -24303,7 +24345,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "kevinriley": {
 "player": "Kevin Riley",
@@ -24356,10 +24398,10 @@
 },
 "kewanlacy": {
 "player": "Kewan Lacy",
-"rate": 0.5556,
+"rate": 0.5,
 "rush_td": 5.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "keyanburnett": {
 "player": "Keyan Burnett",
@@ -24821,7 +24863,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "kobepierce": {
 "player": "Kobe Pierce",
@@ -25038,7 +25080,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "kyiongrayes": {
 "player": "Kyion Grayes",
@@ -25091,10 +25133,10 @@
 },
 "kylelowe": {
 "player": "Kyle Lowe",
-"rate": 0.3,
+"rate": 0.2727,
 "rush_td": 3.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "kylemcneal": {
 "player": "Kyle Mcneal",
@@ -25238,10 +25280,10 @@
 },
 "kyreepaul": {
 "player": "Kyree Paul",
-"rate": 0.2,
+"rate": 0.1818,
 "rush_td": 2.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "kyrietyson": {
 "player": "Kyrie Tyson",
@@ -25472,7 +25514,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "landonkelsey": {
 "player": "Landon Kelsey",
@@ -25759,7 +25801,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "lawsonluckie": {
 "player": "Lawson Luckie",
@@ -26029,10 +26071,10 @@
 },
 "lidariuspryor": {
 "player": "Li'Darius Pryor",
-"rate": 0.7778,
+"rate": 0.7,
 "rush_td": 7.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "lincolncardillo": {
 "player": "Lincoln Cardillo",
@@ -26099,10 +26141,10 @@
 },
 "lloydavant": {
 "player": "Lloyd Avant",
-"rate": 0.2222,
+"rate": 0.2,
 "rush_td": 2.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "loftonhoward": {
 "player": "Lofton Howard",
@@ -26277,7 +26319,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "lontrellturner": {
 "player": "Lontrell Turner",
@@ -26298,7 +26340,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "lorenzorobinson": {
 "player": "Lorenzo Robinson",
@@ -26564,7 +26606,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "lukehutchison": {
 "player": "Luke Hutchison",
@@ -26613,7 +26655,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "lukemarble": {
 "player": "Luke Marble",
@@ -26816,14 +26858,14 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "lynnwycheel": {
 "player": "Lynn Wyche-El",
-"rate": 0.3,
+"rate": 0.2727,
 "rush_td": 3.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "lyvielwaters": {
 "player": "Lyviel Waters",
@@ -26872,7 +26914,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "macowen": {
 "player": "Mac Owen",
@@ -26991,7 +27033,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "makhihughes": {
 "player": "Makhi Hughes",
@@ -27012,7 +27054,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "makhiwatson": {
 "player": "Makhi Watson",
@@ -27121,10 +27163,10 @@
 },
 "malachilewis": {
 "player": "Malachi Lewis",
-"rate": 0.1,
+"rate": 0.0909,
 "rush_td": 1.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "malachinelson": {
 "player": "Malachi Nelson",
@@ -27313,7 +27355,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "mannycovey": {
 "player": "Manny Covey",
@@ -27670,7 +27712,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "marquawnmccraney": {
 "player": "Marquawn McCraney",
@@ -27688,10 +27730,10 @@
 },
 "marquezdavis": {
 "player": "Marquez Davis",
-"rate": 0.1,
+"rate": 0.0909,
 "rush_td": 1.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "marquezdortch": {
 "player": "Marquez Dortch",
@@ -28622,7 +28664,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "maxwhisner": {
 "player": "Max Whisner",
@@ -28643,7 +28685,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "maxzuluaga": {
 "player": "Max Zuluaga",
@@ -29133,7 +29175,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "michaelstevenson": {
 "player": "Michael Stevenson",
@@ -29182,7 +29224,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "michealcabellero": {
 "player": "Micheal Cabellero",
@@ -29802,10 +29844,10 @@
 },
 "nateblount": {
 "player": "Nate Blount IV",
-"rate": 0.5556,
+"rate": 0.5,
 "rush_td": 5.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "natebranch": {
 "player": "Nate Branch",
@@ -30008,7 +30050,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "nathanroberts": {
 "player": "Nathan Roberts",
@@ -30099,7 +30141,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "nehemiahjordan": {
 "player": "Nehemiah Jordan",
@@ -30232,7 +30274,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "nickbierman": {
 "player": "Nick Bierman",
@@ -30428,7 +30470,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "nicktyree": {
 "player": "Nick Tyree",
@@ -31090,10 +31132,10 @@
 },
 "omiriwiggins": {
 "player": "Omiri Wiggins",
-"rate": 0.5,
+"rate": 0.4545,
 "rush_td": 5.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "onterriosmith": {
 "player": "Onterrio Smith Jr.",
@@ -31135,7 +31177,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "oscarhammond": {
 "player": "Oscar Hammond",
@@ -31303,7 +31345,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "parkermady": {
 "player": "Parker Mady",
@@ -31331,7 +31373,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "patmcquaide": {
 "player": "Pat McQuaide",
@@ -31975,7 +32017,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "queseanbrown": {
 "player": "Que'Sean Brown",
@@ -32206,7 +32248,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "randallnauden": {
 "player": "Randall Nauden",
@@ -32374,7 +32416,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "reedharris": {
 "player": "Reed Harris",
@@ -32885,7 +32927,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "rockylencioni": {
 "player": "Rocky Lencioni",
@@ -33039,7 +33081,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "romangagliano": {
 "player": "Roman Gagliano",
@@ -33620,7 +33662,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "samdriggers": {
 "player": "Sam Driggers",
@@ -34096,7 +34138,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "sedrickalexander": {
 "player": "Sedrick Alexander",
@@ -34212,10 +34254,10 @@
 },
 "sethglatz": {
 "player": "Seth Glatz",
-"rate": 0.3,
-"rush_td": 3.0,
+"rate": 0.4545,
+"rush_td": 5.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "sethmyers": {
 "player": "Seth Myers",
@@ -34485,10 +34527,10 @@
 },
 "shekaimillsknight": {
 "player": "Shekai Mills-Knight",
-"rate": 0.3333,
+"rate": 0.3,
 "rush_td": 3.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "sheltonsampson": {
 "player": "Shelton Sampson Jr.",
@@ -34642,7 +34684,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "somourianwingo": {
 "player": "Somourian Wingo",
@@ -34768,7 +34810,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "stevebrown": {
 "player": "Steve Brown",
@@ -34985,7 +35027,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "tahjsmith": {
 "player": "Tahj Smith",
@@ -35216,7 +35258,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "tashibraceful": {
 "player": "Tashi Braceful",
@@ -35692,7 +35734,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "tevincarter": {
 "player": "Tevin Carter",
@@ -35993,7 +36035,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Alabama State",
-"team_games": 9
+"team_games": 10
 },
 "tjsabatucci": {
 "player": "TJ Sabatucci",
@@ -36280,7 +36322,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "traceestes": {
 "player": "Trace Estes",
@@ -36462,7 +36504,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "travisterrell": {
 "player": "Travis Terrell Jr.",
@@ -36511,7 +36553,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "trayvonpinder": {
 "player": "Trayvon Pinder",
@@ -36602,7 +36644,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "tremayneharris": {
 "player": "Tremayne Harris Jr.",
@@ -36714,7 +36756,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "trevonkinchen": {
 "player": "Trevon Kinchen",
@@ -36735,7 +36777,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "trevorfoley": {
 "player": "Trevor Foley",
@@ -36756,7 +36798,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "trevorrogers": {
 "player": "Trevor Rogers",
@@ -36963,10 +37005,10 @@
 },
 "trinidadchambliss": {
 "player": "Trinidad Chambliss",
-"rate": 0.7778,
+"rate": 0.7,
 "rush_td": 7.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "tripmaxwell": {
 "player": "Trip Maxwell",
@@ -36994,7 +37036,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "SE Louisiana",
-"team_games": 10
+"team_games": 11
 },
 "tristanhollins": {
 "player": "Tristan Hollins",
@@ -37407,7 +37449,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "tylerbell": {
 "player": "Tyler Bell",
@@ -37565,10 +37607,10 @@
 },
 "tylerlofton": {
 "player": "Tyler Lofton",
-"rate": 0.4,
+"rate": 0.3636,
 "rush_td": 4.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "tylermanship": {
 "player": "Tyler Manship",
@@ -38167,10 +38209,10 @@
 },
 "victordawson": {
 "player": "Victor Dawson",
-"rate": 0.9,
-"rush_td": 9.0,
+"rate": 0.9091,
+"rush_td": 10.0,
 "team": "Illinois State",
-"team_games": 10
+"team_games": 11
 },
 "victorrosa": {
 "player": "Victor Rosa",
@@ -38426,10 +38468,10 @@
 },
 "whittnewbauer": {
 "player": "Whitt Newbauer",
-"rate": 0.1111,
+"rate": 0.1,
 "rush_td": 1.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "wilhelmdaal": {
 "player": "Wilhelm Daal",
@@ -38538,10 +38580,10 @@
 },
 "williamecholes": {
 "player": "William Echoles",
-"rate": 0.1111,
+"rate": 0.1,
 "rush_td": 1.0,
 "team": "Ole Miss",
-"team_games": 9
+"team_games": 10
 },
 "williamfierro": {
 "player": "William Fierro",
@@ -38765,7 +38807,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "wyatthook": {
 "player": "Wyatt Hook",
@@ -39003,7 +39045,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Oklahoma",
-"team_games": 9
+"team_games": 10
 },
 "xavierspadacini": {
 "player": "Xavier Spadacini",
@@ -39374,7 +39416,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Jackson State",
-"team_games": 9
+"team_games": 10
 },
 "zalenwatkins": {
 "player": "Zalen Watkins",
@@ -39439,12 +39481,19 @@
 "team": "VMI",
 "team_games": 11
 },
+"zanehooper": {
+"player": "Zane Hooper",
+"rate": 0.0,
+"rush_td": 0.0,
+"team": "SE Louisiana",
+"team_games": 11
+},
 "zanekinsey": {
 "player": "Zane Kinsey",
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "zanesmith": {
 "player": "Zane Smith",
@@ -39598,7 +39647,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "McNeese",
-"team_games": 10
+"team_games": 11
 },
 "zeonchriss": {
 "player": "Zeon Chriss",
@@ -39682,7 +39731,7 @@
 "rate": 0.0,
 "rush_td": 0.0,
 "team": "Youngstown State",
-"team_games": 10
+"team_games": 11
 },
 "zionragins": {
 "player": "Zion Ragins",
