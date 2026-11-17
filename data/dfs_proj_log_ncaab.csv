@@ -2988,3 +2988,62 @@ date,gid,player,team,opp,dk_pos,salary,proj,sd,floor,ceil,own,proj_source,impute
 2026-11-16,156660,Koren Johnson,PORST,STMRY,G,3000,1.02,1.52,0.0,3.25,0.2,bench,all,,0,,,,live,66.0,1.05
 2026-11-16,156660,Gunars Grinvalds,UCLA,LBS,G/F,3000,4.46,3.28,2.0,8.75,0.6,bench,all,,0,,,1.9,live,87.5,2.696
 2026-11-16,156660,Tyler Bey,GRAM,UK,G/F,3000,0.95,1.47,0.0,3.5,0.2,bench,all,,0,,,,live,62.25,3.0
+2026-11-17,156662,Thomas Haugh,UF,ND,F,9200,37.45,10.58,30.0,51.25,70.0,props,stl|blk|tov,,1,Florida,33.318,36.6,live,82.75,36.811
+2026-11-17,156662,Alex Condon,UF,ND,F,9000,34.61,9.8,27.75,47.5,60.3,props,fg3|stl|blk|tov,,1,Florida,30.538,32.3,live,82.75,34.255
+2026-11-17,156662,Dedan Thomas Jr.,UH,RU,G,8800,35.84,9.78,29.0,48.75,58.8,props,reb|stl|blk|tov,,1,,,33.1,live,80.0,35.676
+2026-11-17,156662,Rueben Chinyelu,UF,ND,F,7800,28.88,8.32,22.75,39.78,40.9,props,fg3|stl|blk|tov,,1,Florida,24.526,26.9,live,82.75,28.41
+2026-11-17,156662,Joseph Tugler,UH,RU,F,7400,19.3,6.44,15.0,27.75,15.2,blend,all,,1,Houston,23.5,24.3,live,80.0,24.741
+2026-11-17,156662,Ethan Roberts,ND,UF,G/F,7000,23.28,8.33,17.0,34.0,23.2,props,ast|stl|blk|tov,,1,Penn,30.478,28.4,live,67.25,23.212
+2026-11-17,156662,Delrecco Gillespie,UH,RU,F,6800,26.19,8.23,20.25,37.25,37.0,props,ast|fg3|stl|blk|tov,,1,,,21.4,live,80.0,26.127
+2026-11-17,156662,Boogie Fland,UF,ND,G,6700,25.63,8.19,20.0,36.0,31.5,props,stl|blk|tov,Q,1,Florida,29.991,21.8,live,82.75,25.627
+2026-11-17,156662,Logan Duncomb,ND,UF,F,6600,23.21,7.91,17.75,34.0,26.8,props,ast|fg3|stl|blk|tov,,1,,,21.6,live,67.25,23.061
+2026-11-17,156662,Tariq Francis,RU,UH,G,6500,21.3,7.87,15.5,32.0,19.2,props,stl|blk|tov,,1,Rutgers,27.791,17.4,live,63.5,21.363
+2026-11-17,156662,Braeden Smith,ND,UF,G,6400,21.62,7.76,16.0,32.0,20.2,props,fg3|stl|blk|tov,,1,,,30.7,live,67.25,21.519
+2026-11-17,156662,Christian Gurdak,RU,UH,F,6300,22.09,7.74,16.75,32.25,24.9,props,fg3|stl|blk|tov,,1,,,29.7,live,63.5,21.735
+2026-11-17,156662,Brady Koehler,ND,UF,F,6200,26.69,8.79,20.75,38.03,46.9,props,ast|stl|blk|tov,,1,Notre Dame,15.99,33.1,live,67.25,26.351
+2026-11-17,156662,Braeden Shrewsberry,ND,UF,G,5900,21.32,8.23,15.25,32.75,21.0,props,stl|blk|tov,,1,Notre Dame,32.697,26.2,live,67.25,21.262
+2026-11-17,156662,Mercy Miller,UH,RU,G,5800,22.67,7.62,17.25,33.0,25.7,props,stl|blk|tov,,1,Houston,11.872,23.1,live,80.0,22.878
+2026-11-17,156662,Lino Mark,RU,UH,G,5700,23.53,7.97,17.75,34.25,29.6,props,fg3|stl|blk|tov,,1,Rutgers,15.942,24.9,live,63.5,23.816
+2026-11-17,156662,Denzel Aberdeen,UF,ND,G,5300,20.31,7.45,15.19,30.25,20.8,props,stl|blk|tov,,1,,,12.8,live,82.75,20.146
+2026-11-17,156662,Chase McCarty,UH,RU,F,5200,17.81,6.82,13.0,27.0,18.1,blend,all,,1,Houston,12.317,20.4,live,80.0,13.132
+2026-11-17,156662,Darren Buchanan Jr.,RU,UH,G,5100,18.65,6.88,13.75,27.75,17.1,props,fg3|stl|blk|tov,,1,Rutgers,24.047,17.6,live,63.5,18.698
+2026-11-17,156662,Jamichael Davis,RU,UH,G,5000,17.47,6.7,12.75,26.5,14.6,blend,all,,0,Rutgers,26.185,23.0,live,63.5,16.419
+2026-11-17,156662,Chendall Weaver,UH,RU,G,4900,12.57,5.97,8.25,20.75,6.8,blend,all,,0,,,18.3,live,80.0,16.52
+2026-11-17,156662,Urban Klavzar,UF,ND,G,4800,17.84,8.15,12.0,28.75,16.4,blend,all,,0,Florida,20.7,14.1,live,82.75,16.379
+2026-11-17,156662,Logan Imes,ND,UF,G,4700,12.34,5.48,8.5,19.75,6.7,blend,all,,0,Notre Dame,21.136,11.6,live,67.25,13.557
+2026-11-17,156662,Corey Hadnot II,UH,RU,G,4600,16.03,6.98,11.0,25.5,12.8,blend,all,,0,,,13.3,live,80.0,14.337
+2026-11-17,156662,Jonathan Sanderson,ND,UF,G,4500,12.61,5.64,8.5,20.5,7.3,blend,all,,0,,,10.9,live,67.25,12.403
+2026-11-17,156662,Braden East,UH,RU,F,4400,14.56,6.09,10.25,22.75,13.8,blend,all,,0,,,17.4,live,80.0,15.459
+2026-11-17,156662,Darin Smith Jr.,RU,UH,G,4100,9.09,4.52,5.75,15.0,4.1,blend,all,,1,,,12.2,live,63.5,11.907
+2026-11-17,156662,Arafan Diane,UH,RU,F,4000,14.18,6.17,9.75,22.25,15.3,blend,all,,0,,,13.6,live,80.0,13.542
+2026-11-17,156662,RaSheed Jones,RU,UH,G,3900,10.22,4.84,6.75,16.53,5.3,bench,all,,0,,,11.3,live,63.5,3.096
+2026-11-17,156662,Will Sydnor,RU,UH,F,3800,2.82,2.29,1.25,6.0,1.5,bench,all,,0,,,8.7,live,63.5,2.897
+2026-11-17,156662,Domen Petrovic,UF,ND,F,3700,9.56,4.56,6.25,15.75,6.5,bench,all,,0,,,8.9,live,82.75,3.25
+2026-11-17,156662,Mervedi Miteo,RU,UH,F,3600,6.55,3.66,4.0,11.5,3.4,bench,all,,0,,,8.3,live,63.5,2.866
+2026-11-17,156662,Kordel Jefferson,UH,RU,G,3500,7.73,4.49,4.5,13.75,3.4,bench,all,,0,Houston,3.9,10.4,live,80.0,0.854
+2026-11-17,156662,Gevonte Ware,RU,UH,F,3400,0.15,0.52,0.0,0.0,0.7,bench,all,,0,Rutgers,6.117,9.0,live,63.5,0.378
+2026-11-17,156662,Bryce Dortch,ND,UF,F,3400,6.52,3.76,3.75,11.5,3.5,bench,all,,0,,,4.6,live,67.25,2.641
+2026-11-17,156662,Alex Lloyd,UF,ND,G,3300,17.48,7.26,12.5,27.25,36.2,bench,all,,0,Florida,4.771,13.1,live,82.75,0.893
+2026-11-17,156662,Diego Garavaglia,RU,UH,G,3300,7.12,4.08,4.25,12.5,3.1,bench,all,,0,,,6.6,live,63.5,2.735
+2026-11-17,156662,Dorin Buca,RU,UH,F,3200,3.6,2.7,1.5,7.25,1.7,bench,all,,0,,,4.6,live,63.5,2.582
+2026-11-17,156662,Yoro Diallo,ND,UF,F,3200,4.78,3.14,2.5,9.0,2.4,bench,all,,0,,,3.8,live,67.25,2.578
+2026-11-17,156662,Arturas Butajevas,UF,ND,F,3100,5.23,3.4,2.75,9.75,2.7,bench,all,,0,,,5.1,live,82.75,2.917
+2026-11-17,156662,Kaden Powers,RU,UH,G,3100,0.99,1.49,0.0,3.5,0.7,bench,all,,0,Rutgers,15.772,-0.5,live,63.5,3.166
+2026-11-17,156662,Luke Devine,ND,UF,F,3000,2.25,2.08,0.75,5.0,1.2,bench,all,,0,,,2.4,live,67.25,2.468
+2026-11-17,156662,Gan-Erdene Solongo,ND,UF,F,3000,3.61,2.71,1.5,7.25,1.8,bench,all,,0,,,2.3,live,67.25,2.46
+2026-11-17,156662,Djafar Silimana,UH,RU,F,3000,1.36,1.66,0.0,3.5,1.0,bench,all,,0,,,1.0,live,80.0,2.523
+2026-11-17,156662,Martin Tonejc,RU,UH,F,3000,0.67,1.13,0.0,2.0,0.8,bench,all,,0,,,-0.1,live,63.5,2.221
+2026-11-17,156662,Viktor Mikic,UF,ND,F,3000,3.77,2.78,1.5,7.53,1.9,bench,all,,0,Florida,2.918,3.9,live,82.75,1.017
+2026-11-17,156662,Jones Lay,UF,ND,F,3000,3.73,2.73,1.5,7.5,1.8,bench,all,,0,,,1.3,live,82.75,2.583
+2026-11-17,156662,CJ Ingram,UF,ND,G,3000,0.51,1.05,0.0,2.0,0.6,bench,all,,0,Florida,5.405,,live,82.75,1.538
+2026-11-17,156662,Brady Stevens,ND,UF,G,3000,1.25,1.68,0.0,3.5,0.7,bench,all,,0,Notre Dame,2.62,1.0,live,67.25,0.449
+2026-11-17,156662,Jake Burow,ND,UF,G,3000,1.66,1.95,0.0,4.5,0.8,bench,all,,0,,,0.6,live,67.25,2.325
+2026-11-17,156662,Tyus Thomas,UH,RU,G,3000,1.36,1.74,0.0,3.5,0.7,bench,all,,0,,,0.0,live,80.0,1.05
+2026-11-17,156662,Ikenna Alozie,UH,RU,G,3000,1.92,2.1,0.0,4.75,0.8,bench,all,,0,,,0.0,live,80.0,1.05
+2026-11-17,156662,AJ Brown,UF,ND,G,3000,5.92,3.85,3.0,11.0,2.4,bench,all,,0,,,7.0,live,82.75,3.083
+2026-11-17,156662,Bryce Jackson,UH,RU,G,3000,5.91,3.82,3.0,11.25,2.4,bench,all,,0,,,3.9,live,80.0,2.773
+2026-11-17,156662,Alex Kovatchev,UF,ND,G,3000,3.15,2.71,1.25,6.75,1.2,bench,all,,0,Florida,3.24,4.1,live,82.75,0.496
+2026-11-17,156662,Nick Shrewsberry,ND,UF,G,3000,3.29,2.81,1.25,7.0,1.2,bench,all,,0,,,2.2,live,67.25,2.452
+2026-11-17,156662,Imahri Wooten,RU,UH,G,3000,1.12,1.56,0.0,3.5,0.7,bench,all,,0,,,2.1,live,63.5,2.39
+2026-11-17,156662,Max Fradkin,RU,UH,G,3000,1.13,1.61,0.0,3.5,0.7,bench,all,,0,,,1.1,live,63.5,2.313
+2026-11-17,156662,Devin Brown,ND,UF,G,3000,7.26,4.15,4.25,13.0,3.4,bench,all,,0,,,3.5,live,67.25,2.555
