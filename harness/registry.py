@@ -219,6 +219,7 @@ RULES: list[tuple[str, str]] = [
      r"categories|tick|history_collect|odds_capture)", "ingest"),
     (r"^buzz_(?!fit)|^tout_|^pickem_pool|^pickem_session|^dfs_entry_history", "ingest"),
     (r"^dfs_strategy_doe$", "evaluate"),  # construction arms scored in DK dollars vs the real fields
+    (r"^(dfs_props_roi|dfs_transfer)$", "evaluate"),  # props-vs-ROI check; cross-sport lessons the scout reads
     (r"(publish|mirror_app)", "publish"),
     (r"(calibration|backtest|_fit\b|_fit_|fit$|grade|_eval|validate|replay|measure|"
      r"compare|parity|sweep|accuracy|trust|meta|contest_db|contest_stats|transferability|plot|"
@@ -243,8 +244,8 @@ EDGE_RULES: list[tuple[str, str]] = [
     (r"^pagereload$", "app"),
     (r"^dfs_forward_log$", "evaluate"),
     (r"^(dfs_run|dfs_slate|dfs_sport|repo_files|names|scanner|ncaab_names)", "optimize"),
-    (r"^(client|dfs$|nfl$|nfl_intel$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
     (r"^pickem_polymarket$", "ingest"),  # Polymarket NFL spread ladder -> a line (logged, not used)
+    (r"^(client|dfs$|nfl$|nfl_intel$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
      r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups|nba_availability|nba_injury_report|nba_rotowire|"
      r"ncaab_rotowire|ncaab_torvik|ncaab_espn)", "ingest"),
 ]

@@ -276,7 +276,8 @@ TRANSFERS = [
     {"id": "T19", "lesson": "L09", "sport": "nhl", "kind": "ownership", "status": "measure",
      "idea": "a skater promoted to PP1 / the top line by news becomes chalk", "where": "edge/dfs_nhl_theory.py",
      "data": "28 GPP slates; DFO line snapshots", "probe": None, "target": "ownership: promotions (GPP only)"},
-    {"id": "T21", "lesson": "L13", "sport": "nba", "kind": "availability", "status": "measure",
+    {"id": "T21", "lesson": "L13", "sport": "nba", "kind": "availability", "status": "null",
+     "measured": "cycle 34 (11/17): Q at build DNP 15/26 in test 11/08-11/15, but 0 test lineup slots held one (P(dress) hedge already avoids them); not worth a sim mixture yet",
      "idea": "a Questionable / GTD player's DNP chance drawn as a zero in the lineup sim (cash floor / GPP "
              "percentiles see it), split by whom the feed defaults to (Expected starter vs bench)",
      "where": "edge/dfs_run_nba.py (minutes hedge shrinks the mean; is the DNP a mixture in the sim?)",

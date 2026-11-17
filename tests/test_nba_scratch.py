@@ -302,3 +302,14 @@ def test_a_failed_last_call_goes_again_on_the_next_run():
     at = datetime(2026, 10, 15, 23, 26, tzinfo=timezone.utc)
     assert S.swap_reminders([w], {"1": {"out": True}}, at)
     assert not w["reminded"]                                    # only run() marks it, once sent
+
+
+def test_injury_report_keeps_a_suffix_split_off_by_layout_spaces():
+    # pypdf layout text: 'Porter  Jr.,Michael' -- the suffix must stay on the surname
+    # (critique cycle 34: 325 report rows lost, Porter Jr. Q 11/14 projected 35.9, DNP)
+    from edge import nba_injury_report as r
+    from edge.names import norm
+    assert r._last_name("Porter  Jr.") == "Porter Jr."
+    assert r._last_name("NOP@MEM 07:30 PM   Murphy   III") == "Murphy III"
+    assert r._last_name("LAL@BOS  James") == "James"
+    assert norm(r.full_name(r._last_name("Payton  II"), "Gary")) == norm("Gary Payton II")
