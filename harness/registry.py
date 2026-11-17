@@ -83,6 +83,14 @@ JOBS: dict[str, Job] = {j.name: j for j in [
        doc="every DFS result number for a script or LLM -> data/dfs_scorecard.json: ROI by period/sport/"
            "type, contest groups (field/cap/games/overlay/alert), per-slate series, code updates, "
            "projection accuracy by position; the dashboard's numbers, each with its n"),
+    _j("dfs-refresh", "evaluate", "scripts/dfs_refresh.py", timeout=3 * 3600,
+       doc="after dropping contest exports: import-contests -> entry-history -> roi-dashboard-rows "
+           "-> critique-ledger-rows -> dfs-scorecard, stopping at the first failure; "
+           "Claude then uploads data/harness/dfs_roi/*.json to the dashboard"),
+    _j("nba-forward", "evaluate", "scripts/dfs_strategy_doe.py", "forward", "nba", sport="nba", timeout=3600,
+       doc="NBA DOE leads judged forward (11/14): Adam's real entries vs production as it ran (props "
+           "blend, since 11/8) vs the paper cash arm p70_cap3 (since 11/15), plus late-swap misses; "
+           "run after import-contests -> data/strategy_doe/forward_nba.json"),
     _j("buzz-nhl", "ingest", "scripts/buzz_nhl.py", sport="nhl", timer="buzz-nhl-publish.timer",
        doc="tonight's NHL DFS YouTube mentions"),
     _j("inverse-consensus", "evaluate", "scripts/inverse_consensus.py",
@@ -120,6 +128,12 @@ JOBS: dict[str, Job] = {j.name: j for j in [
        doc="extract and grade tout picks from transcripts"),
     _j("pickem-tick", "ingest", "scripts/pickem_deadline_tick.py", sport="pickem",
        timer="pickem-deadline-tick.timer", doc="capture pick'em lines on the deadline schedule"),
+    _j("pickem-polymarket", "ingest", "scripts/pickem_polymarket.py", "log", "--push", sport="pickem",
+       timer="pickem-polymarket.timer", timeout=3600, tests=("tests/test_pickem_polymarket.py",),
+       doc="Polymarket NFL spread at every pick'em reading + 1 min before each deadline "
+           "(backfills; logged, not used) -> data/pickem_polymarket_log.csv"),
+    _j("pickem-polymarket-report", "evaluate", "scripts/pickem_polymarket.py", "report", sport="pickem",
+       doc="shipped make_pick graded with books vs Polymarket as the live line"),
     # ── optimize ──────────────────────────────────────────────────────────
     _j("autolog", "optimize", "scripts/dfs_autolog.py", timer="dfs-autolog.timer", timeout=3000,
        doc="build + log every DFS slate 10-15 min before lock (all six sports)"),
@@ -128,12 +142,6 @@ JOBS: dict[str, Job] = {j.name: j for j in [
     _j("lineups-nhl", "optimize", "scripts/dfs_lineups_nhl.py", sport="nhl"),
     _j("lineups-nba", "optimize", "scripts/dfs_lineups_nba.py", sport="nba",
        tests=("tests/test_dfs_nba.py",)),
-    _j("pickem-polymarket", "ingest", "scripts/pickem_polymarket.py", "log", "--push", sport="pickem",
-       timer="pickem-polymarket.timer", timeout=3600, tests=("tests/test_pickem_polymarket.py",),
-       doc="Polymarket NFL spread at every pick'em reading + 1 min before each deadline "
-           "(backfills; logged, not used) -> data/pickem_polymarket_log.csv"),
-    _j("pickem-polymarket-report", "evaluate", "scripts/pickem_polymarket.py", "report", sport="pickem",
-       doc="shipped make_pick graded with books vs Polymarket as the live line"),
     _j("lineups-ncaab", "optimize", "scripts/dfs_lineups_ncaab.py", sport="ncaab",
        tests=("tests/test_dfs_ncaab.py", "tests/test_ncaab_names.py")),
     _j("ncaab-prior-fit", "evaluate", "scripts/ncaab_prior_fit.py", sport="ncaab",
@@ -218,6 +226,7 @@ RULES: list[tuple[str, str]] = [
     (r"(^|_)(collect|ingest|fetch|capture|scaffold|import|bootstrap|from_cookie|discover|"
      r"categories|tick|history_collect|odds_capture)", "ingest"),
     (r"^buzz_(?!fit)|^tout_|^pickem_pool|^pickem_session|^dfs_entry_history", "ingest"),
+    (r"^dfs_props_roi$|^dfs_transfer$", "evaluate"),  # props-vs-ROI study; cross-sport lesson ledger the scout reads
     (r"^dfs_strategy_doe$", "evaluate"),  # construction arms scored in DK dollars vs the real fields
     (r"(publish|mirror_app)", "publish"),
     (r"(calibration|backtest|_fit\b|_fit_|fit$|grade|_eval|validate|replay|measure|"
@@ -235,6 +244,7 @@ RULES: list[tuple[str, str]] = [
 EDGE_RULES: list[tuple[str, str]] = [
     (r"^(git_lock|data_branch)$", "publish"),
     (r"^dfs_entry_edge$", "model"),
+    (r"^pickem_polymarket$", "ingest"),  # Polymarket NFL spread ladder -> a line (logged, not used)
     (r"^(nba_minutes|nba_minutes_gap|nba_minutes_ml|nba_project|nba_ceiling_quantiles|nba_courtiq)$", "model"),
     (r"^scrollrail$", "app"),
     (r"^(dfs_opt|dfs_leverage|dfs_swap|dfs_roster|dfs_lineup|sgp|parlay)", "optimize"),
@@ -244,7 +254,6 @@ EDGE_RULES: list[tuple[str, str]] = [
     (r"^dfs_forward_log$", "evaluate"),
     (r"^(dfs_run|dfs_slate|dfs_sport|repo_files|names|scanner|ncaab_names)", "optimize"),
     (r"^(client|dfs$|nfl$|nfl_intel$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
-    (r"^pickem_polymarket$", "ingest"),  # Polymarket NFL spread ladder -> a line (logged, not used)
      r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups|nba_availability|nba_injury_report|nba_rotowire|"
      r"ncaab_rotowire|ncaab_torvik|ncaab_espn)", "ingest"),
 ]

@@ -3,6 +3,7 @@
 
     python3 scripts/dfs_strategy_doe.py run nba [--seeds 8] [--iters 100]   # build + score + report
     python3 scripts/dfs_strategy_doe.py report nba                           # report from the saved rows
+    python3 scripts/dfs_strategy_doe.py forward nba                          # forward record of the leads
 
 Why it exists (2026-11-14, after the independent system review, SYSTEM_REVIEW.md): every
 lab and the nightly critique gate score stand-ins (MAE, field percentile, cash-line share)
@@ -81,6 +82,18 @@ GPP_ARMS["p90_min24"] = {"pct": 90, "minmin": 24}
 
 ARMS = {"cash": CASH_ARMS, "gpp": GPP_ARMS}
 
+# ---- forward tracking (`forward`): decided 2026-11-14, counted only on nights after ----
+# The NBA DOE's two leads, judged on nights nobody looked at when choosing them:
+#  - production with the DK-props blend (critique cycle 27, live 2026-11-08): the replay put
+#    it ~20 pts/lineup over the no-props model on 10/20-11/12, but the blend was chosen on
+#    those nights, so only nights since it went live count;
+#  - cash arm p70_cap3 (DOE 11/14: LODO pick +14% [-2,+33] over p30, 15 dates) -- PAPER only,
+#    counted from the night after it was picked.
+FORWARD = False
+FWD_START = {"production": "2026-11-08", "p70_cap3": "2026-11-15"}
+FWD_ARMS = {"cash": {"base": CASH_ARMS["base"], "p70_cap3": CASH_ARMS["p70_cap3"]},
+            "gpp": {"base": GPP_ARMS["base"]}}
+
 
 # ---- sport adapters ---------------------------------------------------------------
 class NBA:
@@ -109,14 +122,15 @@ class NBA:
     def build(self, gid, ps, seed, iters, modes) -> dict:
         """{mode: {arm: [names]}} -- one sim per (board, seed), every arm optimised on it."""
         from edge import dfs_nba_theory as theory, dfs_opt_nba, dfs_opt_climb as climb
-        pool = self.L._set_pool(ps, LODO[ps[0]["date"]], gid)
+        # forward: production exactly as it ran (shipped constants, fitted before these nights)
+        pool = self.L._set_pool(ps, "shipped" if FORWARD else LODO[ps[0]["date"]], gid)
         sim = theory.simulate(pool, n_sims=self.L.N_SIMS, seed=seed)
         theory.summarise(sim, pool)
         dfs_opt_nba.prepare(pool)
         out = {}
         for mode in modes:
             out[mode] = {}
-            for arm, spec in ARMS[mode].items():
+            for arm, spec in (FWD_ARMS if FORWARD else ARMS)[mode].items():
                 excl = {p["name"] for p in pool if spec.get("minmin") and (p.get("minutes") or 0) < spec["minmin"]}
                 best = climb.search(pool, sim, dfs_opt_nba.NBA, spec["pct"],
                                     key="ceil" if mode == "gpp" else "floor", iters=iters, seed=seed,
@@ -338,14 +352,103 @@ def _dims(rows, mode, pc) -> list[dict]:
     return out
 
 
+def forward(sport: str, seeds: int, iters: int) -> dict:
+    """Forward record since FWD_START: Adam's real entries, production as it ran, the paper
+    cash arm, and late-swap misses (a 0-point player in Adam's entry: was he still projected
+    on the app's last pre-lock board, i.e. news after the last build?)."""
+    global FORWARD, _PARENT
+    from edge.names import norm
+    FORWARD = True
+    S = _PARENT = SPORTS[sport]()
+    start = min(FWD_START.values())
+    B = {g: ps for g, ps in S.boards().items() if ps[0]["date"] >= start}
+    F = S.fields()
+    cache = OUT / f"cache_{sport}_fwd_i{iters}"
+    cache.mkdir(parents=True, exist_ok=True)
+    todo, built = [], {}
+    for gid, ps in B.items():
+        modes = sorted({t for _, t, _, _ in F[gid]})
+        for s in range(seeds):
+            f = cache / f"{gid}-{s}.json"
+            if f.exists():
+                built[(gid, s)] = json.loads(f.read_text())
+            else:
+                todo.append((sport, gid, ps, s, iters, modes))
+    if todo:
+        with ProcessPoolExecutor(min(WORKERS, len(todo))) as ex:
+            for gid, s, lu in ex.map(_job, todo):
+                built[(gid, s)] = lu
+                (cache / f"{gid}-{s}.json").write_text(json.dumps(lu))
+    c = sqlite3.connect(ROOT / "data" / "contests.db")
+    nights = []
+    for gid, ps in sorted(B.items(), key=lambda kv: kv[1][0]["date"]):
+        on_board = {norm(p["name"]) for p in ps}
+        truth = S.L.dk_points(gid)
+        for cid, typ, field, _ in F[gid]:
+            fee = c.execute("select entry_fee from contest where contest_id=?", (cid,)).fetchone()[0] or 0
+            arms = defaultdict(list)
+            for s in range(seeds):
+                for arm, names in (built.get((gid, s)) or {}).get(typ, {}).items():
+                    x = S.score(gid, ps, names)
+                    if x is not None:
+                        arms[arm].append(S.payout(cid, field, x))
+            adam, misses = [], []
+            for eid, pts in c.execute("select entry_id, points from entry where contest_id=? and is_adam=1", (cid,)):
+                adam.append(S.payout(cid, field, pts))
+                for (pn,) in c.execute("select player_norm from entry_player where contest_id=? and entry_id=?",
+                                       (cid, eid)):
+                    if not truth.get(pn):
+                        misses.append({"player": pn, "on_last_board": pn in on_board})
+            nights.append({"date": ps[0]["date"], "contest": cid, "mode": typ, "fee": fee,
+                           "adam": adam, "arms": {a: float(np.mean(v)) for a, v in arms.items()},
+                           "late_swap_misses": misses})
+    print(f"=== {sport.upper()} forward record (ROI per $1; production since {FWD_START['production']}, "
+          f"paper cash arm since {FWD_START['p70_cap3']}) ===")
+    summary = {"sport": sport, "start": FWD_START, "nights": nights, "totals": {}}
+    for mode in ("cash", "gpp"):
+        ns = [n for n in nights if n["mode"] == mode]
+        dates = sorted({n["date"] for n in ns})
+        tot = {"dates": len(dates), "contests": len(ns),
+               "adam": _roi([r for n in ns for r in n["adam"]]),
+               "adam_entries": sum(len(n["adam"]) for n in ns),
+               "production": _roi([n["arms"].get("base") for n in ns])}
+        if mode == "cash":
+            ps_ = [n for n in ns if n["date"] >= FWD_START["p70_cap3"]]
+            tot["p70_cap3_paper"] = _roi([n["arms"].get("p70_cap3") for n in ps_])
+            tot["production_same_nights"] = _roi([n["arms"].get("base") for n in ps_])
+            tot["p70_cap3_dates"] = len({n["date"] for n in ps_})
+        summary["totals"][mode] = tot
+        print(f"{mode}: {tot['dates']} dates / {tot['contests']} contests"
+              + ("  (not enough data: < 5 dates)" if tot["dates"] < 5 else ""))
+        print(f"   Adam real {tot['adam']} on {tot['adam_entries']} entries | production replay {tot['production']}")
+        if mode == "cash":
+            print(f"   paper p70_cap3 {tot['p70_cap3_paper']} vs production {tot['production_same_nights']} "
+                  f"on the same {tot['p70_cap3_dates']} dates")
+    miss = [(n["date"], m["player"], m["on_last_board"]) for n in nights for m in n["late_swap_misses"]]
+    print(f"late-swap misses (0-pt player in Adam's entry): {len(miss)}")
+    for d, p, ob in sorted(set(miss)):
+        print(f"   {d} {p}: " + ("still projected on the last board -> news after the last build" if ob
+                                  else "already off the last board -> entered with a known OUT"))
+    (OUT / f"forward_{sport}.json").write_text(json.dumps(summary, indent=1))
+    return summary
+
+
+def _roi(rets: list) -> str | None:
+    v = [r for r in rets if r is not None]
+    return f"{np.mean(v) - 1:+.0%} (n={len(v)})" if v else None
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=("run", "report"))
+    ap.add_argument("cmd", choices=("run", "report", "forward"))
     ap.add_argument("sport", choices=sorted(SPORTS))
     ap.add_argument("--seeds", type=int, default=8)
     ap.add_argument("--iters", type=int, default=100)
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
+    if a.cmd == "forward":
+        forward(a.sport, a.seeds, a.iters)
+        return 0
     if a.cmd == "run":
         run(a.sport, a.seeds, a.iters)
     report(a.sport)
