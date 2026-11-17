@@ -88,6 +88,16 @@
 },
 "NAS": {},
 "NBA": {
+"156831": {
+"ContestStartTimeSuffix": null,
+"DraftGroupId": 156831,
+"DraftGroupTag": "Featured",
+"GameCount": 9,
+"GameTypeId": 70,
+"StartDate": "2026-11-19T00:00:00.0000000Z",
+"StartDateEst": "2026-11-18T19:00:00.0000000",
+"last_start": "2026-11-19T01:00:00.0000000Z"
+},
 "156850": {
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 156850,
@@ -249,6 +259,86 @@
 "StartDate": "2026-11-18T03:00:00.0000000Z",
 "StartDateEst": "2026-11-17T22:00:00.0000000",
 "last_start": "2026-11-18T03:00:00.0000000Z"
+},
+"156696": {
+"ContestStartTimeSuffix": " (Madden Stream Early)",
+"DraftGroupId": 156696,
+"DraftGroupTag": "Featured",
+"GameCount": 3,
+"GameTypeId": 158,
+"StartDate": "2026-11-18T17:00:00.0000000Z",
+"StartDateEst": "2026-11-18T12:00:00.0000000",
+"last_start": "2026-11-18T21:00:00.0000000Z"
+},
+"156697": {
+"ContestStartTimeSuffix": " (Madden Stream DET @ LAR)",
+"DraftGroupId": 156697,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-18T17:00:00.0000000Z",
+"StartDateEst": "2026-11-18T12:00:00.0000000",
+"last_start": "2026-11-18T17:00:00.0000000Z"
+},
+"156698": {
+"ContestStartTimeSuffix": " (Madden Stream WAS @ ARI)",
+"DraftGroupId": 156698,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-18T19:00:00.0000000Z",
+"StartDateEst": "2026-11-18T14:00:00.0000000",
+"last_start": "2026-11-18T19:00:00.0000000Z"
+},
+"156699": {
+"ContestStartTimeSuffix": " (Madden Stream NO @ SEA)",
+"DraftGroupId": 156699,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-18T21:00:00.0000000Z",
+"StartDateEst": "2026-11-18T16:00:00.0000000",
+"last_start": "2026-11-18T21:00:00.0000000Z"
+},
+"156700": {
+"ContestStartTimeSuffix": " (Madden Stream)",
+"DraftGroupId": 156700,
+"DraftGroupTag": "Featured",
+"GameCount": 3,
+"GameTypeId": 158,
+"StartDate": "2026-11-18T23:00:00.0000000Z",
+"StartDateEst": "2026-11-18T18:00:00.0000000",
+"last_start": "2026-11-19T03:00:00.0000000Z"
+},
+"156701": {
+"ContestStartTimeSuffix": " (Madden Stream CHI @ NYG)",
+"DraftGroupId": 156701,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-18T23:00:00.0000000Z",
+"StartDateEst": "2026-11-18T18:00:00.0000000",
+"last_start": "2026-11-18T23:00:00.0000000Z"
+},
+"156702": {
+"ContestStartTimeSuffix": " (Madden Stream NYJ @ PIT)",
+"DraftGroupId": 156702,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-19T01:00:00.0000000Z",
+"StartDateEst": "2026-11-18T20:00:00.0000000",
+"last_start": "2026-11-19T01:00:00.0000000Z"
+},
+"156703": {
+"ContestStartTimeSuffix": " (Madden Stream ATL @ TB)",
+"DraftGroupId": 156703,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-19T03:00:00.0000000Z",
+"StartDateEst": "2026-11-18T22:00:00.0000000",
+"last_start": "2026-11-19T03:00:00.0000000Z"
 },
 "156774": {
 "ContestStartTimeSuffix": " (Thu-Mon)",
