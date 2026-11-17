@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-16T21:59:03+00:00",
+"generated_at": "2026-11-17T00:13:58+00:00",
 "goalies": {
 "2026-11-16": {
 "MTL": {
@@ -9859,10 +9859,10 @@
 "toiMinutes": 52,
 "toiSeconds": 4
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Gabriel Perreault": {
 "gtd": false,
@@ -9964,7 +9964,7 @@
 "line": "F2",
 "pk": "PK1",
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Jaroslav Chmelar": {
 "gtd": false,
@@ -9997,7 +9997,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Joonas Korpisalo": {
@@ -10068,6 +10068,40 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
+"pp": null
+},
+"Matt Rempe": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 92,
+"toiSeconds": 15
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 34,
+"toiSeconds": 5
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Matthew Robertson": {
@@ -10206,40 +10240,6 @@
 "pos": "rw",
 "pp": "PP2"
 },
-"Pavel Dorofeyev": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 4,
-"points": 7,
-"powerplayAssists": 2,
-"powerplayGoals": 1,
-"powerplayPoints": 3,
-"shots": 29,
-"toiMinutes": 160,
-"toiSeconds": 46
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 1,
-"powerplayPoints": 2,
-"shots": 20,
-"toiMinutes": 78,
-"toiSeconds": 5
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": "PP1"
-},
 "Scott Morrow": {
 "gtd": false,
 "injury": null,
@@ -10305,7 +10305,7 @@
 },
 "line": "F2",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Vladislav Gavrikov": {
@@ -10371,7 +10371,7 @@
 "toiMinutes": 86,
 "toiSeconds": 54
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
