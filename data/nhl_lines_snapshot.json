@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T18:29:39+00:00",
+"generated_at": "2026-11-17T18:58:46+00:00",
 "goalies": {
 "2026-11-17": {
 "ANA": {
@@ -64,7 +64,7 @@
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
-"status": null
+"status": "Confirmed"
 },
 "STL": {
 "goalie": "Jordan Binnington",
@@ -4236,40 +4236,6 @@
 }
 },
 "COL": {
-"Alex Gagne": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 100,
-"toiSeconds": 32
-},
-"last5": {
-"assists": 0,
-"blocks": 8,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 81,
-"toiSeconds": 46
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
-},
 "Artturi Lehkonen": {
 "gtd": false,
 "injury": null,
@@ -4679,6 +4645,40 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
+},
+"Mike Reilly": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 143,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 61,
+"toiSeconds": 52
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
 },
 "Nazem Kadri": {
 "gtd": false,
@@ -10888,6 +10888,40 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
+"pp": "PP2"
+},
+"Reid Schaefer": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 106,
+"toiSeconds": 6
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 51,
+"toiSeconds": 32
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Roman Josi": {
@@ -11059,40 +11093,6 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
-},
-"Vitali Pinchuk": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 85,
-"toiSeconds": 33
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 48,
-"toiSeconds": 49
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
 }
 },
 "NYI": {
@@ -13869,9 +13869,9 @@
 "toiMinutes": 63,
 "toiSeconds": 27
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Alexey Toropchenko": {
@@ -14073,9 +14073,9 @@
 "toiMinutes": 56,
 "toiSeconds": 42
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Dylan Holloway": {
@@ -14107,7 +14107,7 @@
 "toiMinutes": 91,
 "toiSeconds": 2
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -14141,7 +14141,7 @@
 "toiMinutes": 83,
 "toiSeconds": 29
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP1"
