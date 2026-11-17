@@ -7917,3 +7917,53 @@ date,gid,player,team,opp,dk_pos,salary,minutes,proj,sd,floor,ceil,own,promoted,l
 2026-11-16,156745,Saddiq Bey,NOP,GSW,SF/PF,6400,33.4,31.35,10.52,26.19,44.94,8.0,0,Expected,,live,1,34.08,31.99,29.53,props
 2026-11-16,156745,Yves Missi,NOP,GSW,C,5700,22.0,22.04,9.48,16.65,34.23,3.3,0,Expected,,live,1,26.75,20.8,19.36,props
 2026-11-16,156745,Zion Williamson,NOP,GSW,PF,7200,31.6,34.43,11.1,28.75,48.83,13.7,0,Expected,,live,1,39.42,32.8,33.43,props
+2026-11-16,156750,Chaney Johnson,BKN,PHI,SF/PF,3700,9.9,7.92,7.07,4.31,18.04,0.1,0,Confirmed,,live,0,8.67,,,model
+2026-11-16,156750,Danny Wolf,BKN,PHI,C,5000,19.2,17.87,9.52,12.6,30.64,7.5,0,Confirmed,,live,0,27.33,18.5,14.3,props
+2026-11-16,156750,Day'Ron Sharpe,BKN,PHI,C,5900,23.8,27.87,10.59,21.77,41.18,46.9,0,Confirmed,,live,1,34.92,27.98,25.69,props
+2026-11-16,156750,Egor Demin,BKN,PHI,PG/SG,4700,23.7,20.77,9.0,15.49,32.1,9.5,0,Confirmed,,live,1,17.08,19.17,17.99,props
+2026-11-16,156750,Josh Minott,BKN,PHI,PF/C,3000,2.8,2.71,5.57,0.0,11.44,0.0,0,Confirmed,,live,0,7.5,,,model
+2026-11-16,156750,Julius Randle,BKN,PHI,PF,7900,31.6,35.58,11.5,29.49,50.67,20.8,0,Confirmed,,live,1,31.0,32.68,34.95,props
+2026-11-16,156750,Keon Ellis,BKN,PHI,SG/SF,3500,11.2,7.86,7.29,4.05,18.02,0.3,0,Confirmed,,live,0,12.92,,,model
+2026-11-16,156750,Michael Porter Jr.,BKN,PHI,SF,7600,28.6,35.18,11.09,29.32,48.8,29.4,0,Confirmed,,live,1,36.67,32.39,34.48,props
+2026-11-16,156750,Mikel Brown Jr.,BKN,PHI,PG/SG,4500,19.9,21.36,9.44,15.94,33.19,13.3,0,Confirmed,,live,0,23.67,18.74,18.84,props
+2026-11-16,156750,Moritz Wagner,BKN,PHI,C,4000,14.9,11.7,8.04,6.96,22.35,2.0,0,Confirmed,,live,0,22.5,14.41,,no props: shrunk
+2026-11-16,156750,Noah Clowney,BKN,PHI,SF/PF,3900,21.0,16.79,9.24,11.08,28.47,7.7,0,Confirmed,,live,0,20.83,,,model
+2026-11-16,156750,Nolan Traore,BKN,PHI,PG/SG,4900,23.7,22.0,9.53,16.11,33.91,20.4,0,Confirmed,,live,1,23.08,,,model
+2026-11-16,156750,Terance Mann,BKN,PHI,PF,3300,9.5,5.76,6.88,2.12,15.69,0.1,0,Confirmed,,live,0,8.08,,,model
+2026-11-16,156750,Anfernee Simons,PHI,BKN,PG/SG,4300,19.9,15.57,8.88,10.36,27.41,4.5,0,Confirmed,,live,0,20.33,18.32,11.32,props
+2026-11-16,156750,Dean Wade,PHI,BKN,SF/PF,4200,30.0,16.72,9.2,11.06,28.98,24.4,1,Confirmed,,live,1,22.42,21.61,12.22,props
+2026-11-16,156750,Jabari Walker,PHI,BKN,SF/PF,3800,18.4,12.84,8.25,7.64,23.84,3.1,0,Confirmed,,live,0,17.08,18.59,,no props: shrunk
+2026-11-16,156750,Jaylen Brown,PHI,BKN,SG/SF,8000,34.4,38.8,11.96,33.07,54.44,33.1,0,Confirmed,,live,1,32.08,43.17,37.27,props
+2026-11-16,156750,Joel Embiid,PHI,BKN,C,8300,31.7,40.72,12.15,34.31,56.39,42.0,0,Confirmed,,live,1,33.17,43.92,39.65,props
+2026-11-16,156750,Justin Edwards,PHI,BKN,SF/PF,3300,3.1,2.86,5.73,0.0,11.4,0.0,0,Confirmed,,live,0,1.5,,,model
+2026-11-16,156750,Kentavious Caldwell-Pope,PHI,BKN,SG/SF,4400,22.3,14.07,8.37,8.96,25.2,1.7,0,Confirmed,,live,0,16.58,17.69,,no props: shrunk
+2026-11-16,156750,Labaron Philon Jr.,PHI,BKN,PG/SG,3000,6.6,5.94,6.82,2.34,15.05,0.0,0,Confirmed,,live,0,4.67,,,model
+2026-11-16,156750,Rayan Rupert,PHI,BKN,SG/SF,3500,1.4,1.23,5.29,0.0,9.67,0.0,0,Confirmed,,live,0,4.75,,,model
+2026-11-16,156750,Tacko Fall,PHI,BKN,C,3500,2.4,2.43,5.27,0.0,10.08,0.0,0,Confirmed,,live,0,1.67,,,model
+2026-11-16,156750,Tyrese Maxey,PHI,BKN,PG,8800,35.9,42.11,12.28,35.92,58.32,43.6,0,Confirmed,,live,1,41.25,44.75,41.33,props
+2026-11-16,156750,VJ Edgecombe,PHI,BKN,PG/SG,6300,33.8,31.55,10.57,26.4,45.47,29.5,0,Confirmed,,live,1,32.0,34.28,29.37,props
+2026-11-16,156750,Alperen Sengun,HOU,MIA,PF/C,9500,35.0,46.09,12.41,40.2,61.28,75.0,0,Confirmed,,live,1,56.58,49.32,45.71,props
+2026-11-16,156750,Bogdan Bogdanovic,HOU,MIA,SG/SF,3300,17.7,10.67,7.63,5.95,20.95,1.4,0,Confirmed,,live,0,14.0,16.46,,no props: shrunk
+2026-11-16,156750,Bruce Thornton,HOU,MIA,PG,3000,4.2,3.65,6.07,0.36,12.15,0.0,0,Confirmed,,live,0,0.5,,,model
+2026-11-16,156750,Fred VanVleet,HOU,MIA,PG,6000,31.9,30.76,10.27,25.17,43.7,52.8,0,Confirmed,,live,1,27.42,28.86,29.33,props
+2026-11-16,156750,Isaiah Crawford,HOU,MIA,SF/PF,3000,6.6,5.57,6.45,2.19,14.96,0.0,0,Confirmed,,live,0,2.83,,,model
+2026-11-16,156750,Jabari Smith Jr.,HOU,MIA,PF/C,6300,35.1,28.37,10.68,21.96,42.04,12.4,0,Confirmed,,live,1,23.42,33.0,25.43,props
+2026-11-16,156750,Jae'Sean Tate,HOU,MIA,SF/PF,3000,7.2,5.53,6.51,2.1,14.55,0.0,0,Confirmed,,live,0,2.42,,,model
+2026-11-16,156750,Kevin Durant,HOU,MIA,SF,7500,35.4,37.89,12.12,32.04,54.12,42.6,0,Confirmed,,live,1,35.42,42.7,36.16,props
+2026-11-16,156750,Oscar Tshiebwe,HOU,MIA,C,3000,11.7,8.91,7.09,5.11,17.76,0.6,0,Confirmed,,live,0,9.83,14.03,,no props: shrunk
+2026-11-16,156750,Reed Sheppard,HOU,MIA,SG,4500,23.8,22.61,9.46,17.11,34.59,16.1,0,Confirmed,,live,0,18.5,25.69,19.21,props
+2026-11-16,156750,Tari Eason,HOU,MIA,SF/PF,5300,31.6,26.4,10.31,20.65,38.98,73.9,1,Confirmed,,live,1,26.75,29.97,23.4,props
+2026-11-16,156750,Andrew Wiggins,MIA,HOU,SF,4500,24.0,19.78,9.76,14.11,33.06,6.7,0,Confirmed,,live,0,16.75,20.66,16.41,props
+2026-11-16,156750,Bam Adebayo,MIA,HOU,C,8200,34.9,37.34,11.6,30.94,52.64,30.6,0,Confirmed,,live,1,46.92,44.08,35.19,props
+2026-11-16,156750,Bobby Portis,MIA,HOU,PF/C,4800,18.5,19.07,9.43,13.34,31.36,2.8,0,Confirmed,,live,0,13.83,,,model
+2026-11-16,156750,Davion Mitchell,MIA,HOU,PG,7100,35.1,31.13,10.66,25.68,45.55,27.5,0,Confirmed,,live,1,47.0,32.2,29.21,props
+2026-11-16,156750,Dru Smith,MIA,HOU,PG,3000,3.0,2.45,5.62,0.0,10.55,0.0,0,Confirmed,,live,0,0.67,,,model
+2026-11-16,156750,Giannis Antetokounmpo,MIA,HOU,PF,11700,31.8,49.12,12.92,43.31,64.89,56.0,0,Confirmed,,live,1,58.33,50.95,49.39,props
+2026-11-16,156750,Keshad Johnson,MIA,HOU,SF,3000,0.9,0.9,4.89,0.0,9.5,0.0,0,Confirmed,,live,0,0.0,,,model
+2026-11-16,156750,Klay Thompson,MIA,HOU,SG/SF,5500,26.2,19.21,9.66,13.43,32.3,13.3,0,Confirmed,,live,1,33.0,23.27,15.19,props
+2026-11-16,156750,Myron Gardner,MIA,HOU,SG/SF,3500,20.9,18.74,9.57,13.33,31.19,44.4,1,Confirmed,,live,1,13.83,,,model
+2026-11-16,156750,Nick Richards,MIA,HOU,C,3000,1.9,1.79,5.28,0.0,10.13,0.0,0,Confirmed,,live,0,1.5,,,model
+2026-11-16,156750,Ryan Conwell,MIA,HOU,PG/SG,3700,22.9,12.28,8.18,7.18,23.27,3.6,0,Confirmed,,live,0,20.58,17.85,,no props: shrunk
+2026-11-16,156750,Simone Fontecchio,MIA,HOU,SF/PF,3200,9.9,9.0,7.41,5.11,18.85,0.3,0,Confirmed,,live,0,6.92,,,model
+2026-11-16,156750,Tim Hardaway Jr.,MIA,HOU,SG/SF,3000,8.8,6.55,6.86,2.9,15.75,0.1,0,Confirmed,,live,0,4.58,,,model
+2026-11-16,156750,Tre Donaldson,MIA,HOU,PG,3000,1.1,0.96,5.05,0.0,8.9,0.0,0,Confirmed,,live,0,1.5,,,model
