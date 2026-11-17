@@ -432,7 +432,9 @@ with t_swap:
                        format_func=lambda m: "🚀 GPP" if m == "gpp" else "💵 CASH")
     app_lu = [p["name"] for _, p in ((res.get(sw_mode) or {}).get("slots") or [])]
     try:
-        logged_lu = [r["name"] for r in _nba_logged_lineups(info["date"]).get(int(res["gid"]), {}).get(sw_mode, [])]
+        _lg = _nba_logged_lineups(info["date"]).get(int(res["gid"]), {})
+        # GPP: the logged star pick (what Adam enters, dfs_run_nba.EV_FIELD) before the optimiser's own
+        logged_lu = [r["name"] for r in ((sw_mode == "gpp" and _lg.get("gpp_ev")) or _lg.get(sw_mode, []))]
     except Exception as exc:                                # noqa: BLE001
         logged_lu = []
         st.warning(f"The logged lineup could not be read ({type(exc).__name__}).")

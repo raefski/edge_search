@@ -125,69 +125,16 @@ def _from_lobby(c: dict) -> dict:
 
 
 def contest_picker(sport: str, gid, key: str) -> dict | None:
-    """The GPP this lineup is for: one of the slate's contests from DK's lobby,
-    a pasted link / ID, or a typed field size. None if none is given."""
+    """The GPP's field size, typed. None until one is given. Adam only ever used the
+    field-size box (2026-11-17), so the lobby list and the pasted-link lookup are gone
+    from the page: no DK lobby or contest calls just to draw this. `sport` and `gid`
+    stay in the signature so every page's call is unchanged."""
     with st.expander("🎯 Your contest", expanded=True):
-        gpps = slate_gpps(sport, gid)
-        gpps += past_gpps(sport, {_norm_name(c.get("n")) for c in gpps})
-
-        def _lab(c: dict) -> str:
-            head = f"{(c.get('n') or '').strip()} · ${float(c.get('a') or 0):g} · "
-            if c.get("_past"):
-                return head + f"{int(c['m']):,} · earlier slate {c['_past']}"
-            return (head + f"{int(c.get('nt') or 0):,}/{int(c.get('m') or 0):,}"
-                    + (" · full" if c.get("_full") else ""))
-        labels = ["— pick the contest you entered —"] + [_lab(c) for c in gpps]
-        choice = st.selectbox("Contest on this slate", labels, key=f"{key}_lev_contest",
-                              help="DK's lobby for this draft group, biggest first. DK drops a "
-                                   "contest once it fills, so filled ones you entered are listed "
-                                   "after it, from the last time you played that contest (\"earlier "
-                                   "slate\"). The field size and prize pool decide how much "
-                                   "ownership is worth.")
-        if choice != labels[0]:
-            c = gpps[labels.index(choice) - 1]
-            out = _from_lobby(c)
-            st.caption(f"{out['field']:,} entries planned for · ${out['fee']:g} · "
-                       + ("DK payout table" if out["payouts"] else
-                          f"payout curve fitted to the ${out['prize_pool'] or 0:,.0f} pool")
-                       + (f" · field/fee/pool from the {c['_past']} edition (filled, "
-                          "no longer in DK's lobby)" if c.get("_past") else ""))
-            return out
-        c1, c2 = st.columns([3, 2])
-        text = c1.text_input("…or paste a DK contest link / ID", key=f"{key}_lev_link")
-        field = c2.number_input("…or field size", min_value=0, value=0, step=100,
-                                key=f"{key}_lev_field")
-        cid = dfs_contest.contest_id(text)
-        if cid:
-            info = _lookup(cid)
-            hit = next((c for c in _safe_lobby(sport) if str(c.get("id")) == cid), None)
-            if hit and _is_cash(hit):
-                st.warning("That is a double-up / 50-50 — play the 💵 CASH lineup.")
-                return None
-            if hit and str(hit.get("dg")) != str(gid):
-                st.warning(f"That contest is on draft group {hit.get('dg')}, not this slate "
-                           f"({gid}). Pick its slate in the sidebar.")
-                return None
-            if hit:
-                return _from_lobby(hit)
-            if info:
-                if info.get("sport") and info["sport"] != sport:
-                    st.warning(f"That is a {info['sport']} contest, not {sport}.")
-                    return None
-                if info.get("type") == "cash":
-                    st.warning("That is a double-up / 50-50 — play the 💵 CASH lineup.")
-                    return None
-                if info.get("draft_group") and str(info["draft_group"]) != str(gid):
-                    st.warning(f"That contest is on draft group {info['draft_group']}, not this "
-                               f"slate ({gid}). Pick its slate in the sidebar.")
-                    return None
-                return {"id": cid, "name": info.get("name"),
-                        "field": max(dfs_contest.expected_field(info), 2),
-                        "fee": float(info.get("entry_fee") or 0),
-                        "prize_pool": info.get("prize_pool"),
-                        "payouts": tuple(tuple(p) for p in info["payouts"]) or None}
-            st.warning(f"Contest {cid} isn't in DK's lobby for this sport and its details "
-                       "can't be fetched from here -- type the field size instead.")
+        field = st.number_input("Field size", min_value=0, value=0, step=100,
+                                key=f"{key}_lev_field",
+                                help="Entries in the GPP you are playing. The field size "
+                                     "decides how much ownership is worth: ⭐ marks the lineup "
+                                     "with the best expected payout in a field this big.")
         if field >= 2:
             return {"id": None, "name": None, "field": int(field), "fee": 1.0,
                     "prize_pool": None, "payouts": None}

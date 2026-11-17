@@ -43,7 +43,7 @@ def main() -> int:
         for s in R.classic_groups():
             print(f"{s['gid']}  {s['label']:12} {s['games']} games  {s['start']}")
         return 0
-    res = R.build_slate(draft_group=args.draft_group, n_sims=args.sims, iters=args.iters,
+    res = R.build_slate(star=True, draft_group=args.draft_group, n_sims=args.sims, iters=args.iters,
                         persist=not args.no_log)
     if "pool" not in res:
         print(res.get("error") or res.get("unpriced_reason") or "slate not priced yet")
@@ -63,6 +63,8 @@ def main() -> int:
         print("OUT: " + ", ".join(info["out"]))
     show("CASH", res["cash"])
     show("GPP", res["gpp"])
+    if res.get("gpp_ev"):
+        show(f"GPP star pick ({R.EV_FIELD}-entry field, logged as gpp_ev)", res["gpp_ev"])
     if args.board:
         print(f"\n{'player':24} pos     tm      $  min    pts  val   own")
         for p in sorted(res["pool"], key=lambda p: -p["proj"])[:args.board]:

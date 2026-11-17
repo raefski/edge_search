@@ -754,8 +754,32 @@ def optimal_columns(pool: list, sim, nights: int | None = None) -> dict:
                                        for r in rows}}
 
 
+#: Field size the pre-lock log ranks the GPP page's chalk<->contrarian lineups for. Adam types
+#: 100 in the page's field-size box and enters the star (best expected payout) pick
+#: (2026-11-17), so the log keeps that lineup too: the late-swap tab and the scratch alerts
+#: start from what he entered, not only from the optimiser's own lineup. On 43 graded GPPs
+#: (24 dates) the star pick scored the same as the optimiser's lineup (pct -0.003
+#: [-0.044, +0.035]), so this is bookkeeping, not a model change.
+EV_FIELD = 100
+
+
+def ev_pick(pool, sim, cash, gpp, iters: int) -> dict | None:
+    """The GPP page's star lineup for a EV_FIELD-entry field, the same call the page makes
+    (edge/dfs_leverage_sports.hoops, then dfs_leverage.with_contest). None if it fails."""
+    try:
+        from edge import dfs_leverage as lev, dfs_leverage_sports as LS
+        a = lev.with_contest(LS.hoops({"pool": pool, "sim": sim, "cash": cash, "gpp": gpp},
+                                      None, iters=max(20, iters // 3)),
+                             sim, {"id": None, "name": None, "field": EV_FIELD, "fee": 1.0,
+                                   "prize_pool": None, "payouts": None})
+        return a["cands"][a["best"]]["result"] if a.get("cands") and a.get("best") is not None else None
+    except Exception as exc:                                # noqa: BLE001 -- logging extra only
+        log.warning("nba: star pick for the log failed (%s)", exc)
+        return None
+
+
 def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None,
-                     now: datetime | None = None) -> dict:
+                     now: datetime | None = None, ev: dict | None = None) -> dict:
     """Persist a build so a contest export has something to be joined to --
     edge/dfs_forward_log.py's rules (past dates never, after lock never, this draft
     group only)."""
@@ -774,7 +798,7 @@ def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None,
              "proj_source": p.get("proj_source", "")} for p in pool]
     lineups = [{"mode": mode, "slot": slot, "player": p["name"], "team": p["team"],
                 "salary": p["salary"], "proj": p["proj"], "own": p.get("own")}
-               for mode, res in (("cash", cash), ("gpp", gpp))
+               for mode, res in (("cash", cash), ("gpp", gpp), ("gpp_ev", ev))
                for slot, p in (res or {}).get("slots") or []]
     return dfs_forward_log.write("nba", date, gid, PROJ_LOG_COLS, rows,
                                  ("mode", "slot", "player", "team", "salary", "proj", "own"),
@@ -783,8 +807,10 @@ def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None,
 
 def build_slate(draft_group=None, client=None, n_sims: int = 3000, iters: int = 200, seed: int = 0,
                 own_weight: float = 0.0, groups: list[dict] | None = None,
-                persist: bool = True) -> dict:
-    """Board + a CASH lineup + a GPP lineup for one DK NBA Classic slate."""
+                persist: bool = True, star: bool = False) -> dict:
+    """Board + a CASH lineup + a GPP lineup for one DK NBA Classic slate. `star` also
+    logs the GPP page's star pick (ev_pick): the CLI/autolog only, so Cloud page builds
+    don't pay for a second chalk<->contrarian sweep."""
     if client is None:
         try:
             from edge.odds.cli import scraped_client
@@ -826,10 +852,12 @@ def build_slate(draft_group=None, client=None, n_sims: int = 3000, iters: int = 
     cash = dfs_opt_nba.optimize(pool, sim, mode="cash", iters=iters, seed=seed)
     gpp = dfs_opt_nba.optimize(pool, sim, mode="gpp", iters=iters, seed=seed, own_weight=own_weight)
     log_result = None
+    ev = None
     if persist:
+        ev = ev_pick(pool, sim, cash, gpp, iters) if star else None
         try:
-            log_result = log_forward_test(pool, cash, gpp, gid, info)
+            log_result = log_forward_test(pool, cash, gpp, gid, info, ev=ev)
         except Exception as exc:                            # noqa: BLE001
             log.warning("dfs_run_nba: forward-test logging failed: %s", exc)
     return {"gid": gid, "meta": meta, "slates": slates, "pool": pool, "sim": sim,
-            "stats": info, "cash": cash, "gpp": gpp, "log": log_result}
+            "stats": info, "cash": cash, "gpp": gpp, "gpp_ev": ev, "log": log_result}
