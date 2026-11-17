@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T23:45:04+00:00",
+"generated_at": "2026-11-17T23:59:14+00:00",
 "goalies": {
 "2026-11-17": {
 "ANA": {
@@ -2210,7 +2210,7 @@
 "line": "F1",
 "pk": null,
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Cam Talbot": {
 "gtd": false,
@@ -2656,7 +2656,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Mathieu Olivier": {
 "gtd": false,
@@ -12565,7 +12565,7 @@
 "toiMinutes": 56,
 "toiSeconds": 6
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -12607,7 +12607,7 @@
 "pp": null
 },
 "Denver Barkey": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
@@ -12635,7 +12635,7 @@
 "toiMinutes": 75,
 "toiSeconds": 6
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
