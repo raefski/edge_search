@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T01:30:30+00:00",
+"generated_at": "2026-11-17T01:58:53+00:00",
 "goalies": {
 "2026-11-16": {
 "MTL": {
@@ -21,7 +21,7 @@
 },
 "2026-11-17": {
 "ANA": {
-"goalie": "Lukas Dostal",
+"goalie": "Ville Husso",
 "status": null
 },
 "BOS": {
@@ -33,11 +33,11 @@
 "status": null
 },
 "CBJ": {
-"goalie": "Jet Greaves",
+"goalie": "Cam Talbot",
 "status": null
 },
 "CGY": {
-"goalie": "Devin Cooley",
+"goalie": "Dustin Wolf",
 "status": null
 },
 "CHI": {
@@ -77,15 +77,15 @@
 "status": null
 },
 "PHI": {
-"goalie": "Dan Vladar",
+"goalie": "Joseph Woll",
 "status": null
 },
 "SJS": {
-"goalie": "Alex Nedeljkovic",
+"goalie": "Yaroslav Askarov",
 "status": null
 },
 "STL": {
-"goalie": "Joel Hofer",
+"goalie": "Jordan Binnington",
 "status": null
 },
 "TBL": {
@@ -93,15 +93,15 @@
 "status": null
 },
 "TOR": {
-"goalie": "Anthony Stolarz",
+"goalie": "Sergei Bobrovsky",
 "status": null
 },
 "VGK": {
-"goalie": "Carter Hart",
+"goalie": "Adin Hill",
 "status": null
 },
 "WPG": {
-"goalie": "Stuart Skinner",
+"goalie": "Nico Daws",
 "status": null
 },
 "WSH": {
@@ -449,7 +449,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -791,7 +791,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2235,7 +2235,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2577,7 +2577,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2924,6 +2924,40 @@
 "pos": "rw",
 "pp": "PP2"
 },
+"Brennan Othmann": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 9,
+"toiMinutes": 92,
+"toiSeconds": 24
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 43,
+"toiSeconds": 46
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Devin Cooley": {
 "gtd": false,
 "injury": null,
@@ -2955,7 +2989,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2991,7 +3025,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -3369,16 +3403,6 @@
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
-},
-"William Stromgren": {
-"gtd": false,
-"injury": null,
-"last10": {},
-"last5": {},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Yan Kuznetsov": {
 "gtd": false,
@@ -11815,7 +11839,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12395,7 +12419,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12807,7 +12831,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12843,7 +12867,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13839,7 +13863,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -14351,7 +14375,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15897,7 +15921,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -16035,7 +16059,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -17093,7 +17117,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -17163,7 +17187,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
