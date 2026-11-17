@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T16:58:59+00:00",
+"generated_at": "2026-11-17T17:28:55+00:00",
 "goalies": {
 "2026-11-17": {
 "ANA": {
@@ -76,7 +76,7 @@
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
-"status": "Likely"
+"status": "Confirmed"
 },
 "VGK": {
 "goalie": "Adin Hill",
@@ -102,7 +102,7 @@
 },
 "DET": {
 "goalie": "Daniil Tarasov",
-"status": null
+"status": "Confirmed"
 },
 "MTL": {
 "goalie": "Jacob Fowler",
@@ -886,7 +886,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 13,
+"shots": 14,
 "toiMinutes": 199,
 "toiSeconds": 21
 },
@@ -899,7 +899,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 5,
+"shots": 6,
 "toiMinutes": 95,
 "toiSeconds": 0
 },
@@ -981,7 +981,7 @@
 "injury": null,
 "last10": {
 "assists": 2,
-"blocks": 7,
+"blocks": 8,
 "gamesPlayed": 10,
 "goals": 3,
 "points": 5,
@@ -994,7 +994,7 @@
 },
 "last5": {
 "assists": 1,
-"blocks": 3,
+"blocks": 4,
 "gamesPlayed": 5,
 "goals": 2,
 "points": 3,
@@ -1434,7 +1434,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 9,
+"shots": 8,
 "toiMinutes": 105,
 "toiSeconds": 5
 },
@@ -1447,7 +1447,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 3,
+"shots": 2,
 "toiMinutes": 57,
 "toiSeconds": 2
 },
@@ -1714,7 +1714,7 @@
 "powerplayPoints": 0,
 "shots": 14,
 "toiMinutes": 135,
-"toiSeconds": 48
+"toiSeconds": 49
 },
 "last5": {
 "assists": 0,
@@ -1727,7 +1727,7 @@
 "powerplayPoints": 0,
 "shots": 8,
 "toiMinutes": 66,
-"toiSeconds": 27
+"toiSeconds": 28
 },
 "line": "F1",
 "pk": null,
@@ -1801,40 +1801,6 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
-},
-"Louis Crevier": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 105,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 47,
-"toiSeconds": 58
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
 },
 "Mattias Samuelsson": {
 "gtd": false,
@@ -2175,6 +2141,40 @@
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP1"
+},
+"Zach Metsa": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 121,
+"toiSeconds": 58
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 58,
+"toiSeconds": 7
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
 }
 },
 "CBJ": {
@@ -9904,10 +9904,10 @@
 "goalieLosses": 2,
 "goalieMinutes": 585,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.893",
-"goalieSaves": 241,
+"goalieSavePercentage": "0.892",
+"goalieSaves": 240,
 "goalieSeconds": 57,
-"goalieShotsAgainst": 270,
+"goalieShotsAgainst": 269,
 "goalieShutouts": 1,
 "goalieWins": 8
 },
@@ -9918,10 +9918,10 @@
 "goalieLosses": 0,
 "goalieMinutes": 305,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.914",
-"goalieSaves": 138,
+"goalieSavePercentage": "0.913",
+"goalieSaves": 137,
 "goalieSeconds": 57,
-"goalieShotsAgainst": 151,
+"goalieShotsAgainst": 150,
 "goalieShutouts": 1,
 "goalieWins": 5
 },
@@ -10182,7 +10182,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 6,
+"shots": 5,
 "toiMinutes": 199,
 "toiSeconds": 16
 },
@@ -10195,7 +10195,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 4,
+"shots": 3,
 "toiMinutes": 99,
 "toiSeconds": 4
 },
@@ -10352,7 +10352,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 1,
 "powerplayPoints": 1,
-"shots": 13,
+"shots": 14,
 "toiMinutes": 107,
 "toiSeconds": 14
 },
@@ -10365,7 +10365,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 6,
+"shots": 7,
 "toiMinutes": 52,
 "toiSeconds": 48
 },
@@ -18516,7 +18516,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 15,
+"shots": 14,
 "toiMinutes": 213,
 "toiSeconds": 33
 },
@@ -18529,7 +18529,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 10,
+"shots": 9,
 "toiMinutes": 107,
 "toiSeconds": 8
 },
