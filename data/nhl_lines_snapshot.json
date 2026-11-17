@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T16:00:00+00:00",
+"generated_at": "2026-11-17T16:29:19+00:00",
 "goalies": {
 "2026-11-17": {
 "ANA": {
@@ -7,8 +7,8 @@
 "status": null
 },
 "BOS": {
-"goalie": "Jeremy Swayman",
-"status": null
+"goalie": "Michael DiPietro",
+"status": "Confirmed"
 },
 "BUF": {
 "goalie": "Alex Lyon",
@@ -44,7 +44,7 @@
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
-"status": null
+"status": "Confirmed"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -60,7 +60,7 @@
 },
 "PHI": {
 "goalie": "Joseph Woll",
-"status": "Likely"
+"status": "Confirmed"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -12606,6 +12606,40 @@
 "pos": "g",
 "pp": null
 },
+"Denver Barkey": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 6,
+"powerplayAssists": 1,
+"powerplayGoals": 2,
+"powerplayPoints": 3,
+"shots": 13,
+"toiMinutes": 149,
+"toiSeconds": 42
+},
+"last5": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 3,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 8,
+"toiMinutes": 75,
+"toiSeconds": 6
+},
+"line": "F2",
+"pk": null,
+"pos": "lw",
+"pp": "PP1"
+},
 "Jamie Drysdale": {
 "gtd": false,
 "injury": null,
@@ -12635,7 +12669,7 @@
 "toiMinutes": 114,
 "toiSeconds": 37
 },
-"line": "D3",
+"line": "D1",
 "pk": null,
 "pos": "rd",
 "pp": "PP1"
@@ -12710,40 +12744,6 @@
 "pos": "rw",
 "pp": "PP1"
 },
-"Michael Bunting": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 14,
-"toiMinutes": 105,
-"toiSeconds": 11
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 49,
-"toiSeconds": 48
-},
-"line": "F2",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Nick Seeler": {
 "gtd": false,
 "injury": null,
@@ -12810,7 +12810,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": "PP1"
+"pp": null
 },
 "Noel Acciari": {
 "gtd": false,
@@ -12844,6 +12844,40 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "rw",
+"pp": null
+},
+"Oliver Bonk": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 9,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 12,
+"toiMinutes": 172,
+"toiSeconds": 16
+},
+"last5": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 4,
+"toiMinutes": 85,
+"toiSeconds": 47
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
 "pp": null
 },
 "Owen Tippett": {
@@ -12943,8 +12977,8 @@
 "toiMinutes": 84,
 "toiSeconds": 42
 },
-"line": "D1",
-"pk": null,
+"line": "D2",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -12980,40 +13014,6 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "c",
-"pp": null
-},
-"Simon Benoit": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 143,
-"toiSeconds": 27
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 71,
-"toiSeconds": 17
-},
-"line": "D2",
-"pk": "PK2",
-"pos": "rd",
 "pp": null
 },
 "Travis Konecny": {
