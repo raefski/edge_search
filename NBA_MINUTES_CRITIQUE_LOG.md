@@ -1915,3 +1915,18 @@ T21 (Q-DNP mixture in the sim) is **null for now**: Q players DNP 58% in test, b
 **Fix:** `_last_name()` glues a bare Jr/Sr/II/III/IV/V piece back onto the token before it. Nothing fitted. Test added (tests/test_nba_scratch.py). Lab `report` unchanged (it replays logged boards; this is a live-input fix), so the gate should read as a tie. Expected money: < 1 dead slot per 20 slates -- a correctness fix, not an ROI lever. No other sport parses with this pattern (grep). Also fixed on the way: `harness/registry.py` had a misplaced line that made every `harness` import raise TypeError (broke test_nba_scratch collection), and `dfs_props_roi` / `dfs_transfer` lacked a role. Pre-existing, not touched: `test_harness_guard::test_blocks[rm data/odds.db]` fails in a worktree where data/odds.db is a symlink.
 
 Runner-ups: (1) late news -- 23 test players Out at tip but not on the report at the ~70-min build (346 proj pts, 0 exposure today): re-pull the report ~T-30; (2) "Available" two-ways DNP 17/118 in test: map through REPORT_P like Probable; (3) log `avail`, `avail_why`, `injury` columns in dfs_proj_history_nba.csv so the next availability critic needn't rebuild from PDFs.
+
+Unattended gate (20261117-0658): **review** -- waiting for Adam: harness critique-loop --merge / --drop
+
+| split | state | n | clusters | main RMSE | candidate RMSE | loss diff [90%] | verdict |
+|---|---|---|---|---|---|---|---|
+| guard | confirmed | 4,813 | 25 | 6.0465 | 6.0424 | -0.0494 [-0.1181, +0.0063] | holds |
+| guard | inactives | 4,813 | 25 | 6.3416 | 6.3405 | -0.0138 [-0.0618, +0.0332] | holds |
+| primary | confirmed | 31,123 | 164 | 6.0709 | 6.0510 | -0.2408 [-0.3078, -0.1753] | better |
+| primary | inactives | 31,123 | 164 | 6.4608 | 6.4423 | -0.2398 [-0.3039, -0.1736] | better |
+| primary | tip-45 confirmed | 124 | 7 | 6.6478 | 6.3430 | -3.9606 [-11.7955, +0.0176] | noise |
+| primary | tip-45 expected | 5,702 | 23 | 5.5099 | 5.3634 | -1.5938 [-2.2536, -0.9938] | better |
+| primary | tip-90 confirmed | 35 | 2 | 5.8327 | 5.8354 | +0.0309 [+0.0000, +0.0600] | noise |
+| primary | tip-90 expected | 5,791 | 23 | 5.8297 | 5.6887 | -1.6242 [-2.3547, -0.9670] | better |
+- primary tip-90 confirmed: noise, point estimate worse (+0.0309 [+0.0000, +0.0600], 2 clusters)
+- the cycle aimed at 'availability: questionable/GTD DNP mixture in the lineup sim', which this gate does not measure (minutes); gate said fail: Adam decides on the cycle's held-out numbers
