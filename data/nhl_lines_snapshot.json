@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T02:28:56+00:00",
+"generated_at": "2026-11-17T02:59:01+00:00",
 "goalies": {
 "2026-11-16": {
 "MTL": {
@@ -3607,7 +3607,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Anton Frondell": {
@@ -3707,7 +3707,7 @@
 "toiMinutes": 67,
 "toiSeconds": 41
 },
-"line": "F4",
+"line": "F2",
 "pk": "PK1",
 "pos": "lw",
 "pp": null
@@ -3916,7 +3916,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Patrick Kane": {
 "gtd": false,
@@ -3983,7 +3983,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Ryan Donato": {
@@ -4015,10 +4015,10 @@
 "toiMinutes": 65,
 "toiSeconds": 28
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Ryan Greene": {
 "gtd": false,
@@ -4155,7 +4155,7 @@
 },
 "line": "F2",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Tyler Bertuzzi": {
@@ -4189,7 +4189,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Wyatt Kaiser": {
@@ -12491,7 +12491,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Alexey Toropchenko": {
@@ -12693,9 +12693,9 @@
 "toiMinutes": 56,
 "toiSeconds": 42
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Dylan Holloway": {
@@ -12727,7 +12727,7 @@
 "toiMinutes": 91,
 "toiSeconds": 2
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -12761,7 +12761,7 @@
 "toiMinutes": 83,
 "toiSeconds": 29
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP1"
@@ -12834,6 +12834,40 @@
 "line": "G2",
 "pk": null,
 "pos": "g",
+"pp": null
+},
+"Jonatan Berggren": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 20,
+"toiMinutes": 138,
+"toiSeconds": 6
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 61,
+"toiSeconds": 52
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Jordan Binnington": {
@@ -13109,40 +13143,6 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
-},
-"Ross Johnston": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 86,
-"toiSeconds": 45
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 46,
-"toiSeconds": 36
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 }
 },
 "TBL": {
