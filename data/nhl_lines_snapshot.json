@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T18:58:46+00:00",
+"generated_at": "2026-11-17T19:29:05+00:00",
 "goalies": {
 "2026-11-17": {
 "ANA": {
@@ -20,7 +20,7 @@
 },
 "CGY": {
 "goalie": "Dustin Wolf",
-"status": null
+"status": "Confirmed"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -13186,7 +13186,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Alex Nedeljkovic": {
 "gtd": false,
@@ -13223,6 +13223,40 @@
 "pk": null,
 "pos": "g",
 "pp": null
+},
+"Alexander Wennberg": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 13,
+"toiMinutes": 203,
+"toiSeconds": 21
+},
+"last5": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 5,
+"toiMinutes": 106,
+"toiSeconds": 27
+},
+"line": "F2",
+"pk": null,
+"pos": "c",
+"pp": "PP1"
 },
 "Barclay Goodrow": {
 "gtd": false,
@@ -13287,7 +13321,7 @@
 "toiMinutes": 83,
 "toiSeconds": 15
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "rw",
 "pp": null
@@ -13392,7 +13426,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Ivar Stenberg": {
 "gtd": false,
@@ -13460,40 +13494,6 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "rd",
-"pp": "PP1"
-},
-"Kiefer Sherwood": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 16,
-"toiMinutes": 159,
-"toiSeconds": 26
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 75,
-"toiSeconds": 14
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
 "pp": null
 },
 "Macklin Celebrini": {
@@ -13561,7 +13561,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Michael Kesselring": {
@@ -13629,7 +13629,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Sam Dickinson": {
@@ -13732,7 +13732,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Will Smith": {
 "gtd": false,
@@ -13766,7 +13766,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Yaroslav Askarov": {
 "gtd": false,
@@ -16649,9 +16649,9 @@
 "toiMinutes": 61,
 "toiSeconds": 31
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Brayden McNabb": {
@@ -16717,9 +16717,9 @@
 "toiMinutes": 71,
 "toiSeconds": 52
 },
-"line": "F4",
+"line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Carter Hart": {
@@ -17195,7 +17195,7 @@
 "toiMinutes": 70,
 "toiSeconds": 49
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
