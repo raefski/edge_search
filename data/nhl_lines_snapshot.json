@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T17:28:55+00:00",
+"generated_at": "2026-11-17T17:59:04+00:00",
 "goalies": {
 "2026-11-17": {
 "ANA": {
@@ -24,7 +24,7 @@
 },
 "CHI": {
 "goalie": "Spencer Knight",
-"status": "Likely"
+"status": "Confirmed"
 },
 "DAL": {
 "goalie": "Jake Oettinger",
@@ -9724,40 +9724,6 @@
 }
 },
 "NJD": {
-"Anton Silayev": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 3,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 49,
-"toiSeconds": 25
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 3,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 49,
-"toiSeconds": 25
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
-},
 "Arseny Gritsyuk": {
 "gtd": false,
 "injury": null,
@@ -9790,7 +9756,7 @@
 "line": "F1",
 "pk": "PK2",
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Brenden Dillon": {
 "gtd": false,
@@ -9822,6 +9788,40 @@
 "toiSeconds": 7
 },
 "line": "D3",
+"pk": "PK2",
+"pos": "rd",
+"pp": null
+},
+"Brett Pesce": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 5,
+"blocks": 15,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 6,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 207,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 3,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 105,
+"toiSeconds": 26
+},
+"line": "D1",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -9959,8 +9959,8 @@
 "toiMinutes": 65,
 "toiSeconds": 58
 },
-"line": "D2",
-"pk": "PK2",
+"line": "D3",
+"pk": null,
 "pos": "ld",
 "pp": null
 },
@@ -10168,7 +10168,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Jonas Siegenthaler": {
 "gtd": false,
@@ -10199,7 +10199,7 @@
 "toiMinutes": 99,
 "toiSeconds": 4
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -10303,7 +10303,7 @@
 },
 "line": "D1",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": "PP1"
 },
 "Nico Hischier": {
@@ -10439,7 +10439,7 @@
 "toiMinutes": 68,
 "toiSeconds": 30
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "rw",
 "pp": null
@@ -10507,7 +10507,7 @@
 "toiMinutes": 73,
 "toiSeconds": 32
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
@@ -10545,40 +10545,6 @@
 "pk": "PK1",
 "pos": "ld",
 "pp": "PP2"
-},
-"Daemon Hunt": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 134,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 66,
-"toiSeconds": 50
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": null
 },
 "Filip Forsberg": {
 "gtd": false,
@@ -10643,7 +10609,7 @@
 "toiMinutes": 83,
 "toiSeconds": 4
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
 "pos": "c",
 "pp": null
@@ -10681,6 +10647,40 @@
 "pk": null,
 "pos": "rd",
 "pp": null
+},
+"Jonathan Marchessault": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 5,
+"powerplayAssists": 3,
+"powerplayGoals": 1,
+"powerplayPoints": 4,
+"shots": 26,
+"toiMinutes": 167,
+"toiSeconds": 35
+},
+"last5": {
+"assists": 2,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 12,
+"toiMinutes": 83,
+"toiSeconds": 10
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": "PP1"
 },
 "Justus Annunen": {
 "gtd": false,
@@ -10786,7 +10786,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Nick Perbix": {
 "gtd": false,
@@ -10822,6 +10822,40 @@
 "pos": "rd",
 "pp": null
 },
+"Nicolas Hague": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 11,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 159,
+"toiSeconds": 52
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 73,
+"toiSeconds": 33
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Nils Hoglander": {
 "gtd": false,
 "injury": null,
@@ -10854,40 +10888,6 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
-},
-"Reid Schaefer": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 106,
-"toiSeconds": 6
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 51,
-"toiSeconds": 32
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
 "pp": null
 },
 "Roman Josi": {
@@ -10953,7 +10953,7 @@
 "toiMinutes": 64,
 "toiSeconds": 33
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -11089,9 +11089,9 @@
 "toiMinutes": 48,
 "toiSeconds": 49
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 }
 },
@@ -14537,9 +14537,9 @@
 "goalieMinutes": 604,
 "goalieOvertimeLosses": 1,
 "goalieSavePercentage": "0.89",
-"goalieSaves": 235,
+"goalieSaves": 234,
 "goalieSeconds": 44,
-"goalieShotsAgainst": 264,
+"goalieShotsAgainst": 263,
 "goalieShutouts": 0,
 "goalieWins": 6
 },
@@ -14550,10 +14550,10 @@
 "goalieLosses": 2,
 "goalieMinutes": 297,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.913",
-"goalieSaves": 115,
+"goalieSavePercentage": "0.912",
+"goalieSaves": 114,
 "goalieSeconds": 48,
-"goalieShotsAgainst": 126,
+"goalieShotsAgainst": 125,
 "goalieShutouts": 0,
 "goalieWins": 3
 },
@@ -14696,40 +14696,6 @@
 "line": "D1",
 "pk": null,
 "pos": "ld",
-"pp": "PP2"
-},
-"Conor Geekie": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 16,
-"toiMinutes": 108,
-"toiSeconds": 27
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 53,
-"toiSeconds": 49
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
 "pp": "PP2"
 },
 "Dennis Hildeby": {
@@ -15018,7 +14984,7 @@
 "powerplayAssists": 3,
 "powerplayGoals": 2,
 "powerplayPoints": 5,
-"shots": 35,
+"shots": 36,
 "toiMinutes": 211,
 "toiSeconds": 45
 },
@@ -15031,7 +14997,7 @@
 "powerplayAssists": 1,
 "powerplayGoals": 2,
 "powerplayPoints": 3,
-"shots": 22,
+"shots": 23,
 "toiMinutes": 109,
 "toiSeconds": 43
 },
@@ -15174,7 +15140,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Yanni Gourde": {
 "gtd": false,
