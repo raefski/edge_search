@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T23:14:40+00:00",
+"generated_at": "2026-11-17T23:28:45+00:00",
 "goalies": {
 "2026-11-17": {
 "ANA": {
@@ -14563,7 +14563,7 @@
 "pp": null
 },
 "Anthony Cirelli": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 7,
@@ -14596,42 +14596,8 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Brandon Hagel": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 5,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 6,
-"points": 11,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 37,
-"toiMinutes": 196,
-"toiSeconds": 10
-},
-"last5": {
-"assists": 2,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 5,
-"points": 7,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 18,
-"toiMinutes": 92,
-"toiSeconds": 26
-},
-"line": "F2",
-"pk": "PK1",
-"pos": "lw",
-"pp": "PP2"
-},
 "Brayden Point": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 8,
@@ -14735,7 +14701,7 @@
 "pp": null
 },
 "Erik Cernak": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 6,
@@ -14832,7 +14798,7 @@
 "toiSeconds": 57
 },
 "line": "F4",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
 "pp": null
 },
@@ -14903,6 +14869,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Jeffrey Viel": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 97,
+"toiSeconds": 50
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 49,
+"toiSeconds": 10
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "John Carlson": {
 "gtd": false,
@@ -15038,7 +15038,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Ryan McDonagh": {
 "gtd": false,
@@ -15171,7 +15171,7 @@
 "toiMinutes": 76,
 "toiSeconds": 8
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -15206,7 +15206,7 @@
 "toiSeconds": 17
 },
 "line": "F4",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "c",
 "pp": null
 }
