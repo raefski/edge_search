@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T16:29:19+00:00",
+"generated_at": "2026-11-17T16:58:59+00:00",
 "goalies": {
 "2026-11-17": {
 "ANA": {
@@ -12,7 +12,7 @@
 },
 "BUF": {
 "goalie": "Alex Lyon",
-"status": null
+"status": "Likely"
 },
 "CBJ": {
 "goalie": "Cam Talbot",
@@ -32,7 +32,7 @@
 },
 "EDM": {
 "goalie": "Devon Levi",
-"status": null
+"status": "Confirmed"
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
@@ -56,7 +56,7 @@
 },
 "OTT": {
 "goalie": "Linus Ullmark",
-"status": null
+"status": "Confirmed"
 },
 "PHI": {
 "goalie": "Joseph Woll",
@@ -68,7 +68,7 @@
 },
 "STL": {
 "goalie": "Jordan Binnington",
-"status": null
+"status": "Confirmed"
 },
 "TBL": {
 "goalie": "Andrei Vasilevskiy",
@@ -76,7 +76,7 @@
 },
 "TOR": {
 "goalie": "Sergei Bobrovsky",
-"status": null
+"status": "Likely"
 },
 "VGK": {
 "goalie": "Adin Hill",
@@ -5608,6 +5608,40 @@
 }
 },
 "DET": {
+"Albert Johansson": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 11,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 154,
+"toiSeconds": 59
+},
+"last5": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 74,
+"toiSeconds": 39
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Alex DeBrincat": {
 "gtd": false,
 "injury": null,
@@ -5708,7 +5742,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Anton Johansson": {
 "gtd": false,
@@ -5739,9 +5773,9 @@
 "toiMinutes": 64,
 "toiSeconds": 11
 },
-"line": "D3",
+"line": "D1",
 "pk": null,
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Ben Chiarot": {
@@ -5810,7 +5844,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Daniil Tarasov": {
 "gtd": false,
@@ -5823,9 +5857,9 @@
 "goalieMinutes": 485,
 "goalieOvertimeLosses": 1,
 "goalieSavePercentage": "0.933",
-"goalieSaves": 194,
+"goalieSaves": 195,
 "goalieSeconds": 53,
-"goalieShotsAgainst": 208,
+"goalieShotsAgainst": 209,
 "goalieShutouts": 3,
 "goalieWins": 4
 },
@@ -5836,10 +5870,10 @@
 "goalieLosses": 3,
 "goalieMinutes": 274,
 "goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.924",
-"goalieSaves": 122,
+"goalieSavePercentage": "0.925",
+"goalieSaves": 123,
 "goalieSeconds": 34,
-"goalieShotsAgainst": 132,
+"goalieShotsAgainst": 133,
 "goalieShutouts": 1,
 "goalieWins": 2
 },
@@ -5879,7 +5913,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP1"
 },
 "J.T. Compher": {
@@ -5964,7 +5998,7 @@
 "powerplayAssists": 1,
 "powerplayGoals": 1,
 "powerplayPoints": 2,
-"shots": 13,
+"shots": 12,
 "toiMinutes": 219,
 "toiSeconds": 47
 },
@@ -5977,7 +6011,7 @@
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 9,
+"shots": 8,
 "toiMinutes": 114,
 "toiSeconds": 40
 },
@@ -6085,7 +6119,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
 },
 "Michael Brandsegg-Nyg\u00e5rd": {
@@ -6257,40 +6291,6 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
-},
-"William Wallinder": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 21,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 185,
-"toiSeconds": 25
-},
-"last5": {
-"assists": 2,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 96,
-"toiSeconds": 56
-},
-"line": "D1",
-"pk": null,
-"pos": "ld",
-"pp": null
 }
 },
 "EDM": {
@@ -14423,7 +14423,7 @@
 "pp": "PP2"
 },
 "Philip Broberg": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 5,
