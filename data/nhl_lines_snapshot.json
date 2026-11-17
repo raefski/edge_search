@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-17T13:59:00+00:00",
+"generated_at": "2026-11-17T14:59:03+00:00",
 "goalies": {
 "2026-11-17": {
 "ANA": {
@@ -7867,10 +7867,10 @@
 "toiMinutes": 103,
 "toiSeconds": 45
 },
-"line": "D2",
+"line": "D1",
 "pk": null,
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Brian Dumoulin": {
 "gtd": false,
@@ -7901,42 +7901,8 @@
 "toiMinutes": 87,
 "toiSeconds": 24
 },
-"line": "D2",
-"pk": "PK2",
-"pos": "ld",
-"pp": null
-},
-"Cody Ceci": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 157,
-"toiSeconds": 10
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 69,
-"toiSeconds": 6
-},
 "line": "D3",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -8039,10 +8005,44 @@
 "toiMinutes": 109,
 "toiSeconds": 48
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP2"
+},
+"Erik Gustafsson": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 4,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 5,
+"powerplayAssists": 3,
+"powerplayGoals": 1,
+"powerplayPoints": 4,
+"shots": 7,
+"toiMinutes": 206,
+"toiSeconds": 20
+},
+"last5": {
+"assists": 3,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 4,
+"toiMinutes": 109,
+"toiSeconds": 32
+},
+"line": "D1",
+"pk": null,
+"pos": "ld",
+"pp": "PP1"
 },
 "Erik Haula": {
 "gtd": false,
@@ -8141,7 +8141,7 @@
 "toiMinutes": 84,
 "toiSeconds": 42
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -8243,7 +8243,7 @@
 "toiMinutes": 102,
 "toiSeconds": 23
 },
-"line": "D1",
+"line": "D3",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -8348,7 +8348,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 }
 },
 "MIN": {
@@ -14562,6 +14562,40 @@
 "pos": "g",
 "pp": null
 },
+"Anthony Cirelli": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 7,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 11,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 17,
+"toiMinutes": 164,
+"toiSeconds": 20
+},
+"last5": {
+"assists": 5,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 6,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 11,
+"toiMinutes": 79,
+"toiSeconds": 12
+},
+"line": "F2",
+"pk": "PK1",
+"pos": "c",
+"pp": "PP2"
+},
 "Brandon Hagel": {
 "gtd": false,
 "injury": null,
@@ -14591,10 +14625,44 @@
 "toiMinutes": 92,
 "toiSeconds": 26
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
+},
+"Brayden Point": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 8,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 12,
+"powerplayAssists": 2,
+"powerplayGoals": 2,
+"powerplayPoints": 4,
+"shots": 20,
+"toiMinutes": 181,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 4,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 6,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 11,
+"toiMinutes": 88,
+"toiSeconds": 26
+},
+"line": "F1",
+"pk": null,
+"pos": "c",
+"pp": "PP1"
 },
 "Charle-Edouard D'Astous": {
 "gtd": false,
@@ -14628,10 +14696,10 @@
 "line": "D1",
 "pk": null,
 "pos": "ld",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Conor Geekie": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -14659,9 +14727,9 @@
 "toiMinutes": 53,
 "toiSeconds": 49
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Dennis Hildeby": {
@@ -14700,38 +14768,38 @@
 "pos": "g",
 "pp": null
 },
-"Emil Lilleberg": {
-"gtd": false,
+"Erik Cernak": {
+"gtd": true,
 "injury": null,
 "last10": {
-"assists": 0,
-"blocks": 3,
+"assists": 6,
+"blocks": 12,
 "gamesPlayed": 10,
 "goals": 0,
-"points": 0,
+"points": 6,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 139,
-"toiSeconds": 36
+"shots": 8,
+"toiMinutes": 180,
+"toiSeconds": 8
 },
 "last5": {
-"assists": 0,
-"blocks": 1,
+"assists": 5,
+"blocks": 7,
 "gamesPlayed": 5,
 "goals": 0,
-"points": 0,
+"points": 5,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 0,
-"toiMinutes": 62,
-"toiSeconds": 30
+"shots": 5,
+"toiMinutes": 81,
+"toiSeconds": 20
 },
-"line": "D4",
-"pk": null,
-"pos": "ld",
+"line": "D3",
+"pk": "PK1",
+"pos": "rd",
 "pp": null
 },
 "Gage Goncalves": {
@@ -14763,7 +14831,7 @@
 "toiMinutes": 71,
 "toiSeconds": 49
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -14797,8 +14865,8 @@
 "toiMinutes": 78,
 "toiSeconds": 57
 },
-"line": "F2",
-"pk": "PK2",
+"line": "F4",
+"pk": null,
 "pos": "lw",
 "pp": null
 },
@@ -14832,7 +14900,7 @@
 "toiSeconds": 16
 },
 "line": "D2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -14867,42 +14935,8 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "c",
-"pp": "PP1"
-},
-"Jeffrey Viel": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 97,
-"toiSeconds": 50
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 49,
-"toiSeconds": 10
-},
-"line": "F4",
-"pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP1"
 },
 "John Carlson": {
 "gtd": false,
@@ -14967,8 +15001,8 @@
 "toiMinutes": 85,
 "toiSeconds": 46
 },
-"line": "D3",
-"pk": "PK2",
+"line": "D4",
+"pk": null,
 "pos": "rd",
 "pp": null
 },
@@ -15004,7 +15038,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Pontus Holmberg": {
 "gtd": false,
@@ -15035,7 +15069,7 @@
 "toiMinutes": 76,
 "toiSeconds": 1
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -15140,7 +15174,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Yanni Gourde": {
 "gtd": false,
@@ -15205,8 +15239,8 @@
 "toiMinutes": 88,
 "toiSeconds": 17
 },
-"line": "F2",
-"pk": "PK1",
+"line": "F4",
+"pk": "PK2",
 "pos": "c",
 "pp": null
 }
