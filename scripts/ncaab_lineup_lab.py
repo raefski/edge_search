@@ -232,7 +232,35 @@ def _shipped(gid: int, rows: list[dict], data: dict) -> dict:
     return {_key(r): p for r, p in zip(lab[gid], proj)}
 
 
-VARIANTS: dict = {"shipped": _shipped, "as_logged": _as_logged}
+def _shrink_salary(gid: int, rows: list[dict], data: dict) -> dict:
+    """Cycle 6 candidate (critic, 2026-11-17): today's production shrunk toward a salary-only
+    prior, k fitted on the OTHER slates (LOSO): prior = a + b*salary/1k (rows proj >= 10),
+    k = sum(dev*(act-prior))/sum(dev^2) over rows proj >= 15, dev = proj - prior; rows under
+    15 untouched. Training projections are each slate's shipped projection with LAST_GAME
+    fitted without the held-out slate."""
+    import ncaab_lab
+    lab = _lab_rows()
+    if gid not in lab:
+        raise KeyError(f"{gid}: no ESPN box")
+    others = {g: rs for g, rs in lab.items() if g != gid}
+    lg = ncaab_lab.fit_last_game([r for rs in others.values() for r in rs])
+    tr = [(r, p) for rs in others.values() for r, p in zip(rs, ncaab_lab.shipped(rs, lg))]
+    xs = np.array([[1.0, float(r["salary"]) / 1000] for r, p in tr if p >= 10])
+    ys = np.array([float(r["act"]) for r, p in tr if p >= 10])
+    a, b = np.linalg.lstsq(xs, ys, rcond=None)[0]
+    dev = np.array([p - (a + b * float(r["salary"]) / 1000) for r, p in tr if p >= 15])
+    res = np.array([float(r["act"]) - (a + b * float(r["salary"]) / 1000) for r, p in tr if p >= 15])
+    k = float((dev * res).sum() / (dev * dev).sum())
+    SHRINK_FIT[gid] = (round(float(a), 2), round(float(b), 2), round(k, 3))
+    out = {}
+    for r, p in zip(lab[gid], ncaab_lab.shipped(lab[gid], lg)):
+        prior = a + b * float(r["salary"]) / 1000
+        out[_key(r)] = max(0.0, prior + k * (p - prior)) if p >= 15 else p
+    return out
+
+
+SHRINK_FIT: dict = {}
+VARIANTS: dict = {"shipped": _shipped, "as_logged": _as_logged, "shrink_salary": _shrink_salary}
 
 
 # ---------------------------------------------------------------------------

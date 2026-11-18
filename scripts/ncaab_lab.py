@@ -24,6 +24,7 @@ under ~5 slates nothing here is called proven.
 """
 from __future__ import annotations
 
+import collections
 import json
 import statistics
 import sys
@@ -98,6 +99,11 @@ def load(gid: int) -> list[dict]:
     """Logged rows with truth (act, min, started) and the team's last game (last_min,
     last_fp, None when the team had none), read the way build_board reads it."""
     rows = grader.logged(gid)
+    # Two players with one name on one team (11/16 156660: Long Beach St.'s Christian Jones,
+    # $5,900 and $3,700) cannot be told apart in ESPN's box by name, so neither has truth:
+    # both are left out (their lab rows would otherwise share one key and lose last_min).
+    seen = collections.Counter(f"{norm(r['player'])}|{r['team']}" for r in rows)
+    rows = [r for r in rows if seen[f"{norm(r['player'])}|{r['team']}"] == 1]
     box = json.loads((grader.BOX_DIR / f"{gid}.json").read_text())
     rows, _ = grader.join(rows, box)
     salaries = {f"{norm(r['player'])}|{r['team']}": {"name": r["player"], "team": r["team"], "row": r}

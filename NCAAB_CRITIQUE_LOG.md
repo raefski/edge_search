@@ -444,3 +444,28 @@ Unattended gate (20261113-0843): **pass** -- re-gated after 7 forward days, then
 | split | state | n | clusters | main MAE | candidate MAE | loss diff [90%] | verdict |
 |---|---|---|---|---|---|---|---|
 | primary | all | 1,282 | 6 | 6.0935 | 6.0391 | -0.0544 [-0.1013, -0.0221] | better |
+
+## Cycle 6 (auto target: GPP lineups) — 2026-11-17, hand-run
+
+Scout: `{"target": "GPP lineups (construction scored against the real GPP field)", "metric": "field pctile of the shipped 20-lineup GPP set, slate = unit; cashed, $ per $1 secondary; never pooled with cash", "harness": "scripts/ncaab_lineup_lab.py report", "split": "leave one slate out", "why": "NCAAB GPP -70% [-100%,-24%] 11 entries / 9 slates; GPP construction never a target", "runner_ups": ["Dioubate name fix", "wire lineup gate for cash", "T07 availability"]}`
+
+Built on critique/ncaab-20261113-0843 (cycle 5, pending its 7-day re-gate; its team-code fix is needed to box-grade 11/9-11/16).
+
+**Prerequisites fixed:** boxes graded for 156355, 156551, 156569, 156653, 156660 (156656 11/14 cannot be: ESPN has no Utah-Washington game that day, Utah's schedule skips 11/11 -> 11/18). `ncaab_lab.load` crashed on two Long Beach St. "Christian Jones" ($5,900 / $3,700) sharing one name|team key: both are now left out (the box cannot tell them apart). Name fix (edge/names.py, every sport): Mouhamed = Mo (book "Mouhamed Dioubate" vs DK "Mo Dioubate", props never joined).
+
+**Critic's hole:** the GPP optimizer reads projections at face value; picked players run -3.5 pts/player vs actual (board players 20+ are unbiased, +0.2, n 318), worst 11/9 -7.4, 11/10 -8.8, 11/12 -5.6; the set projects ~230 and scores 205. Percentile objective (50/90/97) is irrelevant (0.443/0.439/0.439). Fix proposed: shrink proj >= 15 toward a salary-only prior with one LOSO k (0.64-0.71 per fold), GPP only.
+
+**Result (lab variant `shrink_salary`, LOSO, 10 GPP contests / 8 slates: NOT ENOUGH DATA):**
+
+| variant | mode | field pctile [90%] | cashed | pts | $ per $1 |
+|---|---|---|---|---|---|
+| shipped/set20 | gpp | 0.504 [0.329, 0.635] | 29% | 205.6 | 0.97 |
+| shrink_salary/set20 | gpp | 0.500 [0.308, 0.643] | 32% | 204.9 | 1.14 |
+| shipped/single | gpp | 0.531 | 30% | 208.6 | 1.58 |
+| shrink_salary/single | gpp | 0.444 | 30% | 199.9 | 0.66 |
+| shipped/set20 | cash | 0.373 | 29% | 209.1 | 0.57 |
+| shrink_salary/set20 | cash | 0.408 | 32% | 211.9 | 0.65 |
+
+**Decision: not shipped.** The target (GPP set20 pctile) is flat (-0.004); the single lineup worse. Same pattern as cycle 5's per-tier recalibration: an honest board is not a better-picking board. Cash moved +0.035 (set) / +0.27 (single, one lineup on 8 slates) -- not this cycle's target and cycle 5 dropped its cash cousin; a lead to retest at 12+ cash slates, not evidence.
+
+**Runner-ups (critic):** the 20 GPP lineups are nearly one lineup (top six players in 18-20 of 20) -- the gate measures ~1 lineup per slate; real field ownership predicts our projection error (positive slope 7/9 slates) while our ownership echoes our value (negative 9/9); props projections run -1.4/player (worst 11/9 -6.0).
