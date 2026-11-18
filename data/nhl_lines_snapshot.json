@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-18T13:58:53+00:00",
+"generated_at": "2026-11-18T14:58:52+00:00",
 "goalies": {
 "2026-11-18": {
 "BOS": {
@@ -85,7 +85,7 @@
 "status": null
 },
 "PHI": {
-"goalie": "Joseph Woll",
+"goalie": "Dan Vladar",
 "status": null
 },
 "PIT": {
@@ -105,7 +105,7 @@
 "status": null
 },
 "TOR": {
-"goalie": "Sergei Bobrovsky",
+"goalie": "Anthony Stolarz",
 "status": null
 },
 "VAN": {
@@ -160,7 +160,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Cutter Gauthier": {
 "gtd": false,
@@ -225,7 +225,7 @@
 "toiMinutes": 88,
 "toiSeconds": 44
 },
-"line": "D4",
+"line": "D3",
 "pk": null,
 "pos": "ld",
 "pp": null
@@ -364,7 +364,7 @@
 "line": "F1",
 "pk": "PK2",
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Leo Carlsson": {
 "gtd": false,
@@ -431,7 +431,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -533,7 +533,7 @@
 "toiMinutes": 63,
 "toiSeconds": 40
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -604,7 +604,7 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Sam Colangelo": {
 "gtd": false,
@@ -638,7 +638,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Tim Washe": {
 "gtd": false,
@@ -703,7 +703,7 @@
 "toiMinutes": 96,
 "toiSeconds": 13
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -771,7 +771,7 @@
 "toiMinutes": 75,
 "toiSeconds": 16
 },
-"line": "D3",
+"line": "D4",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -807,7 +807,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7294,7 +7294,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Leon Draisaitl": {
 "gtd": false,
@@ -7636,7 +7636,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Zach Hyman": {
 "gtd": false,
@@ -11822,7 +11822,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": "PP2"
+"pp": null
 },
 "Christian Dvorak": {
 "gtd": false,
@@ -11923,7 +11923,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12027,7 +12027,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12200,7 +12200,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Owen Tippett": {
 "gtd": false,
@@ -14219,7 +14219,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -14289,7 +14289,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15251,7 +15251,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15696,7 +15696,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Ryan Tverberg": {
 "gtd": false,
@@ -15730,7 +15730,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Sergei Bobrovsky": {
 "gtd": false,
@@ -15763,7 +15763,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
