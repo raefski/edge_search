@@ -259,8 +259,27 @@ def _shrink_salary(gid: int, rows: list[dict], data: dict) -> dict:
     return out
 
 
+def _props_bias(gid: int, rows: list[dict], data: dict) -> dict:
+    """Lead 3 (cycle 6 critic): props-source projections run high (-1.4/player, 7 slates).
+    Production with every props row scaled by k = sum(act*proj)/sum(proj^2) over the OTHER
+    slates' props rows (LOSO); non-props rows unchanged."""
+    import ncaab_lab
+    lab = _lab_rows()
+    if gid not in lab:
+        raise KeyError(f"{gid}: no ESPN box")
+    others = {g: rs for g, rs in lab.items() if g != gid}
+    lg = ncaab_lab.fit_last_game([r for rs in others.values() for r in rs])
+    tr = [(r, p) for rs in others.values() for r, p in zip(rs, ncaab_lab.shipped(rs, lg))
+          if r["source"] == "props"]
+    k = sum(float(r["act"]) * p for r, p in tr) / max(1e-9, sum(p * p for _, p in tr))
+    SHRINK_FIT[("props", gid)] = round(k, 3)
+    return {_key(r): (p * k if r["source"] == "props" else p)
+            for r, p in zip(lab[gid], ncaab_lab.shipped(lab[gid], lg))}
+
+
 SHRINK_FIT: dict = {}
-VARIANTS: dict = {"shipped": _shipped, "as_logged": _as_logged, "shrink_salary": _shrink_salary}
+VARIANTS: dict = {"shipped": _shipped, "as_logged": _as_logged, "shrink_salary": _shrink_salary,
+                  "props_bias": _props_bias}
 
 
 # ---------------------------------------------------------------------------

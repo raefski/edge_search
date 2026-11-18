@@ -469,3 +469,13 @@ Built on critique/ncaab-20261113-0843 (cycle 5, pending its 7-day re-gate; its t
 **Decision: not shipped.** The target (GPP set20 pctile) is flat (-0.004); the single lineup worse. Same pattern as cycle 5's per-tier recalibration: an honest board is not a better-picking board. Cash moved +0.035 (set) / +0.27 (single, one lineup on 8 slates) -- not this cycle's target and cycle 5 dropped its cash cousin; a lead to retest at 12+ cash slates, not evidence.
 
 **Runner-ups (critic):** the 20 GPP lineups are nearly one lineup (top six players in 18-20 of 20) -- the gate measures ~1 lineup per slate; real field ownership predicts our projection error (positive slope 7/9 slates) while our ownership echoes our value (negative 9/9); props projections run -1.4/player (worst 11/9 -6.0).
+
+### Cycle 6 follow-ups (2026-11-17, Adam: "props first, then match names"; then the leads)
+
+**Props join audit.** Every no-props slate player whose exact name was a book prop subject that night (13 boards 11/4-11/17): 31 players. Of them, all but one (Mouhamed/Mo Dioubate, fixed in edge/names.py) were props the book FIRST posted after our pre-lock build, for games tipping after slate lock (11/13 build 22:49 UTC, Xavier props first 00:48; 11/8 build 17:48, Kenyon Giles 20:17; 11/17 build 23:46, Dior Johnson 23:48). Caleb Williams AUB vs a Clemson/Georgetown Caleb Williams was correctly refused. The join already goes book subject -> slate player within its game; the gap is timing (college books post ~1-2 h before tip), which only a late-swap rebuild could use. NCAAB has no late-swap tool.
+
+**Lead 3, props projections high:** LOSO scale k = 0.944-0.962 on props rows: player props bias +1.13 -> -0.18, props MAE 8.24 -> 8.11 (289 rows), all proj>=10 MAE 7.842 -> 7.814. Lineups (variant `props_bias`, 10 GPP / 8 slates): GPP set20 .504 -> .495, single .531 -> .459; cash set20 .373 -> .381. **Not shipped** (target flat/worse; third time an honest board did not pick better).
+
+**Lead 2, ownership:** only 5 NCAAB GPP slates have exports (11/2-11/9). Logged GPP own MAE 3.27; LOSO refit of the softmax weights 3.27 (better 3/5 slates, worse on players >=5%). Null. The critic's "field ownership predicts our error" is not available pre-lock; our own ownership does not carry it.
+
+**Lead 1, 20 GPP lineups nearly identical:** not pursued -- Adam enters 1-2 NCAAB GPP lineups, so set diversity does not change what he plays.
