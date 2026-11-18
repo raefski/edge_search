@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-18T16:29:53+00:00",
+"generated_at": "2026-11-18T17:28:48+00:00",
 "goalies": {
 "2026-11-18": {
 "BOS": {
@@ -16,7 +16,7 @@
 },
 "MTL": {
 "goalie": "Jacob Fowler",
-"status": null
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Connor Hellebuyck",
@@ -73,8 +73,8 @@
 "status": null
 },
 "MTL": {
-"goalie": "Jacob Fowler",
-"status": null
+"goalie": "Jakub Dobes",
+"status": "Confirmed"
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
@@ -17500,7 +17500,7 @@
 "powerplayPoints": 1,
 "shots": 12,
 "toiMinutes": 148,
-"toiSeconds": 32
+"toiSeconds": 30
 },
 "last5": {
 "assists": 3,
@@ -17513,7 +17513,7 @@
 "powerplayPoints": 0,
 "shots": 4,
 "toiMinutes": 73,
-"toiSeconds": 52
+"toiSeconds": 50
 },
 "line": "F3",
 "pk": null,
@@ -17670,7 +17670,7 @@
 "powerplayPoints": 0,
 "shots": 2,
 "toiMinutes": 102,
-"toiSeconds": 5
+"toiSeconds": 7
 },
 "last5": {
 "assists": 0,
@@ -17683,7 +17683,7 @@
 "powerplayPoints": 0,
 "shots": 2,
 "toiMinutes": 51,
-"toiSeconds": 56
+"toiSeconds": 58
 },
 "line": "F4",
 "pk": null,
