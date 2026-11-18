@@ -99,6 +99,8 @@ NICKNAMES = (
     ("yaroslav", "jaroslav"),
     ("mikhail", "michail"),
     ("vasili", "vasily", "vasiliy", "vasilii"),
+    # 2026-11-17 NCAAB scout: the book's "Mouhamed Dioubate" is DK's "Mo Dioubate" (props never joined).
+    ("mohamed", "mo", "mouhamed", "mohammed", "mohammad", "mohamad", "muhammad", "mohamad"),
 )
 _NICK = {}
 for _row in NICKNAMES:
