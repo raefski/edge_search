@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-18T15:00:33+00:00",
+"generated_at": "2026-11-18T15:28:47+00:00",
 "goalies": {
 "2026-11-18": {
 "BOS": {
@@ -113,7 +113,7 @@
 "status": null
 },
 "VGK": {
-"goalie": "Adin Hill",
+"goalie": "Carter Hart",
 "status": null
 },
 "WPG": {
@@ -8530,7 +8530,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Jared Spurgeon": {
 "gtd": false,
@@ -8940,7 +8940,7 @@
 "line": "D1",
 "pk": null,
 "pos": "ld",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Ryan Hartman": {
 "gtd": false,
@@ -11272,7 +11272,7 @@
 "line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Jake Sanderson": {
 "gtd": false,
@@ -11512,7 +11512,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Sammy Blais": {
 "gtd": false,
@@ -17309,7 +17309,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -17447,7 +17447,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
