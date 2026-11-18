@@ -87,6 +87,10 @@ JOBS: dict[str, Job] = {j.name: j for j in [
        doc="after dropping contest exports: import-contests -> entry-history -> roi-dashboard-rows "
            "-> critique-ledger-rows -> dfs-scorecard, stopping at the first failure; "
            "Claude then uploads data/harness/dfs_roi/*.json to the dashboard"),
+    _j("outside-nba", "evaluate", "scripts/dfs_outside_report.py", sport="nba",
+       tests=("tests/test_dfs_outside.py",),
+       doc="whose optimizer do we (and the field) resemble: RotoWire / numberFire / LineStar / DFF "
+           "projections captured by the NBA autolog, scored vs DK points and the field's most-copied lineups"),
     _j("nba-forward", "evaluate", "scripts/dfs_strategy_doe.py", "forward", "nba", sport="nba", timeout=3600,
        doc="NBA DOE leads judged forward (11/14): Adam's real entries vs production as it ran (props "
            "blend, since 11/8) vs the paper cash arm p70_cap3 (since 11/15), plus late-swap misses; "
@@ -244,7 +248,8 @@ RULES: list[tuple[str, str]] = [
 EDGE_RULES: list[tuple[str, str]] = [
     (r"^(git_lock|data_branch)$", "publish"),
     (r"^dfs_entry_edge$", "model"),
-    (r"^pickem_polymarket$", "ingest"),  # Polymarket NFL spread ladder -> a line (logged, not used)
+    (r"^pickem_polymarket$", "ingest"),
+    (r"^dfs_outside$", "ingest"),  # other sites' free NBA projections, logged beside ours  # Polymarket NFL spread ladder -> a line (logged, not used)
     (r"^(nba_minutes|nba_minutes_gap|nba_minutes_ml|nba_project|nba_ceiling_quantiles|nba_courtiq)$", "model"),
     (r"^scrollrail$", "app"),
     (r"^(dfs_opt|dfs_leverage|dfs_swap|dfs_roster|dfs_lineup|sgp|parlay)", "optimize"),

@@ -855,6 +855,16 @@ def build_slate(draft_group=None, client=None, n_sims: int = 3000, iters: int = 
     ev = None
     if persist:
         ev = ev_pick(pool, sim, cash, gpp, iters) if star else None
+        if star:
+            # Other companies' free projections + their optimal lineups (edge/dfs_outside.py),
+            # logged beside ours to see whose optimizer we -- and the field -- resemble.
+            try:
+                from edge import dfs_outside
+                lock_et = min((t for t in (_parse_time(p.get("start")) for p in pool) if t), default=None)
+                info["outside"] = dfs_outside.capture_with_lineups(
+                    pool, gid, info["date"], lock_et.astimezone(ET) if lock_et else None)
+            except Exception as exc:                        # noqa: BLE001
+                log.warning("nba: outside projections failed (%s)", exc)
         try:
             log_result = log_forward_test(pool, cash, gpp, gid, info, ev=ev)
         except Exception as exc:                            # noqa: BLE001
