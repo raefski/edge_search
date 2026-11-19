@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T23:45:56+00:00",
+"generated_at": "2026-11-19T23:46:56+00:00",
 "goalies": {
 "2026-11-19": {
 "ANA": {
@@ -7714,7 +7714,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Alexandre Carrier": {
@@ -7848,9 +7848,9 @@
 "toiMinutes": 50,
 "toiSeconds": 38
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Cole Caufield": {
@@ -7952,7 +7952,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -8022,7 +8022,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -8058,7 +8058,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Kaiden Guhle": {
@@ -8126,7 +8126,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Lane Hutson": {
@@ -8294,7 +8294,7 @@
 "toiMinutes": 45,
 "toiSeconds": 20
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": null
