@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T21:14:02+00:00",
+"generated_at": "2026-11-19T21:44:06+00:00",
 "goalies": {
 "2026-11-19": {
 "ANA": {
@@ -4219,6 +4219,40 @@
 }
 },
 "COL": {
+"Adam Beckman": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 58,
+"toiSeconds": 31
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 58,
+"toiSeconds": 31
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Alex Gagne": {
 "gtd": false,
 "injury": null,
@@ -4488,42 +4522,8 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
-"Gavin Brindley": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 80,
-"toiSeconds": 28
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 43,
-"toiSeconds": 47
-},
-"line": "F3",
-"pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Jaden Schwartz": {
 "gtd": false,
