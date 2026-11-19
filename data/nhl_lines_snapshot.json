@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T00:28:52+00:00",
+"generated_at": "2026-11-19T00:59:23+00:00",
 "goalies": {
 "2026-11-18": {
 "BOS": {
@@ -33,11 +33,11 @@
 "status": null
 },
 "BUF": {
-"goalie": "Alex Lyon",
+"goalie": "Ukko-Pekka Luukkonen",
 "status": null
 },
 "CAR": {
-"goalie": "Brandon Bussi",
+"goalie": "Pyotr Kochetkov",
 "status": null
 },
 "CBJ": {
@@ -1531,7 +1531,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -1568,42 +1568,6 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "lw",
-"pp": null
-},
-"Colten Ellis": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 25,
-"goalieGoalsAgainstAvg": "3.23",
-"goalieLosses": 3,
-"goalieMinutes": 464,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.878",
-"goalieSaves": 180,
-"goalieSeconds": 43,
-"goalieShotsAgainst": 205,
-"goalieShutouts": 1,
-"goalieWins": 3
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 15,
-"goalieGoalsAgainstAvg": "3.5",
-"goalieLosses": 2,
-"goalieMinutes": 256,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.877",
-"goalieSaves": 107,
-"goalieSeconds": 51,
-"goalieShotsAgainst": 122,
-"goalieShutouts": 1,
-"goalieWins": 2
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
 "pp": null
 },
 "Conor Timmins": {
@@ -2116,6 +2080,42 @@
 "pos": "c",
 "pp": null
 },
+"Ukko-Pekka Luukkonen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 32,
+"goalieGoalsAgainstAvg": "3.4",
+"goalieLosses": 3,
+"goalieMinutes": 564,
+"goalieOvertimeLosses": 3,
+"goalieSavePercentage": "0.878",
+"goalieSaves": 231,
+"goalieSeconds": 16,
+"goalieShotsAgainst": 263,
+"goalieShutouts": 0,
+"goalieWins": 4
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 16,
+"goalieGoalsAgainstAvg": "3.39",
+"goalieLosses": 2,
+"goalieMinutes": 282,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.876",
+"goalieSaves": 113,
+"goalieSeconds": 33,
+"goalieShotsAgainst": 129,
+"goalieShutouts": 0,
+"goalieWins": 2
+},
+"line": "G1",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Zach Benson": {
 "gtd": false,
 "injury": null,
@@ -2285,7 +2285,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2631,7 +2631,7 @@
 "pp": "PP1"
 },
 "Pyotr Kochetkov": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "gamesPlayed": 10,
@@ -2661,7 +2661,7 @@
 "goalieShutouts": 1,
 "goalieWins": 4
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
