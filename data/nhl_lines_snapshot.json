@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T23:46:56+00:00",
+"generated_at": "2026-11-19T23:59:01+00:00",
 "goalies": {
 "2026-11-19": {
 "ANA": {
@@ -6374,7 +6374,7 @@
 "toiMinutes": 64,
 "toiSeconds": 31
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -6408,7 +6408,7 @@
 "toiMinutes": 56,
 "toiSeconds": 53
 },
-"line": "F1",
+"line": "F4",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -6956,7 +6956,7 @@
 "toiMinutes": 57,
 "toiSeconds": 12
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -9646,9 +9646,9 @@
 "gamesPlayed": 10,
 "goals": 2,
 "points": 4,
-"powerplayAssists": 0,
+"powerplayAssists": 1,
 "powerplayGoals": 1,
-"powerplayPoints": 1,
+"powerplayPoints": 2,
 "shots": 10,
 "toiMinutes": 101,
 "toiSeconds": 5
