@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T15:30:38+00:00",
+"generated_at": "2026-11-19T15:58:52+00:00",
 "goalies": {
 "2026-11-19": {
 "ANA": {
@@ -27,7 +27,7 @@
 "status": null
 },
 "COL": {
-"goalie": "Mackenzie Blackwood",
+"goalie": "Scott Wedgewood",
 "status": null
 },
 "DAL": {
@@ -55,8 +55,8 @@
 "status": null
 },
 "OTT": {
-"goalie": "Linus Ullmark",
-"status": null
+"goalie": "Samuel Ersson",
+"status": "Likely"
 },
 "PHI": {
 "goalie": "Dan Vladar",
@@ -64,7 +64,7 @@
 },
 "PIT": {
 "goalie": "Arturs Silovs",
-"status": null
+"status": "Likely"
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
@@ -80,7 +80,7 @@
 },
 "TOR": {
 "goalie": "Anthony Stolarz",
-"status": "Likely"
+"status": "Confirmed"
 },
 "VAN": {
 "goalie": "Leevi Merilainen",
@@ -96,7 +96,7 @@
 },
 "WSH": {
 "goalie": "Logan Thompson",
-"status": null
+"status": "Confirmed"
 }
 },
 "2026-11-20": {}
@@ -4624,7 +4624,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -4864,7 +4864,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9290,7 +9290,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9496,7 +9496,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13306,7 +13306,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Darren Raddysh": {
@@ -13406,10 +13406,10 @@
 "toiMinutes": 68,
 "toiSeconds": 54
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "lw",
-"pp": "PP2"
+"pos": "rw",
+"pp": "PP1"
 },
 "Jack Roslovic": {
 "gtd": false,
@@ -13443,7 +13443,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Jake McCabe": {
 "gtd": false,
@@ -13542,7 +13542,7 @@
 "toiMinutes": 83,
 "toiSeconds": 25
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": "PP2"
@@ -13576,9 +13576,9 @@
 "toiMinutes": 78,
 "toiSeconds": 1
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Oliver Ekman-Larsson": {
@@ -13610,7 +13610,7 @@
 "toiMinutes": 102,
 "toiSeconds": 40
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
@@ -13644,9 +13644,9 @@
 "toiMinutes": 67,
 "toiSeconds": 52
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Sergei Bobrovsky": {
@@ -13782,7 +13782,7 @@
 "toiMinutes": 92,
 "toiSeconds": 22
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -15258,9 +15258,9 @@
 "toiMinutes": 71,
 "toiSeconds": 56
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Brayden Yager": {
@@ -15396,7 +15396,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Dawson Mercer": {
@@ -15632,7 +15632,7 @@
 "toiMinutes": 103,
 "toiSeconds": 42
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -15700,9 +15700,9 @@
 "toiMinutes": 71,
 "toiSeconds": 10
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Neal Pionk": {
@@ -15734,7 +15734,7 @@
 "toiMinutes": 127,
 "toiSeconds": 34
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "rd",
 "pp": "PP2"
@@ -15770,7 +15770,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15806,7 +15806,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
