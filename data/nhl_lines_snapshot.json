@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T23:29:10+00:00",
+"generated_at": "2026-11-19T23:45:56+00:00",
 "goalies": {
 "2026-11-19": {
 "ANA": {
@@ -12,7 +12,7 @@
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
-"status": null
+"status": "Confirmed"
 },
 "CBJ": {
 "goalie": "Cam Talbot",
@@ -52,7 +52,7 @@
 },
 "NYI": {
 "goalie": "Semyon Varlamov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Samuel Ersson",
@@ -92,7 +92,7 @@
 },
 "WPG": {
 "goalie": "Nico Daws",
-"status": "Likely"
+"status": "Confirmed"
 },
 "WSH": {
 "goalie": "Logan Thompson",
@@ -6374,7 +6374,7 @@
 "toiMinutes": 64,
 "toiSeconds": 31
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -6408,7 +6408,7 @@
 "toiMinutes": 56,
 "toiSeconds": 53
 },
-"line": "F4",
+"line": "F1",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -6956,7 +6956,7 @@
 "toiMinutes": 57,
 "toiSeconds": 12
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -8400,7 +8400,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Ben Hutton": {
@@ -8536,7 +8536,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Emil Heineman": {
@@ -8610,7 +8610,7 @@
 "pp": null
 },
 "Jean-Gabriel Pageau": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 5,
@@ -15910,7 +15910,7 @@
 "toiMinutes": 66,
 "toiSeconds": 18
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -16012,7 +16012,7 @@
 "toiMinutes": 63,
 "toiSeconds": 2
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "rw",
 "pp": null
@@ -16046,7 +16046,7 @@
 "toiMinutes": 74,
 "toiSeconds": 15
 },
-"line": "F4",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -16150,7 +16150,7 @@
 "toiMinutes": 88,
 "toiSeconds": 3
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -16184,7 +16184,7 @@
 "toiMinutes": 55,
 "toiSeconds": 9
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -16286,9 +16286,9 @@
 "toiMinutes": 74,
 "toiSeconds": 10
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Justin Sourdif": {
@@ -16320,9 +16320,9 @@
 "toiMinutes": 71,
 "toiSeconds": 46
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Logan Thompson": {
