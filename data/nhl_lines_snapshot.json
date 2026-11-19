@@ -1,10 +1,10 @@
 {
-"generated_at": "2026-11-18T21:45:18+00:00",
+"generated_at": "2026-11-19T00:14:11+00:00",
 "goalies": {
 "2026-11-18": {
 "BOS": {
 "goalie": "Jeremy Swayman",
-"status": null
+"status": "Confirmed"
 },
 "COL": {
 "goalie": "Mackenzie Blackwood",
@@ -843,7 +843,7 @@
 "toiMinutes": 73,
 "toiSeconds": 59
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -979,7 +979,7 @@
 "toiMinutes": 85,
 "toiSeconds": 1
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP1"
@@ -1013,7 +1013,7 @@
 "toiMinutes": 78,
 "toiSeconds": 16
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
@@ -1081,9 +1081,9 @@
 "toiMinutes": 87,
 "toiSeconds": 44
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Jeremy Swayman": {
@@ -1153,7 +1153,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Mark Kastelic": {
@@ -1224,6 +1224,40 @@
 "pos": "ld",
 "pp": "PP2"
 },
+"Matthew Poitras": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 88,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 40,
+"toiSeconds": 0
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Michael DiPietro": {
 "gtd": false,
 "injury": null,
@@ -1260,40 +1294,6 @@
 "pos": "g",
 "pp": null
 },
-"Michael Eyssimont": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 22,
-"toiMinutes": 114,
-"toiSeconds": 25
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 53,
-"toiSeconds": 21
-},
-"line": "F2",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Morgan Geekie": {
 "gtd": false,
 "injury": null,
@@ -1323,9 +1323,9 @@
 "toiMinutes": 74,
 "toiSeconds": 11
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Nikita Zadorov": {
@@ -1391,7 +1391,7 @@
 "toiMinutes": 97,
 "toiSeconds": 33
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -6302,40 +6302,6 @@
 }
 },
 "DET": {
-"Albert Johansson": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 11,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 14,
-"toiMinutes": 154,
-"toiSeconds": 59
-},
-"last5": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 74,
-"toiSeconds": 39
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Alex DeBrincat": {
 "gtd": false,
 "injury": null,
@@ -6607,7 +6573,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP1"
 },
 "J.T. Compher": {
@@ -6643,6 +6609,40 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
+},
+"Jacob Bernard-Docker": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 149,
+"toiSeconds": 38
+},
+"last5": {
+"assists": 0,
+"blocks": 8,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 82,
+"toiSeconds": 34
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
 },
 "John Gibson": {
 "gtd": false,
@@ -6813,7 +6813,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Michael Brandsegg-Nyg\u00e5rd": {
