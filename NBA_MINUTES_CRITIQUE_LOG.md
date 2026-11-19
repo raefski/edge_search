@@ -1967,4 +1967,4 @@ chases chalk-adjacent value. **Not shipped.** Caveat: the minutes hand-off is pr
 project(); a faithful re-projection could differ, but the sign on test GPP says don't build the auto-swap yet.
 
 Runner-ups: (1) $3,000 no-history players shrunk toward 0 (coach's-decision DNPs: 7 slots on opening night,
-0 since); (2) last-call alert when the first Out lands < 5 min before tip (DeRozan 11/4: no alert).
+0 since); (2) ~~last-call alert when the first Out lands < 5 min before tip (DeRozan 11/4)~~ -- checked 11/19: no gap. His game tipped 9:00 PM ET (02:00Z); the official report first showed him Out at 02:01:46Z and RotoWire at 02:03:51Z, i.e. AFTER tip -- his row is in the 'first Out after his tip' line, nothing was swappable.
