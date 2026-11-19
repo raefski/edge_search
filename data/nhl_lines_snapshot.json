@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T21:44:06+00:00",
+"generated_at": "2026-11-19T21:58:46+00:00",
 "goalies": {
 "2026-11-19": {
 "ANA": {
@@ -7783,7 +7783,7 @@
 "line": "F1",
 "pk": "PK2",
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Arber Xhekaj": {
 "gtd": false,
@@ -7848,10 +7848,10 @@
 "toiMinutes": 50,
 "toiSeconds": 38
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Cole Caufield": {
 "gtd": false,
@@ -7886,6 +7886,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Florian Xhekaj": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 84,
+"toiSeconds": 54
+},
+"last5": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 39,
+"toiSeconds": 43
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Jacob Fowler": {
 "gtd": false,
@@ -8298,40 +8332,6 @@
 "pk": "PK1",
 "pos": "c",
 "pp": null
-},
-"Zack Bolduc": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 14,
-"toiMinutes": 155,
-"toiSeconds": 19
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 78,
-"toiSeconds": 27
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": "PP1"
 }
 },
 "NYI": {
