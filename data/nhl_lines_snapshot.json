@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T22:00:36+00:00",
+"generated_at": "2026-11-19T22:14:14+00:00",
 "goalies": {
 "2026-11-19": {
 "ANA": {
@@ -4975,40 +4975,6 @@
 "pos": "g",
 "pp": null
 },
-"Colin Blackwell": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 101,
-"toiSeconds": 24
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 49,
-"toiSeconds": 36
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "David Perron": {
 "gtd": false,
 "injury": null,
@@ -5040,7 +5006,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Esa Lindell": {
@@ -5180,6 +5146,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Joel Kiviranta": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 119,
+"toiSeconds": 10
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 59,
+"toiSeconds": 51
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Justin Hryckowian": {
 "gtd": false,
@@ -11142,7 +11142,7 @@
 "toiMinutes": 62,
 "toiSeconds": 26
 },
-"line": "F3",
+"line": "F4",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -11176,7 +11176,7 @@
 "toiMinutes": 78,
 "toiSeconds": 39
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -11249,40 +11249,6 @@
 "pos": "rd",
 "pp": "PP2"
 },
-"Cale Fleury": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 17,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 10,
-"toiMinutes": 148,
-"toiSeconds": 2
-},
-"last5": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 66,
-"toiSeconds": 20
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": null
-},
 "Chandler Stephenson": {
 "gtd": false,
 "injury": null,
@@ -11312,7 +11278,7 @@
 "toiMinutes": 85,
 "toiSeconds": 53
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
@@ -11348,36 +11314,36 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
-"Jagger Firkus": {
-"gtd": false,
+"Jacob Melanson": {
+"gtd": true,
 "injury": null,
 "last10": {
-"assists": 0,
-"blocks": 1,
+"assists": 2,
+"blocks": 6,
 "gamesPlayed": 10,
-"goals": 2,
+"goals": 0,
 "points": 2,
 "powerplayAssists": 0,
-"powerplayGoals": 2,
-"powerplayPoints": 2,
-"shots": 12,
-"toiMinutes": 86,
-"toiSeconds": 43
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 92,
+"toiSeconds": 5
 },
 "last5": {
-"assists": 0,
-"blocks": 1,
+"assists": 2,
+"blocks": 3,
 "gamesPlayed": 5,
-"goals": 2,
+"goals": 0,
 "points": 2,
 "powerplayAssists": 0,
-"powerplayGoals": 2,
-"powerplayPoints": 2,
-"shots": 11,
-"toiMinutes": 72,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 53,
 "toiSeconds": 53
 },
 "line": "F4",
@@ -11454,6 +11420,40 @@
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
+},
+"Joshua Mahura": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 7,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 141,
+"toiSeconds": 22
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 68,
+"toiSeconds": 14
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
 },
 "Kaapo Kakko": {
 "gtd": false,
@@ -11552,9 +11552,9 @@
 "toiMinutes": 71,
 "toiSeconds": 14
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Matty Beniers": {
@@ -11586,7 +11586,7 @@
 "toiMinutes": 88,
 "toiSeconds": 4
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -11690,7 +11690,7 @@
 "toiMinutes": 60,
 "toiSeconds": 52
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
