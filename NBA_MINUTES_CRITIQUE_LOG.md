@@ -1930,3 +1930,41 @@ Unattended gate (20261117-0658): **review** -- waiting for Adam: harness critiqu
 | primary | tip-90 expected | 5,791 | 23 | 5.8297 | 5.6887 | -1.6242 [-2.3547, -0.9670] | better |
 - primary tip-90 confirmed: noise, point estimate worse (+0.0309 [+0.0000, +0.0600], 2 clusters)
 - the cycle aimed at 'availability: questionable/GTD DNP mixture in the lineup sim', which this gate does not measure (minutes); gate said fail: Adam decides on the cycle's held-out numbers
+
+## Cycle 35 (availability: late Out news after the pre-lock build; Adam's target, hand-run) -- 2026-11-19 -- NOT SHIPPED
+
+Target (Adam, from cycle 34's runner-up): players Out after our ~build but before their tip. Metric: dead lineup
+slots, lead time, whether the after-build path caught it, and the field percentile of a lineup rebuilt on the news.
+
+**Critic (dfs-availability-critic)**, box minutes = truth, logs by draft group:
+
+| | train 10/21-11/07 (17 dates / 49 gids) | test 11/08-11/18 (11 / 33) |
+|---|---|---|
+| first Out after build, before tip: players / proj pts | 47 / 358 | 48 / 543 |
+| logged lineup slots holding them (cash / GPP) | 2 / 0 (Poeltl, Oubre: both alerted) | 0 / 0 |
+| first Out after his tip (nothing could help) | 6 / 92 | 1 / 17 |
+| lead: first Out vs his tip | median ~50 min (16-104) | ~50 (25-104) |
+
+Dead slots cost ~0 (P(dress) hedge + nba_scratch swap alerts). Critic's hole: nothing re-optimises the unlocked
+slots when a late Out promotes a cheap teammate (~1 event/date; hindsight examples Jakucionis 7.9->45.8 11/15,
+J. Green 12.0->34.2 11/18, Clowney 10.1->34.8 11/14).
+
+**Test (scratch late_rebuild.py on nba_lineup_lab's boards / production variant / sim / optimizer / fields):**
+for each actionable Out (first source + 2 min, before his tip), remove him, give his minutes to teammates pro rata
+(cap 40, constant pts/min), re-sim, re-optimise only slots whose games had not started (locked + exclude), take
+the new lineup if its projected gain >= X. 21 boards. X fit on train ({0,3,5,8}): X=3.
+
+| X=3 | contests | dates | lineups changed | field pctile diff vs no rebuild [90%, by date] | pts | cashed |
+|---|---|---|---|---|---|---|
+| train cash | 9 | 7 | 2 | +0.078 [+0.000, +0.157] | +5.7 | +2 |
+| train GPP | 13 | 10 | 3 | +0.032 [-0.075, +0.140] | -0.5 | +1 |
+| **test cash** | 10 | 7 | 2 | +0.003 [-0.043, +0.053] | -0.7 | 0 |
+| **test GPP** | 10 | 8 | 5 | **-0.041 [-0.086, -0.006]** | -8.2 | 0 |
+
+(X=0 on test: cash -0.029, GPP -0.051.) Held out it is flat on cash and worse on GPP: the beneficiaries the
+critic named are hindsight; at news time the projection bump rarely picks the one who booms, and swapping
+chases chalk-adjacent value. **Not shipped.** Caveat: the minutes hand-off is pro rata, not edge/nba_minutes
+project(); a faithful re-projection could differ, but the sign on test GPP says don't build the auto-swap yet.
+
+Runner-ups: (1) $3,000 no-history players shrunk toward 0 (coach's-decision DNPs: 7 slots on opening night,
+0 since); (2) last-call alert when the first Out lands < 5 min before tip (DeRozan 11/4: no alert).
