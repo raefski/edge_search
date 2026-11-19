@@ -1893,3 +1893,40 @@ Runner-ups: (1) partial-props players (some lines, not P+R+A) are now the larges
 1.06 picks a cash lineup at -3.2 a pick (-3.4 a lineup; cycle 32, T24); (2) confirmed promoted
 starters inside the shrink (17 rows, still -5.6 biased: not enough data to exempt them); (3) on 11/2
 the shrink cost GPP when a props-free promoted starter boomed (Braden Smith 47; .714 -> .614).
+
+## Cycle 34 (auto -> availability: Questionable / GTD players at build time; T21) -- 2026-11-17, unattended -- SHIPPED (correctness fix)
+
+Scout: `{"target": "availability: questionable/GTD DNP mixture in the lineup sim", "metric": "held-out field percentile of replayed lineups per slate vs the real field (cash, GPP apart) + share of lineups holding a Q/GTD DNP", "harness": "scripts/nba_lineup_lab.py + official report / RotoWire logs joined to box DNPs", "split": "fit < 11/08, test 11/08-11/16", "transfer": "T21", "money_at_stake": "GPP -$62.47 (49e/22s), cash -$14.00 (21e/16s)", "runner_ups": ["T04 Poisson count props", "T24/T02 partial props with more dates", "combo markets (T03 null)"]}`
+
+Baseline (`nba_lineup_lab.py report`, shipped): cash train .610 (13 contests / 8 dates), GPP train .798 (21/10), cash test .507 (8/8), GPP test .559 (20/12).
+
+**Critic (dfs-availability-critic).** Last pre-tip build per draft group, official report as of build time (cached PDFs), NBA.com minutes as truth; history from 10/30, 11/16 not yet boxed.
+
+| | train 10/30-11/07 (25 slates / 8 dates) | test 11/08-11/15 (23 / 8) |
+|---|---|---|
+| Questionable at build: players / DNP | 19 / 6 (90 proj pts) | 26 / 15 (218 pts) |
+| not on report at build, Out by tip | 17 (225 pts) | 23 (346 pts) |
+| logged lineup slots holding a DNP | 2 (incl. Oubre) | **0** |
+
+T21 (Q-DNP mixture in the sim) is **null for now**: Q players DNP 58% in test, but the existing P(dress) hedge already keeps them out of our lineups (0 dead test slots), so the lineup-percentile before/after is ~0 by construction; not replayed.
+
+**Hole found instead (a name join, fixed whatever the target):** `edge/nba_injury_report.parse` took the text after the last 2+-space run as the surname; pypdf writes `Porter  Jr.,Michael` / `Murphy   III,Trey`, so the surname came back "Jr."/"III" and `full_name` gave "Michael Jr.", which neither the exact join nor the `_sig` fallback matches. 325 of 5,623 parsed rows; re-parsed, 25 board rows change status. False actives the fix catches: test 3 (Porter Jr. Q 11/14 proj 35.9; Murphy III Out 11/11 17.3; Payton II Out 11/09 11.4) = 64.6 projected pts, 0 lineup exposure; train 3 (Oubre Jr. Q 11/04 25.8 -- 1 logged slot + the lab's replayed cash lineup; Pippen Jr. 10/31, 11/02) = 45.5 pts.
+
+**Fix:** `_last_name()` glues a bare Jr/Sr/II/III/IV/V piece back onto the token before it. Nothing fitted. Test added (tests/test_nba_scratch.py). Lab `report` unchanged (it replays logged boards; this is a live-input fix), so the gate should read as a tie. Expected money: < 1 dead slot per 20 slates -- a correctness fix, not an ROI lever. No other sport parses with this pattern (grep). Also fixed on the way: `harness/registry.py` had a misplaced line that made every `harness` import raise TypeError (broke test_nba_scratch collection), and `dfs_props_roi` / `dfs_transfer` lacked a role. Pre-existing, not touched: `test_harness_guard::test_blocks[rm data/odds.db]` fails in a worktree where data/odds.db is a symlink.
+
+Runner-ups: (1) late news -- 23 test players Out at tip but not on the report at the ~70-min build (346 proj pts, 0 exposure today): re-pull the report ~T-30; (2) "Available" two-ways DNP 17/118 in test: map through REPORT_P like Probable; (3) log `avail`, `avail_why`, `injury` columns in dfs_proj_history_nba.csv so the next availability critic needn't rebuild from PDFs.
+
+Unattended gate (20261117-0658): **review** -- waiting for Adam: harness critique-loop --merge / --drop
+
+| split | state | n | clusters | main RMSE | candidate RMSE | loss diff [90%] | verdict |
+|---|---|---|---|---|---|---|---|
+| guard | confirmed | 4,813 | 25 | 6.0465 | 6.0424 | -0.0494 [-0.1181, +0.0063] | holds |
+| guard | inactives | 4,813 | 25 | 6.3416 | 6.3405 | -0.0138 [-0.0618, +0.0332] | holds |
+| primary | confirmed | 31,123 | 164 | 6.0709 | 6.0510 | -0.2408 [-0.3078, -0.1753] | better |
+| primary | inactives | 31,123 | 164 | 6.4608 | 6.4423 | -0.2398 [-0.3039, -0.1736] | better |
+| primary | tip-45 confirmed | 124 | 7 | 6.6478 | 6.3430 | -3.9606 [-11.7955, +0.0176] | noise |
+| primary | tip-45 expected | 5,702 | 23 | 5.5099 | 5.3634 | -1.5938 [-2.2536, -0.9938] | better |
+| primary | tip-90 confirmed | 35 | 2 | 5.8327 | 5.8354 | +0.0309 [+0.0000, +0.0600] | noise |
+| primary | tip-90 expected | 5,791 | 23 | 5.8297 | 5.6887 | -1.6242 [-2.3547, -0.9670] | better |
+- primary tip-90 confirmed: noise, point estimate worse (+0.0309 [+0.0000, +0.0600], 2 clusters)
+- the cycle aimed at 'availability: questionable/GTD DNP mixture in the lineup sim', which this gate does not measure (minutes); gate said fail: Adam decides on the cycle's held-out numbers

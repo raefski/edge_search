@@ -249,7 +249,7 @@ EDGE_RULES: list[tuple[str, str]] = [
     (r"^(git_lock|data_branch)$", "publish"),
     (r"^dfs_entry_edge$", "model"),
     (r"^pickem_polymarket$", "ingest"),
-    (r"^dfs_outside$", "ingest"),  # other sites' free NBA projections, logged beside ours  # Polymarket NFL spread ladder -> a line (logged, not used)
+    (r"^dfs_outside$", "ingest"),  # other sites' free NBA projections, logged beside ours
     (r"^(nba_minutes|nba_minutes_gap|nba_minutes_ml|nba_project|nba_ceiling_quantiles|nba_courtiq)$", "model"),
     (r"^scrollrail$", "app"),
     (r"^(dfs_opt|dfs_leverage|dfs_swap|dfs_roster|dfs_lineup|sgp|parlay)", "optimize"),

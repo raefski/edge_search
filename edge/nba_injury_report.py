@@ -92,6 +92,23 @@ def text(pdf: bytes) -> str:
     return "\n".join(p.extract_text(extraction_mode="layout") for p in r.pages)
 
 
+_SUFFIX = re.compile(r"(?:Jr|Sr|II|III|IV|V)\.?", re.I)
+
+
+def _last_name(raw: str) -> str:
+    """The last name in ROW's first group: what follows the last run of 2+ spaces (a
+    team / matchup label can sit columns to its left) -- unless that piece is a bare
+    suffix. pypdf's layout text writes 'Porter  Jr.,Michael' / 'Murphy   III,Trey', so
+    the split alone left 'Jr.' and full_name gave 'Michael Jr.', which no board name
+    joins: 325 of 5,623 rows 10/30-11/16, incl. Porter Jr. Questionable 11/14 (projected
+    35.9, did not play), Murphy III Out 11/11, Oubre Jr. Questionable 11/4 (in a logged
+    lineup). Critique cycle 34, 2026-11-17."""
+    parts = re.split(r"\s{2,}", raw.strip())
+    if len(parts) > 1 and _SUFFIX.fullmatch(parts[-1]):
+        return f"{parts[-2]} {parts[-1]}"
+    return parts[-1]
+
+
 def parse(pdf: bytes) -> dict:
     """{"rows": [(last, first, status, reason)], "not_submitted": n, "status_words": n} --
     the last is a check: every listed player carries exactly one status word. `reason`
@@ -100,7 +117,7 @@ def parse(pdf: bytes) -> dict:
     t = text(pdf)
     # a team / matchup label can sit on the player's line, columns apart: the name is
     # what follows the last run of 2+ spaces
-    rows = [(re.split(r"\s{2,}", m.group(1).strip())[-1], m.group(2).strip(), m.group(3),
+    rows = [(_last_name(m.group(1)), m.group(2).strip(), m.group(3),
              re.sub(r"\s+", " ", m.group(4)).strip()) for m in ROW.finditer(t)]
     words = sum(len(re.findall(r"\b" + s + r"\b", t)) for s in STATUSES)
     return {"rows": rows, "not_submitted": len(NOT_SUBMITTED.findall(t)), "status_words": words}

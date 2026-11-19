@@ -191,6 +191,7 @@ Independent critic agents (`.claude/agents/nba-minutes-critic.md`), each fixed a
    board RMSE incl. phantoms, five announced, 2025-26: 6.766 -> 6.459 at 25% missed (6.385 -> 6.319 at 0%).
    ESPN snapshots now logged (data/nba_espn_injuries/) to measure the miss rate.
 7. the NBA's official injury report replaces ESPN as the Out list (two-ways, Doubtful/Questionable/Probable);
+   (11/17, critique cycle 34: the parser now keeps a suffix pypdf splits off with layout spaces -- "Porter  Jr.,Michael" had parsed as "Michael Jr." and never joined the board: 325 of 5,623 rows 10/30-11/16 lost, incl. Porter Jr. Q 11/14 projected 35.9 DNP, Murphy III Out 11/11, Oubre Jr. Q 11/4 in a logged lineup);
    uncertain players get P(dress) x minutes by status, teammates the expected share. Replayed on 1,182 archived
    reports, 2025-26 held out: five announced 6.624 -> 6.438, no five 7.357 -> 7.077 (board per active game).
    The lab's NBA.com inactive flags miss ~1,000 injured 0-minute 'actives' a season: lab tables run pessimistic.
