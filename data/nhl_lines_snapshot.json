@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T00:59:23+00:00",
+"generated_at": "2026-11-19T01:28:48+00:00",
 "goalies": {
 "2026-11-18": {
 "BOS": {
@@ -93,7 +93,7 @@
 "status": null
 },
 "SEA": {
-"goalie": "Joey Daccord",
+"goalie": "Philipp Grubauer",
 "status": null
 },
 "STL": {
@@ -109,7 +109,7 @@
 "status": null
 },
 "VAN": {
-"goalie": "Nikita Tolopilo",
+"goalie": "Leevi Merilainen",
 "status": null
 },
 "VGK": {
@@ -13499,7 +13499,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -13705,7 +13705,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -16966,6 +16966,42 @@
 "pos": "rw",
 "pp": "PP1"
 },
+"Kevin Lankinen": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 46,
+"goalieGoalsAgainstAvg": "5.66",
+"goalieLosses": 8,
+"goalieMinutes": 487,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.814",
+"goalieSaves": 202,
+"goalieSeconds": 27,
+"goalieShotsAgainst": 247,
+"goalieShutouts": 0,
+"goalieWins": 2
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 21,
+"goalieGoalsAgainstAvg": "5.23",
+"goalieLosses": 5,
+"goalieMinutes": 240,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.819",
+"goalieSaves": 95,
+"goalieSeconds": 23,
+"goalieShotsAgainst": 116,
+"goalieShutouts": 0,
+"goalieWins": 0
+},
+"line": "G2",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Leevi Merilainen": {
 "gtd": false,
 "injury": null,
@@ -16997,7 +17033,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -17136,42 +17172,6 @@
 "line": "F4",
 "pk": null,
 "pos": "c",
-"pp": null
-},
-"Nikita Tolopilo": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 36,
-"goalieGoalsAgainstAvg": "4.0",
-"goalieLosses": 8,
-"goalieMinutes": 539,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.865",
-"goalieSaves": 231,
-"goalieSeconds": 7,
-"goalieShotsAgainst": 267,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 15,
-"goalieGoalsAgainstAvg": "3.2",
-"goalieLosses": 3,
-"goalieMinutes": 280,
-"goalieOvertimeLosses": 0,
-"goalieSavePercentage": "0.888",
-"goalieSaves": 119,
-"goalieSeconds": 34,
-"goalieShotsAgainst": 134,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"line": "G1",
-"pk": null,
-"pos": "g",
 "pp": null
 },
 "Paul Cotter": {
