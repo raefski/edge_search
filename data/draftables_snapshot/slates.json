@@ -1,5 +1,25 @@
 {
 "CBB": {
+"157013": {
+"ContestStartTimeSuffix": " (Early)",
+"DraftGroupId": 157013,
+"DraftGroupTag": "Featured",
+"GameCount": 3,
+"GameTypeId": 98,
+"StartDate": "2026-11-20T17:30:00.0000000Z",
+"StartDateEst": "2026-11-20T12:30:00.0000000",
+"last_start": "2026-11-20T22:30:00.0000000Z"
+},
+"157014": {
+"ContestStartTimeSuffix": " (OKST vs MINN)",
+"DraftGroupId": 157014,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 97,
+"StartDate": "2026-11-20T17:30:00.0000000Z",
+"StartDateEst": "2026-11-20T12:30:00.0000000",
+"last_start": "2026-11-20T17:30:00.0000000Z"
+},
 "157138": {
 "ContestStartTimeSuffix": " (Early)",
 "DraftGroupId": 157138,
@@ -450,6 +470,16 @@
 "StartDateEst": "2026-11-22T16:25:00.0000000",
 "last_start": "2026-11-22T21:25:00.0000000Z"
 },
+"156779": {
+"ContestStartTimeSuffix": " (Primetime)",
+"DraftGroupId": 156779,
+"DraftGroupTag": "",
+"GameCount": 2,
+"GameTypeId": 1,
+"StartDate": "2026-11-23T01:20:00.0000000Z",
+"StartDateEst": "2026-11-22T20:20:00.0000000",
+"last_start": "2026-11-24T01:15:00.0000000Z"
+},
 "156781": {
 "ContestStartTimeSuffix": " (IND @ HOU)",
 "DraftGroupId": 156781,
@@ -559,6 +589,26 @@
 "StartDate": "2026-11-22T21:25:00.0000000Z",
 "StartDateEst": "2026-11-22T16:25:00.0000000",
 "last_start": "2026-11-22T21:25:00.0000000Z"
+},
+"156792": {
+"ContestStartTimeSuffix": " (MIN vs SF)",
+"DraftGroupId": 156792,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 96,
+"StartDate": "2026-11-23T01:20:00.0000000Z",
+"StartDateEst": "2026-11-22T20:20:00.0000000",
+"last_start": "2026-11-23T01:20:00.0000000Z"
+},
+"156793": {
+"ContestStartTimeSuffix": " (CIN @ WAS)",
+"DraftGroupId": 156793,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 96,
+"StartDate": "2026-11-24T01:15:00.0000000Z",
+"StartDateEst": "2026-11-23T20:15:00.0000000",
+"last_start": "2026-11-24T01:15:00.0000000Z"
 },
 "156794": {
 "ContestStartTimeSuffix": " (2H IND @ HOU)",
