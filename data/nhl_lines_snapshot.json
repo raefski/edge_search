@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T17:58:49+00:00",
+"generated_at": "2026-11-19T18:28:50+00:00",
 "goalies": {
 "2026-11-19": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "CBJ": {
 "goalie": "Cam Talbot",
-"status": null
+"status": "Confirmed"
 },
 "CGY": {
 "goalie": "Dustin Wolf",
@@ -44,7 +44,7 @@
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
-"status": null
+"status": "Confirmed"
 },
 "MTL": {
 "goalie": "Jakub Dobes",
@@ -6992,7 +6992,7 @@
 "toiMinutes": 83,
 "toiSeconds": 44
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
@@ -7026,7 +7026,7 @@
 "toiMinutes": 70,
 "toiSeconds": 1
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -7130,7 +7130,7 @@
 "toiMinutes": 82,
 "toiSeconds": 30
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -7438,7 +7438,7 @@
 "toiMinutes": 70,
 "toiSeconds": 8
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -7472,7 +7472,7 @@
 "toiMinutes": 78,
 "toiSeconds": 20
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -7509,6 +7509,40 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
+"pp": null
+},
+"Nico Sturm": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 110,
+"toiSeconds": 2
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 0,
+"toiMinutes": 52,
+"toiSeconds": 56
+},
+"line": "F3",
+"pk": "PK2",
+"pos": "lw",
 "pp": null
 },
 "Quinn Hughes": {
@@ -7578,40 +7612,6 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP2"
-},
-"Yakov Trenin": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 130,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 62,
-"toiSeconds": 26
-},
-"line": "F2",
-"pk": "PK2",
-"pos": "lw",
-"pp": null
 },
 "Zach Bogosian": {
 "gtd": false,
@@ -8500,7 +8500,7 @@
 "toiMinutes": 86,
 "toiSeconds": 27
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -8536,7 +8536,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Emil Heineman": {
@@ -8568,7 +8568,7 @@
 "toiMinutes": 83,
 "toiSeconds": 33
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -8607,6 +8607,40 @@
 "line": "G1",
 "pk": null,
 "pos": "g",
+"pp": null
+},
+"Jean-Gabriel Pageau": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 5,
+"blocks": 10,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 5,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 164,
+"toiSeconds": 48
+},
+"last5": {
+"assists": 2,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 81,
+"toiSeconds": 22
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
 "pp": null
 },
 "Kyle Palmieri": {
@@ -8672,7 +8706,7 @@
 "toiMinutes": 97,
 "toiSeconds": 34
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -8706,7 +8740,7 @@
 "toiMinutes": 69,
 "toiSeconds": 58
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -8779,40 +8813,6 @@
 "pos": "ld",
 "pp": "PP1"
 },
-"Mitchell Chaffee": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 100,
-"toiSeconds": 11
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 51,
-"toiSeconds": 54
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Ondrej Palat": {
 "gtd": false,
 "injury": null,
@@ -8842,7 +8842,7 @@
 "toiMinutes": 68,
 "toiSeconds": 39
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -9014,7 +9014,7 @@
 "toiMinutes": 79,
 "toiSeconds": 9
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
