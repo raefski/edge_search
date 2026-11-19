@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T21:58:46+00:00",
+"generated_at": "2026-11-19T22:00:36+00:00",
 "goalies": {
 "2026-11-19": {
 "ANA": {
@@ -2190,7 +2190,7 @@
 "toiMinutes": 93,
 "toiSeconds": 9
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -2297,7 +2297,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "lw",
-"pp": null
+"pp": "PP2"
 },
 "Damon Severson": {
 "gtd": false,
@@ -2331,40 +2331,6 @@
 "line": "D1",
 "pk": null,
 "pos": "rd",
-"pp": null
-},
-"Dante Fabbro": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 11,
-"toiMinutes": 142,
-"toiSeconds": 1
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 72,
-"toiSeconds": 3
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
 "pp": null
 },
 "Denton Mateychuk": {
@@ -2401,40 +2367,6 @@
 "pos": "rd",
 "pp": "PP2"
 },
-"Dmitri Voronkov": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 97,
-"toiSeconds": 53
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 56,
-"toiSeconds": 18
-},
-"line": "F1",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Erik Gudbranson": {
 "gtd": false,
 "injury": null,
@@ -2465,8 +2397,42 @@
 "toiSeconds": 22
 },
 "line": "D3",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
+"pp": null
+},
+"Isac Lundestrom": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 126,
+"toiSeconds": 1
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 64,
+"toiSeconds": 13
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Ivan Provorov": {
@@ -2566,7 +2532,7 @@
 "toiMinutes": 78,
 "toiSeconds": 57
 },
-"line": "D4",
+"line": "D3",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -2636,7 +2602,7 @@
 "toiMinutes": 95,
 "toiSeconds": 33
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -2670,7 +2636,7 @@
 "toiMinutes": 48,
 "toiSeconds": 56
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -2738,10 +2704,44 @@
 "toiMinutes": 95,
 "toiSeconds": 14
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Ryan Lomberg": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 79,
+"toiSeconds": 17
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 32,
+"toiSeconds": 36
+},
+"line": "F2",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Steven Lorentz": {
 "gtd": false,
@@ -2806,7 +2806,7 @@
 "toiMinutes": 96,
 "toiSeconds": 12
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK1",
 "pos": "rw",
 "pp": "PP2"
