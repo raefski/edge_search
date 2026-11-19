@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-19T00:14:11+00:00",
+"generated_at": "2026-11-19T00:28:52+00:00",
 "goalies": {
 "2026-11-18": {
 "BOS": {
@@ -9109,9 +9109,9 @@
 "toiMinutes": 75,
 "toiSeconds": 3
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Alexandre Carrier": {
@@ -9149,7 +9149,7 @@
 "pp": null
 },
 "Alexandre Texier": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -9177,7 +9177,7 @@
 "toiMinutes": 74,
 "toiSeconds": 23
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
@@ -9216,6 +9216,40 @@
 "pos": "ld",
 "pp": null
 },
+"Brett Berard": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 109,
+"toiSeconds": 44
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 53,
+"toiSeconds": 40
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Cole Caufield": {
 "gtd": false,
 "injury": null,
@@ -9249,40 +9283,6 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
-},
-"Florian Xhekaj": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 84,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 39,
-"toiSeconds": 43
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Jacob Fowler": {
 "gtd": false,
@@ -9349,7 +9349,7 @@
 "toiMinutes": 75,
 "toiSeconds": 6
 },
-"line": "F4",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -9419,9 +9419,9 @@
 "toiMinutes": 94,
 "toiSeconds": 6
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Kaiden Guhle": {
@@ -9453,7 +9453,7 @@
 "toiMinutes": 108,
 "toiSeconds": 42
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -9521,7 +9521,7 @@
 "toiMinutes": 126,
 "toiSeconds": 57
 },
-"line": "D1",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": "PP1"
@@ -9623,7 +9623,7 @@
 "toiMinutes": 55,
 "toiSeconds": 39
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -9691,7 +9691,7 @@
 "toiMinutes": 87,
 "toiSeconds": 16
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -9725,7 +9725,7 @@
 "toiMinutes": 82,
 "toiSeconds": 1
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
