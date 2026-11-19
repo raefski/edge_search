@@ -201,8 +201,8 @@
 "DraftGroupTag": "Featured",
 "GameCount": 11,
 "GameTypeId": 168,
-"StartDate": "2026-11-21T15:00:00.0000000Z",
-"StartDateEst": "2026-11-21T10:00:00.0000000",
+"StartDate": "2026-11-21T15:20:00.0000000Z",
+"StartDateEst": "2026-11-21T10:20:00.0000000",
 "last_start": "2026-11-21T19:20:00.0000000Z"
 }
 },
@@ -641,6 +641,66 @@
 "StartDate": "2026-11-20T03:00:00.0000000Z",
 "StartDateEst": "2026-11-19T22:00:00.0000000",
 "last_start": "2026-11-20T03:00:00.0000000Z"
+},
+"156944": {
+"ContestStartTimeSuffix": " (Early)",
+"DraftGroupId": 156944,
+"DraftGroupTag": "",
+"GameCount": 2,
+"GameTypeId": 125,
+"StartDate": "2026-11-21T18:00:00.0000000Z",
+"StartDateEst": "2026-11-21T13:00:00.0000000",
+"last_start": "2026-11-21T20:30:00.0000000Z"
+},
+"156945": {
+"ContestStartTimeSuffix": " (CHI @ CGY)",
+"DraftGroupId": 156945,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-21T20:30:00.0000000Z",
+"StartDateEst": "2026-11-21T15:30:00.0000000",
+"last_start": "2026-11-21T20:30:00.0000000Z"
+},
+"156946": {
+"ContestStartTimeSuffix": null,
+"DraftGroupId": 156946,
+"DraftGroupTag": "Featured",
+"GameCount": 12,
+"GameTypeId": 125,
+"StartDate": "2026-11-21T23:00:00.0000000Z",
+"StartDateEst": "2026-11-21T18:00:00.0000000",
+"last_start": "2026-11-22T03:00:00.0000000Z"
+},
+"156950": {
+"ContestStartTimeSuffix": " (BUF @ FLA)",
+"DraftGroupId": 156950,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-21T23:00:00.0000000Z",
+"StartDateEst": "2026-11-21T18:00:00.0000000",
+"last_start": "2026-11-21T23:00:00.0000000Z"
+},
+"156951": {
+"ContestStartTimeSuffix": " (ANA @ UTA)",
+"DraftGroupId": 156951,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-22T02:00:00.0000000Z",
+"StartDateEst": "2026-11-21T21:00:00.0000000",
+"last_start": "2026-11-22T02:00:00.0000000Z"
+},
+"156953": {
+"ContestStartTimeSuffix": " (Late)",
+"DraftGroupId": 156953,
+"DraftGroupTag": "",
+"GameCount": 2,
+"GameTypeId": 125,
+"StartDate": "2026-11-22T03:00:00.0000000Z",
+"StartDateEst": "2026-11-21T22:00:00.0000000",
+"last_start": "2026-11-22T03:00:00.0000000Z"
 }
 }
 }
