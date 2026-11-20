@@ -1997,3 +1997,5 @@ and deleted its temporary cache files). **Not shipped**; T04 set to "null" in sc
 Runner-ups: (1) the points market's own bias drifts +0.25 (train) -> -0.37 (test) -- bigger than anything in the
 count mapping; a date-level market offset may be worth a cycle; (2) cosmetic: clamp each stat's implied mean at 0
 (~3 negative means per half), no expected gain; (3) the scout's T24 / T02 retests.
+
+Unattended gate (20261120-0658): **not shipped (log / harness only, verified)**
