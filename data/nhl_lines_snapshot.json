@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-20T01:28:57+00:00",
+"generated_at": "2026-11-20T01:30:37+00:00",
 "goalies": {
 "2026-11-19": {
 "ANA": {
@@ -3698,8 +3698,42 @@
 "toiMinutes": 71,
 "toiSeconds": 49
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
+"pos": "lw",
+"pp": null
+},
+"Dillon Boucher": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 3,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 25,
+"toiSeconds": 49
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 3,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 25,
+"toiSeconds": 49
+},
+"line": "F4",
+"pk": null,
 "pos": "rw",
 "pp": null
 },
@@ -3839,40 +3873,6 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
-},
-"Jordan Greenway": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 121,
-"toiSeconds": 54
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 61,
-"toiSeconds": 14
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
 "pp": null
 },
 "Oliver Moore": {
