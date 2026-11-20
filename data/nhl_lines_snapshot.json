@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-20T17:58:57+00:00",
+"generated_at": "2026-11-20T18:28:52+00:00",
 "goalies": {
 "2026-11-20": {},
 "2026-11-21": {
@@ -14695,40 +14695,6 @@
 "pos": "rd",
 "pp": null
 },
-"Connor McMichael": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 149,
-"toiSeconds": 40
-},
-"last5": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 76,
-"toiSeconds": 36
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
-},
 "Dalibor Dvorsky": {
 "gtd": false,
 "injury": null,
@@ -14758,9 +14724,9 @@
 "toiMinutes": 57,
 "toiSeconds": 4
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Dylan Holloway": {
@@ -14930,10 +14896,10 @@
 "toiMinutes": 64,
 "toiSeconds": 55
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Jordan Binnington": {
 "gtd": false,
@@ -15071,6 +15037,40 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
+"pp": null
+},
+"Nathan Walker": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 8,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 111,
+"toiSeconds": 18
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 61,
+"toiSeconds": 42
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Pavel Buchnevich": {
