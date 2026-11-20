@@ -599,6 +599,46 @@
 "StartDate": "2026-11-23T01:20:00.0000000Z",
 "StartDateEst": "2026-11-22T20:20:00.0000000",
 "last_start": "2026-11-23T01:20:00.0000000Z"
+},
+"157047": {
+"ContestStartTimeSuffix": " (Madden Stream)",
+"DraftGroupId": 157047,
+"DraftGroupTag": "Featured",
+"GameCount": 3,
+"GameTypeId": 158,
+"StartDate": "2026-11-23T17:00:00.0000000Z",
+"StartDateEst": "2026-11-23T12:00:00.0000000",
+"last_start": "2026-11-23T21:00:00.0000000Z"
+},
+"157048": {
+"ContestStartTimeSuffix": " (Madden Stream ATL @ BAL)",
+"DraftGroupId": 157048,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-23T17:00:00.0000000Z",
+"StartDateEst": "2026-11-23T12:00:00.0000000",
+"last_start": "2026-11-23T17:00:00.0000000Z"
+},
+"157049": {
+"ContestStartTimeSuffix": " (Madden Stream PHI @ ARI)",
+"DraftGroupId": 157049,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-23T19:00:00.0000000Z",
+"StartDateEst": "2026-11-23T14:00:00.0000000",
+"last_start": "2026-11-23T19:00:00.0000000Z"
+},
+"157050": {
+"ContestStartTimeSuffix": " (Madden Stream WAS @ LAR)",
+"DraftGroupId": 157050,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-23T21:00:00.0000000Z",
+"StartDateEst": "2026-11-23T16:00:00.0000000",
+"last_start": "2026-11-23T21:00:00.0000000Z"
 }
 },
 "NHL": {
