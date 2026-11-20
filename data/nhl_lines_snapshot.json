@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-20T00:59:57+00:00",
+"generated_at": "2026-11-20T01:28:57+00:00",
 "goalies": {
 "2026-11-19": {
 "ANA": {
@@ -3698,42 +3698,8 @@
 "toiMinutes": 71,
 "toiSeconds": 49
 },
-"line": "F3",
-"pk": "PK1",
-"pos": "lw",
-"pp": null
-},
-"Dillon Boucher": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 3,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 25,
-"toiSeconds": 49
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 3,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 25,
-"toiSeconds": 49
-},
 "line": "F4",
-"pk": null,
+"pk": "PK1",
 "pos": "rw",
 "pp": null
 },
@@ -3873,6 +3839,40 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
+"pp": null
+},
+"Jordan Greenway": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 121,
+"toiSeconds": 54
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 61,
+"toiSeconds": 14
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
 "pp": null
 },
 "Oliver Moore": {
@@ -7075,10 +7075,10 @@
 "goalieLosses": 3,
 "goalieMinutes": 566,
 "goalieOvertimeLosses": 2,
-"goalieSavePercentage": "0.882",
-"goalieSaves": 217,
+"goalieSavePercentage": "0.883",
+"goalieSaves": 218,
 "goalieSeconds": 6,
-"goalieShotsAgainst": 246,
+"goalieShotsAgainst": 247,
 "goalieShutouts": 0,
 "goalieWins": 4
 },
@@ -12600,9 +12600,9 @@
 "goalieMinutes": 572,
 "goalieOvertimeLosses": 2,
 "goalieSavePercentage": "0.909",
-"goalieSaves": 229,
+"goalieSaves": 230,
 "goalieSeconds": 20,
-"goalieShotsAgainst": 252,
+"goalieShotsAgainst": 253,
 "goalieShutouts": 0,
 "goalieWins": 6
 },
@@ -13012,8 +13012,8 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 11,
-"toiMinutes": 155,
-"toiSeconds": 34
+"toiMinutes": 154,
+"toiSeconds": 58
 },
 "last5": {
 "assists": 1,
