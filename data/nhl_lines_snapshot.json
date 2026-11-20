@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-20T17:30:42+00:00",
+"generated_at": "2026-11-20T17:58:57+00:00",
 "goalies": {
 "2026-11-20": {},
 "2026-11-21": {
@@ -9,7 +9,7 @@
 },
 "BOS": {
 "goalie": "Jeremy Swayman",
-"status": null
+"status": "Confirmed"
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
@@ -2895,7 +2895,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Cam Talbot": {
 "gtd": false,
@@ -2962,9 +2962,9 @@
 "toiMinutes": 101,
 "toiSeconds": 51
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
-"pos": "c",
+"pos": "lw",
 "pp": "PP1"
 },
 "Cole Sillinger": {
@@ -2998,7 +2998,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "lw",
+"pos": "c",
 "pp": "PP2"
 },
 "Damon Severson": {
@@ -3200,9 +3200,9 @@
 "toiMinutes": 56,
 "toiSeconds": 47
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "Jake Christiansen": {
@@ -3341,7 +3341,7 @@
 "line": "F1",
 "pk": null,
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Mathieu Olivier": {
 "gtd": false,
@@ -3440,9 +3440,9 @@
 "toiMinutes": 32,
 "toiSeconds": 36
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Steven Lorentz": {
@@ -3476,7 +3476,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Valeri Nichushkin": {
@@ -4436,7 +4436,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
 "Drew Commesso": {
@@ -4609,7 +4609,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Patrick Kane": {
 "gtd": false,
@@ -4674,7 +4674,7 @@
 "toiMinutes": 93,
 "toiSeconds": 55
 },
-"line": "F1",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -4708,9 +4708,9 @@
 "toiMinutes": 61,
 "toiSeconds": 50
 },
-"line": "F4",
+"line": "F1",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Ryan Greene": {
@@ -4745,7 +4745,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Sam Rinzel": {
 "gtd": false,
@@ -18848,7 +18848,7 @@
 "pp": null
 },
 "Cole Hutson": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 7,
