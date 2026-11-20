@@ -186,11 +186,17 @@ TRANSFERS = [
                           "double-double price adds nothing leave-one-date-out (+0.004). The combo markets "
                           "(P+R, P+A, PRA) matter only to fill a missing stat: NBA cycle 32's target (partial "
                           "props)."}},
-    {"id": "T04", "lesson": "L04", "sport": "nba", "kind": "market", "status": "measure",
+    {"id": "T04", "lesson": "L04", "sport": "nba", "kind": "market", "status": "null",
      "idea": "count props (steals, blocks, threes, lines 0.5-2.5) read through a normal with sd 1.1 sqrt(line): "
              "NHL reads count props as a Poisson mean (nhl_sim.market_mean); NFL's median-vs-mean lesson",
      "where": "edge/dfs_run_nba.py market_dk / PROP_SD_K (not fitted)", "data": "odds.db + DK points by draft group",
-     "probe": None, "target": "market mapping: Poisson count props"},
+     "probe": None, "target": "market mapping: Poisson count props",
+     "measured": {"at": "2026-11-20", "pts_lineup": 0.0,
+                  "note": "NBA cycle 36: the normal read biases count means low (test threes -0.36, steals -0.09, "
+                          "blocks -0.19, reb lines <=2.5 -0.34; Poisson -0.16/+0.13/+0.04/-0.16) but PROPS_BLEND's "
+                          "intercept absorbs it: blend refit on train (<11/08, 662 players / 8 dates), test "
+                          "11/08-11/19 (644 / 10) MAE 8.391 -> 8.401 (+0.009 [-0.015, +0.031] by date, 4/10 better); "
+                          "missing steals/blocks markets filled by share: +0.026 [-0.089, +0.148]. Null."}},
     {"id": "T05", "lesson": "L02", "sport": "nfl", "kind": "projection", "status": "open",
      "idea": "a Questionable RB / WR who plays scores ~1 pt below his projection; the tag only feeds ownership",
      "where": "edge/dfs_nfl_theory.py INTEL_* (ownership only); edge/dfs_run_nfl.py:418 keeps Q at full projection",

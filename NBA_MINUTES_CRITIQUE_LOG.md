@@ -1968,3 +1968,32 @@ project(); a faithful re-projection could differ, but the sign on test GPP says 
 
 Runner-ups: (1) $3,000 no-history players shrunk toward 0 (coach's-decision DNPs: 7 slots on opening night,
 0 since); (2) ~~last-call alert when the first Out lands < 5 min before tip (DeRozan 11/4)~~ -- checked 11/19: no gap. His game tipped 9:00 PM ET (02:00Z); the official report first showed him Out at 02:01:46Z and RotoWire at 02:03:51Z, i.e. AFTER tip -- his row is in the 'first Out after his tip' line, nothing was swappable.
+
+## Cycle 36 (auto: GPP lineups -- count props read as Poisson means, T04 from NHL/NFL/NASCAR) -- 2026-11-20, unattended -- NOT SHIPPED
+
+Scout: `{"target": "count props (steals/blocks/threes) read as Poisson means, not a normal (T04)", "metric": "GPP field
+percentile of the replayed production lineup vs main, 90% range by date; cash pctile + cashed rate as guardrail",
+"harness": "scripts/nba_lineup_lab.py", "split": "fit 10/21-11/07, test 11/08-11/19; LODO confirm", "why": "GPP -62%
+[-84%, -39%] over 54 entries / 25 slates; full-props picks unbiased, so the market mapping is what's left; T04 never
+measured in NBA", "money_at_stake": "GPP -$70.72 net", "runner_ups": ["T24 partial-props shrink retest on GPP",
+"T02 tier overrating re-measured post-blend (~10 slates now)", "$3,000 no-history players shrunk toward 0"]}`
+
+Critic (dfs-model-critic): **no hole worth fixing.** `market_dk` reads every stat through a normal with sd
+1.1 sqrt(line+.5), which biases count-stat means low on test dates (threes -0.36 n 518, steals -0.09 n 223, blocks
+-0.19 n 82, rebounds at lines <= 2.5 -0.34 n 97; Poisson: -0.16 / +0.13 / +0.04 / -0.16), but the PROPS_BLEND intercept
+absorbs it. Blend refit on train (< 11/08, 662 prop players / 8 dates), scored on test (644 / 10 dates, DK points by
+draft group, 25 boards):
+
+| market read | test MAE | delta [90% by date] | dates better |
+|---|---|---|---|
+| normal (production) | 8.391 | -- | -- |
+| Poisson for counts | 8.401 | +0.009 [-0.015, +0.031] | 4 / 10 |
+| + missing steals/blocks filled by share | 8.417 | +0.026 [-0.089, +0.148] | 5 / 10 |
+
+Projected 30+ (n 275): +0.001. A ~0.01-point player effect cannot move field percentile, so the lineup replay was
+not run (the lab's market-cache rebuild over archived scans also ran > 40 min; the critic used the 25 finished boards
+and deleted its temporary cache files). **Not shipped**; T04 set to "null" in scripts/dfs_transfer.py.
+
+Runner-ups: (1) the points market's own bias drifts +0.25 (train) -> -0.37 (test) -- bigger than anything in the
+count mapping; a date-level market offset may be worth a cycle; (2) cosmetic: clamp each stat's implied mean at 0
+(~3 negative means per half), no expected gain; (3) the scout's T24 / T02 retests.
