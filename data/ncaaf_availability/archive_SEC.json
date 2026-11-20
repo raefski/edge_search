@@ -1555,7 +1555,7 @@
 "Player": "Braydon Lee",
 "Team": "Arkansas",
 "TeamDisplay": "Arkansas",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -1569,7 +1569,7 @@
 "Player": "Brylan Green",
 "Team": "Arkansas",
 "TeamDisplay": "Arkansas",
-"Update 1": "-",
+"Update 1": "Doubtful",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -1583,7 +1583,7 @@
 "Player": "Maddox Lassiter",
 "Team": "Arkansas",
 "TeamDisplay": "Arkansas",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -1597,7 +1597,7 @@
 "Player": "Bryant Williams",
 "Team": "Arkansas",
 "TeamDisplay": "Arkansas",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -1611,7 +1611,7 @@
 "Player": "Gavin Garretson",
 "Team": "Arkansas",
 "TeamDisplay": "Arkansas",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -1625,7 +1625,7 @@
 "Player": "Quincy Rhodes Jr.",
 "Team": "Arkansas",
 "TeamDisplay": "Arkansas",
-"Update 1": "-",
+"Update 1": "Probable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -2479,7 +2479,7 @@
 "Player": "Vernell Brown III",
 "Team": "Florida",
 "TeamDisplay": "Florida",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -2493,7 +2493,7 @@
 "Player": "Bryce Thornton",
 "Team": "Florida",
 "TeamDisplay": "Florida",
-"Update 1": "-",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -2507,7 +2507,7 @@
 "Player": "Bailey Stockton",
 "Team": "Florida",
 "TeamDisplay": "Florida",
-"Update 1": "-",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -2521,7 +2521,7 @@
 "Player": "Lacota Dippre",
 "Team": "Florida",
 "TeamDisplay": "Florida",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -2535,7 +2535,7 @@
 "Player": "Dijon Johnson",
 "Team": "Florida",
 "TeamDisplay": "Florida",
-"Update 1": "-",
+"Update 1": "Doubtful",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -2549,7 +2549,7 @@
 "Player": "Jaden Robinson",
 "Team": "Florida",
 "TeamDisplay": "Florida",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -2563,7 +2563,7 @@
 "Player": "DJ Coleman",
 "Team": "Florida",
 "TeamDisplay": "Florida",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -2577,7 +2577,7 @@
 "Player": "Emeka Ugorji",
 "Team": "Florida",
 "TeamDisplay": "Florida",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -3242,6 +3242,20 @@
 },
 {
 "Game Day": "-",
+"Initial": "Available",
+"Number": "#8",
+"Opponent": "at South Carolina",
+"OpponentDisplay": "at South Carolina",
+"Player": "Landon Roldan",
+"Team": "Georgia",
+"TeamDisplay": "Georgia",
+"Update 1": "Out",
+"Update 2": "-",
+"Week": "Sat, 21 Nov 2026 00:00:00 GMT",
+"WeekNum": 12
+},
+{
+"Game Day": "-",
 "Initial": "Out",
 "Number": "#17",
 "Opponent": "at South Carolina",
@@ -3249,7 +3263,7 @@
 "Player": "Amaris Williams",
 "Team": "Georgia",
 "TeamDisplay": "Georgia",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -3263,7 +3277,7 @@
 "Player": "Drew Bobo",
 "Team": "Georgia",
 "TeamDisplay": "Georgia",
-"Update 1": "-",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4103,7 +4117,7 @@
 "Player": "Nic Anderson",
 "Team": "Kentucky",
 "TeamDisplay": "Kentucky",
-"Update 1": "-",
+"Update 1": "Probable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4117,7 +4131,7 @@
 "Player": "Antwan Smith",
 "Team": "Kentucky",
 "TeamDisplay": "Kentucky",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4131,7 +4145,7 @@
 "Player": "Alex Afari Jr.",
 "Team": "Kentucky",
 "TeamDisplay": "Kentucky",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4145,7 +4159,7 @@
 "Player": "Jaden Smith",
 "Team": "Kentucky",
 "TeamDisplay": "Kentucky",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4159,7 +4173,7 @@
 "Player": "Grant Grayton",
 "Team": "Kentucky",
 "TeamDisplay": "Kentucky",
-"Update 1": "-",
+"Update 1": "Doubtful",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4173,7 +4187,7 @@
 "Player": "Quintavion Norman",
 "Team": "Kentucky",
 "TeamDisplay": "Kentucky",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4831,7 +4845,7 @@
 "Player": "Jackson Harris",
 "Team": "LSU",
 "TeamDisplay": "LSU",
-"Update 1": "-",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4845,7 +4859,7 @@
 "Player": "Winston Watkins Jr.",
 "Team": "LSU",
 "TeamDisplay": "LSU",
-"Update 1": "-",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4859,7 +4873,7 @@
 "Player": "Whit Weeks",
 "Team": "LSU",
 "TeamDisplay": "LSU",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4873,7 +4887,7 @@
 "Player": "Dashawn Spears",
 "Team": "LSU",
 "TeamDisplay": "LSU",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4887,7 +4901,21 @@
 "Player": "Phillip Wright III",
 "Team": "LSU",
 "TeamDisplay": "LSU",
-"Update 1": "-",
+"Update 1": "Out",
+"Update 2": "-",
+"Week": "Sat, 21 Nov 2026 00:00:00 GMT",
+"WeekNum": 12
+},
+{
+"Game Day": "-",
+"Initial": "Exempt",
+"Number": "#23",
+"Opponent": "at Tennessee",
+"OpponentDisplay": "at Tennessee",
+"Player": "Aidan Anding",
+"Team": "LSU",
+"TeamDisplay": "LSU",
+"Update 1": "Probable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4901,7 +4929,7 @@
 "Player": "Charles Ross II",
 "Team": "LSU",
 "TeamDisplay": "LSU",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4915,7 +4943,7 @@
 "Player": "Jhase Thomas",
 "Team": "LSU",
 "TeamDisplay": "LSU",
-"Update 1": "-",
+"Update 1": "Probable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4929,7 +4957,7 @@
 "Player": "Richard Anderson",
 "Team": "LSU",
 "TeamDisplay": "LSU",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -4943,7 +4971,7 @@
 "Player": "Trenton Henderson",
 "Team": "LSU",
 "TeamDisplay": "LSU",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -6651,7 +6679,7 @@
 "Player": "Langden Kitchen",
 "Team": "Missouri",
 "TeamDisplay": "Missouri",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -6665,7 +6693,7 @@
 "Player": "Jahlil Florence",
 "Team": "Missouri",
 "TeamDisplay": "Missouri",
-"Update 1": "-",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -6679,7 +6707,7 @@
 "Player": "Malae Fonoti",
 "Team": "Missouri",
 "TeamDisplay": "Missouri",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -6693,7 +6721,7 @@
 "Player": "Josh Atkins",
 "Team": "Missouri",
 "TeamDisplay": "Missouri",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -6707,7 +6735,7 @@
 "Player": "Gavin Hoffman",
 "Team": "Missouri",
 "TeamDisplay": "Missouri",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -7981,7 +8009,7 @@
 "Player": "Manny Choice",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Probable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -7995,7 +8023,7 @@
 "Player": "Tory Blaylock",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Probable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -8009,7 +8037,7 @@
 "Player": "Taylor Heim",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -8023,7 +8051,7 @@
 "Player": "Dakoda Fields",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -8037,7 +8065,7 @@
 "Player": "Trell Harris",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -8051,7 +8079,7 @@
 "Player": "Danny Okoye",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Probable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -8065,7 +8093,7 @@
 "Player": "Trynae Washington",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -8079,7 +8107,7 @@
 "Player": "Gunnar Allen",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -8093,7 +8121,7 @@
 "Player": "Ryan Fodje",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -8107,7 +8135,7 @@
 "Player": "Fred Hinton",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -8121,7 +8149,7 @@
 "Player": "Hayden Hansen",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Available",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -8135,7 +8163,7 @@
 "Player": "Kenny Ozowalu",
 "Team": "Oklahoma",
 "TeamDisplay": "Oklahoma",
-"Update 1": "-",
+"Update 1": "Probable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10543,7 +10571,7 @@
 "Player": "Nitro Tuggle",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10557,7 +10585,7 @@
 "Player": "Mazeo Bennett Jr.",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Doubtful",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10571,7 +10599,7 @@
 "Player": "Dylan Stewart",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10585,7 +10613,7 @@
 "Player": "Judge Collier",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Doubtful",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10599,7 +10627,7 @@
 "Player": "Nyck Harbor",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Probable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10613,7 +10641,7 @@
 "Player": "Jalewis Solomon",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10627,7 +10655,7 @@
 "Player": "Jayden Sellers",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10641,7 +10669,7 @@
 "Player": "Matt Fuller",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10655,7 +10683,7 @@
 "Player": "Anthony Addison",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Doubtful",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10669,7 +10697,7 @@
 "Player": "Kobby Sakyi-Prah",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10683,7 +10711,7 @@
 "Player": "Josiah Thompson",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10697,7 +10725,7 @@
 "Player": "Dayne Arnett",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -10711,7 +10739,7 @@
 "Player": "Seth Smith",
 "Team": "South Carolina",
 "TeamDisplay": "South Carolina",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -11509,7 +11537,7 @@
 "Player": "Ethan Davis",
 "Team": "Tennessee",
 "TeamDisplay": "Tennessee",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -11523,7 +11551,7 @@
 "Player": "Mike Matthews",
 "Team": "Tennessee",
 "TeamDisplay": "Tennessee",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -11537,7 +11565,7 @@
 "Player": "Joakim Dodson",
 "Team": "Tennessee",
 "TeamDisplay": "Tennessee",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -11551,7 +11579,7 @@
 "Player": "Jaedon Harmon",
 "Team": "Tennessee",
 "TeamDisplay": "Tennessee",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -11565,7 +11593,7 @@
 "Player": "Edrees Farooq",
 "Team": "Tennessee",
 "TeamDisplay": "Tennessee",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -11579,7 +11607,7 @@
 "Player": "Daune Morris",
 "Team": "Tennessee",
 "TeamDisplay": "Tennessee",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -11593,7 +11621,7 @@
 "Player": "Tyree Weathersby",
 "Team": "Tennessee",
 "TeamDisplay": "Tennessee",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -11607,7 +11635,7 @@
 "Player": "Dylan Lewis",
 "Team": "Tennessee",
 "TeamDisplay": "Tennessee",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -11621,7 +11649,7 @@
 "Player": "Nic Moore",
 "Team": "Tennessee",
 "TeamDisplay": "Tennessee",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -11635,7 +11663,7 @@
 "Player": "Wendell Moe Jr.",
 "Team": "Tennessee",
 "TeamDisplay": "Tennessee",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12265,7 +12293,7 @@
 "Player": "Colin Simmons",
 "Team": "Texas",
 "TeamDisplay": "Texas",
-"Update 1": "-",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12279,7 +12307,7 @@
 "Player": "Hollywood Smothers",
 "Team": "Texas",
 "TeamDisplay": "Texas",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12293,7 +12321,21 @@
 "Player": "Warren Roberson",
 "Team": "Texas",
 "TeamDisplay": "Texas",
-"Update 1": "-",
+"Update 1": "Questionable",
+"Update 2": "-",
+"Week": "Sat, 21 Nov 2026 00:00:00 GMT",
+"WeekNum": 12
+},
+{
+"Game Day": "-",
+"Initial": "Available",
+"Number": "#50",
+"Opponent": "vs. Arkansas",
+"OpponentDisplay": "vs. Arkansas",
+"Player": "Laurence Seymore III",
+"Team": "Texas",
+"TeamDisplay": "Texas",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12307,7 +12349,7 @@
 "Player": "Trevor Goosby",
 "Team": "Texas",
 "TeamDisplay": "Texas",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12321,7 +12363,7 @@
 "Player": "Nick Townsend",
 "Team": "Texas",
 "TeamDisplay": "Texas",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12335,7 +12377,7 @@
 "Player": "Hero Kanu",
 "Team": "Texas",
 "TeamDisplay": "Texas",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12349,7 +12391,7 @@
 "Player": "Richard Wesley",
 "Team": "Texas",
 "TeamDisplay": "Texas",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12818,6 +12860,20 @@
 },
 {
 "Game Day": "-",
+"Initial": "Available",
+"Number": "#3",
+"Opponent": "at Oklahoma",
+"OpponentDisplay": "at Oklahoma",
+"Player": "Marcus Ratcliffe",
+"Team": "Texas A&M",
+"TeamDisplay": "Texas A&M",
+"Update 1": "Out",
+"Update 2": "-",
+"Week": "Sat, 21 Nov 2026 00:00:00 GMT",
+"WeekNum": 12
+},
+{
+"Game Day": "-",
 "Initial": "Out",
 "Number": "#6",
 "Opponent": "at Oklahoma",
@@ -12825,7 +12881,7 @@
 "Player": "Terry Bussey",
 "Team": "Texas A&M",
 "TeamDisplay": "Texas A&M",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12839,7 +12895,7 @@
 "Player": "Ashton Bethel-Roman",
 "Team": "Texas A&M",
 "TeamDisplay": "Texas A&M",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12853,7 +12909,7 @@
 "Player": "Kelshaun Johnson",
 "Team": "Texas A&M",
 "TeamDisplay": "Texas A&M",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12867,7 +12923,7 @@
 "Player": "TK Norman",
 "Team": "Texas A&M",
 "TeamDisplay": "Texas A&M",
-"Update 1": "-",
+"Update 1": "Questionable",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12881,7 +12937,7 @@
 "Player": "Blake Ivy",
 "Team": "Texas A&M",
 "TeamDisplay": "Texas A&M",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12895,7 +12951,7 @@
 "Player": "Trovon Baugh",
 "Team": "Texas A&M",
 "TeamDisplay": "Texas A&M",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -12909,7 +12965,7 @@
 "Player": "Landon Rink",
 "Team": "Texas A&M",
 "TeamDisplay": "Texas A&M",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -13861,7 +13917,7 @@
 "Player": "Cobey Sellers",
 "Team": "Vanderbilt",
 "TeamDisplay": "Vanderbilt",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -13875,7 +13931,7 @@
 "Player": "Blaze Berlowitz",
 "Team": "Vanderbilt",
 "TeamDisplay": "Vanderbilt",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -13889,7 +13945,7 @@
 "Player": "Edwin Kolenge",
 "Team": "Vanderbilt",
 "TeamDisplay": "Vanderbilt",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -13903,7 +13959,7 @@
 "Player": "Josiah Broxton",
 "Team": "Vanderbilt",
 "TeamDisplay": "Vanderbilt",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -13917,7 +13973,7 @@
 "Player": "Evan Hampton",
 "Team": "Vanderbilt",
 "TeamDisplay": "Vanderbilt",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -13931,7 +13987,7 @@
 "Player": "Miles Capers",
 "Team": "Vanderbilt",
 "TeamDisplay": "Vanderbilt",
-"Update 1": "-",
+"Update 1": "Available",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -13945,7 +14001,7 @@
 "Player": "Daniel Vollmer Jr.",
 "Team": "Vanderbilt",
 "TeamDisplay": "Vanderbilt",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -13959,7 +14015,7 @@
 "Player": "Gunner Givens",
 "Team": "Vanderbilt",
 "TeamDisplay": "Vanderbilt",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -13973,7 +14029,7 @@
 "Player": "Aaron Bryant",
 "Team": "Vanderbilt",
 "TeamDisplay": "Vanderbilt",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
@@ -13987,11 +14043,11 @@
 "Player": "Ted Gregoire",
 "Team": "Vanderbilt",
 "TeamDisplay": "Vanderbilt",
-"Update 1": "-",
+"Update 1": "Out",
 "Update 2": "-",
 "Week": "Sat, 21 Nov 2026 00:00:00 GMT",
 "WeekNum": 12
 }
 ],
-"fetched_at": "2026-11-19T12:05:25+00:00"
+"fetched_at": "2026-11-20T12:03:21+00:00"
 }
