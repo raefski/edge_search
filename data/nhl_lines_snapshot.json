@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-20T17:28:47+00:00",
+"generated_at": "2026-11-20T17:29:49+00:00",
 "goalies": {
 "2026-11-20": {},
 "2026-11-21": {
@@ -2895,7 +2895,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Cam Talbot": {
 "gtd": false,
@@ -2962,9 +2962,9 @@
 "toiMinutes": 101,
 "toiSeconds": 51
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
-"pos": "lw",
+"pos": "c",
 "pp": "PP1"
 },
 "Cole Sillinger": {
@@ -2998,7 +2998,7 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "c",
+"pos": "lw",
 "pp": "PP2"
 },
 "Damon Severson": {
@@ -3200,9 +3200,9 @@
 "toiMinutes": 56,
 "toiSeconds": 47
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Jake Christiansen": {
@@ -3341,7 +3341,7 @@
 "line": "F1",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Mathieu Olivier": {
 "gtd": false,
@@ -3440,9 +3440,9 @@
 "toiMinutes": 32,
 "toiSeconds": 36
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Steven Lorentz": {
@@ -3476,7 +3476,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Valeri Nichushkin": {
