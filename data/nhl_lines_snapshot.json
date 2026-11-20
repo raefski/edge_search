@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-20T13:58:59+00:00",
+"generated_at": "2026-11-20T16:59:00+00:00",
 "goalies": {
 "2026-11-20": {},
 "2026-11-21": {
@@ -12467,6 +12467,40 @@
 }
 },
 "PIT": {
+"Andrei Kuzmenko": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 1,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 126,
+"toiSeconds": 56
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 61,
+"toiSeconds": 15
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": "PP2"
+},
 "Arturs Silovs": {
 "gtd": false,
 "injury": null,
@@ -12501,6 +12535,40 @@
 "line": "G1",
 "pk": null,
 "pos": "g",
+"pp": null
+},
+"Avery Hayes": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 4,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 21,
+"toiMinutes": 125,
+"toiSeconds": 24
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 3,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 72,
+"toiSeconds": 27
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Ben Kindel": {
@@ -12673,40 +12741,6 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Evgeni Malkin": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 10,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 11,
-"powerplayAssists": 3,
-"powerplayGoals": 0,
-"powerplayPoints": 3,
-"shots": 18,
-"toiMinutes": 178,
-"toiSeconds": 43
-},
-"last5": {
-"assists": 7,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 7,
-"powerplayAssists": 3,
-"powerplayGoals": 0,
-"powerplayPoints": 3,
-"shots": 10,
-"toiMinutes": 98,
-"toiSeconds": 47
-},
-"line": "F1",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
-},
 "Hendrix Lapierre": {
 "gtd": false,
 "injury": null,
@@ -12809,40 +12843,6 @@
 "pos": "rd",
 "pp": "PP2"
 },
-"Nicholas Robertson": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 15,
-"toiMinutes": 138,
-"toiSeconds": 4
-},
-"last5": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 68,
-"toiSeconds": 11
-},
-"line": "F4",
-"pk": "PK2",
-"pos": "rw",
-"pp": null
-},
 "Rickard Rakell": {
 "gtd": false,
 "injury": null,
@@ -12906,7 +12906,7 @@
 "toiMinutes": 61,
 "toiSeconds": 22
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -13078,7 +13078,7 @@
 "toiMinutes": 70,
 "toiSeconds": 43
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -13147,7 +13147,7 @@
 "toiSeconds": 14
 },
 "line": "F3",
-"pk": null,
+"pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
 }
