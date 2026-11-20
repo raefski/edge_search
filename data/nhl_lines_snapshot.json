@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-20T18:28:52+00:00",
+"generated_at": "2026-11-20T19:29:09+00:00",
 "goalies": {
 "2026-11-20": {},
 "2026-11-21": {
@@ -25,7 +25,7 @@
 },
 "CGY": {
 "goalie": "Dustin Wolf",
-"status": null
+"status": "Likely"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -12496,7 +12496,7 @@
 "toiMinutes": 61,
 "toiSeconds": 15
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -12738,7 +12738,7 @@
 },
 "line": "D1",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": "PP1"
 },
 "Hendrix Lapierre": {
@@ -12804,7 +12804,7 @@
 "toiMinutes": 88,
 "toiSeconds": 3
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -12906,7 +12906,7 @@
 "toiMinutes": 61,
 "toiSeconds": 22
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -13044,7 +13044,7 @@
 "toiMinutes": 89,
 "toiSeconds": 26
 },
-"line": "D1",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -13112,9 +13112,9 @@
 "toiMinutes": 92,
 "toiSeconds": 55
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Ville Koivunen": {
