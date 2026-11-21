@@ -259,7 +259,10 @@ TRANSFERS = [
     {"id": "T14", "lesson": "L06", "sport": "all", "kind": "eval", "status": "audit",
      "idea": "every lab: rebuild a logged slate and compare its projection with the forward log's, player by "
              "player -- a double-applied (or missing) adjustment shows as a constant ratio on a subset",
-     "data": "forward logs + each lab's cache", "probe": None, "target": None},
+     "data": "forward logs + each lab's cache", "probe": None, "target": None,
+     "found": {"at": "2026-11-21", "note": "nba (cycle 38): dfs_strategy_doe replayed the props blend on 17 pre-11/9 boards where "
+                 "production ran model-only -> GPP replay +22% vs faithful -32% vs live -61% (53 entries / 25 dates); "
+                 "fixed (NBA.variant). Every lab: replay a board with the transform that was LIVE that date"}},
     {"id": "T15", "lesson": "L07", "sport": "ncaab", "kind": "eval", "status": "audit",
      "idea": "per-game history: are DNP / ruled-out games counted as 0-minute (0-point) games?",
      "where": "edge/dfs_run_ncaab.py last-season / LAST_GAME history", "data": "box scores", "probe": None, "target": None},

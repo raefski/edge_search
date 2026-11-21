@@ -2022,3 +2022,44 @@ The finding that matters: the faithful replay of production makes +25.8% on thes
 entries made -62%. Construction settings are not the gap; what differs between the replay and the entries
 (post-build news, hand edits, which lineup was entered, late swap) is. `harness run nba-forward` tracks it; next
 cycle should target replay-vs-entered, not arms. Re-run arms at ~40 dates.
+
+## Cycle 38 (auto: replay-vs-entered GPP gap, T14 audit) -- 2026-11-21, unattended -- LAB FIX SHIPPED (no model change)
+
+Scout: `{"target": "replay-vs-live gap: why entered GPP lineups lose while the replayed production wins", "metric":
+"per GPP contest Adam entered (46 / 25 dates): field pctile + $ ROI of the replayed production lineup vs Adam's entered
+lineup; split the gap into board inputs (forward log vs replay board) and construction/selection; cash secondary",
+"harness": "nba_lineup_lab.py + dfs_strategy_doe.py (build: live-vs-replay diff, T14/T17)", "split": "train <= 11-12,
+test 11-13..11-20, LODO", "money_at_stake": "GPP -62% (-$70.72, 54 entries / 25 slates); cash -39%", "transfer": "T14"}`
+
+Critic (dfs-model-critic): **the replay was not what production built.** `dfs_strategy_doe.py` `NBA.build` applied the
+LODO props blend + shrink on all 25 dates, but the blend went live 11/9; the 17 earlier boards were the model alone
+(logged with no `mkt`). GPP, 53 of Adam's entries / 46 contests / 25 dates, ROI per $1:
+
+| lineup on the same contests | ROI | DK pts |
+|---|---|---|
+| Adam's entered | -26% | 249.3 |
+| live logged lineup (seed 0) | -61% | 244.0 |
+| faithful replay (model alone < 11/9, blend after; 5 seeds) | -32% | 246.4 |
+| replay as cycle 37 ran it (blend everywhere) | +22% | 257.9 |
+
+Faithful seed-0 replay == logged live lineup on 29/53 entries, >= 5/8 players shared on all. The backdated blend gained
++15.6 pts [+5.0, +27.2] on the 17 pre-11/9 dates but -1.2 [-16.9, +15.7] on the 8 live dates, so it is not a free win.
+Adam's choices are not the loss (entered beat logged live +35% [-16, +84]). Cash (34 / 20): Adam -24%, live -29%, replay -13%.
+
+Fix: `NBA.variant()` in scripts/dfs_strategy_doe.py -- `model_only` on boards with no `mkt`, LODO blend where it ran;
+`--backdate` keeps the old what-if; build cache key `asran` vs `lodo` so old builds are not reused; test
+tests/test_dfs_strategy_doe.py. Cycle 37's "replay +25.8% vs Adam -62% => the gap is replay-vs-entered" is **withdrawn**.
+
+DOE rerun on the faithful baseline (`run nba --seeds 5`):
+
+| | base ROI | LODO pick vs base |
+|---|---|---|
+| GPP (46 c / 25 d) | -18.3% [-69.2, +38.4] (was +25.8% backdated) | +12.4% [-9.5, +33.6], picks p90_stack5 23/25 |
+| cash (34 c / 20 d) | -42.4% [-70.0, -10.0] | +1.2% [-8.6, +10.9], picks p50_min24 19/20 |
+
+p90_stack5 (5-man game stack) is the only GPP arm separated in-sample (+44.3% [+5.4, +93.9]) but LODO spans zero:
+**no construction change shipped**; watch it at ~40 dates. Cash p70_cap3 is now -5.9% vs base: the 11/14 lead is dead.
+
+Runner-ups: (1) why the backdated blend gains +15.6 pts pre-11/9 but ~0 live -- props snapshot timing / PROP_CUT_MIN
+coverage on old vs live scans; (2) single-lineup luck: on blend-live dates the 5-seed mean beat seed 0 by +74% [+16, +143]
+(best-of-seeds / consensus entry is a construction test); (3) late-swap zeros: 6/53 GPP, 4/34 cash entries.

@@ -90,6 +90,7 @@ ARMS = {"cash": CASH_ARMS, "gpp": GPP_ARMS}
 #  - cash arm p70_cap3 (DOE 11/14: LODO pick +14% [-2,+33] over p30, 15 dates) -- PAPER only,
 #    counted from the night after it was picked.
 FORWARD = False
+BACKDATE = False      # --backdate: props blend on pre-11/9 boards too (cycle 38: a what-if, not production)
 FWD_START = {"production": "2026-11-08", "p70_cap3": "2026-11-15"}
 FWD_ARMS = {"cash": {"base": CASH_ARMS["base"], "p70_cap3": CASH_ARMS["p70_cap3"]},
             "gpp": {"base": GPP_ARMS["base"]}}
@@ -119,11 +120,25 @@ class NBA:
         reg = L.register_props(B)
         LODO.update(L._lodo_names(B, reg["rows"], None, L.shrink_rows(B)))
 
+    def variant(self, ps: list[dict]) -> str:
+        """The pool transform production actually ran on this board. Critique cycle 38
+        (2026-11-21, 53 GPP entries / 25 dates): the props blend went live 11/9, and boards
+        logged before it carry no `mkt`. Applying the (LODO) blend to those 17 dates replayed
+        a model that never ran: +22% GPP ROI vs -32% for the faithful replay (model alone
+        before 11/9, blend after) and -61% for the logged live lineup -- the whole "replay vs
+        entered" gap of cycle 37. Default = faithful (same test as nba_lineup_lab.parity);
+        BACKDATE=True (--backdate) keeps the old everywhere-blend as a what-if."""
+        if FORWARD:
+            return "shipped"
+        if not BACKDATE and not any(p.get("mkt") is not None for p in ps):
+            return "model_only"
+        return LODO[ps[0]["date"]]
+
     def build(self, gid, ps, seed, iters, modes) -> dict:
         """{mode: {arm: [names]}} -- one sim per (board, seed), every arm optimised on it."""
         from edge import dfs_nba_theory as theory, dfs_opt_nba, dfs_opt_climb as climb
         # forward: production exactly as it ran (shipped constants, fitted before these nights)
-        pool = self.L._set_pool(ps, "shipped" if FORWARD else LODO[ps[0]["date"]], gid)
+        pool = self.L._set_pool(ps, self.variant(ps), gid)
         sim = theory.simulate(pool, n_sims=self.L.N_SIMS, seed=seed)
         theory.summarise(sim, pool)
         dfs_opt_nba.prepare(pool)
@@ -185,7 +200,7 @@ def run(sport: str, seeds: int, iters: int) -> list[dict]:
     global _PARENT
     S = _PARENT = SPORTS[sport]()
     B, F = S.boards(), S.fields()
-    cache = OUT / f"cache_{sport}_lodo_{_arms_key()}_i{iters}"
+    cache = OUT / f"cache_{sport}_{'lodo' if BACKDATE else 'asran'}_{_arms_key()}_i{iters}"
     cache.mkdir(parents=True, exist_ok=True)
     built, todo = {}, []
     for gid, ps in B.items():
@@ -444,7 +459,11 @@ def main() -> int:
     ap.add_argument("sport", choices=sorted(SPORTS))
     ap.add_argument("--seeds", type=int, default=8)
     ap.add_argument("--iters", type=int, default=100)
+    ap.add_argument("--backdate", action="store_true",
+                    help="what-if: props blend on boards logged before it went live (pre-11/9)")
     a = ap.parse_args()
+    global BACKDATE
+    BACKDATE = a.backdate
     OUT.mkdir(parents=True, exist_ok=True)
     if a.cmd == "forward":
         forward(a.sport, a.seeds, a.iters)
