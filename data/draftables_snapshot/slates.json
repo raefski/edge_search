@@ -1,15 +1,5 @@
 {
 "CBB": {
-"157015": {
-"ContestStartTimeSuffix": null,
-"DraftGroupId": 157015,
-"DraftGroupTag": "Featured",
-"GameCount": 8,
-"GameTypeId": 98,
-"StartDate": "2026-11-21T00:00:00.0000000Z",
-"StartDateEst": "2026-11-20T19:00:00.0000000",
-"last_start": "2026-11-21T04:00:00.0000000Z"
-},
 "157017": {
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 157017,
@@ -29,6 +19,26 @@
 "StartDate": "2026-11-22T00:00:00.0000000Z",
 "StartDateEst": "2026-11-21T19:00:00.0000000",
 "last_start": "2026-11-22T00:00:00.0000000Z"
+},
+"157019": {
+"ContestStartTimeSuffix": null,
+"DraftGroupId": 157019,
+"DraftGroupTag": "Featured",
+"GameCount": 5,
+"GameTypeId": 98,
+"StartDate": "2026-11-22T17:00:00.0000000Z",
+"StartDateEst": "2026-11-22T12:00:00.0000000",
+"last_start": "2026-11-22T23:00:00.0000000Z"
+},
+"157020": {
+"ContestStartTimeSuffix": " (UTAH vs MINN)",
+"DraftGroupId": 157020,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 97,
+"StartDate": "2026-11-22T23:00:00.0000000Z",
+"StartDateEst": "2026-11-22T18:00:00.0000000",
+"last_start": "2026-11-22T23:00:00.0000000Z"
 }
 },
 "CFB": {
@@ -158,16 +168,6 @@
 },
 "NAS": {},
 "NBA": {
-"157137": {
-"ContestStartTimeSuffix": " (2H HOU @ DEN)",
-"DraftGroupId": 157137,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 112,
-"StartDate": "2026-11-21T04:29:00.0000000Z",
-"StartDateEst": "2026-11-20T23:29:00.0000000",
-"last_start": "2026-11-21T04:00:00.0000000Z"
-},
 "157172": {
 "ContestStartTimeSuffix": " (MIL @ PHI)",
 "DraftGroupId": 157172,
