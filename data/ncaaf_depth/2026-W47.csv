@@ -1085,3 +1085,955 @@ captured_at,team_id,team,slug,conference,updated,version,section,slot,pos,depth,
 2026-11-20T19:08:05+00:00,91970,Temple,temple,AAC,11/20/2026 12:35PM ET,6f12a8ef2411,reserve,2,RES,3,89,Zander Baptiste,zanderbaptiste,"Baptiste, Zander",RS FR,0,0,178739
 2026-11-20T19:08:05+00:00,91970,Temple,temple,AAC,11/20/2026 12:35PM ET,6f12a8ef2411,reserve,2,RES,4,13,Ajani Sheppard,ajanisheppard,"Sheppard, Ajani",RS JR/TR,1,0,162486
 2026-11-20T19:08:05+00:00,91970,Temple,temple,AAC,11/20/2026 12:35PM ET,6f12a8ef2411,reserve,2,RES,5,95,Troy Cunningham,troycunningham,"Cunningham, Troy",RS FR,0,0,178744
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,0,WR-X,1,10,Adam Hrynciw,adamhrynciw,"Hrynciw, Adam",SR,0,0,170717
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,0,WR-X,2,19,Grant Wayne,grantwayne,"Wayne, Grant",SR,0,0,170742
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,0,WR-X,3,8,Jonah Dawson,jonahdawson,"Dawson, Jonah",JR,0,0,176085
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,0,WR-X,4,36,Astin Hange,astinhange,"Hange, Astin",JR,0,0,176062
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,1,WR-Z,1,3,Matt Long,mattlong,"Long, Matt",JR,0,0,176075
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,1,WR-Z,2,18,Mason Hayes,masonhayes,"Hayes, Mason",JR,0,0,176063
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,1,WR-Z,3,29,Sylas Maiava-Alaimalo,sylasmaiavaalaimalo,"Maiava-Alaimalo, Sylas",SO,0,0,181052
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,1,WR-Z,4,0,Owen Chambers,owenchambers,"Chambers, Owen",SR,0,0,170745
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,2,LT,1,52,Nathan Elwood,nathanelwood,"Elwood, Nathan",SR,0,0,170708
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,2,LT,2,73,Brandon Nazworth,brandonnazworth,"Nazworth, Brandon",JR,0,0,176100
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,2,LT,3,76,Alex Boyd,alexboyd,"Boyd, Alex",SO,0,0,181031
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,3,LG,1,58,TJ Tarascio,tjtarascio,"Tarascio, TJ",SR,0,0,170737
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,3,LG,2,67,Cole Anderson,coleanderson,"Anderson, Cole",SO,0,0,181077
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,4,C,1,51,Rudy Varela,rudyvarela,"Varela, Rudy",SR,0,0,170741
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,4,C,2,59,Johnique Thomas,johniquethomas,"Thomas, Johnique",JR,0,0,176109
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,4,C,3,78,Gary Lassley,garylassley,"Lassley, Gary",SO,0,0,181048
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,4,C,4,77,Peyton Knoebel,peytonknoebel,"Knoebel, Peyton",JR,0,0,176096
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,5,RG,1,75,Alec Falk,alecfalk,"Falk, Alec",SR,0,0,170709
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,5,RG,2,56,Ian Fisher,ianfisher,"Fisher, Ian",SR,0,0,170710
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,5,RG,3,57,Brody Smith,brodysmith,"Smith, Brody",JR,0,0,176107
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,6,RT,1,55,Luke Vonderhaar,lukevonderhaar,"Vonderhaar, Luke",SR,0,0,164452
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,6,RT,2,64,Caden Romo,cadenromo,"Romo, Caden",JR,0,0,176104
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,6,RT,3,66,Jake Sulzberger,jakesulzberger,"Sulzberger, Jake",SO,0,0,181067
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,7,TE,1,80,Simon Kibbee,simonkibbee,"Kibbee, Simon",SR,0,0,170719
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,7,TE,2,86,Griffin Stalfort,griffinstalfort,"Stalfort, Griffin",SR,0,0,170736
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,7,TE,3,84,Samuel Rhoades V,samuelrhoades,"Rhoades V, Samuel",JR,0,0,176103
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,7,TE,4,85,Mitchell Blakeslee,mitchellblakeslee,"Blakeslee, Mitchell",SR,0,0,170699
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,8,QB,1,5,Evan Medders,evanmedders,"Medders, Evan",SO,0,0,181056
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,8,QB,2,4,Kemper Hodges,kemperhodges,"Hodges, Kemper",SR,0,0,170716
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,8,QB,3,11,Josh Johnson,joshjohnson,"Johnson, Josh",SR,0,0,170749
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,9,RB,1,44,Rocco Conti,roccoconti,"Conti, Rocco",SR,0,0,170706
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,9,RB,2,20,Keegan Sack,keegansack,"Sack, Keegan",SO,0,0,181064
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,9,RB,3,33,Mason Lowe,masonlowe,"Lowe, Mason",JR,0,0,176068
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,10,FB,1,2,Owen Allen,owenallen,"Allen, Owen",SR,0,0,170698
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,10,FB,2,28,Gage LaDue,gageladue,"LaDue, Gage",JR,0,0,176066
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,offense,10,FB,3,24,Luke Rauh,lukerauh,"Rauh, Luke",JR,0,0,176070
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,0,DE,1,45,Jaylin Reese,jaylinreese,"Reese, Jaylin",JR,0,0,176102
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,0,DE,2,48,Antonio Menard,antoniomenard,"Menard, Antonio",JR,0,0,176098
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,0,DE,3,50,Grady Forsythe,gradyforsythe,"Forsythe, Grady",JR,0,0,176088
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,1,NT,1,93,Andrew Tillett,andrewtillett,"Tillett, Andrew",SR,0,0,170738
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,1,NT,2,97,Bennett Williams,bennettwilliams,"Williams, Bennett",JR,0,0,176117
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,1,NT,3,56,Trace Williams-Mitchel,tracewilliamsmitchel,"Williams-Mitchel, Trace",JR,0,0,176110
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,1,NT,4,98,Christian Krietzer,christiankrietzer,"Krietzer, Christian",SO,0,0,181046
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,2,DT,1,99,Jayden Oquendo,jaydenoquendo,"Oquendo, Jayden",SR,0,0,170726
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,2,DT,2,59,Chaz Barnett,chazbarnett,"Barnett, Chaz",JR,0,0,176077
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,2,DT,3,90,Muhammad Alcine,muhammadalcine,"Alcine, Muhammad",SO,0,0,181029
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,3,OLB,1,30,Isaac Hubert,isaachubert,"Hubert, Isaac",SR,0,0,170718
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,3,OLB,2,92,Connor Vasek,connorvasek,"Vasek, Connor",SO,0,0,181071
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,3,OLB,3,47,Jake Kepler,jakekepler,"Kepler, Jake",JR,0,0,176095
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,3,OLB,4,55,Cullen Devine,cullendevine,"Devine, Cullen",SO,0,0,181036
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,4,WLB,1,33,Brody Bujnoch,brodybujnoch,"Bujnoch, Brody",SR,0,0,170702
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,4,WLB,2,0,Luke Fisher,lukefisher,"Fisher, Luke",SR,0,0,170747
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,4,WLB,3,39,Brodie Mitchell,brodiemitchell,"Mitchell, Brodie",JR,0,0,176099
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,4,WLB,4,43,Seth McFarland,sethmcfarland,"McFarland, Seth",SO,0,0,181054
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,5,MLB,1,8,Dallas Daley,dallasdaley,"Daley, Dallas",SR,0,0,170707
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,5,MLB,2,51,Vinnie Canosa,vinniecanosa,"Canosa, Vinnie",JR,0,0,176081
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,5,MLB,3,44,Jonah Bowman,jonahbowman,"Bowman, Jonah",JR,0,0,176078
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,6,LCB,1,2,Korey Johnson,koreyjohnson,"Johnson, Korey",JR,0,0,176074
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,6,LCB,2,4,Mikhail Seiken,mikhailseiken,"Seiken, Mikhail",JR,0,0,176071
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,7,SS,1,5,Roger Jones Jr.,rogerjones,"Jones Jr., Roger",JR,0,0,176064
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,7,SS,2,23,Cade Paterson,cadepaterson,"Paterson, Cade",SO,0,0,181060
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,7,SS,3,3,Kyle Chen,kylechen,"Chen, Kyle",JR,0,0,170705
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,8,FS,1,9,Max Mustell,maxmustell,"Mustell, Max",SO,0,0,178706
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,8,FS,2,13,Joseph Kramlich,josephkramlich,"Kramlich, Joseph",SO,0,0,181045
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,8,FS,3,20,JT Tomescko,jttomescko,"Tomescko, JT",JR,0,0,176072
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,8,FS,4,12,Jax Gates,jaxgates,"Gates, Jax",SO,0,0,181076
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,9,RCB,1,25,Jayden Gray,jaydengray,"Gray, Jayden",FR,0,1,184287
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,9,RCB,2,15,Mikey Inweh,mikeyinweh,"Inweh, Mikey",FR,0,1,184018
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,10,NB,1,26,Alexander Perez,alexanderperez,"Perez, Alexander",SO,0,0,178769
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,10,NB,2,31,Jayden Malbranche,jaydenmalbranche,"Malbranche, Jayden",SO,0,0,178767
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,defense,10,NB,3,27,Ethan Stannard,ethanstannard,"Stannard, Ethan",SO,0,0,181066
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,0,PT,1,94,Will Duncan,willduncan,"Duncan, Will",JR,0,0,176115
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,0,PT,2,91,Rip Perez,ripperez,"Perez, Rip",SR,0,0,170728
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,1,PK,1,90,Carter Cremascoli,cartercremascoli,"Cremascoli, Carter",SO,0,0,181034
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,1,PK,2,39,Jacob Medina,jacobmedina,"Medina, Jacob",JR,0,0,176097
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,2,KO,1,90,Carter Cremascoli,cartercremascoli,"Cremascoli, Carter",SO,0,0,181034
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,2,KO,2,39,Jacob Medina,jacobmedina,"Medina, Jacob",JR,0,0,176097
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,3,LS,1,46,Jake Helms,jakehelms,"Helms, Jake",JR,0,0,176091
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,3,LS,2,49,Mickey Widner,mickeywidner,"Widner, Mickey",FR,0,1,184288
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,4,H,1,98,Rocco D'Angelo,roccodangelo,"D'Angelo, Rocco",JR,0,0,176083
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,4,H,2,91,Rip Perez,ripperez,"Perez, Rip",SR,0,0,170728
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,5,PR,1,3,Matt Long,mattlong,"Long, Matt",JR,0,0,176075
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,5,PR,2,10,Adam Hrynciw,adamhrynciw,"Hrynciw, Adam",SR,0,0,170717
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,5,PR,3,8,Jonah Dawson,jonahdawson,"Dawson, Jonah",JR,0,0,176085
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,6,KR,1,44,Rocco Conti,roccoconti,"Conti, Rocco",SR,0,0,170706
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,6,KR,2,3,Matt Long,mattlong,"Long, Matt",JR,0,0,176075
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,special,6,KR,3,0,Owen Chambers,owenchambers,"Chambers, Owen",SR,0,0,170745
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,reserve,0,RES,1,7,Nick Beckwith,nickbeckwith,"Beckwith, Nick",JR,0,0,176058
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,reserve,0,RES,2,9,Liam Szarka,liamszarka,"Szarka, Liam",JR,0,0,176054
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,reserve,0,RES,3,19,Houston Hendrix,houstonhendrix,"Hendrix, Houston",SR,0,0,170714
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,reserve,0,RES,4,95,Noah Daniels,noahdaniels,"Daniels, Noah",SO,0,0,181078
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,reserve,0,RES,5,6,Blake Fletcher,blakefletcher,"Fletcher, Blake",SR,0,0,170711
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,reserve,1,RES,1,10,Jerome Drain,jeromedrain,"Drain, Jerome",SO,0,0,181038
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,reserve,1,RES,2,17,Thomas Young,thomasyoung,"Young, Thomas",FR,0,1,184017
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,reserve,1,RES,3,22,Ehimen Oyamendan,ehimenoyamendan,"Oyamendan, Ehimen",SO,0,0,178768
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,reserve,1,RES,4,24,Jordan Elie-Stuart,jordaneliestuart,"Elie-Stuart, Jordan",SO,0,0,178766
+2026-11-21T03:10:39+00:00,89877,Air Force,air-force,MW,11/20/2026 8:21PM ET,fb07b25feb86,reserve,1,RES,5,72,Jon Ashford,jonashford,"Ashford, Jon",JR,0,0,176076
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,0,WR-X,1,3,Trey Johnson,treyjohnson,"Johnson, Trey",RS SR,0,0,158702
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,0,WR-X,2,19,Joseph Saffold,josephsaffold,"Saffold, Joseph",FR,0,1,182923
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,1,WR-Z,1,9,Nick Sowell,nicksowell,"Sowell, Nick",RS SR/TR,1,0,182926
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,2,WR-SL,1,5,Brennan Ridley,brennanridley,"Ridley, Brennan",JR/TR,0,0,175117
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,2,WR-SL,2,14,Pauly Sadler,paulysadler,"Sadler, Pauly",FR,0,1,182922
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,3,LT,1,65,Gabe Funk,gabefunk,"Funk, Gabe",RS SO/TR,1,0,172172
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,3,LT,2,71,Travis Robertson,travisrobertson,"Robertson, Travis",FR,0,1,182920
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,4,LG,1,54,Brody Bolyn,brodybolyn,"Bolyn, Brody",RS JR,0,0,164353
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,4,LG,2,53,Masyn Zahursky,masynzahursky,"Zahursky, Masyn",RS FR,0,0,178387
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,4,LG,3,66,Zane Panchula,zanepanchula,"Panchula, Zane",RS FR,0,0,178382
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,5,C,1,78,Alexis Sanchez,alexissanchez,"Sanchez, Alexis",SR/TR,0,0,178385
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,6,RG,1,70,Alex Harris,alexharris,"Harris, Alex",RS SO,0,0,173061
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,6,RG,2,73,Caden Campbell,cadencampbell,"Campbell, Caden",RS SO,0,0,173046
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,7,RT,1,77,James Thomas Jr.,jamesthomas,"Thomas Jr., James",RS JR,0,0,161496
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,7,RT,2,50,Vincent Giordano,vincentgiordano,"Giordano, Vincent",RS FR,0,0,175108
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,7,RT,3,75,Maddux Murphy,madduxmurphy,"Murphy, Maddux",FR,0,1,182916
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,8,TE,1,8,Eli Jacon-Duffy,elijaconduffy,"Jacon-Duffy, Eli",RS SO,0,0,173050
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,8,TE,2,0,Jeremiah Scoby,jeremiahscoby,"Scoby, Jeremiah",SO,0,0,175119
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,8,TE,3,89,Blane Cleaver,blanecleaver,"Cleaver, Blane",GR/TR,0,0,152342
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,8,TE,4,47,Kentrell White,kentrellwhite,"White, Kentrell",FR,0,1,182928
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,8,TE,5,88,Carsen Melvin,carsenmelvin,"Melvin, Carsen",RS FR,0,0,178380
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,9,QB,1,16,Austin Novosad,austinnovosad,"Novosad, Austin",RS JR/TR,1,0,159930
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,9,QB,2,10,Hunter Najm,hunternajm,"Najm, Hunter",RS SO/TR,0,0,169547
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,10,RB,1,2,Nakai Amachree,nakaiamachree,"Amachree, Nakai",RS SO,0,0,173042
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,10,RB,2,4,Ke'Marion Baldwin,kemarionbaldwin,"Baldwin, Ke'Marion",RS JR/TR,1,0,165710
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,offense,11,FB,1,44,Leo Kemp,leokemp,"Kemp, Leo",SR/TR,0,0,163353
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,0,DE,1,4,Kade Kostus,kadekostus,"Kostus, Kade",RS SR/TR,1,0,158726
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,0,DE,2,52,Elijah Durham-Smith,elijahdurhamsmith,"Durham-Smith, Elijah",FR,0,1,182899
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,1,NT,1,88,Selah Brown,selahbrown,"Brown, Selah",GR/TR,1,0,155949
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,1,NT,2,95,Jonathan Hendrix,jonathanhendrix,"Hendrix, Jonathan",FR,0,1,182906
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,2,DT,1,5,Eriq George,eriqgeorge,"George, Eriq",SR/TR,0,0,178372
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,3,BUCK,1,23,Myles Bradley,mylesbradley,"Bradley, Myles",RS SR,0,0,158686
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,3,BUCK,2,48,Quentin Lewis,quentinlewis,"Lewis, Quentin",RS FR,0,0,178376
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,4,WLB,1,6,Sanders Ellis,sandersellis,"Ellis, Sanders",JR/TR,1,0,176369
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,4,WLB,2,8,Cashmire Lewis,cashmirelewis,"Lewis, Cashmire",RS FR,0,0,178375
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,5,MLB,1,3,Dorian Pringle,dorianpringle,"Pringle, Dorian",RS SO,0,0,170471
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,5,MLB,2,10,Andrew Hines III,andrewhines,"Hines III, Andrew",RS SO/TR,0,0,172906
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,6,LCB,1,26,Josira Andrews,josiraandrews,"Andrews, Josira",RS SO,0,0,173043
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,6,LCB,2,37,Garrison Blair,garrisonblair,"Blair, Garrison",RS SO,0,0,173546
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,7,SS,1,9,Preston EstoEsta,prestonestoesta,"EstoEsta, Preston",SO,0,0,175107
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,7,SS,2,15,D'kyah Banks,dkyahbanks,"Banks, D'kyah",RS SO,0,0,173044
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,8,FS,1,0,Kal-El Pascal,kalelpascal,"Pascal, Kal-El",JR,0,0,170469
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,8,FS,2,19,Jahai Johnson,jahaijohnson,"Johnson, Jahai",RS FR,0,0,175109
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,9,RCB,1,1,Drey Braxton,dreybraxton,"Braxton, Drey",JR/TR,1,0,182889
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,9,RCB,2,24,DeVenchi Arnold II,devenchiarnold,"Arnold II, DeVenchi",RS FR,0,0,178368
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,10,NB,1,18,Nick Sawyer,nicksawyer,"Sawyer, Nick",RS SR/TR,1,0,170870
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,defense,10,NB,2,14,JayT Jackson,jaytjackson,"Jackson, JayT",RS SR/TR,1,0,79229
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,0,PT,1,30,Ryan Kingston,ryankingston,"Kingston, Ryan",RS SR/TR,1,0,155781
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,0,PT,2,91,Alex Jenkins,alexjenkins,"Jenkins, Alex",FR,0,1,182909
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,1,PK,1,12,Travis Kenner,traviskenner,"Kenner, Travis",RS JR,0,0,170467
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,1,PK,2,27,Treyton McKee,treytonmckee,"McKee, Treyton",RS FR,0,0,178379
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,1,PK,3,40,Ethan Warner,ethanwarner,"Warner, Ethan",RS SR,0,0,158700
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,2,KO,1,40,Ethan Warner,ethanwarner,"Warner, Ethan",RS SR,0,0,158700
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,2,KO,2,27,Treyton McKee,treytonmckee,"McKee, Treyton",RS FR,0,0,178379
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,3,LS,1,56,Quillan Jimenez,quillanjimenez,"Jimenez, Quillan",RS JR/TR,0,0,167395
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,3,LS,2,52,Quinn Forsythe,quinnforsythe,"Forsythe, Quinn",RS FR/TR,1,0,182900
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,4,H,1,30,Ryan Kingston,ryankingston,"Kingston, Ryan",RS SR/TR,1,0,155781
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,5,PR,1,5,Brennan Ridley,brennanridley,"Ridley, Brennan",JR/TR,0,0,175117
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,5,PR,2,19,Jahai Johnson,jahaijohnson,"Johnson, Jahai",RS FR,0,0,175109
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,6,KR,1,19,Jahai Johnson,jahaijohnson,"Johnson, Jahai",RS FR,0,0,175109
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,6,KR,2,2,Nakai Amachree,nakaiamachree,"Amachree, Nakai",RS SO,0,0,173042
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,special,6,KR,3,44,Leo Kemp,leokemp,"Kemp, Leo",SR/TR,0,0,163353
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,0,RES,1,2,JoJo Johnson,jojojohnson,"Johnson, JoJo",GR/TR,0,0,165800
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,0,RES,2,11,Austin Clay,austinclay,"Clay, Austin",RS SO/TR,0,0,172019
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,0,RES,3,32,Rico Garcia,ricogarcia,"Garcia, Rico",RS FR,0,0,178370
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,0,RES,4,36,Jabari Mitchell,jabarimitchell,"Mitchell, Jabari",RS JR,0,0,164358
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,0,RES,5,58,Ethan Kraatz,ethankraatz,"Kraatz, Ethan",RS FR,0,0,178374
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,1,RES,1,61,Pete Pendergest,petependergest,"Pendergest, Pete",FR,0,1,182918
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,1,RES,2,84,Trent Taylor,trenttaylor,"Taylor, Trent",FR,0,1,182930
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,1,RES,3,1,Austyn Dendy,austyndendy,"Dendy, Austyn",RS SO/TR,0,0,171087
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,1,RES,4,6,Isaiah Dawson,isaiahdawson,"Dawson, Isaiah",SO/TR,1,0,182895
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,1,RES,5,17,Jay Kastantin,jaykastantin,"Kastantin, Jay",RS JR/TR,1,0,182910
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,2,RES,1,18,Winn Sharp,winnsharp,"Sharp, Winn",RS SO,0,0,173057
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,2,RES,2,55,Timothy Taylor Jr.,timothytaylor,"Taylor Jr., Timothy",RS FR/TR,1,0,177921
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,2,RES,3,57,Dayln White,daylnwhite,"White, Dayln",RS JR,0,0,164362
+2026-11-21T03:10:39+00:00,90176,Bowling Green,bowling-green,MAC,11/20/2026 7:49PM ET,42c80b76fe76,reserve,2,RES,4,76,Theo Andall,theoandall,"Andall, Theo",FR,0,1,182887
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,0,WR-X,1,9,Waden Charles,wadencharles,"Charles, Waden",SO,0,0,174558
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,0,WR-X,2,2,Tyren Hornes,tyrenhornes,"Hornes, Tyren",FR,0,1,180440
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,0,WR-X,3,86,Chase Hinshaw,chasehinshaw,"Hinshaw, Chase",RS FR,0,0,177332
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,1,WR-Z,1,5,Josh Derry,joshderry,"Derry, Josh",SR/TR,1,0,180435
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,1,WR-Z,2,13,Caleb Rollerson,calebrollerson,"Rollerson, Caleb",RS SO,0,0,173295
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,1,WR-Z,3,80,Elijah Hardy,elijahhardy,"Hardy, Elijah",FR,0,1,183623
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,1,WR-Z,4,23,Jordan Nunuha,jordannunuha,"Nunuha, Jordan",FR,0,1,180449
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,2,WR-SL,1,7,Duane Thomas Jr.,duanethomas,"Thomas Jr., Duane",SR/TR,0,0,166624
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,2,WR-SL,2,6,Ric'Darious Farmer,ricdariousfarmer,"Farmer, Ric'Darious",RS SO/TR,0,0,168460
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,2,WR-SL,3,82,Jordyn Bridgewater,jordynbridgewater,"Bridgewater, Jordyn",RS SO,0,0,169353
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,3,LT,1,73,Henry Tabansi,henrytabansi,"Tabansi, Henry",RS JR/TR,1,0,165427
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,3,LT,2,53,LaParka Langston,laparkalangston,"Langston, LaParka",RS JR/TR,0,0,176335
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,3,LT,3,77,Kasiyah Charlton,kasiyahcharlton,"Charlton, Kasiyah",FR,0,1,180434
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,4,LG,1,66,Brady Wayburn,bradywayburn,"Wayburn, Brady",RS SR/TR,1,0,159029
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,4,LG,2,76,Justin Royes,justinroyes,"Royes, Justin",RS JR/TR,0,0,174571
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,5,C,1,58,Connor Meadows,connormeadows,"Meadows, Connor",RS SR/TR,0,0,78630
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,5,C,2,55,Jacob Maiava,jacobmaiava,"Maiava, Jacob",RS FR,0,0,174563
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,6,RG,1,61,Owen Spell,owenspell,"Spell, Owen",SR/TR,0,0,176395
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,6,RG,2,54,Cooper Terpstra,cooperterpstra,"Terpstra, Cooper",RS JR/TR,1,0,165540
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,7,RT,1,78,Preston Cushman,prestoncushman,"Cushman, Preston",RS SR/TR,0,0,156819
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,7,RT,2,75,Tyler Gibson,tylergibson,"Gibson, Tyler",RS SR/TR,1,0,79175
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,8,TE,1,18,Caden Piening,cadenpiening,"Piening, Caden",RS FR,0,0,174566
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,8,TE,2,0,Dylan Wade,dylanwade,"Wade, Dylan",SR/TR,0,0,164471
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,8,TE,3,88,Grayson Brousseau,graysonbrousseau,"Brousseau, Grayson",RS SO/TR,1,0,171774
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,8,TE,4,83,Dylan Burk,dylanburk,"Burk, Dylan",SO/TR,1,0,177939
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,8,TE,5,84,Thomas Wadsworth,thomaswadsworth,"Wadsworth, Thomas",RS SR,0,0,157615
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,9,QB,1,14,Alonza Barnett III,alonzabarnett,"Barnett III, Alonza",RS SR/TR,1,0,158899
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,9,QB,2,12,Keyone Jenkins,keyonejenkins,"Jenkins, Keyone",SR/TR,1,0,160863
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,9,QB,3,10,Kaleb Annett,kalebannett,"Annett, Kaleb",RS SO/TR,1,0,169515
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,9,QB,4,8,Rocco Marriott,roccomarriott,"Marriott, Rocco",FR,0,1,180447
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,10,RB,1,26,Duke Watson,dukewatson,"Watson, Duke",JR/TR,1,0,170560
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,10,RB,2,11,Landen Chambers,landenchambers,"Chambers, Landen",RS JR/TR,1,0,180433
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,10,RB,3,4,Taevion Swint,taevionswint,"Swint, Taevion",RS FR,0,0,174568
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,offense,10,RB,4,35,Agyeman Addae,agyemanaddae,"Addae, Agyeman",RS FR,0,0,176333
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,0,LDE,1,11,Ken Talley,kentalley,"Talley, Ken",RS SR/TR,1,0,159541
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,0,LDE,2,10,Sincere Edwards,sincereedwards,"Edwards, Sincere",JR/TR,0,0,168559
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,0,LDE,3,47,Arthur Kingdom,arthurkingdom,"Kingdom, Arthur",JR,0,0,183626
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,1,LDT,1,0,Horace Lockett,horacelockett,"Lockett, Horace",RS SR/TR,0,0,153976
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,1,LDT,2,93,Brad Gurley Jr.,bradgurley,"Gurley Jr., Brad",RS SR/TR,1,0,180437
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,1,LDT,3,95,RJ Jackson Jr.,rjjackson,"Jackson Jr., RJ",SR/TR,0,0,164003
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,1,LDT,4,42,Artavius Jones,artaviusjones,"Jones, Artavius",RS SO/TR,1,0,172770
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,2,RDT,1,92,Jeffson Lafontant,jeffsonlafontant,"Lafontant, Jeffson",RS JR/TR,0,0,176396
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,2,RDT,2,99,Thomas Collins,thomascollins,"Collins, Thomas",RS JR/TR,1,0,160242
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,2,RDT,3,54,Trenton Turner,trentonturner,"Turner, Trenton",RS FR,0,0,174569
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,2,RDT,4,55,Noah Mercer,noahmercer,"Mercer, Noah",FR,0,1,180453
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,3,RDE,1,6,Isaiah Nixon,isaiahnixon,"Nixon, Isaiah",RS JR,0,0,163946
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,3,RDE,2,12,Aymeric Koumba,aymerickoumba,"Koumba, Aymeric",RS JR/TR,0,0,159982
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,3,RDE,3,97,Josh Schell,joshschell,"Schell, Josh",RS SR/TR,1,0,176532
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,4,WLB,1,20,Lewis Carter,lewiscarter,"Carter, Lewis",SR/TR,0,0,160254
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,4,WLB,2,34,Jahleel Culbreath,jahleelculbreath,"Culbreath, Jahleel",RS SR/TR,1,0,158156
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,4,WLB,3,19,Rashad Henry,rashadhenry,"Henry, Rashad",RS JR/TR,1,0,166125
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,5,MLB,1,24,Tackett Curtis,tackettcurtis,"Curtis, Tackett",SR/TR,1,0,168745
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,5,MLB,2,43,Cole Kozlowski,colekozlowski,"Kozlowski, Cole",SR/TR,0,0,174572
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,5,MLB,3,38,Jayden Jennings,jaydenjennings,"Jennings, Jayden",RS SR/TR,0,0,149446
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,5,MLB,4,33,Phil Picciotti,philpicciotti,"Picciotti, Phil",RS JR/TR,0,0,160268
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,6,LCB,1,1,Jayden Bellamy,jaydenbellamy,"Bellamy, Jayden",RS SR/TR,0,0,162573
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,6,LCB,2,5,DJ Bell,djbell,"Bell, DJ",RS SR/TR,0,0,157641
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,6,LCB,3,17,Jailen Duffie,jailenduffie,"Duffie, Jailen",RS JR/TR,1,0,180436
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,7,SS,1,2,Jayden Williams,jaydenwilliams,"Williams, Jayden",RS SR/TR,0,0,152173
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,7,SS,2,21,Ty Bartrum,tybartrum,"Bartrum, Ty",RS SR/TR,1,0,180430
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,8,FS,1,18,Caleb Flagg,calebflagg,"Flagg, Caleb",RS SR/TR,1,0,168864
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,8,FS,2,28,Matt Irwin,mattirwin,"Irwin, Matt",JR/TR,1,0,180442
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,9,RCB,1,7,Antione Jackson,antionejackson,"Jackson, Antione",SR/TR,0,0,79539
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,9,RCB,2,25,Rukeem Stroud,rukeemstroud,"Stroud, Rukeem",RS FR,0,0,174567
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,9,RCB,3,49,Donnell Johnson III,donnelljohnson,"Johnson III, Donnell",RS SR,0,0,180455
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,10,NB,1,4,Braeden Marshall,braedenmarshall,"Marshall, Braeden",SR,0,0,162989
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,10,NB,2,14,Kahmel Johnson,kahmeljohnson,"Johnson, Kahmel",RS SO/TR,1,0,180444
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,defense,10,NB,3,30,Otis Hardy,otishardy,"Hardy, Otis",FR,0,1,183624
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,0,PT,1,49,Atticus Bertrams,atticusbertrams,"Bertrams, Atticus",SR/TR,1,0,165690
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,0,PT,2,97,Mason Denaburg,masondenaburg,"Denaburg, Mason",RS FR,0,0,177331
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,1,PK,1,15,Will Stone,willstone,"Stone, Will",RS SR/TR,1,0,155937
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,1,PK,2,31,Noah McGough,noahmcgough,"McGough, Noah",RS FR,0,0,177334
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,2,KO,1,15,Will Stone,willstone,"Stone, Will",RS SR/TR,1,0,155937
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,2,KO,2,31,Noah McGough,noahmcgough,"McGough, Noah",RS FR,0,0,177334
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,3,LS,1,44,Kyle Hicks,kylehicks,"Hicks, Kyle",RS SO/TR,1,0,180454
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,3,LS,2,37,Rocklyn Kelley,rocklynkelley,"Kelley, Rocklyn",RS FR,0,0,177333
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,4,H,1,97,Mason Denaburg,masondenaburg,"Denaburg, Mason",RS FR,0,0,177331
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,4,H,2,49,Atticus Bertrams,atticusbertrams,"Bertrams, Atticus",SR/TR,1,0,165690
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,5,PR,1,7,Antione Jackson,antionejackson,"Jackson, Antione",SR/TR,0,0,79539
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,5,PR,2,86,Chase Hinshaw,chasehinshaw,"Hinshaw, Chase",RS FR,0,0,177332
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,5,PR,3,5,Josh Derry,joshderry,"Derry, Josh",SR/TR,1,0,180435
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,6,KR,1,4,Taevion Swint,taevionswint,"Swint, Taevion",RS FR,0,0,174568
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,6,KR,2,5,Josh Derry,joshderry,"Derry, Josh",SR/TR,1,0,180435
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,special,6,KR,3,35,Agyeman Addae,agyemanaddae,"Addae, Agyeman",RS FR,0,0,176333
+2026-11-21T03:10:39+00:00,92200,Central Florida,central-florida,BIG12,11/20/2026 6:52PM ET,7dbbcf9c86ec,reserve,0,RES,1,8,Demari Henderson,demarihenderson,"Henderson, Demari",RS SR,0,0,157606
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,0,WR-X,1,12,Bryant Wesco Jr.,bryantwesco,"Wesco Jr., Bryant",JR,0,0,168191
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,0,WR-X,2,0,Naeem Burroughs,naeemburroughs,"Burroughs, Naeem",FR,0,1,180162
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,0,WR-X,3,86,Jaylen Brown-Wallace,jaylenbrownwallace,"Brown-Wallace, Jaylen",RS JR/TR,1,0,180160
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,0,WR-X,4,80,Luke Stubbs,lukestubbs,"Stubbs, Luke",RS SR,0,0,177301
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,1,WR-Z,1,1,T.J. Moore,tjmoore,"Moore, T.J.",JR,0,0,168195
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,1,WR-Z,2,19,Gordon Sellars III,gordonsellars,"Sellars III, Gordon",FR,0,1,180178
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,1,WR-Z,3,3,Tristan Smith,tristansmith,"Smith, Tristan",SR/TR,0,0,174488
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,1,WR-Z,4,83,Cam Blivens,camblivens,"Blivens, Cam",FR,0,1,180158
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,1,WR-Z,5,13,Connor Salmin,connorsalmin,"Salmin, Connor",FR,0,1,180176
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,2,WR-SL,1,10,Juju Preston,jujupreston,"Preston, Juju",RS FR,0,0,174486
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,2,WR-SL,2,20,Clark Sanderson,clarksanderson,"Sanderson, Clark",RS SO,0,0,171208
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,3,LT,1,74,Brayden Jacobs,braydenjacobs,"Jacobs, Brayden",SO,0,0,174483
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,3,LT,2,54,Ian Reed,ianreed,"Reed, Ian",RS JR,0,0,160316
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,4,LG,1,52,Elyjah Thurmon,elyjahthurmon,"Thurmon, Elyjah",RS SO,0,0,168189
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,4,LG,2,75,Tucker Kattus,tuckerkattus,"Kattus, Tucker",RS FR,0,0,174484
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,4,LG,3,70,Chance Barclay,chancebarclay,"Barclay, Chance",FR,0,1,180157
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,4,LG,4,78,Carter Scruggs,carterscruggs,"Scruggs, Carter",FR,0,1,180177
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,5,C,1,55,Harris Sewell,harrissewell,"Sewell, Harris",SR,0,0,160303
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,5,C,2,64,Grant Wise,grantwise,"Wise, Grant",FR,0,1,180182
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,5,C,3,94,Chapman Pendergrass,chapmanpendergrass,"Pendergrass, Chapman",GR,0,0,156239
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,6,RG,1,51,Gavin Blanchard,gavinblanchard,"Blanchard, Gavin",RS FR,0,0,174475
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,6,RG,2,77,Ronan O'Connell,ronanoconnell,"O'Connell, Ronan",RS SO,0,0,168187
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,6,RG,3,73,Hayes Galloway,hayesgalloway,"Galloway, Hayes",RS SO/TR,0,0,168485
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,7,RT,1,50,Collin Sadler,collinsadler,"Sadler, Collin",RS SR,0,0,153151
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,7,RT,2,71,Leo Delaney,leodelaney,"Delaney, Leo",FR,0,1,180165
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,7,RT,3,62,Bryce Smith,brycesmith,"Smith, Bryce",RS JR,0,0,165840
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,8,TE,1,11,Olsen Patt-Henry,olsenpatthenry,"Patt-Henry, Olsen",SR,0,0,160296
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,8,TE,2,87,Christian Bentancur,christianbentancur,"Bentancur, Christian",RS SO,0,0,168171
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,8,TE,3,7,Logan Brooking,loganbrooking,"Brooking, Logan",RS FR,0,0,174476
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,8,TE,4,85,Charlie Johnson,charliejohnson,"Johnson, Charlie",RS JR,0,0,165837
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,8,TE,5,18,Tayveon Wilson,tayveonwilson,"Wilson, Tayveon",FR,0,1,180181
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,9,QB,1,14,Trent Pearman,trentpearman,"Pearman, Trent",RS SR,0,0,153148
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,9,QB,2,5,Brock Bradley,brockbradley,"Bradley, Brock",FR,0,1,180159
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,9,QB,3,15,Chris Denson,chrisdenson,"Denson, Chris",RS FR,0,0,174480
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,10,RB,1,8,Gideon Davidson,gideondavidson,"Davidson, Gideon",SO,0,0,174479
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,10,RB,2,21,Jarvis Green,jarvisgreen,"Green, Jarvis",RS JR,0,0,160293
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,10,RB,3,26,Jay Haynes,jayhaynes,"Haynes, Jay",RS JR,0,0,160313
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,10,RB,4,16,Chris Johnson Jr.,chrisjohnson,"Johnson Jr., Chris",RS JR/TR,1,0,160371
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,offense,10,RB,5,34,Max Wilson,maxwilson,"Wilson, Max",RS SO,0,0,174493
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,0,LDE,1,15,Jahiem Lawson,jahiemlawson,"Lawson, Jahiem",RS SR,0,0,153143
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,0,LDE,2,14,London Merritt,londonmerritt,"Merritt, London",SO/TR,1,0,174425
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,0,LDE,3,23,C.J. Wesley,cjwesley,"Wesley, C.J.",RS SR/TR,1,0,180179
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,0,LDE,4,17,Ari Watford,ariwatford,"Watford, Ari",RS FR,0,0,174491
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,1,LDT,1,49,Darien Mayo,darienmayo,"Mayo, Darien",RS SO,0,0,168185
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,1,LDT,2,56,Andy Burburija,andyburburija,"Burburija, Andy",JR/TR,1,0,180161
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,1,LDT,3,92,Devarrick Woods,devarrickwoods,"Woods, Devarrick",RS SR/TR,1,0,175967
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,2,RDT,1,95,Amare Adams,amareadams,"Adams, Amare",SO,0,0,174473
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,2,RDT,2,44,Kourtney Kelly,kourtneykelly,"Kelly, Kourtney",RS SO/TR,1,0,180171
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,3,RDE,1,13,Will Heldt,willheldt,"Heldt, Will",SR/TR,0,0,160068
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,3,RDE,2,33,Caden Story,cadenstory,"Story, Caden",RS SR,0,0,153153
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,3,RDE,3,34,Armon Mason,armonmason,"Mason, Armon",GR,0,0,150662
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,4,WLB,1,47,Sammy Brown,sammybrown,"Brown, Sammy",JR,0,0,168172
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,4,WLB,2,26,C.J. Kubah-Taylor,cjkubahtaylor,"Kubah-Taylor, C.J.",RS SO,0,0,168184
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,5,MLB,1,50,Fletcher Cothran,fletchercothran,"Cothran, Fletcher",RS SR,0,0,156233
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,5,MLB,2,21,Kobe McCloud,kobemccloud,"McCloud, Kobe",RS SR,0,0,153145
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,6,LCB,1,2,Ashton Hampton,ashtonhampton,"Hampton, Ashton",JR,0,0,168180
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,6,LCB,2,10,Misun Kelley,misunkelley,"Kelley, Misun",RS JR,0,0,160299
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,7,SS,1,22,Corey Myrick,coreymyrick,"Myrick, Corey",JR/TR,1,0,170244
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,7,SS,2,5,Ronan Hanafin,ronanhanafin,"Hanafin, Ronan",SR,0,0,160295
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,7,SS,3,20,Jakarrion Kenan,jakarrionkenan,"Kenan, Jakarrion",RS FR,0,0,174485
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,8,FS,1,6,Jerome Carter III,jeromecarter,"Carter III, Jerome",JR/TR,1,0,170303
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,8,FS,2,18,Kylon Griffin,kylongriffin,"Griffin, Kylon",RS SR,0,0,153139
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,9,RCB,1,3,Elliot Washington II,elliotwashington,"Washington II, Elliot",SR/TR,1,0,159881
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,10,NB,1,1,Branden Strozier,brandenstrozier,"Strozier, Branden",RS JR,0,0,160305
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,defense,10,NB,2,25,Marcell Gipson Jr.,marcellgipson,"Gipson Jr., Marcell",FR,0,1,180167
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,0,PT,1,89,Jack Smith,jacksmith,"Smith, Jack",RS SR,0,0,153158
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,0,PT,2,81,Nolan Hauser,nolanhauser,"Hauser, Nolan",JR,0,0,168181
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,1,PK,1,81,Nolan Hauser,nolanhauser,"Hauser, Nolan",JR,0,0,168181
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,1,PK,2,38,Robert Gunn III,robertgunn,"Gunn III, Robert",RS SR,0,0,153140
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,2,KO,1,38,Robert Gunn III,robertgunn,"Gunn III, Robert",RS SR,0,0,153140
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,3,LS,1,46,Jackson Reach,jacksonreach,"Reach, Jackson",FR,0,1,180173
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,3,LS,2,40,Brodey Conn,brodeyconn,"Conn, Brodey",RS JR,0,0,153136
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,4,H,1,88,Clay Swinney,clayswinney,"Swinney, Clay",RS SR,0,0,153154
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,5,PR,1,12,Bryant Wesco Jr.,bryantwesco,"Wesco Jr., Bryant",JR,0,0,168191
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,5,PR,2,1,T.J. Moore,tjmoore,"Moore, T.J.",JR,0,0,168195
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,5,PR,3,29,Chase Byrd,chasebyrd,"Byrd, Chase",RS SO,0,0,168174
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,special,6,KR,1,16,Chris Johnson Jr.,chrisjohnson,"Johnson Jr., Chris",RS JR/TR,1,0,160371
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,0,RES,1,0,Donovan Starr,donovanstarr,"Starr, Donovan",SO/TR,1,0,173868
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,0,RES,2,2,Tait Reynolds,taitreynolds,"Reynolds, Tait",FR,0,1,180175
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,0,RES,3,6,Tyler Brown,tylerbrown,"Brown, Tyler",RS JR,0,0,160312
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,0,RES,4,7,Jeremiah Alexander,jeremiahalexander,"Alexander, Jeremiah",RS SR/TR,0,0,153072
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,0,RES,5,8,Corian Gipson,coriangipson,"Gipson, Corian",RS SO,0,0,168179
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,1,RES,1,11,Polo Anderson,poloanderson,"Anderson, Polo",FR,0,1,180156
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,1,RES,2,12,Shavar Young Jr.,shavaryoung,"Young Jr., Shavar",FR,0,1,180183
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,1,RES,3,17,Christopher Vizzina,christophervizzina,"Vizzina, Christopher",RS JR,0,0,160307
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,1,RES,4,22,Cole Turner,coleturner,"Turner, Cole",RS SR,0,0,153159
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,1,RES,5,24,David Eziomume,davideziomume,"Eziomume, David",RS SO,0,0,168177
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,2,RES,1,29,Champ Thompson,champthompson,"Thompson, Champ",RS SO,0,0,168188
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,2,RES,2,45,Vic Burley,vicburley,"Burley, Vic",RS JR,0,0,160290
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,2,RES,3,63,Easton Ware,eastonware,"Ware, Easton",RS FR,0,0,174490
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,2,RES,4,76,Mason Wade,masonwade,"Wade, Mason",RS SO,0,0,168190
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,2,RES,5,79,Braden Wilmes,bradenwilmes,"Wilmes, Braden",FR,0,1,180180
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,3,RES,1,99,Markus Strong,markusstrong,"Strong, Markus",RS JR/TR,1,0,160271
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,3,RES,2,42,Hevin Brown-Shuler,hevinbrownshuler,"Brown-Shuler, Hevin",RS SO,0,0,168173
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,3,RES,3,53,Joseph Roberto II,josephroberto,"Roberto II, Joseph",RS SO,0,0,171207
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,3,RES,4,23,Peyton Streko,peytonstreko,"Streko, Peyton",RS JR,0,0,160304
+2026-11-21T03:10:39+00:00,90314,Clemson,clemson,ACC,11/20/2026 6:35PM ET,bd3b519f59d1,reserve,3,RES,5,72,Adam Guthrie,adamguthrie,"Guthrie, Adam",FR,0,1,180168
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,0,WR-X,1,13,Jamal Polite Jr.,jamalpolite,"Polite Jr., Jamal",FR,0,1,181809
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,0,WR-X,2,23,Carson Robbins,carsonrobbins,"Robbins, Carson",RS SO,0,0,171462
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,1,WR-Z,1,89,Ty Claiborne,tyclaiborne,"Claiborne, Ty",RS SR,0,0,157096
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,1,WR-Z,2,83,Sam Zelenovich,samzelenovich,"Zelenovich, Sam",RS FR,0,0,174103
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,2,WR-F,1,9,Omari Hayes,omarihayes,"Hayes, Omari",RS SR/TR,1,0,157063
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,2,WR-F,2,12,Braden Goellner,bradengoellner,"Goellner, Braden",RS SR,0,0,181800
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,3,LT,1,79,Jake Taylor,jaketaylor,"Taylor, Jake",RS SR/TR,1,0,153014
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,3,LT,2,71,Gabriel Greenlee,gabrielgreenlee,"Greenlee, Gabriel",RS SR,0,0,157103
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,4,LG,1,68,Makai Sat,makaisat,"Sat, Makai",RS JR/TR,0,0,176971
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,4,LG,2,78,DeAndre Carter,deandrecarter,"Carter, DeAndre",RS SO/TR,1,0,170632
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,5,C,1,63,Braden Smith,bradensmith,"Smith, Braden",RS SO/TR,1,0,179257
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,5,C,2,52,Kingston Fotualii,kingstonfotualii,"Fotualii, Kingston",FR,0,1,181798
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,5,C,3,54,Cade Myer,cademyer,"Myer, Cade",RS SR/TR,1,0,179247
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,6,RG,1,72,Austin Barrett,austinbarrett,"Barrett, Austin",RS JR/TR,0,0,165786
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,6,RG,2,55,Trevor Bindel,trevorbindel,"Bindel, Trevor",RS FR/TR,1,0,177522
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,6,RG,3,74,Gavin Broscious,gavinbroscious,"Broscious, Gavin",RS JR/TR,1,0,157324
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,7,RT,1,51,Maasai King,maasaiking,"King, Maasai",RS JR/TR,1,0,176022
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,7,RT,2,65,Garret Rutledge,garretrutledge,"Rutledge, Garret",RS SO,0,0,171463
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,7,RT,3,56,Colin Amick,colinamick,"Amick, Colin",RS SO/TR,1,0,179234
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,8,TE,1,37,Vince Benetti,vincebenetti,"Benetti, Vince",RS JR,0,0,164554
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,8,TE,2,19,Tyler Fortenberry,tylerfortenberry,"Fortenberry, Tyler",RS SR/TR,1,0,168376
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,8,TE,3,88,Christian Greenlaw,christiangreenlaw,"Greenlaw, Christian",RS JR/TR,1,0,179241
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,8,TE,4,45,Gavin Proudfoot,gavinproudfoot,"Proudfoot, Gavin",RS SR/TR,1,0,179248
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,9,QB,1,1,Jaylen Raynor,jaylenraynor,"Raynor, Jaylen",SR/TR,1,0,163839
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,9,QB,2,6,Zane Flores,zaneflores,"Flores, Zane",RS SO/TR,1,0,162358
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,10,RB,1,21,Aiden Flora,aidenflora,"Flora, Aiden",RS SO,0,0,171451
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,10,RB,2,0,Cameron Pettaway,cameronpettaway,"Pettaway, Cameron",RS SO/TR,1,0,173053
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,10,RB,3,3,Arnold Barnes III,arnoldbarnes,"Barnes III, Arnold",SR/TR,1,0,161946
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,10,RB,4,25,Easton Miller,eastonmiller,"Miller, Easton",RS JR,0,0,166519
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,10,RB,5,22,Ryver Peppers,ryverpeppers,"Peppers, Ryver",RS FR,0,0,174098
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,11,FB,1,39,AJ Petersen,ajpetersen,"Petersen, AJ",RS JR,0,0,164574
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,offense,11,FB,2,41,Rylan Barnes,rylanbarnes,"Barnes, Rylan",RS JR,0,0,164553
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,0,LDE,1,88,Isaac Terrell,isaacterrell,"Terrell, Isaac",SR/TR,1,0,161057
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,0,LDE,2,93,Jack Janikowski,jackjanikowski,"Janikowski, Jack",RS JR/TR,1,0,167256
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,0,LDE,3,92,Caden Crawford,cadencrawford,"Crawford, Caden",RS SR/TR,1,0,154566
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,0,LDE,4,96,Chet Andrews,chetandrews,"Andrews, Chet",RS SR,0,0,157092
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,1,LDT,1,0,Zaimir Hawk,zaimirhawk,"Hawk, Zaimir",RS JR,0,0,164565
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,1,LDT,2,97,Max Baloun,maxbaloun,"Baloun, Max",RS SR/TR,1,0,174874
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,1,LDT,3,89,Donovan Fitzmaurice,donovanfitzmaurice,"Fitzmaurice, Donovan",SO/TR,1,0,177530
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,1,LDT,4,90,Jareb Ramos,jarebramos,"Ramos, Jareb",RS SR/TR,1,0,179249
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,2,RDT,1,99,Bryson Lamb,brysonlamb,"Lamb, Bryson",RS SR/TR,1,0,157554
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,2,RDT,2,55,Jace Gilbert,jacegilbert,"Gilbert, Jace",RS SO,0,0,171452
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,2,RDT,3,13,Kaleb Bilal-Jones,kalebbilaljones,"Bilal-Jones, Kaleb",RS FR/TR,1,0,178611
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,3,RDE,1,98,Malaki Ta'ase,malakitaase,"Ta'ase, Malaki",JR/TR,1,0,169898
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,3,RDE,2,91,Blake Hawkins,blakehawkins,"Hawkins, Blake",RS SO/TR,1,0,179244
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,3,RDE,3,44,Trey Verdon,treyverdon,"Verdon, Trey",RS FR,0,0,174101
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,4,WLB,1,34,Beau Goodwin,beaugoodwin,"Goodwin, Beau",JR,0,0,171454
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,4,WLB,2,11,Willie Breland III,williebreland,"Breland III, Willie",JR/TR,1,0,179235
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,4,WLB,3,36,Bradley Esser,bradleyesser,"Esser, Bradley",FR,0,1,181797
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,4,WLB,4,8,Tristan Exline,tristanexline,"Exline, Tristan",SR/TR,1,0,179238
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,5,MLB,1,7,Sullivan Schlimgen,sullivanschlimgen,"Schlimgen, Sullivan",SO/TR,1,0,177544
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,5,MLB,2,40,Landon Kalsbeck,landonkalsbeck,"Kalsbeck, Landon",FR,0,1,179246
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,5,MLB,3,31,Montreze Smith Jr.,montrezesmith,"Smith Jr., Montreze",RS SO/TR,1,0,170690
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,5,MLB,4,16,Malcolm Jones,malcolmjones,"Jones, Malcolm",RS SR/TR,1,0,155707
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,6,LCB,1,18,David Coffey,davidcoffey,"Coffey, David",RS SO,0,0,171447
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,6,LCB,2,9,Jaheim Singletary,jaheimsingletary,"Singletary, Jaheim",RS SR/TR,1,0,163611
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,6,LCB,3,20,Trillion Sorrell,trillionsorrell,"Sorrell, Trillion",RS FR/TR,1,0,177545
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,7,SS,1,6,Drew Surges,drewsurges,"Surges, Drew",RS JR,0,0,164576
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,7,SS,2,24,Brody Miller,brodymiller,"Miller, Brody",RS FR/TR,1,0,177537
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,7,SS,3,19,Eddie Lemos,eddielemos,"Lemos, Eddie",RS SR,0,0,157110
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,7,SS,4,42,Matthew McClain,matthewmcclain,"McClain, Matthew",FR,0,1,181808
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,8,FS,1,21,Duhron Goodman,duhrongoodman,"Goodman, Duhron",RS SR/TR,1,0,177531
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,8,FS,2,33,Brady Hummel,bradyhummel,"Hummel, Brady",FR,0,1,181804
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,8,FS,3,4,Micah Harper,micahharper,"Harper, Micah",RS SR/TR,1,0,141333
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,8,FS,4,14,Damarius Russell,damariusrussell,"Russell, Damarius",RS FR/TR,1,0,177543
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,9,RCB,1,1,Keyon Washington,keyonwashington,"Washington, Keyon",RS JR/TR,1,0,178386
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,9,RCB,2,26,Tyrone Cotton III,tyronecotton,"Cotton III, Tyrone",RS FR/TR,1,0,177526
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,9,RCB,3,29,Toe Sanders,toesanders,"Sanders, Toe",FR,0,1,179250
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,10,NB,1,3,Seth Johnson,sethjohnson,"Johnson, Seth",RS SO/TR,1,0,179245
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,defense,10,NB,2,5,Beni Ngoyi,beningoyi,"Ngoyi, Beni",RS JR,0,0,160509
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,0,PT,1,99,Jonah DuPont,jonahdupont,"DuPont, Jonah",RS SO/TR,0,0,176964
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,0,PT,2,95,Ethan Gurney,ethangurney,"Gurney, Ethan",FR,0,1,179242
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,1,PK,1,97,Kyle Konrardy,kylekonrardy,"Konrardy, Kyle",RS JR,0,0,164568
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,1,PK,2,98,Adlai Lounsbury,adlailounsbury,"Lounsbury, Adlai",RS FR/TR,1,0,174900
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,2,KO,1,97,Kyle Konrardy,kylekonrardy,"Konrardy, Kyle",RS JR,0,0,164568
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,2,KO,2,98,Adlai Lounsbury,adlailounsbury,"Lounsbury, Adlai",RS FR/TR,1,0,174900
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,3,LS,1,56,Caleb Schmidt,calebschmidt,"Schmidt, Caleb",JR/TR,1,0,179251
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,3,LS,2,57,Gavin Schieler,gavinschieler,"Schieler, Gavin",RS FR,0,0,176972
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,4,H,1,99,Jonah DuPont,jonahdupont,"DuPont, Jonah",RS SO/TR,0,0,176964
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,4,H,2,95,Ethan Gurney,ethangurney,"Gurney, Ethan",FR,0,1,179242
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,5,PR,1,21,Aiden Flora,aidenflora,"Flora, Aiden",RS SO,0,0,171451
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,5,PR,2,9,Omari Hayes,omarihayes,"Hayes, Omari",RS SR/TR,1,0,157063
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,6,KR,1,0,Cameron Pettaway,cameronpettaway,"Pettaway, Cameron",RS SO/TR,1,0,173053
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,special,6,KR,2,23,Carson Robbins,carsonrobbins,"Robbins, Carson",RS SO,0,0,171462
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,0,RES,1,2,Braden Awls,bradenawls,"Awls, Braden",SR/TR,1,0,164330
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,0,RES,2,17,Jordyn Bailey,jordynbailey,"Bailey, Jordyn",RS JR/TR,1,0,160607
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,0,RES,3,8,Evan Boyd,evanboyd,"Boyd, Evan",RS JR/TR,1,0,164371
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,0,RES,4,11,Dominic Overby,dominicoverby,"Overby, Dominic",RS SO,0,0,171461
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,0,RES,5,77,Caden Maas,cadenmaas,"Maas, Caden",RS SR/TR,1,0,179256
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,1,RES,1,4,Carter Pabst,carterpabst,"Pabst, Carter",SO/TR,1,0,177540
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,1,RES,2,85,Keaton Roskop,keatonroskop,"Roskop, Keaton",RS SO,0,0,168660
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,1,RES,3,2,Cody Jackson,codyjackson,"Jackson, Cody",RS SR/TR,1,0,69795
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,1,RES,4,5,Connor Moberly,connormoberly,"Moberly, Connor",RS SO,0,0,168658
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,1,RES,5,95,Ka'Mori Moore,kamorimoore,"Moore, Ka'Mori",RS FR,0,0,174096
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,2,RES,1,7,Salahadin Allah,salahadinallah,"Allah, Salahadin",JR/TR,1,0,170088
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,2,RES,2,10,Carson Willich,carsonwillich,"Willich, Carson",RS SR,0,0,153314
+2026-11-21T03:10:39+00:00,90774,Iowa State,iowa-state,BIG12,11/20/2026 6:41PM ET,bfa1b9a0855e,reserve,2,RES,3,80,Malcolm Watkins,malcolmwatkins,"Watkins, Malcolm",FR,0,1,179253
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,0,WR-X,1,14,Bryson Williams,brysonwilliams,"Williams, Bryson",RS FR,0,0,178673
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,0,WR-X,2,5,Samson Gash,samsongash,"Gash, Samson",FR,0,1,183084
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,0,WR-X,3,8,KK Smith,kksmith,"Smith, KK",RS JR/TR,1,0,164151
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,1,WR-Z,1,6,Fredrick Moore,fredrickmoore,"Moore, Fredrick",RS JR/TR,1,0,159990
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,1,WR-Z,2,19,Charles Taplin,charlestaplin,"Taplin, Charles",RS FR,0,0,174385
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,2,WR-SL,1,13,Chrishon McCray,chrishonmccray,"McCray, Chrishon",RS SR/TR,0,0,158807
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,2,WR-SL,2,17,Braylon Collier,brayloncollier,"Collier, Braylon",RS FR,0,0,174378
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,3,LT,1,75,Ben Murawski,benmurawski,"Murawski, Ben",RS SR/TR,1,0,159019
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,3,LT,2,54,Antonio Johnson,antoniojohnson,"Johnson, Antonio",RS FR,0,0,178671
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,3,LT,3,61,Collin Campbell,collincampbell,"Campbell, Collin",FR,0,1,183081
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,4,LG,1,52,Nick Sharpe,nicksharpe,"Sharpe, Nick",RS SR/TR,1,0,147474
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,4,LG,2,73,Rustin Young,rustinyoung,"Young, Rustin",RS SO,0,0,172031
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,5,C,1,63,Trent Fraley,trentfraley,"Fraley, Trent",RS SR/TR,1,0,157136
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,5,C,2,76,Drew Nichols,drewnichols,"Nichols, Drew",RS FR,0,0,178672
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,6,RG,1,70,Luka Vincic,lukavincic,"Vincic, Luka",RS SR/TR,0,0,158841
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,6,RG,2,77,Andrew Dennis,andrewdennis,"Dennis, Andrew",RS SO/TR,0,0,168936
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,7,RT,1,55,Rakeem Johnson,rakeemjohnson,"Johnson, Rakeem",RS SO,0,0,172022
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,7,RT,2,71,Robert Wright Jr.,robertwright,"Wright Jr., Robert",RS JR/TR,1,0,166963
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,8,TE,1,88,Kai Rios,kairios,"Rios, Kai",RS SR/TR,0,0,178663
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,8,TE,2,12,Carson Gulker,carsongulker,"Gulker, Carson",RS SR/TR,1,0,180124
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,9,QB,1,2,Cam Fancher,camfancher,"Fancher, Cam",RS SR/TR,1,0,79183
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,9,QB,2,10,Kayd Coffman,kaydcoffman,"Coffman, Kayd",FR,0,1,180119
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,9,QB,3,15,Leo Hannan,leohannan,"Hannan, Leo",RS FR,0,0,174381
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,10,RB,1,4,Jaziun Patterson,jaziunpatterson,"Patterson, Jaziun",RS SR/TR,1,0,154584
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,10,RB,2,7,Brandon Tullis,brandontullis,"Tullis, Brandon",JR,0,0,168979
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,10,RB,3,32,Kenneth Williams,kennethwilliams,"Williams, Kenneth",RS JR/TR,1,0,167440
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,10,RB,4,27,Darrin Jones Jr.,darrinjones,"Jones Jr., Darrin",RS FR,0,0,178662
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,offense,10,RB,5,20,Zion Gist,ziongist,"Gist, Zion",RS FR,0,0,174380
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,0,LDE,1,9,Keahnist Thompson,keahnistthompson,"Thompson, Keahnist",RS SR/TR,1,0,75910
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,0,LDE,2,13,Isaac Smith,isaacsmith,"Smith, Isaac",RS SR/TR,0,0,151013
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,0,LDE,3,97,Cal Thrush,calthrush,"Thrush, Cal",RS FR,0,0,174387
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,0,LDE,4,47,Jaxson Wilson,jaxsonwilson,"Wilson, Jaxson",RS JR,0,0,165541
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,1,NT,1,52,Mikeshun Beeler,mikeshunbeeler,"Beeler, Mikeshun",RS SO,0,0,172011
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,1,NT,2,98,Derrick Simmons,derricksimmons,"Simmons, Derrick",RS FR,0,0,174384
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,2,DT,1,96,Eli Coenen,elicoenen,"Coenen, Eli",RS JR/TR,1,0,178710
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,2,DT,2,25,Carlos Hazelwood,carloshazelwood,"Hazelwood, Carlos",RS SO/TR,1,0,173125
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,3,RDE,1,1,Kenny Soares Jr.,kennysoares,"Soares Jr., Kenny",RS SR/TR,1,0,156808
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,3,RDE,2,11,Anelu Lafaele,anelulafaele,"Lafaele, Anelu",RS SO/TR,0,0,168924
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,3,RDE,3,8,Trey Lisle,treylisle,"Lisle, Trey",RS SO/TR,1,0,180125
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,4,WLB,1,45,Brady Pretzlaff,bradypretzlaff,"Pretzlaff, Brady",RS SO,0,0,168976
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,4,WLB,2,18,Dion Crawford,dioncrawford,"Crawford, Dion",SR/TR,1,0,161506
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,4,WLB,3,10,DiMari Malone,dimarimalone,"Malone, DiMari",RS FR,0,0,174382
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,5,MLB,1,44,Caleb Wheatland,calebwheatland,"Wheatland, Caleb",RS SR/TR,1,0,152943
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,5,MLB,2,12,Cam Stodghill,camstodghill,"Stodghill, Cam",SR/TR,1,0,180128
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,5,MLB,3,16,Adam Shaw,adamshaw,"Shaw, Adam",FR,0,1,180127
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,6,LCB,1,3,Tre Bell,trebell,"Bell, Tre",RS SR/TR,1,0,174104
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,6,LCB,2,20,Keshawn Williams,keshawnwilliams,"Williams, Keshawn",RS SO,0,0,172030
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,6,LCB,3,14,Andrew Brinson IV,andrewbrinson,"Brinson IV, Andrew",RS SO,0,0,172012
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,7,SS,1,30,Aveon Grose,aveongrose,"Grose, Aveon",RS SR/TR,0,0,77783
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,7,SS,2,32,Evan Young,evanyoung,"Young, Evan",RS FR,0,0,178670
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,8,FS,1,21,Nikai Martinez,nikaimartinez,"Martinez, Nikai",RS SR/TR,0,0,154523
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,8,FS,2,17,Jonathan Granby,jonathangranby,"Granby, Jonathan",FR,0,1,180123
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,9,RCB,1,24,Jeremiah Favorite,jeremiahfavorite,"Favorite, Jeremiah",FR,0,1,180122
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,9,RCB,2,4,Charles Brantley,charlesbrantley,"Brantley, Charles",RS SR/TR,1,0,167598
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,9,RCB,3,29,KJ Deriso,kjderiso,"Deriso, KJ",FR,0,1,180120
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,10,NB,1,0,NiJhay Burt,nijhayburt,"Burt, NiJhay",RS SR/TR,0,0,174375
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,defense,10,NB,2,34,Khalil Majeed,khalilmajeed,"Majeed, Khalil",RS SR,0,0,150338
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,special,0,PT,1,9,Rhys Dakin,rhysdakin,"Dakin, Rhys",JR/TR,1,0,167709
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,special,0,PT,2,49,Alex Weeks,alexweeks,"Weeks, Alex",RS FR/TR,1,0,180132
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,special,1,PK,1,37,Liam Boyd,liamboyd,"Boyd, Liam",RS SR/TR,1,0,165656
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,special,2,KO,1,37,Liam Boyd,liamboyd,"Boyd, Liam",RS SR/TR,1,0,165656
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,special,3,LS,1,50,Nick Duzansky,nickduzansky,"Duzansky, Nick",RS JR/TR,1,0,159920
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,special,4,H,1,9,Rhys Dakin,rhysdakin,"Dakin, Rhys",JR/TR,1,0,167709
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,special,4,H,2,49,Alex Weeks,alexweeks,"Weeks, Alex",RS FR/TR,1,0,180132
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,special,5,PR,1,13,Chrishon McCray,chrishonmccray,"McCray, Chrishon",RS SR/TR,0,0,158807
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,special,5,PR,2,17,Braylon Collier,brayloncollier,"Collier, Braylon",RS FR,0,0,174378
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,special,6,KR,1,32,Kenneth Williams,kennethwilliams,"Williams, Kenneth",RS JR/TR,1,0,167440
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,special,6,KR,2,13,Chrishon McCray,chrishonmccray,"McCray, Chrishon",RS SR/TR,0,0,158807
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,0,RES,1,0,Cam Edwards,camedwards,"Edwards, Cam",RS SR/TR,1,0,159012
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,0,RES,2,2,Devin Vaught,devinvaught,"Vaught, Devin",RS JR/TR,1,0,180130
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,0,RES,3,3,Rodney Bullard Jr.,rodneybullard,"Bullard Jr., Rodney",RS SR/TR,0,0,174374
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,0,RES,4,5,Jordan Hall,jordanhall,"Hall, Jordan",SR,0,0,161110
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,0,RES,5,7,Michael Richard,michaelrichard,"Richard, Michael",SR/TR,1,0,162015
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,1,RES,1,11,Alessio Milivojevic,alessiomilivojevic,"Milivojevic, Alessio",RS SO,0,0,168975
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,1,RES,2,21,Marvis Parrish,marvisparrish,"Parrish, Marvis",SO/TR,1,0,177898
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,1,RES,3,22,Tyran Chappell,tyranchappell,"Chappell, Tyran",RS SO/TR,1,0,180117
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,1,RES,4,31,Jayden Savoury,jaydensavoury,"Savoury, Jayden",RS FR,0,0,178665
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,1,RES,5,44,Jay Coyne,jaycoyne,"Coyne, Jay",RS SR,0,0,157325
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,2,RES,1,55,Ben Roberts,benroberts,"Roberts, Ben",RS SR/TR,0,0,153657
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,2,RES,2,58,Conner Moore,connermoore,"Moore, Conner",RS SR/TR,0,0,174390
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,2,RES,3,79,Tristan Comer,tristancomer,"Comer, Tristan",FR,0,1,183083
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,2,RES,4,82,Brennan Parachek,brennanparachek,"Parachek, Brennan",RS JR,0,0,161105
+2026-11-21T03:10:39+00:00,91142,Michigan State,michigan-state,BIG10,11/20/2026 7:24PM ET,bda2b802cb58,reserve,2,RES,5,87,Joe Caudill,joecaudill,"Caudill, Joe",FR,0,1,180116
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,0,WR-X,1,0,Miles Williams,mileswilliams,"Williams, Miles",RS SR/TR,1,0,181665
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,0,WR-X,2,25,Dorian Patterson,dorianpatterson,"Patterson, Dorian",FR,0,1,181654
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,1,WR-Z,1,14,DJ Darling,djdarling,"Darling, DJ",FR,0,1,181636
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,1,WR-Z,2,6,Zhaiel Smith,zhaielsmith,"Smith, Zhaiel",SO,0,0,178319
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,2,WR-SL,1,81,Bailen George,bailengeorge,"George, Bailen",FR,0,1,181641
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,2,WR-SL,2,9,Kader Diop,kaderdiop,"Diop, Kader",RS SR/TR,0,0,172582
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,2,WR-SL,3,84,Trey Moore,treymoore,"Moore, Trey",FR,0,1,181663
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,3,LT,1,71,Danzel Newell,danzelnewell,"Newell, Danzel",FR,0,1,181652
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,3,LT,2,75,Ty'aun Gates,tyaungates,"Gates, Ty'aun",FR,0,1,181640
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,4,LG,1,79,Cole Millward,colemillward,"Millward, Cole",RS JR/TR,1,0,181649
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,4,LG,2,76,Braden Chick,bradenchick,"Chick, Braden",FR,0,1,181634
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,5,C,1,51,Malik Aliane,malikaliane,"Aliane, Malik",RS SR/TR,0,0,170150
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,5,C,2,54,JoJo Matautia,jojomatautia,"Matautia, JoJo",RS FR,0,0,178310
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,6,RG,1,58,Jaymar Tasi,jaymartasi,"Tasi, Jaymar",SO,0,0,178321
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,6,RG,2,60,Jubilee Siitia-Tasi,jubileesiitiatasi,"Siitia-Tasi, Jubilee",RS FR,0,0,178318
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,7,RT,1,68,Tyler Lawrence,tylerlawrence,"Lawrence, Tyler",JR/TR,0,0,170721
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,7,RT,2,75,Ty'aun Gates,tyaungates,"Gates, Ty'aun",FR,0,1,181640
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,8,TE,1,88,Cade Keith,cadekeith,"Keith, Cade",RS SO/TR,0,0,171477
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,8,TE,2,7,Tripp Walsh,trippwalsh,"Walsh, Tripp",RS JR/TR,1,0,164578
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,8,TE,3,85,Simon Mapa,simonmapa,"Mapa, Simon",SR/TR,0,0,174687
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,8,TE,4,4,Joey Olsen,joeyolsen,"Olsen, Joey",RS SO/TR,1,0,169482
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,8,TE,5,80,Max Leeper,maxleeper,"Leeper, Max",FR,0,1,181645
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,9,QB,1,13,Toa Fa'avae,toafaavae,"Fa'avae, Toa",RS FR,0,0,176152
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,9,QB,2,10,Luke Moga,lukemoga,"Moga, Luke",RS SO/TR,1,0,169450
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,10,RB,1,22,Scottre Humphrey,scottrehumphrey,"Humphrey, Scottre",SR/TR,0,0,176137
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,10,RB,2,21,Kiefer Sibley,kiefersibley,"Sibley, Kiefer",JR/TR,1,0,169591
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,10,RB,3,8,Deshaun Buchanan,deshaunbuchanan,"Buchanan, Deshaun",RS JR/TR,0,0,176133
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,offense,10,RB,4,23,Cameron Mathews,cameronmathews,"Mathews, Cameron",RS FR/TR,1,0,177650
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,0,LDE,1,10,Darren Agu,darrenagu,"Agu, Darren",RS SR/TR,0,0,153368
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,0,LDE,2,22,Jalen Charles,jalencharles,"Charles, Jalen",RS SO/TR,1,0,171821
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,1,NT,1,92,Brian Booker,brianbooker,"Booker, Brian",RS SR/TR,0,0,176131
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,1,NT,2,94,Jalen McIver,jalenmciver,"McIver, Jalen",JR/TR,0,0,178312
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,2,DT,1,15,Xavier Slayton,xavierslayton,"Slayton, Xavier",RS SR/TR,0,0,176147
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,2,DT,2,46,Jake DeVos,jakedevos,"DeVos, Jake",RS FR,0,0,178304
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,3,RDE,1,45,Brett Karhu,brettkarhu,"Karhu, Brett",RS SR/TR,0,0,169823
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,3,RDE,2,36,Albert Tuakalau,alberttuakalau,"Tuakalau, Albert",JR/TR,1,0,181661
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,3,RDE,3,19,Elijah Brody,elijahbrody,"Brody, Elijah",JR,0,0,172579
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,4,WLB,1,2,Mercury Swaim,mercuryswaim,"Swaim, Mercury",RS SR/TR,0,0,178320
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,4,WLB,2,26,Thomas Pettus,thomaspettus,"Pettus, Thomas",RS FR,0,0,178315
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,5,MLB,1,38,Jayden Flaker,jaydenflaker,"Flaker, Jayden",RS SR/TR,1,0,169819
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,5,MLB,2,18,Clay Martineau,claymartineau,"Martineau, Clay",RS SO/TR,1,0,169530
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,6,LCB,1,5,Frankie Edwards III,frankieedwards,"Edwards III, Frankie",JR/TR,0,0,176135
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,6,LCB,2,1,Jahmir Torres,jahmirtorres,"Torres, Jahmir",SO,0,0,178323
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,7,SS,1,3,CJ McBean,cjmcbean,"McBean, CJ",SO,0,0,178311
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,8,FS,1,0,Austin Brawley,austinbrawley,"Brawley, Austin",SR/TR,0,0,156191
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,8,FS,2,16,Marco Beltran Jr.,marcobeltran,"Beltran Jr., Marco",FR,0,1,181633
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,9,RCB,1,8,Ormanie Arnold,ormaniearnold,"Arnold, Ormanie",RS SR/TR,1,0,169417
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,9,RCB,2,9,Eric McClain,ericmcclain,"McClain, Eric",JR/TR,1,0,172949
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,10,NB,1,12,Drew Speech,drewspeech,"Speech, Drew",RS SR/TR,0,0,172595
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,defense,10,NB,2,20,Kevin Longstreet,kevinlongstreet,"Longstreet, Kevin",RS JR/TR,1,0,164527
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,0,PT,1,35,Charles Steinkamp,charlessteinkamp,"Steinkamp, Charles",RS SR,0,0,158424
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,0,PT,2,19,Michael Kern,michaelkern,"Kern, Michael",JR/TR,1,0,169296
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,1,PK,1,31,Grant Glasgow,grantglasgow,"Glasgow, Grant",RS SR/TR,0,0,76129
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,1,PK,2,41,Nick Romero,nickromero,"Romero, Nick",SO/TR,1,0,181657
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,2,KO,1,31,Grant Glasgow,grantglasgow,"Glasgow, Grant",RS SR/TR,0,0,76129
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,2,KO,2,35,Charles Steinkamp,charlessteinkamp,"Steinkamp, Charles",RS SR,0,0,158424
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,3,LS,1,53,Caden Beck,cadenbeck,"Beck, Caden",RS FR,0,0,178325
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,3,LS,2,50,Lincoln Epstein,lincolnepstein,"Epstein, Lincoln",RS SO/TR,1,0,173266
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,4,H,1,19,Michael Kern,michaelkern,"Kern, Michael",JR/TR,1,0,169296
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,4,H,2,35,Charles Steinkamp,charlessteinkamp,"Steinkamp, Charles",RS SR,0,0,158424
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,5,PR,1,16,Marco Beltran Jr.,marcobeltran,"Beltran Jr., Marco",FR,0,1,181633
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,5,PR,2,0,Austin Brawley,austinbrawley,"Brawley, Austin",SR/TR,0,0,156191
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,5,PR,3,81,Bailen George,bailengeorge,"George, Bailen",FR,0,1,181641
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,6,KR,1,16,Marco Beltran Jr.,marcobeltran,"Beltran Jr., Marco",FR,0,1,181633
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,6,KR,2,21,Kiefer Sibley,kiefersibley,"Sibley, Kiefer",JR/TR,1,0,169591
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,special,6,KR,3,23,Cameron Mathews,cameronmathews,"Mathews, Cameron",RS FR/TR,1,0,177650
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,0,RES,1,2,Jack Layne,jacklayne,"Layne, Jack",RS SR/TR,0,0,176138
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,0,RES,2,5,Troy Omeire,troyomeire,"Omeire, Troy",RS SR/TR,1,0,159764
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,0,RES,3,12,James Laubstein,jameslaubstein,"Laubstein, James",RS SR/TR,0,0,172588
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,0,RES,4,23,Nick Wheeler,nickwheeler,"Wheeler, Nick",RS FR,0,0,178324
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,0,RES,5,55,Elvin Harris,elvinharris,"Harris, Elvin",RS JR/TR,0,0,170153
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,1,RES,1,59,Kaden Robnett,kadenrobnett,"Robnett, Kaden",RS JR/TR,0,0,176144
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,1,RES,2,87,Abraham Williams,abrahamwilliams,"Williams, Abraham",RS SR/TR,0,0,173620
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,1,RES,3,97,Cody Thumlert,codythumlert,"Thumlert, Cody",RS FR,0,0,178322
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,1,RES,4,1,Shawn Miller,shawnmiller,"Miller, Shawn",RS SR/TR,0,0,78740
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,1,RES,5,6,Jaxton Eck,jaxtoneck,"Eck, Jaxton",SR/TR,0,0,176134
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,2,RES,1,7,Tavian Combs,taviancombs,"Combs, Tavian",RS SR,0,0,141959
+2026-11-21T03:10:39+00:00,91349,New Mexico,new-mexico,MW,11/20/2026 8:48PM ET,9de1977abb45,reserve,2,RES,2,11,Massiah Mingo,massiahmingo,"Mingo, Massiah",FR,0,1,181650
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,0,WR-X,1,3,Jeremiah McClellan,jeremiahmcclellan,"McClellan, Jeremiah",RS SO,0,0,169448
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,0,WR-X,2,10,Jalen Lott,jalenlott,"Lott, Jalen",FR,0,1,179140
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,0,WR-X,3,13,Gatlin Bair,gatlinbair,"Bair, Gatlin",FR,0,1,179148
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,0,WR-X,4,82,Nathan McCoy II,nathanmccoy,"McCoy II, Nathan",RS FR,0,0,178430
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,1,WR-Z,1,1,Dakorien Moore,dakorienmoore,"Moore, Dakorien",SO,0,0,174045
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,1,WR-Z,2,15,Messiah Hampton,messiahhampton,"Hampton, Messiah",FR,0,1,179129
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,2,WR-SL,1,7,Evan Stewart,evanstewart,"Stewart, Evan",RS SR/TR,0,0,79389
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,2,WR-SL,2,83,Hudson Lewis,hudsonlewis,"Lewis, Hudson",FR,0,1,179138
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,2,WR-SL,3,89,Brady Bidwell,bradybidwell,"Bidwell, Brady",RS SO,0,0,172299
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,2,WR-SL,4,88,Jack Ressler,jackressler,"Ressler, Jack",RS SO,0,0,169455
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,3,LT,1,59,Fox Crader,foxcrader,"Crader, Fox",RS SO,0,0,171538
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,3,LT,2,58,Ziyare Addison,ziyareaddison,"Addison, Ziyare",RS FR,0,0,174036
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,3,LT,3,79,Immanuel Iheanacho,immanueliheanacho,"Iheanacho, Immanuel",FR,0,1,179133
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,4,LG,1,77,Tommy Tofi,tommytofi,"Tofi, Tommy",FR,0,1,179145
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,4,LG,2,73,Kawika Rogers,kawikarogers,"Rogers, Kawika",RS SR,0,0,153656
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,5,C,1,72,Iapani Laloulu,iapanilaloulu,"Laloulu, Iapani",SR,0,0,159923
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,5,C,2,70,Koloi Keli,koloikeli,"Keli, Koloi",FR,0,1,179137
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,5,C,3,53,Devin Brooks,devinbrooks,"Brooks, Devin",RS SO,0,0,171536
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,6,RG,1,55,Douglas Utu,douglasutu,"Utu, Douglas",RS FR,0,0,174053
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,6,RG,2,50,Demetri Manning,demetrimanning,"Manning, Demetri",RS FR,0,0,174043
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,7,RT,1,78,Gernorris Wilson,gernorriswilson,"Wilson, Gernorris",RS JR,0,0,159938
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,7,RT,2,75,Michael Bennett III,michaelbennett,"Bennett III, Michael",RS SR/TR,1,0,179112
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,7,RT,3,57,Zac Stascausky,zacstascausky,"Stascausky, Zac",RS FR,0,0,174052
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,8,TE,1,9,Jamari Johnson,jamarijohnson,"Johnson, Jamari",RS JR/TR,0,0,160735
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,8,TE,2,18,Kendre Harrison,kendreharrison,"Harrison, Kendre",FR,0,1,179130
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,8,TE,3,19,Andrew Olesh,andrewolesh,"Olesh, Andrew",RS FR/TR,1,0,174003
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,8,TE,4,17,Markus Dixon,markusdixon,"Dixon, Markus",RS JR/TR,1,0,160292
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,8,TE,5,81,Dayton Raiola,daytonraiola,"Raiola, Dayton",FR,0,1,179142
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,9,QB,1,8,Dylan Raiola,dylanraiola,"Raiola, Dylan",JR/TR,1,0,167764
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,9,QB,2,12,Brock Thomas,brockthomas,"Thomas, Brock",RS JR,0,0,165916
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,9,QB,3,11,Akili Smith Jr.,akilismith,"Smith Jr., Akili",RS FR,0,0,174051
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,10,RB,1,6,Dierre Hill Jr.,dierrehill,"Hill Jr., Dierre",SO,0,0,174041
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,10,RB,2,26,Brandon Smith,brandonsmith,"Smith, Brandon",FR,0,1,179143
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,10,RB,3,21,Da'Jaun Riggs,dajaunriggs,"Riggs, Da'Jaun",RS SO,0,0,171540
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,10,RB,4,22,Simeon Price,simeonprice,"Price, Simeon",RS SR/TR,1,0,78456
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,offense,10,RB,5,4,Tradarian Ball,tradarianball,"Ball, Tradarian",FR,0,1,179124
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,0,DE,1,10,Matayo Uiagalelei,matayouiagalelei,"Uiagalelei, Matayo",SR,0,0,159936
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,0,DE,2,47,Elijah Rushing,elijahrushing,"Rushing, Elijah",RS SO,0,0,169456
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,1,NT,1,52,A'Mauri Washington,amauriwashington,"Washington, A'Mauri",SR,0,0,159937
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,1,NT,2,0,D'Antre Robinson,dantrerobinson,"Robinson, D'Antre",JR/TR,1,0,168011
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,2,DT,1,1,Bear Alexander,bearalexander,"Alexander, Bear",RS SR/TR,0,0,163557
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,2,DT,2,42,Aydin Breland,aydinbreland,"Breland, Aydin",RS SO,0,0,169438
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,2,DT,3,28,Anthony Jones Jr.,anthonyjones,"Jones Jr., Anthony",FR,0,1,179136
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,3,JACK,1,31,Nasir Wyatt,nasirwyatt,"Wyatt, Nasir",SO,0,0,174054
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,3,JACK,2,41,Dutch Horisk,dutchhorisk,"Horisk, Dutch",FR,0,1,179132
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,4,MAC,1,11,Dylan Williams,dylanwilliams,"Williams, Dylan",RS SO,0,0,171541
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,4,MAC,2,38,Will Straton,willstraton,"Straton, Will",RS JR,0,0,162377
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,4,MAC,3,39,Cole Thomas,colethomas,"Thomas, Cole",FR,0,1,183889
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,5,MONEY,1,9,Devon Jackson,devonjackson,"Jackson, Devon",RS SR,0,0,153662
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,5,MONEY,2,13,Gavin Nix,gavinnix,"Nix, Gavin",SO,0,0,174046
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,6,LCB,1,2,Na'eem Offord,naeemofford,"Offord, Na'eem",SO,0,0,174047
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,6,LCB,2,14,Aaron Scott Jr.,aaronscott,"Scott Jr., Aaron",RS SO/TR,1,0,167687
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,6,LCB,3,17,Tre Watson,trewatson,"Watson, Tre",JR/TR,1,0,179147
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,7,SS,1,12,Peyton Woodyard,peytonwoodyard,"Woodyard, Peyton",JR,0,0,167945
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,7,SS,2,22,Devin Jackson,devinjackson,"Jackson, Devin",FR,0,1,179134
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,7,SS,3,8,Trey McNutt,treymcnutt,"McNutt, Trey",RS FR,0,0,174044
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,8,FS,1,3,Koi Perich,koiperich,"Perich, Koi",JR/TR,1,0,170332
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,8,FS,2,24,Jett Washington,jettwashington,"Washington, Jett",FR,0,1,179146
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,8,FS,3,20,Xavier Lherisse,xavierlherisse,"Lherisse, Xavier",FR,0,1,179139
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,9,RCB,1,7,Ify Obidegwu,ifyobidegwu,"Obidegwu, Ify",RS SO,0,0,171539
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,9,RCB,2,18,Dorian Brew,dorianbrew,"Brew, Dorian",RS FR,0,0,174037
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,10,NB,1,4,Brandon Finney Jr.,brandonfinney,"Finney Jr., Brandon",SO,0,0,174039
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,10,NB,2,5,Davon Benjamin,davonbenjamin,"Benjamin, Davon",FR,0,1,179127
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,10,NB,3,15,Carl Williams IV,carlwilliams,"Williams IV, Carl",RS JR/TR,1,0,162408
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,defense,10,NB,4,33,Zach Grisham,zachgrisham,"Grisham, Zach",RS SR,0,0,158754
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,0,PT,1,39,Bailey Ettridge,baileyettridge,"Ettridge, Bailey",SO/TR,1,0,176285
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,1,PK,1,97,Gage Hurych,gagehurych,"Hurych, Gage",RS SO,0,0,170294
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,1,PK,2,25,Rocco Graziano,roccograziano,"Graziano, Rocco",RS FR,0,0,178428
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,2,KO,1,35,Keaton Emmett,keatonemmett,"Emmett, Keaton",JR/TR,1,0,175732
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,2,KO,2,97,Gage Hurych,gagehurych,"Hurych, Gage",RS SO,0,0,170294
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,3,LS,1,71,RJ Todd,rjtodd,"Todd, RJ",RS SR/TR,1,0,158600
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,3,LS,2,64,Thomas Donkerbrook,thomasdonkerbrook,"Donkerbrook, Thomas",FR,0,1,181138
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,4,H,1,39,Bailey Ettridge,baileyettridge,"Ettridge, Bailey",SO/TR,1,0,176285
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,5,PR,1,1,Dakorien Moore,dakorienmoore,"Moore, Dakorien",SO,0,0,174045
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,5,PR,2,7,Evan Stewart,evanstewart,"Stewart, Evan",RS SR/TR,0,0,79389
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,6,KR,1,6,Dierre Hill Jr.,dierrehill,"Hill Jr., Dierre",SO,0,0,174041
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,6,KR,2,26,Brandon Smith,brandonsmith,"Smith, Brandon",FR,0,1,179143
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,special,6,KR,3,22,Simeon Price,simeonprice,"Price, Simeon",RS SR/TR,1,0,78456
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,reserve,0,RES,1,0,Jordon Davison,jordondavison,"Davison, Jordon",SO,0,0,174038
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,reserve,0,RES,2,2,Iverson Hooks,iversonhooks,"Hooks, Iverson",RS SR/TR,1,0,160718
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,reserve,0,RES,3,5,Dante Moore,dantemoore,"Moore, Dante",RS JR/TR,0,0,78993
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,reserve,0,RES,4,6,Jerry Mixon,jerrymixon,"Mixon, Jerry",SR,0,0,159927
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,reserve,0,RES,5,21,Aaron Flowers,aaronflowers,"Flowers, Aaron",RS SO,0,0,169440
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,reserve,1,RES,1,23,Brayden Platt,braydenplatt,"Platt, Brayden",RS SO,0,0,169453
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,reserve,1,RES,2,44,Teitum Tuioti,teitumtuioti,"Tuioti, Teitum",SR,0,0,159935
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,reserve,1,RES,3,55,Matthew Johnson,matthewjohnson,"Johnson, Matthew",RS FR,0,0,174055
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,reserve,1,RES,4,56,Trent Ferguson,trentferguson,"Ferguson, Trent",RS SO,0,0,170293
+2026-11-21T03:10:39+00:00,91625,Oregon,oregon,BIG10,11/20/2026 7:03PM ET,ab2c446a2b78,reserve,1,RES,5,74,Dave Iuli,daveiuli,"Iuli, Dave",RS SR,0,0,153655
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,0,WR-X,1,3,Adjatay Dabbs,adjataydabbs,"Dabbs, Adjatay",RS JR/TR,1,0,182224
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,0,WR-X,2,5,Terrell Crosby Jr.,terrellcrosby,"Crosby Jr., Terrell",RS SR/TR,0,0,78635
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,0,WR-X,3,14,Tashi Braceful,tashibraceful,"Braceful, Tashi",RS SO,0,0,170400
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,0,WR-X,4,83,Omar Mims Jr.,omarmims,"Mims Jr., Omar",RS FR,0,0,178042
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,1,WR-Z,1,19,Daryl Barnett Jr.,darylbarnett,"Barnett Jr., Daryl",RS SO,0,0,173120
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,1,WR-Z,2,85,Anthony Simpson,anthonysimpson,"Simpson, Anthony",RS SR/TR,1,0,163082
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,1,WR-Z,3,10,Seth Elchert,sethelchert,"Elchert, Seth",FR,0,1,182225
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,1,WR-Z,4,9,Kalvin Gilbert Jr.,kalvingilbert,"Gilbert Jr., Kalvin",JR/TR,1,0,182227
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,2,WR-SL,1,12,Bryson Hammer,brysonhammer,"Hammer, Bryson",RS JR,0,0,166995
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,2,WR-SL,2,1,Rico Bond,ricobond,"Bond, Rico",RS SO/TR,1,0,182220
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,2,WR-SL,3,13,Cooper Rusk,cooperrusk,"Rusk, Cooper",RS SR,0,0,159280
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,3,LT,1,55,Ibrahim Traore,ibrahimtraore,"Traore, Ibrahim",RS SR/TR,0,0,79732
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,3,LT,2,70,Nick Thomas,nickthomas,"Thomas, Nick",RS SR/TR,1,0,150832
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,3,LT,3,72,Brian Mahoney III,brianmahoney,"Mahoney III, Brian",JR/TR,1,0,184249
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,4,LG,1,74,Ahmad Carwise,ahmadcarwise,"Carwise, Ahmad",RS SO/TR,1,0,182222
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,4,LG,2,60,Jake Grimm,jakegrimm,"Grimm, Jake",RS SO,0,0,173124
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,5,C,1,50,Luke Rector,lukerector,"Rector, Luke",RS JR/TR,1,0,182239
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,5,C,2,56,Jacob Kropchak,jacobkropchak,"Kropchak, Jacob",RS SO,0,0,173128
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,6,RG,1,73,Jonathan Harder,jonathanharder,"Harder, Jonathan",RS SR/TR,0,0,153629
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,6,RG,2,69,Dominic Johnson,dominicjohnson,"Johnson, Dominic",RS SO/TR,1,0,172444
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,7,RT,1,71,Matt Hofer,matthofer,"Hofer, Matt",RS SO,0,0,170404
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,7,RT,2,62,Christian Medlock,christianmedlock,"Medlock, Christian",RS JR/TR,0,0,167327
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,7,RT,3,67,Cade Wilhelmi,cadewilhelmi,"Wilhelmi, Cade",RS FR,0,0,178051
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,8,TE,1,43,Sam Lee,samlee,"Lee, Sam",RS SR/TR,0,0,170414
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,8,TE,2,88,Jacob Newell,jacobnewell,"Newell, Jacob",RS SR/TR,1,0,164706
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,8,TE,3,80,Peyton Strickland,peytonstrickland,"Strickland, Peyton",SR/TR,1,0,182244
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,8,TE,4,29,Tanner Rubinstein,tannerrubinstein,"Rubinstein, Tanner",RS SR/TR,0,0,178044
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,8,TE,5,81,Ethan Malafa,ethanmalafa,"Malafa, Ethan",RS SR/TR,1,0,182231
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,9,QB,1,6,John Alan Richter,johnalanrichter,"Richter, John Alan",RS SR,0,0,155373
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,9,QB,2,7,Khamoni Robinson,khamonirobinson,"Robinson, Khamoni",RS JR/TR,1,0,182240
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,9,QB,3,11,Walter Moses,waltermoses,"Moses, Walter",RS FR,0,0,174921
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,9,QB,4,13,Jake DeHaan,jakedehaan,"DeHaan, Jake",RS JR,0,0,166992
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,10,RB,1,22,CJ Miller,cjmiller,"Miller, CJ",RS SR/TR,1,0,182250
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,10,RB,2,8,Connor Walendzak,connorwalendzak,"Walendzak, Connor",SR,0,0,162690
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,10,RB,3,4,Autavius Ison,autaviusison,"Ison, Autavius",RS JR/TR,1,0,182229
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,offense,10,RB,4,23,Noah Sanders,noahsanders,"Sanders, Noah",RS FR,0,0,178047
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,0,LDE,1,0,Andrew Zock,andrewzock,"Zock, Andrew",JR/TR,1,0,182248
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,0,LDE,2,2,Ezra Odinjor,ezraodinjor,"Odinjor, Ezra",RS JR/TR,1,0,79308
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,0,LDE,3,85,Josh Lee,joshlee,"Lee, Josh",RS SR/TR,0,0,170413
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,0,LDE,4,51,Zackery Samuel,zackerysamuel,"Samuel, Zackery",FR,0,1,184253
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,1,LDT,1,96,Nathaniel Chandler,nathanielchandler,"Chandler, Nathaniel",RS JR/TR,0,0,178038
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,1,LDT,2,95,Wayne Peart II,waynepeart,"Peart II, Wayne",RS SO,0,0,170410
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,1,LDT,3,94,Adrian Love Jr.,adrianlove,"Love Jr., Adrian",FR,0,1,184248
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,2,RDT,1,52,Lucas Lambert-Pipkin,lucaslambertpipkin,"Lambert-Pipkin, Lucas",JR/TR,0,0,178041
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,2,RDT,2,99,Caden Camese,cadencamese,"Camese, Caden",RS SR/TR,1,0,182221
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,2,RDT,3,98,Micah Fils-Aime,micahfilsaime,"Fils-Aime, Micah",FR,0,1,184245
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,3,RDE,1,90,Zach Johnson,zachjohnson,"Johnson, Zach",SO/TR,1,0,175155
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,3,RDE,2,92,Tommy Huss,tommyhuss,"Huss, Tommy",RS JR,0,0,166997
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,3,RDE,3,21,Ben Sahakian,bensahakian,"Sahakian, Ben",RS SR/TR,1,0,182251
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,3,RDE,4,35,Bryant Weatherspoon Jr.,bryantweatherspoon,"Weatherspoon Jr., Bryant",RS FR,0,0,174925
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,4,WLB,1,44,Isaac Zay,isaaczay,"Zay, Isaac",RS SO,0,0,173132
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,4,WLB,2,5,Damon Ollison II,damonollison,"Ollison II, Damon",RS SR,0,0,151748
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,4,WLB,3,31,Maddox Arnold,maddoxarnold,"Arnold, Maddox",RS FR,0,0,178037
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,5,MLB,1,10,Julian Fox,julianfox,"Fox, Julian",RS JR/TR,1,0,182226
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,5,MLB,2,19,Isaac Prince,isaacprince,"Prince, Isaac",RS SR/TR,1,0,182237
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,6,LCB,1,23,Israel Petite,israelpetite,"Petite, Israel",RS SO/TR,1,0,182236
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,6,LCB,2,11,Hyajah Miller,hyajahmiller,"Miller, Hyajah",RS SO,0,0,170408
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,6,LCB,3,15,Michael-Arinzé Ezirim,michaelarinzeezirim,"Ezirim, Michael-Arinzé",RS SO,0,0,170418
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,7,SS,1,22,Nicholas Thompson,nicholasthompson,"Thompson, Nicholas",RS JR,0,0,164339
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,7,SS,2,12,Mo Conteh,moconteh,"Conteh, Mo",RS SR/TR,1,0,182223
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,7,SS,3,39,Dylan Hohler,dylanhohler,"Hohler, Dylan",RS JR,0,0,166996
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,7,SS,4,33,Andrew Fineske,andrewfineske,"Fineske, Andrew",RS SO,0,0,173552
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,8,FS,1,17,Kaleb Hutchinson,kalebhutchinson,"Hutchinson, Kaleb",RS SR/TR,1,0,79200
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,8,FS,2,7,Armorion Smith,armorionsmith,"Smith, Armorion",RS SR/TR,1,0,165546
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,8,FS,3,26,Tyler Hackenbracht,tylerhackenbracht,"Hackenbracht, Tyler",RS FR,0,0,174919
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,8,FS,4,3,Sharard Vaughn III,sharardvaughn,"Vaughn III, Sharard",FR,0,1,182246
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,9,RCB,1,25,Tyrell Russell,tyrellrussell,"Russell, Tyrell",RS FR,0,0,178046
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,9,RCB,2,8,KJ Thomas,kjthomas,"Thomas, KJ",SO/TR,1,0,182245
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,9,RCB,3,20,LaDavion Osborn,ladavionosborn,"Osborn, LaDavion",SR/TR,1,0,182234
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,10,NB,1,4,Donovan Watkins,donovanwatkins,"Watkins, Donovan",JR/TR,1,0,182247
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,10,NB,2,1,Cam Jones,camjones,"Jones, Cam",JR/TR,1,0,182249
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,defense,10,NB,3,24,Bo Jacobs,bojacobs,"Jacobs, Bo",SO/TR,1,0,184247
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,0,PT,1,47,Markus Meincke,markusmeincke,"Meincke, Markus",RS SO/TR,1,0,182232
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,1,PK,1,93,Reice Griffith,reicegriffith,"Griffith, Reice",SR/TR,1,0,182228
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,1,PK,2,39,Anthony Ruggles,anthonyruggles,"Ruggles, Anthony",RS FR,0,0,178045
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,2,KO,1,93,Reice Griffith,reicegriffith,"Griffith, Reice",SR/TR,1,0,182228
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,2,KO,2,39,Anthony Ruggles,anthonyruggles,"Ruggles, Anthony",RS FR,0,0,178045
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,3,LS,1,59,Max Allen,maxallen,"Allen, Max",RS FR/TR,1,0,182219
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,3,LS,2,57,Reece Strittmatter,reecestrittmatter,"Strittmatter, Reece",FR,0,1,184254
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,4,H,1,39,Anthony Ruggles,anthonyruggles,"Ruggles, Anthony",RS FR,0,0,178045
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,5,PR,1,12,Bryson Hammer,brysonhammer,"Hammer, Bryson",RS JR,0,0,166995
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,5,PR,2,4,Autavius Ison,autaviusison,"Ison, Autavius",RS JR/TR,1,0,182229
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,6,KR,1,12,Bryson Hammer,brysonhammer,"Hammer, Bryson",RS JR,0,0,166995
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,special,6,KR,2,4,Autavius Ison,autaviusison,"Ison, Autavius",RS JR/TR,1,0,182229
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,0,RES,1,2,Trenton Jones,trentonjones,"Jones, Trenton",RS FR/TR,1,0,182230
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,0,RES,2,6,Langston Long,langstonlong,"Long, Langston",RS SR/TR,0,0,79569
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,0,RES,3,13,Kari Jackson,karijackson,"Jackson, Kari",RS SO/TR,1,0,167673
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,0,RES,4,20,Corey Smith,coreysmith,"Smith, Corey",RS SO/TR,1,0,170648
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,0,RES,5,27,Dane Nauman,danenauman,"Nauman, Dane",RS SO,0,0,173129
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,1,RES,1,30,Hayden Roy,haydenroy,"Roy, Hayden",FR,0,1,182241
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,1,RES,2,36,Emilio Duran,emilioduran,"Duran, Emilio",SR,0,0,164333
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,1,RES,3,36,Nathan Gersh,nathangersh,"Gersh, Nathan",FR,0,1,184246
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,1,RES,4,41,Cam Gwinn,camgwinn,"Gwinn, Cam",RS FR,0,0,170420
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,1,RES,5,63,Grant Zimmerly,grantzimmerly,"Zimmerly, Grant",RS JR,0,0,164341
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,2,RES,1,65,Stephen Gales,stephengales,"Gales, Stephen",RS SR,0,0,159274
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,2,RES,2,78,Dylan Senda,dylansenda,"Senda, Dylan",RS JR/TR,1,0,165624
+2026-11-21T03:10:39+00:00,92085,Toledo,toledo,MAC,11/20/2026 8:05PM ET,4a469a4b2f15,reserve,2,RES,3,87,Tucker Kelleher,tuckerkelleher,"Kelleher, Tucker",SO/TR,1,0,175484
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,0,WR-X,1,81,Jeremiah Nash,jeremiahnash,"Nash, Jeremiah",JR/TR,1,0,182416
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,0,WR-X,2,7,Jaylan Brown,jaylanbrown,"Brown, Jaylan",RS SO/TR,0,0,172013
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,1,WR-Z,1,5,Carver Cheeks,carvercheeks,"Cheeks, Carver",SR/TR,1,0,182393
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,1,WR-Z,2,13,Nik Henry,nikhenry,"Henry, Nik",SO,0,0,175894
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,2,WR-Y,1,3,Jaden Smith,jadensmith,"Smith, Jaden",RS SR/TR,0,0,169938
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,2,WR-Y,2,14,Marcus Torres,marcustorres,"Torres, Marcus",RS SO,0,0,172106
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,3,WR-H,1,8,Kam Thomas,kamthomas,"Thomas, Kam",RS SR/TR,0,0,169939
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,3,WR-H,2,2,Royal Capell,royalcapell,"Capell, Royal",SO/TR,1,0,174361
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,4,LT,1,73,Tyler Roberts,tylerroberts,"Roberts, Tyler",RS FR,0,0,178009
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,4,LT,2,50,Isaiah Maumalanga,isaiahmaumalanga,"Maumalanga, Isaiah",RS SR/TR,1,0,182411
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,5,LG,1,54,Jaymon Lamb,jaymonlamb,"Lamb, Jaymon",RS JR/TR,1,0,175139
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,5,LG,2,76,Diego De La Cruz,diegodelacruz,"De La Cruz, Diego",RS FR,0,0,177982
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,6,C,1,56,Brian Williams Jr.,brianwilliams,"Williams Jr., Brian",RS SO/TR,1,0,182433
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,7,RG,1,55,Omoruyi Aliu-Otokiti,omoruyialiuotokiti,"Aliu-Otokiti, Omoruyi",JR/TR,1,0,182389
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,7,RG,2,67,Jayden Trapp,jaydentrapp,"Trapp, Jayden",RS SO/TR,1,0,182425
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,8,RT,1,74,Grayson Johnson,graysonjohnson,"Johnson, Grayson",JR/TR,1,0,182405
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,8,RT,2,71,Preston Perkins,prestonperkins,"Perkins, Preston",RS FR,0,0,177993
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,9,TE,1,4,Cash Cheeks,cashcheeks,"Cheeks, Cash",RS JR/TR,0,0,175885
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,9,TE,2,82,Judah Ezinwa,judahezinwa,"Ezinwa, Judah",RS SR/TR,0,0,162852
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,10,QB,1,12,Raymond Moore III,raymondmoore,"Moore III, Raymond",RS SO/TR,1,0,182415
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,10,QB,2,9,Bodey Weaver,bodeyweaver,"Weaver, Bodey",FR,0,1,182428
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,11,RB,1,6,Elijah McCoy,elijahmccoy,"McCoy, Elijah",SO,0,0,177991
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,offense,11,RB,2,22,Chris Hunter,chrishunter,"Hunter, Chris",JR/TR,1,0,182432
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,0,DE,1,21,Dycin Davis,dycindavis,"Davis, Dycin",FR,0,1,182396
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,0,DE,2,9,Oryend Fisher,oryendfisher,"Fisher, Oryend",RS JR/TR,0,0,166980
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,1,NT,1,90,Ashton Coker,ashtoncoker,"Coker, Ashton",JR,0,0,169941
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,1,NT,2,98,Preston Hickey,prestonhickey,"Hickey, Preston",RS SR/TR,1,0,162921
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,1,NT,3,95,DAdrian Tinney-Anderson,dadriantinneyanderson,"Tinney-Anderson, DAdrian",FR,0,1,182424
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,1,NT,4,96,Caynan James,caynanjames,"James, Caynan",FR,0,1,182404
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,1,NT,5,93,Jerrell Brasher,jerrellbrasher,"Brasher, Jerrell",JR/TR,1,0,182391
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,2,DT,1,1,Elijah Fields,elijahfields,"Fields, Elijah",SR/TR,1,0,182397
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,2,DT,2,55,Leander Parrish,leanderparrish,"Parrish, Leander",RS FR,0,0,177992
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,3,BAN,1,19,Sterling Miles,sterlingmiles,"Miles, Sterling",RS SR/TR,1,0,155793
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,3,BAN,2,25,Royce Wilson,roycewilson,"Wilson, Royce",RS FR,0,0,178001
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,4,SLB,1,4,Garrett Hawkins,garretthawkins,"Hawkins, Garrett",RS JR/TR,0,0,175891
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,4,SLB,2,8,Shay Smith,shaysmith,"Smith, Shay",RS SO,0,0,169940
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,5,MLB,1,10,Jayden Wilson,jaydenwilson,"Wilson, Jayden",SR/TR,0,0,166772
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,5,MLB,2,13,Isaiah Bogerty,isaiahbogerty,"Bogerty, Isaiah",RS SR/TR,1,0,182390
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,6,SPUR,1,7,Kode Lowe,kodelowe,"Lowe, Kode",RS SR/TR,0,0,175896
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,6,SPUR,2,32,Adarius Hutchinson,adariushutchinson,"Hutchinson, Adarius",FR,0,1,182403
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,7,LCB,1,23,Kaleb Miles,kalebmiles,"Miles, Kaleb",JR/TR,1,0,182414
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,7,LCB,2,18,Decorian Thompson,decorianthompson,"Thompson, Decorian",FR,0,1,182423
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,7,LCB,3,5,TJ Tillman,tjtillman,"Tillman, TJ",SO,0,0,175899
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,8,SS,1,2,Xavier Smith,xaviersmith,"Smith, Xavier",RS SR/TR,0,0,76012
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,8,SS,2,12,Donavan Howard,donavanhoward,"Howard, Donavan",RS SR/TR,1,0,182402
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,9,FS,1,16,Esteban Guillory,estebanguillory,"Guillory, Esteban",SR/TR,1,0,182398
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,9,FS,2,17,Darnell Williams,darnellwilliams,"Williams, Darnell",SO,0,0,177999
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,10,RCB,1,0,Justin Content,justincontent,"Content, Justin",JR,0,0,172088
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,defense,10,RCB,2,27,LaTristan Thompson,latristanthompson,"Thompson, LaTristan",RS SO/TR,1,0,170820
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,0,PT,1,47,Brady Braun,bradybraun,"Braun, Brady",RS SR/TR,1,0,77819
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,0,PT,2,33,Parker Cushing,parkercushing,"Cushing, Parker",SO/TR,1,0,182394
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,1,PK,1,91,Carlos Arreola,carlosarreola,"Arreola, Carlos",SR/TR,0,0,175882
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,1,PK,2,48,Cade Hechter,cadehechter,"Hechter, Cade",SR/TR,1,0,182399
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,2,KO,1,91,Carlos Arreola,carlosarreola,"Arreola, Carlos",SR/TR,0,0,175882
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,2,KO,2,48,Cade Hechter,cadehechter,"Hechter, Cade",SR/TR,1,0,182399
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,3,LS,1,49,Ian Hall,ianhall,"Hall, Ian",RS FR,0,0,178006
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,3,LS,2,46,Carson Loeb,carsonloeb,"Loeb, Carson",SO/TR,1,0,182409
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,4,H,1,47,Brady Braun,bradybraun,"Braun, Brady",RS SR/TR,1,0,77819
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,4,H,2,14,Marcus Torres,marcustorres,"Torres, Marcus",RS SO,0,0,172106
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,5,PR,1,8,Kam Thomas,kamthomas,"Thomas, Kam",RS SR/TR,0,0,169939
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,5,PR,2,13,Nik Henry,nikhenry,"Henry, Nik",SO,0,0,175894
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,6,KR,1,2,Royal Capell,royalcapell,"Capell, Royal",SO/TR,1,0,174361
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,6,KR,2,13,Nik Henry,nikhenry,"Henry, Nik",SO,0,0,175894
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,special,6,KR,3,17,Carmelo Taylor,carmelotaylor,"Taylor, Carmelo",RS JR/TR,1,0,161008
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,reserve,0,RES,1,6,Ekow Taylor,ekowtaylor,"Taylor, Ekow",JR,0,0,172104
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,reserve,0,RES,2,35,Kofi Taylor-Barrocks,kofitaylorbarrocks,"Taylor-Barrocks, Kofi",RS JR/TR,0,0,161187
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,reserve,0,RES,3,52,Jackson Bradley,jacksonbradley,"Bradley, Jackson",RS SR/TR,1,0,182431
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,reserve,0,RES,4,58,Rashad Smith,rashadsmith,"Smith, Rashad",JR/TR,1,0,182436
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,reserve,0,RES,5,0,Tavorus Jones,tavorusjones,"Jones, Tavorus",RS SR/TR,1,0,156067
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,reserve,1,RES,1,1,EJ Colson Jr.,ejcolson,"Colson Jr., EJ",RS SO/TR,1,0,169354
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,reserve,1,RES,2,3,Shakaun Bowser,shakaunbowser,"Bowser, Shakaun",RS SR/TR,0,0,75981
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,reserve,1,RES,3,11,Derek Burns,derekburns,"Burns, Derek",RS SR/TR,0,0,172062
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,reserve,1,RES,4,16,Mason Ferguson,masonferguson,"Ferguson, Mason",RS SO/TR,0,0,169579
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,reserve,1,RES,5,32,Lamar Sperling,lamarsperling,"Sperling, Lamar",RS JR/TR,1,0,165424
+2026-11-21T03:10:39+00:00,92338,UTEP,utep,MW,11/20/2026 8:35PM ET,71c5aae35ed1,reserve,2,RES,1,62,Eddie Lartigue Jr.,eddielartigue,"Lartigue Jr., Eddie",FR,0,1,182407
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,0,WR-X,1,19,Charlie Coenen,charliecoenen,"Coenen, Charlie",RS SR,0,0,154477
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,0,WR-X,2,12,Bricen Brantley,bricenbrantley,"Brantley, Bricen",RS JR,0,0,163138
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,1,WR-Z,1,9,Jackson Holman,jacksonholman,"Holman, Jackson",RS JR/TR,0,0,161447
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,1,WR-Z,2,4,Ke'Lyn Washom,kelynwashom,"Washom, Ke'Lyn",RS FR,0,0,176668
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,1,WR-Z,3,5,Justin Popovich,justinpopovich,"Popovich, Justin",RS JR/TR,1,0,181381
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,2,WR-SL,1,2,Eric Richardson,ericrichardson,"Richardson, Eric",RS SR/TR,0,0,175179
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,2,WR-SL,2,3,Deion DeBlanc,deiondeblanc,"DeBlanc, Deion",SO,0,0,175168
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,3,LT,1,70,Rex Johnsen,rexjohnsen,"Johnsen, Rex",RS SR,0,0,154482
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,3,LT,2,60,Grant Lott,grantlott,"Lott, Grant",FR,0,1,181374
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,4,LG,1,55,Kalvin Janssen,kalvinjanssen,"Janssen, Kalvin",RS FR,0,0,176659
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,4,LG,2,77,Josiah Petaia,josiahpetaia,"Petaia, Josiah",RS SO/TR,0,0,175172
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,5,C,1,52,Chandler Donaway,chandlerdonaway,"Donaway, Chandler",RS SR/TR,1,0,181365
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,5,C,2,66,Johnathan Bush,johnathanbush,"Bush, Johnathan",RS FR,0,0,176651
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,6,RG,1,50,Giovanni Panozzo,giovannipanozzo,"Panozzo, Giovanni",RS SO,0,0,170123
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,6,RG,2,75,Cooper Lawson,cooperlawson,"Lawson, Cooper",RS FR,0,0,176662
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,7,RT,1,63,Braylon Jenkins,braylonjenkins,"Jenkins, Braylon",RS SO,0,0,170115
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,7,RT,2,73,Caleb Hall,calebhall,"Hall, Caleb",RS SO,0,0,170131
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,8,TE,1,89,Jake Wilson,jakewilson,"Wilson, Jake",RS SO,0,0,170128
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,8,TE,2,83,Kyle Frendt,kylefrendt,"Frendt, Kyle",RS FR,0,0,176653
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,8,TE,3,87,Isaac Schoenfeld,isaacschoenfeld,"Schoenfeld, Isaac",RS SR,0,0,158995
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,8,TE,4,80,Tyler Siddons,tylersiddons,"Siddons, Tyler",RS SR/TR,1,0,181383
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,8,TE,5,88,Landon Pace,landonpace,"Pace, Landon",RS FR,0,0,176664
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,9,QB,1,14,Landon Sims,landonsims,"Sims, Landon",RS JR/TR,0,0,175177
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,9,QB,2,7,Mason Drube,masondrube,"Drube, Mason",RS FR,0,0,175169
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,10,RB,1,1,Samuel Harris,samuelharris,"Harris, Samuel",SO,0,0,176655
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,10,RB,2,8,Markell Holman,markellholman,"Holman, Markell",SR/TR,1,0,181373
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,10,RB,3,21,Nico Hamilton,nicohamilton,"Hamilton, Nico",RS SO,0,0,170776
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,offense,10,RB,4,20,Jaden Lawrence,jadenlawrence,"Lawrence, Jaden",RS FR,0,0,176661
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,0,LDE,1,99,Donnie Wingate,donniewingate,"Wingate, Donnie",RS SR/TR,1,0,71544
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,0,LDE,2,21,Jack Dunkley,jackdunkley,"Dunkley, Jack",SR/TR,1,0,181366
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,0,LDE,3,90,Cade Brook,cadebrook,"Brook, Cade",RS FR,0,0,176650
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,1,NT,1,92,Dante Drake,dantedrake,"Drake, Dante",RS JR,0,0,163146
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,1,NT,2,50,Tanielu Maafala-Barbasa,tanielumaafalabarbasa,"Maafala-Barbasa, Tanielu",FR,0,1,181375
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,1,NT,3,53,Tegen Seeds,tegenseeds,"Seeds, Tegen",RS SO,0,0,170127
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,2,DT,1,98,Jayden Williams,jaydenwilliams,"Williams, Jayden",RS JR,0,0,163168
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,2,DT,2,44,Ja'Quan Redfern,jaquanredfern,"Redfern, Ja'Quan",RS JR/TR,1,0,181382
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,2,DT,3,97,Alex Haswell,alexhaswell,"Haswell, Alex",RS SO,0,0,170114
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,3,RDE,1,11,Esaia Bogar,esaiabogar,"Bogar, Esaia",SR/TR,0,0,175166
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,3,RDE,2,55,Kevin Sjogren,kevinsjogren,"Sjogren, Kevin",RS SR,0,0,154492
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,3,RDE,3,51,Thaddeus Gianaris,thaddeusgianaris,"Gianaris, Thaddeus",RS SR/TR,1,0,181370
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,4,WLB,1,26,Gary Rutherford,garyrutherford,"Rutherford, Gary",RS SO,0,0,170125
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,4,WLB,2,34,Steven Perez,stevenperez,"Perez, Steven",RS FR,0,0,176665
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,4,WLB,3,33,Parker Moore,parkermoore,"Moore, Parker",RS FR,0,0,176669
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,5,MLB,1,42,Ethan Stuhlsatz,ethanstuhlsatz,"Stuhlsatz, Ethan",GR/TR,0,0,175174
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,5,MLB,2,46,Dash Bauman,dashbauman,"Bauman, Dash",RS SO,0,0,170105
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,6,LCB,1,9,Dainsus Miller,dainsusmiller,"Miller, Dainsus",SR/TR,0,0,76228
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,6,LCB,2,0,Tyson Shamsid-Deen,tysonshamsiddeen,"Shamsid-Deen, Tyson",SO,0,0,176652
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,6,LCB,3,3,Ian Bell,ianbell,"Bell, Ian",SR,0,0,163167
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,7,SS,1,4,Jett Vincent,jettvincent,"Vincent, Jett",RS JR/TR,1,0,163712
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,7,SS,2,6,Kaiden Kimble-Turner,kaidenkimbleturner,"Kimble-Turner, Kaiden",RS FR,0,0,176660
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,8,FS,1,23,Jones Thomas,jonesthomas,"Thomas, Jones",RS JR,0,0,163160
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,8,FS,2,22,Jaden DaCosta,jadendacosta,"DaCosta, Jaden",RS JR/TR,0,0,175167
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,9,RCB,1,25,Therman Williams,thermanwilliams,"Williams, Therman",FR,0,1,181385
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,9,RCB,2,15,David Leonard,davidleonard,"Leonard, David",RS SO,0,0,170117
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,10,NB,1,1,Desman Hearns,desmanhearns,"Hearns, Desman",RS SR/TR,0,0,175170
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,defense,10,NB,2,2,Travis Franklin Jr.,travisfranklin,"Franklin Jr., Travis",SR/TR,1,0,164961
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,0,PT,1,18,Bart Edmiston,bartedmiston,"Edmiston, Bart",SR/TR,0,0,169663
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,0,PT,2,43,Gavyn Helm,gavynhelm,"Helm, Gavyn",RS SO,0,0,170777
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,1,PK,1,47,Erik Sandvik,eriksandvik,"Sandvik, Erik",RS JR,0,0,166202
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,1,PK,2,99,Keelan Anderson,keelananderson,"Anderson, Keelan",RS SO,0,0,170129
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,2,KO,1,47,Erik Sandvik,eriksandvik,"Sandvik, Erik",RS JR,0,0,166202
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,2,KO,2,18,Bart Edmiston,bartedmiston,"Edmiston, Bart",SR/TR,0,0,169663
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,3,LS,1,49,Nathan Curry,nathancurry,"Curry, Nathan",SR/TR,1,0,181388
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,3,LS,2,45,Charlie Houston,charliehouston,"Houston, Charlie",RS FR,0,0,176656
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,3,LS,3,47,Jason Handy,jasonhandy,"Handy, Jason",RS FR,0,0,176654
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,4,H,1,43,Gavyn Helm,gavynhelm,"Helm, Gavyn",RS SO,0,0,170777
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,4,H,2,18,Bart Edmiston,bartedmiston,"Edmiston, Bart",SR/TR,0,0,169663
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,5,PR,1,19,Charlie Coenen,charliecoenen,"Coenen, Charlie",RS SR,0,0,154477
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,5,PR,2,3,Deion DeBlanc,deiondeblanc,"DeBlanc, Deion",SO,0,0,175168
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,6,KR,1,2,Eric Richardson,ericrichardson,"Richardson, Eric",RS SR/TR,0,0,175179
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,6,KR,2,18,BJ Inmon,bjinmon,"Inmon, BJ",RS JR/TR,0,0,175171
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,special,6,KR,3,3,Deion DeBlanc,deiondeblanc,"DeBlanc, Deion",SO,0,0,175168
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,reserve,0,RES,1,11,Jayden Williams,jaydenwilliams,"Williams, Jayden",FR,0,1,181358
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,reserve,0,RES,2,51,Jason Maciejczak,jasonmaciejczak,"Maciejczak, Jason",RS JR/TR,1,0,160046
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,reserve,0,RES,3,65,Nathan Geiger,nathangeiger,"Geiger, Nathan",RS JR,0,0,163149
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,reserve,0,RES,4,95,Caleb Robinson,calebrobinson,"Robinson, Caleb",GR,0,0,141772
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,reserve,0,RES,5,5,Brooklyn Cheek,brooklyncheek,"Cheek, Brooklyn",RS SO/TR,0,0,170792
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,reserve,1,RES,1,6,Tyler Hughes,tylerhughes,"Hughes, Tyler",RS SR/TR,1,0,181391
+2026-11-21T03:10:39+00:00,92568,Wyoming,wyoming,MW,11/20/2026 8:39PM ET,df302e318d99,reserve,1,RES,2,71,Jake Davies,jakedavies,"Davies, Jake",RS JR,0,0,163142
