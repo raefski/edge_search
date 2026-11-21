@@ -1,9 +1,9 @@
 {
-"generated_at": "2026-11-21T18:29:08+00:00",
+"generated_at": "2026-11-21T18:59:16+00:00",
 "goalies": {
 "2026-11-21": {
 "ANA": {
-"goalie": "Lukas Dostal",
+"goalie": "Ville Husso",
 "status": null
 },
 "BOS": {
@@ -84,7 +84,7 @@
 },
 "SJS": {
 "goalie": "Alex Nedeljkovic",
-"status": null
+"status": "Confirmed"
 },
 "STL": {
 "goalie": "Joel Hofer",
@@ -189,44 +189,10 @@
 "toiMinutes": 77,
 "toiSeconds": 50
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
-},
-"Beckett Sennecke": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 11,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 5,
-"points": 16,
-"powerplayAssists": 5,
-"powerplayGoals": 1,
-"powerplayPoints": 6,
-"shots": 24,
-"toiMinutes": 200,
-"toiSeconds": 25
-},
-"last5": {
-"assists": 3,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 5,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 97,
-"toiSeconds": 10
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": "PP1"
 },
 "Cutter Gauthier": {
 "gtd": false,
@@ -262,6 +228,40 @@
 "pos": "lw",
 "pp": "PP1"
 },
+"Drew Helleson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 20,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 193,
+"toiSeconds": 21
+},
+"last5": {
+"assists": 2,
+"blocks": 13,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 88,
+"toiSeconds": 44
+},
+"line": "D2",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Frank Vatrano": {
 "gtd": false,
 "injury": null,
@@ -294,7 +294,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Ian Moore": {
 "gtd": false,
@@ -393,7 +393,7 @@
 "toiMinutes": 60,
 "toiSeconds": 51
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -427,10 +427,10 @@
 "toiMinutes": 82,
 "toiSeconds": 30
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK2",
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Leo Carlsson": {
 "gtd": false,
@@ -497,7 +497,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -599,7 +599,7 @@
 "toiMinutes": 65,
 "toiSeconds": 21
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -636,7 +636,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Roger McQueen": {
 "gtd": false,
@@ -672,25 +672,25 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Stian Solberg": {
+"Sam Colangelo": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 0,
-"blocks": 8,
-"gamesPlayed": 6,
+"assists": 3,
+"blocks": 4,
+"gamesPlayed": 10,
 "goals": 0,
-"points": 0,
+"points": 3,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 104,
-"toiSeconds": 36
+"shots": 13,
+"toiMinutes": 98,
+"toiSeconds": 35
 },
 "last5": {
 "assists": 0,
-"blocks": 7,
+"blocks": 3,
 "gamesPlayed": 5,
 "goals": 0,
 "points": 0,
@@ -698,12 +698,12 @@
 "powerplayGoals": 0,
 "powerplayPoints": 0,
 "shots": 6,
-"toiMinutes": 89,
-"toiSeconds": 18
+"toiMinutes": 43,
+"toiSeconds": 56
 },
-"line": "D3",
+"line": "F1",
 "pk": null,
-"pos": "ld",
+"pos": "rw",
 "pp": null
 },
 "Tim Washe": {
@@ -740,40 +740,6 @@
 "pos": "c",
 "pp": null
 },
-"Tristan Luneau": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 5,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 7,
-"powerplayAssists": 2,
-"powerplayGoals": 1,
-"powerplayPoints": 3,
-"shots": 18,
-"toiMinutes": 192,
-"toiSeconds": 44
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 105,
-"toiSeconds": 15
-},
-"line": "D3",
-"pk": null,
-"pos": "rd",
-"pp": "PP2"
-},
 "Troy Terry": {
 "gtd": false,
 "injury": null,
@@ -808,6 +774,40 @@
 "pos": "rw",
 "pp": "PP2"
 },
+"Tyson Hinds": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 11,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 168,
+"toiSeconds": 54
+},
+"last5": {
+"assists": 2,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 75,
+"toiSeconds": 16
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Ville Husso": {
 "gtd": false,
 "injury": null,
@@ -839,7 +839,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
