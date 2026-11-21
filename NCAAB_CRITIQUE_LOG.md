@@ -305,3 +305,149 @@ from noise, and the skill puts the harness first.
 propose the gate wiring.
 
 Unattended gate (20261110-0658): **not shipped (log / harness only, verified)**
+
+
+## Cycle 5 (target: cash lineups -- the optimizer selects our errors; T08, from NHL L05) — 2026-11-13, unattended
+
+Scout (dfs-target-scout, `scripts/dfs_target_scout.py ncaab --rebuild` first):
+```json
+{"sport": "ncaab", "target": "cash lineups: the optimizer picks our projection errors (selection gap)",
+ "metric": "The shipped 20-lineup cash sets, replayed per slate and scored against the real Double Up fields: field percentile and $ back per $1 (8 Double Ups / 6 slates). Paired second measure: actual DK points per cash lineup, variant minus shipped, per slate, on all 11 logged boards. Guards: GPP set20 percentile and ncaab_lab all-player MAE no worse beyond noise. Diagnostic: lineup actual minus projection, ours vs the field's.",
+ "harness": "python3 -m harness run ncaab-box-grade -- <gid> for 156346 156355 156569 156549 156551 (the lab's report crashes now: KeyError, no box for 156355/156569); then python3 scripts/ncaab_lineup_lab.py report --variant <new> and rows OUT.json; python3 scripts/ncaab_lab.py report as the guard",
+ "split": "Leave one slate out over 11/2-11/12 (11 boards; Double Up fields on 155565, 156123, 156240 x3, 156344, 156355, 156569), any constant refit inside each fold; forward check fit 11/2-11/7, test 11/8-11/12",
+ "why": "Our entered lineups ran 36.8 pts per lineup [-45.2, -28.4] worse against our own projection than the field's lineups did, over 6 slates. On 11/9-11/10 they were projected 243-253 and scored 167-207, while the field's sat -12 to -21. The board's top 15 props players ran 2-8 pts high while props across the whole board ran only about +1.",
+ "money_at_stake": "NCAAB cash -57% [-100%, +4%], 8 entries / 6 slates, net -$8; GPP -63% [-100%, -6%], 8 entries / 6 slates, net -$3.65",
+ "transfer": "T08",
+ "runner_ups": ["props rows are raw ladder means with no calibration fitted on results (NBA's PROPS_BLEND shrinks its market to 0.76 + 4.4)",
+                "GPP lineups in GPP mode on the same harness (-63%, 6 slates); not ownership (graveyard, and NBA's T20 was null)",
+                "T07 availability starters: RotoWire's starter flag now only feeds the under-$4K rule, and LAST_GAME carries roles"]}
+```
+(The 02:00 run of this cycle hit the usage limit with nothing committed; this is the 08:43 re-run.)
+
+### Before the critic: 13 team codes matched no school -- SHIPPED (mechanical, the name-suspect rule)
+
+Grading the five new slates failed on three: CINCY/MINN (11/9), ARK/RMU, NEV/UCSB, STC/UNT (11/11), OKST/TA&M,
+RICH/SIU (11/12) "not found on ESPN", all final. DK's codes matched no school: `match_team` gave 0 for CINCY,
+MRSHL, NFLA, RMU, STC, STJN, UCSB, JACST, MONTS, SIU, TA&M, TNTC (and UNT only 0.8). The same function gates every
+team-keyed join in production, so those **13 team-slates on 11/9-11/12 ran with: no last game** (logged proj ==
+base_proj up to sim noise: LAST_GAME never moved them), **no RotoWire five** (0 starters listed: their $3,000
+rows stayed "blend" at 7-12 points instead of "bench", e.g. UCSB John Simcoe $3,000 7.4 after 3 minutes), **no
+conference tier**, and **no line** for ARK/RMU, NEV/UCSB, RICH/SIU (one side matched 1.0 + 0 < the 1.2 event
+threshold: league-average implied). Our 11/12 lineups held three players from those teams (Sanders TNTC,
+Haggerty and Mgbako TA&M); 11/12 has no contest export.
+
+Audit of every code on the 11 boards (107), true school = most roster-name overlap with Torvik's player table:
+- **GWB is Gardner-Webb**, not George Washington (11/5 @ Texas; 3 DK names are Gardner-Webb's last season). The
+  11/7 alias sent its last-game search to the wrong school, which the roster check then refused.
+- Codes that also claimed another school (team_tiers votes over every Torvik row a code matches): UNC -> UNC
+  Asheville / Greensboro / Wilmington (3 low-major rosters vs 1 ACC: UNC's tier vote went to the low majors), TEX
+  -> all six Texas schools, PUR -> Purdue Fort Wayne, NEB -> Nebraska Omaha, TENN -> Tennessee Martin, IU -> IU
+  Indy, IOWA -> Iowa St., COL -> Colgate / Columbia / Colorado St., CAL -> five Cal schools, JAC -> Jackson St. +
+  Jacksonville St., UCSB -> Cal St. Bakersfield (initials), KU -> Kansas City, and ESPN's non-D1 namesakes.
+- Torvik spellings that nothing matched: "Cal St. Northridge" (CS-NR), "Nebraska Omaha" (OMAHA).
+
+**Fix** (`edge/ncaab.py`): 24 new aliases (incl. TEX "texas", GWB "gardner webb"), two added spellings (CS-NR
+"cal st northridge"; MISS "ole miss", ESPN's name, before MISS reaches a board) + 30
+`_OTHER_SCHOOL` words (asheville, fort, omaha, martin, city, edwardsville, poly, st, college, valley, ...). Now
+every code on the 11 boards resolves to exactly one Torvik school and one ESPN team (BSU / SDSU / USF are two
+schools by DK's design; the roster / opponent check decides). Last-game coverage, 11 slates: missing team-slates
+54 -> 40, every one of them a season opener (11/2-11/5); 0 missing from 11/6 on. Tests:
+`test_cycle5_codes_find_their_school`, `test_cycle5_namesakes_do_not_match`,
+`test_every_aliased_code_names_one_torvik_school`.
+
+**Held out, player lab LOSO (LAST_GAME refit per fold), same 11 graded slates, main's matcher -> fixed:**
+
+| slate | all MAE | priced MAE | bench MAE |
+|---|---|---|---|
+| 11/3 156039 | 7.61 -> 7.61 | 8.95 -> 8.94 | 6.44 -> 6.44 |
+| 11/4 156123 | 5.65 -> 5.63 | 7.62 -> 7.61 | 3.14 -> 3.11 |
+| 11/5 156240 (GWB) | 5.56 -> 5.49 | 6.99 -> 6.93 | 3.74 -> 3.67 |
+| 11/6 156342 | 5.26 -> 5.24 | 6.86 -> 6.85 | 3.44 -> 3.40 |
+| 11/7 156344 | 4.88 -> 4.84 | 6.93 -> 6.89 | 2.70 -> 2.64 |
+| 11/8 156346 | 5.68 -> 5.63 | 8.66 -> 8.65 | 2.69 -> 2.61 |
+| 11/9 156355 (3 teams) | 5.62 -> 5.42 | 7.24 -> 6.97 | 2.73 -> 2.64 |
+| 11/10 156569 | 5.81 -> 5.75 | 7.50 -> 7.46 | 3.49 -> 3.39 |
+| 11/11 156549 (6 teams) | 6.21 -> 5.55 | 7.58 -> 6.76 | 2.99 -> 2.71 |
+| 11/12 156551 (4 teams) | 5.70 -> 5.08 | 7.31 -> 6.57 | 1.53 -> 1.22 |
+| pooled (11/2 unchanged) | 5.954 -> 5.815 | 7.788 -> 7.596 | 3.580 -> 3.510 |
+
+Only the last-game part is replayable (the log holds base_proj); starters, tier and lines are not, so this
+understates the fix. Gate preview (critique_gate.compare on `ncaab_lab.py gate` rows, main's 6 slates): branch
+vs main all MAE 6.0935 -> 6.0391, -0.054 [-0.101, -0.022]; of which the matcher alone (6 boxes) -0.012 [-0.025,
+-0.003] and the 5 extra training slates -0.043 [-0.084, -0.016] -- each better beyond noise on its own.
+
+**Lineups (paired, 20 seeds x 11 boards, the critic's dump harness):** main's matcher -> fixed, cash points per
+lineup -2.5 [-4.3, -0.7] (3 of 11 better), GPP -0.8 [-4.0, +2.7]; Double Up pctile -0.020 [-0.056, +0.005] (6
+slates). The swaps on the four slates the fix touched are idiosyncratic (11/11: UNT's Chavis 31.0 and Ndour 22.5
+in, Lockett JACST 6.5 in, and a knock-on Nigel James Jr. 33.8 proj -> -0.5; 11/12: SIU's Haynes 35.5 in, Robert
+Wright III 44.0 out), and 11/10, where no code changed (only the LAST_GAME refit moved a little), swung -11 by
+itself. **Placebo** (the fixed-matcher board x (1 + 0.01 N(0,1)) per player, nothing else; three seeds): cash
++4.1 [-0.3, +8.5], -0.6 [-4.3, +3.3], +2.2 [-0.7, +5.1]; GPP +4.3 [+1.3, +7.4], -0.4 [-3.5, +2.1], +2.4 [-1.2,
++6.1]; forward boards (11/8-11/12) cash +7.9 [+1.5, +14.6] on placebo 1; single slates swing +23 / -15. A 1% nudge moves replayed lineups as much as this fix: the slate bootstrap on paired
+lineup points does not carry the optimizer's own discontinuity and must not be read as "beyond noise" for
+changes this small. The fix ships on the player metric and on correctness.
+
+### Cycle 5 -- hole, fix, decision: per-tier recalibration of the cash board, NOT SHIPPED
+
+**Hole (dfs-model-critic):** the cash optimizer ranks players on projections the selection itself inflates:
+it picks the rows whose projection most beats their salary, which are the most over-projected, and nothing on
+the board maps (projection, salary) to the expected actual. Shipped cash sets on all 11 boards: projected 220.4,
+scored 196.3 (-24/lineup); worst on props-heavy boards (11/10 244 -> 183, 11/9 248 -> 196, 11/11 210 -> 168).
+Props players inside the cash lineups ran +4.41 each (904 lineup slots, 10 slates) vs +1.14 for all props rows
+(218); blend players in lineups +1.81.
+
+**Fix tested** (critic's variant, my re-scoring of its dumps): after LAST_GAME, per tier (props; blend + salary)
+actual = a + b proj + c salary/$1K by OLS on the training slates, refit inside each fold (bench as is, floor 0).
+Fits stable: props b .40-.59, c 0.96-1.52; blend/salary b .85-.93, c .41-.69.
+
+| measure (held out) | shipped | recalibrated |
+|---|---|---|
+| cash Double Up pctile, set20 (8 contests / 6 slates) | .396 [.294, .556] | .483 [.398, .596] |
+| cashed / $ back per $1 | 30% / $0.60 | 53% / $1.06 |
+| paired Double Up pctile, by slate | | +0.064 [-0.022, +0.140] |
+| paired $ per $1, by slate | | +0.18 [-0.32, +0.65] |
+| paired cash points / lineup, 11 boards | | -0.4 [-5.7, +5.2], 5 of 11 better |
+| forward fit (11/2-11/7 only), cash points, 11 / 5 fwd boards | | -1.5 [-7.2, +4.3] / -2.7 [-11.1, +4.5] |
+| GPP set20 pctile (guard) | .559 | .517; paired -0.043 [-0.093, +0.010] |
+| forward fit, GPP points on 11/8-11/12 (guard) | | -6.8 [-11.6, -2.3], 0 of 5 better |
+| lineup projection vs actual, cash | 220 vs 196 | 198 vs 196 |
+| player MAE LOSO (guard) | 5.815 | 5.732 (8 of 11 slates better) |
+| props-only shrink: cash points / pctile | | +0.1 / -0.016 |
+
+**Decision: NOT SHIPPED.** The Double Up gain rides on three slates (11/2 +19 pts, replayed on the pre-11/5
+blend model; 11/5 +11; 11/10 +14) and its paired interval spans 0; lineup points are flat (-0.4) and inside the
+placebo range above; the forward fit is worse on GPP. The recalibration makes the cash board honest (-24 -> -2
+pts/lineup) without picking better players: at this level the projections cannot separate the candidates. The
+critic's own reading: ship it, if at all, as the page's projected-total / cash-line comparison (the page
+overstates a cash lineup by ~24 points), not as the optimizer's input -- left for Adam (display, no money test).
+T08 set to null (scripts/dfs_transfer.py).
+
+**Runner-ups (critic):** (1) the field knows something at lock we don't: cash-field-owned players beat our proj +
+salary by 11.2 pts per 100% owned (780 player rows, 6 slates, in sample) -- news / minutes, not calibration;
+(2) blend recalibrated on its own last game (proj, salary, last points, last minutes): blend/salary MAE 7.38 ->
+7.14 held out (1,051 rows) vs 7.26 salary-only, not tested on lineups; (3) the lab replays 11/2-11/4 on the old
+blend model, so gains there are inflated -- flag or replay those slates before any lineup gate.
+
+**Also this cycle:** `scripts/ncaab_lineup_lab.py` leaves out (and names on stderr) a contest slate with no box
+instead of crashing. Five slates graded and committed (156346, 156355, 156549, 156551, 156569: 11 with boxes).
+**Conservative calls (unattended):** the boxes are committed on the branch this time -- cycles 3-4 left grading to
+main and it never happened, and the lineup lab crashed without them; the gate preview above separates the boxes'
+effect from the matcher's. No mirror (NCAAB has none). Cash-only recalibration and the display-only total were
+not built (no money evidence; Adam's call). Verified: `harness verify` (112 tests), DFS suite 577 passed, NCAAB
+page AppTest no exception (05:45: no fresh prices, nothing to build -- the build path is covered by the tests).
+
+**Next critic:** the lineup lab's noise floor is the binding constraint: before another lineup cycle, average
+each variant over several perturbation seeds (or more sim seeds per lineup) so a paired difference can be told
+from optimizer chaos. Information at lock (runner-up 1) is the lead for cash.
+
+Unattended gate (20261113-0843): **pass** -- re-gated after 7 forward days, then merged unless vetoed
+
+| split | state | n | clusters | main MAE | candidate MAE | loss diff [90%] | verdict |
+|---|---|---|---|---|---|---|---|
+| primary | all | 1,282 | 6 | 6.0935 | 6.0391 | -0.0544 [-0.1013, -0.0221] | better |
+
+Unattended gate (20261121-0658): **dropped at re-gate (fail)**
+
+
+- rebase onto main failed: git rebase -q origin/main: error: cannot rebase: You have unstaged changes.
+error: Please commit or stash them.
