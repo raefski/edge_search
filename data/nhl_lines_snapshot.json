@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-21T21:59:14+00:00",
+"generated_at": "2026-11-21T22:43:54+00:00",
 "goalies": {
 "2026-11-21": {
 "ANA": {
@@ -12,7 +12,7 @@
 },
 "BUF": {
 "goalie": "Alex Lyon",
-"status": "Likely"
+"status": "Confirmed"
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
@@ -60,7 +60,7 @@
 },
 "NSH": {
 "goalie": "Juuse Saros",
-"status": null
+"status": "Confirmed"
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
@@ -2703,7 +2703,7 @@
 "injury": null,
 "last10": {
 "assists": 2,
-"blocks": 18,
+"blocks": 19,
 "gamesPlayed": 10,
 "goals": 3,
 "points": 5,
@@ -2716,7 +2716,7 @@
 },
 "last5": {
 "assists": 2,
-"blocks": 4,
+"blocks": 5,
 "gamesPlayed": 5,
 "goals": 1,
 "points": 3,
@@ -2737,7 +2737,7 @@
 "injury": null,
 "last10": {
 "assists": 8,
-"blocks": 2,
+"blocks": 1,
 "gamesPlayed": 10,
 "goals": 6,
 "points": 14,
@@ -2750,7 +2750,7 @@
 },
 "last5": {
 "assists": 5,
-"blocks": 2,
+"blocks": 1,
 "gamesPlayed": 5,
 "goals": 4,
 "points": 9,
@@ -7119,7 +7119,7 @@
 "toiMinutes": 83,
 "toiSeconds": 19
 },
-"line": "F2",
+"line": "F1",
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
@@ -7221,7 +7221,7 @@
 "toiMinutes": 92,
 "toiSeconds": 29
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -7323,7 +7323,7 @@
 "toiMinutes": 80,
 "toiSeconds": 39
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
@@ -7461,9 +7461,9 @@
 "toiMinutes": 82,
 "toiSeconds": 28
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "Matthew Tkachuk": {
@@ -7597,7 +7597,7 @@
 "toiMinutes": 79,
 "toiSeconds": 52
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -7633,7 +7633,7 @@
 },
 "line": "F2",
 "pk": "PK2",
-"pos": "rw",
+"pos": "c",
 "pp": "PP1"
 },
 "Sandis Vilmanis": {
@@ -11033,7 +11033,7 @@
 "pp": null
 },
 "Ryan O'Reilly": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 5,
