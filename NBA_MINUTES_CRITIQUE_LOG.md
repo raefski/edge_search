@@ -2063,3 +2063,5 @@ p90_stack5 (5-man game stack) is the only GPP arm separated in-sample (+44.3% [+
 Runner-ups: (1) why the backdated blend gains +15.6 pts pre-11/9 but ~0 live -- props snapshot timing / PROP_CUT_MIN
 coverage on old vs live scans; (2) single-lineup luck: on blend-live dates the 5-seed mean beat seed 0 by +74% [+16, +143]
 (best-of-seeds / consensus entry is a construction test); (3) late-swap zeros: 6/53 GPP, 4/34 cash entries.
+
+Unattended gate (20261121-1202): **not shipped (log / harness only, verified)**
