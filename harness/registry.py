@@ -151,6 +151,9 @@ JOBS: dict[str, Job] = {j.name: j for j in [
     _j("ncaab-prior-fit", "evaluate", "scripts/ncaab_prior_fit.py", sport="ncaab",
        tests=("tests/test_ncaab_names.py",),
        doc="college no-prop rules vs the prop market: harness run ncaab-prior-fit -- <draft group>"),
+    _j("college-teams", "ingest", "scripts/college_teams_build.py", sport="ncaab",
+       tests=("tests/test_college_teams.py",),
+       doc="college rosetta stone (DK teamId/codes + ESPN + books + Torvik -> one school): harness run college-teams; prints unresolved names"),
     _j("ncaab-box-grade", "evaluate", "scripts/ncaab_box_grade.py", sport="ncaab",
        tests=("tests/test_ncaab_box_grade.py",),
        doc="college build vs ESPN box scores, undrafted included: harness run ncaab-box-grade -- <draft group> | --fit"),
@@ -257,7 +260,7 @@ EDGE_RULES: list[tuple[str, str]] = [
      r"pickem$|fairodds|oddsmath|dfs_contest|dfs_nfl_contest|dfs_validate|clv)", "model"),
     (r"^pagereload$", "app"),
     (r"^dfs_forward_log$", "evaluate"),
-    (r"^(dfs_run|dfs_slate|dfs_sport|repo_files|names|scanner|ncaab_names)", "optimize"),
+    (r"^(dfs_run|dfs_slate|dfs_sport|repo_files|names|scanner|ncaab_names|college_teams)", "optimize"),
     (r"^(client|dfs$|nfl$|nfl_intel$|nba$|ncaab$|nhl$|mma$|nascar$|ncaaf$|mma_market|buzz|pickem_cbs|pickem_data|"
      r"pickem_free|pickem_live|pickem_log|pickem_deadline|pickem_week|nba_lineups|nba_availability|nba_injury_report|nba_rotowire|"
      r"ncaab_rotowire|ncaab_torvik|ncaab_espn)", "ingest"),

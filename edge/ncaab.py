@@ -26,6 +26,8 @@ from __future__ import annotations
 
 import re
 
+from edge import college_teams
+
 from edge.names import norm  # noqa: F401 (re-exported)
 from edge.nba import actual_points  # noqa: F401 (same DK basketball table)
 
@@ -144,6 +146,16 @@ def match_team(dk_abbr: str, book_name: str) -> float:
     name = _clean(book_name)
     if not code or not name:
         return 0.0
+    # The rosetta stone (edge/college_teams.py) first: DK's own teamId -> school for
+    # every code DK has used, every source's spelling -> school. Authoritative when it
+    # knows BOTH sides. Replayed on 136 logged CBB games (11/2-11/21) vs the odds
+    # events in their tip window: names alone, the tests below matched 121 and this
+    # 136, neither ever wrong (VU = Villanova, GMU, LY-IL, OMAHA were the misses).
+    # Everything below stays the fallback: for a code or name it has never seen, and
+    # for a "no" -- DK reuses codes (USF was South Florida, then San Francisco), so a
+    # code's next school must still be reachable through ALIASES.
+    if college_teams.same_school(code, book_name, "CBB"):
+        return 1.0
     words = name.split()
     target = ALIASES.get(code)
     # "LSU New Orleans Privateers" (ESPN's New Orleans) is not LSU: the code as the first
