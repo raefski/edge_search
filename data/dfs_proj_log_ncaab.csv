@@ -4022,3 +4022,122 @@ date,gid,player,team,opp,dk_pos,salary,proj,sd,floor,ceil,own,proj_source,impute
 2026-11-20,157015,Markel Jennings,UGA,GT,G,3000,0.13,0.55,0.0,0.0,0.1,bench,all,,0,Georgia,0.7,,live,87.5,0.35
 2026-11-20,157015,Cal Conroy,TLSA,MSST,G,3000,1.08,1.52,0.0,3.5,0.2,bench,all,,0,,,,live,73.0,1.05
 2026-11-20,157015,Mavrick Hawkins,VAND,UCF,G/F,3000,4.61,3.35,2.0,9.0,0.5,blend,all,,0,,,3.5,live,86.5,8.898
+2026-11-21,157017,Jake Hall,UNM,WICH,G,9100,29.49,9.58,22.94,42.0,15.3,blend,all,,0,New Mexico,31.0,39.0,live,78.25,29.384
+2026-11-21,157017,Elliot Cadeau,MICH,VU,G,8800,32.95,9.98,25.5,46.0,22.5,props,stl|blk|tov,,1,Michigan,27.282,30.6,live,82.25,32.235
+2026-11-21,157017,Patrick Ngongba II,DUKE,WSU,F,8600,24.3,7.49,19.0,33.78,13.5,blend,all,,1,Duke,21.884,32.6,live,87.5,28.238
+2026-11-21,157017,Trey McKenney,MICH,VU,G,8500,29.75,9.21,23.25,42.0,18.7,props,stl|blk|tov,,1,Michigan,22.075,29.2,live,82.25,29.47
+2026-11-21,157017,Luigi Suigo,VU,MICH,F,8200,26.24,8.24,20.5,37.5,16.5,props,fg3|stl|blk|tov,,0,,,33.3,live,78.25,26.128
+2026-11-21,157017,J.P. Estrella,MICH,VU,F,8100,36.29,10.25,28.75,49.75,46.2,props,fg3|stl|blk|tov,,1,,,33.9,live,82.25,35.598
+2026-11-21,157017,Devin Royal,VU,MICH,F,8000,31.57,9.37,24.5,44.25,29.0,props,stl|blk|tov,,0,,,29.7,live,78.25,31.282
+2026-11-21,157017,Moustapha Thiam,MICH,VU,F,7800,26.75,8.25,20.75,37.75,18.0,props,ast|fg3|stl|blk|tov,,1,Cincinnati,27.155,25.2,live,82.25,26.441
+2026-11-21,157017,Tyler Perkins,VU,MICH,G,7600,27.6,9.12,21.0,39.78,16.0,props,stl|blk|tov,,0,Villanova,29.873,24.9,live,78.25,27.628
+2026-11-21,157017,Kwame Evans Jr.,VU,MICH,F,7500,21.64,7.27,16.5,31.75,10.6,blend,all,,0,,,21.6,live,78.25,21.393
+2026-11-21,157017,William Berg,WICH,UNM,F,7400,28.36,8.68,22.25,40.0,22.6,blend,all,,0,,,39.7,live,76.25,27.174
+2026-11-21,157017,Baraka Okojie,GMU,USF,G,7300,27.09,8.52,21.25,38.0,15.6,props,stl|blk|tov,,0,,,24.8,live,76.0,26.869
+2026-11-21,157017,Elijah Jones,GMU,USF,F,7200,18.89,6.82,14.0,28.0,7.9,blend,all,,0,,,16.4,live,76.0,18.969
+2026-11-21,157017,Tunde Vahlberg Fasasi,UNM,WICH,F,7100,20.76,7.01,15.75,30.25,9.9,blend,all,,0,,,21.6,live,78.25,20.793
+2026-11-21,157017,Joaquim Boumtje Boumtje,DUKE,WSU,F,7000,25.15,7.88,19.75,35.5,16.7,blend,all,,1,,,24.6,live,87.5,22.593
+2026-11-21,157017,Cayden Boozer,DUKE,WSU,G,6900,15.24,6.73,10.5,24.0,4.4,blend,all,,1,Duke,22.795,22.5,live,87.5,21.015
+2026-11-21,157017,Roddy Gayle Jr.,MICH,VU,G,6800,26.0,8.42,20.0,37.53,14.7,props,fg3|stl|blk|tov,,1,Michigan,21.074,25.3,live,82.25,26.025
+2026-11-21,157017,Dame Sarr,DUKE,WSU,G/F,6700,17.59,7.4,12.25,27.25,5.7,blend,all,,1,Duke,23.518,21.1,live,87.5,20.173
+2026-11-21,157017,Ronnie Harrison,WSU,DUKE,F,6600,19.09,7.14,14.0,28.28,8.5,blend,all,,1,,,20.3,live,62.0,17.999
+2026-11-21,157017,Hudson Mayes,UNM,WICH,G,6500,22.64,7.59,17.25,32.75,10.4,blend,all,,0,,,29.1,live,78.25,22.465
+2026-11-21,157017,Sonny Wilson,USF,GMU,G,6400,27.01,8.89,20.75,38.5,17.7,blend,all,,0,,,35.3,live,72.5,23.703
+2026-11-21,157017,Elijah Crawford,VU,MICH,G,6300,19.1,7.19,13.75,28.5,7.0,blend,all,,0,,,21.0,live,78.25,19.389
+2026-11-21,157017,Uriah Tenette,UNM,WICH,G,6200,22.58,7.37,17.75,32.25,10.8,blend,all,,0,New Mexico,27.486,23.5,live,78.25,22.515
+2026-11-21,157017,Kenyon Giles,WICH,UNM,G,6100,19.22,7.7,13.5,29.25,7.2,blend,all,,0,Wichita St.,36.178,20.8,live,76.25,26.755
+2026-11-21,157017,Emmanuel Kanga,GMU,USF,F,6000,29.06,8.7,22.75,40.5,36.2,props,ast|fg3|stl|blk|tov,,0,,,27.1,live,76.0,28.575
+2026-11-21,157017,Dillon Battie,WICH,UNM,F,5900,20.73,6.91,16.0,30.0,11.8,blend,all,,0,Wichita St.,17.377,26.3,live,76.25,18.423
+2026-11-21,157017,Lazerek Houston,WSU,DUKE,G,5800,25.86,9.26,19.25,38.53,17.9,blend,all,,1,,,29.0,live,62.0,19.454
+2026-11-21,157017,Jake Fiegen,VU,MICH,G,5700,18.58,7.91,12.75,29.0,7.0,props,stl|blk|tov,,0,,,20.1,live,78.25,18.314
+2026-11-21,157017,Zayden High,USF,GMU,F,5600,20.22,7.01,15.44,29.53,11.8,blend,all,,0,,,32.8,live,72.5,21.679
+2026-11-21,157017,Efeosa Oliogu-Elabor,GMU,USF,G/F,5500,17.25,6.53,12.5,26.0,6.0,blend,all,,0,,,18.9,live,76.0,17.266
+2026-11-21,157017,Makhai Valentine,GMU,USF,G,5400,15.43,6.33,11.0,23.75,4.7,blend,all,,0,,,14.3,live,76.0,15.563
+2026-11-21,157017,Sebastian Akins,WSU,DUKE,G,5300,12.85,5.92,8.5,20.5,3.3,blend,all,,1,,,21.4,live,62.0,16.386
+2026-11-21,157017,Garrett Johnson,USF,GMU,F,5200,23.72,7.4,18.5,33.5,23.3,blend,all,,0,,,23.4,live,72.5,17.978
+2026-11-21,157017,Ladji Dembele,WSU,DUKE,F,5100,11.89,5.08,8.25,18.5,3.6,blend,all,,1,,,12.1,live,62.0,13.249
+2026-11-21,157017,Caleb Foster,DUKE,WSU,G,5000,23.2,7.81,17.75,33.28,16.3,blend,all,,0,Duke,24.864,19.2,live,87.5,19.044
+2026-11-21,157017,Josh Omojafo,USF,GMU,G,5000,15.57,5.91,11.5,23.5,5.1,blend,all,,0,South Florida,27.159,15.7,live,72.5,20.43
+2026-11-21,157017,Jordan Frison,WICH,UNM,G,4900,18.19,6.91,13.25,27.25,7.8,blend,all,,0,,,21.2,live,76.25,17.168
+2026-11-21,157017,Jahari Long,WICH,UNM,G,4900,19.6,7.21,14.25,29.0,9.7,blend,all,,0,,,17.2,live,76.25,15.815
+2026-11-21,157017,Tyler Kropp,WSU,DUKE,F,4800,14.37,5.95,10.0,22.0,5.8,blend,all,,0,,,12.4,live,62.0,12.891
+2026-11-21,157017,Sebastian Wilkins,DUKE,WSU,G/F,4800,17.92,6.74,13.0,27.0,7.7,blend,all,,0,,,19.8,live,87.5,17.556
+2026-11-21,157017,Brayden O'Connor,GMU,USF,G,4700,25.56,8.12,19.75,36.0,27.4,props,fg3|stl|blk|tov,,0,,,23.3,live,76.0,25.719
+2026-11-21,157017,John Blackwell,DUKE,WSU,G,4700,19.42,6.89,14.5,28.5,10.1,blend,all,,1,,,14.0,live,87.5,15.304
+2026-11-21,157017,Chris Howell,UNM,WICH,G,4600,17.39,6.4,13.0,26.03,7.5,blend,all,,0,New Mexico,24.473,22.3,live,78.25,17.459
+2026-11-21,157017,Michael Gray Jr.,WICH,UNM,G,4600,18.52,7.2,13.25,28.0,9.1,blend,all,,0,Wichita St.,26.925,14.0,live,76.25,17.113
+2026-11-21,157017,Fraser Roxburgh,WSU,DUKE,F,4500,3.7,2.69,1.5,7.5,0.9,blend,all,,0,,,12.5,live,62.0,12.472
+2026-11-21,157017,Cameron Williams,DUKE,WSU,F,4500,12.5,5.66,8.25,20.0,4.5,blend,all,,0,,,14.4,live,87.5,15.15
+2026-11-21,157017,Chris Davis Jr.,USF,GMU,G,4500,17.59,6.95,12.75,26.75,8.1,blend,all,,0,,,23.7,live,72.5,17.028
+2026-11-21,157017,Jalen Reed,MICH,VU,F,4400,10.92,4.91,7.5,17.25,3.4,blend,all,,0,,,12.3,live,82.25,13.858
+2026-11-21,157017,Shane Pendergrass,GMU,USF,F,4400,15.33,6.11,11.0,23.53,7.8,blend,all,,0,,,17.5,live,76.0,15.145
+2026-11-21,157017,Mike James,USF,GMU,G,4400,20.58,7.54,15.0,30.75,14.1,blend,all,,0,,,20.4,live,72.5,15.79
+2026-11-21,157017,Quinn Costello,MICH,VU,F,4300,20.76,7.39,15.5,30.5,23.0,blend,all,,0,,,19.8,live,82.25,16.344
+2026-11-21,157017,Emmanuel Okorafor,WICH,UNM,F,4300,10.22,4.35,7.25,16.0,3.1,blend,all,,0,Wichita St.,16.839,11.1,live,76.25,15.615
+2026-11-21,157017,TJ Williams,WICH,UNM,G,4300,5.25,3.11,3.0,9.5,1.0,blend,all,,0,Wichita St.,22.083,17.3,live,76.25,17.333
+2026-11-21,157017,Dax Hall,UNM,WICH,G,4200,15.59,6.42,11.0,24.03,6.4,blend,all,,0,,,20.1,live,78.25,15.934
+2026-11-21,157017,Jaylen Harrell,WSU,DUKE,G,4200,12.46,5.87,8.25,20.25,3.6,blend,all,,1,,,24.1,live,62.0,15.562
+2026-11-21,157017,Darryl Simmons II,VU,MICH,G,4200,8.64,4.53,5.25,14.5,1.8,blend,all,Q,0,,,10.6,live,78.25,8.874
+2026-11-21,157017,Ricky Liburd,MICH,VU,G,4100,14.39,6.23,10.0,22.5,5.3,blend,all,,0,,,9.4,live,82.25,12.389
+2026-11-21,157017,Jamari Phillips,WSU,DUKE,G,4100,11.85,5.33,8.0,19.0,3.3,blend,all,,0,,,12.4,live,62.0,11.842
+2026-11-21,157017,Adam Oumiddoch,VU,MICH,G,4100,14.0,5.96,9.75,22.0,4.9,blend,all,,0,,,15.2,live,78.25,14.104
+2026-11-21,157017,Fynn Lastring,UNM,WICH,F,4000,12.87,5.59,8.75,20.03,5.6,blend,all,,0,,,11.9,live,78.25,12.823
+2026-11-21,157017,Kenny Noland,MICH,VU,G,4000,13.69,6.04,9.25,21.75,4.8,blend,all,,0,,,8.1,live,82.25,11.782
+2026-11-21,157017,Andrej Shoshkikj,USF,GMU,G,4000,13.14,5.75,9.0,20.75,4.3,blend,all,,0,,,12.5,live,72.5,12.584
+2026-11-21,157017,Richard Goods,USF,GMU,F,3900,3.27,2.55,1.25,6.75,0.8,blend,all,,0,,,1.2,live,72.5,8.706
+2026-11-21,157017,Carter Fisk,VU,MICH,G,3900,11.53,5.35,7.75,18.5,3.3,blend,all,,0,,,8.8,live,78.25,11.611
+2026-11-21,157017,Bryce Heard,WICH,UNM,G,3900,16.5,6.45,12.0,24.75,8.7,blend,all,,0,Dayton,18.456,12.5,live,76.25,12.38
+2026-11-21,157017,Malik Presley,GMU,USF,G/F,3800,13.33,5.61,9.5,20.5,4.9,blend,all,,0,George Mason,16.164,6.7,live,76.0,13.325
+2026-11-21,157017,Nico Onyekwere,VU,MICH,F,3800,12.72,5.33,8.75,20.0,6.0,blend,all,,0,,,12.4,live,78.25,12.695
+2026-11-21,157017,Oscar Goodman,MICH,VU,F,3800,9.35,4.55,6.0,15.25,2.9,bench,all,,0,Michigan,5.312,12.5,live,82.25,1.383
+2026-11-21,157017,Deron Rippey Jr.,DUKE,WSU,G,3700,9.95,5.26,6.0,17.0,2.5,bench,all,,0,,,11.3,live,87.5,3.967
+2026-11-21,157017,Drew Scharnowski,DUKE,WSU,F,3700,7.73,4.25,4.5,13.5,2.1,bench,all,,0,,,13.6,live,87.5,4.199
+2026-11-21,157017,RJ Jones,WSU,DUKE,G,3700,4.33,3.1,2.0,8.75,0.8,bench,all,,0,,,9.8,live,62.0,2.952
+2026-11-21,157017,Benjamin Schuch,UNM,WICH,F,3600,13.14,5.38,9.5,20.0,7.3,blend,all,,0,,,14.8,live,78.25,13.218
+2026-11-21,157017,Michael Marcus Jr.,GMU,USF,F,3600,9.61,4.48,6.25,15.75,3.2,blend,all,,0,,,4.7,live,76.0,9.622
+2026-11-21,157017,Tiefing Diawara,USF,GMU,F,3600,11.26,5.05,7.75,18.0,4.7,blend,all,,0,,,8.1,live,72.5,10.533
+2026-11-21,157017,Casey Jones,WSU,DUKE,G,3500,9.21,4.62,6.0,15.25,2.3,bench,all,,0,,,9.3,live,62.0,2.914
+2026-11-21,157017,Rytis Petraitis,UNM,WICH,F,3500,10.78,4.91,7.25,17.25,4.4,blend,all,,0,,,8.1,live,78.25,10.771
+2026-11-21,157017,Mohamed Sankhe,WSU,DUKE,F,3500,7.2,3.87,4.5,12.5,1.9,bench,all,,0,,,9.3,live,62.0,2.914
+2026-11-21,157017,James Nnaji,GMU,USF,F,3500,0.71,1.17,0.0,2.0,0.4,bench,all,Q,0,,,,live,76.0,0.735
+2026-11-21,157017,Reph Stevenson,USF,GMU,F,3400,3.32,2.56,1.25,6.75,0.8,blend,all,,0,,,1.6,live,72.5,8.088
+2026-11-21,157017,Federico Grani,UNM,WICH,F,3400,11.4,4.94,7.75,18.0,5.4,blend,all,,0,,,10.4,live,78.25,11.41
+2026-11-21,157017,Dominik Robinson,WSU,DUKE,F,3400,5.78,3.55,3.25,10.5,1.4,bench,all,,0,,,12.0,live,62.0,3.119
+2026-11-21,157017,Malachi Brown,MICH,VU,G,3400,3.95,2.95,1.5,8.0,0.7,bench,all,,0,,,7.3,live,82.25,3.102
+2026-11-21,157017,Lilian Marville,GMU,USF,G,3300,0.8,1.31,0.0,2.75,0.4,bench,all,Q,0,,,,live,76.0,0.735
+2026-11-21,157017,Bryson Howard,DUKE,WSU,G,3300,8.6,4.69,5.25,15.0,2.1,bench,all,,0,,,7.6,live,87.5,3.594
+2026-11-21,157017,Henry Thengvall,WICH,UNM,F,3300,0.12,0.47,0.0,0.0,0.3,bench,all,,0,Wichita St.,2.482,3.3,live,76.25,0.35
+2026-11-21,157017,Tyrus Rathan-Mayes,WICH,UNM,G,3300,3.91,2.93,1.5,7.78,0.7,blend,all,,0,,,16.3,live,76.25,13.113
+2026-11-21,157017,Darren Moore,USF,GMU,G,3200,5.79,3.71,3.0,10.75,1.1,blend,all,,0,,,3.4,live,72.5,8.382
+2026-11-21,157017,Joy Ighovodja,WICH,UNM,G,3200,3.02,2.64,1.25,6.75,0.6,blend,all,,0,,,8.3,live,76.25,10.256
+2026-11-21,157017,Joseph Hartman,MICH,VU,G,3200,0.24,0.68,0.0,1.25,0.3,bench,all,Q,0,,,,live,82.25,0.735
+2026-11-21,157017,Harrison Hochberg,MICH,VU,F,3200,3.02,2.48,1.25,6.5,0.7,bench,all,,0,,,4.3,live,82.25,2.839
+2026-11-21,157017,Jake Feldhaus,USF,GMU,F,3100,4.08,2.9,2.0,8.0,0.9,blend,all,,0,,,4.2,live,72.5,8.497
+2026-11-21,157017,Jaret Valencia,WICH,UNM,F,3100,8.34,4.14,5.5,14.0,2.9,bench,all,,0,Wichita St.,13.182,6.5,live,76.25,2.485
+2026-11-21,157017,Desmeon Jones,WICH,UNM,G,3100,3.31,2.78,1.25,7.0,0.6,blend,all,,0,,,11.3,live,76.25,11.121
+2026-11-21,157017,Peyton Miller,GMU,USF,G,3100,8.3,4.49,5.0,14.25,2.1,blend,all,,0,,,3.3,live,76.0,8.4
+2026-11-21,157017,AJ Pierre-Jerome,UNM,WICH,F,3000,1.11,1.48,0.0,3.25,0.4,bench,all,,0,,,0.0,live,78.25,1.05
+2026-11-21,157017,Marcus Moller,MICH,VU,F,3000,2.42,2.19,0.75,5.5,0.6,bench,all,,0,,,,live,82.25,1.05
+2026-11-21,157017,Brayden Kyman,WSU,DUKE,F,3000,1.25,1.52,0.0,3.5,0.4,bench,all,,0,,,8.0,live,62.0,2.815
+2026-11-21,157017,Abdou Samb,VU,MICH,F,3000,7.38,3.9,4.5,12.53,2.3,blend,all,,0,,,0.6,live,78.25,7.451
+2026-11-21,157017,Bryton Barrett,GMU,USF,F,3000,7.78,4.08,4.75,13.25,2.6,blend,all,,0,,,2.0,live,76.0,7.811
+2026-11-21,157017,Ryan-Preston Mendy,GMU,USF,F,3000,7.81,3.99,4.75,13.0,2.6,blend,all,,0,,,1.8,live,76.0,7.744
+2026-11-21,157017,Imran Suljanovic,UNM,WICH,F,3000,1.01,1.38,0.0,3.0,0.4,bench,all,,0,,,0.0,live,78.25,1.05
+2026-11-21,157017,Maxime Meyer,DUKE,WSU,F,3000,1.16,1.45,0.0,3.25,0.4,bench,all,,0,,,7.3,live,87.5,3.563
+2026-11-21,157017,Cyr Malonga,WICH,UNM,F,3000,2.72,2.36,1.25,6.0,0.6,blend,all,,0,,,5.3,live,76.25,8.941
+2026-11-21,157017,Emmett Adair,GMU,USF,F,3000,7.2,3.88,4.25,12.25,2.2,blend,all,,0,,,0.4,live,76.0,7.271
+2026-11-21,157017,Roman Stathis,WSU,DUKE,F,3000,0.33,0.79,0.0,1.25,0.3,bench,all,,0,,,,live,62.0,1.05
+2026-11-21,157017,Nate Muriithi,UNM,WICH,F,3000,1.06,1.42,0.0,3.25,0.4,bench,all,,0,,,,live,78.25,1.05
+2026-11-21,157017,Joshua Lewis,USF,GMU,F,3000,0.22,0.65,0.0,1.25,0.3,bench,all,Q,0,,,,live,72.5,0.735
+2026-11-21,157017,Ben Woodward,GMU,USF,G,3000,1.02,1.5,0.0,3.25,0.3,bench,all,,0,,,0.0,live,76.0,1.05
+2026-11-21,157017,Dio Blakely,WSU,DUKE,G,3000,0.23,0.71,0.0,1.25,0.3,bench,all,,0,Washington St.,1.2,0.0,live,62.0,0.605
+2026-11-21,157017,Howard Eisley Jr.,MICH,VU,G,3000,0.13,0.53,0.0,0.0,0.3,bench,all,,0,Michigan,1.267,,live,82.25,0.35
+2026-11-21,157017,Wade Chiddick,VU,MICH,G,3000,7.76,4.29,4.5,13.5,1.9,blend,all,,0,Villanova,1.85,1.5,live,78.25,7.76
+2026-11-21,157017,Brady Muller,VU,MICH,G,3000,1.06,1.48,0.0,3.5,0.4,bench,all,,0,,,0.0,live,78.25,1.05
+2026-11-21,157017,Donovan Waleskowski,USF,GMU,G,3000,2.83,2.44,1.0,6.25,0.5,blend,all,,0,,,1.3,live,72.5,7.39
+2026-11-21,157017,Jayden Johnson,USF,GMU,G,3000,2.61,2.33,1.0,6.0,0.5,blend,all,,0,,,1.0,live,72.5,7.291
+2026-11-21,157017,Nick Arnold,DUKE,WSU,G,3000,0.36,0.86,0.0,1.5,0.3,bench,all,,0,,,0.0,live,87.5,1.176
+2026-11-21,157017,Jacob Theodosiou,DUKE,WSU,G,3000,0.88,1.36,0.0,2.75,0.3,bench,all,,0,,,1.0,live,87.5,2.927
+2026-11-21,157017,Pierre Couisnard,WICH,UNM,G,3000,0.34,0.86,0.0,1.5,0.3,bench,all,,0,,,,live,76.25,1.05
+2026-11-21,157017,T.J. Prosise,GMU,USF,G,3000,1.05,1.49,0.0,3.5,0.3,bench,all,,0,,,,live,76.0,1.05
+2026-11-21,157017,Pedro Sancho Moraga,WSU,DUKE,G,3000,0.24,0.7,0.0,1.25,0.3,bench,all,Q,0,,,,live,62.0,0.735
