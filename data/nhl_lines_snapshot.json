@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-21T21:00:10+00:00",
+"generated_at": "2026-11-21T21:28:49+00:00",
 "goalies": {
 "2026-11-21": {
 "ANA": {
@@ -76,7 +76,7 @@
 },
 "PIT": {
 "goalie": "Sergei Murashov",
-"status": null
+"status": "Confirmed"
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
@@ -11033,7 +11033,7 @@
 "pp": null
 },
 "Ryan O'Reilly": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 5,
