@@ -1999,3 +1999,26 @@ count mapping; a date-level market offset may be worth a cycle; (2) cosmetic: cl
 (~3 negative means per half), no expected gain; (3) the scout's T24 / T02 retests.
 
 Unattended gate (20261120-0658): **not shipped (log / harness only, verified)**
+
+## Cycle 37 -- GPP construction rerun, dollar-scored DOE (2026-11-20, Adam's target)
+
+Adam asked after the live scorecard showed model GPP -62% [-84%, -39%] (54 entries / 25 slates). Rerun of
+`scripts/dfs_strategy_doe.py run nba --seeds 5` (production sim+climb on logged boards, props blend + shrink refit
+leave-one-date-out, payouts from contests.db, 90% range bootstrapped over dates). GPP: 46 contests / 25 dates, 26 arms.
+
+| GPP arm | ROI | vs production (p90) |
+|---|---|---|
+| p99_own+15 (top in-sample) | +71.1% [+23.2, +116.9] | +45.3% [-28.8, +113.3] |
+| p80_own+5 | +46.4% [-0.5, +100.7] | +20.6% [-27.9, +72.3] |
+| production p90 | +25.8% [-19.9, +75.1] | -- |
+| **LODO pick-the-best** | **+42.1% [-2.9, +81.8]** | **+16.3% [-46.7, +65.4]** |
+
+LODO picked p99_own+15 on 24/25 folds but its gain over production still spans zero widely; only p70_own-5 is
+separated (worse, -33.6% [-69.7, -6.2]). **Not shipped** -- 25 dates still cannot separate GPP arms. Cash rerun
+(34 contests / 20 dates): LODO pick -3.5% [-23.1, +15.8] vs production; the 11/14 p70_cap3 lead (+14%) no longer
+holds (now +11.8% [-1.1, +25.8] in-sample only).
+
+The finding that matters: the faithful replay of production makes +25.8% on these GPPs, while Adam's real model
+entries made -62%. Construction settings are not the gap; what differs between the replay and the entries
+(post-build news, hand edits, which lineup was entered, late swap) is. `harness run nba-forward` tracks it; next
+cycle should target replay-vs-entered, not arms. Re-run arms at ~40 dates.
