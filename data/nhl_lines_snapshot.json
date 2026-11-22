@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-22T18:28:40+00:00",
+"generated_at": "2026-11-22T18:58:42+00:00",
 "goalies": {
 "2026-11-22": {
 "BUF": {
@@ -7714,7 +7714,7 @@
 "toiSeconds": 2
 },
 "line": "F1",
-"pk": "PK2",
+"pk": null,
 "pos": "lw",
 "pp": "PP1"
 },
@@ -7782,7 +7782,7 @@
 "toiSeconds": 50
 },
 "line": "D1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 },
@@ -7816,7 +7816,7 @@
 "toiSeconds": 45
 },
 "line": "F4",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": null
 },
@@ -7850,7 +7850,7 @@
 "toiSeconds": 49
 },
 "line": "F3",
-"pk": null,
+"pk": "PK1",
 "pos": "rw",
 "pp": "PP1"
 },
@@ -7954,7 +7954,7 @@
 "toiSeconds": 24
 },
 "line": "D2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
 },
@@ -7988,7 +7988,7 @@
 "toiSeconds": 43
 },
 "line": "F3",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "lw",
 "pp": "PP2"
 },
@@ -8296,7 +8296,7 @@
 "toiSeconds": 15
 },
 "line": "F2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
 },
@@ -8330,7 +8330,7 @@
 "toiSeconds": 15
 },
 "line": "F2",
-"pk": "PK2",
+"pk": null,
 "pos": "lw",
 "pp": "PP2"
 }
@@ -10600,6 +10600,40 @@
 "pos": "lw",
 "pp": null
 },
+"Declan Carlile": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 12,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 179,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 86,
+"toiSeconds": 43
+},
+"line": "D3",
+"pk": "PK1",
+"pos": "ld",
+"pp": null
+},
 "Egor Chinakhov": {
 "gtd": false,
 "injury": null,
@@ -10766,7 +10800,7 @@
 "toiSeconds": 42
 },
 "line": "D3",
-"pk": "PK1",
+"pk": null,
 "pos": "rd",
 "pp": "PP2"
 },
@@ -10870,7 +10904,7 @@
 "line": "D2",
 "pk": null,
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Sergei Murashov": {
 "gtd": false,
@@ -10942,40 +10976,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Spencer Stastney": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 174,
-"toiSeconds": 38
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 0,
-"toiMinutes": 89,
-"toiSeconds": 26
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
-"pp": null
-},
 "Tommy Novak": {
 "gtd": false,
 "injury": null,
@@ -11040,7 +11040,7 @@
 "toiSeconds": 57
 },
 "line": "D2",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -11076,7 +11076,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 }
 },
 "SEA": {
@@ -12516,7 +12516,7 @@
 "toiSeconds": 46
 },
 "line": "F4",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "lw",
 "pp": null
 },
@@ -12550,7 +12550,7 @@
 "toiSeconds": 13
 },
 "line": "D3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 },
@@ -12584,7 +12584,7 @@
 "toiSeconds": 20
 },
 "line": "D3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": "PP2"
 },
@@ -12618,7 +12618,7 @@
 "toiSeconds": 13
 },
 "line": "D2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -12720,7 +12720,7 @@
 "toiSeconds": 27
 },
 "line": "F1",
-"pk": "PK1",
+"pk": null,
 "pos": "lw",
 "pp": "PP1"
 },
@@ -12826,7 +12826,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Jordan Binnington": {
 "gtd": false,
@@ -12964,7 +12964,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": null
+"pp": "PP1"
 },
 "Pavel Buchnevich": {
 "gtd": false,
@@ -12996,9 +12996,9 @@
 "toiSeconds": 14
 },
 "line": "F3",
-"pk": null,
+"pk": "PK2",
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Philip Broberg": {
 "gtd": false,
@@ -13030,7 +13030,7 @@
 "toiSeconds": 34
 },
 "line": "D1",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "ld",
 "pp": "PP1"
 },
