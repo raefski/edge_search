@@ -90,21 +90,29 @@ def test_infer_rule_scores_only_observations_the_rules_disagree_on():
     assert s[D.FIRST_GAME_OF_DAY] == {"agree": 0, "disagree": 1}
 
 
-def test_the_grader_drops_a_reading_taken_after_a_2h_lock(tmp_path):
-    """Before kickoff is no longer enough: a 12:35 reading for a 1pm game
-    came after an 11:00 lock, so under the default rule it does not count."""
+def test_the_grader_drops_a_reading_taken_after_the_first_game_of_the_day(tmp_path):
+    """Before kickoff is no longer enough: the rule (settled 11/22) locks every
+    game at the day's first kickoff, so a 12:35 reading for a 1pm game counts on
+    a plain Sunday but not on a Sunday that opened with a 9:30 London game."""
     from edge.pickem_log import Snapshot, append
     from scripts import pickem_grade
 
-    def snap(label, at, mkt):
+    def snap(label, at, mkt, home="HOU", ko="2026-09-13T17:00:00Z"):
         return Snapshot(season=2026, week=1, snapshot=label, captured_at=at,
-                        away_team="BUF", home_team="HOU",
-                        kickoff_utc="2026-09-13T17:00:00Z", cbs_line_home=-1.5,
+                        away_team="BUF", home_team=home,
+                        kickoff_utc=ko, cbs_line_home=-1.5,
                         market_line_home=mkt, n_books=3)
-    log = tmp_path / "log.csv"
-    append([snap("midweek", "2026-09-11T16:35:00Z", -2.0),
-            snap("lock-sun", "2026-09-13T16:35:00Z", 1.0)], path=log)
+    rows = [snap("midweek", "2026-09-11T16:35:00Z", -2.0),
+            snap("lock-sun", "2026-09-13T16:35:00Z", 1.0)]
+    log = tmp_path / "plain.csv"
+    append(rows, path=log)
     g = pickem_grade.readings(log)[0]
+    assert g["lock"] == 1.0 and g["lock_label"] == "lock-sun"
+
+    london = "2026-09-13T13:30:00Z"
+    log = tmp_path / "london.csv"
+    append(rows + [snap("midweek", "2026-09-11T16:35:00Z", 3.0, "JAX", london)], path=log)
+    g = next(r for r in pickem_grade.readings(log) if r["home"] == "HOU")
     assert g["lock"] == -2.0 and g["lock_label"] == "midweek"
 
 

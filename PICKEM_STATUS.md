@@ -285,7 +285,8 @@ with `--write` to let the computed values in.
 
 ## Deadline-driven captures + pool picks — built 2026-10-11
 
-- **The lock rule is unsettled.** Adam: "2 hours before kickoff". The pool's Settings
+- **Lock rule SETTLED 2026-11-22 (Adam): before the first game of the ET day** -- `RULE =
+  FIRST_GAME_OF_DAY`. History: Adam first said "2 hours before kickoff". The pool's Settings
   page (fetched 2026-10-11): "Before the start of the first game of the day".
   `edge/pickem_deadline.py` owns it: `RULE = "earliest"` (the earlier of the two) for the
   grader, transferability and the page's "locks …" label, so no reading Adam could not

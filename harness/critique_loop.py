@@ -586,10 +586,10 @@ def pick(st: dict, now: datetime, done: set = frozenset(), season=in_season) -> 
 
 #: Cycles per night and sports left out (Adam 11/10: weekly Claude usage nearly spent --
 #: one sport a night; NFL is profitable, focus on the others; reassess Monday 11/16 from
-#: the ROI dashboard). A resumed run (07:05 / after the usage limit) only finishes a
+#: the ROI dashboard). 11/22 Adam: NFL back in the rotation. A resumed run (07:05 / after the usage limit) only finishes a
 #: night whose cycle did not complete.
 MAX_PER_NIGHT = 1
-SKIP = ("nfl",)
+SKIP: tuple = ()
 #: A second timer run at 07:05 picks the night back up after the Claude 5-hour usage
 #: window resets (11/9: the 02:00 start means a limit hit at ~04:00-07:00 resets by
 #: ~07:00). A sport whose cycle already ran in this window is not run again.

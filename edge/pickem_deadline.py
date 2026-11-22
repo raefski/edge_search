@@ -39,7 +39,9 @@ EARLIEST = "earliest"
 RULES = (KICKOFF_MINUS_2H, FIRST_GAME_OF_DAY, EARLIEST)
 
 #: See the module docstring before changing this.
-RULE = EARLIEST
+# Settled 2026-11-22 by Adam: picks lock before the first game of the ET day
+# (matches the pool Settings page). The scheduler still captures every candidate.
+RULE = FIRST_GAME_OF_DAY
 
 
 def parse_utc(value) -> datetime.datetime | None:
