@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-22T15:28:45+00:00",
+"generated_at": "2026-11-22T15:29:37+00:00",
 "goalies": {
 "2026-11-22": {
 "BUF": {
@@ -1716,6 +1716,40 @@
 "pos": "rd",
 "pp": null
 },
+"Jesperi Kotkaniemi": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 6,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 118,
+"toiSeconds": 14
+},
+"last5": {
+"assists": 3,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 56,
+"toiSeconds": 26
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Jordan Martinook": {
 "gtd": false,
 "injury": null,
@@ -1886,40 +1920,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Nikolaj Ehlers": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 10,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 12,
-"powerplayAssists": 6,
-"powerplayGoals": 0,
-"powerplayPoints": 6,
-"shots": 27,
-"toiMinutes": 158,
-"toiSeconds": 28
-},
-"last5": {
-"assists": 6,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 8,
-"powerplayAssists": 5,
-"powerplayGoals": 0,
-"powerplayPoints": 5,
-"shots": 11,
-"toiMinutes": 78,
-"toiSeconds": 11
-},
-"line": "F2",
-"pk": null,
-"pos": "lw",
-"pp": "PP1"
-},
 "Pyotr Kochetkov": {
 "gtd": false,
 "injury": null,
@@ -1988,7 +1988,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Sebastian Aho": {
 "gtd": false,
@@ -2056,7 +2056,7 @@
 "line": "F3",
 "pk": "PK2",
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Shayne Gostisbehere": {
 "gtd": false,
@@ -2121,7 +2121,7 @@
 "toiMinutes": 66,
 "toiSeconds": 54
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
