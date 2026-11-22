@@ -428,6 +428,16 @@
 "StartDateEst": "2026-11-23T21:15:00.0000000",
 "last_start": "2026-11-24T02:15:00.0000000Z"
 },
+"156809": {
+"ContestStartTimeSuffix": " (Mon-Wed)",
+"DraftGroupId": 156809,
+"DraftGroupTag": "",
+"GameCount": 2,
+"GameTypeId": 1,
+"StartDate": "2026-11-24T01:15:00.0000000Z",
+"StartDateEst": "2026-11-23T20:15:00.0000000",
+"last_start": "2026-11-26T01:00:00.0000000Z"
+},
 "156919": {
 "ContestStartTimeSuffix": " (MIN vs SF)",
 "DraftGroupId": 156919,
@@ -509,6 +519,16 @@
 "StartDate": "2026-11-23T01:00:00.0000000Z",
 "StartDateEst": "2026-11-22T20:00:00.0000000",
 "last_start": "2026-11-23T01:00:00.0000000Z"
+},
+"156961": {
+"ContestStartTimeSuffix": " (CBJ @ NJD)",
+"DraftGroupId": 156961,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-24T00:00:00.0000000Z",
+"StartDateEst": "2026-11-23T19:00:00.0000000",
+"last_start": "2026-11-24T00:00:00.0000000Z"
 },
 "156962": {
 "ContestStartTimeSuffix": null,
