@@ -208,16 +208,6 @@
 }
 },
 "NFL": {
-"156561": {
-"ContestStartTimeSuffix": null,
-"DraftGroupId": 156561,
-"DraftGroupTag": "Featured",
-"GameCount": 10,
-"GameTypeId": 1,
-"StartDate": "2026-11-22T18:00:00.0000000Z",
-"StartDateEst": "2026-11-22T13:00:00.0000000",
-"last_start": "2026-11-22T21:25:00.0000000Z"
-},
 "156774": {
 "ContestStartTimeSuffix": " (Thu-Mon)",
 "DraftGroupId": 156774,
@@ -238,26 +228,6 @@
 "StartDateEst": "2026-11-22T13:00:00.0000000",
 "last_start": "2026-11-24T01:15:00.0000000Z"
 },
-"156777": {
-"ContestStartTimeSuffix": " (Afternoon Only)",
-"DraftGroupId": 156777,
-"DraftGroupTag": "Featured",
-"GameCount": 3,
-"GameTypeId": 1,
-"StartDate": "2026-11-22T21:05:00.0000000Z",
-"StartDateEst": "2026-11-22T16:05:00.0000000",
-"last_start": "2026-11-22T21:25:00.0000000Z"
-},
-"156778": {
-"ContestStartTimeSuffix": " (Afternoon Turbo)",
-"DraftGroupId": 156778,
-"DraftGroupTag": "",
-"GameCount": 2,
-"GameTypeId": 1,
-"StartDate": "2026-11-22T21:25:00.0000000Z",
-"StartDateEst": "2026-11-22T16:25:00.0000000",
-"last_start": "2026-11-22T21:25:00.0000000Z"
-},
 "156779": {
 "ContestStartTimeSuffix": " (Primetime)",
 "DraftGroupId": 156779,
@@ -267,36 +237,6 @@
 "StartDate": "2026-11-23T01:20:00.0000000Z",
 "StartDateEst": "2026-11-22T20:20:00.0000000",
 "last_start": "2026-11-24T01:15:00.0000000Z"
-},
-"156789": {
-"ContestStartTimeSuffix": " (NYJ @ LAC)",
-"DraftGroupId": 156789,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-22T21:05:00.0000000Z",
-"StartDateEst": "2026-11-22T16:05:00.0000000",
-"last_start": "2026-11-22T21:05:00.0000000Z"
-},
-"156790": {
-"ContestStartTimeSuffix": " (LV @ DEN)",
-"DraftGroupId": 156790,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-22T21:25:00.0000000Z",
-"StartDateEst": "2026-11-22T16:25:00.0000000",
-"last_start": "2026-11-22T21:25:00.0000000Z"
-},
-"156791": {
-"ContestStartTimeSuffix": " (JAX @ NYG)",
-"DraftGroupId": 156791,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-22T21:25:00.0000000Z",
-"StartDateEst": "2026-11-22T16:25:00.0000000",
-"last_start": "2026-11-22T21:25:00.0000000Z"
 },
 "156792": {
 "ContestStartTimeSuffix": " (MIN vs SF)",
