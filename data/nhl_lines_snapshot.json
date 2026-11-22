@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-22T15:59:44+00:00",
+"generated_at": "2026-11-22T17:29:04+00:00",
 "goalies": {
 "2026-11-22": {
 "BUF": {
@@ -24,7 +24,7 @@
 },
 "NYR": {
 "goalie": "Dylan Garand",
-"status": null
+"status": "Confirmed"
 },
 "PIT": {
 "goalie": "Arturs Silovs",
@@ -1611,7 +1611,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Jaccob Slavin": {
@@ -1747,7 +1747,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Jordan Martinook": {
@@ -9120,8 +9120,8 @@
 "toiSeconds": 41
 },
 "line": "D3",
-"pk": "PK2",
-"pos": "rd",
+"pk": null,
+"pos": "ld",
 "pp": null
 },
 "Dylan Garand": {
@@ -9259,7 +9259,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": null
 },
 "J.T. Miller": {
@@ -9400,38 +9400,72 @@
 "pos": "ld",
 "pp": null
 },
-"Matthew Robertson": {
+"Matt Rempe": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 1,
-"blocks": 7,
+"assists": 2,
+"blocks": 4,
 "gamesPlayed": 10,
-"goals": 1,
+"goals": 0,
 "points": 2,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 149,
-"toiSeconds": 53
+"shots": 5,
+"toiMinutes": 91,
+"toiSeconds": 30
 },
 "last5": {
 "assists": 0,
-"blocks": 3,
+"blocks": 1,
 "gamesPlayed": 5,
 "goals": 0,
 "points": 0,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 64,
-"toiSeconds": 45
+"shots": 3,
+"toiMinutes": 31,
+"toiSeconds": 17
 },
-"line": "D3",
+"line": "F4",
 "pk": null,
-"pos": "ld",
+"pos": "rw",
+"pp": null
+},
+"Max Sasson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 12,
+"toiMinutes": 111,
+"toiSeconds": 15
+},
+"last5": {
+"assists": 1,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 48,
+"toiSeconds": 16
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
 "pp": null
 },
 "Mika Zibanejad": {
@@ -9531,13 +9565,13 @@
 "toiMinutes": 65,
 "toiSeconds": 42
 },
-"line": "D4",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
 },
 "Sean Durzi": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 3,
@@ -9566,43 +9600,9 @@
 "toiSeconds": 43
 },
 "line": "D2",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
-},
-"Taylor Raddysh": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 4,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 84,
-"toiSeconds": 0
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 38,
-"toiSeconds": 3
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Tye Kartye": {
 "gtd": false,
