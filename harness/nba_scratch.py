@@ -168,6 +168,7 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
            extra: dict | None = None, espn_out: set | None = None,
            official_out: set | None = None, name_ids: dict | None = None,
            official_doubtful: set | None = None, lineups: dict | None = None,
+           rotowire_out: set | None = None,
            day: date | None = None, labels: dict | None = None,
            now: datetime | None = None) -> tuple[list, dict]:
     """(alerts, new `seen`) for tonight's games. `seen` = {player_id: {"out", "starter"}}
@@ -207,12 +208,17 @@ def assess(games: list[dict], hist: dict, pos: dict, dk: dict, seen: dict,
                 r = NM.role([(m, s) for m, s, _ in h], win)
                 # NBA.com's lineups carry no inactive list in 2026-27: ESPN's Out list too
                 official = norm(p["name"]) in (official_out or set())
+                # RotoWire's Out tag (decided 11/22, scripts/nba_news_lead.py over 22 nights /
+                # 2,550 player-nights 10/30-11/21): official is first 68% of the time, but
+                # RotoWire flags 66 outs official never listed and beat it on 149 of 957
+                # shared ones by a median 75 min (41 of those after 5 PM ET). DK was first 0.4%.
+                rotowire = (norm(p["name"]), team) in (rotowire_out or set())
                 out = (p["inactive"] or d.get("status") == "OUT" or (norm(p["name"]), team) in (espn_out or set())
-                       or official)
+                       or official or rotowire)
                 # Doubtful on the official report (Poole 10/29: Doubtful 3:45 PM, Out
                 # 6:15 PM) -- pushed as its own event, projected as if he sits.
                 doubtful = not out and norm(p["name"]) in (official_doubtful or set())
-                p = dict(p, official=official)
+                p = dict(p, official=official, rotowire=rotowire)
                 now_seen[pid] = {"out": out, "starter": p["starter"], "doubtful": doubtful}
                 before = {"out": out, "starter": False, "doubtful": doubtful} if prime else seen.get(pid, {})
                 mine = ((lineups or {}).get((norm(p["name"]), team)) or []) if tip else []
@@ -287,7 +293,8 @@ def _alert(game: dict, team: str, events: list, gains: list, swap: list | None =
         last = _surname(p["name"])
         if kind == "out":
             why = ("inactive list" if p["inactive"] else "DK: OUT" if d.get("status") == "OUT"
-                   else "official report" if p.get("official") else "ESPN")
+                   else "official report" if p.get("official")
+                   else "RotoWire" if p.get("rotowire") else "ESPN")
             heads.append(f"🔴 {last} OUT ({why})")
         elif kind == "doubtful":
             heads.append(f"🟠 {last} DOUBTFUL (official report; projected as out)")
@@ -455,6 +462,7 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
         espn_out: set = set()
         official_out: set = set()
         official_doubtful: set = set()
+        rotowire_out: set = set()
     else:
         # The same history the app projects from (data/nba_player_history.json), so
         # an alert and the page it opens cannot disagree about a player's role.
@@ -477,13 +485,14 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
                         if st_ == "Out"}
         official_doubtful = {norm(nba_injury_report.full_name(a, b))
                              for a, b, st_, _ in (got[1]["rows"] if got else []) if st_ == "Doubtful"}
+        from edge import nba_rotowire
+        try:
+            rw = [(x["team"], x["name"], x["status"]) for x in nba_rotowire.parse(nba_rotowire.fetch())]
+        except Exception as exc:                            # noqa: BLE001
+            print(f"RotoWire unavailable ({exc}); alerts without its Out tags")
+            rw = None
+        rotowire_out = {(norm(n), t) for t, n, st_ in (rw or []) if st_ == "Out"}
         if do_push:
-            from edge import nba_rotowire
-            try:
-                rw = [(x["team"], x["name"], x["status"]) for x in nba_rotowire.parse(nba_rotowire.fetch())]
-            except Exception as exc:                        # noqa: BLE001
-                print(f"RotoWire unavailable ({exc})")
-                rw = None
             # the official report names no team: "" keeps the key unique per name
             off = ([("", nba_injury_report.full_name(a, b), st_) for a, b, st_, _ in got[1]["rows"]]
                    if got else None)
@@ -507,7 +516,7 @@ def run(do_push: bool = False, day: str | None = None) -> list[dict]:
                           prime=not replay and not state.get("seen"), windows=windows, extra=extra,
                           espn_out=espn_out, official_out=official_out,
                           name_ids=name_ids, official_doubtful=official_doubtful,
-                          lineups=lineups, day=d, labels=state.get("dk", {}).get("labels"), now=now)
+                          lineups=lineups, day=d, rotowire_out=rotowire_out, labels=state.get("dk", {}).get("labels"), now=now)
     new = [a for a in alerts if a["key"] not in state["sent"]]
     if any(a["preseason"] for a in new):
         new = sorted(new, key=lambda a: a["preseason"])[:PRESEASON_MAX_PUSH]

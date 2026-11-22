@@ -124,6 +124,19 @@ def test_a_bench_regular_not_on_nba_coms_list_fires_on_the_official_report():
     assert any("🔴 McBride OUT (official report)" in a["title"] for a in alerts)
 
 
+# 11/22: RotoWire's Out tag beat the official report by a median 75 min on 149 of 957
+# shared outs and caught 66 it never listed; it fires an OUT keyed by (name, team).
+def test_rotowire_out_fires_and_names_its_source():
+    ids = {"milesmcbride": "2"}
+    _, seen = S.assess(_starters_only(), HIST, {}, DK, {}, prime=True, name_ids=ids)
+    other, _ = S.assess(_starters_only(), HIST, {}, DK, seen, name_ids=ids,
+                        rotowire_out={("milesmcbride", "BOS")})
+    assert not any("McBride" in a["title"] for a in other)
+    alerts, _ = S.assess(_starters_only(), HIST, {}, DK, seen, name_ids=ids,
+                         rotowire_out={("milesmcbride", "NYK")})
+    assert any("🔴 McBride OUT (RotoWire)" in a["title"] for a in alerts)
+
+
 def test_doubtful_on_the_official_report_fires_once_then_out_fires_again():
     _, seen = S.assess(_night(), HIST, {}, DK, {}, prime=True)
     alerts, seen = S.assess(_night(), HIST, {}, DK, seen, official_doubtful={"jalenbrunson"})

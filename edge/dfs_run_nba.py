@@ -484,6 +484,18 @@ def build_board(gid: int, meta: dict, client=None) -> tuple[list, dict]:
     espn_rows = nba_availability.tonight_out() if date >= datetime.now(ET).date().isoformat() else []
     info["injuries_source"] = nba_availability.LAST_SOURCE if espn_rows or date >= datetime.now(ET).date().isoformat() \
         else "past slate (not read)"
+    # RotoWire's Out tags join ESPN's (decided 11/22, scripts/nba_news_lead.py, 22 nights:
+    # 66 outs the official report never listed, 149 of 957 shared ones a median 75 min
+    # sooner). Same (name, team) key; a failed read is named in injuries_source.
+    if date >= datetime.now(ET).date().isoformat():
+        try:
+            from edge import nba_rotowire
+            rw = [(x["name"], x["team"]) for x in nba_rotowire.parse(nba_rotowire.fetch())
+                  if x["status"] == "Out"]
+            espn_rows = list(espn_rows) + rw
+            info["injuries_source"] += f" + RotoWire ({len(rw)} out)"
+        except Exception as exc:                            # noqa: BLE001
+            info["injuries_source"] += f" + RotoWire UNAVAILABLE ({type(exc).__name__})"
     espn_out = {(norm(n), t) for n, t in espn_rows}
     espn_sig: dict = {}
     for n, t in espn_rows:
