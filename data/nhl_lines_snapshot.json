@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-22T17:29:04+00:00",
+"generated_at": "2026-11-22T18:28:40+00:00",
 "goalies": {
 "2026-11-22": {
 "BUF": {
@@ -890,7 +890,7 @@
 "toiSeconds": 23
 },
 "line": "D2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -1094,7 +1094,7 @@
 "toiSeconds": 9
 },
 "line": "D1",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -1162,7 +1162,7 @@
 "toiSeconds": 10
 },
 "line": "D3",
-"pk": null,
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -1196,7 +1196,7 @@
 "toiSeconds": 1
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": "PP2"
 },
@@ -1264,7 +1264,7 @@
 "toiSeconds": 19
 },
 "line": "D1",
-"pk": "PK2",
+"pk": null,
 "pos": "rd",
 "pp": "PP1"
 },
