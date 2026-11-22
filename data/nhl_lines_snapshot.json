@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-22T22:13:55+00:00",
+"generated_at": "2026-11-22T22:44:31+00:00",
 "goalies": {
 "2026-11-22": {
 "BUF": {
@@ -5141,10 +5141,10 @@
 "toiMinutes": 54,
 "toiSeconds": 28
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
-"pos": "lw",
-"pp": null
+"pos": "rw",
+"pp": "PP2"
 },
 "Jake Walman": {
 "gtd": false,
@@ -5246,7 +5246,7 @@
 "line": "F2",
 "pk": "PK2",
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Leon Draisaitl": {
 "gtd": false,
@@ -5311,7 +5311,7 @@
 "toiMinutes": 53,
 "toiSeconds": 11
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
 "pos": "rw",
 "pp": null
@@ -5349,6 +5349,40 @@
 "pk": null,
 "pos": "ld",
 "pp": "PP2"
+},
+"Max Jones": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 87,
+"toiSeconds": 41
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 35,
+"toiSeconds": 23
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Owen Michaels": {
 "gtd": false,
@@ -5483,7 +5517,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Tristan Jarry": {
@@ -5554,40 +5588,6 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
-},
-"Zach Hyman": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 5,
-"powerplayAssists": 1,
-"powerplayGoals": 1,
-"powerplayPoints": 2,
-"shots": 15,
-"toiMinutes": 160,
-"toiSeconds": 32
-},
-"last5": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 5,
-"toiMinutes": 78,
-"toiSeconds": 29
-},
-"line": "F1",
-"pk": null,
-"pos": "rw",
 "pp": "PP1"
 }
 },
