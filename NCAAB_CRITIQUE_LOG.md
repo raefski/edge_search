@@ -451,3 +451,42 @@ Unattended gate (20261121-0658): **dropped at re-gate (fail)**
 
 - rebase onto main failed: git rebase -q origin/main: error: cannot rebase: You have unstaged changes.
 error: Please commit or stash them.
+
+## Cycle 6 (availability: projected starters / late scratches; T07, from NBA) — 2026-11-22, unattended
+
+Scout: `{"target": "availability at lock: projected starters / late scratches (T07), scored on lineups",
+"metric": "held-out set20 field pctile + $ per $1, cash first, GPP guard, player MAE LOSO guard",
+"harness": "scripts/ncaab_lineup_lab.py report --n 20 (+VARIANT), scripts/ncaab_lab.py",
+"split": "LOSO over boards with box + contest; 11/2-11/4 reported apart (old blend)",
+"why": "cycle 5 runner-up: cash-owned players beat proj+salary by 11.2 pts per 100% owned (780 rows, 6 slates)",
+"money_at_stake": "cash +48% [-28,+124] (15 entries/10 slates); GPP -37% (12/10, net -$3)"}`
+
+**Hole (dfs-availability-critic):** a cheap (<$5K) RotoWire-listed starter on the salary/bench path (no Torvik
+history, no props) gets no credit for starting. 13 rows / 8 boxed slates: proj 11.8, scored 17.7 (+5.9; Stillwell
+11/10 $3,000 2.3 -> 31.75, Goosby 11/5 7.7 -> 30.5 at 76% cash-owned, L'Etang 11/14 7.6 -> 39.25).
+Other availability measures (8 slates, 1,689 rows): false actives are bench rows projected 0-3 (LAST_GAME already
+zeroes last-game DNPs; ~3 of 128 replayed lineup slots); starter flag precision .904 (283/313), recall .497
+(RotoWire covers ~half the teams; 4 late builds 11/17-11/20 logged no starters); false outs unmeasurable (OUT
+rows aren't logged); lead time unmeasurable (one build per slate, 14-72 min before lock, no news timestamps).
+
+**Fix tested** (`starter_bump`): eligible rows + STARTER_BUMP after LAST_GAME, the bump = mean train residual of
+eligible rows (floor 0, >= 5 rows), refit per LOSO fold (3.7-8.4 on 10-13 rows).
+
+| held out (6 slates / 8 contests per mode, set20) | shipped | starter_bump |
+|---|---|---|
+| cash pctile | .368 [.252, .544] | .441 [.306, .578] |
+| cash cashed / $ per $1 | 31% / 0.62 | 41% / 0.81 |
+| GPP pctile (guard) | .529 | .538 |
+| cash pts/lineup by slate | | 11/5 +17.1, 11/7 +15.5, 11/10 +1.2, 11/16 0, 11/2 -5.0, 11/4 -4.0 (old blend) |
+
+**Decision: NOT SHIPPED (conservative, unattended).** 13 qualifying rows, the gain is two slates, and cycle 5's
+placebo showed a 1% nudge swings single slates +23 / -15; no perturbation-seed average was run. Risks: RotoWire
+starters who come off the bench (Morillo, Landeira) get inflated; the variant silently does nothing on builds
+where RotoWire returned no starters. Re-test once more boxes are graded (9 of 24 logged boards have no box here).
+
+**Runner-ups:** (1) grading/logging gaps: commit the missing boxes, log OUT players at proj 0, add a rebuild ~20
+min before lock (makes scratches and lead time measurable); (2) no visible fallback when RotoWire returns no
+starters (4 late builds): last game's 20+ minute players as starters hit precision .80 / recall .77 on unlisted
+teams; (3) **bug:** two "Christian Jones" on LBS (11/16) share one key -> `KeyError: 'last_min'` in
+scripts/ncaab_lab.py and the lineup lab; key by DK player id. Not fixed here: the labs are the gate's judge
+files -- left for Adam.
