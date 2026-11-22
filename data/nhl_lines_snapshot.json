@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-22T19:28:42+00:00",
+"generated_at": "2026-11-22T19:59:03+00:00",
 "goalies": {
 "2026-11-22": {
 "BUF": {
@@ -4936,7 +4936,7 @@
 "toiSeconds": 49
 },
 "line": "F4",
-"pk": "PK1",
+"pk": null,
 "pos": "lw",
 "pp": null
 },
@@ -5004,7 +5004,7 @@
 "toiSeconds": 46
 },
 "line": "F1",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "c",
 "pp": "PP1"
 },
@@ -5038,7 +5038,7 @@
 "toiSeconds": 0
 },
 "line": "D2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -5108,7 +5108,7 @@
 "toiSeconds": 10
 },
 "line": "D1",
-"pk": null,
+"pk": "PK1",
 "pos": "rd",
 "pp": "PP1"
 },
@@ -5144,7 +5144,7 @@
 "line": "F3",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Jason Dickinson": {
 "gtd": false,
@@ -5176,7 +5176,7 @@
 "toiSeconds": 9
 },
 "line": "F3",
-"pk": null,
+"pk": "PK1",
 "pos": "c",
 "pp": null
 },
@@ -5278,7 +5278,7 @@
 "toiSeconds": 11
 },
 "line": "F3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rw",
 "pp": null
 },
@@ -5312,9 +5312,9 @@
 "toiSeconds": 58
 },
 "line": "D1",
-"pk": "PK2",
+"pk": null,
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Owen Michaels": {
 "gtd": false,
@@ -5380,7 +5380,7 @@
 "toiSeconds": 40
 },
 "line": "D2",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
 },
@@ -5414,7 +5414,7 @@
 "toiSeconds": 53
 },
 "line": "D3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -5557,7 +5557,7 @@
 "pp": "PP1"
 },
 "Zach Hyman": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
