@@ -490,3 +490,5 @@ starters (4 late builds): last game's 20+ minute players as starters hit precisi
 teams; (3) **bug:** two "Christian Jones" on LBS (11/16) share one key -> `KeyError: 'last_min'` in
 scripts/ncaab_lab.py and the lineup lab; key by DK player id. Not fixed here: the labs are the gate's judge
 files -- left for Adam.
+
+Unattended gate (20261122-0658): **not shipped (log / harness only, verified)**
