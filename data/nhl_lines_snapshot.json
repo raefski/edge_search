@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-23T17:28:29+00:00",
+"generated_at": "2026-11-23T17:29:45+00:00",
 "goalies": {
 "2026-11-23": {
 "ANA": {
@@ -5555,7 +5555,7 @@
 "toiMinutes": 102,
 "toiSeconds": 16
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -5589,9 +5589,9 @@
 "toiMinutes": 70,
 "toiSeconds": 37
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Ben Hutton": {
@@ -5691,9 +5691,9 @@
 "toiMinutes": 84,
 "toiSeconds": 37
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "lw",
 "pp": "PP1"
 },
 "Casey Cizikas": {
@@ -5727,7 +5727,7 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Emil Heineman": {
@@ -5759,9 +5759,9 @@
 "toiMinutes": 78,
 "toiSeconds": 7
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Ilya Sorokin": {
@@ -5829,7 +5829,7 @@
 "toiMinutes": 75,
 "toiSeconds": 21
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": null
@@ -5863,7 +5863,7 @@
 "toiMinutes": 77,
 "toiSeconds": 50
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -5897,7 +5897,7 @@
 "toiMinutes": 95,
 "toiSeconds": 49
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -5965,9 +5965,9 @@
 "toiMinutes": 76,
 "toiSeconds": 13
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Matthew Kessel": {
@@ -6069,7 +6069,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Semyon Varlamov": {
@@ -6205,7 +6205,7 @@
 "toiMinutes": 78,
 "toiSeconds": 16
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
