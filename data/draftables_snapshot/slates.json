@@ -51,6 +51,16 @@
 "StartDate": "2026-11-25T00:00:00.0000000Z",
 "StartDateEst": "2026-11-24T19:00:00.0000000",
 "last_start": "2026-11-25T00:00:00.0000000Z"
+},
+"157157": {
+"ContestStartTimeSuffix": " (TCU @ TTU)",
+"DraftGroupId": 157157,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 95,
+"StartDate": "2026-11-27T01:00:00.0000000Z",
+"StartDateEst": "2026-11-26T20:00:00.0000000",
+"last_start": "2026-11-27T01:00:00.0000000Z"
 }
 },
 "MLB": {},
@@ -259,26 +269,6 @@
 "StartDateEst": "2026-11-23T20:15:00.0000000",
 "last_start": "2026-11-26T01:00:00.0000000Z"
 },
-"157047": {
-"ContestStartTimeSuffix": " (Madden Stream)",
-"DraftGroupId": 157047,
-"DraftGroupTag": "Featured",
-"GameCount": 3,
-"GameTypeId": 158,
-"StartDate": "2026-11-23T17:00:00.0000000Z",
-"StartDateEst": "2026-11-23T12:00:00.0000000",
-"last_start": "2026-11-23T21:00:00.0000000Z"
-},
-"157050": {
-"ContestStartTimeSuffix": " (Madden Stream WAS @ LAR)",
-"DraftGroupId": 157050,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 159,
-"StartDate": "2026-11-23T21:00:00.0000000Z",
-"StartDateEst": "2026-11-23T16:00:00.0000000",
-"last_start": "2026-11-23T21:00:00.0000000Z"
-},
 "157051": {
 "ContestStartTimeSuffix": " (Madden Stream Early)",
 "DraftGroupId": 157051,
@@ -460,6 +450,16 @@
 "StartDate": "2026-11-24T03:00:00.0000000Z",
 "StartDateEst": "2026-11-23T22:00:00.0000000",
 "last_start": "2026-11-24T03:00:00.0000000Z"
+},
+"156969": {
+"ContestStartTimeSuffix": " (VGK @ EDM)",
+"DraftGroupId": 156969,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-25T01:00:00.0000000Z",
+"StartDateEst": "2026-11-24T20:00:00.0000000",
+"last_start": "2026-11-25T01:00:00.0000000Z"
 }
 }
 }
