@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-23T19:28:36+00:00",
+"generated_at": "2026-11-23T19:58:36+00:00",
 "goalies": {
 "2026-11-23": {
 "ANA": {
@@ -205,7 +205,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Ian Moore": {
@@ -344,40 +344,6 @@
 "pos": "rw",
 "pp": "PP1"
 },
-"Leo Carlsson": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 5,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 8,
-"powerplayAssists": 3,
-"powerplayGoals": 1,
-"powerplayPoints": 4,
-"shots": 19,
-"toiMinutes": 200,
-"toiSeconds": 4
-},
-"last5": {
-"assists": 2,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 8,
-"toiMinutes": 90,
-"toiSeconds": 33
-},
-"line": "F1",
-"pk": null,
-"pos": "c",
-"pp": "PP1"
-},
 "Lukas Dostal": {
 "gtd": false,
 "injury": null,
@@ -443,7 +409,7 @@
 "toiMinutes": 104,
 "toiSeconds": 21
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -513,8 +479,8 @@
 },
 "line": "F4",
 "pk": "PK2",
-"pos": "lw",
-"pp": null
+"pos": "c",
+"pp": "PP2"
 },
 "Pavel Mintyukov": {
 "gtd": false,
@@ -579,10 +545,44 @@
 "toiMinutes": 66,
 "toiSeconds": 48
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
+},
+"Sam Colangelo": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 13,
+"toiMinutes": 98,
+"toiSeconds": 35
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 43,
+"toiSeconds": 56
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Stian Solberg": {
 "gtd": false,
@@ -647,7 +647,7 @@
 "toiMinutes": 70,
 "toiSeconds": 28
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
 "pos": "c",
 "pp": null
@@ -718,7 +718,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Ville Husso": {
 "gtd": false,
@@ -859,7 +859,7 @@
 },
 "line": "F1",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Cole Sillinger": {
@@ -959,7 +959,7 @@
 "toiMinutes": 71,
 "toiSeconds": 13
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -993,7 +993,7 @@
 "toiMinutes": 98,
 "toiSeconds": 19
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
@@ -1405,7 +1405,7 @@
 },
 "line": "F1",
 "pk": "PK1",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Zach Werenski": {
