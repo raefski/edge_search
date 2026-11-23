@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-23T13:58:36+00:00",
+"generated_at": "2026-11-23T15:28:22+00:00",
 "goalies": {
 "2026-11-23": {
 "ANA": {
@@ -56,7 +56,7 @@
 },
 "WPG": {
 "goalie": "Stuart Skinner",
-"status": null
+"status": "Likely"
 }
 },
 "2026-11-24": {
@@ -206,7 +206,7 @@
 "line": "F4",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Ian Moore": {
 "gtd": false,
@@ -480,7 +480,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": null
 },
 "Nikita Nesterenko": {
 "gtd": false,
@@ -3328,7 +3328,7 @@
 "line": "F2",
 "pk": null,
 "pos": "lw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Mats Zuccarello": {
 "gtd": false,
@@ -3362,7 +3362,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Mikey Anderson": {
 "gtd": false,
@@ -3706,7 +3706,7 @@
 "line": "D3",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Jared Spurgeon": {
 "gtd": false,
@@ -3740,7 +3740,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Jesper Wallstedt": {
 "gtd": false,
@@ -5589,7 +5589,7 @@
 "toiMinutes": 102,
 "toiSeconds": 16
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -5623,9 +5623,9 @@
 "toiMinutes": 70,
 "toiSeconds": 37
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Ben Hutton": {
@@ -5793,7 +5793,7 @@
 "toiMinutes": 78,
 "toiSeconds": 7
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -5897,7 +5897,7 @@
 "toiMinutes": 77,
 "toiSeconds": 50
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -5931,7 +5931,7 @@
 "toiMinutes": 95,
 "toiSeconds": 49
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -5968,7 +5968,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Matias Maccelli": {
 "gtd": false,
@@ -5999,10 +5999,10 @@
 "toiMinutes": 76,
 "toiSeconds": 13
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Matthew Kessel": {
 "gtd": false,
@@ -6101,9 +6101,9 @@
 "toiMinutes": 63,
 "toiSeconds": 45
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Semyon Varlamov": {
@@ -9981,7 +9981,7 @@
 "toiMinutes": 86,
 "toiSeconds": 51
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
@@ -10151,7 +10151,7 @@
 "toiMinutes": 92,
 "toiSeconds": 45
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -11007,9 +11007,9 @@
 "toiMinutes": 49,
 "toiSeconds": 18
 },
-"line": "F4",
+"line": "D4",
 "pk": null,
-"pos": "rw",
+"pos": "ld",
 "pp": null
 },
 "Viggo Bj\u00f6rck": {
