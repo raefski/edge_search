@@ -72,8 +72,8 @@
 "DraftGroupTag": "",
 "GameCount": 1,
 "GameTypeId": 112,
-"StartDate": "2026-11-23T02:30:00.0000000Z",
-"StartDateEst": "2026-11-22T21:30:00.0000000",
+"StartDate": "2026-11-23T02:44:00.0000000Z",
+"StartDateEst": "2026-11-22T21:44:00.0000000",
 "last_start": "2026-11-23T02:30:00.0000000Z"
 },
 "157216": {
@@ -188,16 +188,6 @@
 "StartDateEst": "2026-11-22T20:20:00.0000000",
 "last_start": "2026-11-24T01:15:00.0000000Z"
 },
-"156792": {
-"ContestStartTimeSuffix": " (MIN vs SF)",
-"DraftGroupId": 156792,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 96,
-"StartDate": "2026-11-23T01:20:00.0000000Z",
-"StartDateEst": "2026-11-22T20:20:00.0000000",
-"last_start": "2026-11-23T01:20:00.0000000Z"
-},
 "156793": {
 "ContestStartTimeSuffix": " (CIN @ WAS)",
 "DraftGroupId": 156793,
@@ -214,8 +204,8 @@
 "DraftGroupTag": "",
 "GameCount": 1,
 "GameTypeId": 108,
-"StartDate": "2026-11-23T02:20:00.0000000Z",
-"StartDateEst": "2026-11-22T21:20:00.0000000",
+"StartDate": "2026-11-23T02:39:00.0000000Z",
+"StartDateEst": "2026-11-22T21:39:00.0000000",
 "last_start": "2026-11-23T02:20:00.0000000Z"
 },
 "156796": {
@@ -237,16 +227,6 @@
 "StartDate": "2026-11-24T01:15:00.0000000Z",
 "StartDateEst": "2026-11-23T20:15:00.0000000",
 "last_start": "2026-11-26T01:00:00.0000000Z"
-},
-"156919": {
-"ContestStartTimeSuffix": " (MIN vs SF)",
-"DraftGroupId": 156919,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 385,
-"StartDate": "2026-11-23T01:20:00.0000000Z",
-"StartDateEst": "2026-11-22T20:20:00.0000000",
-"last_start": "2026-11-23T01:20:00.0000000Z"
 },
 "157047": {
 "ContestStartTimeSuffix": " (Madden Stream)",
@@ -290,26 +270,6 @@
 }
 },
 "NHL": {
-"156955": {
-"ContestStartTimeSuffix": null,
-"DraftGroupId": 156955,
-"DraftGroupTag": "Featured",
-"GameCount": 4,
-"GameTypeId": 125,
-"StartDate": "2026-11-22T22:00:00.0000000Z",
-"StartDateEst": "2026-11-22T17:00:00.0000000",
-"last_start": "2026-11-23T01:00:00.0000000Z"
-},
-"156959": {
-"ContestStartTimeSuffix": " (CHI @ VAN)",
-"DraftGroupId": 156959,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 127,
-"StartDate": "2026-11-23T01:00:00.0000000Z",
-"StartDateEst": "2026-11-22T20:00:00.0000000",
-"last_start": "2026-11-23T01:00:00.0000000Z"
-},
 "156961": {
 "ContestStartTimeSuffix": " (CBJ @ NJD)",
 "DraftGroupId": 156961,
