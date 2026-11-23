@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-23T15:30:14+00:00",
+"generated_at": "2026-11-23T15:58:35+00:00",
 "goalies": {
 "2026-11-23": {
 "ANA": {
@@ -32,11 +32,11 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": null
+"status": "Likely"
 },
 "OTT": {
 "goalie": "Linus Ullmark",
-"status": null
+"status": "Likely"
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
@@ -61,7 +61,7 @@
 },
 "2026-11-24": {
 "EDM": {
-"goalie": "Tristan Jarry",
+"goalie": "Devon Levi",
 "status": null
 },
 "VGK": {
@@ -2263,7 +2263,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2741,7 +2741,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
