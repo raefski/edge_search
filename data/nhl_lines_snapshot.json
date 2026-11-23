@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-23T17:29:45+00:00",
+"generated_at": "2026-11-23T17:58:35+00:00",
 "goalies": {
 "2026-11-23": {
 "ANA": {
@@ -39,8 +39,8 @@
 "status": "Confirmed"
 },
 "SEA": {
-"goalie": "Philipp Grubauer",
-"status": null
+"goalie": "Joey Daccord",
+"status": "Likely"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -52,7 +52,7 @@
 },
 "UTA": {
 "goalie": "Sebastian Cossa",
-"status": null
+"status": "Confirmed"
 },
 "WPG": {
 "goalie": "Stuart Skinner",
@@ -1473,7 +1473,7 @@
 "toiMinutes": 59,
 "toiSeconds": 59
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -1686,40 +1686,6 @@
 "pos": "c",
 "pp": null
 },
-"Martin Pospisil": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 124,
-"toiSeconds": 14
-},
-"last5": {
-"assists": 2,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 59,
-"toiSeconds": 5
-},
-"line": "F2",
-"pk": null,
-"pos": "c",
-"pp": null
-},
 "Matt Coronato": {
 "gtd": false,
 "injury": null,
@@ -1921,8 +1887,18 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
+},
+"Sam Morton": {
+"gtd": false,
+"injury": null,
+"last10": {},
+"last5": {},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 },
 "Simon Nemec": {
 "gtd": false,
@@ -2879,8 +2855,8 @@
 "toiMinutes": 62,
 "toiSeconds": 18
 },
-"line": "F3",
-"pk": "PK2",
+"line": "F4",
+"pk": null,
 "pos": "lw",
 "pp": null
 },
@@ -3398,40 +3374,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Samuel Helenius": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 84,
-"toiSeconds": 22
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 36,
-"toiSeconds": 28
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
-"pp": null
-},
 "Scott Laughton": {
 "gtd": false,
 "injury": null,
@@ -3463,6 +3405,40 @@
 },
 "line": "F4",
 "pk": null,
+"pos": "c",
+"pp": null
+},
+"Trevor Moore": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 4,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 20,
+"toiMinutes": 161,
+"toiSeconds": 4
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 77,
+"toiSeconds": 24
+},
+"line": "F3",
+"pk": "PK2",
 "pos": "lw",
 "pp": null
 }
@@ -9056,7 +9032,7 @@
 "line": "F2",
 "pk": null,
 "pos": "c",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Ben McCartney": {
 "gtd": false,
@@ -9092,6 +9068,40 @@
 "pos": "lw",
 "pp": null
 },
+"Clayton Keller": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 13,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 14,
+"powerplayAssists": 8,
+"powerplayGoals": 0,
+"powerplayPoints": 8,
+"shots": 31,
+"toiMinutes": 206,
+"toiSeconds": 17
+},
+"last5": {
+"assists": 5,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 5,
+"powerplayAssists": 3,
+"powerplayGoals": 0,
+"powerplayPoints": 3,
+"shots": 12,
+"toiMinutes": 109,
+"toiSeconds": 23
+},
+"line": "F1",
+"pk": null,
+"pos": "rw",
+"pp": "PP1"
+},
 "Daniil But": {
 "gtd": false,
 "injury": null,
@@ -9121,7 +9131,7 @@
 "toiMinutes": 46,
 "toiSeconds": 12
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -9329,7 +9339,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Liam O'Brien": {
@@ -9433,40 +9443,6 @@
 "pk": "PK1",
 "pos": "rd",
 "pp": null
-},
-"Michael Carcone": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 13,
-"toiMinutes": 120,
-"toiSeconds": 59
-},
-"last5": {
-"assists": 1,
-"blocks": 0,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 62,
-"toiSeconds": 53
-},
-"line": "F3",
-"pk": null,
-"pos": "lw",
-"pp": "PP2"
 },
 "Mikhail Sergachev": {
 "gtd": false,
