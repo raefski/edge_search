@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-23T17:00:48+00:00",
+"generated_at": "2026-11-23T16:59:15+00:00",
 "goalies": {
 "2026-11-23": {
 "ANA": {
@@ -2850,6 +2850,40 @@
 "pos": "c",
 "pp": "PP1"
 },
+"Alex Turcotte": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 5,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 13,
+"toiMinutes": 135,
+"toiSeconds": 3
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 61,
+"toiSeconds": 25
+},
+"line": "F3",
+"pk": null,
+"pos": "lw",
+"pp": null
+},
 "Andre Lee": {
 "gtd": false,
 "injury": null,
@@ -2879,7 +2913,7 @@
 "toiMinutes": 62,
 "toiSeconds": 18
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK2",
 "pos": "lw",
 "pp": null
@@ -2920,40 +2954,6 @@
 "pos": "g",
 "pp": null
 },
-"Artemi Panarin": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 8,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 4,
-"points": 12,
-"powerplayAssists": 4,
-"powerplayGoals": 2,
-"powerplayPoints": 6,
-"shots": 34,
-"toiMinutes": 215,
-"toiSeconds": 14
-},
-"last5": {
-"assists": 6,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 6,
-"powerplayAssists": 4,
-"powerplayGoals": 0,
-"powerplayPoints": 4,
-"shots": 17,
-"toiMinutes": 103,
-"toiSeconds": 7
-},
-"line": "F1",
-"pk": null,
-"pos": "lw",
-"pp": "PP1"
-},
 "Brandt Clarke": {
 "gtd": false,
 "injury": null,
@@ -2986,7 +2986,7 @@
 "line": "D1",
 "pk": null,
 "pos": "rd",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Brian Dumoulin": {
 "gtd": false,
@@ -3019,40 +3019,6 @@
 },
 "line": "D3",
 "pk": "PK2",
-"pos": "ld",
-"pp": null
-},
-"Cody Ceci": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 157,
-"toiSeconds": 10
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 69,
-"toiSeconds": 6
-},
-"line": "D3",
-"pk": null,
 "pos": "rd",
 "pp": null
 },
@@ -3160,6 +3126,40 @@
 "pos": "rd",
 "pp": "PP2"
 },
+"Erik Gustafsson": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 6,
+"blocks": 13,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 7,
+"powerplayAssists": 4,
+"powerplayGoals": 0,
+"powerplayPoints": 4,
+"shots": 10,
+"toiMinutes": 206,
+"toiSeconds": 30
+},
+"last5": {
+"assists": 5,
+"blocks": 5,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 6,
+"powerplayAssists": 3,
+"powerplayGoals": 0,
+"powerplayPoints": 3,
+"shots": 8,
+"toiMinutes": 95,
+"toiSeconds": 58
+},
+"line": "D1",
+"pk": null,
+"pos": "ld",
+"pp": "PP1"
+},
 "Erik Haula": {
 "gtd": false,
 "injury": null,
@@ -3257,7 +3257,7 @@
 "toiMinutes": 89,
 "toiSeconds": 16
 },
-"line": "D1",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -3328,7 +3328,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Mikey Anderson": {
 "gtd": false,
@@ -3359,7 +3359,7 @@
 "toiMinutes": 99,
 "toiSeconds": 7
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
 "pos": "ld",
 "pp": null
