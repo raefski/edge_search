@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-23T20:59:19+00:00",
+"generated_at": "2026-11-23T23:43:34+00:00",
 "goalies": {
 "2026-11-23": {
 "ANA": {
@@ -9068,40 +9068,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Ben McCartney": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 92,
-"toiSeconds": 1
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 45,
-"toiSeconds": 19
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
-},
 "Clayton Keller": {
 "gtd": false,
 "injury": null,
@@ -9165,7 +9131,7 @@
 "toiMinutes": 46,
 "toiSeconds": 12
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -9203,6 +9169,40 @@
 "pk": "PK2",
 "pos": "ld",
 "pp": null
+},
+"Dylan Guenther": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 2,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 2,
+"powerplayPoints": 3,
+"shots": 20,
+"toiMinutes": 177,
+"toiSeconds": 36
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 1,
+"powerplayGoals": 1,
+"powerplayPoints": 2,
+"shots": 7,
+"toiMinutes": 84,
+"toiSeconds": 43
+},
+"line": "F2",
+"pk": null,
+"pos": "rw",
+"pp": "PP1"
 },
 "Jack McBain": {
 "gtd": false,
@@ -9267,10 +9267,10 @@
 "toiMinutes": 93,
 "toiSeconds": 29
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Karel Vejmelka": {
 "gtd": false,
@@ -9374,7 +9374,7 @@
 "line": "F3",
 "pk": "PK1",
 "pos": "lw",
-"pp": "PP2"
+"pp": null
 },
 "Liam O'Brien": {
 "gtd": false,
@@ -9407,7 +9407,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Logan Cooley": {
