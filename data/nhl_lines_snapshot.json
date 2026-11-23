@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-23T18:59:51+00:00",
+"generated_at": "2026-11-23T19:28:36+00:00",
 "goalies": {
 "2026-11-23": {
 "ANA": {
@@ -19,8 +19,8 @@
 "status": null
 },
 "MIN": {
-"goalie": "Jesper Wallstedt",
-"status": null
+"goalie": "Filip Gustavsson",
+"status": "Confirmed"
 },
 "MTL": {
 "goalie": "Jakub Dobes",
@@ -928,7 +928,7 @@
 "line": "D1",
 "pk": null,
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Dante Fabbro": {
 "gtd": false,
@@ -959,78 +959,44 @@
 "toiMinutes": 71,
 "toiSeconds": 13
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": null
 },
-"Dmitri Voronkov": {
+"Denton Mateychuk": {
 "gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
-"blocks": 1,
+"blocks": 10,
 "gamesPlayed": 10,
 "goals": 1,
 "points": 3,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 91,
+"shots": 12,
+"toiMinutes": 208,
 "toiSeconds": 22
 },
 "last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 53,
-"toiSeconds": 13
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
-"Erik Gudbranson": {
-"gtd": false,
-"injury": null,
-"last10": {
 "assists": 0,
-"blocks": 17,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 128,
-"toiSeconds": 27
-},
-"last5": {
-"assists": 0,
-"blocks": 9,
+"blocks": 4,
 "gamesPlayed": 5,
 "goals": 0,
 "points": 0,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 54,
-"toiSeconds": 14
+"shots": 6,
+"toiMinutes": 98,
+"toiSeconds": 19
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Isac Lundestrom": {
 "gtd": false,
@@ -1339,6 +1305,74 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
+},
+"Mikael Pyyhtia": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 108,
+"toiSeconds": 24
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 52,
+"toiSeconds": 50
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
+"Ryan Lomberg": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 7,
+"toiMinutes": 74,
+"toiSeconds": 52
+},
+"last5": {
+"assists": 0,
+"blocks": 0,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 32,
+"toiSeconds": 36
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Valeri Nichushkin": {
 "gtd": false,
@@ -3650,6 +3684,42 @@
 "pos": "rd",
 "pp": null
 },
+"Filip Gustavsson": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 37,
+"goalieGoalsAgainstAvg": "3.76",
+"goalieLosses": 6,
+"goalieMinutes": 590,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.85",
+"goalieSaves": 209,
+"goalieSeconds": 13,
+"goalieShotsAgainst": 246,
+"goalieShutouts": 0,
+"goalieWins": 4
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 20,
+"goalieGoalsAgainstAvg": "4.07",
+"goalieLosses": 3,
+"goalieMinutes": 294,
+"goalieOvertimeLosses": 0,
+"goalieSavePercentage": "0.833",
+"goalieSaves": 100,
+"goalieSeconds": 12,
+"goalieShotsAgainst": 120,
+"goalieShutouts": 0,
+"goalieWins": 2
+},
+"line": "G1",
+"pk": null,
+"pos": "g",
+"pp": null
+},
 "Jared Spurgeon": {
 "gtd": false,
 "injury": null,
@@ -3683,42 +3753,6 @@
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
-},
-"Jesper Wallstedt": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 20,
-"goalieGoalsAgainstAvg": "1.98",
-"goalieLosses": 0,
-"goalieMinutes": 605,
-"goalieOvertimeLosses": 2,
-"goalieSavePercentage": "0.925",
-"goalieSaves": 246,
-"goalieSeconds": 20,
-"goalieShotsAgainst": 266,
-"goalieShutouts": 0,
-"goalieWins": 8
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 11,
-"goalieGoalsAgainstAvg": "2.16",
-"goalieLosses": 0,
-"goalieMinutes": 304,
-"goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.919",
-"goalieSaves": 125,
-"goalieSeconds": 43,
-"goalieShotsAgainst": 136,
-"goalieShutouts": 0,
-"goalieWins": 4
-},
-"line": "G1",
-"pk": null,
-"pos": "g",
-"pp": null
 },
 "Joel Eriksson Ek": {
 "gtd": false,
