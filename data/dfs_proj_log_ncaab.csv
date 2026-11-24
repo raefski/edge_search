@@ -4643,3 +4643,199 @@ date,gid,player,team,opp,dk_pos,salary,proj,sd,floor,ceil,own,proj_source,impute
 2026-11-24,157024,John Jackson,PROV,ARIZ,G,3000,0.31,0.83,0.0,1.5,0.2,bench,all,,0,,,,live,74.75,1.05
 2026-11-24,157024,Jel Malek,SDSU,ISU,G,3000,0.47,1.0,0.0,2.0,0.2,bench,all,,0,,,,live,66.5,1.443
 2026-11-24,157024,George Turkson Jr.,UMD,TENN,G/F,3000,1.63,1.84,0.0,4.25,0.3,bench,all,,0,Maryland,11.478,2.0,live,72.75,1.545
+2026-11-24,157026,Tyler Tanner,VAND,OSU,G,10200,37.69,10.33,30.5,51.25,13.0,props,reb|ast|fg3|stl|blk|tov,,0,Vanderbilt,33.464,38.0,live,79.25,37.862
+2026-11-24,157026,Davis Fogle,GONZ,KSU,G,9700,28.36,8.3,22.5,39.5,7.6,blend,all,,0,Gonzaga,16.717,36.4,live,86.5,25.457
+2026-11-24,157026,Flory Bidunga,UL,TTU,F,9400,31.22,9.39,24.25,43.5,11.4,props,ast|fg3|stl|blk|tov,,0,,,34.6,live,75.5,31.001
+2026-11-24,157026,Braden Huff,GONZ,KSU,F,9100,29.54,8.67,23.5,41.25,10.7,blend,all,,0,Gonzaga,25.394,30.3,live,86.5,32.573
+2026-11-24,157026,Brandon Rechsteiner,KSU,GONZ,G,8700,29.74,9.68,23.0,42.25,8.9,props,fg3|stl|blk|tov,,0,,,33.1,live,71.0,29.901
+2026-11-24,157026,Malique Ewin,ORE,STJN,F,8400,29.46,9.22,23.0,41.5,13.1,blend,all,,0,,,35.4,live,72.5,26.733
+2026-11-24,157026,Cruz Davis,TTU,UL,G,8300,34.89,10.34,27.75,48.53,14.0,props,stl|blk|tov,,0,,,36.5,live,78.0,34.684
+2026-11-24,157026,Quinn Ellis,STJN,ORE,G,8200,25.09,8.24,19.25,35.75,6.1,blend,all,,0,,,35.2,live,83.0,27.691
+2026-11-24,157026,Tounde Yessoufou,STJN,ORE,G,8100,19.6,7.14,14.5,29.25,3.8,blend,all,,0,,,33.8,live,83.0,27.047
+2026-11-24,157026,John Mobley Jr.,OSU,VAND,G,8000,26.17,9.18,19.75,38.25,6.8,props,stl|blk|tov,,0,Ohio St.,31.661,27.7,live,77.25,26.363
+2026-11-24,157026,Amari Allen,BAMA,BAY,G,7800,36.62,10.58,29.25,50.03,17.5,props,stl|blk|tov,,0,Alabama,28.212,36.4,live,88.0,36.354
+2026-11-24,157026,Ryan Beasley,UW,CLEM,G,7700,28.09,8.56,22.0,39.75,8.2,blend,all,,0,,,29.2,live,74.5,23.87
+2026-11-24,157026,Lazar Djokovic,VCU,CSU,F,7600,26.51,8.28,20.75,37.5,11.6,props,fg3|stl|blk|tov,,0,VCU,27.654,25.0,live,77.5,26.439
+2026-11-24,157026,Dylan Mingo,BAY,BAMA,G,7500,25.7,8.54,19.75,36.78,6.7,props,reb|fg3|stl|blk|tov,,0,,,29.5,live,86.5,25.764
+2026-11-24,157026,Brett Decker Jr.,BAY,BAMA,G,7400,27.08,9.54,20.25,39.25,7.7,props,reb|stl|blk|tov,,0,,,25.8,live,86.5,26.682
+2026-11-24,157026,Dra Gibbs-Lawhorn,TTU,UL,G,7300,19.33,7.22,14.25,29.0,3.7,blend,all,,0,,,24.2,live,78.0,21.959
+2026-11-24,157026,Keyshawn Hall,STJN,ORE,F,7200,23.41,7.36,18.25,33.0,8.5,blend,all,,0,,,32.5,live,83.0,25.24
+2026-11-24,157026,Blake Harper,VCU,CSU,G,7100,29.27,9.07,23.0,41.25,9.9,props,stl|blk|tov,,0,,,29.6,live,77.5,29.276
+2026-11-24,157026,Kayden Mingo,BAY,BAMA,G,7100,34.83,10.34,27.5,48.5,17.1,props,stl|blk|tov,,0,,,29.9,live,86.5,34.737
+2026-11-24,157026,Adrian Wooley,UL,TTU,G,7000,24.31,8.08,18.5,34.75,6.1,props,stl|blk|tov,,0,Louisville,22.437,28.4,live,75.5,24.204
+2026-11-24,157026,Fred Payne,ORE,STJN,G,7000,24.91,8.8,18.75,36.75,6.5,blend,all,,0,,,24.6,live,72.5,21.071
+2026-11-24,157026,Ace Buckner,CLEM,UW,G,6900,33.48,9.39,27.0,46.0,15.7,props,reb|stl|blk|tov,,0,Clemson,19.506,29.3,live,76.0,33.624
+2026-11-24,157026,Xaivian Lee,GONZ,KSU,G,6900,23.06,7.71,17.5,33.5,5.4,blend,all,,0,,,22.3,live,86.5,21.517
+2026-11-24,157026,Nyk Lewis,VCU,CSU,G,6800,23.85,7.92,18.25,34.25,6.0,props,stl|blk|tov,,0,VCU,23.671,23.8,live,77.5,24.096
+2026-11-24,157026,Isaac Williams IV,BAY,BAMA,G,6800,22.91,7.72,17.5,33.0,5.4,blend,all,,0,Baylor,25.018,24.3,live,86.5,23.373
+2026-11-24,157026,Amare Bynum,OSU,VAND,F,6700,27.13,8.69,21.0,38.75,13.6,props,fg3|stl|blk|tov,,0,Ohio St.,28.497,27.3,live,77.25,27.038
+2026-11-24,157026,Jase Butler,CSU,VCU,G,6700,22.3,7.88,16.75,33.0,5.1,blend,all,,0,,,30.5,live,72.0,22.508
+2026-11-24,157026,Massamba Diop,GONZ,KSU,F,6600,20.93,7.09,15.75,30.25,6.6,blend,all,,0,,,17.3,live,86.5,19.265
+2026-11-24,157026,Justin Pippen,OSU,VAND,G,6600,22.06,7.92,16.5,32.5,5.1,props,stl|blk|tov,,0,,,23.0,live,77.25,22.034
+2026-11-24,157026,LeJuan Watts,UW,CLEM,G/F,6500,23.67,7.95,18.0,34.5,6.1,blend,all,,0,,,29.1,live,74.5,22.039
+2026-11-24,157026,Carey Booth,CSU,VCU,F,6500,21.53,7.32,16.25,31.25,7.2,blend,all,,0,,,27.9,live,72.0,21.354
+2026-11-24,157026,Jaden Schutt,KSU,GONZ,G,6400,17.7,7.39,12.25,27.25,3.2,props,stl|blk|tov,,0,,,19.9,live,71.0,17.675
+2026-11-24,157026,Drew Fielder,BAMA,BAY,F,6400,22.18,7.76,16.5,32.53,7.8,props,stl|blk|tov,,0,Boise St.,23.712,23.8,live,88.0,21.948
+2026-11-24,157026,Cole Certa,CLEM,UW,G,6300,25.87,8.7,19.75,37.0,8.0,props,ast|stl|blk|tov,,0,,,22.9,live,76.0,25.53
+2026-11-24,157026,Kyle Jorgensen,CSU,VCU,F,6300,12.85,5.39,9.0,20.0,2.5,blend,all,Q,0,,,19.9,live,72.0,12.897
+2026-11-24,157026,Berke Buyuktuncel,VAND,OSU,F,6200,25.53,8.07,19.75,36.5,12.2,blend,all,,0,,,22.9,live,79.25,19.989
+2026-11-24,157026,Ace Glass,VAND,OSU,G,6100,32.59,9.91,25.5,45.75,18.3,props,reb|ast|fg3|stl|blk|tov,,0,,,26.4,live,79.25,32.423
+2026-11-24,157026,Darrion Williams,TTU,UL,F,6100,21.37,7.21,16.25,30.25,7.3,blend,all,,0,,,18.9,live,78.0,18.347
+2026-11-24,157026,Isaiah Abraham,KSU,GONZ,F,6000,18.01,6.84,13.0,27.03,4.8,props,fg3|stl|blk|tov,,0,,,22.1,live,71.0,17.962
+2026-11-24,157026,Aden Holloway,BAMA,BAY,G,6000,25.88,8.96,19.44,37.75,8.7,props,stl|blk|tov,,0,Alabama,28.389,23.6,live,88.0,25.899
+2026-11-24,157026,Chandler Bing,VAND,OSU,G/F,5900,23.11,7.69,17.5,33.5,6.4,props,reb|ast|fg3|stl|blk|tov,,0,Vanderbilt,14.828,24.6,live,79.25,22.867
+2026-11-24,157026,Isaac Celiscar,BAY,BAMA,F,5900,19.76,6.75,15.0,29.0,6.1,blend,all,,0,,,22.8,live,86.5,20.199
+2026-11-24,157026,Damarion Dennis,TTU,UL,G,5900,21.21,7.65,16.0,31.5,5.1,blend,all,,0,,,22.5,live,78.0,19.279
+2026-11-24,157026,Dylan Faulkner,CLEM,UW,F,5800,23.72,7.57,18.75,33.75,10.6,props,ast|fg3|stl|blk|tov,,0,,,28.5,live,76.0,23.724
+2026-11-24,157026,Jamichael Stillwell,TTU,UL,F,5800,31.79,9.48,25.0,44.5,31.5,props,fg3|stl|blk|tov,,0,,,31.0,live,78.0,31.11
+2026-11-24,157026,Obinna Ekezie Jr.,UL,TTU,F,5800,13.99,5.61,10.0,21.5,2.8,blend,all,,0,,,17.9,live,75.5,17.333
+2026-11-24,157026,Ian Jackson,STJN,ORE,G,5700,20.78,7.72,15.25,31.0,5.0,blend,all,,0,St. John's,18.294,24.5,live,83.0,18.582
+2026-11-24,157026,Alvaro Folgueiras,UL,TTU,F,5700,23.7,7.93,18.25,34.03,10.8,props,stl|blk|tov,,0,,,22.8,live,75.5,23.308
+2026-11-24,157026,David Fuchs,CLEM,UW,F,5700,13.19,5.51,9.25,20.25,2.5,blend,all,,0,,,13.6,live,76.0,15.776
+2026-11-24,157026,Isiah Harwell,GONZ,KSU,G,5600,19.04,8.04,13.25,29.5,4.1,blend,all,,0,,,18.4,live,86.5,18.163
+2026-11-24,157026,Nikola Dzepina,UW,CLEM,F,5600,24.11,8.08,18.25,34.75,11.8,props,stl|blk|tov,,0,Washington,11.057,26.1,live,74.5,24.211
+2026-11-24,157026,Keitenn Bristow,BAMA,BAY,F,5600,14.86,5.77,10.75,22.25,3.2,blend,all,,0,Alabama,12.6,18.6,live,88.0,15.778
+2026-11-24,157026,Torey Alston,VCU,CSU,F,5500,21.73,6.98,16.75,30.75,8.6,props,ast|fg3|stl|blk|tov,,0,Middle Tennessee,29.291,26.2,live,77.5,21.598
+2026-11-24,157026,Caden Powell,BAY,BAMA,F,5500,18.0,6.29,13.25,26.5,5.1,blend,all,,0,Baylor,24.379,17.3,live,86.5,20.739
+2026-11-24,157026,Donovan Atwell,TTU,UL,G,5500,20.65,7.93,15.0,31.0,5.2,props,stl|blk|tov,,0,Texas Tech,34.632,17.6,live,78.0,20.677
+2026-11-24,157026,Evan Chatman,BAY,BAMA,F,5400,15.41,6.01,11.0,23.0,3.5,blend,all,,0,,,15.1,live,86.5,16.674
+2026-11-24,157026,Karter Knox,UL,TTU,G,5400,18.79,7.13,13.5,28.5,4.2,blend,all,,0,,,26.0,live,75.5,19.461
+2026-11-24,157026,Andrija Jelavic,OSU,VAND,F,5400,24.17,7.99,18.5,34.75,12.6,props,fg3|stl|blk|tov,,0,,,25.7,live,77.25,24.082
+2026-11-24,157026,Steele Venters,UW,CLEM,G/F,5300,23.01,8.26,17.0,33.75,7.4,props,stl|blk|tov,,0,,,23.2,live,74.5,22.939
+2026-11-24,157026,LJ Wells,UL,TTU,F,5300,8.09,4.23,5.0,13.5,1.2,blend,all,,0,,,6.6,live,75.5,12.779
+2026-11-24,157026,Jasper Johnson,ORE,STJN,G,5300,21.81,7.89,16.25,32.25,6.4,blend,all,,0,,,15.7,live,72.5,15.588
+2026-11-24,157026,London Jemison,BAMA,BAY,F,5200,15.13,6.14,10.75,23.5,3.5,blend,all,,0,Alabama,15.658,19.2,live,88.0,16.343
+2026-11-24,157026,Brandon Garrison,BAMA,BAY,F,5200,15.72,6.16,11.25,23.75,3.8,blend,all,,0,,,21.9,live,88.0,18.963
+2026-11-24,157026,Elijah Williams,BAY,BAMA,F,5200,17.05,6.62,12.25,25.5,4.6,props,fg3|stl|blk|tov,,0,,,20.4,live,86.5,16.921
+2026-11-24,157026,Seth Trimble,UL,TTU,G,5200,25.05,8.12,19.25,36.0,10.1,props,fg3|stl|blk|tov,Q,0,North Carolina,32.454,26.9,live,75.5,25.083
+2026-11-24,157026,Qayden Samuels,BAMA,BAY,G,5100,18.55,7.04,13.5,27.75,4.3,blend,all,,0,,,18.5,live,88.0,17.577
+2026-11-24,157026,Josh Pascarelli,CSU,VCU,G,5100,17.6,7.15,12.5,27.0,3.8,blend,all,,0,Colorado St.,26.422,18.7,live,72.0,17.396
+2026-11-24,157026,Taylor Bowen,ORE,STJN,F,5100,13.29,5.46,9.5,20.5,2.7,blend,all,,0,,,16.9,live,72.5,15.684
+2026-11-24,157026,Justin Menard,CSU,VCU,G,5000,15.28,6.41,10.75,23.53,2.8,blend,all,,0,,,16.9,live,72.0,15.489
+2026-11-24,157026,Liutauras Lelevicius,CLEM,UW,G/F,5000,22.54,8.04,16.75,33.25,7.8,props,ast|stl|blk|tov,,0,,,24.3,live,76.0,22.663
+2026-11-24,157026,Sebastian Williams-Adams,VAND,OSU,F,5000,21.66,7.29,16.5,31.5,9.9,props,ast|fg3|stl|blk|tov,,0,,,19.3,live,79.25,21.584
+2026-11-24,157026,Jimmie Williams,OSU,VAND,G,4900,16.45,6.45,12.0,25.0,3.4,blend,all,,0,,,18.8,live,77.25,16.447
+2026-11-24,157026,Lathan Sommerville,UW,CLEM,F,4900,22.49,7.48,17.25,32.25,11.8,blend,all,,0,Washington,14.441,21.0,live,74.5,11.901
+2026-11-24,157026,Jackson Shelstad,UL,TTU,G,4900,25.78,8.84,19.69,37.75,12.9,props,stl|blk|tov,,0,,,22.9,live,75.5,25.606
+2026-11-24,157026,Wesley Yates III,UW,CLEM,G,4800,4.35,3.26,2.0,8.75,0.6,blend,all,Q,0,Washington,31.37,15.0,live,74.5,14.331
+2026-11-24,157026,Ruben Prey,STJN,ORE,F,4800,13.63,5.84,9.25,21.5,2.9,blend,all,,0,St. John's,10.746,19.5,live,83.0,13.471
+2026-11-24,157026,Tarris Bouie,BAMA,BAY,F,4800,15.37,6.13,11.0,23.5,3.9,blend,all,,0,,,16.1,live,88.0,16.255
+2026-11-24,157026,Brandon Jennings,VCU,CSU,G,4800,18.79,6.83,14.0,27.53,4.9,props,fg3|stl|blk|tov,,0,VCU,24.883,15.7,live,77.5,18.887
+2026-11-24,157026,Pape N'Diaye,KSU,GONZ,F,4700,7.55,4.06,4.75,12.78,1.1,blend,all,,0,,,13.2,live,71.0,13.742
+2026-11-24,157026,Anthony Thompson,OSU,VAND,F,4700,16.3,6.44,12.0,24.5,4.6,props,fg3|stl|blk|tov,,0,,,14.4,live,77.25,16.317
+2026-11-24,157026,Lefteris Liotopoulos,STJN,ORE,G,4700,18.09,6.83,13.0,27.0,4.6,blend,all,,0,St. John's,7.747,15.6,live,83.0,9.911
+2026-11-24,157026,Michael Belle,VCU,CSU,G/F,4600,13.2,5.45,9.25,20.25,2.2,props,ast|fg3|stl|blk|tov,,0,VCU,22.356,13.4,live,77.5,13.151
+2026-11-24,157026,Josiah Moseley,TTU,UL,F,4600,14.16,5.61,10.25,21.75,3.3,blend,all,,0,Texas Tech,13.771,16.6,live,78.0,14.803
+2026-11-24,157026,Rashaan Mbemba,CSU,VCU,F,4600,16.03,6.12,11.75,23.75,4.5,blend,all,,0,Colorado St.,17.5,13.3,live,72.0,15.877
+2026-11-24,157026,Tayshawn Comer,UW,CLEM,G,4400,17.89,6.95,13.0,26.75,4.9,blend,all,,0,,,16.1,live,74.5,14.544
+2026-11-24,157026,Jaxon Richardson,BAMA,BAY,F,4400,17.57,6.46,13.25,25.75,6.3,blend,all,,0,,,15.3,live,88.0,15.365
+2026-11-24,157026,Cole Cloer,BAMA,BAY,G,4400,18.69,6.87,14.0,28.0,5.6,blend,all,,0,,,14.3,live,88.0,15.001
+2026-11-24,157026,Jamarion Davis-Fleming,BAMA,BAY,F,4300,3.57,2.63,1.5,7.25,0.5,blend,all,Q,0,,,19.0,live,88.0,11.592
+2026-11-24,157026,Brock Vice,KSU,GONZ,F,4300,17.99,6.79,13.25,27.0,7.1,props,fg3|stl|blk|tov,,0,,,21.0,live,71.0,17.895
+2026-11-24,157026,Andrew Meadow,ORE,STJN,F,4300,17.36,6.5,12.75,26.0,6.3,blend,all,,0,,,13.8,live,72.5,13.462
+2026-11-24,157026,Wei Lin,ORE,STJN,G,4300,12.78,5.93,8.5,20.75,2.2,blend,all,,0,Oregon,17.58,20.1,live,72.5,12.3
+2026-11-24,157026,Sean Stewart,ORE,STJN,F,4200,4.8,2.93,2.5,8.75,0.6,blend,all,,0,Oregon,23.034,18.8,live,72.5,16.009
+2026-11-24,157026,Izan Almansa,GONZ,KSU,F,4200,23.27,7.38,18.25,32.53,19.9,blend,all,,0,,,19.6,live,86.5,16.498
+2026-11-24,157026,Anderson Diaz,BAMA,BAY,G,4200,13.42,5.9,9.25,21.0,2.5,blend,all,,0,,,10.3,live,88.0,13.247
+2026-11-24,157026,Dallas Thomas,CLEM,UW,F,4100,17.06,6.17,12.75,25.03,6.6,blend,all,,0,Clemson,4.523,13.3,live,76.0,7.536
+2026-11-24,157026,Zsombor Maronka,STJN,ORE,F,4100,16.43,6.36,12.0,24.75,5.8,blend,all,,0,,,10.6,live,83.0,12.863
+2026-11-24,157026,Jaylen Alexander,KSU,GONZ,G,4100,16.1,6.66,11.25,25.0,4.2,blend,all,,0,,,15.5,live,71.0,13.594
+2026-11-24,157026,Chase Thompson,CLEM,UW,F,4000,14.7,5.66,10.75,22.25,4.3,blend,all,,0,Clemson,8.986,18.4,live,76.0,8.28
+2026-11-24,157026,Bangot Dak,VAND,OSU,F,4000,13.21,5.61,9.25,20.5,3.2,blend,all,,0,,,15.6,live,79.25,14.174
+2026-11-24,157026,LJ Smith,OSU,VAND,G,4000,16.36,6.73,11.5,25.25,4.5,blend,all,,0,,,11.1,live,77.25,12.476
+2026-11-24,157026,Avery Brown,STJN,ORE,G,3900,8.82,5.38,5.0,15.78,1.2,blend,all,,0,Columbia,14.867,7.8,live,83.0,8.488
+2026-11-24,157026,Pharaoh Compton,ORE,STJN,F,3900,5.85,3.34,3.5,10.25,0.8,blend,all,,0,San Diego St.,13.785,13.9,live,72.5,10.077
+2026-11-24,157026,Babacar Sane,STJN,ORE,F,3900,16.16,6.44,11.69,24.25,6.1,blend,all,,0,,,11.4,live,83.0,12.846
+2026-11-24,157026,DaKari Spear,TTU,UL,G,3900,16.81,6.85,12.0,26.0,5.2,blend,all,,0,,,13.6,live,78.0,13.236
+2026-11-24,157026,Ahmad Nowell,VCU,CSU,G,3800,17.22,7.32,12.0,27.0,5.9,bench,all,,0,VCU,10.507,16.9,live,77.5,2.864
+2026-11-24,157026,Tajh Ariza,ORE,STJN,F,3800,11.9,5.17,8.0,18.75,2.7,blend,all,,0,,,12.8,live,72.5,12.383
+2026-11-24,157026,Bassala Bagayoko,TTU,UL,F,3800,3.57,2.68,1.5,7.25,0.5,blend,all,,0,,,10.4,live,78.0,11.991
+2026-11-24,157026,Reed Bailey,STJN,ORE,F,3800,8.89,4.55,5.75,15.0,1.4,blend,all,,0,,,6.7,live,83.0,11.037
+2026-11-24,157026,Matt Gilhool,KSU,GONZ,F,3700,2.59,2.25,1.0,5.53,0.4,blend,all,Q,0,,,14.1,live,71.0,8.776
+2026-11-24,157026,Jojo McIver,CSU,VCU,G,3700,12.71,5.56,8.75,20.0,2.7,blend,all,,0,Colorado St.,12.324,6.1,live,72.0,12.739
+2026-11-24,157026,Lazar Stojkovic,STJN,ORE,F,3700,5.28,3.4,2.75,10.0,0.7,blend,all,,0,,,4.7,live,83.0,10.181
+2026-11-24,157026,Jaden Ghoreishi,CSU,VCU,F,3700,8.0,4.08,5.0,13.5,1.2,blend,all,Q,0,,,10.5,live,72.0,8.006
+2026-11-24,157026,Curtis Givens III,OSU,VAND,G,3700,12.56,5.73,8.5,20.0,2.6,blend,all,,0,,,7.1,live,77.25,10.664
+2026-11-24,157026,Dwayne Aristode,ORE,STJN,F,3700,14.62,5.86,10.5,22.5,4.9,blend,all,,0,,,11.2,live,72.5,11.705
+2026-11-24,157026,Nathan De Sousa,GONZ,KSU,G,3600,13.48,6.22,9.0,21.75,3.2,blend,all,,0,,,8.0,live,86.5,11.418
+2026-11-24,157026,T.O. Barrett,VAND,OSU,G,3600,11.89,5.56,7.75,19.25,2.4,blend,all,,0,,,15.6,live,79.25,13.574
+2026-11-24,157026,Josh Ojianwuna,OSU,VAND,F,3600,11.0,4.78,7.75,17.5,2.4,blend,all,,0,,,7.7,live,77.25,10.718
+2026-11-24,157026,Alex Smith,OSU,VAND,F,3600,2.99,2.37,1.25,6.0,0.4,blend,all,,0,,,1.1,live,77.25,8.471
+2026-11-24,157026,Andrej Kostic,KSU,GONZ,G,3600,0.93,1.51,0.0,3.5,0.3,bench,all,,0,Kansas St.,13.73,4.3,live,71.0,3.44
+2026-11-24,157026,Theo Edema,STJN,ORE,F,3500,11.69,5.35,7.75,18.5,2.9,blend,all,,0,,,6.8,live,83.0,10.623
+2026-11-24,157026,Timo Malovec,KSU,GONZ,F,3500,14.96,5.77,10.75,22.75,5.9,blend,all,,0,,,12.7,live,71.0,11.781
+2026-11-24,157026,Chauncey Wiggins,GONZ,KSU,F,3500,11.06,5.13,7.5,17.75,2.5,blend,all,,0,,,7.4,live,86.5,11.052
+2026-11-24,157026,Juslin Bodo Bodo,BAY,BAMA,F,3500,8.52,3.81,5.75,13.75,1.4,props,ast|fg3|stl|blk|tov,,0,,,7.3,live,86.5,8.605
+2026-11-24,157026,Ant Brown Jr.,VAND,OSU,G,3500,6.14,3.77,3.5,11.0,0.8,blend,all,,0,,,11.5,live,79.25,12.01
+2026-11-24,157026,Javon Bennett,GONZ,KSU,G,3400,9.57,5.06,6.0,16.5,1.6,blend,all,,0,,,12.6,live,86.5,12.777
+2026-11-24,157026,Parker Friedrichsen,UW,CLEM,G,3400,9.18,4.7,5.75,15.5,1.5,blend,all,,0,,,8.7,live,74.5,10.57
+2026-11-24,157026,Luca Foster,GONZ,KSU,F,3400,3.65,2.76,1.5,7.5,0.5,blend,all,,0,,,10.0,live,86.5,11.84
+2026-11-24,157026,Eric Fiedler,CSU,VCU,F,3400,9.42,4.34,6.25,15.25,1.8,blend,all,,0,,,5.6,live,72.0,9.376
+2026-11-24,157026,Wini Braga,UW,CLEM,F,3400,4.23,2.98,2.0,8.25,0.5,blend,all,,0,,,3.8,live,74.5,8.932
+2026-11-24,157026,Dez Lindsay,KSU,GONZ,F,3400,11.27,4.97,7.75,18.0,2.7,blend,all,,0,,,14.3,live,71.0,12.153
+2026-11-24,157026,Ivan Njegovan,OSU,VAND,F,3300,4.21,2.86,2.0,8.03,0.5,bench,all,,0,Ohio St.,11.443,5.8,live,77.25,2.866
+2026-11-24,157026,Montana Wheeler,KSU,GONZ,G,3300,9.85,4.9,6.25,16.5,1.8,blend,all,,0,,,8.1,live,71.0,9.979
+2026-11-24,157026,Tyrell Ward,VCU,CSU,G,3300,6.43,3.78,3.5,11.5,0.9,blend,all,,0,VCU,13.59,6.6,live,77.5,11.053
+2026-11-24,157026,Harris Reynolds,CLEM,UW,G,3300,11.97,5.47,8.25,19.0,2.8,blend,all,,0,,,8.4,live,76.0,10.423
+2026-11-24,157026,Collin Ross,VCU,CSU,F,3300,3.48,2.71,1.25,7.0,0.4,blend,all,,0,,,12.3,live,77.5,11.855
+2026-11-24,157026,Trey Hall,TTU,UL,F,3300,5.76,3.4,3.25,10.25,0.8,blend,all,,0,Maryland Eastern Shore,11.456,4.3,live,78.0,6.707
+2026-11-24,157026,Mayo Soyoye,BAY,BAMA,F,3300,9.0,4.36,5.75,14.75,1.7,blend,all,,0,,,6.6,live,86.5,10.464
+2026-11-24,157026,Jackson Sheffield,VAND,OSU,F,3200,6.29,3.74,3.5,11.25,0.9,blend,all,,0,,,4.0,live,79.25,8.974
+2026-11-24,157026,Blake Davidson,CLEM,UW,F,3200,0.34,0.8,0.0,1.5,0.2,bench,all,,0,,,,live,76.0,1.05
+2026-11-24,157026,Marial Akuentok,TTU,UL,F,3200,2.34,2.16,0.75,5.25,0.3,bench,all,,0,Texas Tech,6.1,3.2,live,78.0,1.357
+2026-11-24,157026,Amari Barrett,TTU,UL,G,3200,7.97,4.37,4.75,13.75,1.2,blend,all,,0,,,14.5,live,78.0,12.495
+2026-11-24,157026,Pops Dunson,CSU,VCU,G,3200,9.22,4.69,5.75,15.75,1.6,blend,all,,0,,,6.3,live,72.0,9.307
+2026-11-24,157026,Tristan Devers,UW,CLEM,G,3200,0.35,0.86,0.0,1.5,0.2,bench,all,,0,,,,live,74.5,1.05
+2026-11-24,157026,Maikcol Perez,BAY,BAMA,F,3200,5.73,3.38,3.25,10.0,0.8,blend,all,,0,,,4.3,live,86.5,9.486
+2026-11-24,157026,Boyuan Zhang,UL,TTU,F,3200,7.39,4.05,4.5,12.75,1.2,blend,all,,0,,,3.2,live,75.5,8.488
+2026-11-24,157026,Lee Aaliya,OSU,VAND,F,3100,4.66,2.93,2.5,8.5,0.6,blend,all,,0,,,1.8,live,77.25,7.96
+2026-11-24,157026,JT Rock,KSU,GONZ,F,3100,3.82,2.75,2.0,7.5,0.5,blend,all,,0,,,6.3,live,71.0,9.092
+2026-11-24,157026,Trent Steinour,CLEM,UW,F,3100,2.18,2.07,0.0,5.0,0.3,bench,all,,0,Clemson,2.5,1.1,live,76.0,0.831
+2026-11-24,157026,Amondo Miller Jr.,CSU,VCU,F,3100,8.25,4.15,5.25,14.0,1.5,blend,all,,0,,,3.6,live,72.0,8.269
+2026-11-24,157026,Jayden Leverett,VAND,OSU,F,3100,1.82,1.86,0.0,4.5,0.3,bench,all,,0,Vanderbilt,4.035,5.6,live,79.25,1.04
+2026-11-24,157026,Juwan Ekanga,GONZ,KSU,G,3100,3.01,2.61,1.0,6.5,0.4,blend,all,,0,,,6.3,live,86.5,10.057
+2026-11-24,157026,Harun Zrno,UW,CLEM,G,3100,4.02,2.99,1.75,8.25,0.5,blend,all,,0,,,0.6,live,74.5,7.412
+2026-11-24,157026,Sammy Jackson,VCU,CSU,G,3100,2.89,2.59,1.0,6.25,0.4,blend,all,,0,,,6.1,live,77.5,9.44
+2026-11-24,157026,Kyle Cuffe Jr.,STJN,ORE,G,3100,4.09,3.07,2.0,8.25,0.5,blend,all,,0,,,2.5,live,83.0,8.505
+2026-11-24,157026,Jordan Tillery,VCU,CSU,G,3000,0.61,1.11,0.0,2.0,0.2,bench,all,Q,0,VCU,6.775,1.0,live,77.5,1.929
+2026-11-24,157026,Jaxon Clark,CSU,VCU,F,3000,1.08,1.4,0.0,3.25,0.2,bench,all,,0,,,0.0,live,72.0,1.05
+2026-11-24,157026,Stefan Plisnic,VCU,CSU,F,3000,2.34,2.19,0.75,5.25,0.3,blend,all,,0,,,1.5,live,77.5,7.721
+2026-11-24,157026,Will Stevens,CLEM,UW,F,3000,2.38,2.16,0.75,5.25,0.3,blend,all,,0,,,1.3,live,76.0,7.575
+2026-11-24,157026,Sam Funches,GONZ,KSU,F,3000,2.93,2.43,1.25,6.25,0.4,blend,all,,0,,,5.0,live,86.5,9.438
+2026-11-24,157026,Parker Jefferson,GONZ,KSU,F,3000,2.69,2.36,1.0,6.0,0.4,blend,all,,0,,,3.3,live,86.5,8.826
+2026-11-24,157026,Jasir Rencher,UW,CLEM,F,3000,0.65,1.08,0.0,2.0,0.2,bench,all,,0,Washington,8.325,1.1,live,74.5,2.053
+2026-11-24,157026,Vuk Lazarevic,OSU,VAND,F,3000,2.94,2.3,1.25,6.0,0.4,blend,all,,0,,,0.8,live,77.25,7.469
+2026-11-24,157026,Nash Stark,KSU,GONZ,F,3000,2.11,2.04,0.0,4.75,0.3,blend,all,,0,,,0.6,live,71.0,7.081
+2026-11-24,157026,Tegra Makabu,BAY,BAMA,F,3000,0.91,1.3,0.0,2.53,0.2,bench,all,,0,,,0.0,live,86.5,1.05
+2026-11-24,157026,TJ St. Louis,BAMA,BAY,F,3000,2.46,2.16,1.0,5.25,0.3,blend,all,,0,,,1.3,live,88.0,8.178
+2026-11-24,157026,Collins Onyejiaka,BAMA,BAY,F,3000,0.44,0.92,0.0,2.0,0.2,bench,all,,0,Alabama,4.7,0.7,live,88.0,1.474
+2026-11-24,157026,Seven Spurlock,ORE,STJN,F,3000,2.78,2.32,1.25,6.0,0.4,blend,all,,0,,,6.8,live,72.5,9.205
+2026-11-24,157026,LaTrell Hoover,TTU,UL,F,3000,2.9,2.38,1.25,6.0,0.4,blend,all,,0,,,0.8,live,78.0,7.507
+2026-11-24,157026,Devin Hutcherson,KSU,GONZ,F,3000,2.22,2.09,0.5,5.25,0.3,blend,all,,0,,,2.0,live,71.0,7.538
+2026-11-24,157026,Ethan Mgbako,VAND,OSU,F,3000,2.7,2.29,1.25,5.75,0.4,blend,all,,0,,,4.5,live,79.25,8.846
+2026-11-24,157026,Charlie Dortch,CSU,VCU,F,3000,1.09,1.42,0.0,3.25,0.2,bench,all,,0,,,,live,72.0,1.05
+2026-11-24,157026,Docker Tedeschi,CSU,VCU,F,3000,0.99,1.35,0.0,3.0,0.2,bench,all,,0,,,,live,72.0,1.05
+2026-11-24,157026,Luke Johnson,ORE,STJN,F,3000,0.23,0.67,0.0,1.25,0.2,bench,all,,0,Oregon,5.433,,live,72.5,0.708
+2026-11-24,157026,Mady Traore,UW,CLEM,F,3000,0.29,0.77,0.0,1.25,0.2,bench,all,,0,,,,live,74.5,1.05
+2026-11-24,157026,BJ Roy,UW,CLEM,G,3000,0.33,0.84,0.0,1.5,0.2,bench,all,,0,,,0.0,live,74.5,1.05
+2026-11-24,157026,Myles Herro,OSU,VAND,G,3000,0.35,0.86,0.0,1.5,0.2,bench,all,,0,,,0.0,live,77.25,1.05
+2026-11-24,157026,Alonzo Metz,GONZ,KSU,G,3000,2.61,2.49,0.75,6.0,0.4,blend,all,,0,,,2.5,live,86.5,8.537
+2026-11-24,157026,Preston Murphy Jr.,BAMA,BAY,G,3000,0.17,0.6,0.0,0.08,0.2,bench,all,,0,Alabama,1.825,0.0,live,88.0,0.481
+2026-11-24,157026,Nyle Ralph-Beyer,VCU,CSU,G,3000,2.42,2.3,0.75,5.5,0.4,blend,all,,0,,,2.5,live,77.5,8.062
+2026-11-24,157026,Amare James,CLEM,UW,G,3000,2.49,2.32,1.0,5.5,0.4,blend,all,,0,,,3.3,live,76.0,8.25
+2026-11-24,157026,Will Hanke,UL,TTU,G,3000,0.15,0.58,0.0,0.0,0.2,bench,all,,0,Louisville,1.02,3.3,live,75.5,0.35
+2026-11-24,157026,Jerry Easter II,ORE,STJN,G,3000,2.55,2.4,0.75,5.75,0.4,blend,all,,0,,,4.8,live,72.5,8.545
+2026-11-24,157026,Braylen Nash,OSU,VAND,G,3000,0.59,1.12,0.0,2.0,0.2,bench,all,,0,Ohio St.,1.3,0.7,live,77.25,0.35
+2026-11-24,157026,James Goodis,BAY,BAMA,G,3000,0.86,1.36,0.0,2.75,0.2,bench,all,,0,Baylor,2.7,0.0,live,86.5,1.05
+2026-11-24,157026,Fotis Konstantinidis,STJN,ORE,G,3000,0.65,1.2,0.0,2.0,0.2,bench,all,,0,St. John's,1.2,0.3,live,83.0,0.35
+2026-11-24,157026,Drew Perry,BAY,BAMA,G,3000,1.16,1.59,0.0,3.5,0.3,bench,all,,0,Baylor,2.911,-0.1,live,86.5,0.461
+2026-11-24,157026,Casper Pohto,STJN,ORE,G,3000,1.15,1.62,0.0,3.5,0.3,bench,all,,0,St. John's,4.55,1.3,live,83.0,0.43
+2026-11-24,157026,Baylor Allen,VAND,OSU,G,3000,0.34,0.83,0.0,1.5,0.2,bench,all,,0,,,0.0,live,79.25,1.05
+2026-11-24,157026,Chase Byington,VAND,OSU,G,3000,2.33,2.36,0.0,5.5,0.3,blend,all,,0,,,1.1,live,79.25,7.673
+2026-11-24,157026,River Sawyer,CSU,VCU,G,3000,1.1,1.55,0.0,3.5,0.3,bench,all,,0,,,,live,72.0,1.05
+2026-11-24,157026,Rian Gonzales,ORE,STJN,G,3000,0.33,0.83,0.0,1.5,0.2,bench,all,,0,,,,live,72.5,1.05
+2026-11-24,157026,Carter Nilson,GONZ,KSU,G,3000,0.37,0.87,0.0,1.5,0.2,bench,all,,0,,,,live,86.5,1.05
+2026-11-24,157026,Lat Ford,UW,CLEM,G/F,3000,0.38,0.9,0.0,1.5,0.2,bench,all,,0,,,,live,74.5,1.05
+2026-11-24,157026,Joshua Wyche,VCU,CSU,G/F,3000,0.34,0.88,0.0,1.5,0.2,bench,all,,0,,,0.0,live,77.5,1.05
+2026-11-24,157026,Andre Iguodala II,BAY,BAMA,G/F,3000,4.34,3.09,2.0,8.5,0.6,blend,all,,0,,,0.4,live,86.5,7.78
+2026-11-24,157026,Mavrick Hawkins,VAND,OSU,G/F,3000,2.51,2.39,1.0,5.5,0.4,blend,all,,0,,,3.5,live,79.25,8.501
