@@ -2096,3 +2096,5 @@ Decision: nothing shipped; seed 0 stays. Graveyard row added to scripts/dfs_tran
 at this n). Runner-ups: (1) search convergence -- iters 100 -> 400 / more sims, does the optimizer land on one higher-mean
 lineup (points metric, ~40 boards); (2) cash is -77% ROI over 36c/22d -- bigger leak than seed choice, own cycle;
 (3) p90_stack5 GPP arm re-run at ~40 dates.
+
+Unattended gate (20261124-0657): **not shipped (log / harness only, verified)**
