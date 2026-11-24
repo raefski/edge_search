@@ -104,7 +104,7 @@ def _clears(tot, line):
 
 
 def _hill_climb(pool, sim, idx, cand, mode, own_weight, owns, min_stack, line=None):
-    q = theory.GPP_PCT if mode == "gpp" else theory.CASH_PCT
+    q = theory.GPP_BUILD_PCT if mode == "gpp" else theory.CASH_PCT
     idx = list(idx)
     totals = sim[:, idx].sum(axis=1)
 

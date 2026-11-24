@@ -30,6 +30,15 @@ import numpy as np
 
 CASH_PCT = 25.0
 GPP_PCT = 95.0
+#: The percentile the GPP OPTIMIZER climbs on (GPP_PCT above still sets the board's
+#: "ceil" and the leverage chart). 50 = the lineup's simulated median, i.e. build for
+#: expected points. NHL critique cycle 17 (2026-11-23), nhl_lineup_lab set20 replay
+#: vs real GPP fields, test 10/13-11/22 (39 contests / 26 slates): field pctile
+#: .541 -> .614, $/1 1.42 -> 1.33 (90% ranges overlap); late 10/27+ (17 / 12):
+#: .522 -> .600, $0.81 -> $1.67. Train < 10/13 (8 slates) preferred p95 (.717 vs .625),
+#: the train->test collapse cycle 16 flagged. Random-lineup layer table: max
+#: projection beat the p95 build by +.104 pctile on 19/26 test slates.
+GPP_BUILD_PCT = 50.0
 
 #: Ownership: softmax over value (proj per $1K), salary, PP1, and buzz, per position
 #: group, normalised to the group's share of the nine slots. This is the GPP field.

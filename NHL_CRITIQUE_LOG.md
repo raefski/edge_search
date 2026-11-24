@@ -930,3 +930,27 @@ optimizer's value ranking (cash train +.067 [.001, .138], 6/3) -- re-test with ~
 Runner-ups: prop-but-no-shots skaters' imputed shots (cycle 12); the GPP train->test collapse
 (construction/ownership); no-prop F1s run under (-2.06, n 31, thin). Critic code: scratch np_variant.py
 (registers `np_shrink` in nhl_lineup_lab.VARIANTS).
+
+## Cycle 17 (hand-run 2026-11-23; target: shipped lineups vs a random-lineup baseline) -- SHIPPED (GPP optimizer objective p95 -> p50)
+
+Scout: {"target": "random-lineup baseline in the lab", "metric": "per-slate field pctile of shipped set20 minus 20 random DK-legal exact-$50k lineups (pool = players DK scored), cash/GPP separate", "harness": "nhl_lineup_lab + random50k + layer decomposition", "split": "train < 10/13, test 10/13-11/22 by slate"}.
+Trigger: Adam's live NHL entries 11/8-11/22 (7 slates / 19 contests) out-scored only 50% of random lineups (NBA 70%, NFL 74%, NCAAB 81%).
+
+**Critic #17:** the premise is false on the lab's 26 test slates -- projections separate skaters better than salary
+(within-slate R2 .188 vs .170, n 5,391; goalies ~0, n 300) and the shipped set20 beats random by +.28 (cash) / +.18 (GPP)
+field pctile. The leak is the GPP objective: max projection (MILP, legal) beat the p95 set20 build by +.104 pctile
+(se .044, 19/26 test slates); on train (8 slates) -.017. Layers on test GPP: random .396, max salary .483, max proj .649,
++goalie/3 teams .684, +(3,3) stacks .667, shipped set20 .580 (critic replay). The 7-slate live tie = as-run lineups had
+a bad stretch (as-run +.19 over random across 24 test slates).
+
+**Fix:** GPP_BUILD_PCT = 50 (hill climb on the simulated median); GPP_PCT 95 kept for board ceil + leverage chart. Cash unchanged.
+
+| GPP, nhl_lineup_lab set20 | pctile [90%] | $ per $1 [90%] |
+|---|---|---|
+| train <10/13 (8 / 8) | .717 -> .625 | 1.88 -> 0.58 |
+| test 10/13+ (39 contests / 26 slates) | .541 [.467,.619] -> .614 [.546,.676] | 1.42 -> 1.33 |
+| late 10/27+ (17 / 12) | .522 -> .600 | 0.81 -> 1.67 |
+
+Cash with q=50 was worse (set20 .594 -> .574), not shipped. Risk: dollars on test are within noise and train
+disagrees; re-gate on forward slates (>=10) and revert if GPP pctile falls back. Runner-ups: goalie projections
+carry ~no signal (R2 .007); (3,3) stack constraint never fitted (-.017); cash set20 .04 under max projection.

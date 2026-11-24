@@ -106,7 +106,7 @@ each. The phone page lists unconfirmed goalies with their start chance. Harness:
 ## 5. The two theories (edge/dfs_nhl_theory.py, edge/dfs_opt_nhl.py)
 
 - **cash** = 25th percentile of the lineup's own simulated total. No stack rule.
-- **gpp** = 95th percentile (not NASCAR's 90th: a line stack's upside is a JOINT
+- **gpp** = optimizer climbs the 50th percentile (GPP_BUILD_PCT, cycle 17 2026-11-23: +.073 test field pctile vs p95, 26 slates); 95th percentile still the board ceil + leverage chart (not NASCAR's 90th: a line stack's upside is a JOINT
   tail). Shape rule: two team stacks of 3+ skaters (the 3-3-2 / 4-3-1 builds),
   max 5 from one team — left alone it put six Oilers in one lineup.
 - Both: no skater facing your goalie; DK's 3-team / 2-game minimums.
