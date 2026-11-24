@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-24T13:58:52+00:00",
+"generated_at": "2026-11-24T16:29:09+00:00",
 "goalies": {
 "2026-11-24": {
 "EDM": {
@@ -49,7 +49,7 @@
 "status": null
 },
 "DET": {
-"goalie": "John Gibson",
+"goalie": "Daniil Tarasov",
 "status": null
 },
 "FLA": {
@@ -3042,7 +3042,7 @@
 "line": "D1",
 "pk": null,
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Dante Fabbro": {
 "gtd": false,
@@ -3073,7 +3073,7 @@
 "toiMinutes": 71,
 "toiSeconds": 5
 },
-"line": "D2",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": null
@@ -3107,10 +3107,10 @@
 "toiMinutes": 93,
 "toiSeconds": 35
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Isac Lundestrom": {
 "gtd": false,
@@ -3863,9 +3863,9 @@
 "toiMinutes": 96,
 "toiSeconds": 41
 },
-"line": "F1",
+"line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Matvei Gridin": {
@@ -4067,9 +4067,9 @@
 "toiMinutes": 54,
 "toiSeconds": 4
 },
-"line": "F3",
+"line": "F1",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Simon Nemec": {
@@ -6535,7 +6535,7 @@
 "toiMinutes": 61,
 "toiSeconds": 6
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "lw",
 "pp": null
@@ -6571,7 +6571,7 @@
 "goalieShutouts": 1,
 "goalieWins": 1
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6641,7 +6641,7 @@
 },
 "line": "F3",
 "pk": "PK1",
-"pos": "c",
+"pos": "rw",
 "pp": "PP2"
 },
 "John Gibson": {
@@ -6675,7 +6675,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6777,9 +6777,9 @@
 "toiMinutes": 66,
 "toiSeconds": 53
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
-"pos": "lw",
+"pos": "c",
 "pp": null
 },
 "Lucas Raymond": {
@@ -6881,7 +6881,7 @@
 },
 "line": "F3",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP2"
 },
 "Michael Rasmussen": {
