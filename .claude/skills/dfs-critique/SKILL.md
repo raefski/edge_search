@@ -126,6 +126,10 @@ Agent tool, `subagent_type: "dfs-model-critic"` (`"dfs-availability-critic"` for
 Give it: sport, target metric, the files above, the log, the data locations, the
 held-out split, a scratch dir (`<scratchpad>/critic-<sport>-<n>`), and the deliverable
 format. Foreground: the next step depends on it. Never tell it what you suspect.
+Also give it the bar a finding must clear: the output of `python3 -m harness critique-metrics
+exemplars` (findings that shipped held out, any sport: hole + evidence, n, clusters). They show
+the standard of proof, not where to look -- do not add this sport's suspected hole to them
+(2026-11-23, CS329A's STaR: learn from your own verified successes).
 
 ## 4. Fix, honestly
 

@@ -52,6 +52,12 @@ questions for the sport you are given, every time.
    could exist in this sport. Before naming ANY target, check `graveyard`: an idea tested null
    (in any sport) is not a target unless you can say what is different now.
 
+8. Near-misses (`history.near_misses`, harness/critique_metrics.py, 2026-11-23). A change that
+   leaned better on held-out rows but did not clear noise (`closeness` = point estimate over
+   interval half-width) is a stepping stone, NOT the graveyard: re-running it is a fair target
+   when there are now clearly more slates than its `clusters`, or a sharper version of it is
+   obvious. Say which and why; never re-run one on the same data.
+
 ## Deliverable (final message, at most ~350 words)
 First a fenced JSON block, exactly these keys:
 ```json

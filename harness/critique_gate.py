@@ -26,7 +26,12 @@ the others' rows identical) -- AND no guard state worse by more than 1% of main'
 Cycle 25 (2026-11-07) is why it is not "every primary state better": the Expected-five
 hedge left 2025-26 untouched and helped only the live state. Requiring every OTHER
 point estimate <= 0 keeps a pure-noise change from passing on one lucky state; the
-7-day forward re-gate (critique_loop) is the second check. A candidate that edited a lab's gate()
+7-day forward re-gate (critique_loop) is the second check. 
+Two checks added 2026-11-23 (Stanford CS329A, "Robust Verification": a weak verifier
+plus more samples = more false positives): a "better" state must stay better with its
+single best cluster removed (else "one-slate win"), and `tries` > 1 (several candidates
+gated on the same rows in one night) widens the interval to 1 - 0.10/tries.
+A candidate that edited a lab's gate()
 function is never auto-passed: the numbers are shown and the verdict is "review".
 A model change that also edits a script producing the gate rows (judge_files) and does
 not pass goes to Adam as "review", not "fail" (Adam, 2026-11-08): a fix to how the lab
@@ -150,8 +155,10 @@ def _loss(kind: str, pred: np.ndarray, actual: np.ndarray) -> np.ndarray:
     return e * e if kind == "sq" else np.abs(e)
 
 
-def _boot(cl: np.ndarray, d: np.ndarray, seed: int = 0) -> tuple[float, float, float]:
-    """Mean of d per row, with a 90% interval resampling whole clusters."""
+def _boot(cl: np.ndarray, d: np.ndarray, seed: int = 0, tries: int = 1) -> tuple[float, float, float]:
+    """Mean of d per row, with a 90% interval resampling whole clusters -- widened to
+    1 - 0.10/tries when the night tried `tries` candidates against the same held-out rows
+    (Bonferroni: keeping the best of k by the same test passes noise ~k times as often)."""
     ids, inv = np.unique(cl, return_inverse=True)
     s = np.bincount(inv, weights=d, minlength=len(ids))
     c = np.bincount(inv, minlength=len(ids)).astype(float)
@@ -159,11 +166,25 @@ def _boot(cl: np.ndarray, d: np.ndarray, seed: int = 0) -> tuple[float, float, f
     pick = rng.integers(0, len(ids), size=(N_BOOT, len(ids)))
     est = s.sum() / c.sum()
     boots = s[pick].sum(axis=1) / c[pick].sum(axis=1)
-    lo, hi = np.percentile(boots, [5, 95])
+    tail = 5.0 / max(1, tries)
+    lo, hi = np.percentile(boots, [tail, 100 - tail])
     return float(est), float(lo), float(hi)
 
 
-def compare(base: list[dict], cand: list[dict], loss: str = "sq", min_clusters: int = 5) -> dict:
+def _without_best_cluster(cl: np.ndarray, d: np.ndarray) -> float:
+    """Mean of d per row with the single cluster that helps the candidate most taken out.
+    A real fix is spread over nights; one that is a win only because of one slate is not
+    (NFL mass-150, 11/15: "2 slates carry it"; NCAAB cycle 6, 11/22: "the gain is 2
+    slates"; the one auto-pass so far, NCAAB 11/13, was dropped at its 7-day re-gate)."""
+    ids, inv = np.unique(cl, return_inverse=True)
+    s = np.bincount(inv, weights=d, minlength=len(ids))
+    c = np.bincount(inv, minlength=len(ids)).astype(float)
+    j = int(np.argmin(s))
+    return float((s.sum() - s[j]) / (c.sum() - c[j])) if c.sum() > c[j] else 0.0
+
+
+def compare(base: list[dict], cand: list[dict], loss: str = "sq", min_clusters: int = 5,
+            tries: int = 1) -> dict:
     """{"ok": bool, "reasons": [...], "groups": [{split, state, n, clusters, base, cand, d, lo, hi, verdict}]}"""
     b = {r["key"]: r for r in base}
     c = {r["key"]: r for r in cand}
@@ -185,7 +206,7 @@ def compare(base: list[dict], cand: list[dict], loss: str = "sq", min_clusters: 
         lb = _loss(loss, np.array([b[k]["pred"] for k in keys]), act)
         lc = _loss(loss, np.array([c[k]["pred"] for k in keys]), act)
         cl = np.array([str(b[k]["cluster"]) for k in keys])
-        d, lo, hi = _boot(cl, lc - lb)
+        d, lo, hi = _boot(cl, lc - lb, tries=tries)
         n_cl = len(set(cl))
         if split == "primary":
             if not np.any(lc != lb):
@@ -194,6 +215,10 @@ def compare(base: list[dict], cand: list[dict], loss: str = "sq", min_clusters: 
                 verdict = "worse"
             elif hi < 0:
                 verdict = "better" if n_cl >= min_clusters else "not enough data"
+                if verdict == "better" and _without_best_cluster(cl, lc - lb) >= 0:
+                    verdict = "one-slate win"
+                    reasons.append(f"{split} {state}: better only because of one cluster: without its "
+                                   f"best night the change is not better")
             else:
                 verdict = "noise"
             if verdict == "worse" or (verdict in ("noise", "not enough data") and d > 0):
@@ -223,10 +248,11 @@ def table(res: dict, loss: str) -> str:
     return "\n".join(out)
 
 
-def run(sport: str, cand: Path, base: Path = ROOT) -> dict:
-    """Measure both checkouts; {"verdict": "pass"|"fail"|"review", "table", "reasons", ...}."""
+def run(sport: str, cand: Path, base: Path = ROOT, tries: int = 1) -> dict:
+    """Measure both checkouts; {"verdict": "pass"|"fail"|"review", "table", "reasons", ...}.
+    `tries` = candidates gated against these rows tonight (widens the interval, see _boot)."""
     spec = SPECS[sport]
-    res = compare(rows(base, sport), rows(cand, sport), spec["loss"], spec["min_clusters"])
+    res = compare(rows(base, sport), rows(cand, sport), spec["loss"], spec["min_clusters"], tries=tries)
     verdict = "pass" if res["ok"] else "fail"
     if judge_changed(sport, base, cand):
         res["reasons"].append(f"candidate edited gate() in {spec['judge']}: a person decides")

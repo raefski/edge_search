@@ -189,7 +189,16 @@ def history(sport: str) -> dict:
         return {"cycles": 0}
     rows = [json.loads(x) for x in LEDGER.read_text().splitlines() if x.strip()]
     mine = [r for r in rows if r.get("sport") == sport and r.get("event") in ("cycle", "manual")]
+    # stepping stones (harness/critique_metrics.py, 2026-11-23 -- CS329A's ADAS / AlphaEvolve
+    # archive): changes that leaned better without clearing noise, in this sport and elsewhere
+    try:
+        from harness import critique_metrics as M
+        near = M.near_misses(rows, limit=6)
+    except Exception as exc:                          # noqa: BLE001 -- the rest still stands
+        near = [{"error": str(exc)}]
     return {"cycles": len(mine), "results": dict(Counter(r.get("verdict") for r in mine)),
+            "near_misses": [n for n in near if n.get("sport") in (sport, None)] +
+                           [n for n in near if n.get("sport") not in (sport, None)][:3],
             "recent": [{"at": r["at"][:10], "result": r.get("verdict"), "target": r.get("target"),
                         "hole": (r.get("hole") or "")[:200]} for r in mine[-5:]]}
 

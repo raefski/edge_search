@@ -12,6 +12,7 @@
     python3 -m harness critique-loop [--sport S] [--dry-run] [--status] [--drop|--merge|--resume S]
                                      [--queue S "TARGET"]   pin a sport's next nightly cycle to a target
     python3 -m harness critique-gate <sport> <candidate checkout>   held-out gate vs main
+    python3 -m harness critique-metrics [near-misses|exemplars] [SPORT] [--json]   is the loop improving?
 """
 from __future__ import annotations
 
@@ -85,6 +86,9 @@ def main(argv=None) -> int:
     s = sub.add_parser("critique-gate", help="candidate checkout vs main, held out (harness/critique_gate.py)")
     s.add_argument("sport")
     s.add_argument("candidate")
+    s = sub.add_parser("critique-metrics", help="the critique loop's own scorecard (harness/critique_metrics.py)")
+    s.add_argument("rest", nargs="*")
+    s.add_argument("--json", action="store_true", help="write data/harness/critique_metrics.json")
     s = sub.add_parser("data-pull", help="copy the data branch's files into this checkout")
     s.add_argument("--overwrite", action="store_true",
                    help="replace files that already exist (default: leave them)")
@@ -152,6 +156,9 @@ def main(argv=None) -> int:
     if a.cmd == "critique-gate":
         from harness import critique_gate
         return critique_gate.main([a.sport, a.candidate])
+    if a.cmd == "critique-metrics":
+        from harness import critique_metrics
+        return critique_metrics.main(a.rest + (["--json"] if a.json else []))
     if a.cmd == "data-pull":
         from edge import data_branch
         wrote = data_branch.checkout_files(overwrite=a.overwrite)

@@ -608,6 +608,11 @@ def ran_tonight(st: dict, now: datetime) -> set:
 
 def status(st: dict) -> str:
     out = [f"rotation {', '.join(ROTATION)}; next: {ROTATION[st['next'] % len(ROTATION)]}"]
+    try:                                    # the loop's own scorecard (harness/critique_metrics.py)
+        from harness import critique_metrics
+        out.append(critique_metrics.summary_line(critique_metrics.scorecard(critique_metrics.load())))
+    except Exception as e:                  # noqa: BLE001 -- status must still print
+        out.append(f"(loop metrics unavailable: {e})")
     for s, q in (st.get("queue") or {}).items():
         out.append(f"  queued: {s} -> {q['target']!r} (added {q.get('added', '?')[:16]}; runs ahead of the rotation)")
     for s in ROTATION:
@@ -742,6 +747,8 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
             sys.path.insert(0, str(ROOT / "scripts"))
             import critique_ledger_rows
             critique_ledger_rows.build()
+            from harness import critique_metrics
+            critique_metrics.build()
         except Exception as e:              # noqa: BLE001 -- never lose the night over the rows file
             results.append(f"(dashboard rows not rebuilt: {e})")
         if len(results) > 1 or (results and results[-1].startswith("stopped")):

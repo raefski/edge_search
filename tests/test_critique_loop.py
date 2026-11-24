@@ -202,7 +202,7 @@ def test_rotation_skips_paused_pending_out_of_season_and_done():
     st["next"] = 0
     while (s := C.pick(st, now, set(night), season=season)):
         night.append(s)
-    assert night == ["nhl", "ncaaf", "nascar", "mma"]                # each once, no MLB, no NFL (11/10)
+    assert night == ["nhl", "ncaaf", "nascar", "nfl", "mma"]         # each once, no MLB (NFL back 11/22)
     C._sport(st, "nba")["paused_until"] = (now - timedelta(days=1)).isoformat()
     assert C.pick(st, now, season=season) == "nba"
 
@@ -297,10 +297,10 @@ def test_the_5_hour_limit_message_is_a_usage_stop_with_its_reset_time():
     assert C.reset_time("no time here") is None
 
 
-def test_one_sport_a_night_and_nfl_skipped(monkeypatch):
+def test_one_sport_a_night_and_nfl_back_in_rotation(monkeypatch):
     now = datetime(2026, 11, 10, 7, 0, tzinfo=timezone.utc)
     st = {"next": C.ROTATION.index("nfl"), "sports": {}}
-    assert C.pick(st, now, season=lambda s: True) == "mma"          # NFL left out (11/10)
+    assert C.pick(st, now, season=lambda s: True) == "nfl"          # SKIP emptied 11/22
     assert C.MAX_PER_NIGHT == 1
 
 
@@ -356,3 +356,40 @@ def test_a_queued_target_replaces_auto_and_is_used_once(tmp_path, monkeypatch):
                         {"rc": 0, "claim": {}, "limited": False, "resets": None, "cost": None, "minutes": 1})
     assert C.cycle("nhl", st) == "no commits" and "nhl" not in st["queue"]
     assert seen == ["availability goalies", "availability goalies"]
+
+
+def test_a_win_carried_by_one_night_is_not_a_pass():
+    b = _rows()
+    c = [dict(x) for x in b]
+    for x in c:                    # only night 1 improves, hugely
+        if x["cluster"] == "2025-11-01":
+            x["pred"] = x["actual"]
+    r = G.compare(b, c)
+    assert not r["ok"]
+    assert r["groups"][0]["verdict"] in ("one-slate win", "noise")
+
+
+def test_more_tries_widen_the_interval():
+    b, c = _rows(), _rows(better=0.95)
+    one, many = G.compare(b, c)["groups"][0], G.compare(b, c, tries=8)["groups"][0]
+    assert many["lo"] < one["lo"] and many["hi"] > one["hi"]
+
+
+def test_loop_metrics_count_ships_failures_and_repeats():
+    from harness import critique_metrics as M
+    led = [
+        {"at": "2026-11-08T00:00", "event": "cycle", "sport": "nba", "verdict": "record", "hole": "bench minutes run low after blowouts", "cost_est": 2.0},
+        {"at": "2026-11-09T00:00", "event": "cycle", "sport": "nba", "verdict": "usage limit"},
+        {"at": "2026-11-10T00:00", "event": "cycle", "sport": "nba", "verdict": "pass", "hole": "bench minutes run low after blowouts again", "cost_est": 2.0,
+         "groups": [{"split": "primary", "state": "all", "d": -0.1, "lo": -0.2, "hi": -0.01, "clusters": 6, "verdict": "better"}]},
+        {"at": "2026-11-17T00:00", "event": "merged", "sport": "nba", "hole": "bench minutes run low after blowouts again"},
+        {"at": "2026-11-18T00:00", "event": "cycle", "sport": "nhl", "verdict": "fail", "hole": "goalie pulls", "cost_est": 1.0,
+         "groups": [{"split": "primary", "state": "all", "d": -0.05, "lo": -0.12, "hi": 0.02, "clusters": 9, "verdict": "noise"}]},
+    ]
+    card = M.scorecard(led)
+    assert card["nba"]["completed"] == 2 and card["nba"]["loop_failures"] == 1
+    assert card["nba"]["shipped"] == 1 and card["nba"]["regate_survival"] == 1.0
+    assert card["nba"]["repeats"] == 1 and card["all"]["cost_per_ship"] == 5.0
+    nm = M.near_misses(led)
+    assert [x["sport"] for x in nm] == ["nhl"]
+    assert M.exemplars(led)[0]["hole"].endswith("again")
