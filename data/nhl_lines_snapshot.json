@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-23T23:43:34+00:00",
+"generated_at": "2026-11-24T00:13:41+00:00",
 "goalies": {
 "2026-11-23": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
-"status": null
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Filip Gustavsson",
@@ -32,7 +32,7 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": "Likely"
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Linus Ullmark",
@@ -56,7 +56,7 @@
 },
 "WPG": {
 "goalie": "Stuart Skinner",
-"status": "Likely"
+"status": "Confirmed"
 }
 },
 "2026-11-24": {
@@ -4295,7 +4295,7 @@
 "toiMinutes": 81,
 "toiSeconds": 53
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK2",
 "pos": "rw",
 "pp": "PP2"
@@ -4501,9 +4501,9 @@
 "toiMinutes": 88,
 "toiSeconds": 2
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
-"pos": "c",
+"pos": "rw",
 "pp": null
 },
 "Jakub Dobes": {
@@ -4571,7 +4571,7 @@
 "toiMinutes": 96,
 "toiSeconds": 35
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -4741,9 +4741,9 @@
 "toiMinutes": 45,
 "toiSeconds": 57
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": "PP2"
 },
 "Owen Beck": {
@@ -8995,7 +8995,7 @@
 "toiMinutes": 71,
 "toiSeconds": 55
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
@@ -9063,7 +9063,7 @@
 "toiMinutes": 82,
 "toiSeconds": 11
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "c",
 "pp": "PP2"
@@ -9099,7 +9099,7 @@
 },
 "line": "F1",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": "PP1"
 },
 "Daniil But": {
@@ -9171,7 +9171,7 @@
 "pp": null
 },
 "Dylan Guenther": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 1,
@@ -9199,7 +9199,7 @@
 "toiMinutes": 84,
 "toiSeconds": 43
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "rw",
 "pp": "PP1"
@@ -9233,7 +9233,7 @@
 "toiMinutes": 71,
 "toiSeconds": 31
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK2",
 "pos": "c",
 "pp": null
@@ -9371,9 +9371,9 @@
 "toiMinutes": 87,
 "toiSeconds": 45
 },
-"line": "F3",
+"line": "F2",
 "pk": "PK1",
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Liam O'Brien": {
@@ -9439,7 +9439,7 @@
 "toiMinutes": 103,
 "toiSeconds": 52
 },
-"line": "F1",
+"line": "F2",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -9611,7 +9611,7 @@
 "toiMinutes": 113,
 "toiSeconds": 47
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
