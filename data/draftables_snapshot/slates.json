@@ -10,16 +10,6 @@
 "StartDateEst": "2026-11-24T13:30:00.0000000",
 "last_start": "2026-11-24T23:00:00.0000000Z"
 },
-"157025": {
-"ContestStartTimeSuffix": " (TCU vs MIA)",
-"DraftGroupId": 157025,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 97,
-"StartDate": "2026-11-24T20:00:00.0000000Z",
-"StartDateEst": "2026-11-24T15:00:00.0000000",
-"last_start": "2026-11-24T20:00:00.0000000Z"
-},
 "157026": {
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 157026,
@@ -328,6 +318,46 @@
 "StartDate": "2026-11-25T03:00:00.0000000Z",
 "StartDateEst": "2026-11-24T22:00:00.0000000",
 "last_start": "2026-11-25T03:00:00.0000000Z"
+},
+"157059": {
+"ContestStartTimeSuffix": " (Madden Stream)",
+"DraftGroupId": 157059,
+"DraftGroupTag": "Featured",
+"GameCount": 3,
+"GameTypeId": 158,
+"StartDate": "2026-11-25T17:00:00.0000000Z",
+"StartDateEst": "2026-11-25T12:00:00.0000000",
+"last_start": "2026-11-25T21:00:00.0000000Z"
+},
+"157060": {
+"ContestStartTimeSuffix": " (Madden Stream CHI @ DET)",
+"DraftGroupId": 157060,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-25T17:00:00.0000000Z",
+"StartDateEst": "2026-11-25T12:00:00.0000000",
+"last_start": "2026-11-25T17:00:00.0000000Z"
+},
+"157061": {
+"ContestStartTimeSuffix": " (Madden Stream PHI @ DAL)",
+"DraftGroupId": 157061,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-25T19:00:00.0000000Z",
+"StartDateEst": "2026-11-25T14:00:00.0000000",
+"last_start": "2026-11-25T19:00:00.0000000Z"
+},
+"157062": {
+"ContestStartTimeSuffix": " (Madden Stream KC @ BUF)",
+"DraftGroupId": 157062,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 159,
+"StartDate": "2026-11-25T21:00:00.0000000Z",
+"StartDateEst": "2026-11-25T16:00:00.0000000",
+"last_start": "2026-11-25T21:00:00.0000000Z"
 },
 "157063": {
 "ContestStartTimeSuffix": " (Wed-Mon)",
