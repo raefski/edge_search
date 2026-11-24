@@ -2065,3 +2065,34 @@ coverage on old vs live scans; (2) single-lineup luck: on blend-live dates the 5
 (best-of-seeds / consensus entry is a construction test); (3) late-swap zeros: 6/53 GPP, 4/34 cash entries.
 
 Unattended gate (20261121-1202): **not shipped (log / harness only, verified)**
+
+## Cycle 39 (auto: GPP best-of-seeds lineup selection) -- 2026-11-24, unattended -- NOT SHIPPED (null)
+
+Scout: `{"target": "GPP single-lineup variance: enter the best-of-seeds / consensus lineup instead of seed 0", "metric":
+"$ ROI per $1 + field pctile of the one entered GPP lineup per contest (Adam's GPP contests, ~47 / 26 dates) vs the
+faithful-replay seed-0 lineup; cash secondary, never pooled", "harness": "dfs_strategy_doe.py run nba (asran/lodo) +
+a pre-lock seed-selection arm", "split": "train <= 11-12, test 11-13..11-23, LODO; blend-live >= 11-09 separately",
+"money_at_stake": "GPP -64% [-86, -41], -$75.72, 55 entries / 26 slates", "transfer": null}`
+(Name suspects checked: all five pairs are different players -- Donovan/Davion Mitchell etc. -- nothing to fix.)
+
+Critic (dfs-model-critic): faithful replay, 8 seeds, iters 100; pre-lock features from a separate reference sim (seed 999)
+on the production pool. GPP 47 contests / 26 dates, cash 36 / 22, bootstrap 90% over dates.
+
+| rule (GPP) | train <= 11-12 (40c/21d) | test 11-13..23 (7c/5d) | blend-live >= 11-09 (13c/9d) |
+|---|---|---|---|
+| seed 0 (production) | -66.2% [-89, -20], pct .517 | -67.9% [-100, +6], pct .567 | +39.1%, pct .692 |
+| max ref-sim mean | +3.1 [-11, +16] | -13.5 [-30, 0], pct .391 | -37.2 |
+| max p99 (best on train) | +31.3 [-23, +89] | -21.5 [-47, 0] | -61.4 |
+| consensus | -1.4 | -13.5 | -20.3 |
+| min ownership | +9.2 | -13.5 | -46.6 |
+| average of 8 seeds | +7.1 | -16.2 | -46.6 [-119, -14] |
+
+(rows below seed 0 are dROI vs seed 0.) LODO over 7 rules picks max p99 on 25/26 dates: -75.6% vs seed 0 -66.4%.
+Within a board the ref-sim mean ranks seeds weakly (Spearman .14, projection .16, p99 -.06); realised spread across seeds
+on one board has median 27 pts. Seed 0 was a lucky draw here (pctile .524 vs seed average .482), not systematically better.
+Cycle 38's runner-up "5-seed mean beat seed 0 by +74% on blend-live dates" does not replicate (-47% at 8 seeds): withdrawn.
+
+Decision: nothing shipped; seed 0 stays. Graveyard row added to scripts/dfs_transfer.py (never select on tail percentiles
+at this n). Runner-ups: (1) search convergence -- iters 100 -> 400 / more sims, does the optimizer land on one higher-mean
+lineup (points metric, ~40 boards); (2) cash is -77% ROI over 36c/22d -- bigger leak than seed choice, own cycle;
+(3) p90_stack5 GPP arm re-run at ~40 dates.

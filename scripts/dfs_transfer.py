@@ -351,6 +351,12 @@ TRANSFERS = [
 
 # ── what we tested and found null (do not re-propose without saying what changed) ──
 GRAVEYARD = [
+    {"idea": "enter the best-of-seeds GPP lineup (max sim mean / p99 / consensus / min own / seed average) instead of seed 0",
+     "sports": "nba",
+     "evidence": "cycle 39 (11/24), faithful 8-seed replay, 47 GPP contests / 26 dates: every rule lost to seed 0 on test "
+                 "11/13-11/23 (max mean -13.5% ROI, max p99 -21.5%; LODO picks max p99 25/26, -75.6% vs -66.4%); ref-sim "
+                 "mean ranks seeds only weakly (Spearman .14); cycle 38's +74% seed-average lead does not replicate",
+     "when": "2026-11-24", "retest": "only if search converges (iters/sims up) and seeds still differ by >10 proj pts"},
     {"idea": "ownership as an ROI signal at a fixed projection (chalk vs contrarian)", "sports": "mlb, nhl (all but mma)",
      "evidence": "108 exports / 201,928 entries: no detectable effect on cash rate or ROI (GPP_META.md)",
      "when": "2026-10", "retest": "a sport where ownership is fitted per contest type and n > 10 slates"},
