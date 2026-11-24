@@ -259,26 +259,6 @@
 "StartDateEst": "2026-11-26T13:00:00.0000000",
 "last_start": "2026-11-27T01:20:00.0000000Z"
 },
-"157051": {
-"ContestStartTimeSuffix": " (Madden Stream Early)",
-"DraftGroupId": 157051,
-"DraftGroupTag": "Featured",
-"GameCount": 3,
-"GameTypeId": 158,
-"StartDate": "2026-11-24T17:00:00.0000000Z",
-"StartDateEst": "2026-11-24T12:00:00.0000000",
-"last_start": "2026-11-24T21:00:00.0000000Z"
-},
-"157054": {
-"ContestStartTimeSuffix": " (Madden Stream GB @ MIN)",
-"DraftGroupId": 157054,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 159,
-"StartDate": "2026-11-24T21:00:00.0000000Z",
-"StartDateEst": "2026-11-24T16:00:00.0000000",
-"last_start": "2026-11-24T21:00:00.0000000Z"
-},
 "157055": {
 "ContestStartTimeSuffix": " (Madden Stream)",
 "DraftGroupId": 157055,
@@ -442,7 +422,7 @@
 "157076": {
 "ContestStartTimeSuffix": " (DEN @ PIT)",
 "DraftGroupId": 157076,
-"DraftGroupTag": "",
+"DraftGroupTag": "Featured",
 "GameCount": 1,
 "GameTypeId": 96,
 "StartDate": "2026-11-27T20:00:00.0000000Z",
