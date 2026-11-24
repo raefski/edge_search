@@ -1,24 +1,44 @@
 {
 "CBB": {
-"157021": {
-"ContestStartTimeSuffix": null,
-"DraftGroupId": 157021,
+"157024": {
+"ContestStartTimeSuffix": " (Early)",
+"DraftGroupId": 157024,
 "DraftGroupTag": "Featured",
-"GameCount": 4,
+"GameCount": 8,
 "GameTypeId": 98,
-"StartDate": "2026-11-23T19:30:00.0000000Z",
-"StartDateEst": "2026-11-23T14:30:00.0000000",
-"last_start": "2026-11-24T04:20:00.0000000Z"
+"StartDate": "2026-11-24T18:30:00.0000000Z",
+"StartDateEst": "2026-11-24T13:30:00.0000000",
+"last_start": "2026-11-24T23:00:00.0000000Z"
 },
-"157023": {
-"ContestStartTimeSuffix": " (CSU vs ARIZ)",
-"DraftGroupId": 157023,
+"157025": {
+"ContestStartTimeSuffix": " (TCU vs MIA)",
+"DraftGroupId": 157025,
 "DraftGroupTag": "",
 "GameCount": 1,
 "GameTypeId": 97,
-"StartDate": "2026-11-24T04:20:00.0000000Z",
-"StartDateEst": "2026-11-23T23:20:00.0000000",
-"last_start": "2026-11-24T04:20:00.0000000Z"
+"StartDate": "2026-11-24T20:00:00.0000000Z",
+"StartDateEst": "2026-11-24T15:00:00.0000000",
+"last_start": "2026-11-24T20:00:00.0000000Z"
+},
+"157026": {
+"ContestStartTimeSuffix": null,
+"DraftGroupId": 157026,
+"DraftGroupTag": "Featured",
+"GameCount": 7,
+"GameTypeId": 98,
+"StartDate": "2026-11-25T00:00:00.0000000Z",
+"StartDateEst": "2026-11-24T19:00:00.0000000",
+"last_start": "2026-11-25T05:30:00.0000000Z"
+},
+"157027": {
+"ContestStartTimeSuffix": " (BAY vs BAMA)",
+"DraftGroupId": 157027,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 97,
+"StartDate": "2026-11-25T03:00:00.0000000Z",
+"StartDateEst": "2026-11-24T22:00:00.0000000",
+"last_start": "2026-11-25T03:00:00.0000000Z"
 }
 },
 "CFB": {
@@ -76,16 +96,6 @@
 "StartDate": "2026-11-25T00:00:00.0000000Z",
 "StartDateEst": "2026-11-24T19:00:00.0000000",
 "last_start": "2026-11-25T03:00:00.0000000Z"
-},
-"157228": {
-"ContestStartTimeSuffix": " (2H UTA @ LAL)",
-"DraftGroupId": 157228,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 112,
-"StartDate": "2026-11-24T04:15:00.0000000Z",
-"StartDateEst": "2026-11-23T23:15:00.0000000",
-"last_start": "2026-11-24T04:00:00.0000000Z"
 },
 "157232": {
 "ContestStartTimeSuffix": " (DET @ ORL)",
