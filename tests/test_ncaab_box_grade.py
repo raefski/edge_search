@@ -119,3 +119,28 @@ def test_sides_are_tagged_as_a_pair_not_each_to_its_best_code():
                     _summary("Arkansas-Pine Bluff Golden Lions", [_athlete("Jalen Tatum", 34, 20)]))
     rows = g.box_rows(summary, ("ARK", "UAPB"))
     assert [r["team"] for r in rows] == ["ARK", "UAPB"]
+
+
+def test_missing_boxes_are_fetched_from_the_day_after_and_old_ones_listed_stuck(tmp_path, monkeypatch, capsys):
+    """The timer (deploy/ncaab-box.timer): only slates with no box, not tonight's, not older than
+    MISSING_DAYS; a not-final slate waits; publishes only when something new was saved."""
+    from datetime import date
+    log = tmp_path / "log.csv"
+    log.write_text("date,gid,player,team\n" + "".join(f"{d},{g},P,T\n" for d, g in [
+        ("2026-11-24", 3), ("2026-11-24", 4), ("2026-11-25", 5), ("2026-11-01", 1), ("2026-11-23", 2)]))
+    (tmp_path / "box").mkdir()
+    (tmp_path / "box" / "2.json").write_text("[]")
+    monkeypatch.setattr(g, "LOG", log)
+    monkeypatch.setattr(g, "BOX_DIR", tmp_path / "box")
+    tried, pushed = [], []
+    monkeypatch.setattr(g, "logged", lambda gid: [{"gid": gid}])
+    monkeypatch.setattr(g, "boxes", lambda gid, rows: tried.append(gid) or ([] if gid == 3 else None))
+    import edge.data_branch as D
+    monkeypatch.setattr(D, "publish_one", lambda path, label: pushed.append(label) or True)
+    assert g.fetch_missing(push=True, today=date(2026, 11, 25)) == 0
+    assert tried == [3, 4] and pushed == ["ncaab box scores 3"]
+    out = capsys.readouterr().out
+    assert "1 saved" in out and "1 waiting" in out and "STUCK" in out and "1 (2026-11-01)" in out
+    monkeypatch.setattr(g, "boxes", lambda gid, rows: None)
+    pushed.clear()
+    assert g.fetch_missing(push=True, today=date(2026, 11, 25)) == 0 and not pushed

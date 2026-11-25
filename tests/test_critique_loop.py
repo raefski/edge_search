@@ -345,6 +345,7 @@ def test_a_queued_target_replaces_auto_and_is_used_once(tmp_path, monkeypatch):
     C.enqueue(st, "nhl", "availability goalies")
     monkeypatch.setattr(C, "worktree", lambda *a: tmp_path)
     monkeypatch.setattr(C, "drop_worktree", lambda *a: None)
+    monkeypatch.setattr(C, "preflight", lambda s: None)
     monkeypatch.setattr(C, "changed", lambda wt: [])
     monkeypatch.setattr(C, "ledger", lambda e: None)
     monkeypatch.setattr(C, "notify", lambda *a: None)
@@ -393,3 +394,81 @@ def test_loop_metrics_count_ships_failures_and_repeats():
     nm = M.near_misses(led)
     assert [x["sport"] for x in nm] == ["nhl"]
     assert M.exemplars(led)[0]["hole"].endswith("again")
+
+
+def _quiet(monkeypatch, tmp_path, sha="abc123"):
+    """cycle() with no git, no pushes, no ledger file."""
+    events, pushes = [], []
+    monkeypatch.setattr(C, "git", lambda *a, **k: sha)
+    monkeypatch.setattr(C, "ledger", events.append)
+    monkeypatch.setattr(C, "notify", lambda t, b, p="default": pushes.append((t, b, p)))
+    monkeypatch.setattr(C, "worktree", lambda *a, **k: tmp_path)
+    return events, pushes
+
+
+def test_a_broken_main_gate_skips_the_sport_before_the_agent_runs(tmp_path, monkeypatch):
+    """11/21-11/25: NCAAB's lab crashed on MAIN three times, each after a full critic cycle."""
+    events, pushes = _quiet(monkeypatch, tmp_path)
+    dropped = []
+    monkeypatch.setattr(C, "drop_worktree", lambda *a, **k: dropped.append(a))
+    monkeypatch.setattr(C, "preflight", lambda s: "RuntimeError: ncaab gate rows failed in x-main: KeyError 'last_min'")
+    monkeypatch.setattr(C, "run_agent", lambda *a, **k: (_ for _ in ()).throw(AssertionError("agent ran")))
+    st = {"next": 0, "sports": {}}
+    assert C.cycle("ncaab", st) == C.BROKEN_PREFLIGHT
+    sp = st["sports"]["ncaab"]
+    assert sp["gate_broken"]["sha"] == "abc123" and sp["streak"] == 0 and not dropped
+    assert "no cycle spent" in pushes[0][1] and pushes[0][2] == "high" and events[0]["event"] == "gate broken"
+    now = datetime.strptime(sp["history"][-1]["at"], "%Y%m%d-%H%M").replace(tzinfo=timezone.utc)
+    assert "ncaab" not in C.ran_tonight(st, now)           # a skip is not tonight's cycle
+    season = lambda s: s != "mlb"                          # noqa: E731
+    assert C.pick(st, now, season=season) == "nba"
+    assert C.pick(st, now, {"nba"}, season=season) == "nhl"  # ncaab sits out ...
+    C.enqueue(st, "ncaab", "availability")
+    st["next"] = 0
+    assert C.pick(st, now, {"nba"}, season=season) == "nhl"  # ... even when queued
+    assert C.clear_fixed_gates(st) == []                   # same main: still out
+    monkeypatch.setattr(C, "git", lambda *a, **k: "def456")
+    assert C.clear_fixed_gates(st) == ["ncaab"] and "gate_broken" not in sp
+    assert C.pick(st, now, {"nba"}, season=season) == "ncaab"   # queued, and back in
+
+
+def test_main_breaking_after_the_agent_keeps_its_branch_and_lands_its_log(tmp_path, monkeypatch):
+    events, pushes = _quiet(monkeypatch, tmp_path)
+    dropped, landed = [], []
+    monkeypatch.setattr(C, "drop_worktree", lambda *a, **k: dropped.append(a))
+    monkeypatch.setattr(C, "preflight", lambda s: None)
+    monkeypatch.setattr(C, "run_agent", lambda *a, **k: {"rc": 0, "claim": {"hole": "starters"}, "limited": False,
+                                                          "resets": None, "cost": 1.0, "minutes": 9})
+    monkeypatch.setattr(C, "changed", lambda wt: ["edge/dfs_run_ncaab.py"])
+    monkeypatch.setattr(C, "land_log", lambda s, wt, note: landed.append(note))
+    monkeypatch.setattr(C, "judge", lambda *a, **k: (_ for _ in ()).throw(
+        RuntimeError("ncaab gate rows failed in /wt/critique-ncaab-x-main (scripts/ncaab_lab.py, rc 1)")))
+    st = {"next": 0, "sports": {}}
+    assert C.cycle("ncaab", st) == C.BROKEN_CYCLE
+    assert dropped == [(tmp_path,)]                        # worktree gone, branch NOT deleted
+    assert "not judged" in landed[0] and "kept on branch critique/ncaab-" in pushes[0][1]
+    now = datetime.strptime(st["sports"]["ncaab"]["history"][-1]["at"], "%Y%m%d-%H%M").replace(tzinfo=timezone.utc)
+    assert "ncaab" in C.ran_tonight(st, now)               # a spent cycle: the 07:05 run won't redo it
+    monkeypatch.setattr(C, "judge", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("git worktree add: boom")))
+    try:
+        C.cycle("ncaab", {"next": 0, "sports": {}})
+        raise AssertionError("an unrelated error must still raise")
+    except RuntimeError as e:
+        assert "boom" in str(e)
+
+
+def test_a_regate_waits_when_mains_gate_is_broken(tmp_path, monkeypatch):
+    events, pushes = _quiet(monkeypatch, tmp_path)
+    monkeypatch.setattr(C, "judge", lambda *a, **k: (_ for _ in ()).throw(
+        RuntimeError("nhl gate rows failed in /wt/x-main (scripts/nhl_skater_lab.py, rc 1)")))
+    monkeypatch.setattr(C, "changed", lambda wt: ["edge/nhl_sim.py"])
+    st = {"next": 0, "sports": {}}
+    old = (C._now() - timedelta(days=C.WAIT_DAYS + 1)).strftime("%Y%m%d-%H%M")
+    C._sport(st, "nhl")["pending"] = {"branch": "b", "wt": str(tmp_path), "created": old, "verdict": "pass",
+                                      "hole": "goalies"}
+    assert C.regate("nhl", st).startswith("waiting") and st["sports"]["nhl"]["pending"]["branch"] == "b"
+    assert "re-gate waiting" in pushes[0][0]
+
+
+def test_preflight_has_nothing_to_check_for_an_ungated_sport():
+    assert "mlb" not in G.SPECS and C.preflight("mlb") is None

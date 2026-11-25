@@ -1,0 +1,20 @@
+# Save ESPN box scores for every logged college slate that has none, and publish them to
+# the data branch. See scripts/ncaab_box_grade.py --missing. The NCAAB lab and the critique
+# gate grade only slates with a box: before this (11/25) nothing fetched them unless a
+# critique agent did, so the gate's forward nights stayed ungraded.
+#
+#   cp deploy/ncaab-box.service deploy/ncaab-box.timer ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now ncaab-box.timer
+#   journalctl --user -u ncaab-box -n 50
+[Unit]
+Description=Save missing NCAAB ESPN box scores and publish them
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/edge_search
+ExecStart=/usr/bin/env python3 scripts/ncaab_box_grade.py --missing --push
+Restart=no
+Nice=10
+TimeoutStartSec=1800

@@ -32,6 +32,13 @@ Why it is built this way (asked for 2026-11-07, after 24 hand-run NBA cycles):
    the gate: no new data, no new holes, and each cycle costs a night of model time.
 6. Nothing runs or merges with a Classic slate locking inside LOCK_CLEAR_H hours: a
    merge changes projections, and Adam builds from the phone before lock.
+7. MAIN's gate rows are built before the agent is started (preflight). 11/21-11/25 NCAAB's
+   own lab crashed on main (two LBS Christian Joneses) three times, each AFTER a full
+   critic cycle ($1-2), and two of those candidates had fixed the very bug -- a fix to the
+   gate's script can never pass a gate that runs main's copy first. A broken main gate now
+   skips the sport before any money is spent, pushes "gate broken on main", and keeps the
+   sport out until origin/main changes (or --resume). A crash is recorded in the sport's
+   history, so the 07:05 run no longer reruns a crash that is certain to repeat.
 
 The loop never edits the critic prompt or the skill: a loop that rewrites its own
 judge can quietly start grading itself easier. That stays a person's change.
@@ -418,6 +425,59 @@ def judge(sport: str, cand: Path, paths: list[str], target: str | None = None) -
     return verdict, gate
 
 
+def preflight(sport: str) -> str | None:
+    """None when main's gate rows build in a fresh worktree of origin/main, else the error.
+    Sports with no gate (critique_gate.SPECS) have nothing to check. Cost: the gate's own
+    runtime on one checkout (ncaab ~7 s, nba ~15 min -- no Claude usage, Nice 15)."""
+    from harness import critique_gate
+    if sport not in critique_gate.SPECS:
+        return None
+    base = worktree(f"critique-{sport}-{_now():%Y%m%d-%H%M%S}-preflight", None)
+    try:
+        critique_gate.rows(base, sport)
+    except (RuntimeError, subprocess.TimeoutExpired) as e:
+        return f"{type(e).__name__}: {e}"
+    finally:
+        drop_worktree(base)
+    return None
+
+
+#: history outcomes; a preflight skip spent no cycle, so it is not "ran tonight"
+BROKEN_PREFLIGHT = "gate broken (preflight)"
+BROKEN_CYCLE = "gate broken on main"
+
+
+def gate_broken(sport: str, st: dict, err: str, stamp: str, cand: Path | None = None,
+                branch: str | None = None, head: str | None = None) -> str:
+    """Main's gate rows fail: record it, keep the sport out until origin/main changes, push.
+    With `cand` (the agent already ran): land its log entry and keep its branch -- the
+    work may be good (the 11/21 NCAAB candidate was) and is re-gated by hand once main is
+    fixed; only its worktree goes."""
+    sp = _sport(st, sport)
+    sha = git("rev-parse", "origin/main", check=False)
+    outcome = BROKEN_CYCLE if cand is not None else BROKEN_PREFLIGHT
+    sp["gate_broken"] = {"sha": sha, "at": _now().isoformat(), "error": err[-800:]}
+    sp["history"].append({"at": stamp, "outcome": outcome, "hole": head})
+    ledger({"event": "gate broken", "sport": sport, "during": "cycle" if cand is not None else "preflight",
+            "sha": sha, "error": err[-1500:]})
+    kept = ""
+    if cand is not None:
+        try:
+            land_log(sport, cand, f"Unattended gate ({stamp}): **{outcome}** -- main's gate rows failed, "
+                                  f"the candidate was not judged; kept on branch `{branch}`.")
+        except RuntimeError as e:
+            kept += f"\n(log entry not landed: {e})"
+        drop_worktree(cand)                       # the branch stays
+        kept += f"\n\nThe agent's work is kept on branch {branch}; re-gate it once main is fixed."
+    notify(f"{sport} critique: gate broken on main",
+           ("Skipped before the agent ran: no cycle spent.\n" if cand is None else "")
+           + f"main's own gate rows fail, so no {sport} candidate can be judged -- fix it on main "
+             "(a fix inside a candidate can never pass: the gate runs main's copy first). "
+             f"{sport} sits out until origin/main changes, or: harness critique-loop --resume {sport}"
+           + kept + f"\n\n{err[-900:]}", "high")
+    return outcome
+
+
 def _note(stamp: str, verdict: str, gate: dict, extra: str = "") -> str:
     return (f"Unattended gate ({stamp}): **{verdict}**{extra}\n\n{gate['table']}"
             + "".join(f"\n- {x.strip()[:400]}" for x in gate["reasons"][:6]))
@@ -427,6 +487,10 @@ def cycle(sport: str, st: dict) -> str:
     from harness import critique_gate
     sp = _sport(st, sport)
     stamp = _now().strftime("%Y%m%d-%H%M")
+    err = preflight(sport)
+    if err:
+        return gate_broken(sport, st, err, stamp)
+    sp.pop("gate_broken", None)
     branch = f"critique/{sport}-{stamp}"
     cand = worktree(f"critique-{sport}-{stamp}", branch)
     queued = (st.get("queue") or {}).get(sport) or {}
@@ -452,7 +516,14 @@ def cycle(sport: str, st: dict) -> str:
         notify(f"{sport} critique: no result", f"the agent committed nothing (rc {res['rc']}). "
                f"Run log: data/harness/critique/{stamp}-{sport}.json", "high")
         return "no commits"
-    verdict, gate = judge(sport, cand, paths, claim.get("target"))
+    try:
+        verdict, gate = judge(sport, cand, paths, claim.get("target"))
+    except RuntimeError as e:
+        # judge() turns a CANDIDATE's broken rows into a fail; what escapes is main's
+        # (data that landed while the agent ran can still break it after the preflight)
+        if "gate rows failed" not in str(e) and "prepare failed" not in str(e):
+            raise
+        return gate_broken(sport, st, str(e), stamp, cand=cand, branch=branch, head=head)
     if verdict in ("pass", "review"):
         extra = (f" -- re-gated after {WAIT_DAYS} forward days, then merged unless vetoed" if verdict == "pass"
                  else " -- waiting for Adam: harness critique-loop --merge / --drop")
@@ -519,7 +590,16 @@ def regate(sport: str, st: dict) -> str | None:
         git("rebase", "--abort", cwd=cand, check=False)
         verdict, gate = "fail", {"table": "", "reasons": [f"rebase onto main failed: {e}"]}
     else:
-        verdict, gate = judge(sport, cand, changed(cand))
+        try:
+            verdict, gate = judge(sport, cand, changed(cand))
+        except RuntimeError as e:
+            # main's gate rows broke: not the candidate's fault -- keep it pending and say so
+            # (outside the night's try, this used to end the whole run)
+            if "gate rows failed" not in str(e) and "prepare failed" not in str(e):
+                raise
+            notify(f"{sport} critique: re-gate waiting", f"main's gate rows fail, so {p['hole']} stays pending "
+                   f"until main is fixed.\n\n{str(e)[-900:]}", "high")
+            return "waiting: main's gate rows fail"
     if verdict == "pass":
         if locks_soon():
             return "waiting: a slate locks soon"
@@ -571,14 +651,17 @@ def pick(st: dict, now: datetime, done: set = frozenset(), season=in_season) -> 
     should be tonight's NHL critique target") -- but never past a pending candidate (two
     branches of one sport would collide at merge) or out of season (no slates to test on).
     The rotation pointer does not move for it."""
+    # a sport whose MAIN gate is broken sits out until main changes (main() clears the flag)
     for s in (st.get("queue") or {}):
-        if s not in done and not _sport(st, s)["pending"] and season(s):
+        sp = _sport(st, s)
+        if s not in done and not sp["pending"] and not sp.get("gate_broken") and season(s):
             return s
     for k in range(len(ROTATION)):
         s = ROTATION[(st["next"] + k) % len(ROTATION)]
         sp = _sport(st, s)
         paused = sp["paused_until"] and datetime.fromisoformat(sp["paused_until"]) > now
-        if not paused and not sp["pending"] and s not in done and s not in SKIP and season(s):
+        if (not paused and not sp["pending"] and not sp.get("gate_broken") and s not in done
+                and s not in SKIP and season(s)):
             st["next"] = (st["next"] + k + 1) % len(ROTATION)
             return s
     return None
@@ -594,7 +677,7 @@ SKIP: tuple = ()
 #: window resets (11/9: the 02:00 start means a limit hit at ~04:00-07:00 resets by
 #: ~07:00). A sport whose cycle already ran in this window is not run again.
 NIGHT_WINDOW_H = 12
-_NOT_A_CYCLE = ("regate", "merged", "vetoed")
+_NOT_A_CYCLE = ("regate", "merged", "vetoed", BROKEN_PREFLIGHT)
 
 
 def ran_tonight(st: dict, now: datetime) -> set:
@@ -621,8 +704,22 @@ def status(st: dict) -> str:
         season = f"in season (last slate {last_slate(s)})" if in_season(s) else f"OUT of season ({last_slate(s)})"
         out.append(f"  {s:<6} {season}  streak {sp['streak']}  paused until {sp['paused_until'] or '-'}  "
                    f"pending {(sp['pending'] or {}).get('branch', '-')}  last {last.get('at', '-')} "
-                   f"{last.get('outcome', '')}")
+                   f"{last.get('outcome', '')}"
+                   + (f"  GATE BROKEN on main {sp['gate_broken']['sha'][:9]} (out until main changes)"
+                      if sp.get("gate_broken") else ""))
     return "\n".join(out)
+
+
+def clear_fixed_gates(st: dict) -> list[str]:
+    """Lift `gate_broken` for every sport whose flag was set on an older origin/main: a
+    push since may be the fix, and the next preflight checks it for the price of one gate run."""
+    git("fetch", "-q", "origin", "main", check=False)
+    sha = git("rev-parse", "origin/main", check=False)
+    lifted = [s for s, sp in st.get("sports", {}).items()
+              if sp.get("gate_broken") and sp["gate_broken"].get("sha") != sha]
+    for s in lifted:
+        st["sports"][s].pop("gate_broken", None)
+    return lifted
 
 
 def enqueue(st: dict, sport: str, target: str) -> None:
@@ -684,6 +781,7 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
                 sp["pending"] = None
             if resume:
                 sp["paused_until"], sp["streak"] = None, 0
+                sp.pop("gate_broken", None)
             save_state(st)
             print(status(st))
             return 0
@@ -701,13 +799,15 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
                     break
             print(f"would run, in order: {', '.join(plan) or 'nothing'} (claude: {claude_bin()})\n{status(st)}")
             return 0
-        done, results = set(), []
+        done, skipped, results = set(), set(), []
         earlier = set() if sport else ran_tonight(st, _now())
         if len(earlier) >= MAX_PER_NIGHT:
             print(f"tonight's {MAX_PER_NIGHT} cycle(s) already ran: {', '.join(sorted(earlier))}")
             return 0
+        clear_fixed_gates(st)
         while True:
-            if not sport and len(done | earlier) >= MAX_PER_NIGHT and done:
+            # a sport skipped at preflight spent no cycle: the night moves to the next one
+            if not sport and len((done - skipped) | earlier) >= MAX_PER_NIGHT and done - skipped:
                 break
             soon = locks_soon(CYCLE_LOCK_H)
             if soon:
@@ -727,7 +827,13 @@ def main(sport: str | None = None, dry_run: bool = False, show: bool = False,
                 import traceback
                 v = f"crashed ({type(e).__name__}: {e})"
                 ledger({"event": "cycle", "sport": s, "verdict": "crashed", "error": traceback.format_exc()[-1500:]})
+                # in the history, so ran_tonight() sees it: the 07:05 run used to rerun a
+                # crash certain to repeat (NCAAB 11/25, 02:07 and again 07:50 ET)
+                _sport(st, s)["history"].append({"at": _now().strftime("%Y%m%d-%H%M"), "outcome": "crashed",
+                                                 "error": str(e)[-300:]})
                 notify(f"{s} critique: loop crashed", traceback.format_exc()[-1200:], "high")
+            if v == BROKEN_PREFLIGHT:
+                skipped.add(s)
             save_state(st)
             results.append(f"{s}: {v}")
             print(results[-1], flush=True)

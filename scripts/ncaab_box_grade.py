@@ -3,6 +3,8 @@
 
     python3 scripts/ncaab_box_grade.py <draft group>    # grade one logged slate
     python3 scripts/ncaab_box_grade.py --fit            # refit SALARY_TIER_LINE on saved slates
+    python3 scripts/ncaab_box_grade.py --missing [--push]   # save every logged slate's box still missing
+                                                            # (deploy/ncaab-box.timer; --push: data branch)
 
 Why the contest export is not enough (scripts/nba_calibration.py --sport ncaab reads it):
 it lists only the players somebody drafted. On 2026-11-02 (draft group 155565) it had 43 of
@@ -13,6 +15,9 @@ miss is 1.75. It also has no team column: the two Trent Perrys came back as one 
 Names go through edge/ncaab_names.Rosters inside the player's own team, and the box points
 are checked against DK's FPTS wherever an export has them (172 of 173 agreed that night; the
 one miss was Perry). Boxes are kept in data/ncaab_box/<gid>.json once every game is final.
+Since 2026-11-25 a timer saves them (--missing) and publishes the directory to the data
+branch (edge/data_branch.FEEDS); before that only critique agents fetched them, so the NCAAB
+gate's forward nights stayed ungraded until someone asked.
 One night is a reading, not a fit: CLAUDE.md wants ~5 slates before anything is called proven.
 """
 from __future__ import annotations
@@ -23,6 +28,7 @@ import json
 import re
 import sys
 import time
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -264,11 +270,61 @@ def fit_salary_tier() -> int:
     return 0
 
 
+#: How far back (days) --missing retries a slate with no box. Older ones are listed as
+#: STUCK each run and not fetched again: 156656 (11/14) has a UTAH/UW game ESPN never lists
+#: (11/13-11/15 scoreboards, checked 2026-11-25) -- postponed or cancelled, and zeros
+#: for its players would be a guess.
+MISSING_DAYS = 10
+
+
+def fetch_missing(days: int = MISSING_DAYS, push: bool = False, today: date | None = None) -> int:
+    """Save the box for every logged slate that has none, from the day after its date
+    (games end past midnight ET) for `days` days. A slate with a game not final, or not
+    matched on ESPN, waits for the next run; `push` publishes data/ncaab_box to the data
+    branch when anything new was saved. Returns 1 only when the publish fails."""
+    today = today or date.today()
+    with LOG.open(newline="") as fh:
+        dates: dict = {}
+        for r in csv.DictReader(fh):
+            dates.setdefault(int(r["gid"]), r["date"])
+    saved, waiting, stuck = [], [], []
+    for gid, d in sorted(dates.items()):
+        if (BOX_DIR / f"{gid}.json").exists():
+            continue
+        age = (today - date.fromisoformat(d)).days
+        if age < 1:
+            continue
+        if age > days:
+            stuck.append(f"{gid} ({d})")
+            continue
+        print(f"{gid} ({d}):", end=" ", flush=True)
+        if boxes(gid, logged(gid)) is None:
+            waiting.append(f"{gid} ({d})")
+        else:
+            saved.append(gid)
+            print("saved")
+    print(f"ncaab boxes: {len(saved)} saved {saved or ''}, {len(waiting)} waiting, {len(stuck)} stuck")
+    if waiting:
+        print("  waiting: " + ", ".join(waiting) + " -- a game not found a day after the slate is usually a DK "
+              "team code missing from data/college_teams.json: harness run college-teams")
+    if stuck:
+        print(f"  STUCK (older than {days} days, not retried): " + ", ".join(stuck))
+    if push and saved:
+        from edge import data_branch
+        if not data_branch.publish_one(BOX_DIR, f"ncaab box scores {', '.join(map(str, saved))}"):
+            return 1
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("gid", nargs="?", type=int)
     ap.add_argument("--fit", action="store_true", help="refit the salary tier on data/ncaab_box/")
+    ap.add_argument("--missing", action="store_true", help="save every logged slate's missing box (the timer)")
+    ap.add_argument("--push", action="store_true", help="with --missing: publish data/ncaab_box to the data branch")
     args = ap.parse_args()
+    if args.missing:
+        return fetch_missing(push=args.push)
     if args.fit:
         return fit_salary_tier()
     if not args.gid:

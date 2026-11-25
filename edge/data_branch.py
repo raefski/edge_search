@@ -71,6 +71,7 @@ FEEDS: tuple[str, ...] = (
     "data/ncaaf_availability",            # scripts/ncaaf_availability_capture.py (history, not rebuildable)
     "data/ncaaf_depth",                   # scripts/ncaaf_depth_capture.py (history, not rebuildable)
     "data/ncaaf_qb_rush_td.json",         # scripts/ncaaf_qb_rates_publish.py (the NCAAF build reads it)
+    "data/ncaab_box",                     # scripts/ncaab_box_grade.py --missing (deploy/ncaab-box.timer); main until 11/25
 )
 
 

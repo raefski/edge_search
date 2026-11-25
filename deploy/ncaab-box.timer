@@ -1,0 +1,14 @@
+[Unit]
+Description=NCAAB box scores, before and after the critique night
+
+[Timer]
+Unit=ncaab-box.service
+# 01:40 ET: most of last night's games are final, so the 02:00 critique run grades them.
+# 06:30: late West-coast / Hawaii finishes, before the 07:05 resume run. 13:30: anything
+# ESPN marked final late. A slate is fetched once (it has a box after), so reruns are cheap.
+OnCalendar=*-*-* 01:40,06:30,13:30:00
+RandomizedDelaySec=120
+Persistent=true
+
+[Install]
+WantedBy=timers.target
