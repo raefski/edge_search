@@ -598,8 +598,70 @@ $ .95 -> 1.11 -- but single-cash $ is one slate each way (11/5 +, 11/4 -).
 Verdict: held-out over the season it helps; on the only forward nights it hurts, worst on
 the two Thanksgiving-tournament slates (neutral sites; "last game" may be a different
 event type). 3 forward slates is not enough data either way -> not merged; re-gate the
-branch at 5+ forward slates (boxes: `harness run ncaab-box-grade -- <gid>`; no timer fetches them).
+branch at 5+ forward slates (boxes: ncaab-box.timer fetches them nightly since 11/25).
 
 Also fixed today: boxes for 157021/157024/157026 failed because DK codes MISS, OU, CSU were
 not in data/college_teams.json (built 11/21, before those codes appeared): `harness run
 college-teams` (279 DK teams, was 269). 156656 (11/14, UTAH/UW) still fails to fetch.
+
+
+## Cycle 8 (auto: DK season FPPG unused) — 2026-11-25, hand-run
+
+Scout: `{"target": "DK season FPPG unused: no-props projection ignores this season's DK average whenever a Torvik row exists",
+"metric": "held-out cash set20 field pctile + $ per $1 on the Double Ups from 11/12 (5 slates / 8 contests), 2+ seed sets; paired cash pts/lineup on every boxed board from 11/12; guards GPP set20 pctile, ncaab_lab all-player MAE LOSO (the gate)",
+"harness": "ncaab_lineup_lab VARIANT act ~ a + b*shipped + c*dk_fppg on non-props rows, refit per fold; ncaab_lab gate",
+"split": "LOSO over boards from 11/12; forward fit 11/12-11/18, test 11/19-11/24; 11/2-11/10 apart (DK FPPG was last season's)",
+"money_at_stake": "cash +37% [-42,+116] (17e/12s, +$22, mostly 11/17); cash 5-7 game slates -69% (7e/5s); GPP -37% (12e/10s, -$3)",
+"runner_ups": ["re-land cycle 5's team-code fix (passed the gate 11/13, lost in a rebase)", "GPP build pct p90 -> p50/p70 (NHL c17)", "re-gate critique/ncaab-c6-regate at 5+ forward slates"]}`
+
+Baseline (27 boxed slates, 4,689 rows): LOSO pooled all MAE **5.507**, priced bias +1.15.
+
+**Hole (dfs-model-critic):** from 11/9 DK's FPPG on every board is THIS season's average, but no-props
+rows still projected from last season (Torvik carryover + salary line) and one LAST_GAME box: a player
+with a Torvik row never read DK's average; one without read it through the "side" carryover as if it
+were last season's. Residuals rise with (dk_fppg - proj): -3.6 at -5..-2 (204 rows), +2.95 at +10 or more
+(107). Juzenas 11/20: DK 40.7, base 15.7, proj 28.7; field 50% vs our 5%. Switch: the share of
+Torvik-joined players whose DK FPPG equals Torvik's last-season DK points (within 0.5) is .84-.96 on
+11/2-11/8 and .03-.29 on every slate from 11/9 (all 58 early-seen players changed on 11/9).
+
+**Fix (shipped):** `SEASON_FPPG` in edge/dfs_run_ncaab.py, after LAST_GAME on every non-props row with a DK
+FPPG: fp' = max(-1.833 + 0.623 fp + 0.357 dk_fppg, 0), least squares on 2,178 rows / 20 fresh slates
+(11/9-11/24; train-only 11/9-11/18 fit (-1.552, 0.711, 0.261)), only when `season_fppg_state` says the
+FPPG is this season's (share < .5 among 20+ joined players); `info["season_fppg"]` on the page, with a
+warning when off. scripts/ncaab_lab.py (judge file, hand-run cycle) replays it: `shipped(..., season)`,
+`fit_season`, `held_out` (LAST_GAME + SEASON_FPPG refit leave-one-slate-out) used by report, gate and
+the lineup lab's `shipped`. Parity: the lab's LOSO reproduces the critic's 5.3802 and its full fit
+reproduces the shipped constants to 4 decimals.
+
+| held out | n | shipped | + SEASON_FPPG |
+|---|---|---|---|
+| all-player MAE, LOSO (the gate) | 4,689 rows / 27 slates | 5.507 | **5.380** (19 of 20 fresh slates better; 11/2-11/8 unchanged) |
+| 11/12 on | 2,562 / 17 | 5.265 | 5.050 (17 / 17) |
+| forward: fit <= 11/18, test 11/19-11/24 | 1,406 / 9 | 5.446 | 5.216 (9 / 9) |
+| 11/9-11/11 (1-3 games in DK's average) | 669 / 3 | 5.472 | 5.406 (2 / 3) |
+| priced bias, 11/12 on | | +1.26 | +0.84 |
+| cash pts / lineup, 17 boxed boards 11/12+ (20 x 2 seed sets) | | 200.1 | **205.1** (+5.0 [+1.8, +8.4]; seed sets +5.6 / +4.5) |
+| cash pts / lineup, forward 11/19+ (9 boards) | | 184.5 | 191.0 (+6.5 [+2.3, +10.7]) |
+| cash Double Up pctile, 11/12+ (8 contests / 5 slates) | | .288 | .379 (+.091 [-.034, +.227], 3 of 5) |
+| cash $ per $1 | | 0.50 | 0.58 (+0.08 [-0.40, +0.64]) |
+| GPP set20 pctile, guard (3 slates) | | .336 | .460 (+.124 [+.041, +.207]) |
+| 11/9-11/11 cash (2 contests / 3 boards) | | .274 / 183.7 pts | .231 / 180.6 pts (worse) |
+
+Per cash slate pctile: 11/12 +.28, 11/16 +.31, 11/17 -.11, 11/20 -.03, 11/24 +.01. A salary-only
+recalibration (cycle-5 style comparator) reached only 5.148 on 11/12+, so the gain is DK's average,
+not a level shift. $5K+ rows whose DK average is under half the board (6 held out): MAE 8.26 -> 6.91.
+
+**Decision: SHIPPED.** Player error better on every forward slate and the lineup points interval clear
+of 0 on 17 boards; the money percentile is positive but its interval includes 0 (5 cash slates), and
+cycle 5's placebo moved cash points up to +4.1 [-0.3, +8.5] -- both seed sets and the forward window agree,
+both GPP guards improved. Live build 11/25 (157295, 5 games): fresh (share .065 of 46), 99 rows moved.
+Risks: next season the switch fires with 1-3 games in DK's average, where the replay was worse
+(11/9-11/11) -- weight by games played before then; c grows with games (.26 on the early fit, .36 full):
+refit weekly.
+
+**Runner-ups:** (1) props rows run high at $5K+ (bias +2.10, 424 rows / 17 slates); a per-fold shrink
+(~0.84 p + 1.76) cuts props MAE 8.16 -> 7.88 (14 of 17) -- cycle 5's props-only lineup test was null;
+(2) since 11/9 the Torvik fingerprint join compares last-season Torvik with this-season FPPG, so transfers
+fail it and fall to the no-Torvik path -- match on last season's FPPG; (3) weight DK's average by games
+played (above).
+

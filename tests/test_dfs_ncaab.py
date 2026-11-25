@@ -349,6 +349,7 @@ def test_forward_log_is_keyed_by_draft_group(cbb_slate, tmp_path):
     # Cycle 3: the pre-LAST_GAME projection is logged, so the lab never applies it twice.
     assert text[0].split(",")[-1] == "base_proj"
     assert all(p.get("base_fp") is not None for p in res["pool"])
+    assert {"fresh", "share", "n", "moved"} <= set(res["stats"]["season_fppg"])   # cycle 8
     assert (tmp_path / "data" / f"dfs_lineups_ncaab_{out['date']}.csv").read_text().startswith("gid,")
 
 
@@ -415,6 +416,55 @@ def test_lab_takes_last_game_back_out_of_a_logged_projection():
     assert L.base_projection(1, row(15.0), "") == 15.0               # before 11/7: as logged
     assert L.base_projection(156344, row(30.0, source="props"), "") == 30.0
     assert L.base_projection(156344, row(9.0, last_min=None), "") == 9.0
+
+
+# ---------------------------------------------------------------------------
+# this season's DK average (SEASON_FPPG): NCAAB_CRITIQUE_LOG.md cycle 8
+# ---------------------------------------------------------------------------
+def test_season_fppg_moves_non_props_rows_with_a_dk_average():
+    rows = [{"source": "blend", "fp": 15.7, "dk_fppg": 40.7},     # Juzenas, 11/20
+            {"source": "props", "fp": 30.0, "dk_fppg": 10.0},
+            {"source": "bench", "fp": 2.0, "dk_fppg": None},
+            {"source": "salary", "fp": 9.0, "dk_fppg": 0.0}]
+    assert RC.apply_season_fppg(rows) == 1
+    a, b, c = RC.SEASON_FPPG
+    assert rows[0]["fp"] == pytest.approx(a + b * 15.7 + c * 40.7) and rows[0]["fp"] > 20
+    assert [r["fp"] for r in rows[1:]] == [30.0, 2.0, 9.0]
+    rows = [{"source": "bench", "fp": 0.5, "dk_fppg": 0.4}]
+    RC.apply_season_fppg(rows)
+    assert rows[0]["fp"] == 0.0                                    # floored, never negative
+
+
+def test_season_fppg_switch_waits_for_dk_to_roll_the_average_over(monkeypatch):
+    """DK's FPPG is last season's until ~11/9: the layer is off while most Torvik-joined
+    players' DK number equals their last-season DK points, and with too few to tell."""
+    monkeypatch.setattr(RC.ncaab_torvik, "dk_points", lambda tv: tv["fp"])
+    def slate(n, same):
+        sal = {i: {"dk_fppg": 20.0 if i < same else 31.0} for i in range(n)}
+        return sal, {i: {"fp": 20.0} for i in range(n)}
+    assert not RC.season_fppg_state(*slate(40, 36))["fresh"]       # 11/2-11/8: .84-.96 match
+    st = RC.season_fppg_state(*slate(40, 4))                       # from 11/9: .03-.16
+    assert st["fresh"] and st["share"] == 0.1 and st["n"] == 40
+    assert not RC.season_fppg_state(*slate(10, 0))["fresh"]       # under MIN_N: can't tell
+    sal, hist = slate(30, 0)
+    sal[0]["dk_fppg"] = None                                       # no DK number: not counted
+    assert RC.season_fppg_state(sal, hist)["n"] == 29
+
+
+def test_lab_applies_the_season_layer_only_on_fresh_slates():
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location(
+        "ncaab_lab_t2", Path(__file__).resolve().parents[1] / "scripts" / "ncaab_lab.py")
+    L = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(L)
+    def rows(fresh):
+        return [{"source": "blend", "proj": 15.0, "last_min": None, "last_fp": None, "team": "A",
+                 "implied": None, "dk_fppg": 30.0, "fppg_fresh": fresh}]
+    a, b, c = RC.SEASON_FPPG
+    assert L.shipped(rows(False)) == [15.0]
+    assert L.shipped(rows(True)) == [pytest.approx(a + b * 15.0 + c * 30.0)]
+    assert L.shipped(rows(True), season=(0.0, 1.0, 0.0)) == [15.0]
 
 
 def _event(eid, a, b, done=True):

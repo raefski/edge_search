@@ -35,8 +35,8 @@ Variants (a projection per logged row):
   - "as_logged": the logged proj, i.e. the board as it ran that night (11/2-11/6 without
     LAST_GAME, 11/7 with cycle 1's, 11/8 on cycle 2's);
   - "shipped" (the baseline, today's production): scripts/ncaab_lab.py's pre-LAST_GAME base +
-    production apply_last_game with LAST_GAME REFIT ON THE OTHER SLATES (leave one slate out,
-    as ncaab_lab's honest table). Needs the slate's ESPN box (data/ncaab_box/<gid>.json).
+    production apply_last_game and apply_season_fppg (cycle 8) with both REFIT ON THE OTHER
+    SLATES (leave one slate out, ncaab_lab.held_out). Needs the slate's ESPN box (data/ncaab_box/<gid>.json).
 A critic adds a variant to VARIANTS: fn(gid, rows, data) -> {name|team: proj}.
 
 Two measurements per variant and board:
@@ -224,13 +224,13 @@ def _lab_rows() -> dict:
 
 
 def _shipped(gid: int, rows: list[dict], data: dict) -> dict:
-    """Today's production, held out: the pre-LAST_GAME base + LAST_GAME refit without this slate."""
+    """Today's production, held out: the pre-LAST_GAME base + LAST_GAME and SEASON_FPPG refit
+    without this slate (ncaab_lab.held_out)."""
     import ncaab_lab
     lab = _lab_rows()
     if gid not in lab:
         raise KeyError(f"{gid}: no ESPN box (harness run ncaab-box-grade -- {gid})")
-    train = [r for g, rs in lab.items() if g != gid for r in rs]
-    proj = ncaab_lab.shipped(lab[gid], ncaab_lab.fit_last_game(train))
+    proj = ncaab_lab.held_out(lab, gid)
     return {_key(r): p for r, p in zip(lab[gid], proj)}
 
 

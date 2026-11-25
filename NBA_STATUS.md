@@ -393,6 +393,18 @@ exact: re-applied it reproduces the log to 1e-14) and the log carries `base_proj
 every build since. If LAST_GAME's constants change, slates logged without `base_proj` need their window
 added to `BAKED`. 11/7 (156344) forward with cycle 2's constants: all MAE 5.13 as run -> 5.06, priced
 7.16 -> 6.96, rho .573 -> .610 (one slate).
+**This season's DK average, 2026-11-25** (NCAAB_CRITIQUE_LOG.md cycle 8): after LAST_GAME, every
+non-props row with a DK FPPG moves to `SEASON_FPPG` = -1.833 + 0.623 x board + 0.357 x DK FPPG (floor 0;
+2,178 rows / 20 slates 11/9-11/24). Before it, a player with a Torvik row never read DK's average at
+all, and one without read it as if it were last season's (the "side" carryover). Only on when DK's
+FPPG IS this season's: `season_fppg_state` counts Torvik-joined players whose DK FPPG equals Torvik's
+last-season DK points (within 0.5) -- .84-.96 on 11/2-11/8, .03-.16 from 11/9, when DK rolled every
+player over at once -- and needs that share under half among 20+ players; the page says when it is
+off. Held out (lab, LAST_GAME + this refit leave-one-slate-out): all MAE 5.507 -> 5.380 (27 slates; 19
+of 20 fresh better), forward (fit <= 11/18) 5.446 -> 5.216 (9 of 9); lineups +5.0 cash pts [+1.8, +8.4]
+(17 boards), Double Up pctile +.091 (5 slates, not enough data alone). `base_proj` is still
+pre-LAST_GAME: the lab (`ncaab_lab.held_out`) re-applies both layers. Next season: the switch fires
+with 1-3 games in DK's average, where the replay ran worse (11/9-11/11) -- weight by games played then.
 **Lineups are scored now** (cycle 4, 2026-11-10): `scripts/ncaab_lineup_lab.py report` replays the
 production sim + optimizer on each logged board with a contest field and scores the lineups against
 the real Double Ups / GPPs (field percentile, cashed, $ back per $1; DK's own points). `shipped` =

@@ -183,6 +183,8 @@ def summary(res: dict, sport_label: str) -> None:
         + f"<br>starters: {info.get('starters', 0)} from {info.get('starters_source', 'none')}"
         + (f"<br>last game: {lg.get('teams', 0)} teams from {lg.get('source')}, "
            f"{lg.get('moved', 0)} players moved by it" if (lg := info.get("last_game")) else "")
+        + (f"<br>DK season average: {sf.get('moved', 0)} players moved by it"
+           if (sf := info.get("season_fppg") or {}).get("fresh") else "")
         + f"<br>implied points: " + ", ".join(f"{t} {g:.1f}" for t, g in top)
         + (" …" if len(imp) > len(top) else "")
         + f"<br>{odds} · books: {books} · salaries: {info.get('draftables_source', 'live')}"
@@ -214,6 +216,14 @@ def summary(res: dict, sport_label: str) -> None:
         st.markdown(f"<div class='warn'>No last game this season ({lg.get('source')}) for: "
                     + ", ".join(lg.get("missing") or ["every team"]) + " — those players are "
                     "on last season and salary only.</div>", unsafe_allow_html=True)
+    sf = info.get("season_fppg")
+    if sf and not sf.get("fresh"):
+        # A fallback must be visible (cycle 8): DK's FPPG still last season's, or too few
+        # players to tell -- projections without props then run without this season's average.
+        st.markdown(f"<div class='warn'>DK's FPPG not used this build: it still looks like last "
+                    f"season's ({sf.get('share')} of {sf.get('n')} players match last season; "
+                    "needs 20+ players and under half) — projections without props are on last "
+                    "season, salary and last game only.</div>", unsafe_allow_html=True)
     if not info.get("history_rows"):
         st.markdown("<div class='warn'>No last-season stats file: projections without props "
                     "fall back to salary only.</div>", unsafe_allow_html=True)

@@ -130,6 +130,16 @@ LESSONS = [
                  "(noise). Across sports (scripts/dfs_props_roi.py, 11/13): cash slates with more of the board priced "
                  "went better within a sport (+.09 share of field beaten per +10 coverage pts [+.05, +.15], 63 slates)",
      "covers": [("nba", "2026-11-13")]},
+    {"id": "L15", "from": "ncaab", "mechanism": "a fallback projection built from LAST season keeps running after the "
+                                              "provider's own season average (DK FPPG) has rolled over to THIS season: "
+                                              "detect the rollover from the data (share of players whose DK FPPG still "
+                                              "equals last season's) and regress the fallback on DK's average",
+     "ref": "NCAAB critique cycle 8 (11/25, hand-run, DK season FPPG)",
+     "evidence": "NCAAB no-props rows: residual -3.6 at FPPG-proj -5..-2 (204 rows) to +2.95 at +10 (107); layer "
+                 "-1.833 + .623 board + .357 FPPG: all MAE 5.507 -> 5.380 LOSO (27 slates), forward 5.446 -> 5.216 "
+                 "(9 of 9); cash pts/lineup +5.0 [+1.8, +8.4] (17 boards); Double Up pctile +.091 [-.034, +.227] "
+                 "(5 slates). DK rolled every player over at once (11/9): share .84-.96 before, .03-.29 after",
+     "covers": [("ncaab", "2026-11-25")]},
     {"id": "L12", "from": "overlay", "mechanism": "late-listed re-posts priced on a pooled curve (overlay only)",
      "ref": "overlay cycle (11/9)", "evidence": "re-posts fill 0.88 of room; no DFS-model analogue",
      "covers": [("overlay", "2026-11-09")]},
@@ -326,13 +336,14 @@ TRANSFERS = [
                           "in the lab's seed lineups, not entered picks. NHL cycle 16 (2026-11-14): lineup lab, "
                           "K=0.74 slate x D/F shrink: cash pctile +.020 [-.016,+.054] (19 slates), GPP -.022 "
                           "[-.041,-.003] (26): null board-wide; cash-only in-optimizer shrink to retest ~12/1."}},
-    {"id": "T26", "lesson": "L14", "sport": "ncaab", "kind": "market", "status": "measure",
+    {"id": "T26", "lesson": "L14", "sport": "ncaab", "kind": "market", "status": "handled",
      "idea": "a non-props row in a game whose props are up (DK ladders) keeps the carryover / salary blend",
      "where": "edge/dfs_run_ncaab.py non-props rows (LAST_GAME, prior blend)", "data": "6 graded dates",
      "probe": None, "target": "projection: non-props rows in priced games",
      "measured": {"at": "2026-11-13", "pts_lineup": 0.0,
                   "note": "only 29% of NCAAB board points are priced; entered picks without props -4.1 vs -4.4 "
-                          "with (128 picks / 6 dates): not enough data."}},
+                          "with (128 picks / 6 dates): not enough data. 2026-11-25: absorbed by cycle 8 (L15): "
+                          "every non-props row now regresses on DK's season average after LAST_GAME."}},
     {"id": "T27", "lesson": "L14", "sport": "nfl", "kind": "market", "status": "null",
      "idea": "an offensive player with no props keeps the fallback projection",
      "where": "edge/dfs_run_nfl.py", "data": "10 graded slates", "probe": None, "target": None,
@@ -344,6 +355,35 @@ TRANSFERS = [
      "where": "edge/dfs_run_ncaaf.py", "data": "12 graded slates", "probe": None, "target": None,
      "measured": {"at": "2026-11-13", "pts_lineup": 0.0,
                   "note": "98% of NCAAF board points carry DK ladders; 3 of Adam's 200 picks had none."}},
+    {"id": "T29", "lesson": "L15", "sport": "nhl", "kind": "projection", "status": "handled",
+     "idea": "no-props skater rates fall back on last season after this season's numbers exist",
+     "where": "edge/dfs_run_nhl.py (season blend w = K / (K + games this season), role from recent TOI)",
+     "data": "NHL API game logs", "probe": None, "target": None,
+     "measured": {"at": "2026-11-25", "pts_lineup": 0.0,
+                  "note": "already blends this season's rates by games played (nhl_season_lab H1); DK FPPG itself "
+                          "unread, but the same information arrives through the game logs."}},
+    {"id": "T30", "lesson": "L15", "sport": "nba", "kind": "projection", "status": "handled",
+     "idea": "minutes / per-minute fallback on last season once this season's games exist",
+     "where": "edge/nba_minutes.py, edge/dfs_run_nba.py", "data": "game logs", "probe": None, "target": None,
+     "measured": {"at": "2026-11-25", "pts_lineup": 0.0,
+                  "note": "the minutes model and rates read this season's game logs; props cover the board."}},
+    {"id": "T31", "lesson": "L15", "sport": "ncaaf", "kind": "projection", "status": "null",
+     "idea": "a player without DK ladders keeps a last-season fallback while DK FPPG is this season's",
+     "where": "edge/dfs_run_ncaaf.py (unladdered rows; dk_fppg read by ownership only)",
+     "data": "data/ncaaf unladdered log", "probe": None, "target": None,
+     "measured": {"at": "2026-11-25", "pts_lineup": 0.0,
+                  "note": "98% of NCAAF board points carry DK ladders (T28); season ends in December. Re-check in "
+                          "September 2027: the first weeks are when the fallback carries weight."}},
+    {"id": "T32", "lesson": "L15", "sport": "nfl", "kind": "projection", "status": "null",
+     "idea": "an offensive player with no props keeps a fallback that never reads this season's DK FPPG",
+     "where": "edge/dfs_run_nfl.py", "data": "10 graded slates", "probe": None, "target": None,
+     "measured": {"at": "2026-11-25", "pts_lineup": 0.0,
+                  "note": "91% of NFL board points priced; unpriced entered picks are mostly DST (T27)."}},
+    {"id": "T33", "lesson": "L15", "sport": "mlb", "kind": "projection", "status": "waiting",
+     "idea": "early-season hitters / pitchers on last-season rates after DK FPPG rolls over",
+     "where": "edge/dfs.py (season stats source and its early-season blend)",
+     "data": "2027 opening weeks", "probe": None, "target": "projection: hitter DK points, first 3 weeks",
+     "measured": None},
     {"id": "T20", "lesson": "L10", "sport": "nba", "kind": "ownership", "status": "null",
      "idea": "DK FPPG as an ownership input (NHL, NFL, NCAAF, NCAAB, NASCAR boards carry it; NBA's theory does not)",
      "where": "edge/dfs_nba_theory.py", "data": "26 GPP slates", "probe": None, "target": None,

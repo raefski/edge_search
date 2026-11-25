@@ -662,6 +662,56 @@ def last_game_lines(salaries: dict, rosters: Rosters, teams: set, date: str) -> 
     return out, {"source": "espn", "teams": len(found), "missing": sorted(teams - set(found))}
 
 
+#: This season's DK average, layered on every non-props row after LAST_GAME:
+#:   fp' = max(a + b * fp + c * dk_fppg, 0)      (fp = the board after LAST_GAME)
+#: Critique cycle 8 (2026-11-25, NCAAB_CRITIQUE_LOG.md). From 11/9 DK's FPPG is THIS season's
+#: average, but a no-props row read it only when Torvik had no row (carried(): as if it were
+#: last season's, through the "side" carryover) -- the board projected from last season +
+#: salary + one box. Residuals climbed with (dk_fppg - proj): -3.6 at -5..-2 (204 rows), +2.95
+#: at +10 or more (107). FITTED: least squares on 2,178 non-props rows with a DK FPPG, 20 fresh
+#: slates 11/9-11/24 (ESPN boxes), on the shipped LAST_GAME. HELD OUT (scripts/ncaab_lab.py,
+#: LAST_GAME and this refit on the other slates): all-player MAE 5.507 -> 5.380 over 27 slates
+#: (19 of 20 fresh slates better, 11/2-11/8 untouched); 11/12 on 5.265 -> 5.050 (17 of 17);
+#: forward (fit 11/9-11/18, test 11/19-11/24) 5.428 -> 5.209 (9 of 9). Lineups (ncaab_lineup_lab,
+#: 20 x 2 seed sets): cash points per lineup +5.0 [+1.8, +8.4] on 17 boards, cash Double Up pctile
+#: .288 -> .379 (+.091 [-.034, +.227], 5 slates / 8 contests: not enough data alone), GPP
+#: pctile .336 -> .460 (3 slates). Fold ranges a -1.21..-1.48, b .62-.68, c .31-.38; the
+#: train-only fit (11/9-11/18) was (-1.552, 0.711, 0.261) -- c grows as the average covers more
+#: games, and on 11/9-11/11 (1-3 games in it) the lineups ran worse. Refit weekly.
+SEASON_FPPG = (-1.833, 0.623, 0.357)
+#: The switch: DK's FPPG is last season's until DK rolls it over (all at once, 11/9 this year:
+#: before then .84-.96 of the Torvik-joined players had a DK FPPG within 0.5 of Torvik's
+#: last-season DK points; from 11/9, .03-.16). Fresh = that share under STALE_SHARE among at
+#: least MIN_N joined players; otherwise the layer is off and the page says so.
+SEASON_FPPG_TOL = 0.5
+SEASON_FPPG_STALE_SHARE = 0.5
+SEASON_FPPG_MIN_N = 20
+
+
+def season_fppg_state(salaries: dict, history: dict) -> dict:
+    """{fresh, share, n}: is tonight's DK FPPG this season's? `history` = the Torvik join
+    ({salary key: Torvik row}); a player counts when he has both a Torvik row and a DK FPPG."""
+    hits = [abs(float(salaries[k]["dk_fppg"]) - ncaab_torvik.dk_points(tv)) <= SEASON_FPPG_TOL
+            for k, tv in history.items() if salaries.get(k, {}).get("dk_fppg")]
+    share = sum(hits) / len(hits) if hits else None
+    fresh = len(hits) >= SEASON_FPPG_MIN_N and share < SEASON_FPPG_STALE_SHARE
+    return {"fresh": fresh, "share": None if share is None else round(share, 3), "n": len(hits)}
+
+
+def apply_season_fppg(rows: list, coef: tuple | None = None) -> int:
+    """SEASON_FPPG on each non-props row with a DK FPPG (in place, `fp`); how many moved.
+    Call only when season_fppg_state says the FPPG is this season's."""
+    a, b, c = SEASON_FPPG if coef is None else coef
+    n = 0
+    for r in rows:
+        fppg = r.get("dk_fppg")
+        if r["source"] == "props" or not fppg or float(fppg) <= 0:
+            continue
+        r["fp"] = max(a + b * r["fp"] + c * float(fppg), 0.0)
+        n += 1
+    return n
+
+
 def apply_last_game(rows: list, coef: tuple | None = None, implied: dict | None = None) -> int:
     """Move each non-props row with a `last_min` (in place) by LAST_GAME, its minutes scaled
     by the team's `implied` points tonight; how many moved."""
@@ -774,6 +824,10 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
     for p in pool:
         p["base_fp"] = round(p["fp"], 3)
     info["last_game"]["moved"] = apply_last_game(pool, implied=implied)
+    # Then this season's DK average (SEASON_FPPG, cycle 8), only once DK's number IS this
+    # season's; `base_proj` above stays the pre-LAST_GAME value, and the lab re-applies both.
+    info["season_fppg"] = season_fppg_state(salaries, history)
+    info["season_fppg"]["moved"] = (apply_season_fppg(pool) if info["season_fppg"]["fresh"] else 0)
     for p in pool:
         if p["means"] is None:
             p["means"] = means_from_total(p["fp"], p["shape"])

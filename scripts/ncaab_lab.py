@@ -39,6 +39,7 @@ from scipy.stats import spearmanr  # noqa: E402
 
 import ncaab_box_grade as grader  # noqa: E402
 from edge import dfs_run_ncaab as RC  # noqa: E402
+from edge import ncaab_torvik  # noqa: E402
 from edge.ncaab_names import Rosters  # noqa: E402
 
 PRICED = ("props", "blend", "salary")
@@ -118,6 +119,14 @@ def load(gid: int) -> list[dict]:
         r.update(gid=gid, last_min=m, last_fp=fp, source=r["proj_source"], implied=imp,
                  logged_proj=r["proj"])
         r["proj"] = base_projection(gid, r, logged_imp)
+    # Was DK's FPPG this season's on this slate? The board's own switch (RC.season_fppg_state)
+    # on the logged rows, joined to Torvik the way build_board joins them (cycle 8, 11/25).
+    sal = {k: {"name": r["player"], "team": r["team"], "salary": r["salary"],
+               "dk_fppg": _num(r.get("dk_fppg"))} for k, r in zip(grader.keys(rows), rows)}
+    history, _ = ncaab_torvik.join(sal, _torvik())
+    fresh = RC.season_fppg_state(sal, history)["fresh"]
+    for k, r in zip(grader.keys(rows), rows):
+        r.update(dk_fppg=sal[k]["dk_fppg"], fppg_fresh=fresh)
     unknown = [r for r in rows if r["namesake"]]
     if unknown:                     # truth unknowable: say so, don't guess
         print(f"ncaab_lab: {gid} leaves out same-name teammates with one box line: "
@@ -129,12 +138,55 @@ def _env(r: dict) -> float:
     return (r["implied"] or RC.LEAGUE.team_points) / RC.LEAGUE.team_points
 
 
-def shipped(rows: list[dict], coef: tuple | None = None) -> list[float]:
-    """The board's projection for each row: as logged, then LAST_GAME (`coef` to override)."""
+def _num(x) -> float | None:
+    try:
+        return float(x) if x not in (None, "") else None
+    except (TypeError, ValueError):
+        return None
+
+
+_TORVIK: list = []
+
+
+def _torvik():
+    if not _TORVIK:
+        _TORVIK.append(ncaab_torvik.load())
+    return _TORVIK[0]
+
+
+def shipped(rows: list[dict], coef: tuple | None = None, season: tuple | None = None) -> list[float]:
+    """The board's projection for each row of ONE slate: as logged, then LAST_GAME, then
+    SEASON_FPPG when that slate's DK FPPG is this season's (`coef` / `season` to override)."""
     tmp = [{"source": r["source"], "fp": r["proj"], "last_min": r["last_min"], "last_fp": r["last_fp"],
-            "team": r["team"]} for r in rows]
+            "team": r["team"], "dk_fppg": r.get("dk_fppg")} for r in rows]
     RC.apply_last_game(tmp, coef, {r["team"]: r["implied"] for r in rows if r["implied"]})
+    if rows and rows[0].get("fppg_fresh"):
+        RC.apply_season_fppg(tmp, season)
     return [t["fp"] for t in tmp]
+
+
+def fit_season(data: dict, lg: tuple) -> tuple:
+    """SEASON_FPPG's least squares (how the shipped constants were fit): on the fresh slates'
+    non-props rows with a DK FPPG, against the board after LAST_GAME (`lg`)."""
+    X, y = [], []
+    for rows in data.values():
+        if not (rows and rows[0].get("fppg_fresh")):
+            continue
+        for r, p in zip(rows, shipped(rows, lg, season=(0.0, 1.0, 0.0))):
+            if r["source"] != "props" and (r.get("dk_fppg") or 0) > 0:
+                X.append([1.0, p, r["dk_fppg"]])
+                y.append(r["act"])
+    if len(y) < 50:                     # too few fresh rows to fit: the layer stays off
+        return (0.0, 1.0, 0.0)
+    return tuple(float(c) for c in np.linalg.lstsq(np.array(X), np.array(y), rcond=None)[0])
+
+
+def held_out(data: dict, gid: int) -> list[float]:
+    """Slate `gid` with LAST_GAME and SEASON_FPPG both refit on the OTHER slates: the honest
+    LOSO baseline the report, the gate and the lineup lab all score."""
+    others = {h: rs for h, rs in data.items() if h != gid}
+    lg = fit_last_game([r for rs in others.values() for r in rs])
+    return shipped(data[gid], lg, fit_season(others, lg))
 
 
 def fit_last_game(rows: list[dict]) -> tuple:
@@ -174,14 +226,14 @@ def report() -> int:
     print("\nAS RUN (logged projection, before LAST_GAME):")
     for g, rows in data.items():
         print(_line(g, rows[0]["date"], metrics(rows, [r["proj"] for r in rows])))
-    print(f"\nSHIPPED (LAST_GAME {RC.LAST_GAME}; in sample for 11/3-11/6):")
+    print(f"\nSHIPPED (LAST_GAME {RC.LAST_GAME}, in sample for 11/3-11/6; SEASON_FPPG {RC.SEASON_FPPG}"
+          f" on fresh slates, in sample from 11/9):")
     for g, rows in data.items():
         print(_line(g, rows[0]["date"], metrics(rows, shipped(rows))))
-    print("\nLOSO (LAST_GAME refit on the other slates each time): the held-out baseline")
+    print("\nLOSO (LAST_GAME + SEASON_FPPG refit on the other slates each time): the held-out baseline")
     pooled = []
     for g, rows in data.items():
-        train = [r for h, rs in data.items() if h != g for r in rs]
-        proj = shipped(rows, fit_last_game(train))
+        proj = held_out(data, g)
         pooled += list(zip(proj, rows))
         print(_line(g, rows[0]["date"], metrics(rows, proj)))
     m = metrics([r for _, r in pooled], [p for p, _ in pooled])
@@ -211,11 +263,10 @@ def gate(path: str) -> int:
     n = 0
     with open(path, "w") as fh:
         for g, rows in data.items():
-            train = [r for h, rs in data.items() if h != g for r in rs]
             # The gate pairs base and candidate rows by key (a dict): two same-name teammates
             # (156660's Christian Joneses) need their salary in it or one silently replaces the other.
             dup = {k for k, n in collections.Counter((r["team"], r["player"]) for r in rows).items() if n > 1}
-            for p, r in zip(shipped(rows, fit_last_game(train)), rows):
+            for p, r in zip(held_out(data, g), rows):
                 key = f"{g}|{r['team']}|{r['player']}"
                 if (r["team"], r["player"]) in dup:
                     key += f"|{int(r['salary'])}"
