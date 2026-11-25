@@ -5046,3 +5046,147 @@ date,gid,player,team,opp,dk_pos,salary,proj,sd,floor,ceil,own,proj_source,impute
 2026-11-25,157293,John Jackson,PROV,BYU,G,3000,0.39,0.93,0.0,2.0,0.3,bench,all,,0,,,,live,75.75,1.097
 2026-11-25,157293,Dovydas Buika,BYU,PROV,G,3000,0.34,0.81,0.0,1.5,0.3,bench,all,,0,,,,live,78.25,1.05
 2026-11-25,157293,Desmond Roberts,UVA,MARQ,G,3000,0.14,0.54,0.0,0.0,0.3,bench,all,,0,Virginia,1.385,,live,78.5,0.405
+2026-11-25,157295,Silas Demary Jr.,UCONN,DUKE,G,9200,28.71,8.85,22.44,40.25,14.3,blend,all,,0,Connecticut,28.403,35.0,live,,30.091
+2026-11-25,157295,Mason Falslev,UTST,SMU,G,9000,40.78,10.98,32.5,55.75,41.2,props,stl|blk|tov,,0,Utah St.,32.025,43.7,live,83.0,40.628
+2026-11-25,157295,Patrick Ngongba II,DUKE,UCONN,F,8900,27.23,8.2,21.5,38.0,18.8,blend,all,,0,Duke,21.884,34.2,live,,26.875
+2026-11-25,157295,Dallin Hall,UTST,SMU,G,8800,29.67,9.37,22.5,42.25,16.1,props,stl|blk|tov,,0,,,34.6,live,83.0,29.622
+2026-11-25,157295,Braylon Mullins,UCONN,DUKE,G,8700,26.61,8.99,20.25,38.5,12.3,blend,all,,0,Connecticut,28.212,30.4,live,,25.957
+2026-11-25,157295,Kevair Kennedy,WAKE,MSST,G,8500,29.75,8.68,23.75,40.75,16.4,props,fg3|stl|blk|tov,,0,Merrimack,36.797,32.5,live,73.0,29.986
+2026-11-25,157295,Gavin Placide,WAKE,MSST,F,8300,32.06,9.82,25.0,45.0,34.8,props,fg3|stl|blk|tov,,0,,,32.7,live,73.0,32.056
+2026-11-25,157295,Rowan Brumbaugh,SMU,UTST,G,8100,17.81,6.77,13.0,27.0,5.5,blend,all,,0,,,20.3,live,79.5,21.962
+2026-11-25,157295,Josh Hubbard,MSST,WAKE,G,7800,27.94,9.12,21.25,40.0,14.7,props,stl|blk|tov,,0,Mississippi St.,33.353,27.5,live,76.5,28.056
+2026-11-25,157295,Blake Harper,VCU,UW,G,7700,31.07,9.3,24.5,43.25,20.2,props,stl|blk|tov,,0,,,32.3,live,74.25,30.86
+2026-11-25,157295,Ace Buckner,CLEM,CSU,G,7500,33.14,9.79,26.25,46.03,25.8,props,stl|blk|tov,,0,Clemson,19.506,30.9,live,75.75,33.136
+2026-11-25,157295,Will Hornseth,UTST,SMU,F,7400,23.79,7.52,18.44,33.75,16.1,props,fg3|stl|blk|tov,,0,,,24.1,live,83.0,23.582
+2026-11-25,157295,Ryan Beasley,UW,VCU,G,7300,24.3,8.17,18.5,34.75,10.6,props,stl|blk|tov,,0,,,28.5,live,70.25,24.246
+2026-11-25,157295,Jase Butler,CSU,CLEM,G,7200,24.97,8.66,18.75,36.0,11.5,blend,all,,0,Colorado St.,25.823,30.3,live,72.25,20.672
+2026-11-25,157295,Ring Nyeri,WAKE,MSST,F,7100,1.75,1.84,0.0,4.25,1.5,blend,all,,0,,,2.6,live,73.0,13.991
+2026-11-25,157295,Lazar Djokovic,VCU,UW,F,7000,26.19,8.13,20.75,36.53,21.5,props,fg3|stl|blk|tov,,0,VCU,27.654,24.2,live,74.25,26.059
+2026-11-25,157295,Carey Booth,CSU,CLEM,F,6900,23.79,7.9,18.25,34.0,16.7,blend,all,,0,Colorado St.,24.591,28.3,live,72.25,22.872
+2026-11-25,157295,Joaquim Boumtje Boumtje,DUKE,UCONN,F,6800,20.64,6.93,15.94,30.0,11.8,blend,all,,0,,,25.2,live,,20.97
+2026-11-25,157295,Jaden Toombs,SMU,UTST,F,6700,23.04,7.47,17.75,33.5,15.6,props,fg3|stl|blk|tov,,0,SMU,19.941,30.3,live,79.5,22.746
+2026-11-25,157295,Dame Sarr,DUKE,UCONN,G/F,6600,20.24,7.35,14.75,30.0,7.3,blend,all,,0,Duke,23.518,22.5,live,,18.679
+2026-11-25,157295,Dylan Faulkner,CLEM,CSU,F,6500,27.5,8.52,21.75,38.75,27.1,props,fg3|stl|blk|tov,,0,,,29.6,live,75.75,27.271
+2026-11-25,157295,LeJuan Watts,UW,VCU,G/F,6400,16.29,6.27,11.75,24.75,4.6,blend,all,,0,,,26.7,live,70.25,20.613
+2026-11-25,157295,Nyk Lewis,VCU,UW,G,6400,21.18,7.54,15.75,31.25,8.3,props,stl|blk|tov,,0,VCU,23.671,21.8,live,74.25,21.313
+2026-11-25,157295,Colben Landrew,UCONN,DUKE,F,6300,22.98,7.66,17.5,33.25,16.3,blend,all,,0,,,23.3,live,,19.594
+2026-11-25,157295,Kyle Jorgensen,CSU,CLEM,F,6300,19.52,6.98,14.5,28.5,10.6,blend,all,,0,Colorado St.,25.536,21.1,live,72.25,22.534
+2026-11-25,157295,Cayden Boozer,DUKE,UCONN,G,6200,11.92,5.39,8.0,18.75,2.7,blend,all,,0,Duke,22.795,19.3,live,,18.573
+2026-11-25,157295,Tristan Reed,MSST,WAKE,F,6200,12.12,5.37,8.5,19.0,4.3,blend,all,,0,,,17.9,live,76.5,18.022
+2026-11-25,157295,Oziyah Sellers,SMU,UTST,G,6100,22.67,8.2,16.75,33.5,10.6,props,stl|blk|tov,,0,,,25.1,live,79.5,22.595
+2026-11-25,157295,Na'jai Hines,UCONN,DUKE,F,6100,19.3,6.74,14.5,28.0,10.5,blend,all,,0,,,26.1,live,,20.218
+2026-11-25,157295,Cole Certa,CLEM,CSU,G,6000,21.1,7.89,15.5,31.75,8.8,props,stl|blk|tov,,0,,,20.9,live,75.75,21.255
+2026-11-25,157295,Solomon Callaghan,UTST,SMU,G,6000,22.68,8.62,16.5,34.25,10.8,props,stl|blk|tov,,0,,,26.3,live,83.0,22.726
+2026-11-25,157295,Karson Templin,UTST,SMU,F,5900,21.78,7.3,16.75,31.5,15.0,props,fg3|stl|blk|tov,,0,Utah St.,19.058,23.0,live,83.0,21.842
+2026-11-25,157295,Nikola Dzepina,UW,VCU,F,5900,24.36,8.31,18.5,35.5,21.0,props,stl|blk|tov,,0,Washington,11.057,25.7,live,70.25,24.638
+2026-11-25,157295,Justin Ray,WAKE,MSST,G,5800,18.57,7.29,13.25,28.5,6.6,blend,all,,0,Monmouth,28.5,18.8,live,73.0,14.364
+2026-11-25,157295,Gallagher Placide,WAKE,MSST,F,5800,18.65,6.68,14.0,27.5,10.0,blend,all,,0,,,19.2,live,73.0,17.539
+2026-11-25,157295,Jakub Szumert,SMU,UTST,F,5700,16.13,6.05,12.0,24.0,7.2,blend,all,,0,,,22.8,live,79.5,19.229
+2026-11-25,157295,AJ Bates,UTST,SMU,G,5700,14.52,6.15,10.25,22.75,3.9,blend,all,,0,,,16.7,live,83.0,17.414
+2026-11-25,157295,Lathan Sommerville,UW,VCU,F,5600,18.54,6.44,14.19,26.75,10.2,blend,all,,0,Washington,14.441,22.3,live,70.25,12.677
+2026-11-25,157295,Liutauras Lelevicius,CLEM,CSU,G/F,5600,24.29,8.21,18.75,34.78,15.0,props,ast|stl|blk|tov,,0,,,24.5,live,75.75,24.177
+2026-11-25,157295,Kimani Hamilton,MSST,WAKE,F,5500,20.55,6.65,16.0,29.53,13.7,props,fg3|stl|blk|tov,,0,,,18.9,live,76.5,20.549
+2026-11-25,157295,Torey Alston,VCU,UW,F,5500,19.55,7.1,14.5,29.0,11.9,props,ast|fg3|stl|blk|tov,,0,,,23.6,live,74.25,19.538
+2026-11-25,157295,RJ Johnson,MSST,WAKE,G,5400,25.11,8.19,19.5,36.03,18.1,props,stl|blk|tov,,0,,,19.8,live,76.5,25.113
+2026-11-25,157295,David Terrell Jr.,SMU,UTST,G,5400,13.64,5.89,9.5,21.5,3.6,blend,all,,0,,,19.0,live,79.5,17.467
+2026-11-25,157295,John Blackwell,DUKE,UCONN,G,5300,17.26,6.67,12.5,26.25,6.1,blend,all,,0,,,15.1,live,,15.39
+2026-11-25,157295,Jayden Ross,UCONN,DUKE,F,5300,14.72,5.87,10.5,22.5,6.2,blend,all,,0,Connecticut,17.463,15.3,live,,14.081
+2026-11-25,157295,Steele Venters,UW,VCU,G/F,5200,16.16,6.56,11.5,24.75,5.3,blend,all,,0,,,21.0,live,70.25,16.964
+2026-11-25,157295,Caleb Foster,DUKE,UCONN,G,5200,18.52,6.71,13.75,27.25,7.5,blend,all,,0,Duke,24.864,18.5,live,,17.872
+2026-11-25,157295,Johan Munch,SMU,UTST,F,5100,13.68,5.67,9.5,21.25,5.4,blend,all,,0,,,14.4,live,79.5,15.428
+2026-11-25,157295,David Fuchs,CLEM,CSU,F,5100,13.18,5.47,9.25,20.5,5.0,blend,all,,0,,,13.5,live,75.75,14.823
+2026-11-25,157295,Connor Turnbull,UTST,SMU,F,5000,2.33,2.1,0.75,5.25,0.9,salary,all,Q,0,,,,live,83.0,7.777
+2026-11-25,157295,Josh Pascarelli,CSU,CLEM,G,5000,16.0,6.67,11.25,24.5,5.4,blend,all,,0,Colorado St.,26.422,16.8,live,72.25,17.694
+2026-11-25,157295,Justin Menard,CSU,CLEM,G,5000,15.29,6.37,10.75,23.75,4.8,blend,all,,0,,,17.8,live,72.25,15.808
+2026-11-25,157295,Jaylin Stewart,SMU,UTST,F,4900,12.26,5.18,8.5,19.0,4.4,blend,all,,0,,,14.2,live,79.5,15.059
+2026-11-25,157295,Tayshawn Comer,UW,VCU,G,4900,16.88,6.78,12.0,26.0,6.3,blend,all,,0,,,16.0,live,70.25,14.89
+2026-11-25,157295,Thomas Bassong,MSST,WAKE,F,4800,16.13,5.97,12.0,23.78,8.3,blend,all,,0,,,19.9,live,76.5,16.602
+2026-11-25,157295,Ahmad Nowell,VCU,UW,G,4800,19.2,7.04,14.25,28.75,9.5,props,reb|stl|blk|tov,,0,VCU,10.507,19.3,live,74.25,19.434
+2026-11-25,157295,Wesley Yates III,UW,VCU,G,4800,6.03,3.83,3.25,11.0,1.2,blend,all,Q,0,Washington,31.37,15.0,live,70.25,13.964
+2026-11-25,157295,Chase Thompson,CLEM,CSU,F,4700,13.7,5.57,9.75,21.0,5.7,blend,all,,0,Clemson,8.986,18.0,live,75.75,9.317
+2026-11-25,157295,ND Okafor,MSST,WAKE,F,4700,12.46,5.21,8.75,19.5,4.7,blend,all,,0,,,13.5,live,76.5,14.283
+2026-11-25,157295,Jacob Patrick,SMU,UTST,G,4600,10.62,5.34,6.75,17.78,2.5,blend,all,,0,Utah,20.3,13.4,live,79.5,13.953
+2026-11-25,157295,Jermaine O'Neal Jr.,SMU,UTST,F,4600,19.7,7.53,14.25,29.75,16.1,props,ast|fg3|stl|blk|tov,,0,SMU,14.912,23.5,live,79.5,19.943
+2026-11-25,157295,King Grace,MSST,WAKE,G,4500,13.39,5.85,9.25,21.25,4.0,blend,all,,0,Mississippi St.,12.104,20.8,live,76.5,11.614
+2026-11-25,157295,Billy White III,SMU,UTST,F,4500,15.67,5.98,11.5,23.25,8.4,blend,all,,0,,,19.3,live,79.5,16.222
+2026-11-25,157295,Brandon Jennings,VCU,UW,G,4400,17.32,6.64,12.75,26.0,8.1,props,fg3|stl|blk|tov,,0,VCU,24.883,15.2,live,74.25,17.601
+2026-11-25,157295,Sebastian Wilkins,DUKE,UCONN,G/F,4400,11.29,5.29,7.5,18.5,2.8,blend,all,,0,,,17.7,live,,14.899
+2026-11-25,157295,Oskar Giltay,UCONN,DUKE,F,4300,11.75,4.81,8.25,18.25,4.4,blend,all,,0,Stanford,14.556,13.0,live,,13.011
+2026-11-25,157295,Jamari McDowell,WAKE,MSST,G,4300,11.68,5.31,7.75,18.75,3.1,blend,all,,0,,,13.0,live,73.0,13.238
+2026-11-25,157295,Rashaan Mbemba,CSU,CLEM,F,4200,8.87,4.27,5.75,14.75,2.7,blend,all,,0,Colorado St.,17.5,11.6,live,72.25,14.489
+2026-11-25,157295,Drew Scharnowski,DUKE,UCONN,F,4200,8.62,4.23,5.5,14.25,2.5,blend,all,,0,,,13.3,live,,13.147
+2026-11-25,157295,Xander Pintelon,WAKE,MSST,F,4100,9.65,4.36,6.5,15.5,3.1,blend,all,,0,,,10.3,live,73.0,12.045
+2026-11-25,157295,Isaac Carr,WAKE,MSST,G,4100,11.75,5.4,7.75,19.0,3.3,blend,all,,0,Wake Forest,11.296,16.3,live,73.0,9.375
+2026-11-25,157295,Kingston Tosi,UTST,SMU,G/F,4000,15.28,6.44,10.75,23.5,6.7,blend,all,,0,,,20.5,live,83.0,16.208
+2026-11-25,157295,Michael Belle,VCU,UW,G/F,4000,11.46,5.17,7.75,18.25,3.2,props,reb|ast|fg3|stl|blk|tov,,0,VCU,22.356,13.2,live,74.25,11.33
+2026-11-25,157295,Cameron Williams,DUKE,UCONN,F,4000,6.31,3.58,3.5,11.0,1.7,blend,all,,0,,,11.9,live,,12.386
+2026-11-25,157295,Lukas Bojovic,WAKE,MSST,G,3900,6.62,3.93,3.75,11.75,1.3,blend,all,,0,,,5.8,live,73.0,10.255
+2026-11-25,157295,Nic Codie,SMU,UTST,F,3900,8.47,4.07,5.5,14.0,2.5,blend,all,,0,Texas,15.858,9.2,live,79.5,12.179
+2026-11-25,157295,Cameron Lomax,SMU,UTST,G,3900,6.54,3.88,3.5,11.75,1.3,blend,all,,0,,,7.9,live,79.5,11.384
+2026-11-25,157295,Dallas Thomas,CLEM,CSU,F,3800,9.86,4.62,6.5,16.25,3.4,bench,all,,0,Clemson,4.523,12.5,live,75.75,1.155
+2026-11-25,157295,Antonio Dorn,WAKE,MSST,F,3800,8.51,4.23,5.44,14.25,2.6,blend,all,,0,Virginia Tech,8.625,4.9,live,73.0,10.112
+2026-11-25,157295,Parker Friedrichsen,UW,VCU,G,3800,10.63,4.92,7.0,17.0,2.9,blend,all,,0,,,10.5,live,70.25,11.456
+2026-11-25,157295,Jaden Ghoreishi,CSU,CLEM,F,3700,3.43,2.62,1.25,7.0,0.9,blend,all,Q,0,,,10.5,live,72.25,8.019
+2026-11-25,157295,Jojo McIver,CSU,CLEM,G,3700,7.97,4.5,4.75,14.0,1.7,bench,all,,0,Colorado St.,12.324,7.3,live,72.25,2.452
+2026-11-25,157295,Justin Abson,WAKE,MSST,F,3700,1.83,1.8,0.0,4.28,0.7,blend,all,,0,,,5.2,live,73.0,9.757
+2026-11-25,157295,Brayden Boe,UTST,SMU,G,3700,9.66,5.05,6.0,16.5,2.5,blend,all,,0,,,10.5,live,83.0,12.229
+2026-11-25,157295,Collin Ross,VCU,UW,F,3600,4.83,3.22,2.5,9.25,1.2,blend,all,,0,,,12.3,live,74.25,12.055
+2026-11-25,157295,Junior County,UCONN,DUKE,G,3600,6.68,3.78,4.0,11.75,1.3,blend,all,,0,,,9.4,live,,10.962
+2026-11-25,157295,Nils Machowski,UCONN,DUKE,G,3600,4.54,3.19,2.0,9.0,0.9,blend,all,,0,,,4.8,live,,9.444
+2026-11-25,157295,Eric Fiedler,CSU,CLEM,F,3500,5.14,3.25,2.75,9.5,1.3,blend,all,,0,,,6.0,live,72.25,9.674
+2026-11-25,157295,Tajuan Simpkins,MSST,WAKE,G,3500,11.03,5.26,7.25,18.0,3.5,blend,all,,0,,,13.3,live,76.5,12.417
+2026-11-25,157295,Tyrell Ward,VCU,UW,G,3500,6.64,3.88,3.75,11.75,1.4,blend,all,,0,VCU,13.59,7.5,live,74.25,11.12
+2026-11-25,157295,Vincent Ricchiuti,WAKE,MSST,F,3500,2.16,2.04,0.44,5.0,0.7,bench,all,,0,Wake Forest,2.025,3.1,live,73.0,0.72
+2026-11-25,157295,Wini Braga,UW,VCU,F,3400,1.37,1.65,0.0,3.5,0.6,blend,all,,0,,,3.0,live,70.25,8.42
+2026-11-25,157295,Willie Burnett III,MSST,WAKE,G,3400,2.79,2.49,1.0,6.25,0.6,blend,all,,0,,,7.7,live,76.5,10.369
+2026-11-25,157295,Sammy Jackson,VCU,UW,G,3400,5.23,3.42,2.75,9.75,1.0,blend,all,,0,,,6.8,live,74.25,9.919
+2026-11-25,157295,Deron Rippey Jr.,DUKE,UCONN,G,3400,7.0,4.07,4.0,12.25,1.5,blend,all,,0,,,9.9,live,,10.827
+2026-11-25,157295,Kendyl Sanders,MSST,WAKE,F,3400,4.01,2.85,2.0,8.0,1.0,blend,all,,0,,,6.2,live,76.5,9.861
+2026-11-25,157295,Harris Reynolds,CLEM,CSU,G,3300,2.64,2.47,1.0,6.0,0.6,blend,all,Q,0,,,8.4,live,75.75,7.284
+2026-11-25,157295,Mady Traore,UW,VCU,F,3300,0.33,0.77,0.0,1.25,0.4,bench,all,,0,,,,live,70.25,1.05
+2026-11-25,157295,Tristan Devers,UW,VCU,G,3300,0.32,0.81,0.0,1.5,0.3,bench,all,,0,,,,live,70.25,1.05
+2026-11-25,157295,Jalyn Collingwood,MSST,WAKE,G,3300,5.26,3.55,2.75,10.0,1.0,blend,all,,0,,,7.3,live,76.5,10.084
+2026-11-25,157295,Nyle Ralph-Beyer,VCU,UW,G,3300,0.61,1.15,0.0,2.0,0.3,blend,all,,0,,,2.5,live,74.25,8.333
+2026-11-25,157295,Tee Bartlett,MSST,WAKE,F,3300,2.58,2.18,1.0,5.5,0.7,blend,all,,0,,,7.3,live,76.5,10.084
+2026-11-25,157295,Vincent Chaudhri,WAKE,MSST,F,3200,1.73,1.78,0.0,4.0,0.6,blend,all,,0,,,2.0,live,73.0,7.948
+2026-11-25,157295,Pops Dunson,CSU,CLEM,G,3200,5.56,3.59,3.0,10.25,1.1,blend,all,,0,,,5.9,live,72.25,9.191
+2026-11-25,157295,Cameren Paul,MSST,WAKE,G,3200,0.31,0.82,0.0,1.5,0.3,bench,all,,0,,,,live,76.5,1.05
+2026-11-25,157295,Will Underwood,WAKE,MSST,G,3200,0.12,0.5,0.0,0.0,0.3,bench,all,,0,Wake Forest,1.675,,live,73.0,0.394
+2026-11-25,157295,Egor Amosov,UCONN,DUKE,F,3200,2.23,2.08,0.5,5.25,0.7,blend,all,,0,,,5.6,live,,9.108
+2026-11-25,157295,Sean Felts,UTST,SMU,F,3100,4.86,3.09,2.5,9.0,1.3,blend,all,,0,,,8.9,live,83.0,10.765
+2026-11-25,157295,Blake Davidson,CLEM,CSU,F,3100,0.34,0.78,0.0,1.28,0.4,bench,all,,0,,,,live,75.75,1.05
+2026-11-25,157295,Harun Zrno,UW,VCU,G,3100,2.11,2.15,0.0,5.0,0.5,blend,all,,0,,,0.1,live,70.25,7.029
+2026-11-25,157295,Gehrig Normand,SMU,UTST,G,3100,3.09,2.61,1.25,6.53,0.6,blend,all,,0,,,4.3,live,79.5,8.942
+2026-11-25,157295,Bryson Howard,DUKE,UCONN,G,3100,2.75,2.43,1.0,6.0,0.6,blend,all,,0,,,7.6,live,,9.618
+2026-11-25,157295,Jordan Tillery,VCU,UW,G,3000,0.0,0.0,0.0,0.0,0.3,bench,all,Q,0,VCU,6.775,1.0,live,74.25,1.929
+2026-11-25,157295,Solo Ball,UCONN,DUKE,G,3000,4.93,3.44,2.5,9.5,1.0,blend,all,,0,Connecticut,28.38,,live,,16.356
+2026-11-25,157295,Jaxon Clark,CSU,CLEM,F,3000,0.32,0.77,0.0,1.28,0.4,bench,all,,0,,,0.0,live,72.25,1.05
+2026-11-25,157295,Stefan Plisnic,VCU,UW,F,3000,0.15,0.53,0.0,0.0,0.4,blend,all,,0,,,1.5,live,74.25,7.55
+2026-11-25,157295,Collin Mulholland,UTST,SMU,F,3000,1.96,1.92,0.0,4.75,0.6,bench,all,,0,,,0.0,live,83.0,1.05
+2026-11-25,157295,Will Stevens,CLEM,CSU,F,3000,0.06,0.34,0.0,0.0,0.4,blend,all,,0,,,1.3,live,75.75,7.562
+2026-11-25,157295,Trevor Reed,MSST,WAKE,F,3000,0.34,0.82,0.0,1.5,0.4,bench,all,,0,,,,live,76.5,1.05
+2026-11-25,157295,Gai Chol,MSST,WAKE,F,3000,0.0,0.0,0.0,0.0,0.4,blend,all,,0,,,0.6,live,76.5,7.363
+2026-11-25,157295,Elmir Dzafic,UCONN,DUKE,F,3000,0.18,0.58,0.0,1.0,0.4,blend,all,,0,Arkansas,2.329,1.8,live,,7.267
+2026-11-25,157295,Maxime Meyer,DUKE,UCONN,F,3000,2.54,2.21,1.0,5.5,0.7,blend,all,,0,,,7.3,live,,9.37
+2026-11-25,157295,Jasir Rencher,UW,VCU,F,3000,0.0,0.0,0.0,0.0,0.4,bench,all,,0,Washington,8.325,0.8,live,70.25,2.053
+2026-11-25,157295,Isaiah Shaw,UCONN,DUKE,F,3000,0.36,0.84,0.0,1.5,0.4,bench,all,,0,,,0.0,live,,1.05
+2026-11-25,157295,Nigel Walls,SMU,UTST,F,3000,0.0,0.0,0.0,0.0,0.4,bench,all,,0,SMU,3.544,2.9,live,79.5,0.635
+2026-11-25,157295,Jacob Ross,UCONN,DUKE,F,3000,0.19,0.6,0.0,1.0,0.4,blend,all,,0,,,1.1,live,,7.324
+2026-11-25,157295,Amondo Miller Jr.,CSU,CLEM,F,3000,0.98,1.38,0.0,3.0,0.5,blend,all,,0,,,3.6,live,72.25,8.134
+2026-11-25,157295,Trent Steinour,CLEM,CSU,F,3000,0.0,0.0,0.0,0.0,0.4,bench,all,,0,Clemson,2.5,0.9,live,75.75,0.831
+2026-11-25,157295,Charlie Dortch,CSU,CLEM,F,3000,0.23,0.65,0.0,1.25,0.4,bench,all,,0,Colorado St.,3.24,,live,72.25,0.693
+2026-11-25,157295,Docker Tedeschi,CSU,CLEM,F,3000,0.33,0.79,0.0,1.5,0.4,bench,all,,0,,,,live,72.25,1.05
+2026-11-25,157295,Maddox Watson,WAKE,MSST,G,3000,0.8,1.34,0.0,2.75,0.3,bench,all,,0,,,0.0,live,73.0,1.05
+2026-11-25,157295,Anson Beard Jr.,WAKE,MSST,G,3000,0.0,0.0,0.0,0.0,0.3,bench,all,,0,Wake Forest,1.9,1.3,live,73.0,0.35
+2026-11-25,157295,BJ Roy,UW,VCU,G,3000,0.36,0.9,0.0,1.5,0.3,bench,all,,0,,,0.0,live,70.25,1.05
+2026-11-25,157295,Nick Arnold,DUKE,UCONN,G,3000,0.34,0.87,0.0,1.5,0.3,bench,all,,0,,,0.0,live,,1.05
+2026-11-25,157295,Amare James,CLEM,CSU,G,3000,0.88,1.41,0.0,3.25,0.3,blend,all,,0,,,3.3,live,75.75,8.236
+2026-11-25,157295,Jacob Theodosiou,DUKE,UCONN,G,3000,0.0,0.0,0.0,0.0,0.3,blend,all,,0,,,1.0,live,,7.291
+2026-11-25,157295,Niccolo Kalischer-Stork,SMU,UTST,G,3000,0.0,0.0,0.0,0.0,0.3,bench,all,,0,SMU,0.9,2.0,live,79.5,0.35
+2026-11-25,157295,Ashton Magee,MSST,WAKE,G,3000,0.14,0.54,0.0,0.0,0.3,blend,all,,0,,,1.5,live,76.5,7.669
+2026-11-25,157295,Jaye Nash,UCONN,DUKE,G,3000,0.0,0.0,0.0,0.0,0.3,blend,all,,0,,,0.3,live,,7.06
+2026-11-25,157295,Ace Reiser,UTST,SMU,G,3000,1.25,1.67,0.0,3.5,0.4,blend,all,,0,,,1.4,live,83.0,7.967
+2026-11-25,157295,Jordan Boyd,UTST,SMU,G,3000,0.49,1.02,0.0,2.0,0.3,blend,all,,0,,,1.4,live,83.0,7.967
+2026-11-25,157295,River Sawyer,CSU,CLEM,G,3000,0.36,0.9,0.0,1.5,0.3,bench,all,,0,,,,live,72.25,1.05
+2026-11-25,157295,Joshua Wyche,VCU,UW,G/F,3000,0.32,0.83,0.0,1.5,0.3,bench,all,,0,,,0.0,live,74.25,1.05
+2026-11-25,157295,Lat Ford,UW,VCU,G/F,3000,0.35,0.85,0.0,1.5,0.3,bench,all,,0,,,,live,70.25,1.05
