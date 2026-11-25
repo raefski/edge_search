@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-25T23:45:39+00:00",
+"generated_at": "2026-11-25T23:59:11+00:00",
 "goalies": {
 "2026-11-25": {
 "ANA": {
@@ -3578,7 +3578,7 @@
 "toiMinutes": 64,
 "toiSeconds": 44
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -3612,7 +3612,7 @@
 "toiMinutes": 61,
 "toiSeconds": 40
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -3716,7 +3716,7 @@
 "goalieShutouts": 0,
 "goalieWins": 1
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -3752,7 +3752,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -3820,7 +3820,7 @@
 "toiMinutes": 95,
 "toiSeconds": 57
 },
-"line": "F1",
+"line": "F2",
 "pk": "PK2",
 "pos": "lw",
 "pp": "PP1"
@@ -3888,7 +3888,7 @@
 "toiMinutes": 64,
 "toiSeconds": 1
 },
-"line": "F2",
+"line": "F3",
 "pk": "PK2",
 "pos": "c",
 "pp": null
@@ -3956,7 +3956,7 @@
 "toiMinutes": 87,
 "toiSeconds": 35
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "lw",
 "pp": "PP1"
@@ -4058,7 +4058,7 @@
 "toiMinutes": 79,
 "toiSeconds": 37
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -4160,7 +4160,7 @@
 "toiMinutes": 88,
 "toiSeconds": 9
 },
-"line": "F3",
+"line": "F1",
 "pk": "PK1",
 "pos": "lw",
 "pp": "PP2"
@@ -13184,7 +13184,7 @@
 "toiMinutes": 65,
 "toiSeconds": 49
 },
-"line": "F4",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -13326,7 +13326,7 @@
 "pp": "PP1"
 },
 "Evgeni Malkin": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 10,
@@ -13422,7 +13422,7 @@
 "toiMinutes": 50,
 "toiSeconds": 40
 },
-"line": "F2",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -15308,7 +15308,7 @@
 "toiMinutes": 94,
 "toiSeconds": 47
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
 "pos": "ld",
 "pp": "PP2"
@@ -15584,7 +15584,7 @@
 "toiMinutes": 86,
 "toiSeconds": 5
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -15934,7 +15934,7 @@
 "pp": "PP2"
 },
 "Brandon Hagel": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 5,
@@ -16071,38 +16071,72 @@
 "pos": "g",
 "pp": null
 },
-"Erik Cernak": {
-"gtd": true,
+"Emil Lilleberg": {
+"gtd": false,
 "injury": null,
 "last10": {
-"assists": 8,
-"blocks": 13,
+"assists": 0,
+"blocks": 3,
 "gamesPlayed": 10,
 "goals": 0,
-"points": 8,
+"points": 0,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 179,
-"toiSeconds": 50
+"shots": 4,
+"toiMinutes": 139,
+"toiSeconds": 36
 },
 "last5": {
-"assists": 4,
-"blocks": 6,
+"assists": 0,
+"blocks": 1,
 "gamesPlayed": 5,
 "goals": 0,
-"points": 4,
+"points": 0,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 86,
-"toiSeconds": 27
+"shots": 0,
+"toiMinutes": 62,
+"toiSeconds": 30
 },
 "line": "D3",
 "pk": "PK2",
 "pos": "rd",
+"pp": null
+},
+"Gage Goncalves": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 3,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 8,
+"toiMinutes": 136,
+"toiSeconds": 15
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 66,
+"toiSeconds": 9
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
 "pp": null
 },
 "Ilya Mikheyev": {
@@ -16170,8 +16204,8 @@
 },
 "line": "D2",
 "pk": "PK1",
-"pos": "rd",
-"pp": null
+"pos": "ld",
+"pp": "PP2"
 },
 "Jake Guentzel": {
 "gtd": false,
@@ -16275,6 +16309,40 @@
 "pos": "rd",
 "pp": "PP1"
 },
+"Maxwell Crozier": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 11,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 17,
+"toiMinutes": 168,
+"toiSeconds": 1
+},
+"last5": {
+"assists": 0,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 85,
+"toiSeconds": 46
+},
+"line": "D2",
+"pk": "PK2",
+"pos": "rd",
+"pp": null
+},
 "Nikita Kucherov": {
 "gtd": false,
 "injury": null,
@@ -16373,7 +16441,7 @@
 "toiSeconds": 10
 },
 "line": "D3",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": null
 },
@@ -16411,74 +16479,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Scott Sabourin": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 96,
-"toiSeconds": 24
-},
-"last5": {
-"assists": 0,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 49,
-"toiSeconds": 35
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
-"Victor Hedman": {
-"gtd": true,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 7,
-"toiMinutes": 179,
-"toiSeconds": 46
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 91,
-"toiSeconds": 59
-},
-"line": "D2",
-"pk": "PK1",
-"pos": "ld",
-"pp": "PP2"
-},
 "Yanni Gourde": {
 "gtd": false,
 "injury": null,
@@ -16514,7 +16514,7 @@
 "pp": null
 },
 "Zemgus Girgensons": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 2,
