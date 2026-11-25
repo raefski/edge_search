@@ -38,6 +38,43 @@ BOX_DIR = ROOT / "data" / "ncaab_box"
 LOG = ROOT / "data" / "dfs_proj_log_ncaab.csv"
 _SLOT = re.compile(r"(?:^|\s)(?:G|F|UTIL)\s+")
 
+#: DK listings of a player in a game he was not in: he scores 0 there, and he must not take
+#: (or make ambiguous) the real player's box line. Keyed (draft group, norm name, DK team,
+#: salary); the log has no DK player id, so salary tells the two apart.
+#:   156660 (11/16) listed two Christian Jones under LBS (vs UCLA). DK's draftables, re-read
+#:   2026-11-25: $5,900 is DK player 1460011 -- the same id is MURR at $4,900 on 157138 (11/19)
+#:   and $4,300 on 157015 (11/20), i.e. Murray State's guard (Murray played 11/17, not in that
+#:   game); $3,700 is DK 1605388, LBS's own. ESPN's LBS boxes have one Christian Jones (ESPN
+#:   5312979, #24) all season. The $5,900 row was projected 11.79 and used in no lineup.
+MISLISTED = {(156660, norm("Christian Jones"), "LBS", 5900):
+             "DK 1460011 = Murray State's Christian Jones, mislisted in LBS-UCLA"}
+
+
+def mislisted(r: dict) -> str | None:
+    """Why DK's listing of this logged row was not a player in that game, or None."""
+    try:
+        return MISLISTED.get((int(r["gid"]), norm(r["player"]), r["team"], int(float(r["salary"]))))
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def keys(rows: list[dict]) -> list[str]:
+    """One key per logged row, unique even for two players with one name on one team (the
+    live board keeps both too: edge/dfs.fetch_draftables). name|team, then |salary for the
+    namesakes, then |#n. Keyed by name|team alone, the second row silently vanished from the
+    join and the lab crashed on it (KeyError 'last_min', 156660, 11/21 and twice 11/25)."""
+    base = [f"{norm(r['player'])}|{r['team']}" for r in rows]
+    out, seen = [], set()
+    for b, r in zip(base, rows):
+        k = b if base.count(b) == 1 else f"{b}|{int(float(r.get('salary') or 0))}"
+        n = 1
+        while k in seen:
+            n += 1
+            k = f"{b}|#{n}"
+        seen.add(k)
+        out.append(k)
+    return out
+
 
 def logged(gid: int) -> list[dict]:
     with LOG.open(newline="") as fh:
@@ -88,16 +125,23 @@ def boxes(gid: int, rows: list[dict]) -> list[dict] | None:
 
 def join(rows: list[dict], box: list[dict]) -> tuple[list[dict], list[dict]]:
     """(logged rows with truth, box rows nobody claimed). A logged player with no box row
-    never dressed: he scored 0. Unclaimed rows that logged minutes are a name problem."""
-    rosters = Rosters({f"{norm(r['player'])}|{r['team']}": {"name": r["player"], "team": r["team"], "row": r}
-                       for r in rows})
+    never dressed: he scored 0. Unclaimed rows that logged minutes are a name problem.
+    A MISLISTED row scores 0 and stays out of the join. Two real same-name teammates whose
+    box line can't be told apart are tagged `namesake` (truth unknown): leave them out of
+    any fit rather than guess."""
     for r in rows:
-        r.update(act=0.0, min=0.0, started=False)
+        r.update(act=0.0, min=0.0, started=False, namesake=False, mislisted=mislisted(r))
+    rosters = Rosters({k: {"name": r["player"], "team": r["team"], "row": r}
+                       for k, r in zip(keys(rows), rows) if not r["mislisted"]})
     unclaimed = []
     for b in box:
-        info, _how = rosters.resolve(b["name"], [b["team"]])
+        info, how = rosters.resolve(b["name"], [b["team"]])
         if info is None:
             unclaimed.append(b)
+            if how == "ambiguous":
+                for r in rows:
+                    if r["team"] == b["team"] and not r["mislisted"] and norm(r["player"]) == norm(b["name"]):
+                        r["namesake"] = True
         else:
             info["row"].update(act=b["fp"], min=b["min"], started=b["started"])
     return rows, unclaimed

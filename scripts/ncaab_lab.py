@@ -24,6 +24,7 @@ under ~5 slates nothing here is called proven.
 """
 from __future__ import annotations
 
+import collections
 import json
 import statistics
 import sys
@@ -38,7 +39,6 @@ from scipy.stats import spearmanr  # noqa: E402
 
 import ncaab_box_grade as grader  # noqa: E402
 from edge import dfs_run_ncaab as RC  # noqa: E402
-from edge.names import norm  # noqa: E402
 from edge.ncaab_names import Rosters  # noqa: E402
 
 PRICED = ("props", "blend", "salary")
@@ -100,8 +100,13 @@ def load(gid: int) -> list[dict]:
     rows = grader.logged(gid)
     box = json.loads((grader.BOX_DIR / f"{gid}.json").read_text())
     rows, _ = grader.join(rows, box)
-    salaries = {f"{norm(r['player'])}|{r['team']}": {"name": r["player"], "team": r["team"], "row": r}
-                for r in rows}
+    # One key per ROW (grader.keys), as the live board keeps two same-name teammates apart:
+    # keyed by name|team, the second Christian Jones on 156660 (LBS, 11/16) fell out of this
+    # dict, never got last_min, and the gate crashed the loop 3 nights (11/21, 11/25 x2). Both
+    # stay in, so last_game_lines finds the ESPN name ambiguous and gives each 0 minutes --
+    # exactly what the board did that night. A DK mislisting (grader.MISLISTED) is graded 0.
+    salaries = {k: {"name": r["player"], "team": r["team"], "row": r}
+                for k, r in zip(grader.keys(rows), rows)}
     teams = {r["team"] for r in rows}
     last, _audit = RC.last_game_lines(salaries, Rosters(salaries), teams, rows[0]["date"])
     backfill = json.loads(BACKFILL.read_text()).get(str(gid), {}) if BACKFILL.exists() else {}
@@ -113,7 +118,11 @@ def load(gid: int) -> list[dict]:
         r.update(gid=gid, last_min=m, last_fp=fp, source=r["proj_source"], implied=imp,
                  logged_proj=r["proj"])
         r["proj"] = base_projection(gid, r, logged_imp)
-    return rows
+    unknown = [r for r in rows if r["namesake"]]
+    if unknown:                     # truth unknowable: say so, don't guess
+        print(f"ncaab_lab: {gid} leaves out same-name teammates with one box line: "
+              + ", ".join(sorted({f"{r['player']} ({r['team']})" for r in unknown})), file=sys.stderr)
+    return [r for r in rows if not r["namesake"]]
 
 
 def _env(r: dict) -> float:
@@ -203,8 +212,14 @@ def gate(path: str) -> int:
     with open(path, "w") as fh:
         for g, rows in data.items():
             train = [r for h, rs in data.items() if h != g for r in rs]
+            # The gate pairs base and candidate rows by key (a dict): two same-name teammates
+            # (156660's Christian Joneses) need their salary in it or one silently replaces the other.
+            dup = {k for k, n in collections.Counter((r["team"], r["player"]) for r in rows).items() if n > 1}
             for p, r in zip(shipped(rows, fit_last_game(train)), rows):
-                fh.write(json.dumps({"key": f"{g}|{r['team']}|{r['player']}", "cluster": str(g),
+                key = f"{g}|{r['team']}|{r['player']}"
+                if (r["team"], r["player"]) in dup:
+                    key += f"|{int(r['salary'])}"
+                fh.write(json.dumps({"key": key, "cluster": str(g),
                                      "split": "primary", "state": "all", "pred": float(p),
                                      "actual": float(r["act"])}) + "\n")
                 n += 1

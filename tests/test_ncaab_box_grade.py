@@ -44,6 +44,32 @@ def test_two_players_one_name_get_their_own_box_line():
     assert [r["act"] for r in rows] == [35.25, 7.0] and not unclaimed
 
 
+def test_two_players_one_name_one_team_both_kept_with_unique_keys():
+    rows = [_row("Christian Jones", "LBS", salary=5900), _row("Christian Jones", "LBS", salary=3700),
+            _row("Christian Jones", "LBS", salary=3700), _row("Trent Perry", "UCLA")]
+    ks = g.keys(rows)
+    assert len(set(ks)) == 4 and ks[3] == f"{g.norm('Trent Perry')}|UCLA"
+
+
+def test_dk_mislisting_scores_zero_and_leaves_the_real_player_his_line():
+    # 156660: DK listed Murray State's Christian Jones ($5,900) in LBS-UCLA beside LBS's own.
+    rows = [dict(_row("Christian Jones", "LBS", salary=5900), gid="156660"),
+            dict(_row("Christian Jones", "LBS", salary=3700), gid="156660")]
+    box = [{"team": "LBS", "name": "Christian Jones", "min": 16, "started": False, "fp": 11.0}]
+    rows, unclaimed = g.join(rows, box)
+    assert [(r["act"], bool(r["mislisted"]), r["namesake"]) for r in rows] == [(0.0, True, False),
+                                                                             (11.0, False, False)]
+    assert not unclaimed
+
+
+def test_unresolvable_same_name_teammates_are_tagged_not_guessed():
+    rows = [_row("Chris Smith", "UK", salary=5000), _row("Chris Smith", "UK", salary=3000)]
+    box = [{"team": "UK", "name": "Chris Smith", "min": 20, "started": True, "fp": 18.0}]
+    rows, unclaimed = g.join(rows, box)
+    assert [r["namesake"] for r in rows] == [True, True] and [r["act"] for r in rows] == [0.0, 0.0]
+    assert len(unclaimed) == 1
+
+
 def test_logged_player_with_no_box_row_scored_zero_and_stray_box_row_is_reported():
     rows, unclaimed = g.join([_row("Benched Kid", "UK")],
                              [{"team": "UK", "name": "Somebody Else", "min": 12, "started": False, "fp": 9.0}])
