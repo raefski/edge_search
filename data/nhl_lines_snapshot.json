@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-25T18:28:38+00:00",
+"generated_at": "2026-11-25T18:58:54+00:00",
 "goalies": {
 "2026-11-25": {
 "ANA": {
@@ -52,7 +52,7 @@
 },
 "MTL": {
 "goalie": "Jacob Fowler",
-"status": null
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Connor Hellebuyck",
@@ -216,7 +216,7 @@
 "toiMinutes": 75,
 "toiSeconds": 27
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -284,7 +284,7 @@
 "toiMinutes": 89,
 "toiSeconds": 13
 },
-"line": "D1",
+"line": "D3",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -558,7 +558,7 @@
 "toiMinutes": 89,
 "toiSeconds": 18
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK2",
 "pos": "ld",
 "pp": null
@@ -660,7 +660,7 @@
 "toiMinutes": 93,
 "toiSeconds": 26
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "ld",
 "pp": "PP2"
@@ -728,7 +728,7 @@
 "toiMinutes": 107,
 "toiSeconds": 18
 },
-"line": "D3",
+"line": "D2",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -15211,6 +15211,40 @@
 }
 },
 "STL": {
+"Adam Ji\u0159\u00ed\u010dek": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 2,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 154,
+"toiSeconds": 0
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 82,
+"toiSeconds": 38
+},
+"line": "D3",
+"pk": null,
+"pos": "rd",
+"pp": null
+},
 "Aleksanteri Kaskimaki": {
 "gtd": false,
 "injury": null,
@@ -15241,7 +15275,7 @@
 "toiSeconds": 58
 },
 "line": "F3",
-"pk": null,
+"pk": "PK2",
 "pos": "lw",
 "pp": null
 },
@@ -15279,40 +15313,6 @@
 "pos": "lw",
 "pp": null
 },
-"Brandon Carlo": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 12,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 177,
-"toiSeconds": 18
-},
-"last5": {
-"assists": 1,
-"blocks": 5,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 92,
-"toiSeconds": 3
-},
-"line": "D3",
-"pk": "PK1",
-"pos": "rd",
-"pp": null
-},
 "Cam Fowler": {
 "gtd": false,
 "injury": null,
@@ -15343,9 +15343,9 @@
 "toiSeconds": 47
 },
 "line": "D3",
-"pk": "PK1",
+"pk": "PK2",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Colton Parayko": {
 "gtd": false,
@@ -15377,7 +15377,7 @@
 "toiSeconds": 55
 },
 "line": "D2",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "rd",
 "pp": null
 },
@@ -15410,7 +15410,7 @@
 "toiMinutes": 61,
 "toiSeconds": 41
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -15444,10 +15444,10 @@
 "toiMinutes": 78,
 "toiSeconds": 18
 },
-"line": "F2",
+"line": "F1",
 "pk": null,
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Jake Neighbours": {
 "gtd": false,
@@ -15477,40 +15477,6 @@
 "shots": 9,
 "toiMinutes": 78,
 "toiSeconds": 34
-},
-"line": "F1",
-"pk": null,
-"pos": "lw",
-"pp": "PP1"
-},
-"Jimmy Snuggerud": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 3,
-"blocks": 2,
-"gamesPlayed": 10,
-"goals": 6,
-"points": 9,
-"powerplayAssists": 0,
-"powerplayGoals": 2,
-"powerplayPoints": 2,
-"shots": 23,
-"toiMinutes": 179,
-"toiSeconds": 16
-},
-"last5": {
-"assists": 2,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 4,
-"points": 6,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 11,
-"toiMinutes": 82,
-"toiSeconds": 52
 },
 "line": "F1",
 "pk": null,
@@ -15582,7 +15548,7 @@
 "toiMinutes": 68,
 "toiSeconds": 15
 },
-"line": "F2",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -15653,7 +15619,7 @@
 "toiSeconds": 5
 },
 "line": "D2",
-"pk": null,
+"pk": "PK2",
 "pos": "ld",
 "pp": null
 },
@@ -15720,7 +15686,7 @@
 "toiMinutes": 73,
 "toiSeconds": 48
 },
-"line": "F3",
+"line": "F2",
 "pk": null,
 "pos": "c",
 "pp": "PP1"
@@ -15756,42 +15722,42 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "c",
 "pp": null
 },
-"Pavel Buchnevich": {
+"Otto Stenberg": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 1,
-"blocks": 7,
+"assists": 2,
+"blocks": 2,
 "gamesPlayed": 10,
-"goals": 3,
-"points": 4,
+"goals": 1,
+"points": 3,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 18,
-"toiMinutes": 175,
-"toiSeconds": 14
+"shots": 9,
+"toiMinutes": 124,
+"toiSeconds": 45
 },
 "last5": {
-"assists": 1,
-"blocks": 3,
+"assists": 2,
+"blocks": 1,
 "gamesPlayed": 5,
-"goals": 3,
-"points": 4,
+"goals": 0,
+"points": 2,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 86,
-"toiSeconds": 58
+"shots": 4,
+"toiMinutes": 58,
+"toiSeconds": 44
 },
 "line": "F2",
-"pk": "PK2",
-"pos": "c",
-"pp": "PP2"
+"pk": null,
+"pos": "lw",
+"pp": null
 },
 "Philip Broberg": {
 "gtd": false,
@@ -15823,7 +15789,7 @@
 "toiSeconds": 26
 },
 "line": "D1",
-"pk": "PK2",
+"pk": "PK1",
 "pos": "ld",
 "pp": "PP1"
 },
@@ -15856,10 +15822,10 @@
 "toiMinutes": 71,
 "toiSeconds": 11
 },
-"line": "F4",
+"line": "F3",
 "pk": "PK1",
 "pos": "c",
-"pp": null
+"pp": "PP2"
 },
 "Robert Thomas": {
 "gtd": false,
@@ -15894,6 +15860,40 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
+},
+"Ross Johnston": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 8,
+"toiMinutes": 89,
+"toiSeconds": 44
+},
+"last5": {
+"assists": 0,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 48,
+"toiSeconds": 4
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
 }
 },
 "TBL": {
