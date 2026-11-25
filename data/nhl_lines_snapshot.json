@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-25T17:00:39+00:00",
+"generated_at": "2026-11-25T17:28:43+00:00",
 "goalies": {
 "2026-11-25": {
 "ANA": {
@@ -36,7 +36,7 @@
 },
 "DAL": {
 "goalie": "Jake Oettinger",
-"status": "Likely"
+"status": "Confirmed"
 },
 "DET": {
 "goalie": "Daniil Tarasov",
@@ -2276,7 +2276,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -2520,7 +2520,7 @@
 "pp": null
 },
 "K'Andre Miller": {
-"gtd": false,
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 4,
@@ -2652,7 +2652,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
