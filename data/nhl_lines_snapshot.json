@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-25T15:28:58+00:00",
+"generated_at": "2026-11-25T15:59:05+00:00",
 "goalies": {
 "2026-11-25": {
 "ANA": {
@@ -12,7 +12,7 @@
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
-"status": null
+"status": "Likely"
 },
 "CAR": {
 "goalie": "Pyotr Kochetkov",
@@ -23,8 +23,8 @@
 "status": null
 },
 "CGY": {
-"goalie": "Devin Cooley",
-"status": null
+"goalie": "Dustin Wolf",
+"status": "Confirmed"
 },
 "CHI": {
 "goalie": "Spencer Knight",
@@ -44,7 +44,7 @@
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
-"status": "Likely"
+"status": "Confirmed"
 },
 "MIN": {
 "goalie": "Jesper Wallstedt",
@@ -64,7 +64,7 @@
 },
 "NYI": {
 "goalie": "Ilya Sorokin",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "Joonas Korpisalo",
@@ -80,7 +80,7 @@
 },
 "PIT": {
 "goalie": "Arturs Silovs",
-"status": null
+"status": "Likely"
 },
 "SEA": {
 "goalie": "Joey Daccord",
@@ -112,7 +112,7 @@
 },
 "WSH": {
 "goalie": "Logan Thompson",
-"status": null
+"status": "Confirmed"
 }
 },
 "2026-11-26": {}
