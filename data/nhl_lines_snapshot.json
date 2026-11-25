@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-25T23:43:48+00:00",
+"generated_at": "2026-11-25T23:45:39+00:00",
 "goalies": {
 "2026-11-25": {
 "ANA": {
@@ -10717,6 +10717,40 @@
 "pos": "c",
 "pp": "PP2"
 },
+"Logan Stanley": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 22,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 211,
+"toiSeconds": 31
+},
+"last5": {
+"assists": 0,
+"blocks": 9,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 98,
+"toiSeconds": 42
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "ld",
+"pp": null
+},
 "Mathew Barzal": {
 "gtd": false,
 "injury": null,
@@ -10853,40 +10887,6 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Mitchell Chaffee": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 3,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 100,
-"toiSeconds": 11
-},
-"last5": {
-"assists": 1,
-"blocks": 1,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 51,
-"toiSeconds": 54
-},
-"line": "F3",
-"pk": null,
-"pos": "rw",
-"pp": null
-},
 "Ondrej Palat": {
 "gtd": false,
 "injury": null,
@@ -10919,40 +10919,6 @@
 "line": "F4",
 "pk": null,
 "pos": "lw",
-"pp": null
-},
-"Scott Mayfield": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 14,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 132,
-"toiSeconds": 27
-},
-"last5": {
-"assists": 0,
-"blocks": 7,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 61,
-"toiSeconds": 29
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "ld",
 "pp": null
 },
 "Semyon Varlamov": {
