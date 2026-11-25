@@ -638,6 +638,56 @@
 "StartDate": "2026-11-27T21:00:00.0000000Z",
 "StartDateEst": "2026-11-27T16:00:00.0000000",
 "last_start": "2026-11-27T21:00:00.0000000Z"
+},
+"157535": {
+"ContestStartTimeSuffix": " (Afternoon Only)",
+"DraftGroupId": 157535,
+"DraftGroupTag": "Featured",
+"GameCount": 3,
+"GameTypeId": 1,
+"StartDate": "2026-11-29T21:05:00.0000000Z",
+"StartDateEst": "2026-11-29T16:05:00.0000000",
+"last_start": "2026-11-29T21:25:00.0000000Z"
+},
+"157536": {
+"ContestStartTimeSuffix": " (Afternoon Turbo)",
+"DraftGroupId": 157536,
+"DraftGroupTag": "",
+"GameCount": 2,
+"GameTypeId": 1,
+"StartDate": "2026-11-29T21:25:00.0000000Z",
+"StartDateEst": "2026-11-29T16:25:00.0000000",
+"last_start": "2026-11-29T21:25:00.0000000Z"
+},
+"157537": {
+"ContestStartTimeSuffix": " (NE @ LAC)",
+"DraftGroupId": 157537,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 96,
+"StartDate": "2026-11-29T21:05:00.0000000Z",
+"StartDateEst": "2026-11-29T16:05:00.0000000",
+"last_start": "2026-11-29T21:05:00.0000000Z"
+},
+"157539": {
+"ContestStartTimeSuffix": " (WAS @ ARI)",
+"DraftGroupId": 157539,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 96,
+"StartDate": "2026-11-29T21:25:00.0000000Z",
+"StartDateEst": "2026-11-29T16:25:00.0000000",
+"last_start": "2026-11-29T21:25:00.0000000Z"
+},
+"157543": {
+"ContestStartTimeSuffix": " (SEA @ SF)",
+"DraftGroupId": 157543,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 96,
+"StartDate": "2026-11-29T21:25:00.0000000Z",
+"StartDateEst": "2026-11-29T16:25:00.0000000",
+"last_start": "2026-11-29T21:25:00.0000000Z"
 }
 },
 "NHL": {
