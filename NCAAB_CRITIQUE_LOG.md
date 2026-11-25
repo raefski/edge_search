@@ -578,3 +578,28 @@ logged: a ~20-min-before-lock rebuild logging OUT at 0 would make false outs / l
 Possible non-money use: show "not in RotoWire's five" on the page / feed ownership (untested).
 
 Unattended gate (20261125-1250): **crashed** the same way (main's lab, fixed in 3ec3b7290). Nothing shipped by the agent; entry carried by hand 2026-11-25.
+
+### 11/21 cycle 6 (last-game starter step, T07) -- re-gated by hand 2026-11-25: NOT MERGED
+
+The 11/21 run crashed in main's gate (two LBS Christian Joneses; fixed 3ec3b7290), so the
+candidate was never judged. Cherry-picked onto main (branch `critique/ncaab-c6-regate`) and
+judged with the loop's own `judge()`:
+
+| slates | main MAE | candidate MAE | diff [90%] |
+|---|---|---|---|
+| 24 (boxes to 11/22) | 5.5466 | 5.5229 | -0.0237 [-0.0342, -0.0129] -> gate **pass** |
+| 27 (+3 forward) | 5.5068 | 5.4984 | better on 18 of 26 slates that move |
+| **forward only, after 11/21** | 157021 (11/23) 5.063 -> 5.279; 157024 (11/24) 4.737 -> 4.867; 157026 (11/24) 6.020 -> 6.048 | | **0 of 3 better** |
+
+Lineups (ncaab_lineup_lab, 10 contest slates 11/2-11/20, all before the cycle): cash single
+pctile .383 -> .470, $ .80 -> 1.07; cash set20 .384 -> .418, $ .74 -> .79; GPP set20 .520 -> .532,
+$ .95 -> 1.11 -- but single-cash $ is one slate each way (11/5 +, 11/4 -).
+
+Verdict: held-out over the season it helps; on the only forward nights it hurts, worst on
+the two Thanksgiving-tournament slates (neutral sites; "last game" may be a different
+event type). 3 forward slates is not enough data either way -> not merged; re-gate the
+branch at 5+ forward slates (boxes: `harness run ncaab-box-grade -- <gid>`; no timer fetches them).
+
+Also fixed today: boxes for 157021/157024/157026 failed because DK codes MISS, OU, CSU were
+not in data/college_teams.json (built 11/21, before those codes appeared): `harness run
+college-teams` (279 DK teams, was 269). 156656 (11/14, UTAH/UW) still fails to fetch.
