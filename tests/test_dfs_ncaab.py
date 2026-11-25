@@ -474,7 +474,7 @@ def test_lineup_lab_replays_a_logged_board_and_scores_it_against_the_field(monke
     pool, games = L.make_pool(1, rows, proj)
     assert len(pool) == 32 and len(games) == 2
     sim = L.simulate([dict(p) for p in pool], games, seed=0)
-    assert sim.mean(axis=0)[5] == pytest.approx(proj["AAA P5|AAA"], rel=0.1)
+    assert sim.mean(axis=0)[5] == pytest.approx(proj[L._key(rows[5])], rel=0.1)
     lu = L.lineup(pool, games, "cash", seed=0)
     assert len(lu) == 8 and sum(int(next(r["salary"] for r in rows if r["player"] == n)) for n in lu) <= 50000
 
