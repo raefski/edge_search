@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-24T21:45:44+00:00",
+"generated_at": "2026-11-25T00:43:49+00:00",
 "goalies": {
 "2026-11-24": {
 "EDM": {
@@ -8,7 +8,7 @@
 },
 "VGK": {
 "goalie": "Carter Hart",
-"status": "Likely"
+"status": "Confirmed"
 }
 },
 "2026-11-25": {
@@ -97,7 +97,7 @@
 "status": null
 },
 "SJS": {
-"goalie": "Yaroslav Askarov",
+"goalie": "Alex Nedeljkovic",
 "status": null
 },
 "STL": {
@@ -4278,39 +4278,39 @@
 "pos": "ld",
 "pp": null
 },
-"Andrew Mangiapane": {
-"gtd": false,
+"Anton Frondell": {
+"gtd": true,
 "injury": null,
 "last10": {
 "assists": 2,
-"blocks": 7,
+"blocks": 4,
 "gamesPlayed": 10,
-"goals": 0,
-"points": 2,
+"goals": 3,
+"points": 5,
 "powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 114,
-"toiSeconds": 18
+"powerplayGoals": 1,
+"powerplayPoints": 1,
+"shots": 20,
+"toiMinutes": 160,
+"toiSeconds": 26
 },
 "last5": {
-"assists": 0,
-"blocks": 5,
+"assists": 2,
+"blocks": 3,
 "gamesPlayed": 5,
-"goals": 0,
-"points": 0,
+"goals": 1,
+"points": 3,
 "powerplayAssists": 0,
 "powerplayGoals": 0,
 "powerplayPoints": 0,
-"shots": 3,
-"toiMinutes": 57,
-"toiSeconds": 9
+"shots": 6,
+"toiMinutes": 71,
+"toiSeconds": 1
 },
 "line": "F3",
 "pk": null,
-"pos": "lw",
-"pp": null
+"pos": "c",
+"pp": "PP2"
 },
 "Artyom Levshunov": {
 "gtd": false,
@@ -4378,40 +4378,6 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "lw",
-"pp": null
-},
-"Dominic Toninato": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 16,
-"toiMinutes": 103,
-"toiSeconds": 4
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 45,
-"toiSeconds": 1
-},
-"line": "F4",
-"pk": null,
-"pos": "c",
 "pp": null
 },
 "Drew Commesso": {
@@ -4620,6 +4586,40 @@
 "pos": "ld",
 "pp": null
 },
+"Luke Glendening": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 112,
+"toiSeconds": 35
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 39,
+"toiSeconds": 57
+},
+"line": "F4",
+"pk": null,
+"pos": "c",
+"pp": null
+},
 "Oliver Moore": {
 "gtd": false,
 "injury": null,
@@ -4787,8 +4787,8 @@
 },
 "line": "F3",
 "pk": "PK2",
-"pos": "c",
-"pp": "PP2"
+"pos": "lw",
+"pp": null
 },
 "Sam Rinzel": {
 "gtd": false,
@@ -8716,7 +8716,7 @@
 "powerplayAssists": 4,
 "powerplayGoals": 4,
 "powerplayPoints": 8,
-"shots": 23,
+"shots": 24,
 "toiMinutes": 209,
 "toiSeconds": 16
 },
@@ -8729,7 +8729,7 @@
 "powerplayAssists": 1,
 "powerplayGoals": 2,
 "powerplayPoints": 3,
-"shots": 9,
+"shots": 10,
 "toiMinutes": 103,
 "toiSeconds": 43
 },
@@ -15249,7 +15249,7 @@
 "toiMinutes": 56,
 "toiSeconds": 28
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
 "pos": "rw",
 "pp": "PP2"
@@ -15285,7 +15285,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15358,36 +15358,36 @@
 "pos": "lw",
 "pp": null
 },
-"Brett Leason": {
+"Collin Graf": {
 "gtd": false,
 "injury": null,
 "last10": {
-"assists": 2,
+"assists": 1,
 "blocks": 4,
 "gamesPlayed": 10,
 "goals": 1,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 1,
-"powerplayPoints": 2,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
 "shots": 5,
-"toiMinutes": 102,
-"toiSeconds": 50
+"toiMinutes": 159,
+"toiSeconds": 5
 },
 "last5": {
-"assists": 2,
-"blocks": 4,
+"assists": 1,
+"blocks": 1,
 "gamesPlayed": 5,
 "goals": 1,
-"points": 3,
-"powerplayAssists": 1,
-"powerplayGoals": 1,
-"powerplayPoints": 2,
-"shots": 4,
-"toiMinutes": 57,
-"toiSeconds": 8
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 82,
+"toiSeconds": 20
 },
-"line": "F4",
+"line": "F3",
 "pk": null,
 "pos": "rw",
 "pp": null
@@ -15489,7 +15489,7 @@
 "toiMinutes": 82,
 "toiSeconds": 19
 },
-"line": "D3",
+"line": "D1",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -15625,7 +15625,7 @@
 "toiMinutes": 89,
 "toiSeconds": 47
 },
-"line": "D1",
+"line": "D3",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -15844,10 +15844,10 @@
 "goalieLosses": 6,
 "goalieMinutes": 607,
 "goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.892",
-"goalieSaves": 265,
+"goalieSavePercentage": "0.893",
+"goalieSaves": 266,
 "goalieSeconds": 39,
-"goalieShotsAgainst": 297,
+"goalieShotsAgainst": 298,
 "goalieShutouts": 0,
 "goalieWins": 3
 },
@@ -15858,14 +15858,14 @@
 "goalieLosses": 2,
 "goalieMinutes": 310,
 "goalieOvertimeLosses": 1,
-"goalieSavePercentage": "0.897",
-"goalieSaves": 140,
+"goalieSavePercentage": "0.898",
+"goalieSaves": 141,
 "goalieSeconds": 28,
-"goalieShotsAgainst": 156,
+"goalieShotsAgainst": 157,
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
