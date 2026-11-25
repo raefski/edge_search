@@ -10,16 +10,6 @@
 "StartDateEst": "2026-11-24T19:00:00.0000000",
 "last_start": "2026-11-25T05:20:00.0000000Z"
 },
-"157027": {
-"ContestStartTimeSuffix": " (BAY vs BAMA)",
-"DraftGroupId": 157027,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 97,
-"StartDate": "2026-11-25T03:00:00.0000000Z",
-"StartDateEst": "2026-11-24T22:00:00.0000000",
-"last_start": "2026-11-25T03:00:00.0000000Z"
-},
 "157293": {
 "ContestStartTimeSuffix": " (Early)",
 "DraftGroupId": 157293,
@@ -137,16 +127,6 @@
 "MMA": {},
 "NAS": {},
 "NBA": {
-"156301": {
-"ContestStartTimeSuffix": null,
-"DraftGroupId": 156301,
-"DraftGroupTag": "Featured",
-"GameCount": 3,
-"GameTypeId": 70,
-"StartDate": "2026-11-25T00:00:00.0000000Z",
-"StartDateEst": "2026-11-24T19:00:00.0000000",
-"last_start": "2026-11-25T03:00:00.0000000Z"
-},
 "156302": {
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 156302,
@@ -156,26 +136,6 @@
 "StartDate": "2026-11-26T00:00:00.0000000Z",
 "StartDateEst": "2026-11-25T19:00:00.0000000",
 "last_start": "2026-11-26T01:30:00.0000000Z"
-},
-"157234": {
-"ContestStartTimeSuffix": " (Night)",
-"DraftGroupId": 157234,
-"DraftGroupTag": "Featured",
-"GameCount": 2,
-"GameTypeId": 70,
-"StartDate": "2026-11-25T01:00:00.0000000Z",
-"StartDateEst": "2026-11-24T20:00:00.0000000",
-"last_start": "2026-11-25T03:00:00.0000000Z"
-},
-"157236": {
-"ContestStartTimeSuffix": " (DAL @ DEN)",
-"DraftGroupId": 157236,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 81,
-"StartDate": "2026-11-25T03:00:00.0000000Z",
-"StartDateEst": "2026-11-24T22:00:00.0000000",
-"last_start": "2026-11-25T03:00:00.0000000Z"
 },
 "157238": {
 "ContestStartTimeSuffix": " (2H DAL @ DEN)",
@@ -298,26 +258,6 @@
 "StartDate": "2026-11-26T18:00:00.0000000Z",
 "StartDateEst": "2026-11-26T13:00:00.0000000",
 "last_start": "2026-11-27T01:20:00.0000000Z"
-},
-"157055": {
-"ContestStartTimeSuffix": " (Madden Stream)",
-"DraftGroupId": 157055,
-"DraftGroupTag": "Featured",
-"GameCount": 3,
-"GameTypeId": 158,
-"StartDate": "2026-11-24T23:00:00.0000000Z",
-"StartDateEst": "2026-11-24T18:00:00.0000000",
-"last_start": "2026-11-25T03:00:00.0000000Z"
-},
-"157058": {
-"ContestStartTimeSuffix": " (Madden Stream DEN @ JAX)",
-"DraftGroupId": 157058,
-"DraftGroupTag": "Featured",
-"GameCount": 1,
-"GameTypeId": 159,
-"StartDate": "2026-11-25T03:00:00.0000000Z",
-"StartDateEst": "2026-11-24T22:00:00.0000000",
-"last_start": "2026-11-25T03:00:00.0000000Z"
 },
 "157059": {
 "ContestStartTimeSuffix": " (Madden Stream)",
