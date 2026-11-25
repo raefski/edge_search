@@ -147,6 +147,14 @@ LESSONS = [
      "evidence": "NHL GPP p95 gave up ~6 proj pts/lineup; GPP_BUILD_PCT 50: field pctile .541 -> .614 (39 contests / "
                  "26 slates)",
      "covers": [("nhl", "2026-11-24")]},
+    {"id": "L17", "from": "nhl", "mechanism": "in a small, chalk-concentrated cash field the line to beat is 'how the "
+                                            "chalk did': build the cash lineup to maximise P(clear a simulated cash "
+                                            "line), with the field drawn from CASH ownership in the same worlds, not "
+                                            "on the lineup's own floor (Haugh & Singal, Mgmt Sci 2021, double-up)",
+     "ref": "NHL_STATUS.md 6c (10/10); DFS_STATUS.md 'Field-aware cash, tested across sports'",
+     "evidence": "NHL 8 double-ups LOO: cashed 3/8 -> 5/8, finish pctile 51% -> 63%, higher on 7 of 8 (model's own "
+                 "P(clear) gain +1..+5 pts); null in MLB (9), NFL (3), NCAAF (1), NASCAR (1). Never tested in NBA / NCAAB",
+     "covers": [("nhl", "2026-10-10")]},
     {"id": "L12", "from": "overlay", "mechanism": "late-listed re-posts priced on a pooled curve (overlay only)",
      "ref": "overlay cycle (11/9)", "evidence": "re-posts fill 0.88 of room; no DFS-model analogue",
      "covers": [("overlay", "2026-11-09")]},
@@ -411,6 +419,25 @@ TRANSFERS = [
      "idea": "GPP p90 build percentile vs a median build",
      "where": "edge/dfs_nascar_theory.py GPP_PCT", "data": "graded races", "probe": None, "target": None,
      "measured": None},
+    {"id": "T37", "lesson": "L17", "sport": "ncaab", "kind": "projection", "status": "measure",
+     "idea": "cash lineup on its own 25th percentile ignores a tiny, chalk-heavy Double Up field",
+     "where": "edge/dfs_ncaab_theory.py CASH_PCT; edge/dfs_field.py (cash_line), dfs_sim.optimize_cash_vs_field",
+     "data": "17 cash exports / 12 slates (field median 21; top player 75% owned, top-8 summed 450%)",
+     "probe": None, "target": "cash lineups: field-aware objective, replayed in ncaab_lineup_lab with a LOO cash-ownership fit",
+     "measured": {"at": "2026-11-25", "pts_lineup": 0.0,
+                  "note": "Adam's cash lineups far below the field's chalk (summed own < field median - 60) beat .18 of "
+                          "the field vs .55 near it before 11/8, but from 11/8 (props era) the relation is gone (r -0.32, "
+                          "11 entries): confounded with the old model -- needs the held-out replay. Cycle 9: the "
+                          "build PERCENTILE is null; this is a different objective (relative to the field)."}},
+    {"id": "T38", "lesson": "L17", "sport": "nba", "kind": "projection", "status": "measure",
+     "idea": "cash lineup on its own 30th percentile ignores a small, chalk-heavy Double Up field",
+     "where": "edge/dfs_nba_theory.py CASH_PCT; edge/dfs_field.py, dfs_sim.optimize_cash_vs_field",
+     "data": "38 cash exports / 27 slates (field median 23; top player 86% owned, top-8 summed 502%)",
+     "probe": None, "target": "cash lineups: field-aware objective, nba lineup replay with a LOO cash-ownership fit",
+     "measured": {"at": "2026-11-25", "pts_lineup": 0.0,
+                  "note": "Before 11/8: 15 far-from-chalk entries beat .20 of the field, 2 near beat .91 (r +0.67); "
+                          "from 11/8: far .42 (6) vs near .51 (15), r +0.15 -- the props blend moved lineups toward "
+                          "chalk; the objective itself is untested. NBA_STATUS: 'there is no field-aware cash'."}},
     {"id": "T20", "lesson": "L10", "sport": "nba", "kind": "ownership", "status": "null",
      "idea": "DK FPPG as an ownership input (NHL, NFL, NCAAF, NCAAB, NASCAR boards carry it; NBA's theory does not)",
      "where": "edge/dfs_nba_theory.py", "data": "26 GPP slates", "probe": None, "target": None,
