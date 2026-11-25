@@ -665,3 +665,51 @@ refit weekly.
 fail it and fall to the no-Torvik path -- match on last season's FPPG; (3) weight DK's average by games
 played (above).
 
+
+## Cycle 9 (auto: optimizer build percentile, cash p25 / GPP p90; L16 from NHL c17) — 2026-11-25, hand-run
+
+Scout: `{"target": "optimizer objective percentile (cash p25 / GPP p90 are unfitted 10/13 priors): fit the build percentile per contest type on replayed lineups",
+"metric": "paired by slate, shipped vs arm: actual DK pts per lineup, cash set20 and GPP set20, all 27 boxed boards; money: field pctile, cashed, $ per $1 vs real fields (cash 11 slates / 16 contests, GPP 9 / 11), never pooled; arms cash {25, 50, 70}, GPP {50, 70, 90}; 2+ seed sets x 20; guard: the other mode",
+"harness": "build: per-mode pct override for scripts/ncaab_lineup_lab.py (shipped projection = LAST_GAME + SEASON_FPPG refit per fold)",
+"split": "arm picked LOSO over 11/2-11/24; forward pick on 11/2-11/14, test 11/15-11/24; 11/2-11/4 apart",
+"money_at_stake": "cash +37% [-42,+116] 17e/12s (+$22; no-overlay -47% 11e/11s); GPP -37% 12e/10s (-$3)",
+"runner_ups": ["props rows at $5K+ run high (+2.10, 424 rows / 17 slates): retest the per-fold shrink on 27 boards", "Torvik fingerprint join vs this season's FPPG (transfers)", "re-gate critique/ncaab-c6-regate at 5+ forward boxes"]}`
+
+Baseline: cycle 8's model (LOSO all MAE 5.380, 27 slates); player MAE unchanged by construction here.
+
+**Finding (dfs-model-critic): not a hole.** Replayed all 27 boxed boards x 2 seed sets (0-19, 100-119) x 20
+lineups per arm (4,320 lineups; sim shared across arms per board and seed, so paired). In college the
+build percentile barely changes the lineup: p90 and p25 builds from the same sim share 6.49 of 8 players
+(identical 33% of the time), sim means differ -0.05 pts, sim sd +0.53. NHL's p95 cost ~6 proj pts; here
+there is nothing to give back (weak correlation: lineup sd 26.1-26.7 whatever the objective).
+
+| cash (shipped p25) | pts/lineup | paired diff [90%, by slate] | better/worse | seed sets A / B | Double Up pctile (16 / 11 slates) | cashed | $ per $1 |
+|---|---|---|---|---|---|---|---|
+| p25 | 202.3 | -- | -- | -- | .414 | 34% | 0.69 |
+| p50 | 202.9 | +0.53 [-0.52, +1.63] | 12 / 12 | +0.37 / +0.69 | .418 | 36% | 0.72 |
+| p70 | 202.0 | -0.29 [-2.08, +1.40] | 11 / 13 | -0.32 / -0.26 | .395 | 30% | 0.60 |
+
+| GPP (shipped p90) | paired diff [90%] | better/worse | seed sets A / B | GPP pctile (11 / 9 slates) | cashed | $ per $1 |
+|---|---|---|---|---|---|---|
+| p50 | +0.16 [-2.03, +2.26] | 15 / 10 | +0.46 / -0.14 | .518 | 19% | 0.47 |
+| p70 | -0.66 [-2.05, +0.69] | 12 / 13 | -0.23 / -1.09 | .496 | 18% | 0.47 |
+| p90 | -- | -- | -- | .518 | 22% | 0.62 |
+
+LOSO arm choice: cash p50 in 27/27 folds, held out +0.53 [-0.52, +1.63]; GPP p50 22 / p90 5, held out
+-1.57 [-3.25, -0.09] (worse than shipped). Forward (pick on 11/2-11/14, test 15 boards 11/15-11/24):
+cash p50 trained +1.35, tested -0.13 [-1.38, +1.15] (5 of 15 better); GPP p50 trained +0.50, tested
+-0.12. Most of cash p50's edge is 11/2-11/4 (old model, +3.6); from 11/5 +0.14. Noise floor: 20 seeds
+give 5.3 distinct p25 lineups per board; the same arm on seed sets A vs B differs by sd 2.9 pts/board.
+
+**Decision: NOT SHIPPED -- CASH_PCT 25 / GPP_PCT 90 kept**, provenance added beside them
+(edge/dfs_ncaab_theory.py). Transfer: lesson L16 (NHL c17) added, T34 ncaab null; T35 NBA / T36 NASCAR
+to measure (same 90 prior; check the p90-vs-p50 projection gap first).
+
+**Runner-ups:** (1) the props tier: every arm's lineups are simulated ~225 and score 202-203; props players
+fill 71% of lineup slots (6,132 / 8,640) and run +3.31 high when picked (board-wide $4K+ props +1.96,
+picked blend +1.67; same-salary same-projection look-alikes +2.30 vs +3.03 picked: mostly tier bias, not
+selection) -- retest the per-fold props shrink on 27 boards x 2 seed sets (cycle 5's null was 11 boards,
+old model); (2) lineup-lab noise: require 2+ seed sets and report the A/B split, or any change under ~2
+pts/lineup reads as signal; (3) GPP and cash builds are nearly the same lineup: GPP differentiation must
+come from ownership or game correlation in the sim, not the percentile.
+

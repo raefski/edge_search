@@ -140,6 +140,13 @@ LESSONS = [
                  "(9 of 9); cash pts/lineup +5.0 [+1.8, +8.4] (17 boards); Double Up pctile +.091 [-.034, +.227] "
                  "(5 slates). DK rolled every player over at once (11/9): share .84-.96 before, .03-.29 after",
      "covers": [("ncaab", "2026-11-25")]},
+    {"id": "L16", "from": "nhl", "mechanism": "the GPP optimizer climbs a high percentile of the simulated lineup "
+                                            "total and pays for it in projection; build on a lower percentile when "
+                                            "the sport's correlation does not make the tail worth its mean",
+     "ref": "NHL critique cycle 17 (11/24, GPP build percentile)",
+     "evidence": "NHL GPP p95 gave up ~6 proj pts/lineup; GPP_BUILD_PCT 50: field pctile .541 -> .614 (39 contests / "
+                 "26 slates)",
+     "covers": [("nhl", "2026-11-24")]},
     {"id": "L12", "from": "overlay", "mechanism": "late-listed re-posts priced on a pooled curve (overlay only)",
      "ref": "overlay cycle (11/9)", "evidence": "re-posts fill 0.88 of room; no DFS-model analogue",
      "covers": [("overlay", "2026-11-09")]},
@@ -383,6 +390,26 @@ TRANSFERS = [
      "idea": "early-season hitters / pitchers on last-season rates after DK FPPG rolls over",
      "where": "edge/dfs.py (season stats source and its early-season blend)",
      "data": "2027 opening weeks", "probe": None, "target": "projection: hitter DK points, first 3 weeks",
+     "measured": None},
+    {"id": "T34", "lesson": "L16", "sport": "ncaab", "kind": "projection", "status": "null",
+     "idea": "GPP p90 / cash p25 build percentiles are unfitted priors",
+     "where": "edge/dfs_ncaab_theory.py CASH_PCT / GPP_PCT", "data": "27 boxed boards", "probe": None,
+     "target": None,
+     "measured": {"at": "2026-11-25", "pts_lineup": 0.0,
+                  "note": "NCAAB cycle 9: p25/50/70/90 x 2 seed sets x 20 on 27 boards; p25 and p90 builds share 6.5 "
+                          "of 8 players, sim means within 0.05; cash p50 +0.5 [-0.5, +1.6], GPP p50 +0.2 [-2.0, "
+                          "+2.3], forward null. Weak correlation: the percentile has no projection to give back."}},
+    {"id": "T35", "lesson": "L16", "sport": "nba", "kind": "projection", "status": "measure",
+     "idea": "GPP p90 build percentile vs a median build",
+     "where": "edge/dfs_nba_theory.py GPP_PCT (CASH_PCT 30)", "data": "26+ GPP dates", "probe": None,
+     "target": None,
+     "measured": {"at": "2026-11-25", "pts_lineup": 0.0,
+                  "note": "NBA's construction DOE (11/14) found GPP undecidable at 21 dates; NCAAB (same basketball "
+                          "correlation) found the percentile barely moves lineups -- measure the p90-vs-p50 "
+                          "projection gap first; if it is ~0 this is null."}},
+    {"id": "T36", "lesson": "L16", "sport": "nascar", "kind": "projection", "status": "measure",
+     "idea": "GPP p90 build percentile vs a median build",
+     "where": "edge/dfs_nascar_theory.py GPP_PCT", "data": "graded races", "probe": None, "target": None,
      "measured": None},
     {"id": "T20", "lesson": "L10", "sport": "nba", "kind": "ownership", "status": "null",
      "idea": "DK FPPG as an ownership input (NHL, NFL, NCAAF, NCAAB, NASCAR boards carry it; NBA's theory does not)",

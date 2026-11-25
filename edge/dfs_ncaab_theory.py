@@ -32,6 +32,12 @@ import math
 
 import numpy as np
 
+#: Both TESTED 2026-11-25 (NCAAB_CRITIQUE_LOG.md cycle 9) and kept: p25/50/70/90 builds replayed on 27
+#: boxed boards (11/2-11/24) x 2 seed sets x 20 lineups, scored on actual DK points and the real fields.
+#: The percentile barely moves a college lineup: p25 and p90 builds share 6.5 of 8 players, their
+#: simulated means differ by 0.05 and sd by 0.5 (weak correlation, above). Cash p50 +0.5 pts [-0.5, +1.6]
+#: (12 better / 12 worse), GPP p50 +0.2 [-2.0, +2.3]; forward (pick on <= 11/14, test 15 boards) cash
+#: -0.13, GPP -0.12. NHL's GPP_BUILD_PCT = 50 (+6 proj pts there) has nothing to recover here.
 CASH_PCT = 25.0
 GPP_PCT = 90.0
 
