@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-25T01:28:45+00:00",
+"generated_at": "2026-11-25T01:58:59+00:00",
 "goalies": {
 "2026-11-24": {
 "EDM": {
@@ -57,11 +57,11 @@
 "status": null
 },
 "MIN": {
-"goalie": "Filip Gustavsson",
+"goalie": "Jesper Wallstedt",
 "status": null
 },
 "MTL": {
-"goalie": "Jakub Dobes",
+"goalie": "Jacob Fowler",
 "status": null
 },
 "NJD": {
@@ -109,7 +109,7 @@
 "status": null
 },
 "UTA": {
-"goalie": "Sebastian Cossa",
+"goalie": "Karel Vejmelka",
 "status": null
 },
 "VAN": {
@@ -8462,42 +8462,6 @@
 "pos": "rd",
 "pp": "PP1"
 },
-"Calvin Pickard": {
-"gtd": false,
-"injury": null,
-"last10": {
-"gamesPlayed": 10,
-"goalieGoalsAgainst": 29,
-"goalieGoalsAgainstAvg": "3.07",
-"goalieLosses": 3,
-"goalieMinutes": 566,
-"goalieOvertimeLosses": 2,
-"goalieSavePercentage": "0.883",
-"goalieSaves": 218,
-"goalieSeconds": 6,
-"goalieShotsAgainst": 247,
-"goalieShutouts": 0,
-"goalieWins": 4
-},
-"last5": {
-"gamesPlayed": 5,
-"goalieGoalsAgainst": 17,
-"goalieGoalsAgainstAvg": "3.31",
-"goalieLosses": 1,
-"goalieMinutes": 307,
-"goalieOvertimeLosses": 2,
-"goalieSavePercentage": "0.848",
-"goalieSaves": 95,
-"goalieSeconds": 27,
-"goalieShotsAgainst": 112,
-"goalieShutouts": 0,
-"goalieWins": 2
-},
-"line": "G2",
-"pk": null,
-"pos": "g",
-"pp": null
-},
 "Danila Yurov": {
 "gtd": false,
 "injury": null,
@@ -8597,7 +8561,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -8635,6 +8599,42 @@
 "pk": "PK2",
 "pos": "rd",
 "pp": "PP2"
+},
+"Jesper Wallstedt": {
+"gtd": false,
+"injury": null,
+"last10": {
+"gamesPlayed": 10,
+"goalieGoalsAgainst": 20,
+"goalieGoalsAgainstAvg": "1.98",
+"goalieLosses": 0,
+"goalieMinutes": 605,
+"goalieOvertimeLosses": 2,
+"goalieSavePercentage": "0.926",
+"goalieSaves": 249,
+"goalieSeconds": 20,
+"goalieShotsAgainst": 269,
+"goalieShutouts": 0,
+"goalieWins": 8
+},
+"last5": {
+"gamesPlayed": 5,
+"goalieGoalsAgainst": 11,
+"goalieGoalsAgainstAvg": "2.16",
+"goalieLosses": 0,
+"goalieMinutes": 304,
+"goalieOvertimeLosses": 1,
+"goalieSavePercentage": "0.921",
+"goalieSaves": 128,
+"goalieSeconds": 43,
+"goalieShotsAgainst": 139,
+"goalieShutouts": 0,
+"goalieWins": 4
+},
+"line": "G1",
+"pk": null,
+"pos": "g",
+"pp": null
 },
 "Joel Eriksson Ek": {
 "gtd": false,
@@ -9349,7 +9349,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -9419,7 +9419,7 @@
 "goalieShutouts": 0,
 "goalieWins": 3
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -17615,7 +17615,7 @@
 "goalieShutouts": 1,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -17889,7 +17889,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
