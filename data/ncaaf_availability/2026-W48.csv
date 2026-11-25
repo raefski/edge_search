@@ -1137,3 +1137,452 @@ captured_at,conference,report_id,version,report_type,publish_date,posted_time,co
 2026-11-25T02:03:13+00:00,SEC,10003538,5ef31daa5e1b,Initial,2026-11-24,19:10:00,CT,2026-11-27,18:30:00,"College Station, TX",0,Texas A&M,Texas,second,DT,98,Jermaine Kinsler,jermainekinsler,Available,NonExempt
 2026-11-25T02:03:13+00:00,SEC,10003538,5ef31daa5e1b,Initial,2026-11-24,19:10:00,CT,2026-11-27,18:30:00,"College Station, TX",0,Texas A&M,Texas,second,DE,98,Jesse Chukwu,jessechukwu,Available,NonExempt
 2026-11-25T02:03:13+00:00,SEC,10003538,5ef31daa5e1b,Initial,2026-11-24,19:10:00,CT,2026-11-27,18:30:00,"College Station, TX",0,Texas A&M,Texas,second,DT,99,Landon Rink,landonrink,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,0,Zach Chapman,zachchapman,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,0,Dozie Ezukanma,dozieezukanma,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,CB,1,"Vernon Glover, Jr.",vernonglover,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,QB,1,Jaden Craig,jadencraig,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,RB,2,Jon Denman,jondenman,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,2,Jamel Johnson,jameljohnson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,3,Max Carroll,maxcarroll,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,3,Major Everhart,majoreverhart,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,CB,4,Gil Jackson Jr.,giljackson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,4,Ace Theus,acetheus,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,6,Kylin Jackson,kylinjackson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,6,Jeremy Scott,jeremyscott,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,QB,6,Jayden Maples,jaydenmaples,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,7,Jordan Dwyer,jordandwyer,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,7,Julius Simms,juliussimms,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,9,CJ Woodfork,cjwoodfork,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,QB,9,Jack Daulton,jackdaulton,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,TE,10,Mason Peterson,masonpeterson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,QB,11,Adam Schobel,adamschobel,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,11,Michael Short,michaelshort,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,TE,12,Lafayette Kaiuway,lafayettekaiuway,Probable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,QB,12,David Potter,davidpotter,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,CB,12,Kalen Carroll,kalencarroll,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,13,Ryan Yaites,ryanyaites,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,13,James Scott,jamesscott,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,14,John Schobel,johnschobel,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,14,Khamill Pruitt,khamillpruitt,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,15,Devyn Hidrogo,devynhidrogo,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,15,Terry Shelton,terryshelton,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,CB,16,Brock King,brockking,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,16,Koron Hayward,koronhayward,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,17,Dane Jones,danejones,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,CB,17,Devondre McGee,devondremcgee,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,18,Kaden McFadden,kadenmcfadden,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,18,Ed Small,edsmall,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,19,Jesse Ford,jesseford,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,20,Anthony Williams,anthonywilliams,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,RB,20,G'Ivori Graham,givorigraham,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,CB,21,Teon Parks,teonparks,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,22,Fletcher Fierro,fletcherfierro,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,22,Jordan Lester,jordanlester,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,23,Keylan Abrams,keylanabrams,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,RB,23,Amante Martin,amantemartin,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,24,Joseph Albright,josephalbright,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,RB,24,Joe Pitchford,joepitchford,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,25,Zach Taylor,zachtaylor,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,CB,26,Deon Mays,deonmays,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,RB,26,Jeremy Payne,jeremypayne,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,27,Michael Teason Jr.,michaelteason,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,RB,27,Landon Walker,landonwalker,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,CB,28,Micah Strickland,micahstrickland,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,29,Jason Bradford,jasonbradford,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,RB,29,Joseph Hagman,josephhagman,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,CB,30,Max Rankin,maxrankin,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,31,Noriel Dominguez,norieldominguez,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,RB,31,Jacob Martinez,jacobmartinez,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,32,Dillon Arkansas,dillonarkansas,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,32,Jaden Morehead,jadenmorehead,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,DT,34,Perry Cole Jr.,perrycole,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,K,34,Kyle Lemmermann,kylelemmermann,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,DT,35,Tristan Johnson,tristanjohnson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,36,Cheta Ofili,chetaofili,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,37,Hudson Hooper,hudsonhooper,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,38,Zion Junk,zionjunk,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,39,Jack Pitchford,jackpitchford,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,40,Oliver Gunn,olivergunn,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,K,41,Sam Bisesi,sambisesi,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,41,Caleb Cortez,calebcortez,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,S,42,Sebastian Peterson,sebastianpeterson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LS,43,Will Terry,willterry,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,44,Sam Haley,samhaley,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LB,46,Rhett Steppe,rhettsteppe,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,LS,47,Aaron Bowers,aaronbowers,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,P,48,John Hoyet Chance,johnhoyetchance,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,49,Anders Corn,anderscorn,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,50,Witten Van Hoy,wittenvanhoy,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,51,Devan Robison,devanrobison,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,DT,52,Blake Robinett,blakerobinett,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,53,Tobias Steppes,tobiassteppes,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,55,Samir Camacho,samircamacho,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,55,Lawson Watkins,lawsonwatkins,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,56,Ben Taylor-Whitfield,bentaylorwhitfield,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,58,Noah McKinney,noahmckinney,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,59,Jaheim Buchanon,jaheimbuchanon,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,60,Cade Bennett,cadebennett,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,61,Dylan Kinney,dylankinney,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,62,Jordan Burnett,jordanburnett,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,64,Jacob Ahumada,jacobahumada,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,65,Logan Schram,loganschram,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,66,Wesley Harvey,wesleyharvey,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,69,Gannon Gaubert,gannongaubert,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,70,Ryan Hughes,ryanhughes,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,71,Creece Brister,creecebrister,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,72,Jackson Jones,jacksonjones,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,73,Kilian Registe,kilianregiste,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,74,"Vincent Johnson, Jr.",vincentjohnson,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,OL,77,Cooper Powers,cooperpowers,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,80,Jacobe Hayes,jacobehayes,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,TE,81,Kari Ashley,kariashley,Probable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,83,Keagan Cunningham,keagancunningham,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,84,Cooper Reid,cooperreid,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,WR,86,Sutton Lee,suttonlee,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,TE,88,Ka'Morreun Pimpton,kamorreunpimpton,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,TE,89,Braden Bach,bradenbach,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,DT,90,Kelten Mickell,keltenmickell,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,DT,91,Floyd Guidry,floydguidry,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,DT,92,Ansel Din-Mbuh,anseldinmbuh,Probable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,94,Jared Martin,jaredmartin,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,DT,95,Markis Deal,markisdeal,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,DT,96,Maddox Flynt,maddoxflynt,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,P,97,Easton Black,eastonblack,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,97,Paul Oyewale,pauloyewale,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,EDG,98,Carter Buck,carterbuck,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,TCU,Texas Tech,first,K,99,Nate McCashland,natemccashland,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,0,Mikal Harrison-Pilot,mikalharrisonpilot,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,RB,0,Quinten Joyner,quintenjoyner,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,1,Micah Hudson,micahhudson,Questionable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,DL,1,Julien Laventure,julienlaventure,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OLB,2,Trey White,treywhite,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,2,Kenny Johnson,kennyjohnson,Questionable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,3,Coy Eakin,coyeakin,Probable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,3,Peyton Morgan,peytonmorgan,Probable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,CB,4,Davin Martin,davinmartin,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,QB,4,Thomas Castellanos,thomascastellanos,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,5,Oliver Miles III,olivermiles,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,TE,5,Matt Ludwig,mattludwig,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,LB,6,John Curry,johncurry,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,6,Jalen Jones,jalenjones,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,TE,7,Terrance Carter Jr.,terrancecarter,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,7,Brenden Jordan,brendenjordan,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,RB,8,Cameron Dickey,camerondickey,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OLB,8,Jamond Mathis,jamondmathis,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,9,Donte Lee Jr.,dontelee,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,LB,9,Corey Platt Jr.,coreyplatt,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,DL,10,A.J. Holmes Jr.,ajholmes,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,QB,10,Lloyd Jones III,lloydjones,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,LB,11,Brock Golwas,brockgolwas,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,11,Malcolm Simmons,malcolmsimmons,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,CB,12,Tarrion Grant,tarriongrant,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,QB,12,Stephen Cannon,stephencannon,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,LB,13,Ben Roberts,benroberts,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,13,Chase Campbell,chasecampbell,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,14,Bryson Jones,brysonjones,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,CB,14,Brice Pollock,bricepollock,Probable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,QB,15,Will Hammond,willhammond,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,LB,15,Austin Romaine,austinromaine,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,CB,16,Ashton Hampton,ashtonhampton,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,QB,16,Holden Phillips,holdenphillips,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,17,Leyton Stone,leytonstone,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,CB,17,Noah Lewis,noahlewis,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,QB,18,Kirk Francis,kirkfrancis,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,CB,18,S'Vioarean Martin,svioareanmartin,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,19,Michael Dever,michaeldever,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,CB,19,Cam Wyatt,camwyatt,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,RB,20,J'Koby Williams,jkobywilliams,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OLB,20,Adam Trick,adamtrick,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,21,Miquel Dingle Jr.,miqueldingle,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,21,Tristian Gentry,tristiangentry,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,22,Marcus Ramon-Edwards,marcusramonedwards,Doubtful,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,23,Maddox Quiller,maddoxquiller,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,24,Malik Esquerra,malikesquerra,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,25,Donovan Webb,donovanwebb,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,26,Aaron Bradshaw,aaronbradshaw,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,CB,27,Amier Boyd,amierboyd,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,28,Braylan McDonald,braylanmcdonald,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,RB,28,Ashton Rowden,ashtonrowden,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,28,Jordan Rogers,jordanrogers,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,CB,29,Luke Hamilton,lukehamilton,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,S,30,Jamarn Grant II,jamarngrant,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,LB,31,Cord Nolan,cordnolan,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,RB,32,Sawyer Wilkerson,sawyerwilkerson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OLB,32,LaDamion Guyton,ladamionguyton,Doubtful,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OLB,33,Ansel Nedore,anselnedore,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,RB,33,Loic Tshibangu,loictshibangu,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,LB,34,Kaegan Ash,kaeganash,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,RB,35,Michael Henderson III,michaelhenderson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,LB,35,Adam Hill,adamhill,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OLB,36,Demarcus Marks,demarcusmarks,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,P,37,Ian Hershey,ianhershey,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,K,39,Jacob Hand,jacobhand,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,LB,40,Wesley Smith,wesleysmith,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,LB,43,Chris Lemons,chrislemons,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,LS,47,Rylan Vagana,rylanvagana,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,K,48,Stone Harrington,stoneharrington,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,P,49,Will Karoll,willkaroll,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,50,Patrick McMath,patrickmcmath,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,DL,51,Jayden Cofield,jaydencofield,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,51,Felix Ojo,felixojo,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,52,Cash Cleveland,cashcleveland,Questionable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,53,Holton Hendrix,holtonhendrix,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,54,Jordan Church,jordanchurch,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,56,Jerald Mays,jeraldmays,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OLB,56,Amarie Fleming,amariefleming,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,57,Hunter Zambrano,hunterzambrano,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,61,Connor Carty,connorcarty,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,65,D'Anthis Upshaw Jr.,danthisupshaw,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,66,Jackson Hildebrand,jacksonhildebrand,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,68,Ren Brown,renbrown,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,70,Jacob Ponton,jacobponton,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,71,Bryce Gilmore,brycegilmore,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,72,Sheridan Wilson,sheridanwilson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,73,Danilo Guberinich,daniloguberinich,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,74,Daniel Sill,danielsill,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,75,Garin Maley,garinmaley,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,76,Jacob Crow,jacobcrow,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,77,Elias Gillen,eliasgillen,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,78,Ellis Davis,ellisdavis,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OL,79,Howard Sampson,howardsampson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,80,Kai Powell,kaipowell,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,TE,83,Jack Esparza,jackesparza,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,84,Imari Jehiel,imarijehiel,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,TE,85,Jett Carpenter,jettcarpenter,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OLB,86,Sean Robinson,seanrobinson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,WR,88,Quintaelyn Joyner,quintaelynjoyner,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,TE,89,Jason Llewellyn,jasonllewellyn,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,DL,90,Ayden Johnson,aydenjohnson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,DL,91,Krush Johnson,krushjohnson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,DL,92,Bryce Butler,brycebutler,Questionable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,DL,93,Dylan Singleton,dylansingleton,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OLB,95,Christian Bruce,christianbruce,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,DL,96,Keyshawn Williams,keyshawnwilliams,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,OLB,97,Charles Anderson Jr.,charlesanderson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,DL,98,Mateen Ibirogba,mateenibirogba,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003523,e889d73df2c4,Update 1,2026-11-24,21:00:00,CT,2026-11-26,19:00:00,"Lubbock, TX",0,Texas Tech,TCU,second,DL,99,Jojo Johnson,jojojohnson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,S,0,Andrew Powdrell,andrewpowdrell,Probable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,TE,0,Josh Sapp,joshsapp,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,N/S,1,Geimere Latimer II,geimerelatimer,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,RB,1,Amari Latimer,amarilatimer,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,2,DJ Epps,djepps,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,QB,3,Michael Hawkins Jr.,michaelhawkins,Doubtful,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,S,3,Matt Sieg,mattsieg,Probable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,RB,4,Cam Cook,camcook,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,CB,4,Da'Mun Allen,damunallen,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,5,Jaden Bray,jadenbray,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,QB,6,Max Brown,maxbrown,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,S,6,Da'Mare Williams,damarewilliams,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,CB,7,Chams Diagne,chamsdiagne,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,QB,7,Wyatt Walker Brown,wyattwalkerbrown,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,S,8,Kamari Wilson,kamariwilson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,QB,8,Jyron Hughley,jyronhughley,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,TE,10,Cam Ball,camball,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,EDG,10,Jeremiah Johnson,jeremiahjohnson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,11,Taron Francis,taronfrancis,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,CB,11,Vincent Smith,vincentsmith,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,S,12,Jacob Bradford,jacobbradford,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LB,13,Cam Torbor,camtorbor,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,13,Kedrick Triplett,kedricktriplett,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LB,14,Tyler Stolsky,tylerstolsky,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,14,Keon Hutchins,keonhutchins,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LB,15,Ben Cutter,bencutter,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,QB,15,Scotty Fox Jr.,scottyfox,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LB,16,Isaiah Patterson,isaiahpatterson,Probable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,17,Prince Strachan,princestrachan,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,N/S,17,Miles Khatri,mileskhatri,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,QB,18,John Johnson III,johnjohnson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,18,Zeke Durham-Campbell,zekedurhamcampbell,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,QB,19,Max Anderson,maxanderson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,CB,19,Nick Taylor,nicktaylor,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,CB,20,Keyshawn Robinson,keyshawnrobinson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,RB,20,Martavious Boswell,martaviousboswell,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,RB,22,Chris Talley,christalley,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,CB,22,Jaire Rawlison,jairerawlison,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,N/S,23,Emory Snyder,emorysnyder,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,23,Malachi Thompson,malachithompson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,CB,24,Rayshawn Reynolds Jr.,rayshawnreynolds,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,24,Landon Drumm,landondrumm,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,25,Armoni Weaver-Bomar,armoniweaverbomar,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,N/S,25,Jayden Ballard,jaydenballard,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,RB,26,Andre Devine,andredevine,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,CB,26,Makhi Boone,makhiboone,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,CB,27,ChaMarryus Bomar,chamarryusbomar,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,RB,27,Naquari Rogers,naquarirogers,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,S,28,Rickey Giles,rickeygiles,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,RB,28,Lawrence Autry,lawrenceautry,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,S,29,Kameron Reddic,kameronreddic,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LB,30,Antoine Sharp Jr.,antoinesharp,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,S,30,Jacorey Thomas,jacoreythomas,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,S,31,Shane Cornali,shanecornali,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,CB,32,Simaj Hill,simajhill,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,32,Brad Mossor,bradmossor,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LB,33,Ashton Woods,ashtonwoods,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,FB,33,Kayden Luke,kaydenluke,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,RB,34,Darius Morant,dariusmorant,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,S,34,Tim Roberson,timroberson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LB,35,Cameron Dwyer,camerondwyer,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DB,36,Jason Chambers,jasonchambers,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,N/S,37,Maliek Hawkins,maliekhawkins,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LS,38,Macguire Moss,macguiremoss,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,CB,39,Jayden Bell,jaydenbell,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,K,39,Peter Notaro,peternotaro,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LB,40,Jason Hall Jr.,jasonhall,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,41,Noah Tishendorf,noahtishendorf,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,K,42,Jack Cassidy,jackcassidy,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,S,42,Alex Adebayo,alexadebayo,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,43,KJ Henson,kjhenson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LB,45,Malachi Hood,malachihood,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,TE,46,Xavier Anderson,xavieranderson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,47,Wilnerson Telemaque,wilnersontelemaque,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,K,48,Nate Flower,nateflower,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LB,48,Troy Fischer,troyfischer,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,TE,49,Carter Zuliani,carterzuliani,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,49,Carter Kessler,carterkessler,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,EDG,50,Harper Holloman,harperholloman,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,51,Taylor Brown,taylorbrown,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,51,Raymond Kovalesky,raymondkovalesky,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,52,Nick Krahe,nickkrahe,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,52,Corey McIntyre Jr.,coreymcintyre,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,LS,53,Kaden Seller,kadenseller,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,54,Amare Grayson,amaregrayson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,55,Yendor Mack,yendormack,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,55,Aidan Woods,aidanwoods,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,56,Lamarcus Dillard,lamarcusdillard,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,59,Josh Aisosa,joshaisosa,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,60,Gabe Ryan,gaberyan,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,60,Jonas Muya,jonasmuya,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,61,Trevor Bigelow,trevorbigelow,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,64,Rhett Morris,rhettmorris,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,65,Malik Agbo,malikagbo,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,67,Landen Livingston,landenlivingston,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,68,Camden Goforth,camdengoforth,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,69,Devin Vass,devinvass,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,72,Cam Griffin,camgriffin,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,72,Jaylen Thomas,jaylenthomas,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,73,Andreas Hunter,andreashunter,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,74,Kevin Brown,kevinbrown,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,76,Deshawn Woods,deshawnwoods,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,78,Wes King,wesking,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,OL,79,Carsten Casady,carstencasady,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,80,John Neider,johnneider,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,TE,81,Kade Bush,kadebush,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,P,83,Bryan Hansen,bryanhansen,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,TE,84,Ryan Ward,ryanward,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,85,Robert Oliver,robertoliver,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,86,Cyrus Traugh,cyrustraugh,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,87,Greg Wilfred,gregwilfred,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,TE,88,Sam Hamilton,samhamilton,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,WR,89,Charlie Hanafin,charliehanafin,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,91,Darius Wiley,dariuswiley,Out,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,92,Emerson Joy,emersonjoy,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,93,Nate Gabriel,nategabriel,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,94,Cam Mallory,cammallory,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,EDG,95,Tobi Haastrup,tobihaastrup,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,97,Will LeBlanc,willleblanc,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,DL,98,Brandon Caesar,brandoncaesar,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,West Virginia,Utah,first,EDG,99,David Afogho,davidafogho,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,LB,0,Cyrus Polu,cyruspolu,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,0,Kyri Shoels,kyrishoels,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,1,Rabbit Evans,rabbitevans,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,RB,1,Wayshawn Parker,wayshawnparker,Questionable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,2,Creed Whittemore,creedwhittemore,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,CB,2,Rock Caldwell,rockcaldwell,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,ATH,3,Nate Johnson,natejohnson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,QB,4,Devon Dampier,devondampier,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,CB,4,JC Hart,jchart,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,RB,5,Daniel Bray,danielbray,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,CB,5,James Chenault,jameschenault,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,6,Nate Ritchie,nateritchie,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,6,Daidren Zipperer,daidrenzipperer,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,LB,7,Johnathan Hall,johnathanhall,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,7,Braden Pegan,bradenpegan,Questionable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,8,Mana Carvalho,manacarvalho,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DE,8,Ethan Day,ethanday,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,CB,9,Elijah Davis,elijahdavis,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,QB,9,Kane Archer,kanearcher,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,TE,10,Hunter Andrews,hunterandrews,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,LB,10,Trey Reynolds,treyreynolds,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,11,Ricky Johnson,rickyjohnson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,CB,11,Elijah Reed,elijahreed,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,12,Larry Simmons,larrysimmons,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,12,Davis Andrews,davisandrews,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,QB,13,Michael Johnson,michaeljohnson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,14,Cole Standage,colestandage,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,QB,14,Brandon Rose,brandonrose,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,QB,15,Byrd Ficklin,byrdficklin,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DE,15,Lance Holtzclaw,lanceholtzclaw,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DE,16,PJ Takitaki,pjtakitaki,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,K,17,Dillon Curtis,dilloncurtis,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,18,Tobias Merriweather,tobiasmerriweather,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,CB,18,Earl Parker,earlparker,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,CB,19,Dylan Waters,dylanwaters,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,RB,20,Mateaki Helu,mateakihelu,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,21,Nate Tilmon,natetilmon,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,RB,21,LaMarcus Bell,lamarcusbell,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,23,Jackson Bennee,jacksonbennee,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,24,Marcus Wimberly,marcuswimberly,Questionable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,25,Manny Fuller,mannyfuller,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,RB,25,Steve Chavez-Soto,stevechavezsoto,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,CB,26,Nick Brown,nickbrown,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,CB,27,Brandon Holmes,brandonholmes,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,28,Luke Bryant,lukebryant,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,LB,28,Anthony Hernandez,anthonyhernandez,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,CB,29,Major Hinchen,majorhinchen,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,30,Matt Clark,mattclark,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,31,Jack Evans,jackevans,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,32,Josh Sovereign,joshsovereign,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,TE,33,Kana'i Lopes,kanailopes,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,34,Ashton Olevao,ashtonolevao,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,LB,35,Preston Pitts,prestonpitts,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,LB,36,Brock Fonoimoana,brockfonoimoana,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,37,Peyton Rice,peytonrice,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,38,Junior Coughlin,juniorcoughlin,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,S,38,Tommy Nelson,tommynelson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DE,40,Paul Fitzgerald,paulfitzgerald,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,LB,41,LaGary Mitchell,lagarymitchell,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,LB,42,Tayson Reid,taysonreid,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,LB,43,Grady Mareko,gradymareko,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,TE,44,Sione Motuapuaka,sionemotuapuaka,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DT,45,Pupu Sepulona,pupusepulona,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DE,46,Mauka Bernard,maukabernard,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DE,47,Jared Fredrick,jaredfredrick,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DE,48,Alex Cloward,alexcloward,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DT,51,Karson Kaufusi,karsonkaufusi,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,54,Milz Asiata,milzasiata,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,55,Kelvin Obot,kelvinobot,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,56,Isaiah Kema,isaiahkema,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,57,Moses Sparks,mosessparks,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DT,57,Stanley Raass,stanleyraass,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DE,58,Fameitau Siale,fameitausiale,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,62,Solatoa Moea'i,solatoamoeai,Probable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,64,Reece Parmenter,reeceparmenter,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,LS,65,Logan Castor,logancastor,Questionable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,67,Soren Shinofield,sorenshinofield,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,70,Mataalii Benjamin,mataaliibenjamin,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,71,Rowdy Pearce,rowdypearce,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,72,Isaiah Garcia,isaiahgarcia,Exempt,Exempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,73,Cedric Jefferson,cedricjefferson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,74,Keith Olson,keitholson,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,75,Roger Alderman,rogeralderman,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,76,Zereoue Williams,zereouewilliams,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,77,Nick Hallock,nickhallock,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DT,78,Taniela Pepa,tanielapepa,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,OL,79,Alex Harrison,alexharrison,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,80,Bryson Baker,brysonbaker,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,TE,81,Bear Fisher,bearfisher,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,WR,82,Max Ausmus,maxausmus,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,LB,83,Elijah Elliss,elijahelliss,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,TE,85,Broderick Redden,broderickredden,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,TE,86,Will Monney,willmonney,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,K,88,Tanner Cragun,tannercragun,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,TE,89,Noah Bennee,noahbennee,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DT,90,Jireh Moe,jirehmoe,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,P,92,Orion Phillips,orionphillips,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DE,92,Nicholas Igwe,nicholasigwe,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DE,93,Kash Dillon,kashdillon,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DT,94,Mike Tauteoli,miketauteoli,Questionable,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DT,96,Dilan Battle,dilanbattle,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DT,97,Lucas Samsula,lucassamsula,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,TE,99,Semi Taulanga,semitaulanga,Available,NonExempt
+2026-11-25T03:03:13+00:00,B12,10003546,48322dca74b2,Initial,2026-11-24,21:00:00,CT,2026-11-27,20:00:00,"Salt Lake City, UT",0,Utah,West Virginia,second,DT,99,Jamal Wallace,jamalwallace,Exempt,Exempt
