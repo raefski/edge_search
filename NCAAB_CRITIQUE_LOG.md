@@ -492,3 +492,89 @@ scripts/ncaab_lab.py and the lineup lab; key by DK player id. Not fixed here: th
 files -- left for Adam.
 
 Unattended gate (20261122-0658): **not shipped (log / harness only, verified)**
+
+
+## Cycle 7 (auto: cash lineups -- re-test the cheap-listed-starter credit; T07, from NBA) — 2026-11-25, unattended
+
+Scout: `{"target": "cash lineups: re-test the starter credit for cheap RotoWire-listed starters (T07) on the newly graded slates, with each variant averaged over several seeds",
+"metric": "held-out cash set20 field pctile + $ per $1, paired by slate; guards GPP pctile, player DK-pts MAE LOSO",
+"harness": "ncaab_box_grade.py for missing slates, then ncaab_lineup_lab.py report --n 20 (shipped vs starter_bump), ncaab_lab.py MAE guard",
+"split": "LOSO over boards with box + contest; 11/2-11/4 apart; post-11/22 as forward subset",
+"money_at_stake": "cash +49% [-24,+122] (16 entries / 11 slates, net +$27); GPP -37% (12 / 10, net -$3)",
+"runner_ups": ["fallback when RotoWire lists no starters (last game's 20+ min players)", "NHL c17 GPP-median transfer", "T26 non-props rows in priced games"]}`
+
+**Grading first:** 16 more slates boxed from ESPN (8 -> 24): 156346 156355 156549 156551 156653 156658 156662
+156663 157013 157015 157017 157019 157032 157033 157138 157139. Not final on ESPN, nothing saved: 156656 (UTAH/UW),
+157021, 157024, 157026.
+
+**Lab bug fixed (judge file, goes to Adam):** `scripts/ncaab_lab.load` iterated the name|team dict, so the second
+Christian Jones (LBS, 11/16, 156660) never got `last_min` and every LOSO run crashed (cycle 6 runner-up 3). It now
+iterates the rows; the shadowed twin takes the no-history path. No other slate's rows change.
+
+**Finding: the hole has closed by itself -- no critic spawned, no variant built.** Cycle 6's rows (cheap <$5K
+listed starter on the bench/salary path) exist only on 11/2-11/10: 17 rows on 7 slates, 0 on the 15 slates since
+11/11 (by then every college player has a DK season FPPG, so cheap listed starters go to `blend`: 58 blend +
+40 props logged 11/12-11/24, 0 bench/salary). Measured LOSO on ncaab_lab (LAST_GAME refit per fold, bump = mean
+train residual of eligible rows, refit per fold):
+
+| held out | n rows | slates | shipped MAE | + starter bump |
+|---|---|---|---|---|
+| all players | 4,142 | 24 | 5.5468 | 5.5414 (all of it on 11/2-11/10; 0 eligible rows after) |
+| cheap listed starters on blend, 11/12-11/22 (residual act - proj) | 36 | 10 | +0.78 (4 of 10 slates > 0) | -- |
+| cheap listed starters on props, same window | 26 | 6 | -3.07 (1 of 6 > 0) | -- |
+
+**Decision: NOT SHIPPED.** A bump that fires on no current build cannot move tonight's lineups; the blend
+already credits these starters (+0.78, slates split 4/6). The lineup replay was not run for that reason (the
+variant is a no-op on every slate since 11/11). T07 set to null (scripts/dfs_transfer.py).
+**Conservative calls (unattended):** skipped the critic (the scout's target was a measured re-test with its answer
+in hand); fixed the lab crash although the lab is a judge file -- the branch goes to Adam.
+
+**Next critic:** the boxes now cover 24 slates; the lineup lab can finally run on 15+ forward slates -- the
+scout's runner-ups (no-starters fallback; GPP median build from NHL c17) are the leads. Cheap props starters ran
+-3.07 (26 rows) -- small, watch.
+
+Unattended gate (20261125-0707): **crashed** in main's baseline gate (scripts/ncaab_lab.py KeyError 'last_min': two LBS Christian Jones on 156660). Nothing shipped by the agent, so nothing to gate; entry, boxes and T07 status carried by hand 2026-11-25 after the lab fix (3ec3b7290). The branch's own lab patch was superseded.
+
+
+## Cycle 7 (availability: role of RotoWire-listed teams; T07, from NBA) — 2026-11-25, unattended
+
+Scout: `{"target": "availability: cheap RotoWire-listed starters with no history get no starter credit (cycle-6
+starter_bump rerun on more graded slates, seed-averaged)", "metric": "held-out cash set20 pctile + $ per $1,
+seed-averaged; GPP pctile + player MAE (LOSO) guards", "harness": "scripts/ncaab_lineup_lab.py report --n 20;
+scripts/ncaab_lab.py report", "split": "LOSO over boards with box + contest; 11/2-11/4 apart (old blend)",
+"money_at_stake": "cash +37% [-42,+116] (17 entries/12 slates, +$22); GPP -37% (12/10, -$3)"}`
+
+**Graded first:** boxes for 156355 (11/9), 156551 (11/12), 156662 (11/17), 157015 (11/20, cash only) — committed.
+156656 (UTAH/UW) and 157024 not final/found on ESPN.
+
+**Hole (dfs-availability-critic):** on teams with a RotoWire starting five, players NOT in the five keep their full
+projection and score under it. Held out, 12 boxed boards, 2,545 rows: not-listed blend 163 rows proj 15.6 / scored
+12.1 (-3.5, low on 9 of 11 slates); not-listed salary-path 32 rows -3.4; listed starters blend +0.8 (188), salary
+path +3.8 (31); unlisted teams blend -1.2 (698). E.g. Davis-Fleming 11/9 $4,200 proj 18.7 DNP; Clary 11/16 24.3 -> 6.5.
+
+**Fix tested** (`role`, scratch /tmp/critic-ncaab-7/role_variant.py): after LAST_GAME, listed starters +S, listed
+team non-starters -B (floor 0), S/B = mean train-fold residual (S +0.9..+1.6, B -2.2..-3.9), refit per LOSO fold.
+
+| held out (set20, 2 seed sets x 20 averaged) | shipped | role |
+|---|---|---|
+| cash pctile (8 slates / 13 contests) | .334 | .349 (+.015 [-.028, +.058], better 4/8) |
+| cash cashed / $ per $1 | 25% / 0.51 | 21% / 0.42 |
+| GPP pctile (guard, 7 / 9) | .449 | .461 (+.012 [-.050, +.068]) |
+| player MAE pooled | 5.774 | 5.746 (better 6/12 slates) |
+| 11/2-11/4 (old blend) cash pctile | .476 | .667 (discounted) |
+| cash pts/lineup by slate | | 11/5 +3.9, 11/7 +3.9, 11/9 +7.8, 11/12 +6.1, 11/10 +1.7, 11/16 -10.2, 11/17 -6.0, 11/20 0 |
+
+Seed noise between the two seed sets ~±.005 cash pctile, so the flat result is not optimizer chaos.
+
+**Decision: NOT SHIPPED.** Player-level hole is real and consistent, but cash $ per $1 falls (0.51 -> 0.42, mostly
+11/17) and the percentile gain is inside its interval; the optimizer already avoids most of these players in cash.
+Cycle 6's starter_bump and this role fix both fail at the money level -> T07 stays null for lineups.
+Process note: the critic's prompt omitted the `critique-metrics exemplars` bar (prompt truncated) — next cycle include it.
+
+**Runner-ups:** (1) unlisted teams (698 rows, -1.2) have no role info; 4 builds logged no starters — last game's 20+
+min players as a stand-in five, tested together with this fix; (2) two "Christian Jones" (LBS 156660) still crash
+ncaab_lab / lineup lab (`KeyError: 'last_min'`) — key by DK id (judge files: Adam); (3) one build per slate, OUT not
+logged: a ~20-min-before-lock rebuild logging OUT at 0 would make false outs / lead time measurable.
+Possible non-money use: show "not in RotoWire's five" on the page / feed ownership (untested).
+
+Unattended gate (20261125-1250): **crashed** the same way (main's lab, fixed in 3ec3b7290). Nothing shipped by the agent; entry carried by hand 2026-11-25.

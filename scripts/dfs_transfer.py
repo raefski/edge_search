@@ -220,10 +220,14 @@ TRANSFERS = [
                           "before the skater lab can test it. 2026-11-14: COLLECTING -- category 1190 added (Anytime "
                           "Goalscorer split per skater = Over 0.5; Goal Milestones = 1.5/2.5); first scan 28757 "
                           "wrote 881 rows. Rerun ~11/24 once ~10 nights are in."}},
-    {"id": "T07", "lesson": "L01", "sport": "ncaab", "kind": "availability", "status": "measure",
+    {"id": "T07", "lesson": "L01", "sport": "ncaab", "kind": "availability", "status": "null",
      "idea": "RotoWire's projected college starters used as certain (NBA's Expected-five hole)",
      "where": "edge/dfs_run_ncaab.py rotowire starters", "data": "graded slates 5 (box scores via ncaab-box-grade)",
-     "probe": None, "target": "availability starters"},
+     "probe": None,
+     "measured": {"at": "2026-11-25", "pts_lineup": 0.0, "note": "cheap (<$5K) listed starters on the bench/salary path: 17 rows, "
+                  "all 11/2-11/10, none since (season dk_fppg puts them on blend); blend cheap starters "
+                  "11/12-11/22 resid +0.78 (36 rows / 10 slates, 4 of 10 >0); LOSO MAE 5.547 -> 5.541 "
+                  "(4,142 rows / 24 slates), gain only on early slates: cycle 7"}, "target": "availability starters"},
     {"id": "T08", "lesson": "L05", "sport": "ncaab", "kind": "projection", "status": "waiting",
      "idea": "tier / skew knot; our rostered players ran -37 pts/lineup vs the field's, scored on the same "
              "projection (the largest gap of any sport)",

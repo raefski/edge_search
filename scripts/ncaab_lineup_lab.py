@@ -202,7 +202,9 @@ def adam_entries() -> dict:
 # Variants: a projection per logged row
 # ---------------------------------------------------------------------------
 def _key(r: dict) -> str:
-    return f"{r['player']}|{r['team']}"
+    # salary too: 156660 had two Christian Jones under LBS ($5,900 = Murray State's, mislisted
+    # by DK; $3,700 = LBS's own) and name|team handed both one projection (2026-11-25)
+    return f"{r['player']}|{r['team']}|{int(float(r.get('salary') or 0))}"
 
 
 def _as_logged(gid: int, rows: list[dict], data: dict) -> dict:
