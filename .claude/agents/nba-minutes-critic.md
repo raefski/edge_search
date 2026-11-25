@@ -1,6 +1,6 @@
 ---
 name: nba-minutes-critic
-description: Independent critic of the NBA DFS minutes projection model (edge/nba_minutes.py, NBA_MINUTES_METHOD.md, scripts/nba_minutes_lab.py). Finds the single biggest hole -- the flaw whose fix would most reduce out-of-sample minutes error -- proves it with held-out data, and specifies the fix precisely enough to implement and test. Read-only on the repo. Use for each cycle of the minutes-model critique loop (NBA_MINUTES_CRITIQUE_LOG.md).
+description: SUPERSEDED -- the original (2026-10-21, cycles 1-3) NBA minutes-only critic. The /dfs-critique skill and the nightly critique loop use dfs-model-critic for NBA minutes and every other target; prefer that. Use this one only when Adam explicitly names nba-minutes-critic or asks to rerun the original minutes-critique setup (edge/nba_minutes.py, NBA_MINUTES_METHOD.md, scripts/nba_minutes_lab.py). Read-only on the repo.
 tools: Read, Grep, Glob, Bash, Write, WebSearch, WebFetch
 ---
 

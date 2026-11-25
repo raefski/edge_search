@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""REPL driver for the DK MLB DFS Streamlit app (app.py), for headless
+"""REPL driver for the edge_search Streamlit app (app.py = MLB, plus every
+page under pages/ via `goto`), for headless
 agent use: launch the real Streamlit server + a headless Chromium against
 it, and catch the exact tracebacks a phone user would see -- without a
 phone. Wrap in tmux, send-keys one command at a time.
@@ -45,7 +46,9 @@ def cmd_launch(_arg=""):
         cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
     )
     state["proc"] = proc
-    deadline = time.time() + 30
+    # 90 s, not 30: with the box loaded by a replay or critique cycle
+    # (load ~25 on 20 cores, 11/25) startup ran past 30 s in 2 of 5 launches.
+    deadline = time.time() + float(os.environ.get("DFS_APP_START_TIMEOUT", "90"))
     ok = False
     while time.time() < deadline:
         try:
@@ -56,7 +59,10 @@ def cmd_launch(_arg=""):
         except Exception:
             time.sleep(0.5)
     if not ok:
-        print("TIMEOUT waiting for streamlit to serve -- check `tail` for startup errors")
+        print(f"TIMEOUT waiting for streamlit to serve (exit code {proc.poll()}; "
+              f"load {os.getloadavg()[0]:.0f}) -- raise DFS_APP_START_TIMEOUT if the box is busy")
+        if proc.poll() is not None:
+            print(proc.stdout.read()[-3000:])   # it died: show why
         return
     pw = sync_playwright().start()
     browser = pw.chromium.launch(headless=True, args=["--no-sandbox"])
@@ -66,6 +72,36 @@ def cmd_launch(_arg=""):
     page.goto(URL, wait_until="networkidle", timeout=30_000)
     state.update(pw=pw, browser=browser, page=page)
     print(f"launched. serving {URL}, pid {proc.pid}")
+
+
+def cmd_goto(name=""):
+    """Open one of the multipage files under pages/ (NBA, NHL, Overlay, ...)
+    on the server `launch` started -- `streamlit run app.py` serves every
+    page, so one launch covers all 14. `name` is any case-insensitive piece
+    of the file name ("nba_dfs", "nhl", "overlay"); empty = back to app.py.
+    Goes by URL, not the sidebar: the nav collapses after 10 links ("View
+    more"), so pages 11+ (Overlay, NBA, NCAAB, ...) aren't clickable. The slug
+    is the stem minus "<n>_<emoji>_" -- 8_🏒_NHL_DFS.py -> /NHL_DFS (checked
+    against the rendered nav hrefs 11/25)."""
+    page = state["page"]
+    if not page:
+        print("ERROR: launch first")
+        return
+    if not name:
+        page.goto(URL, wait_until="networkidle", timeout=30_000)
+        print("at app.py (MLB)")
+        return
+    hits = sorted(p.stem for p in (ROOT / "pages").glob("*.py")
+                  if name.lower() in p.stem.lower())
+    if len(hits) != 1:
+        print(f"ERROR: {len(hits)} pages match {name!r}: {hits or 'none'}")
+        return
+    slug = hits[0].split("_", 2)[-1]   # "12_🏀_NBA_DFS" -> "NBA_DFS"
+    try:
+        page.goto(f"{URL}/{slug}", wait_until="networkidle", timeout=30_000)
+        print(f"at {hits[0]} ({page.url})")
+    except Exception as e:
+        print("ERROR:", e)
 
 
 def cmd_ss(name=""):
@@ -161,7 +197,7 @@ def cmd_quit(_arg=""):
 
 
 COMMANDS = {
-    "launch": cmd_launch, "ss": cmd_ss, "click": cmd_click, "wait": cmd_wait,
+    "launch": cmd_launch, "goto": cmd_goto, "ss": cmd_ss, "click": cmd_click, "wait": cmd_wait,
     "text": cmd_text, "errors": cmd_errors, "logs": cmd_logs, "quit": cmd_quit,
 }
 

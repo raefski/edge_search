@@ -1,9 +1,10 @@
 ---
 name: run-dfs-app
-description: Launch and drive the DK MLB DFS Streamlit app (app.py) headlessly for local dev/debugging -- catches the exact tracebacks a phone user would see, without relaying through the phone. Use when asked to run the DFS app, reproduce a Streamlit error the user reports, or verify an app.py/edge/dfs_*.py change actually works end-to-end before saying it's fixed.
+description: Launch and drive the edge_search Streamlit apps headlessly -- app.py (MLB) and every page under pages/ (NFL, NCAAF, NHL, NBA, NCAAB, NASCAR, MMA DFS, Overlay, DFS ROI, Pickem, Arbitrage, Parlay Builder) -- for local dev/debugging; catches the exact tracebacks a phone user would see, without relaying through the phone. Use when asked to run or screenshot any of the apps, reproduce a Streamlit error the user reports on any page, or verify that a change to app.py, a pages/ file, or the edge/ code behind it actually works end-to-end before saying it's fixed.
 ---
 
-Runs `app.py` (Streamlit) as a real local server and drives it with a headless
+Runs `app.py` (Streamlit) as a real local server -- which also serves every
+page under `pages/`, reached with `goto` -- and drives it with a headless
 Chromium via Playwright (Python). Reproduces exactly what the user's phone
 shows -- including Streamlit's crashed-app error box -- without a phone in
 the loop. Defaults to CACHE mode (dry-run client, 0 Odds-API credits): the
@@ -12,13 +13,14 @@ main page always builds off `data/cache/` + free statsapi calls.
 ## Run (agent path)
 
 ```bash
-cd /home/asr/Downloads/edge_search
+cd /home/asr/edge_search
 tmux new-session -d -s dfsapp -x 200 -y 50 -c "$PWD"
 tmux send-keys -t dfsapp 'python3 .claude/skills/run-dfs-app/driver.py' Enter
 sleep 2
 tmux send-keys -t dfsapp 'launch' Enter
 # poll instead of a blind sleep -- first build can take several seconds
-timeout 30 bash -c 'until tmux capture-pane -t dfsapp -p | grep -q "launched\."; do sleep 1; done'
+timeout 100 bash -c 'until tmux capture-pane -t dfsapp -p | grep -q "launched\."; do sleep 1; done'
+# for a pages/ app, first: tmux send-keys -t dfsapp 'goto nba_dfs' Enter  (nhl, overlay, roi, ...)
 tmux send-keys -t dfsapp 'ss landing' Enter
 sleep 8   # let the cached_build spinner finish -- there is no clean "done" signal from a screenshot alone
 tmux send-keys -t dfsapp 'ss built' Enter
@@ -38,6 +40,7 @@ kills the streamlit subprocess cleanly), then `tmux kill-session -t dfsapp`.
 | command | what it does |
 |---|---|
 | `launch` | start `streamlit run app.py` on port 8765 + open a headless Chromium page against it |
+| `goto <page>` | open a `pages/` file by any unique piece of its name (`nba_dfs`, `nhl`, `overlay`, `roi`); bare `goto` = back to app.py. Goes by URL (`8_🏒_NHL_DFS.py` -> `/NHL_DFS`) because the sidebar hides pages 11+ behind "View more" |
 | `ss <name>` | screenshot -> `/tmp/shots/<name>.png` (override dir: `SCREENSHOT_DIR`) |
 | `click <selector>` | Playwright `page.click`, e.g. `click text=GPP`, `click text=Refresh` |
 | `wait <selector>` | wait up to 10s for a selector |
@@ -83,6 +86,14 @@ kills the streamlit subprocess cleanly), then `tmux kill-session -t dfsapp`.
   app.py, inject a deliberate bug (e.g. an unexpected kwarg on some call) and
   confirm via `errors`/`text` that the real message shows up, not a generic
   one -- don't just trust that the try/except is still in the right place.
+- **Slow start on a busy box.** A replay or critique cycle on all 20 cores
+  (load ~25) pushed startup past 30 s in 2 of 5 launches on 11/25; `launch`
+  now waits 90 s (`DFS_APP_START_TIMEOUT`) and prints the load on timeout.
+- **404s in `errors`** on every page are static assets (favicon etc.), not a
+  crash -- the crash signal is the error box or a server-side traceback.
+- **Layout checks want a phone width.** The driver's page is 1280x720; for
+  the 390px iPhone check CLAUDE.md asks for, use Playwright with
+  `viewport={'width': 390, 'height': 844}` (or the AppTest + Playwright path).
 - **`--no-sandbox`** is required for Chromium under this container (no
   `CAP_SYS_ADMIN` / user namespaces) -- baked into the driver already.
 
