@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-26T14:59:52+00:00",
+"generated_at": "2026-11-26T15:28:37+00:00",
 "goalies": {
 "2026-11-26": {},
 "2026-11-27": {
@@ -88,7 +88,7 @@
 "status": null
 },
 "SJS": {
-"goalie": "Alex Nedeljkovic",
+"goalie": "Yaroslav Askarov",
 "status": null
 },
 "STL": {
@@ -159,7 +159,7 @@
 "line": "F1",
 "pk": "PK1",
 "pos": "lw",
-"pp": "PP2"
+"pp": "PP1"
 },
 "Cutter Gauthier": {
 "gtd": false,
@@ -224,7 +224,7 @@
 "toiMinutes": 76,
 "toiSeconds": 9
 },
-"line": "D1",
+"line": "D3",
 "pk": "PK2",
 "pos": "rd",
 "pp": null
@@ -292,7 +292,7 @@
 "toiMinutes": 89,
 "toiSeconds": 15
 },
-"line": "D3",
+"line": "D1",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -773,7 +773,7 @@
 "line": "F1",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
+"pp": "PP2"
 },
 "Ville Husso": {
 "gtd": false,
@@ -3792,9 +3792,9 @@
 "toiMinutes": 75,
 "toiSeconds": 1
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK2",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Frank Nazar": {
@@ -3860,9 +3860,9 @@
 "toiMinutes": 111,
 "toiSeconds": 22
 },
-"line": "D2",
+"line": "D3",
 "pk": "PK1",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Jordan Greenway": {
@@ -14598,7 +14598,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -14802,7 +14802,7 @@
 "toiMinutes": 89,
 "toiSeconds": 29
 },
-"line": "D1",
+"line": "D3",
 "pk": null,
 "pos": "rd",
 "pp": "PP2"
@@ -14938,7 +14938,7 @@
 "toiMinutes": 89,
 "toiSeconds": 37
 },
-"line": "D3",
+"line": "D1",
 "pk": "PK1",
 "pos": "rd",
 "pp": null
@@ -15178,7 +15178,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
