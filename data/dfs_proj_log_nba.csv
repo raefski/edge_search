@@ -10355,3 +10355,54 @@ date,gid,player,team,opp,dk_pos,salary,minutes,proj,sd,floor,ceil,own,promoted,l
 2026-11-25,157247,Ousmane Dieng,MIL,BKN,PF/C,3000,4.3,3.78,5.95,0.47,12.73,0.0,0,Confirmed,,live,0,10.92,,,model
 2026-11-25,157247,Ryan Rollins,MIL,BKN,PG/SG,5100,27.1,26.13,10.17,20.03,39.01,35.0,0,Confirmed,,live,1,21.83,30.26,23.0,props
 2026-11-25,157247,Tyler Herro,MIL,BKN,PG/SG,7900,33.6,37.27,11.86,30.79,52.3,71.2,0,Confirmed,,live,1,55.58,40.12,35.82,props
+2026-11-25,157249,Al Horford,GSW,SAC,C,3400,15.7,10.43,7.62,5.49,20.84,1.8,0,Confirmed,,live,0,13.33,15.2,,no props: shrunk
+2026-11-25,157249,Brandin Podziemski,GSW,SAC,PG/SG,6600,32.5,31.54,10.69,25.92,45.28,21.2,0,Confirmed,,live,1,23.75,32.54,29.68,props
+2026-11-25,157249,Brandon Williams,GSW,SAC,PG,4400,11.2,12.03,8.0,7.24,22.5,1.1,0,Confirmed,,live,0,13.08,12.57,,no props: shrunk
+2026-11-25,157249,Charles Bassey,GSW,SAC,C,4700,22.5,23.27,9.7,18.02,35.52,75.0,1,Confirmed,,live,1,32.17,26.73,19.89,props
+2026-11-25,157249,De'Anthony Melton,GSW,SAC,PG/SG,5100,24.1,23.64,9.65,18.43,36.3,36.6,1,Confirmed,,live,1,18.0,23.77,20.91,props
+2026-11-25,157249,Draymond Green,GSW,SAC,PF/C,4800,25.1,21.81,9.54,16.86,34.15,21.5,0,Confirmed,,live,1,19.25,22.29,18.78,props
+2026-11-25,157249,Gary Payton II,GSW,SAC,SG/SF,3100,13.0,8.74,7.21,4.79,17.56,1.6,0,Confirmed,,live,0,14.83,12.94,,no props: shrunk
+2026-11-25,157249,Georges Niang,GSW,SAC,PF,3200,11.6,9.32,7.05,5.35,18.47,0.7,0,Confirmed,,live,0,8.17,,,model
+2026-11-25,157249,Gui Santos,GSW,SAC,SF/PF,4300,19.1,19.3,9.49,13.83,31.6,14.3,0,Confirmed,,live,0,20.33,18.04,16.26,props
+2026-11-25,157249,L.J. Cryer,GSW,SAC,PG,3700,11.3,9.54,7.28,5.68,19.47,0.6,0,Confirmed,,live,0,10.33,,,model
+2026-11-25,157249,Malevy Leons,GSW,SAC,SF/PF,3000,2.4,1.89,5.18,0.0,9.46,0.0,0,Confirmed,,live,0,3.5,,,model
+2026-11-25,157249,Will Richard,GSW,SAC,SG/SF,3800,20.3,13.77,8.49,8.65,25.17,6.9,0,Confirmed,,live,0,20.92,,,model
+2026-11-25,157249,Yaxel Lendeborg,GSW,SAC,SF/PF,8400,31.0,37.11,11.84,31.13,53.08,22.4,0,Confirmed,,live,1,30.42,35.04,36.53,props
+2026-11-25,157249,Alex Karaban,SAC,GSW,SF/PF,3000,2.8,1.54,5.12,0.0,9.39,0.0,0,Confirmed,,live,0,3.67,,,model
+2026-11-25,157249,Daeqwon Plowden,SAC,GSW,SG/SF,3000,3.4,2.28,5.6,0.0,11.01,0.0,0,Confirmed,,live,0,8.0,,,model
+2026-11-25,157249,Darius Acuff Jr.,SAC,GSW,PG/SG,9100,36.4,40.51,12.29,34.81,56.47,25.7,0,Confirmed,,live,1,32.83,36.85,40.66,props
+2026-11-25,157249,De'Andre Hunter,SAC,GSW,SF/PF,6200,35.8,27.67,10.29,21.56,40.83,37.0,0,Confirmed,,live,1,38.58,26.85,25.64,props
+2026-11-25,157249,Domantas Sabonis,SAC,GSW,C,8700,33.3,39.0,12.36,32.62,55.76,42.3,0,Confirmed,,live,1,43.42,38.33,38.41,props
+2026-11-25,157249,Dylan Cardwell,SAC,GSW,PF/C,4000,12.5,10.6,7.71,5.93,21.19,0.3,0,Confirmed,,live,0,6.0,11.63,,no props: shrunk
+2026-11-25,157249,Emanuel Sharp,SAC,GSW,PG/SG,3500,25.3,10.29,7.62,5.77,20.99,0.8,1,Confirmed,,live,1,4.92,14.18,,no props: shrunk
+2026-11-25,157249,Gabe Vincent,SAC,GSW,PG/SG,3000,7.4,4.43,6.07,1.12,13.04,0.0,0,Confirmed,,live,0,0.0,,,model
+2026-11-25,157249,Keegan Murray,SAC,GSW,PF,5600,35.8,25.4,10.06,19.59,38.36,36.7,0,Confirmed,,live,1,27.25,26.07,22.8,props
+2026-11-25,157249,Leaky Black,SAC,GSW,SF,3400,13.6,9.05,7.39,5.11,18.83,0.5,0,Confirmed,,live,0,8.83,,,model
+2026-11-25,157249,Malik Monk,SAC,GSW,PG/SG,4100,15.1,13.76,8.49,8.51,25.0,2.5,0,Confirmed,,live,0,13.75,,,model
+2026-11-25,157249,Mason Plumlee,SAC,GSW,C,3000,1.3,1.06,4.84,0.0,8.75,0.0,0,Confirmed,,live,0,4.25,,,model
+2026-11-25,157249,Precious Achiuwa,SAC,GSW,PF,4600,14.8,13.63,8.49,8.55,25.23,1.0,0,Confirmed,,live,0,10.33,,,model
+2026-11-25,157249,Sean Pedulla,SAC,GSW,PG,3000,2.4,1.96,5.09,0.0,9.75,0.0,0,Confirmed,,live,0,3.61,,,model
+2026-11-25,157249,Branden Carlson,POR,SAS,C,3000,8.1,7.53,6.95,3.81,17.03,0.1,0,Confirmed,,live,0,3.08,,,model
+2026-11-25,157249,Damian Lillard,POR,SAS,PG/SG,7100,32.0,33.25,11.23,27.4,47.72,32.7,0,Confirmed,,live,1,32.67,34.01,31.65,props
+2026-11-25,157249,Deni Avdija,POR,SAS,PG/SF,9000,30.5,39.79,12.19,33.61,55.34,42.8,0,Confirmed,,live,1,45.33,37.27,39.64,props
+2026-11-25,157249,Donovan Clingan,POR,SAS,C,7000,27.0,27.34,10.51,21.22,40.73,26.5,0,Confirmed,,live,1,43.5,33.22,24.04,props
+2026-11-25,157249,Jayson Kent,POR,SAS,PF,3500,8.9,6.36,6.61,2.77,15.68,0.1,0,Confirmed,,live,0,7.67,,,model
+2026-11-25,157249,Jrue Holiday,POR,SAS,PG/SF,6100,27.7,26.92,10.2,20.7,39.85,34.3,0,Confirmed,,live,0,37.75,26.94,24.64,props
+2026-11-25,157249,Micah Potter,POR,SAS,PF,3000,2.7,2.78,5.68,0.0,10.98,0.0,0,Confirmed,,live,0,2.83,,,model
+2026-11-25,157249,Robert Williams,POR,SAS,PF/C,4200,15.9,13.45,8.55,8.76,25.18,3.1,0,Confirmed,,live,0,17.25,17.47,,no props: shrunk
+2026-11-25,157249,Scoot Henderson,POR,SAS,PG/SG,4400,24.3,19.27,9.82,13.61,32.84,20.2,0,Confirmed,,live,0,26.58,,,model
+2026-11-25,157249,Sidy Cissoko,POR,SAS,SG/SF,4100,26.6,14.56,8.73,9.63,26.4,10.0,0,Confirmed,,live,1,20.75,17.42,10.15,props
+2026-11-25,157249,Toumani Camara,POR,SAS,SF,5300,32.2,20.58,9.13,15.31,32.42,16.6,0,Confirmed,,live,1,23.83,24.05,16.84,props
+2026-11-25,157249,Yang Hansen,POR,SAS,C,3000,3.9,3.3,5.37,0.06,10.43,0.0,0,Confirmed,,live,0,4.83,,,model
+2026-11-25,157249,Carter Bryant,SAS,POR,SF/PF,3400,14.4,8.87,7.59,5.18,19.37,0.5,0,Confirmed,,live,0,8.42,11.28,,no props: shrunk
+2026-11-25,157249,David Jones-Garcia,SAS,POR,PG/SG,3000,2.5,2.44,5.71,0.0,11.22,0.0,0,Confirmed,,live,0,1.08,,,model
+2026-11-25,157249,Devin Vassell,SAS,POR,SF/PF,5700,31.0,25.24,10.34,19.25,38.51,36.9,0,Confirmed,,live,1,29.0,25.89,22.62,props
+2026-11-25,157249,Harrison Barnes,SAS,POR,SF/PF,4300,26.5,17.89,9.33,12.32,30.3,15.0,1,Confirmed,,live,1,13.08,,,model
+2026-11-25,157249,Ja'Kobi Gillespie,SAS,POR,PG,3600,7.3,8.15,7.04,4.42,17.38,0.2,0,Confirmed,,live,0,6.5,,,model
+2026-11-25,157249,Jordan McLaughlin,SAS,POR,PG/SG,3300,13.9,8.94,7.49,5.16,18.95,0.8,0,Confirmed,,live,0,11.17,12.12,,no props: shrunk
+2026-11-25,157249,Julian Champagnie,SAS,POR,SG,5000,28.5,22.08,9.4,17.07,34.4,38.4,0,Confirmed,,live,1,29.33,23.97,18.83,props
+2026-11-25,157249,Keldon Johnson,SAS,POR,SF/PF,4900,25.7,23.34,9.68,18.08,35.71,22.9,0,Confirmed,,live,0,24.08,,,model
+2026-11-25,157249,Luke Kornet,SAS,POR,C,4200,19.0,12.77,8.36,7.9,24.04,2.4,0,Confirmed,,live,0,16.67,15.75,,no props: shrunk
+2026-11-25,157249,Stephon Castle,SAS,POR,SG,7800,32.1,38.16,12.06,32.17,54.08,70.5,0,Confirmed,,live,1,47.75,38.05,37.36,props
+2026-11-25,157249,Tarris Reed Jr.,SAS,POR,C,3500,8.2,8.38,6.93,4.61,17.68,0.6,0,Confirmed,,live,0,12.58,,,model
+2026-11-25,157249,Victor Wembanyama,SAS,POR,C,11800,31.2,51.25,13.31,45.29,67.32,75.0,0,Confirmed,,live,1,69.25,59.32,50.66,props
