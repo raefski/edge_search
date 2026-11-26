@@ -1,15 +1,5 @@
 {
 "CBB": {
-"157295": {
-"ContestStartTimeSuffix": null,
-"DraftGroupId": 157295,
-"DraftGroupTag": "Featured",
-"GameCount": 5,
-"GameTypeId": 98,
-"StartDate": "2026-11-26T00:00:00.0000000Z",
-"StartDateEst": "2026-11-25T19:00:00.0000000",
-"last_start": "2026-11-26T05:20:00.0000000Z"
-},
 "157380": {
 "ContestStartTimeSuffix": " (Early)",
 "DraftGroupId": 157380,
@@ -246,16 +236,6 @@
 "StartDate": "2026-11-28T00:00:00.0000000Z",
 "StartDateEst": "2026-11-27T19:00:00.0000000",
 "last_start": "2026-11-28T02:00:00.0000000Z"
-},
-"157253": {
-"ContestStartTimeSuffix": " (2H SAS @ POR)",
-"DraftGroupId": 157253,
-"DraftGroupTag": "",
-"GameCount": 1,
-"GameTypeId": 112,
-"StartDate": "2026-11-26T04:29:00.0000000Z",
-"StartDateEst": "2026-11-25T23:29:00.0000000",
-"last_start": "2026-11-26T04:00:00.0000000Z"
 },
 "157350": {
 "ContestStartTimeSuffix": " (MIA @ NYK)",
@@ -671,6 +651,16 @@
 "StartDateEst": "2026-11-27T13:00:00.0000000",
 "last_start": "2026-11-27T20:00:00.0000000Z"
 },
+"157483": {
+"ContestStartTimeSuffix": " (DAL @ STL)",
+"DraftGroupId": 157483,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-27T19:00:00.0000000Z",
+"StartDateEst": "2026-11-27T14:00:00.0000000",
+"last_start": "2026-11-27T19:00:00.0000000Z"
+},
 "157487": {
 "ContestStartTimeSuffix": null,
 "DraftGroupId": 157487,
@@ -679,6 +669,36 @@
 "GameTypeId": 125,
 "StartDate": "2026-11-27T21:00:00.0000000Z",
 "StartDateEst": "2026-11-27T16:00:00.0000000",
+"last_start": "2026-11-28T01:00:00.0000000Z"
+},
+"157488": {
+"ContestStartTimeSuffix": " (NYR @ CHI)",
+"DraftGroupId": 157488,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-27T22:30:00.0000000Z",
+"StartDateEst": "2026-11-27T17:30:00.0000000",
+"last_start": "2026-11-27T22:30:00.0000000Z"
+},
+"157489": {
+"ContestStartTimeSuffix": " (Late)",
+"DraftGroupId": 157489,
+"DraftGroupTag": "",
+"GameCount": 3,
+"GameTypeId": 125,
+"StartDate": "2026-11-28T00:30:00.0000000Z",
+"StartDateEst": "2026-11-27T19:30:00.0000000",
+"last_start": "2026-11-28T01:00:00.0000000Z"
+},
+"157490": {
+"ContestStartTimeSuffix": " (PIT @ BUF)",
+"DraftGroupId": 157490,
+"DraftGroupTag": "Featured",
+"GameCount": 1,
+"GameTypeId": 127,
+"StartDate": "2026-11-28T01:00:00.0000000Z",
+"StartDateEst": "2026-11-27T20:00:00.0000000",
 "last_start": "2026-11-28T01:00:00.0000000Z"
 }
 }
