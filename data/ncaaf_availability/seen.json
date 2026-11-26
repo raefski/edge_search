@@ -2104,6 +2104,11 @@
 "game_date": "2026-11-27",
 "type": "Initial"
 },
+"SEC:10003531:ef6d53a09ea5": {
+"first_seen": "2026-11-26T02:03:04+00:00",
+"game_date": "2026-11-27",
+"type": "Update 1"
+},
 "SEC:10003538:4274d982a1df": {
 "first_seen": "2026-11-24T03:03:23+00:00",
 "game_date": "2026-11-27",
@@ -2112,6 +2117,16 @@
 "SEC:10003538:5ef31daa5e1b": {
 "first_seen": "2026-11-25T02:03:13+00:00",
 "game_date": "2026-11-27",
+"type": "Initial"
+},
+"SEC:10003539:934d93b56d75": {
+"first_seen": "2026-11-26T02:03:04+00:00",
+"game_date": "2026-11-27",
+"type": "Update 1"
+},
+"SEC:10003568:027fbad47e6b": {
+"first_seen": "2026-11-26T02:03:04+00:00",
+"game_date": "2026-11-28",
 "type": "Initial"
 },
 "SEC:10003568:74932261ffb1": {
@@ -2124,10 +2139,25 @@
 "game_date": "2026-11-28",
 "type": "Report Pending"
 },
+"SEC:10003609:b31a5194a266": {
+"first_seen": "2026-11-26T02:03:04+00:00",
+"game_date": "2026-11-28",
+"type": "Initial"
+},
 "SEC:10003625:3e99bfd95cae": {
 "first_seen": "2026-11-24T03:03:23+00:00",
 "game_date": "2026-11-28",
 "type": "Report Pending"
+},
+"SEC:10003625:adf6309f9d44": {
+"first_seen": "2026-11-26T02:03:04+00:00",
+"game_date": "2026-11-28",
+"type": "Initial"
+},
+"SEC:10003646:2f6a3ba666ab": {
+"first_seen": "2026-11-26T02:03:04+00:00",
+"game_date": "2026-11-28",
+"type": "Initial"
 },
 "SEC:10003646:79926cdc027f": {
 "first_seen": "2026-11-24T03:03:23+00:00",
