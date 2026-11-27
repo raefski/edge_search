@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-27T16:00:00+00:00",
+"generated_at": "2026-11-27T16:28:48+00:00",
 "goalies": {
 "2026-11-27": {
 "ANA": {
@@ -64,7 +64,7 @@
 },
 "NYI": {
 "goalie": "Semyon Varlamov",
-"status": "Likely"
+"status": "Confirmed"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -173,8 +173,8 @@
 "status": null
 },
 "NYI": {
-"goalie": "Semyon Varlamov",
-"status": null
+"goalie": "Ilya Sorokin",
+"status": "Likely"
 },
 "NYR": {
 "goalie": "Dylan Garand",
@@ -10556,6 +10556,40 @@
 "pos": "c",
 "pp": null
 },
+"Anton Silayev": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 3,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 49,
+"toiSeconds": 25
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 3,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 5,
+"toiMinutes": 49,
+"toiSeconds": 25
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Arseny Gritsyuk": {
 "gtd": false,
 "injury": null,
@@ -10589,40 +10623,6 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
-},
-"Brenden Dillon": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 11,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 140,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 66,
-"toiSeconds": 36
-},
-"line": "D3",
-"pk": "PK2",
-"pos": "rd",
-"pp": null
 },
 "Brett Pesce": {
 "gtd": false,
@@ -10760,40 +10760,6 @@
 "line": "G2",
 "pk": null,
 "pos": "g",
-"pp": null
-},
-"Declan Chisholm": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 2,
-"blocks": 10,
-"gamesPlayed": 10,
-"goals": 2,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 135,
-"toiSeconds": 9
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 70,
-"toiSeconds": 43
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
 "pp": null
 },
 "Dougie Hamilton": {
@@ -11205,6 +11171,40 @@
 "pk": null,
 "pos": "lw",
 "pp": "PP2"
+},
+"Vladislav Kolyachonok": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 13,
+"gamesPlayed": 10,
+"goals": 1,
+"points": 2,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 11,
+"toiMinutes": 150,
+"toiSeconds": 59
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 1,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 78,
+"toiSeconds": 17
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "rd",
+"pp": null
 }
 },
 "NSH": {
@@ -18241,7 +18241,7 @@
 "pp": null
 },
 "Colton Sissons": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 3,
@@ -18479,7 +18479,7 @@
 "pp": "PP1"
 },
 "Kirill Marchenko": {
-"gtd": true,
+"gtd": false,
 "injury": null,
 "last10": {
 "assists": 6,
