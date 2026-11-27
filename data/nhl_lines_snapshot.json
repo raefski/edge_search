@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-27T13:58:58+00:00",
+"generated_at": "2026-11-27T14:29:01+00:00",
 "goalies": {
 "2026-11-27": {
 "ANA": {
@@ -16,7 +16,7 @@
 },
 "CBJ": {
 "goalie": "Jet Greaves",
-"status": null
+"status": "Confirmed"
 },
 "CGY": {
 "goalie": "Dustin Wolf",
@@ -35,11 +35,11 @@
 "status": null
 },
 "DET": {
-"goalie": "John Gibson",
+"goalie": "Daniil Tarasov",
 "status": null
 },
 "EDM": {
-"goalie": "Devon Levi",
+"goalie": "Tristan Jarry",
 "status": null
 },
 "FLA": {
@@ -79,7 +79,7 @@
 "status": null
 },
 "PIT": {
-"goalie": "Arturs Silovs",
+"goalie": "Sergei Murashov",
 "status": null
 },
 "SEA": {
@@ -107,7 +107,7 @@
 "status": null
 },
 "VAN": {
-"goalie": "Leevi Merilainen",
+"goalie": "Kevin Lankinen",
 "status": null
 },
 "VGK": {
@@ -145,11 +145,11 @@
 "status": null
 },
 "DET": {
-"goalie": "John Gibson",
+"goalie": "Daniil Tarasov",
 "status": null
 },
 "EDM": {
-"goalie": "Devon Levi",
+"goalie": "Tristan Jarry",
 "status": null
 },
 "FLA": {
@@ -189,7 +189,7 @@
 "status": null
 },
 "PIT": {
-"goalie": "Arturs Silovs",
+"goalie": "Sergei Murashov",
 "status": null
 },
 "SEA": {
@@ -6641,7 +6641,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -6745,7 +6745,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7259,7 +7259,7 @@
 "goalieShutouts": 1,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -7737,7 +7737,7 @@
 "goalieShutouts": 1,
 "goalieWins": 3
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -14669,7 +14669,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -15147,7 +15147,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -19811,7 +19811,7 @@
 "goalieShutouts": 0,
 "goalieWins": 0
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -19847,7 +19847,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
