@@ -372,7 +372,11 @@ def render(result, mode: str) -> None:
         f"Objective: mean {'−' if mode == 'cash' else '+'} "
         f"{0.75 if mode == 'cash' else 1.25}×sd, through a correlation matrix "
         f"measured on cfbfastR 2024+2025. Ownership is a PRIOR — no college "
-        f"contest exports have been fitted yet — so read it as a tilt.")
+        f"contest exports have been fitted yet — so read it as a tilt."
+        + (" Cash picks on the projection pulled halfway to DK's price "
+           "(critique cycle 10: the ladder overrates cheap players); the numbers "
+           "shown are the ladder's." if mode == "cash" and result.get("proj_cash") is not None
+           else ""))
 
 
 def _csv() -> bytes:

@@ -486,3 +486,30 @@ not enough data.
 They are NOT added to the pool. Cycle 8 found every live-faithful version of adding them loses held out. The field put 3-36% of cash ownership on players missing from our board (NCAAF_CRITIQUE_LOG cycle 9 runner-ups).
 
 `scripts/ncaaf_lineup_lab.py --repair` drops board rows today's production would not build. That is `STALE_JOINS`: 10/16 Simmons only, verified by replaying `join_ladders`. With the repair, the cash baseline is 0.266 field percentile and 27% cashed (11 contests / 8 slates).
+
+## 14. Cash picks on a salary-blended projection (2026-11-27, critique cycle 10)
+
+**Shipped, cash only.** The cash optimizer ranks on
+
+    proj_cash = (1 − w)·proj + w · k_pos · salary_k · min(1, proj / 3),  w = 0.5
+
+- `k_pos` is DK points per $1k: QB 2.703, RB 2.194, WR 2.179. It was fitted on graded board rows with proj ≥ 3, 9/26–11/20.
+- The constants and their provenance are `CASH_SALARY_W` / `CASH_PTS_PER_K` in `edge/dfs_ncaaf_theory.py`.
+- `edge/dfs_run_ncaaf.cash_lineup` optimizes on the blended copy, then reports the chosen eight on the board's ladder projections. So the page's proj / sd / floor, the board, the forward log, GPP and ownership all keep the ladder.
+
+Why: the ladder overrates cheap players relative to DK's price. The cash build skipped priced chalk and bought cheap busts (cycles 7–9). Cycle 9 pre-registered w = 0.5, and cycle 10 tested it unchanged. All numbers below are on repaired boards with forward k (fitted on earlier dates only), from `scripts/critique_aux/ncaaf_cash_blend_retest.py`:
+
+| cash | contests / slates | cashed | field pctile | ROI | Δ pctile [90% by slate] |
+|---|---|---|---|---|---|
+| pre-cycle-10 build | 13 / 10 | 31% | 0.299 | −50% | |
+| blend w = 0.5 | 13 / 10 | 38% | 0.395 | −25% | +0.096 [+0.024, +0.208] |
+| new slates only (11/14, 11/20) | 2 / 2 | 50% → 100% | 0.485 → 0.705 | | +0.220 |
+
+**Caveats:**
+- **It is a selection correction, not a better projection.** Blending the board would make player MAE worse (6.59 → 6.77, n = 805), so the board, the logged `proj` and GPP stay on the ladder.
+- **The gain is a step, not a slope.** Seed-averaged: +0.013 at w = 0.375, +0.092 at w = 0.5, +0.046 at w = 0.75; w = 1 loses.
+- **Three slates carry most of it:** 10/3, 11/5 and 11/14.
+- **Lab numbers are in-sample for k.** `ncaaf_lineup_lab.py report --repair` uses production's fixed k, so its shipped row (0.454) is in-sample in k. `--blend-w 0` replays the old build.
+- **Parity:** boards before `CASH_BLEND_SINCE` (11/27) are replayed with w = 0, and parity is 42 of 42 boards.
+
+**Kill rule:** after 5 more cash slates, rerun the retest script and revert (set `CASH_SALARY_W = 0`) if the average gain is below zero. Never refit w; k can be refit forward.

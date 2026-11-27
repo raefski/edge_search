@@ -740,6 +740,29 @@ def log_unladdered(rows: list[dict], gid, meta: dict, root: Path | None = None) 
     return {"logged": True, "n": len(rows)}
 
 
+def cash_lineup(pool: list, iters: int = 700, seed: int = 0, w: float | None = None,
+                k: dict | None = None) -> dict | None:
+    """The CASH lineup: chosen on the salary-blended projection
+    (dfs_ncaaf_theory.CASH_SALARY_W, critique cycle 10), then reported on the
+    board's own ladder projections, so the page's proj / sd / floor and the
+    forward log's lineup `proj` are the same numbers the board shows. The
+    blended objective rides along as `proj_cash` / `floor_cash`. w = 0 is the
+    pre-cycle-10 build exactly. `w` and `k` exist for the lab (ncaaf_lineup_lab)."""
+    from edge import dfs_ncaaf_theory as theory
+    w = theory.CASH_SALARY_W if w is None else w
+    if not w:
+        return dfs_opt_ncaaf.optimize(pool, mode="cash", iters=iters, seed=seed)
+    blended = theory.cash_pool(pool, w, k)
+    res = dfs_opt_ncaaf.optimize(blended, mode="cash", iters=iters, seed=seed)
+    if not res:
+        return res
+    orig = {id(b): p for b, p in zip(blended, pool)}
+    lineup = [orig[id(p)] for p, _slot in res["lineup"]]
+    out = dfs_opt_ncaaf._result(lineup, None)
+    out["proj_cash"], out["floor_cash"] = res["proj"], res["floor"]
+    return out
+
+
 def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftkings",
                 stack_n: int | None = None, bring_back: int | None = None,
                 own_gamma: float | None = None, own_weight: float = 0.0,
@@ -784,7 +807,7 @@ def build_slate(client, draft_group=None, iters: int = 700, book: str = "draftki
     if bring_back is not None:
         kw["bring_back"] = bring_back
 
-    cash = dfs_opt_ncaaf.optimize(pool, mode="cash", iters=iters, seed=0)
+    cash = cash_lineup(pool, iters=iters, seed=0)
     gpp = dfs_opt_ncaaf.optimize(pool, mode="gpp", iters=iters, seed=0,
                                  own_weight=own_weight, **kw)
     log_result = None

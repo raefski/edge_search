@@ -1042,3 +1042,51 @@ The heaviest of these are a mix of hits (Messer, Sides, Hawkins) and busts (Tipt
 - Each build writes those rows to a separate `data/dfs_unladdered_ncaaf.csv` (a data-branch feed), so the forward log's format is untouched.
 - The page shows a "No ladder: check news" line: the top 10 with no status and DK FPPG ≥ 10. On 11/14 that was Sheppard (DUKE RB $9.2k, 36.3), Mensah, Chambliss, Lagway and others.
 - The log builds the record cycle 8 asked for: who the field could draft that we never saw, and DK's status for them at build time.
+
+## Cycle 10 (auto: cash lineups, cycle 9's pre-registered salary blend) — 2026-11-27 (hand-run) — SHIPPED, cash only
+
+Scout: `{"target": "cash lineups: confirm (or kill) cycle 9's fixed w=0.5 salary blend on the slates since 11/14, then decide whether to ship it", "metric": "replayed production CASH lineup per contest on repaired boards vs the real Double Up fields: mean field pctile (90% by slate), share cashed, $ per $1; k_pos fitted on earlier dates only, w fixed at 0.5 (not refit); 11/14 + 11/20 on their own and all 10 slates; GPP not blended or pooled", "harness": "ncaaf_lineup_lab.py report --repair; critique_aux salary blend with REPAIR, w = 0.5", "split": "forward by date over 13 cash contests / 10 slates 9/26-11/20; 11/14 and 11/20 the pre-registered confirmation slates; LOSO secondary", "money_at_stake": "NCAAF cash -57% [-92%, -23%], 14 entries / 11 slates, net -$9.77; GPP +95% on 18e/13s", "transfer": null}`
+
+Scout runner-ups:
+1. GPP (T17): Adam's real GPP entries beat the replay by +0.097 [-0.016, +0.191] (19 contests / 14 slates). Find out what his builds do differently.
+2. Cash restarts on the new slates.
+3. Top-salary players with no props: check whether the props posted after the build.
+
+**Hole (critic):** the cash build ranks on the ladder alone, so its value picks underdeliver.
+- Shipped cash picks score 0.57 below projection (88 lineup slots); the graded pool runs 0.64 above.
+- Pulling the cash projection halfway toward DK's price makes the build take priced chalk.
+
+**Evidence:** repaired boards, production optimizer, real Double Up fields, k fitted on earlier dates only, w not refit. Script: `scripts/critique_aux/ncaaf_cash_blend_retest.py`, which reproduces the critic's numbers exactly.
+
+| cash | contests / slates | cashed | mean pctile | mean pts | ROI | Δ pctile [90% by slate] |
+|---|---|---|---|---|---|---|
+| pre-cycle-10, all | 13 / 10 | 31% | 0.299 | 131.2 | -50% | |
+| w = 0.5 fwd k, all | 13 / 10 | 38% | 0.395 | 138.4 | -25% | +0.096 [+0.024, +0.208] |
+| pre-cycle-10, new (11/14, 11/20) | 2 / 2 | 50% | 0.485 | 108.4 | -33% | |
+| w = 0.5, new | 2 / 2 | 100% | 0.705 | 116.5 | +100% | +0.220 [0, +0.441] |
+| pre-cycle-10, pre-cycle-9 slates | 11 / 8 | 27% | 0.266 | 135.4 | -54% | |
+| w = 0.5, pre-cycle-9 slates | 11 / 8 | 27% | 0.339 | 142.4 | -54% | +0.073 [+0.013, +0.177] |
+
+- **New slates:** 1 better, 1 identical, 0 worse. 11/14 (270-entry field) goes 151.1 → 167.3 points, pctile 0.49 → 0.93, and cashes; 11/20 builds the same lineup.
+- **Points per lineup:** +8.5 [+2.8, +15.3].
+- **Over optimizer seeds 0–9:** the blend beats shipped on every seed, mean +0.092 [+0.031, +0.177]. So it is not cycle 8's 11/6 search tie (11/6 is 0.04 both ways).
+- **The w response is a step** (seed-averaged): +0.007 at 0.25, +0.013 at 0.375, +0.092 at 0.5, +0.061 at 0.625, +0.046 at 0.75; w = 1 is -0.087. On boards as logged (not repaired), w = 0.25 gives the shipped lineups almost exactly.
+- **Where the gain comes from:** 10/3 (+0.24), 11/5 (+0.52) and 11/14 (+0.19). 10/17 dg 155122 is the one slate that gets worse (-0.13).
+- **Bigger cash hole?** None. Cycle 7's regression calibration, fit forward on repaired boards, is +0.027 [-0.102, +0.173] with 8% cashed. z_cash, the unladdered pool and restarts were null or one-slate in cycles 7–9.
+- **Player MAE:** blending the board would hurt it, 6.59 → 6.77 (+0.18 [+0.11, +0.24], n = 805 / 13 slates; worst at RB, +0.33). So the blend is applied to cash selection only. The board, the logged `proj` (the NCAAF gate's metric), GPP and ownership are untouched.
+
+**Fix (shipped):**
+- `edge/dfs_ncaaf_theory.py`: `CASH_SALARY_W = 0.5`, `CASH_PTS_PER_K` = QB 2.703 / RB 2.194 / WR 2.179 (proj ≥ 3 rows, 9/26–11/20; n 155 / 215 / 498), plus `cash_projection` and `cash_pool`.
+- `edge/dfs_run_ncaaf.cash_lineup`: optimizes on the blended copy, then reports the eight on the ladder; `proj_cash` / `floor_cash` ride along.
+- Lab: `ncaaf_lineup_lab.py` replays the same blend (`CASH_W`, `--blend-w 0` = the old build). `parity` replays boards before 11/27 with w = 0: 42 of 42 boards, cash and GPP.
+- `report --repair`'s shipped row is in-sample in k (0.454 vs 0.299). The held-out number is the forward +0.096.
+- The page caption says what cash picks on. NCAAF_STATUS §14. Mirror regenerated.
+
+**Decision: SHIPPED, cash only.** Cycle 9's pre-registered rule (fixed w = 0.5 stays ahead on the new slates) was met, and the forward interval excludes zero on 10 slates. It is still thin: 2 new slates, 3 slates carry it, and the w response is a step.
+
+**Kill rule:** after 5 more cash slates (or the end of bowl season), rerun `ncaaf_cash_blend_retest.py 0.5`. Set `CASH_SALARY_W = 0` if the average gain is below zero. Never refit w.
+
+**Runner-ups (critic):**
+1. **Late scratch left on the board:** 10/17 Austin Simmons (MIZZ QB, $5.6k, proj 18.2) sat in both shipped cash lineups, nobody drafted him, and he scored 0. Check DK's status at build time. This is an availability cycle.
+2. **Cash restarts:** still one slate (11/6).
+3. **Unladdered field chalk:** still loses (cycle 8).

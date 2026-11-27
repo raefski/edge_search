@@ -155,6 +155,15 @@ LESSONS = [
      "evidence": "NHL 8 double-ups LOO: cashed 3/8 -> 5/8, finish pctile 51% -> 63%, higher on 7 of 8 (model's own "
                  "P(clear) gain +1..+5 pts); null in MLB (9), NFL (3), NCAAF (1), NASCAR (1). Never tested in NBA / NCAAB",
      "covers": [("nhl", "2026-10-10")]},
+    {"id": "L18", "from": "ncaaf", "mechanism": "the CASH optimizer ranks on a projection that overrates cheap players "
+                                             "relative to DK's price, so it skips priced chalk for cheap busts; pulling "
+                                             "the cash ranking halfway to k_pos x salary (cash only, board untouched) "
+                                             "fixes the SELECTION even though it makes player MAE worse",
+      "ref": "NCAAF_CRITIQUE_LOG cycle 10 (11/27); NCAAF_STATUS 14; edge/dfs_ncaaf_theory.CASH_SALARY_W",
+      "evidence": "NCAAF 13 cash contests / 10 slates, k forward, w pre-registered: field pctile .299 -> .395, "
+                  "+.096 [+.024, +.208]; new slates 1 better / 1 same; seeds 0-9 +.092 [+.031, +.177]; player MAE "
+                  "6.59 -> 6.77 (why it is cash-only). Step in w (.375 +.013, .5 +.092, .75 +.046)",
+      "covers": [("ncaaf", "2026-11-27")]},
     {"id": "L12", "from": "overlay", "mechanism": "late-listed re-posts priced on a pooled curve (overlay only)",
      "ref": "overlay cycle (11/9)", "evidence": "re-posts fill 0.88 of room; no DFS-model analogue",
      "covers": [("overlay", "2026-11-09")]},
@@ -438,6 +447,36 @@ TRANSFERS = [
                   "note": "Before 11/8: 15 far-from-chalk entries beat .20 of the field, 2 near beat .91 (r +0.67); "
                           "from 11/8: far .42 (6) vs near .51 (15), r +0.15 -- the props blend moved lineups toward "
                           "chalk; the objective itself is untested. NBA_STATUS: 'there is no field-aware cash'."}},
+    {"id": "T39", "lesson": "L18", "sport": "nba", "kind": "projection", "status": "measure",
+     "idea": "cash lineup ranks on a projection that may overrate cheap players vs DK salary (skips priced chalk)",
+     "where": "edge/dfs_run_nba.py cash build; L14 already blends salary for no-prop rows only",
+     "data": "scripts/nba_lineup_lab.py, 38 cash exports / 27 slates",
+     "probe": None, "target": "cash lineups: cash-only salary blend (1-w)proj + w k_pos salary_k, k forward, w fixed",
+     "measured": None},
+    {"id": "T40", "lesson": "L18", "sport": "ncaab", "kind": "projection", "status": "measure",
+     "idea": "cash lineup ranks on a projection that may overrate cheap players vs DK salary (skips priced chalk)",
+     "where": "edge/dfs_run_ncaab.py cash build (CASH_PCT climb)",
+     "data": "scripts/ncaab_lineup_lab.py, 17 cash exports / 12 slates",
+     "probe": None, "target": "cash lineups: cash-only salary blend (1-w)proj + w k_pos salary_k, k forward, w fixed",
+     "measured": None},
+    {"id": "T41", "lesson": "L18", "sport": "nfl", "kind": "projection", "status": "measure",
+     "idea": "cash lineup ranks on a projection that may overrate cheap players vs DK salary (skips priced chalk)",
+     "where": "edge/dfs_run_nfl.py cash build",
+     "data": "scripts/nfl_lineup_lab.py",
+     "probe": None, "target": "cash lineups: cash-only salary blend (1-w)proj + w k_pos salary_k, k forward, w fixed",
+     "measured": None},
+    {"id": "T42", "lesson": "L18", "sport": "nhl", "kind": "projection", "status": "measure",
+     "idea": "cash lineup ranks on a projection that may overrate cheap players vs DK salary (skips priced chalk)",
+     "where": "edge/dfs_run_nhl.py cash build",
+     "data": "scripts/nhl_lineup_lab.py",
+     "probe": None, "target": "cash lineups: cash-only salary blend (1-w)proj + w k_pos salary_k, k forward, w fixed",
+     "measured": None},
+    {"id": "T43", "lesson": "L18", "sport": "mlb", "kind": "projection", "status": "measure",
+     "idea": "cash lineup ranks on a projection that may overrate cheap players vs DK salary (skips priced chalk)",
+     "where": "edge/dfs.py cash build",
+     "data": "MLB cash exports (contests.db); no lineup lab",
+     "probe": None, "target": "cash lineups: cash-only salary blend (1-w)proj + w k_pos salary_k, k forward, w fixed",
+     "measured": None},
     {"id": "T20", "lesson": "L10", "sport": "nba", "kind": "ownership", "status": "null",
      "idea": "DK FPPG as an ownership input (NHL, NFL, NCAAF, NCAAB, NASCAR boards carry it; NBA's theory does not)",
      "where": "edge/dfs_nba_theory.py", "data": "26 GPP slates", "probe": None, "target": None,

@@ -541,3 +541,59 @@ def test_log_unladdered_replaces_its_draft_group_and_skips_past_dates(tmp_path, 
     assert not R.log_unladdered([row], 9, {"d": "2026-11-13"}, root=tmp_path)["logged"]
     rows = list(csv.DictReader((tmp_path / "data" / R.UNLADDERED_LOG).open()))
     assert [r["player"] for r in rows] == ["A", "B"] and rows[0]["dk_fppg"] == ""
+
+
+# ---------------------------------------------------------------------------
+# critique cycle 10: the cash build ranks on a salary-blended projection
+# ---------------------------------------------------------------------------
+def test_cash_projection_pulls_halfway_to_the_price():
+    p = {"dk_pos": "RB", "proj": 10.0, "salary": 8000}
+    k = theory.CASH_PTS_PER_K["RB"]
+    assert theory.cash_projection(p) == pytest.approx(0.5 * 10.0 + 0.5 * k * 8.0)
+    # a bit role (ladder under 3) is not lifted to the salary: the price term shrinks
+    small = {"dk_pos": "WR", "proj": 1.5, "salary": 4000}
+    assert theory.cash_projection(small) == pytest.approx(
+        0.75 + 0.5 * theory.CASH_PTS_PER_K["WR"] * 4.0 * 0.5)
+    assert theory.cash_projection(p, w=0.0) == 10.0
+    assert theory.cash_projection({"dk_pos": "QB", "proj": 7.0, "salary": None}) == 7.0
+
+
+def test_cash_pool_copies_and_keeps_the_ladder():
+    pool = _board()
+    before = [dict(p) for p in pool]
+    out = theory.cash_pool(pool)
+    assert pool == before                                   # originals untouched
+    assert [q["name"] for q in out] == [p["name"] for p in pool]   # order kept
+    assert all(q["proj_ladder"] == p["proj"] for q, p in zip(out, pool))
+
+
+def test_cash_lineup_w0_is_the_old_build_and_reports_the_ladder():
+    from edge import dfs_run_ncaaf as cfb
+    old = opt.optimize(_board(), mode="cash", iters=120, seed=0)
+    w0 = cfb.cash_lineup(_board(), iters=120, seed=0, w=0.0)
+    assert [p["name"] for p, _ in old["lineup"]] == [p["name"] for p, _ in w0["lineup"]]
+    pool = _board()
+    res = cfb.cash_lineup(pool, iters=120, seed=0)
+    ids = {id(p) for p in pool}
+    # the lineup is the board's own players, so the page / forward log show ladder numbers
+    assert all(id(p) in ids for p, _ in res["lineup"])
+    assert res["proj"] == pytest.approx(round(sum(p["proj"] for p, _ in res["lineup"]), 1))
+    assert "proj_cash" in res and "floor_cash" in res
+
+
+def test_cash_lineup_matches_the_lab_replay():
+    """Production's cash build and ncaaf_lineup_lab's replay pick the same eight."""
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+    import ncaaf_lineup_lab as L
+    from edge import dfs_run_ncaaf as cfb
+    # cheap players over-projected vs salary, so the blend changes the pick
+    pool = _board()
+    for p in pool:
+        if p["name"].endswith(("WR3", "RB1")):
+            p["salary"] = 3000
+    prod = cfb.cash_lineup([dict(p) for p in pool], iters=120, seed=0)
+    lab = L.build([dict(p, pos=list(p["pos"])) for p in pool], "cash", iters=120,
+                  cash_w=theory.CASH_SALARY_W)
+    assert sorted(p["name"] for p, _ in prod["lineup"]) == sorted(lab)

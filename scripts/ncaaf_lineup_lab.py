@@ -129,11 +129,22 @@ def logged_lineups(B: dict) -> dict:
 #: cash restarts: seeds 0..CASH_SEEDS-1, keep the best `proj - z*sd` (critique cycle 9
 #: runner-up; production runs seed 0 only, so 1 = production and keeps parity)
 CASH_SEEDS = 1
+#: the cash build's salary blend (critique cycle 10, theory.CASH_SALARY_W /
+#: CASH_PTS_PER_K, the same call production's dfs_run_ncaaf.cash_lineup makes).
+#: `--blend-w 0` replays the pre-cycle-10 cash build; CASH_K = None uses production's
+#: fixed k, a dict overrides it (critique_aux/ncaaf_cash_blend_retest.py fits it forward).
+CASH_W = theory.CASH_SALARY_W
+CASH_K = None
+#: first board date production built with the blend; `parity` replays earlier boards
+#: with w = 0, the build that logged them
+CASH_BLEND_SINCE = "2026-11-27"
 
 
 def build(ps: list[dict], mode: str, z_cash: float = theory.Z_CASH, iters: int = ITERS,
-          seeds: int = 1) -> list[str]:
+          seeds: int = 1, cash_w: float = 0.0, cash_k: dict | None = None) -> list[str]:
     pool = [dict(p, pos=set(p["pos"])) for p in ps]
+    if mode == "cash" and cash_w:
+        pool = theory.cash_pool(pool, cash_w, cash_k)
     best, best_obj = None, None
     for seed in range(seeds if mode == "cash" else 1):
         res = dfs_opt_ncaaf.optimize(pool, mode=mode, iters=iters, seed=seed, z_cash=z_cash)
@@ -161,8 +172,8 @@ def _key(ps, *args) -> str:
 
 
 def _one(args):
-    gid, ps, mode, z, iters, seeds = args
-    return (gid, mode, z), build(ps, mode, z, iters, seeds)
+    gid, ps, mode, z, iters, seeds, w, k = args
+    return (gid, mode, z), build(ps, mode, z, iters, seeds, w, k)
 
 
 def build_all(B: dict, jobs: list[tuple], iters: int = ITERS, workers: int = 12) -> dict:
@@ -172,18 +183,21 @@ def build_all(B: dict, jobs: list[tuple], iters: int = ITERS, workers: int = 12)
     out, todo = {}, []
     seeds = CASH_SEEDS
     kx = (seeds,) if seeds != 1 else ()      # seeds 1 keeps the old cache keys
+
+    def kxm(mode):                           # the blend only touches the cash build
+        return kx + ((CASH_W, CASH_K) if mode == "cash" else ())
     for gid, mode, z in jobs:
-        f = CACHE / f"{gid}-{mode}-{_key(B[gid], mode, z, iters, *kx)}.json"
+        f = CACHE / f"{gid}-{mode}-{_key(B[gid], mode, z, iters, *kxm(mode))}.json"
         if f.exists():
             out[(gid, mode, z)] = json.loads(f.read_text())
         else:
-            todo.append((gid, B[gid], mode, z, iters, seeds))
+            todo.append((gid, B[gid], mode, z, iters, seeds, CASH_W, CASH_K))
     if todo:
         with ProcessPoolExecutor(max_workers=min(workers, len(todo))) as ex:
             for k, lu in ex.map(_one, todo):
                 out[k] = lu
                 gid, mode, z = k
-                (CACHE / f"{gid}-{mode}-{_key(B[gid], mode, z, iters, *kx)}.json").write_text(json.dumps(lu))
+                (CACHE / f"{gid}-{mode}-{_key(B[gid], mode, z, iters, *kxm(mode))}.json").write_text(json.dumps(lu))
     return out
 
 
@@ -304,9 +318,17 @@ HEAD = ("| lineup | contests | slates | cashed | mean field pctile | mean points
 def parity() -> int:
     B = boards()
     L = logged_lineups(B)
+    global CASH_W
     jobs = [(g, m, theory.Z_CASH) for (g, m) in L if g in B]
+    keep = CASH_W
     for iters in (ITERS, 350):
-        built = build_all(B, jobs, iters=iters)
+        built = {}
+        try:   # each board replayed with the cash build that logged it
+            for w, sel in ((0.0, lambda d: d < CASH_BLEND_SINCE), (keep, lambda d: d >= CASH_BLEND_SINCE)):
+                CASH_W = w
+                built.update(build_all(B, [j for j in jobs if sel(B[j[0]][0]["date"])], iters=iters))
+        finally:
+            CASH_W = keep
         same = defaultdict(lambda: [0, 0])
         for g, m, z in jobs:
             same[m][1] += 1
@@ -327,10 +349,13 @@ def report(zs: list[float]) -> int:
     for mode in ("cash", "gpp"):
         print(f"## {mode.upper()}\n\n{HEAD}")
         s = [r for r in base_rows if r["mode"] == mode]
-        print(summary(s, f"shipped (z_cash {theory.Z_CASH})"))
+        print(summary(s, f"shipped (z_cash {theory.Z_CASH}"
+                         + (f", salary blend w {CASH_W})" if mode == "cash" else ")")))
         a = [dict(r, points=r["adam"], pctile=r["adam_pctile"], net=r["adam_net"],
                   cashed=r["adam"] >= r["line"]) for r in s if r["adam"] is not None]
         print(summary(a, "Adam's real entry", base))
+        if mode == "cash" and CASH_W:
+            print(summary(_rows_w(0.0, B, F, T), "no salary blend (pre-cycle-10 build)", base))
         if mode == "cash":
             for z in zs:
                 if z != theory.Z_CASH:
@@ -346,6 +371,16 @@ def report(zs: list[float]) -> int:
               f"{r['line']:.1f} | {r['points']:.1f} | {r['pctile']:.2f} | {'Y' if r['cashed'] else '-'} | "
               f"{opt(r['adam'], '.1f')} | {opt(r['adam_pctile'], '.2f')} |")
     return 0
+
+
+def _rows_w(w: float, B, F, T) -> list[dict]:
+    """Cash rows with the salary blend set to w (CASH_W restored afterwards)."""
+    global CASH_W
+    keep, CASH_W = CASH_W, w
+    try:
+        return rows(theory.Z_CASH, ("cash",), B, F, T)
+    finally:
+        CASH_W = keep
 
 
 def lodo() -> int:
@@ -503,11 +538,16 @@ def main() -> int:
     for sp in (r, sd, c):
         sp.add_argument("--repair", action="store_true",
                         help="drop STALE_JOINS rows (boards as today's production would build them)")
+        sp.add_argument("--blend-w", type=float, default=None,
+                        help="cash salary blend w (production theory.CASH_SALARY_W; 0 = pre-cycle-10 build)")
     g = sub.add_parser("gate")
     g.add_argument("out")
     a = ap.parse_args()
     global REPAIR
     REPAIR = bool(getattr(a, "repair", False))
+    global CASH_W
+    if getattr(a, "blend_w", None) is not None:
+        CASH_W = a.blend_w
     if a.cmd == "parity":
         return parity()
     if a.cmd == "lodo":

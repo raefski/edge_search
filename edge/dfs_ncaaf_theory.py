@@ -123,6 +123,56 @@ SD_FIT = {
 Z_CASH = 0.75
 Z_GPP = 1.25
 
+#: CASH ONLY: the projection the cash optimizer ranks on is pulled halfway toward
+#: DK's price, proj_cash = (1-w)*proj + w * k_pos * salary_k * min(1, proj/3).
+#: NCAAF critique cycle 10 (2026-11-27, NCAAF_CRITIQUE_LOG.md). The ladder overrates
+#: cheap players relative to salary: the shipped cash build skipped priced chalk and
+#: its picks scored 0.57 below projection (88 lineup slots) while the graded pool ran
+#: 0.64 above. w = 0.5 was PRE-REGISTERED in cycle 9 (11/14) and not refit; held out
+#: on the two cash slates since (11/14 dg 156378, 11/20 dg 156982): 1 better
+#: (pctile .49 -> .93, cashed), 1 identical, 0 worse. All 13 cash contests / 10
+#: slates, k fitted on earlier dates only, repaired boards: field pctile .299 -> .395,
+#: +.096 [+.024, +.208] by slate; cashed 31% -> 38%; +8.5 pts a lineup [+2.8, +15.3];
+#: averaged over optimizer seeds 0-9 +.092 [+.031, +.177]. The response in w is a
+#: step (seed-averaged +.013 at .375, +.092 at .5, +.046 at .75, w=1 loses), so this
+#: is a selection correction, not a better projection: it makes player MAE WORSE
+#: (6.59 -> 6.77, n=805 / 13 slates), which is why the board, the logged `proj`,
+#: GPP and ownership all keep the ladder. Kill rule: re-measure after 5 more cash
+#: slates (`ncaaf_lineup_lab.py report --repair`, `--blend-w 0` is the old build)
+#: and revert if the average gain is below zero.
+CASH_SALARY_W = 0.5
+#: DK points per $1k of salary by position, sum(DK pts) / sum(salary_k) over graded
+#: board rows with proj >= 3 (players with a real role), 14 dates 9/26-11/20, repaired
+#: boards (scripts/critique_aux/ncaaf_cash_blend_retest.py prints the forward refit;
+#: it has sat at QB 2.7-2.8 / RB 2.2 / WR 2.2 since 10/22). n rows: QB 155, RB 215, WR 498.
+CASH_PTS_PER_K = {"QB": 2.703, "RB": 2.194, "WR": 2.179}
+
+
+def cash_projection(p: dict, w: float = CASH_SALARY_W, k: dict | None = None) -> float:
+    """The projection the CASH objective ranks on (see CASH_SALARY_W). Below a
+    3-point ladder the price term shrinks with the projection, so a priced player
+    the ladder sees as a bit role is not lifted to his salary."""
+    proj = float(p.get("proj") or 0.0)
+    c = (k or CASH_PTS_PER_K).get(base_position(p.get("dk_pos")))
+    if not w or c is None or not p.get("salary"):
+        return proj
+    return (1.0 - w) * proj + w * c * p["salary"] / 1000.0 * min(1.0, proj / 3.0)
+
+
+def cash_pool(pool: list, w: float = CASH_SALARY_W, k: dict | None = None) -> list:
+    """Copies of the pool's players with `proj` replaced by cash_projection, in the
+    same order (the optimizer's sort ties follow pool order). `proj_ladder` keeps the
+    board's number. The originals are not touched."""
+    out = []
+    for p in pool:
+        q = dict(p)
+        if p.get("proj") is not None:
+            q["proj_ladder"] = p["proj"]
+            q["proj"] = round(cash_projection(p, w, k), 2)
+        q.pop("_sd", None)
+        out.append(q)
+    return out
+
 #: MEASURED Pearson r between two players' DK-point DEVIATIONS in the same
 #: game. scripts/ncaaf_fit.py --what corr, cfbfastR 2024+2025.
 #:
