@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-27T16:58:51+00:00",
+"generated_at": "2026-11-27T17:00:36+00:00",
 "goalies": {
 "2026-11-27": {
 "ANA": {
@@ -14674,6 +14674,40 @@
 "pos": "g",
 "pp": null
 },
+"Atley Calvert": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 3,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 35,
+"toiSeconds": 23
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 3,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 35,
+"toiSeconds": 23
+},
+"line": "F4",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Avery Hayes": {
 "gtd": false,
 "injury": null,
@@ -14706,7 +14740,7 @@
 "line": "F2",
 "pk": null,
 "pos": "rw",
-"pp": null
+"pp": "PP2"
 },
 "Ben Kindel": {
 "gtd": false,
@@ -14808,6 +14842,40 @@
 "line": "F4",
 "pk": "PK1",
 "pos": "lw",
+"pp": null
+},
+"Declan Carlile": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 12,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 10,
+"toiMinutes": 179,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 1,
+"blocks": 6,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 6,
+"toiMinutes": 86,
+"toiSeconds": 43
+},
+"line": "D3",
+"pk": "PK2",
+"pos": "ld",
 "pp": null
 },
 "Erik Karlsson": {
@@ -14912,40 +14980,6 @@
 "pos": "c",
 "pp": "PP2"
 },
-"Justin Brazeau": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 12,
-"toiMinutes": 106,
-"toiSeconds": 52
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 49,
-"toiSeconds": 33
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
-},
 "Kaedan Korczak": {
 "gtd": false,
 "injury": null,
@@ -14975,9 +15009,9 @@
 "toiMinutes": 88,
 "toiSeconds": 38
 },
-"line": "D2",
+"line": "D1",
 "pk": "PK1",
-"pos": "rd",
+"pos": "ld",
 "pp": null
 },
 "Kris Letang": {
@@ -15186,40 +15220,6 @@
 "pos": "c",
 "pp": "PP1"
 },
-"Spencer Stastney": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 9,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 10,
-"toiMinutes": 174,
-"toiSeconds": 5
-},
-"last5": {
-"assists": 0,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 90,
-"toiSeconds": 54
-},
-"line": "D1",
-"pk": "PK2",
-"pos": "ld",
-"pp": null
-},
 "Tommy Novak": {
 "gtd": false,
 "injury": null,
@@ -15283,9 +15283,9 @@
 "toiMinutes": 94,
 "toiSeconds": 5
 },
-"line": "D3",
+"line": "D2",
 "pk": "PK1",
-"pos": "ld",
+"pos": "rd",
 "pp": null
 },
 "Ville Koivunen": {
