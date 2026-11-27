@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-27T15:28:57+00:00",
+"generated_at": "2026-11-27T15:59:07+00:00",
 "goalies": {
 "2026-11-27": {
 "ANA": {
@@ -12,7 +12,7 @@
 },
 "BUF": {
 "goalie": "Ukko-Pekka Luukkonen",
-"status": null
+"status": "Likely"
 },
 "CBJ": {
 "goalie": "Jet Greaves",
@@ -56,7 +56,7 @@
 },
 "NJD": {
 "goalie": "Jake Allen",
-"status": null
+"status": "Confirmed"
 },
 "NSH": {
 "goalie": "Juuse Saros",
@@ -173,7 +173,7 @@
 "status": null
 },
 "NYI": {
-"goalie": "Ilya Sorokin",
+"goalie": "Semyon Varlamov",
 "status": null
 },
 "NYR": {
@@ -12197,7 +12197,7 @@
 "goalieShutouts": 0,
 "goalieWins": 4
 },
-"line": "G1",
+"line": "G2",
 "pk": null,
 "pos": "g",
 "pp": null
@@ -12471,7 +12471,7 @@
 "goalieShutouts": 0,
 "goalieWins": 2
 },
-"line": "G2",
+"line": "G1",
 "pk": null,
 "pos": "g",
 "pp": null
