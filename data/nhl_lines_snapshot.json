@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-26T19:28:52+00:00",
+"generated_at": "2026-11-27T01:58:57+00:00",
 "goalies": {
 "2026-11-26": {},
 "2026-11-27": {
@@ -16763,6 +16763,40 @@
 "pos": "rd",
 "pp": null
 },
+"Colton Sissons": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 9,
+"toiMinutes": 142,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 1,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 66,
+"toiSeconds": 48
+},
+"line": "F2",
+"pk": "PK2",
+"pos": "c",
+"pp": null
+},
 "Dakota Joshua": {
 "gtd": false,
 "injury": null,
@@ -16792,10 +16826,10 @@
 "toiMinutes": 58,
 "toiSeconds": 51
 },
-"line": "F3",
+"line": "F4",
 "pk": null,
-"pos": "lw",
-"pp": "PP2"
+"pos": "rw",
+"pp": null
 },
 "Darren Raddysh": {
 "gtd": false,
@@ -16860,9 +16894,9 @@
 "toiMinutes": 101,
 "toiSeconds": 6
 },
-"line": "F1",
-"pk": "PK2",
-"pos": "rw",
+"line": "F3",
+"pk": null,
+"pos": "lw",
 "pp": "PP2"
 },
 "Gavin McKenna": {
@@ -16896,7 +16930,7 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": "PP1"
 },
 "Jake McCabe": {
@@ -16964,7 +16998,41 @@
 },
 "line": "F2",
 "pk": null,
-"pos": "c",
+"pos": "lw",
+"pp": "PP1"
+},
+"Kirill Marchenko": {
+"gtd": true,
+"injury": null,
+"last10": {
+"assists": 6,
+"blocks": 3,
+"gamesPlayed": 10,
+"goals": 5,
+"points": 11,
+"powerplayAssists": 3,
+"powerplayGoals": 3,
+"powerplayPoints": 6,
+"shots": 23,
+"toiMinutes": 167,
+"toiSeconds": 8
+},
+"last5": {
+"assists": 3,
+"blocks": 3,
+"gamesPlayed": 5,
+"goals": 2,
+"points": 5,
+"powerplayAssists": 2,
+"powerplayGoals": 2,
+"powerplayPoints": 4,
+"shots": 10,
+"toiMinutes": 77,
+"toiSeconds": 53
+},
+"line": "F1",
+"pk": null,
+"pos": "lw",
 "pp": "PP1"
 },
 "Morgan Rielly": {
@@ -17032,7 +17100,7 @@
 },
 "line": "F1",
 "pk": "PK2",
-"pos": "lw",
+"pos": "rw",
 "pp": "PP2"
 },
 "Oliver Ekman-Larsson": {
@@ -17068,40 +17136,6 @@
 "pk": null,
 "pos": "ld",
 "pp": "PP2"
-},
-"Ryan Tverberg": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 1,
-"powerplayGoals": 0,
-"powerplayPoints": 1,
-"shots": 8,
-"toiMinutes": 119,
-"toiSeconds": 36
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 51,
-"toiSeconds": 3
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": null
 },
 "Sergei Bobrovsky": {
 "gtd": false,
@@ -17239,41 +17273,7 @@
 "line": "F3",
 "pk": null,
 "pos": "rw",
-"pp": "PP1"
-},
-"Zack MacEwen": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 10,
-"goals": 1,
-"points": 2,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 9,
-"toiMinutes": 99,
-"toiSeconds": 23
-},
-"last5": {
-"assists": 0,
-"blocks": 3,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 5,
-"toiMinutes": 49,
-"toiSeconds": 32
-},
-"line": "F4",
-"pk": null,
-"pos": "rw",
-"pp": null
+"pp": "PP2"
 }
 },
 "UTA": {
