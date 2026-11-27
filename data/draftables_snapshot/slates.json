@@ -1,14 +1,54 @@
 {
 "CBB": {
-"157382": {
-"ContestStartTimeSuffix": null,
-"DraftGroupId": 157382,
+"157545": {
+"ContestStartTimeSuffix": " (Early)",
+"DraftGroupId": 157545,
 "DraftGroupTag": "Featured",
-"GameCount": 7,
+"GameCount": 10,
 "GameTypeId": 98,
-"StartDate": "2026-11-26T22:50:00.0000000Z",
-"StartDateEst": "2026-11-26T17:50:00.0000000",
-"last_start": "2026-11-27T04:20:00.0000000Z"
+"StartDate": "2026-11-27T16:00:00.0000000Z",
+"StartDateEst": "2026-11-27T11:00:00.0000000",
+"last_start": "2026-11-27T22:20:00.0000000Z"
+},
+"157546": {
+"ContestStartTimeSuffix": " (TCU vs BAY)",
+"DraftGroupId": 157546,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 97,
+"StartDate": "2026-11-27T20:00:00.0000000Z",
+"StartDateEst": "2026-11-27T15:00:00.0000000",
+"last_start": "2026-11-27T20:00:00.0000000Z"
+},
+"157547": {
+"ContestStartTimeSuffix": null,
+"DraftGroupId": 157547,
+"DraftGroupTag": "Featured",
+"GameCount": 8,
+"GameTypeId": 98,
+"StartDate": "2026-11-27T23:50:00.0000000Z",
+"StartDateEst": "2026-11-27T18:50:00.0000000",
+"last_start": "2026-11-28T04:20:00.0000000Z"
+},
+"157548": {
+"ContestStartTimeSuffix": " (TENN vs UL)",
+"DraftGroupId": 157548,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 97,
+"StartDate": "2026-11-28T02:00:00.0000000Z",
+"StartDateEst": "2026-11-27T21:00:00.0000000",
+"last_start": "2026-11-28T02:00:00.0000000Z"
+},
+"157549": {
+"ContestStartTimeSuffix": " (CRE vs GONZ)",
+"DraftGroupId": 157549,
+"DraftGroupTag": "",
+"GameCount": 1,
+"GameTypeId": 97,
+"StartDate": "2026-11-28T03:50:00.0000000Z",
+"StartDateEst": "2026-11-27T22:50:00.0000000",
+"last_start": "2026-11-28T03:50:00.0000000Z"
 }
 },
 "CFB": {
