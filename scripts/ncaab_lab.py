@@ -38,8 +38,9 @@ import numpy as np  # noqa: E402
 from scipy.stats import spearmanr  # noqa: E402
 
 import ncaab_box_grade as grader  # noqa: E402
+import ncaab_scratch_lab as scratch  # noqa: E402
 from edge import dfs_run_ncaab as RC  # noqa: E402
-from edge import ncaab_torvik  # noqa: E402
+from edge import ncaab_scratch, ncaab_torvik  # noqa: E402
 from edge.ncaab_names import Rosters  # noqa: E402
 
 PRICED = ("props", "blend", "salary")
@@ -127,6 +128,12 @@ def load(gid: int) -> list[dict]:
     fresh = RC.season_fppg_state(sal, history)["fresh"]
     for k, r in zip(grader.keys(rows), rows):
         r.update(dk_fppg=sal[k]["dk_fppg"], fppg_fresh=fresh)
+    # Props pulled in isolation before the slate's last build (cycle 11, 11/27): the board's
+    # last layer (RC.apply_props_pulled), replayed from the scan history. None before 11/9
+    # (no build timestamps).
+    pulled = scratch.flags_at_build(rows)
+    for r in rows:
+        r["pulled"] = (r["player"], r["team"], int(float(r["salary"]))) in pulled
     unknown = [r for r in rows if r["namesake"]]
     if unknown:                     # truth unknowable: say so, don't guess
         print(f"ncaab_lab: {gid} leaves out same-name teammates with one box line: "
@@ -154,14 +161,21 @@ def _torvik():
     return _TORVIK[0]
 
 
-def shipped(rows: list[dict], coef: tuple | None = None, season: tuple | None = None) -> list[float]:
+def shipped(rows: list[dict], coef: tuple | None = None, season: tuple | None = None,
+            pull: bool = True) -> list[float]:
     """The board's projection for each row of ONE slate: as logged, then LAST_GAME, then
-    SEASON_FPPG when that slate's DK FPPG is this season's (`coef` / `season` to override)."""
+    SEASON_FPPG when that slate's DK FPPG is this season's (`coef` / `season` to override),
+    then the props-pulled cut (cycle 11; `pull=False` stops before it, as SEASON_FPPG's fit
+    must: production applies it last)."""
     tmp = [{"source": r["source"], "fp": r["proj"], "last_min": r["last_min"], "last_fp": r["last_fp"],
             "team": r["team"], "dk_fppg": r.get("dk_fppg")} for r in rows]
     RC.apply_last_game(tmp, coef, {r["team"]: r["implied"] for r in rows if r["implied"]})
     if rows and rows[0].get("fppg_fresh"):
         RC.apply_season_fppg(tmp, season)
+    if pull:
+        for t, r in zip(tmp, rows):
+            if r.get("pulled") and r["source"] != "props":
+                t["fp"] *= ncaab_scratch.PULL_MULT
     return [t["fp"] for t in tmp]
 
 
@@ -172,7 +186,7 @@ def fit_season(data: dict, lg: tuple) -> tuple:
     for rows in data.values():
         if not (rows and rows[0].get("fppg_fresh")):
             continue
-        for r, p in zip(rows, shipped(rows, lg, season=(0.0, 1.0, 0.0))):
+        for r, p in zip(rows, shipped(rows, lg, season=(0.0, 1.0, 0.0), pull=False)):
             if r["source"] != "props" and (r.get("dk_fppg") or 0) > 0:
                 X.append([1.0, p, r["dk_fppg"]])
                 y.append(r["act"])

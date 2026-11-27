@@ -55,7 +55,7 @@ from __future__ import annotations
 import csv
 import logging
 import statistics
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from statistics import NormalDist
 from zoneinfo import ZoneInfo
@@ -63,7 +63,7 @@ from zoneinfo import ZoneInfo
 from edge import dfs_slate
 from edge import dfs_forward_log
 from edge import dfs, dfs_ladder, dfs_ncaab_theory as theory, dfs_opt_ncaab, ncaab, ncaab_sim
-from edge import ncaab_espn, ncaab_rotowire, ncaab_torvik
+from edge import ncaab_espn, ncaab_rotowire, ncaab_scratch, ncaab_torvik
 from edge.ncaab_names import Audit, Rosters
 from edge.dfs_slate import parse_time as _parse_time, slate_games
 
@@ -730,6 +730,49 @@ def apply_last_game(rows: list, coef: tuple | None = None, implied: dict | None 
 # ---------------------------------------------------------------------------
 # The board
 # ---------------------------------------------------------------------------
+def apply_props_pulled(pool: list, client, rosters: Rosters, games: dict, salaries: dict,
+                       event_players: dict, now: datetime | None = None) -> dict:
+    """Scale every non-props row whose props were pulled in isolation before `now` by
+    ncaab_scratch.PULL_MULT; tag it (status "PULL", `pulled_at` ET clock). Returns the audit
+    for the page: where the check ran and who it caught. It needs the scan HISTORY, which only
+    the desktop store has: on the published snapshot (Cloud) it says so instead of guessing."""
+    store = getattr(client, "store", None)
+    if store is None:
+        return {"check": "unavailable: the odds snapshot has no scan history (desktop store only)",
+                "flagged": []}
+    now = now or datetime.now(timezone.utc)
+    pair_of = {}
+    for g in games.values():
+        pair = (team(g["home"]), team(g["away"]))
+        pair_of[pair[0]] = pair_of[pair[1]] = pair
+    event_pairs = {}
+    for ev, keys in (event_players or {}).items():
+        for k in keys:
+            pair = pair_of.get(team((salaries.get(k) or {}).get("team")))
+            if pair:
+                event_pairs[ev] = pair
+                break
+    try:
+        timelines = ncaab_scratch.store_timelines(store, getattr(client, "profile", None) or "dfs_ncaab",
+                                                  SPORT, now)
+        pulled = ncaab_scratch.pulled_players(timelines, event_pairs, rosters, now)
+    except Exception as exc:                                # noqa: BLE001
+        log.warning("ncaab: props-pulled check failed (%s)", exc)
+        return {"check": f"failed: {type(exc).__name__}: {exc}", "flagged": []}
+    by_key = {(p["name"], p["team"], p["salary"]): p for p in pool}
+    flagged = []
+    for key, t in pulled.items():
+        s = salaries.get(key) or {}
+        p = by_key.get((s.get("name"), team(s.get("team")), s.get("salary")))
+        if p is None or p.get("source") == "props":         # quoted again by another book
+            continue
+        p["fp"] *= ncaab_scratch.PULL_MULT
+        p["pulled_at"] = t.astimezone(ET).strftime("%H:%M")
+        p["status"] = p.get("status") or "PULL"
+        flagged.append(f"{p['name']} ({p['team']}) {p['pulled_at']}")
+    return {"check": f"store: {len(event_pairs)} prop events", "flagged": flagged}
+
+
 def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0):
     """(pool, sim, info) for one DK college basketball Classic slate."""
     salaries = dfs.fetch_draftables(gid)
@@ -832,6 +875,14 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
     # season's; `base_proj` above stays the pre-LAST_GAME value, and the lab re-applies both.
     info["season_fppg"] = season_fppg_state(salaries, history)
     info["season_fppg"]["moved"] = (apply_season_fppg(pool) if info["season_fppg"]["fresh"] else 0)
+    # Last: a player whose props the books pulled ALONE earlier today (cycle 11, 2026-11-27).
+    # College has no injury report; a lone pull while his game-mates stay quoted is the one
+    # pre-tip scratch signal we collect (isolated pulls 4 of 13 DNP vs ~1% unflagged at 15+).
+    # Without this, "no props now" fell back to a full blend: Fland 11/19, 22.6, 0 minutes.
+    info["props_pulled"] = apply_props_pulled(pool, client, rosters, games, salaries, event_players)
+    for p in pool:
+        if p.get("pulled_at"):
+            info["doubtful"].append(f"{p['name']} ({p['team']}, props pulled {p['pulled_at']})")
     for p in pool:
         if p["means"] is None:
             p["means"] = means_from_total(p["fp"], p["shape"])

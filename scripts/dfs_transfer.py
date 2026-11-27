@@ -174,6 +174,18 @@ LESSONS = [
                  "of the cash field, scored 39.25) projected 7.6 instead of 18.6; 4 played rows graded 0; "
                  "gate rows MAE 5.3809 -> 5.3774 (5,530 rows)",
      "covers": [("ncaab", "2026-11-27")]},
+    {"id": "L20", "from": "ncaab", "mechanism": "where no injury report exists, the books pulling ONE player's props "
+                                             "while his game-mates stay quoted is the scratch signal; the board read "
+                                             "'no props now' as a reason to fall back to a full no-props projection. "
+                                             "Isolated pull (no game-mate vanishes in the same scan, 3+ stay) -> "
+                                             "projection x 0.52, from the scan history",
+     "ref": "NCAAB_CRITIQUE_LOG cycle 11 (11/27); edge/ncaab_scratch.py; scripts/ncaab_scratch_lab.py",
+     "evidence": "NCAAB 24 slates 11/9-11/26: isolated pulls before tip 13, 4 DNP (31%) vs ~1% unflagged at 15+; "
+                 "realised/proj .52 train (6) / .435 test (7). Flagged at build 5 rows, all closer (MAE 13.3 -> 5.2); "
+                 "gate rows 5.3774 -> 5.3699 [-.0134, -.0027] (5,530 rows / 31 slates). As-run 11/19: Fland (22.6, "
+                 "0 min) out of 20/20 cash and 15/20 GPP replayed lineups, +25.6 / +21.3 pts per lineup. One slate "
+                 "carries the money",
+     "covers": [("ncaab", "2026-11-27")]},
     {"id": "L12", "from": "overlay", "mechanism": "late-listed re-posts priced on a pooled curve (overlay only)",
      "ref": "overlay cycle (11/9)", "evidence": "re-posts fill 0.88 of room; no DFS-model analogue",
      "covers": [("overlay", "2026-11-09")]},
@@ -499,6 +511,24 @@ TRANSFERS = [
      "data": "NBA injury snapshots + proj logs",
      "probe": None, "target": "list unjoined Out names per night that sit one edit from a DK player on that team",
      "measured": None},
+    {"id": "T46", "lesson": "L20", "sport": "ncaaf", "kind": "availability", "status": "measure",
+     "idea": "college football has no binding injury report either: a skill player whose props vanish alone before "
+             "kickoff keeps a full ladder / no-props projection",
+     "where": "edge/dfs_run_ncaaf.py props read (dfs_ncaaf odds profile); edge/ncaab_scratch.isolated_pull is sport-free",
+     "data": "odds.db dfs_ncaaf scans + NCAAF ground truth (data/ncaaf_ground_truth)",
+     "probe": None, "target": "isolated pulls before kickoff: DNP / low-snap rate vs quoted, per slate", "measured": None},
+    {"id": "T47", "lesson": "L20", "sport": "nba", "kind": "availability", "status": "measure",
+     "idea": "a pulled prop as an Out signal BETWEEN official injury reports (the report and RotoWire lag; NBA has "
+             "late swap, so the payoff is the alert, not the board)",
+     "where": "harness/monitor.py / NBA swap alerts (nba_late_swap_path memory); edge/dfs_run_nba.py props read",
+     "data": "odds.db dfs_nba scans + nba injury snapshots + box minutes",
+     "probe": None, "target": "lead time of an isolated pull vs the official Out tag, and its DNP precision",
+     "measured": None},
+    {"id": "T48", "lesson": "L20", "sport": "nfl", "kind": "availability", "status": "measure",
+     "idea": "inactives land 90 min before kickoff; a skill player's props pulled alone earlier is a lead",
+     "where": "edge/dfs_run_nfl.py props read; NFL late-swap alerts",
+     "data": "odds.db NFL prop scans + inactives",
+     "probe": None, "target": "isolated pulls vs inactive lists: precision and lead minutes", "measured": None},
     {"id": "T20", "lesson": "L10", "sport": "nba", "kind": "ownership", "status": "null",
      "idea": "DK FPPG as an ownership input (NHL, NFL, NCAAF, NCAAB, NASCAR boards carry it; NBA's theory does not)",
      "where": "edge/dfs_nba_theory.py", "data": "26 GPP slates", "probe": None, "target": None,

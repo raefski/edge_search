@@ -405,6 +405,20 @@ of 20 fresh better), forward (fit <= 11/18) 5.446 -> 5.216 (9 of 9); lineups +5.
 (17 boards), Double Up pctile +.091 (5 slates, not enough data alone). `base_proj` is still
 pre-LAST_GAME: the lab (`ncaab_lab.held_out`) re-applies both layers. Next season: the switch fires
 with 1-3 games in DK's average, where the replay ran worse (11/9-11/11) -- weight by games played then.
+**Props pulled = a late scratch, 2026-11-27** (NCAAB_CRITIQUE_LOG.md cycle 11): the board's LAST layer,
+after SEASON_FPPG. A non-props row whose props the books pulled ALONE earlier today (quoted in one scan,
+gone in the next while no game-mate vanished and 3+ stayed, still off now) is cut to `PULL_MULT` x 0.52 and
+listed as "props pulled HH:MM" under Questionable (status `PULL` in the log). `edge/ncaab_scratch.py`
+decides, and the board (`apply_props_pulled`) and the labs (`scripts/ncaab_scratch_lab.py`, `ncaab_lab`)
+share it. It needs the scan history, so it runs only on the desktop store (the autolog). On the Cloud
+snapshot the page says "props pulled check: unavailable". 11/9-11/26: isolated pulls before tip were 13,
+4 of them DNP, against ~1% of unflagged players at 15+. Realised/projected was .52 on train (6) and .435
+held out (7). Five rows were flagged at the build, and all five moved closer (MAE 13.3 -> 5.2). Gate rows
+went 5.3774 -> 5.3699 [-.0134, -.0027]. On 11/19 it would have kept Fland (22.6 projected, 0 minutes) out of
+both lineups. **It catches about half the lost slots, not all:** Lelevicius and O'Neal Jr. (11/25) stayed
+quoted until tip and sat. Gaskins (11/26) was pulled 4.3 h after lock, which only a late swap recovers, and
+no NCAAB swap alert exists yet. Refit above 20 flags with `python3 scripts/ncaab_scratch_lab.py report
+--cutoff <date>`, and drop the rule if precision falls under 20%.
 **Lineups are scored now** (cycle 4, 2026-11-10): `scripts/ncaab_lineup_lab.py report` replays the
 production sim + optimizer on each logged board with a contest field and scores the lineups against
 the real Double Ups / GPPs (field percentile, cashed, $ back per $1; DK's own points). `shipped` =

@@ -805,3 +805,113 @@ Unattended gate (20261127-1511): **review** -- waiting for Adam: harness critiqu
 - primary all: worse, point estimate worse (+0.0017 [+0.0008, +0.0035], 31 clusters)
 - no primary state better beyond noise
 - the cycle aimed at 'availability: players the field rosters that we zero', which this gate does not measure (dk points, minutes, projection); gate said fail: Adam decides on the cycle's held-out numbers
+
+
+## Cycle 11 (availability: late scratches -- pulled props as a scratch flag; queued) — 2026-11-27, unattended
+
+Queued target (Adam): "late scratches -- lineup slots lost to players ruled out after the build (NCAAB has
+no late swap); pulled props as a scratch flag (21% DNP vs 0.6%)". No dfs_transfer row matched it. It is
+cycle 10's runner-up 1. Metric: for each held-out slate, our lineup slots (logged cash / GPP, never pooled,
+plus Adam's entered lineups) on players who played 0 minutes, and what was knowable at the build, at lock,
+and before the player's own tip. Also the precision of any scratch flag and what its false alarms cost.
+Split: train is 11/9-11/18 (11 slates), test is 11/19-11/26 (13 slates). Before 11/9 there is no build
+timestamp.
+
+**Harness built this cycle:** `scripts/ncaab_scratch_lab.py`.
+- `cache`: every dfs_ncaab odds scan since 11/2 (4,013 scans, 249 prop events, read-only, about 1 s
+  incremental) -> `data/cache/ncaab_props_presence.json`.
+- `report --cutoff`: each player's props state at the build, at lock and at his tip (quoted / pulled /
+  unposted / never), lineup slots on DNPs, and the flag's precision.
+- `rows`: one row per board player, for critics.
+
+**Baseline (24 slates):** 7 logged slots on a 0-minute player (4 cash, 3 GPP; 4 players, 91.8 / 66.6
+projected points), all on test slates. Adam entered 2 GPP slots on them (11/25). DNP rate at $4K+ by props
+state at the build:
+
+| props state at build | DNP |
+|---|---|
+| quoted | 5/762 |
+| pulled | 2/5 |
+| unposted (his game posted, he did not) | 51/673 |
+| no props for his game | 28/561 |
+
+**Critic (dfs-availability-critic):** the biggest hole on this target was a lone pull. When a player's
+props vanished at build time, the board quietly fell back to a full blend projection. After lock nothing
+watched NCAAB props at all. The 4 test DNPs:
+
+| player | date | what happened | catchable by |
+|---|---|---|---|
+| Fland | 11/19 | props pulled alone at 19:17 UTC; the build ran at 19:18; projected 22.6 (blend) and put in both lineups | a pre-build flag |
+| Gaskins | 11/26 | pulled alone 4.3 h after lock, 22 min before his tip | only a late swap |
+| Lelevicius, O'Neal Jr. | 11/25 | quoted until tip (O'Neal 2 min before); RotoWire returned 0 of 10 teams' starters that build | no signal we collect |
+
+The flag is an "isolated pull": a game-mate who vanishes in the same scan means the books are closing the
+game. The plain pulled flag fired 24 times, mostly books closing a whole board 7-12 min before tip. The
+isolated version fires 13 times and keeps all 4 DNPs.
+
+| isolated pull before tip | flags | DNP | realised / projected |
+|---|---|---|---|
+| train | 6 | 2 | .521 |
+| test | 7 | 2 | .435 |
+
+Unflagged players projected 15+ sat about 1% of the time. Money is small: about +19.5 cash points
+realised over 13 test slates if both the board flag and a swap alert existed. That is below the exemplars'
+bar, so the critic called it a correctness fix plus an alert, not a projection win.
+
+**Fix shipped (board):** `edge/ncaab_scratch.py` (`isolated_pull`, `store_timelines`, `pulled_players`)
+and `dfs_run_ncaab.apply_props_pulled`. It is the board's last layer, after SEASON_FPPG. A non-props row
+pulled in isolation before the build gets x `PULL_MULT` = 0.52, the train ratio (6 flags, fit on nothing
+later). It is listed as "props pulled HH:MM" under Questionable, and the log carries status `PULL`. The
+check needs the scan history, so it runs on the desktop store only. On the Cloud snapshot the page shows
+"props pulled check: unavailable".
+
+The labs share the function. `ncaab_lab.load` flags each slate at its last pre-lock build
+(`scratch.flags_at_build`), and `shipped()` applies the cut last. SEASON_FPPG's fit stops before the cut.
+
+Parity check: production's store read (`store_timelines`) against the lab cache, at every board's build
+time, gave 0 mismatching event timelines over 26 boards. Scan ids are not in start-time order (overlapping
+collectors), so both sides sort by start time. Before that fix, 9-16 events per board were ordered
+differently.
+
+| held out | n | before | after |
+|---|---|---|---|
+| flagged-at-build rows, train | 2 rows / 2 slates | MAE 10.12 | 4.46 |
+| flagged-at-build rows, test | 3 rows / 2 slates | MAE 15.41 | 5.61 |
+| gate rows (ncaab_lab gate, LOSO), all | 5,530 / 31 slates | 5.3774 | 5.3699 [-.0134, -.0027] |
+| gate rows, train <= 11/18 | 3,283 | | -.0047 |
+| gate rows, test | 2,247 | | -.0116 |
+| as-run board 11/19 (157138), set20 cash | 20 lineups | Fland in 1.00 per lineup, 139.2 pts | 0.00, 164.8 pts |
+| as-run board 11/19 (157138), set20 GPP | 20 lineups | Fland in 0.75 per lineup, 143.2 pts | 0.00, 164.5 pts |
+| as-run boards 11/18, 11/19 (157139), 11/26, set20 | 3 slates | | cash +1.9 / +2.0 / +0.2; GPP +2.9 / +3.7 / 0 |
+| LOSO-replayed lineups, all 5 flagged slates | 5 slates | flagged players never selected | sim-noise deltas only (cash -1.4, GPP -0.1 per lineup) |
+
+The 5 flagged rows at the build: Gertrude 11/13 (played, 7.0), Stokes 11/18 ($8,400, DNP), Fland 11/19
+(DNP), DJ Thomas 11/19 (20 min, 8.5 on a 23.4 projection), McClure 11/26 (6.5 on 15.2). Every one moved
+closer to what he scored.
+
+No contest export exists for those 5 slates, so the money is scored in box points, not field percentile or
+dollars.
+
+**Decision: SHIPPED on the branch** as an availability / correctness fix. The target metric improves held
+out: Fland's 2 slots, scored 0, are avoided at the build. Every flagged row moved closer, and the gate rows
+improve beyond noise. But it is not a money proof: 2 DNPs caught per split, and one slate (11/19) carries
+all the lineup gain.
+
+**Conservative calls (unattended):**
+- The after-lock alert was not built. That means adding NCAAB to `harness/monitor.py`: an isolated pull on
+  a logged or entered player whose game has not tipped sends an urgent ntfy alert with the best
+  same-salary replacement. It would have caught Gaskins (1 cash slot, 11/26). It is a new push path on the
+  live timer, and it is Adam's call.
+- Scan cadence was not changed. Props are scanned 2-3 times an hour, and hourly after 04:00 UTC, so a pull
+  12-22 min before a late tip usually falls between scans.
+
+**Runner-ups:**
+1. The NCAAB swap alert above, plus scanning dfs_ncaab every 10 min from 60 min before each tip.
+2. The Q tag (`Q_PLAY`) skips props rows. Players projected 15+ with a Q tag sat 2 of 8 times (Robert
+   Wright III, 11/23, 32.7 projected, 0 minutes).
+3. Nothing shows when RotoWire returns no starters (157295: 0 of 10 teams). Polling RotoWire every 15 min
+   to tip with timestamps is the only way to measure the Lelevicius / O'Neal half of the hole.
+4. Cash and GPP logged lineups were identical on 157138 and 157295, so each scratch hits both.
+
+Kill rule: refit `PULL_MULT` above 20 flags (`ncaab_scratch_lab.py report --cutoff`), and drop the rule if
+precision (DNP share) falls under 20%.

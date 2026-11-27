@@ -35,7 +35,7 @@ from edge.pagereload import fresh  # noqa: E402
 
 fresh()   # a Cloud deploy reloads every repo module (edge/pagereload.py)
 
-from edge import dfs_opt_ncaab, dfs_run_ncaab as R  # noqa: E402
+from edge import dfs_opt_ncaab, dfs_run_ncaab as R, ncaab_scratch  # noqa: E402
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -185,6 +185,11 @@ def summary(res: dict, sport_label: str) -> None:
            f"{lg.get('moved', 0)} players moved by it" if (lg := info.get("last_game")) else "")
         + (f"<br>DK season average: {sf.get('moved', 0)} players moved by it"
            if (sf := info.get("season_fppg") or {}).get("fresh") else "")
+        # The props-pulled scratch check needs the scan history (desktop store); on the
+        # snapshot it did not run, and the page says so (cycle 11, 2026-11-27).
+        + (f"<br>props pulled check: {pp.get('check')}"
+           + (f" — cut ×{ncaab_scratch.PULL_MULT}: " + ", ".join(pp["flagged"]) if pp.get("flagged") else "")
+           if (pp := info.get("props_pulled")) else "")
         + f"<br>implied points: " + ", ".join(f"{t} {g:.1f}" for t, g in top)
         + (" …" if len(imp) > len(top) else "")
         + f"<br>{odds} · books: {books} · salaries: {info.get('draftables_source', 'live')}"
