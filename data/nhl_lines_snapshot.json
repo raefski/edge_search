@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-27T17:00:36+00:00",
+"generated_at": "2026-11-27T17:28:53+00:00",
 "goalies": {
 "2026-11-27": {
 "ANA": {
@@ -44,7 +44,7 @@
 },
 "FLA": {
 "goalie": "Jacob Markstrom",
-"status": null
+"status": "Confirmed"
 },
 "LAK": {
 "goalie": "Darcy Kuemper",
@@ -80,7 +80,7 @@
 },
 "PIT": {
 "goalie": "Sergei Murashov",
-"status": null
+"status": "Confirmed"
 },
 "SEA": {
 "goalie": "Joey Daccord",
@@ -13266,6 +13266,40 @@
 }
 },
 "OTT": {
+"Andre Burakovsky": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 3,
+"blocks": 6,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 3,
+"powerplayAssists": 2,
+"powerplayGoals": 0,
+"powerplayPoints": 2,
+"shots": 5,
+"toiMinutes": 118,
+"toiSeconds": 47
+},
+"last5": {
+"assists": 0,
+"blocks": 1,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 3,
+"toiMinutes": 46,
+"toiSeconds": 23
+},
+"line": "F4",
+"pk": null,
+"pos": "lw",
+"pp": "PP2"
+},
 "Artem Zub": {
 "gtd": false,
 "injury": null,
@@ -13502,7 +13536,7 @@
 "line": "D2",
 "pk": "PK2",
 "pos": "rd",
-"pp": "PP2"
+"pp": null
 },
 "Linus Ullmark": {
 "gtd": false,
@@ -13709,40 +13743,6 @@
 "pk": "PK1",
 "pos": "c",
 "pp": "PP2"
-},
-"Sammy Blais": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 0,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 7,
-"toiMinutes": 85,
-"toiSeconds": 20
-},
-"last5": {
-"assists": 0,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 4,
-"toiMinutes": 39,
-"toiSeconds": 36
-},
-"line": "F4",
-"pk": null,
-"pos": "lw",
-"pp": null
 },
 "Samuel Ersson": {
 "gtd": false,
@@ -18992,6 +18992,40 @@
 "pos": "rw",
 "pp": "PP1"
 },
+"Gregor Biber": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 1,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 14,
+"toiSeconds": 58
+},
+"last5": {
+"assists": 0,
+"blocks": 2,
+"gamesPlayed": 1,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 1,
+"toiMinutes": 14,
+"toiSeconds": 58
+},
+"line": "D3",
+"pk": null,
+"pos": "ld",
+"pp": null
+},
 "Jack McBain": {
 "gtd": false,
 "injury": null,
@@ -19264,7 +19298,7 @@
 "line": "D1",
 "pk": "PK1",
 "pos": "rd",
-"pp": null
+"pp": "PP2"
 },
 "Mikhail Sergachev": {
 "gtd": false,
@@ -19403,40 +19437,6 @@
 "pk": "PK2",
 "pos": "c",
 "pp": "PP1"
-},
-"Zac Jones": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 8,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 4,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 19,
-"toiMinutes": 152,
-"toiSeconds": 56
-},
-"last5": {
-"assists": 0,
-"blocks": 4,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 0,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 6,
-"toiMinutes": 76,
-"toiSeconds": 32
-},
-"line": "D3",
-"pk": null,
-"pos": "ld",
-"pp": "PP2"
 }
 },
 "VAN": {
