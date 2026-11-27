@@ -915,3 +915,9 @@ all the lineup gain.
 
 Kill rule: refit `PULL_MULT` above 20 flags (`ncaab_scratch_lab.py report --cutoff`), and drop the rule if
 precision (DNP share) falls under 20%.
+
+Unattended gate (20261127-1611): **pass** -- re-gated after 7 forward days, then merged unless vetoed
+
+| split | state | n | clusters | main MAE | candidate MAE | loss diff [90%] | verdict |
+|---|---|---|---|---|---|---|---|
+| primary | all | 5,530 | 31 | 5.3774 | 5.3699 | -0.0075 [-0.0135, -0.0027] | better |
