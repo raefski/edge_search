@@ -283,7 +283,7 @@ measured held out. What came across:
 |---|---|
 | app | `pages/13_🏀_NCAAB_DFS.py` (cash, GPP + leverage map, board with each row's source, name check) |
 | pipeline | `edge/dfs_run_ncaab.py` `build_slate` (same call as `scripts/dfs_lineups_ncaab.py`) |
-| names | `edge/ncaab_names.py`: every outside name -> one DK player, inside a team or game; audit on page + CLI |
+| names | `edge/ncaab_names.py`: every outside name -> one DK player, inside a team or game; audit on page + CLI. Last tier (cycle 10, 11/27): one slip in ONE name part (4+ letters, first letter kept, one teammate only) -- ESPN's "Skytt"/"Krianauskas"/"Amal L'Etang" had read as last-game DNPs (L'Etang 11/14 cut 25.0 -> 7.6) and graded 0 |
 | teams / roster | `edge/ncaab.py` — G G G F F F UTIL UTIL; DK code <-> book/Torvik/RotoWire spellings |
 | starters + injuries | `edge/ncaab_rotowire.py` (reads the link title: the visible text is "D. Aberdeen") |
 | last season | `edge/ncaab_torvik.py`, `data/ncaab_torvik_2026.json` (Barttorvik; on `main`, frozen) |

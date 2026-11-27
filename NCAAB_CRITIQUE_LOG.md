@@ -713,3 +713,85 @@ old model); (2) lineup-lab noise: require 2+ seed sets and report the A/B split,
 pts/lineup reads as signal; (3) GPP and cash builds are nearly the same lineup: GPP differentiation must
 come from ownership or game correlation in the sim, not the percentile.
 
+
+
+## Cycle 10 (availability: players the field rosters that we zero; queued) — 2026-11-27, unattended
+
+Queued target (Adam): "players the field rosters that we zero". No dfs_transfer row matches it exactly
+(T15, "DNP games counted as 0", is the nearest). Metric: for each held-out slate (draft group), players
+who played but whom the board zeroed (proj < 3, 10+ min) or dropped (on DK's list, not on the board),
+with field %Drafted (cash and GPP never pooled) and DK points scored.
+
+**Baseline (26 boxed slates with a log):** 11/2-11/8: zeroed 109 rows / 1,398 pts, field own sums cash
+46.6 / GPP 71.4. From 11/9 (17 slates): zeroed 37 rows / 379 pts, field cash 13.6 / GPP 19.4 (Stillwell
+11/10 is 9.1 of the cash sum); dropped 15 rows, field 0%.
+
+**Critic (dfs-availability-critic):** the target has closed since DK's FPPG rollover. On the LOSO board,
+rows projected under 3 come out at 0.61 projected vs 0.79 scored (1,321 rows), so they are calibrated. A
+perfect pick of the zeroed rows worth 4+ pts/$1K was worth 4.4 pts per slate from 11/9 (42.6 before), and
+nothing known before lock picks them out. Of the 15 "dropped" rows: 6 were name misses in my baseline
+script, 3 were Isaiah Brown (DK never priced him), and 2 were real OUT drops (Robinson 11/10, Shinholster
+11/20, field 0%). The biggest money hole it found runs the other way, false actives after the one build:
+- 7 of our lineup slots (4 cash, 3 GPP) went to players who then played 0 minutes.
+- 5 of those 7 were in games that tipped 0.8-5.5 h after lock. NCAAB has no late swap.
+- Fland 11/19 and Gaskins 11/26 had their props pulled before tip while teammates stayed quoted. A perfect
+  late swap would have recovered 52 cash / 38.5 GPP pts over 24 slates.
+- From 11/13, among $4K+ rows, players whose props were pulled played 0 minutes 5 of 24 times, against
+  4 of 677 when props stayed up.
+
+**Shipped (the critic's runner-up 1, which is on target):** the name join behind LAST_GAME and the grader.
+`edge/ncaab_names._same_person` refused ESPN's one-letter slips:
+
+| ESPN box | DK | effect |
+|---|---|---|
+| Emil Skytt | Emil Skytta | read as a last-game DNP |
+| Gantas Krianauskas | Gantas Krizanauskas | ž dropped, not folded |
+| Amal L'Etang | Amael L'Etang | read as a last-game DNP |
+
+`last_game_lines` gives an unresolved player 0 minutes, so LAST_GAME cut him. On 11/14 (156656) L'Etang,
+a $7,300 starter owned by 26.1% of the cash field and 23.2% of the GPP field, was projected 7.57 from a
+base of 25.0. He scored 39.25. The grader also scored him 0 on 11/20 and 11/22, when he played 22 and 28
+minutes. DK lists "Q Williams IV" (C-C) by an initial, and the bare-initial rule refused even DK's own text.
+
+The fix is a last tier, "typo": exactly one name part differs, by one edit, the slipped part has 4+
+letters and keeps its first letter, and only one teammate fits. Exact, suffix, nickname and partial still
+win. A source name equal to DK's own initial name joins as exact; "Q. Williams" is still refused. The
+partial/nickname checks no longer return early before this tier. Tests are in tests/test_ncaab_names.py
+(twins one slip apart are refused, and so are Ian/Ivan and Lee/Lea).
+
+Audit, old resolver vs new, nothing chosen on held-out data:
+
+| check | n | result |
+|---|---|---|
+| lab load (last games + grader), all slates | 31 slates | 4 new joins, all right (above + Q Williams IV) |
+| live last-game lines, every logged board | 32 boards | 5 player-slates change: L'Etang x3, Skytta, Krizanauskas |
+| book prop subjects (odds.db) vs every logged team | 474 names | 1 new join: "Efeosa Oliigu-Elabor" -> DK "Oliogu-Elabor" (GMU), right |
+| Torvik join on logged rows | 32 boards | unchanged |
+| box rows with minutes that look like a logged player graded 0 | | 5 -> 0 |
+
+The board replay: L'Etang 11/14 goes 7.57 -> 18.55. The other 16 Dayton rows replay within 0.1 of the
+log, which checks the replay against production. Skytta 11/16 goes 6.45 -> 11.45 in the lab (he scored 14.5).
+The live board had left him at 13.4 because PORST's box wasn't up yet. L'Etang 11/20 and 11/22 were props
+rows: projection unchanged, truth corrected.
+
+| gate rows (ncaab_lab gate, LOSO) | rows / slates | main | branch |
+|---|---|---|---|
+| all-player MAE, main truth vs branch truth | 5,530 / 31 | 5.3809 | 5.3774 |
+| board only (both on corrected truth) | 5,530 / 31 | 5.3788 | 5.3774 |
+
+**Decision: SHIPPED as a correctness fix** (the name-suspect rule). It is not a money claim. The one money
+case, L'Etang 11/14, has no box (156656 still fails to fetch), so the lineup lab cannot replay it.
+**Note for the gate:** the grader uses the same resolver, so main and the branch grade 4 rows differently
+(0 -> 7.5 / 20.5 / 14.5 / 8.75). The branch's MAE is judged partly on its own corrected truth.
+**Conservative calls (unattended):**
+- The props-pulled tag and the late-swap alert were not built. They are a new feed plus a monitor, with 5
+  true scratches and under 5 test slates with a hit.
+- No lineup replay: the fix moves one replayable row.
+
+**Runner-ups:**
+1. NCAAB late-scratch path (critic's hole above). Tag a player whose props were pulled while a teammate
+   stays quoted, alert after lock until his game tips, and log OUT-dropped players at 0 with a timestamp
+   on each poll. Fit the gap G and the multiplier P on slates up to 11/18.
+2. A Q tag plus a last-game DNP sat again 15 of 29 times, but props rows keep full projection (Robert
+   Wright III 11/23, $10.3K, 32.7, 0 min). None has landed in our lineups yet.
+3. 156656's box (11/14, UTAH/UW) still fails to fetch, and it is the one slate that would price this fix.

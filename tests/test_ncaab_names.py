@@ -141,6 +141,62 @@ def test_typo_rule_is_opt_in_and_needs_the_first_letter():
 
 
 # ---------------------------------------------------------------------------
+# One slip in one name part (critique cycle 10, 2026-11-27): ESPN box spellings
+# ---------------------------------------------------------------------------
+SLIPS = {
+    "emilskytta": row("Emil Skytta", "PORST", 9, 4700, 13.6),
+    "gantaskrizanauskas": row("Gantas Krizanauskas", "PORST", 9, 3400, 7.6),
+    "amaelletang": row("Amael L'Etang", "DAY", 10, 7300, 30.4),
+    "qwilliamsiv": row("Q Williams IV", "C-C", 11, 3000),
+    "jalensmith": row("Jalen Smith", "TWIN", 12, 3000),
+    "jadensmith": row("Jaden Smith", "TWIN", 12, 3000),
+    "ivanlee": row("Ivan Lee", "IJ", 13, 3000),
+}
+
+
+@pytest.mark.parametrize("source,team,want,how", [
+    ("Emil Skytt", "PORST", "Emil Skytta", "typo"),             # ESPN 11/14 box
+    ("Gantas Krianauskas", "PORST", "Gantas Krizanauskas", "typo"),  # z-caron dropped
+    ("Amal L'Etang", "DAY", "Amael L'Etang", "typo"),           # LAST_GAME cut him 25.0 -> 7.6
+    ("Q Williams IV", "C-C", "Q Williams IV", "exact"),         # DK's own name is the initial
+])
+def test_one_slip_in_one_part_joins(source, team, want, how):
+    info, got = Rosters(SLIPS).resolve(source, [team])
+    assert info is not None, got
+    assert info["name"] == want and got == how
+
+
+@pytest.mark.parametrize("source,team,why", [
+    ("Jaden Smith", "TWIN", "exact beats the other twin's slip"),
+    ("Ian Lee", "IJ", "Ian / Ivan: too short to call a slip"),
+    ("Ivan Lea", "IJ", "Lee / Lea: too short"),
+    ("Emil Skytt", "DAY", "wrong team"),
+    ("Emel Skytt", "PORST", "a slip in BOTH parts"),
+    ("Amal Letang", "DAY", "L'Etang folds to 'letang': exact surname, first slip -- allowed"),
+])
+def test_slips_stay_narrow(source, team, why):
+    info, how = Rosters(SLIPS).resolve(source, [team])
+    if source == "Jaden Smith":
+        assert info["name"] == "Jaden Smith" and how == "exact", why
+    elif source == "Amal Letang":
+        assert info["name"] == "Amael L'Etang" and how == "typo", why
+    else:
+        assert info is None, why
+
+
+def test_two_teammates_one_slip_apart_are_refused():
+    # "Jalan" is one slip from Jalen only (two from Jaden) -> joins; "Jaxen" is one
+    # substitution from BOTH -> refused, not guessed.
+    assert Rosters(SLIPS).resolve("Jalan Smith", ["TWIN"])[0]["name"] == "Jalen Smith"
+    assert Rosters(SLIPS).resolve("Jaxen Smith", ["TWIN"]) == (None, "ambiguous")
+
+
+def test_bare_initial_still_refused_when_dk_spells_it_out(rosters):
+    assert rosters.resolve("Q. Williams", ["C-C"]) == (None, "initial")
+    assert Rosters(SLIPS).resolve("Q. Williams", ["C-C"]) == (None, "initial")
+
+
+# ---------------------------------------------------------------------------
 # Torvik: a name is checked by the numbers
 # ---------------------------------------------------------------------------
 def tv(name, team, pts, conf="B10", gp=30):

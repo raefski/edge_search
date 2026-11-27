@@ -164,6 +164,16 @@ LESSONS = [
                   "+.096 [+.024, +.208]; new slates 1 better / 1 same; seeds 0-9 +.092 [+.031, +.177]; player MAE "
                   "6.59 -> 6.77 (why it is cash-only). Step in w (.375 +.013, .5 +.092, .75 +.046)",
       "covers": [("ncaaf", "2026-11-27")]},
+    {"id": "L19", "from": "ncaab", "mechanism": "a strict team-scoped name join turns an outside source's one-letter "
+                                             "slip (ESPN 'Skytt' / DK 'Skytta', a dropped diacritic, 'Amal' / "
+                                             "'Amael') into 'not in the box': the player reads as a last-game DNP "
+                                             "(the board cuts him) and the grader scores him 0. Unique one-edit "
+                                             "match on ONE name part (4+ letters, first letter kept), last tier",
+     "ref": "NCAAB_CRITIQUE_LOG cycle 10 (11/27); edge/ncaab_names._same_person 'typo'",
+     "evidence": "NCAAB 31 boxed slates + 474 prop names: 5 joins gained, 0 wrong. L'Etang 11/14 ($7,300, 26% "
+                 "of the cash field, scored 39.25) projected 7.6 instead of 18.6; 4 played rows graded 0; "
+                 "gate rows MAE 5.3809 -> 5.3774 (5,530 rows)",
+     "covers": [("ncaab", "2026-11-27")]},
     {"id": "L12", "from": "overlay", "mechanism": "late-listed re-posts priced on a pooled curve (overlay only)",
      "ref": "overlay cycle (11/9)", "evidence": "re-posts fill 0.88 of room; no DFS-model analogue",
      "covers": [("overlay", "2026-11-09")]},
@@ -476,6 +486,18 @@ TRANSFERS = [
      "where": "edge/dfs.py cash build",
      "data": "MLB cash exports (contests.db); no lineup lab",
      "probe": None, "target": "cash lineups: cash-only salary blend (1-w)proj + w k_pos salary_k, k forward, w fixed",
+     "measured": None},
+    {"id": "T44", "lesson": "L19", "sport": "ncaaf", "kind": "eval", "status": "audit",
+     "idea": "ESPN box / ground-truth names that miss DK's by one letter read as DNP (board) and 0 (grader)",
+     "where": "edge/ncaaf.py box joins; scripts/ncaaf_calibration.py ground truth (data/ncaaf_ground_truth)",
+     "data": "NCAAF boxes + contest exports",
+     "probe": None, "target": "count box rows with snaps/points that join no DK player but sit one edit from one",
+     "measured": None},
+    {"id": "T45", "lesson": "L19", "sport": "nba", "kind": "availability", "status": "audit",
+     "idea": "ESPN / RotoWire / official-report names one letter off DK's: an Out tag that never lands (false active)",
+     "where": "edge/dfs_run_nba.py _agree / espn_sig join; edge/nba_injury_report.py",
+     "data": "NBA injury snapshots + proj logs",
+     "probe": None, "target": "list unjoined Out names per night that sit one edit from a DK player on that team",
      "measured": None},
     {"id": "T20", "lesson": "L10", "sport": "nba", "kind": "ownership", "status": "null",
      "idea": "DK FPPG as an ownership input (NHL, NFL, NCAAF, NCAAB, NASCAR boards carry it; NBA's theory does not)",

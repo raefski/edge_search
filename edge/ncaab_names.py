@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import re
 
-from edge.names import first_names_agree, norm
+from edge.names import _damerau_one, first_names_agree, norm
 
 _TAG = re.compile(r"^(.*?)\s*\(([^)]*)\)\s*$")
 _SUFFIX = {"jr", "sr", "ii", "iii", "iv", "v"}
@@ -78,12 +78,25 @@ def _same_person(src: str, dk: str) -> str | None:
     # present on the other side (Kaufman <-> Kaufman-Renn; Ras Elijah Godbolt <->
     # Elijah Godbolt, where "elijah" moves from a later part to the first name).
     short, long_ = (a, b) if len(a) <= len(b) else (b, a)
-    if short[-1] != long_[-1] and short[-1] not in long_[1:]:
-        return None
-    if short[0] in long_ and all(p in long_ for p in short[1:]):
-        return "partial"
-    if all(p in long_[1:] for p in short[1:]) and first_names_agree(short[0], long_[0], typo=True):
-        return "nickname"
+    if short[-1] == long_[-1] or short[-1] in long_[1:]:
+        if short[0] in long_ and all(p in long_ for p in short[1:]):
+            return "partial"
+        if all(p in long_[1:] for p in short[1:]) and first_names_agree(short[0], long_[0], typo=True):
+            return "nickname"
+    # One slip in ONE part, the rest identical (critique cycle 10, 2026-11-27): ESPN's box
+    # spells DK's "Emil Skytta" "Emil Skytt", "Gantas Krizanauskas" "Krianauskas" (the
+    # z-caron dropped, not folded) and "Amael L'Etang" "Amal L'Etang". Unresolved, a box
+    # name left its DK player with 0 minutes in his last game, so LAST_GAME cut L'Etang
+    # ($7,300, 26% of the 11/14 cash field, scored 39.25) from 25.0 to 7.6, and the grader
+    # scored him 0 on two nights he played 22 and 28 minutes. The slipped part needs 4+
+    # letters and its first letter right (Ivan / Ian, Skytta / Smith never pass), and
+    # `resolve` takes it only as the last tier and only when one teammate fits.
+    if len(a) == len(b):
+        diff = [i for i in range(len(a)) if a[i] != b[i]]
+        if len(diff) == 1:
+            x, y = a[diff[0]], b[diff[0]]
+            if min(len(x), len(y)) >= 4 and x[0] == y[0] and _damerau_one(x, y):
+                return "typo"
     return None
 
 
@@ -108,6 +121,13 @@ class Rosters:
         if tag in wanted:
             wanted = [tag]
         if is_bare_initial(base):
+            # An initial is refused as a STAND-IN for a first name, but when DK itself
+            # lists the man by it ("Q Williams IV", C-C) the same text is his name: before
+            # cycle 10 the grader scored him 0 for 13 minutes (11/5).
+            same = [info for team in wanted for info in self.by_team.get(team, ())
+                    if tokens(info.get("name") or "") == tokens(base)]
+            if len(same) == 1:
+                return same[0], "exact"
             return None, "initial"
         hits: dict = {}
         for team in wanted:
@@ -115,7 +135,7 @@ class Rosters:
                 how = _same_person(base, info.get("name") or "")
                 if how:
                     hits.setdefault(how, []).append(info)
-        for how in ("exact", "suffix", "nickname", "partial"):
+        for how in ("exact", "suffix", "nickname", "partial", "typo"):
             if how in hits:
                 if len(hits[how]) == 1:
                     return hits[how][0], how
