@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-27T19:58:42+00:00",
+"generated_at": "2026-11-27T20:28:35+00:00",
 "goalies": {
 "2026-11-27": {
 "ANA": {
@@ -68,7 +68,7 @@
 },
 "NYR": {
 "goalie": "Dylan Garand",
-"status": null
+"status": "Confirmed"
 },
 "OTT": {
 "goalie": "Linus Ullmark",
@@ -161,8 +161,8 @@
 "status": null
 },
 "MTL": {
-"goalie": "Jacob Fowler",
-"status": null
+"goalie": "Jakub Dobes",
+"status": "Confirmed"
 },
 "NJD": {
 "goalie": "Connor Hellebuyck",
@@ -9559,7 +9559,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "rw",
+"pos": "lw",
 "pp": null
 },
 "Matt Boldy": {
@@ -9729,7 +9729,7 @@
 },
 "line": "F4",
 "pk": null,
-"pos": "lw",
+"pos": "rw",
 "pp": null
 },
 "Ryan Hartman": {
@@ -13984,7 +13984,7 @@
 "line": "D2",
 "pk": "PK1",
 "pos": "ld",
-"pp": null
+"pp": "PP2"
 },
 "Christian Dvorak": {
 "gtd": false,
@@ -14088,6 +14088,40 @@
 "line": "G1",
 "pk": null,
 "pos": "g",
+"pp": null
+},
+"David Jiricek": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 13,
+"gamesPlayed": 10,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 1,
+"powerplayGoals": 0,
+"powerplayPoints": 1,
+"shots": 8,
+"toiMinutes": 146,
+"toiSeconds": 39
+},
+"last5": {
+"assists": 0,
+"blocks": 4,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 0,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 2,
+"toiMinutes": 65,
+"toiSeconds": 22
+},
+"line": "D4",
+"pk": null,
+"pos": "rd",
 "pp": null
 },
 "Denver Barkey": {
@@ -14329,40 +14363,6 @@
 "pk": null,
 "pos": "rw",
 "pp": null
-},
-"Owen Tippett": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 4,
-"blocks": 5,
-"gamesPlayed": 10,
-"goals": 3,
-"points": 7,
-"powerplayAssists": 1,
-"powerplayGoals": 2,
-"powerplayPoints": 3,
-"shots": 24,
-"toiMinutes": 141,
-"toiSeconds": 9
-},
-"last5": {
-"assists": 3,
-"blocks": 2,
-"gamesPlayed": 5,
-"goals": 2,
-"points": 5,
-"powerplayAssists": 0,
-"powerplayGoals": 1,
-"powerplayPoints": 1,
-"shots": 13,
-"toiMinutes": 73,
-"toiSeconds": 19
-},
-"line": "F2",
-"pk": null,
-"pos": "rw",
-"pp": "PP2"
 },
 "Porter Martone": {
 "gtd": false,
