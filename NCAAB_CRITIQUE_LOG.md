@@ -795,3 +795,13 @@ case, L'Etang 11/14, has no box (156656 still fails to fetch), so the lineup lab
 2. A Q tag plus a last-game DNP sat again 15 of 29 times, but props rows keep full projection (Robert
    Wright III 11/23, $10.3K, 32.7, 0 min). None has landed in our lineups yet.
 3. 156656's box (11/14, UTAH/UW) still fails to fetch, and it is the one slate that would price this fix.
+
+Unattended gate (20261127-1511): **review** -- waiting for Adam: harness critique-loop --merge / --drop
+
+| split | state | n | clusters | main MAE | candidate MAE | loss diff [90%] | verdict |
+|---|---|---|---|---|---|---|---|
+| primary | all | 5,530 | 31 | 5.3809 | 5.3827 | +0.0017 [+0.0008, +0.0035] | worse |
+- 5 rows changed truth / cluster / split / state
+- primary all: worse, point estimate worse (+0.0017 [+0.0008, +0.0035], 31 clusters)
+- no primary state better beyond noise
+- the cycle aimed at 'availability: players the field rosters that we zero', which this gate does not measure (dk points, minutes, projection); gate said fail: Adam decides on the cycle's held-out numbers
