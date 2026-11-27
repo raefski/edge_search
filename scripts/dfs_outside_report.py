@@ -1,8 +1,9 @@
 """Whose optimizer do we (and the field) resemble? NBA, from the captures in
 data/dfs_outside_nba.csv + data/dfs_outside_lineups_nba.csv (edge/dfs_outside.py) and the
-contest exports, matched by draft group.
+contest exports, matched by draft group. College basketball (--sport ncaab, captured since
+2026-11-27 in data/dfs_outside_ncaab.csv) has projections only, no source lineups yet.
 
-    python3 scripts/dfs_outside_report.py [--json OUT]
+    python3 scripts/dfs_outside_report.py [--sport nba|ncaab] [--json OUT]
 
 Per source, slate = unit (n slates printed; under ~5 slates it is not enough data):
   projection   MAE vs DK points on players every compared source projects 10+ (ours too)
@@ -30,12 +31,12 @@ from edge.names import norm  # noqa: E402
 SLOT = re.compile(r"\b(PG|SG|SF|PF|C|G|F|UTIL)\s")
 
 
-def exports() -> dict:
+def exports(sport: str = "NBA") -> dict:
     """{gid: [(contest id, type, [(points, frozenset lineup)], {norm name: DK pts})]}."""
     meta = json.loads((ROOT / "data" / "contest_meta.json").read_text())
     out: dict = {}
     for cid, m in meta.items():
-        if m.get("sport") != "NBA" or m.get("type") not in ("cash", "gpp"):
+        if m.get("sport") != sport or m.get("type") not in ("cash", "gpp"):
             continue
         f = ROOT / "data" / f"contest-standings-{cid}.csv"
         if not f.exists():
@@ -64,8 +65,8 @@ def lineups(path: Path) -> dict:
     return {g: {k: frozenset(v) for k, v in d.items()} for g, d in out.items()}
 
 
-def ours(gid: str, date: str) -> dict:
-    f = ROOT / "data" / f"dfs_lineups_nba_{date}.csv"
+def ours(gid: str, date: str, sport: str = "nba") -> dict:
+    f = ROOT / "data" / f"dfs_lineups_{sport}_{date}.csv"
     out: dict = {}
     if f.exists():
         for r in csv.DictReader(f.open()):
@@ -74,9 +75,9 @@ def ours(gid: str, date: str) -> dict:
     return {k: frozenset(v) for k, v in out.items()}
 
 
-def our_proj(gid: str) -> dict:
+def our_proj(gid: str, sport: str = "nba") -> dict:
     out = {}
-    for r in csv.DictReader((ROOT / "data" / "dfs_proj_log_nba.csv").open()):
+    for r in csv.DictReader((ROOT / "data" / f"dfs_proj_log_{sport}.csv").open()):
         if r.get("gid") == gid:
             out[norm(r["player"])] = float(r["proj"] or 0)
     return out
@@ -85,10 +86,11 @@ def our_proj(gid: str) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--json")
+    ap.add_argument("--sport", choices=("nba", "ncaab"), default="nba")
     a = ap.parse_args()
-    cap = dfs_outside.load()
-    lus = lineups(dfs_outside.LINEUPS)
-    ex = exports()
+    cap = dfs_outside.load(dfs_outside.LOG if a.sport == "nba" else dfs_outside.LOG_NCAAB)
+    lus = lineups(dfs_outside.LINEUPS) if a.sport == "nba" else {}
+    ex = exports(a.sport.upper())
     acc = collections.defaultdict(list)        # source -> [slate MAE]
     rel = collections.defaultdict(list)        # (source, mode, what) -> [values]
     slates = []
@@ -99,14 +101,14 @@ def main() -> int:
         truth = {}
         for _, _, _, pts in ex[gid]:
             truth.update(pts)
-        projs = {"ours": our_proj(gid)}
+        projs = {"ours": our_proj(gid, a.sport)}
         projs.update({s: {norm(n): float(r["proj"]) for n, r in rows.items()} for s, rows in srcs.items()})
         slates.append(date)
         for s, pr in projs.items():
             common = [n for n in pr if n in truth and n in projs["ours"] and projs["ours"][n] >= 10]
             if len(common) >= 15:
                 acc[s].append((sum(abs(pr[n] - truth[n]) for n in common) / len(common), len(common)))
-        mine = ours(gid, date)
+        mine = ours(gid, date, a.sport)
         for (src, mode), lu in lus.get(gid, {}).items():
             if mode in mine:
                 rel[(src, mode, "shared with ours")].append(len(lu & mine[mode]))
@@ -125,7 +127,7 @@ def main() -> int:
                     rel[("ours", mode, "shared with field's most-copied")].append(len(lu & top))
                     rel[("ours", mode, "IS the most-copied")].append(int(lu == top))
     n = len(set(slates))
-    print(f"# Whose optimizer do we resemble? NBA, {n} graded slate(s)"
+    print(f"# Whose optimizer do we resemble? {a.sport.upper()}, {n} graded slate(s)"
           + (" -- NOT ENOUGH DATA (under 5 slates)" if n < 5 else ""))
     print("\n## Projection MAE vs DK points (players we project 10+, slate mean)\n")
     print("| source | slates | MAE | players/slate |\n|---|---|---|---|")

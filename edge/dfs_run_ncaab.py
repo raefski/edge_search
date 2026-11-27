@@ -764,6 +764,10 @@ def build_board(gid: int, meta: dict, client, n_sims: int = 2000, seed: int = 0)
                                 {"source": "torvik", "joined": len(history), "loose": [],
                                  "refused": [f"{n}: stats do not match DK's" for n in
                                              torvik_audit["refused_mismatch"]]}]})
+    # Every priced player, OUT ones included, for the outside-projection capture: a player we
+    # drop as out while RotoWire still projects him is the disagreement worth logging.
+    info["priced_players"] = [{"name": s["name"], "team": team(s.get("team")), "salary": s["salary"],
+                               "game": s.get("game")} for s in salaries.values() if s.get("salary")]
     opp_of = {}
     for g in games.values():
         opp_of[team(g["home"])] = team(g["away"])
@@ -882,9 +886,11 @@ def log_forward_test(pool, cash, gpp, gid, info, root: Path | None = None) -> di
 # ---------------------------------------------------------------------------
 def build_slate(draft_group=None, client=None, n_sims: int = 2000, iters: int = 150,
                 seed: int = 0, own_weight: float = 0.0, groups: list[dict] | None = None,
-                persist: bool = True, locked: set | None = None) -> dict:
+                persist: bool = True, locked: set | None = None, outside: bool = False) -> dict:
     """Board + a CASH lineup + a GPP lineup for one DK college Classic slate.
-    `locked` keeps named players in both lineups (late swap)."""
+    `locked` keeps named players in both lineups (late swap). `outside` also logs other
+    sites' projections (edge/dfs_outside.capture_ncaab): the CLI/autolog only, so a phone
+    build on Cloud never calls them."""
     if client is None:
         # The local store on the desktop, the published snapshot on the cloud.
         from edge.odds.cli import scraped_client
@@ -910,6 +916,19 @@ def build_slate(draft_group=None, client=None, n_sims: int = 2000, iters: int = 
                                  own_weight=own_weight, locked=locked)
     log_result = None
     if persist:
+        if outside:
+            # RotoWire + LineStar's free college projections, logged beside ours (2026-11-27):
+            # the field's ownership carries points our board misses (ian.mccarthy11 study), so
+            # log what the field reads and test it held out once 5+ slates are graded.
+            try:
+                from edge import dfs_outside
+                lock = min((t for t in (_parse_time(p.get("start")) for p in pool) if t), default=None)
+                info["outside"] = dfs_outside.capture_ncaab(
+                    info.get("priced_players") or pool, gid, info["date"],
+                    lock.astimezone(ET) if lock else None)
+            except Exception as exc:                        # noqa: BLE001
+                info["outside"] = {"failed": f"{type(exc).__name__}: {exc}"}
+                log.warning("ncaab: outside projections failed (%s)", exc)
         try:
             log_result = log_forward_test(pool, cash, gpp, gid, info)
         except Exception as exc:                            # noqa: BLE001

@@ -56,7 +56,7 @@ def main() -> int:
                   + ("  (type unverified)" if s.get("unverified_type") else ""))
         return 0
     res = R.build_slate(draft_group=args.draft_group, n_sims=args.sims, iters=args.iters,
-                        persist=not args.no_log, locked=set(args.lock) or None)
+                        persist=not args.no_log, locked=set(args.lock) or None, outside=True)
     if res.get("error") or res.get("unpriced"):
         print(res.get("error") or "slate not priced yet")
         return 1
@@ -77,6 +77,9 @@ def main() -> int:
                                          sorted(info["implied"].items(), key=lambda kv: -kv[1])))
     if info["missing_lines"]:
         print("NO LINE (league average): " + ", ".join(info["missing_lines"]))
+    if info.get("outside"):
+        print("outside projections logged: "
+              + ", ".join(f"{k} {v}" for k, v in info["outside"].items()))
     if info["out"]:
         print("OUT: " + ", ".join(info["out"]))
     if info["doubtful"]:

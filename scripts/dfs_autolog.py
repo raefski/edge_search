@@ -116,7 +116,8 @@ SPORTS = {
     "mma": (_slates_mma, ["scripts/dfs_lineups_mma.py", "--capture", "--draft-group"], None,
             ["data/dfs_proj_log_mma.csv", "data/dfs_lineups_mma_*.csv"]),
     "ncaab": (_slates_ncaab, ["scripts/dfs_lineups_ncaab.py", "--draft-group"], "dfs_ncaab",
-              ["data/dfs_proj_log_ncaab.csv", "data/dfs_lineups_ncaab_*.csv"]),
+              ["data/dfs_proj_log_ncaab.csv", "data/dfs_lineups_ncaab_*.csv",
+               "data/dfs_outside_ncaab.csv"]),
     "mlb": (_slates_mlb, ["scripts/dfs_lineups.py", "--draft-group"], "dfs_mlb",
             ["data/dfs_proj_log.csv", "data/dfs_proj_log_*_g*.csv", "data/dfs_lineups_2*.csv"]),
 }

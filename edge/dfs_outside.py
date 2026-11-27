@@ -14,6 +14,17 @@ Four sources serve a full slate with no login (probed 2026-11-18, one request ea
               the HTML (the rest load on scroll), so it is PARTIAL: the biggest names
   (linestar is partial too: the free feed is truncated to ~31 players, IsTruncated)
 
+College basketball (2026-11-27, capture_ncaab -> data/dfs_outside_ncaab.csv): the
+ian.mccarthy11 study found the FIELD's ownership carries points our NCAAB board misses
+(held out, 11 slates: +1.0..1.7 DK pts per 10% owned at the same projection, mostly
+availability -- players we zero that the field rosters), so we log what the field reads.
+Probed that day, one request each: rotowire's ncaab api (same shape as NBA: full slate,
+DK projection + minutes; "rostership" empty at 11 a.m.) and linestar sport=4 (G/G/G/F/F/F/
+UTIL/UTIL; free feed truncated to 24 players) serve it; dailyfantasyfuel has no college
+page and FanDuel Research's college projections page is a 404. College rows join by name +
+DK SALARY (join_by_salary), not team: both sites print DK's salary, and RotoWire's school
+codes (MIA-FL) are a dialect of their own (edge/college_teams.py). No source lineups yet.
+
 Paywalled, not captured: RotoGrinders, FantasyLabs, SaberSim, Establish the Run,
 Stokastic (its free CSV is one game). Each source is fetched once per build with a pause
 between hosts; a source that fails is logged as failed (the row count shows it), never
@@ -59,9 +70,11 @@ def _get(url: str, data: bytes | None = None, headers: dict | None = None) -> by
 
 
 # ---- sources: each returns [{"player", "team", "proj", ...}] ----------------------------
-def rotowire(lock: datetime | None, n_games: int | None) -> list[dict]:
-    """The Classic slate whose start matches DK's lock (and game count when known)."""
-    slates = json.loads(_get("https://www.rotowire.com/daily/nba/api/slate-list.php?siteID=1"))["slates"]
+def rotowire(lock: datetime | None, n_games: int | None, sport: str = "nba") -> list[dict]:
+    """The Classic slate whose start matches DK's lock (and game count when known).
+    `sport` is RotoWire's path segment: nba, ncaab."""
+    base = f"https://www.rotowire.com/daily/{sport}/api"
+    slates = json.loads(_get(f"{base}/slate-list.php?siteID=1"))["slates"]
     classic = [s for s in slates if s.get("contestType") == "Classic"]
     if not classic:
         return []
@@ -72,16 +85,18 @@ def rotowire(lock: datetime | None, n_games: int | None) -> list[dict]:
         return (off, abs(len(s.get("games") or []) - (n_games or 0)))
     s = min(classic, key=fit)
     time.sleep(PAUSE)
-    rows = json.loads(_get(f"https://www.rotowire.com/daily/nba/api/players.php?slateID={s['slateID']}"))
+    rows = json.loads(_get(f"{base}/players.php?slateID={s['slateID']}"))
     return [{"player": f"{p['firstName']} {p['lastName']}", "team": _team(p["team"]["abbr"]),
              "salary": p.get("salary"), "proj": float(p.get("pts") or 0),
              "own": p.get("rostership"), "minutes": p.get("minutes")} for p in rows]
 
 
-def linestar(gid) -> list[dict]:
-    """LineStar's current period; players on DK's draft group `gid` when it lists it."""
+def linestar(gid, sport_id: int = 2) -> list[dict]:
+    """LineStar's current period; players on DK's draft group `gid` when it lists it.
+    `sport_id`: 2 NBA, 4 college basketball (probed 2026-11-27: 1 NFL, 3 MLB, 6 NHL,
+    8 MMA, 9 NASCAR)."""
     url = ("https://www.linestarapp.com/DesktopModules/DailyFantasyApi/API/Fantasy/GetSalariesV5"
-           "?periodId={}&site=1&sport=2")
+           "?periodId={}&site=1&sport=" + str(sport_id))
     j = json.loads(_get(url.format(0)))
     period = j.get("PeriodId")
     sal = j.get("SalaryContainerJson")
@@ -161,23 +176,67 @@ def join(rows: list[dict], pool: list[dict]) -> list[dict]:
     return out
 
 
+_SUFFIX = {"jr", "sr", "ii", "iii", "iv", "v"}
+
+
+def _words(name: str) -> list[str]:
+    return [w for w in name.lower().replace(".", "").replace(",", "").split() if w not in _SUFFIX]
+
+
+def join_by_salary(rows: list[dict], pool: list[dict]) -> list[dict]:
+    """College rows keyed to the DK pool by (name, DK salary) -- no team codes: every site
+    spells schools its own way, and two players with one name AND one salary on a slate
+    is the only thing that can fool this (then nothing joins: refused, not guessed).
+    Fallback: same salary + same surname + agreeing first names (nicknames) or the same
+    first initial (RotoWire typos: "Jayln" for DK's Jalyn Collingwood, "Takai" for Tajuan
+    Simpkins, 2026-11-27), when exactly one pool player fits."""
+    by: dict = {}
+    by_sal: dict = {}
+    for p in pool:
+        s = int(p["salary"] or 0)
+        by.setdefault((norm(p["name"]), s), []).append(p)
+        by_sal.setdefault(s, []).append(p)
+    out = []
+    for r in rows:
+        try:
+            s = int(float(r.get("salary") or 0))
+        except (TypeError, ValueError):
+            s = 0
+        c = by.get((norm(r["player"]), s), [])
+        if not c:
+            w = _words(r["player"])
+            c = [q for q in by_sal.get(s, ()) if len(w) > 1 and (qw := _words(q["name"]))
+                 and qw[-1] == w[-1] and (first_names_agree(w[0], qw[0]) or w[0][0] == qw[0][0])]
+        if len(c) == 1:
+            out.append({**r, "player": c[0]["name"], "team": c[0]["team"], "salary": c[0]["salary"]})
+    return out
+
+
 SOURCES = {"rotowire": lambda ctx: rotowire(ctx["lock"], ctx["games"]),
            "linestar": lambda ctx: linestar(ctx["gid"]),
            "numberfire": lambda ctx: numberfire(),
            "dff": lambda ctx: dff()}
+LOG_NCAAB = ROOT / "data" / "dfs_outside_ncaab.csv"
+SOURCES_NCAAB = {"rotowire": lambda ctx: rotowire(ctx["lock"], ctx["games"], sport="ncaab"),
+                 "linestar": lambda ctx: linestar(ctx["gid"], sport_id=4)}
 
 
 def capture(pool: list[dict], gid, date: str, lock: datetime | None, path: Path = LOG,
-            fetchers: dict | None = None) -> dict:
+            fetchers: dict | None = None, joiner=join) -> dict:
     """Fetch every source, join to the pool, append to the log. {source: rows joined |
-    "failed: ..."}. A failure is recorded per source, never filled from another."""
+    "failed: ..."}, plus {source}_unjoined when a source's rows found no DK player (a slate
+    mismatch or a new name dialect shows up here, not as a quietly thinner log). A failure
+    is recorded per source, never filled from another."""
     ctx = {"gid": gid, "lock": lock, "games": len({p.get("game") for p in pool})}
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     result, out = {}, []
     for name, fetch in (fetchers or SOURCES).items():
         try:
-            got = join(fetch(ctx), pool)
+            rows = fetch(ctx)
+            got = joiner(rows, pool)
             result[name] = len(got)
+            if len(rows) > len(got):
+                result[f"{name}_unjoined"] = len(rows) - len(got)
             out += [{"date": date, "gid": gid, "source": name, "captured_at": now, **r} for r in got]
         except Exception as exc:                            # noqa: BLE001
             result[name] = f"failed: {type(exc).__name__}"
@@ -190,6 +249,12 @@ def capture(pool: list[dict], gid, date: str, lock: datetime | None, path: Path 
             w.writeheader()
         w.writerows(out)
     return result
+
+
+def capture_ncaab(pool: list[dict], gid, date: str, lock: datetime | None,
+                  path: Path = LOG_NCAAB, fetchers: dict | None = None) -> dict:
+    """College basketball: rotowire + linestar, joined by name + DK salary."""
+    return capture(pool, gid, date, lock, path, fetchers or SOURCES_NCAAB, joiner=join_by_salary)
 
 
 def load(path: Path = LOG) -> dict:

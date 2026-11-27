@@ -91,6 +91,10 @@ JOBS: dict[str, Job] = {j.name: j for j in [
        tests=("tests/test_dfs_outside.py",),
        doc="whose optimizer do we (and the field) resemble: RotoWire / numberFire / LineStar / DFF "
            "projections captured by the NBA autolog, scored vs DK points and the field's most-copied lineups"),
+    _j("outside-ncaab", "evaluate", "scripts/dfs_outside_report.py", "--sport", "ncaab", sport="ncaab",
+       tests=("tests/test_dfs_outside.py",),
+       doc="college: RotoWire + LineStar (top 24) projections captured by the NCAAB autolog since "
+           "11/27, MAE vs DK points beside ours; read at 5+ graded slates (does the field's info show up?)"),
     _j("nba-forward", "evaluate", "scripts/dfs_strategy_doe.py", "forward", "nba", sport="nba", timeout=3600,
        doc="NBA DOE leads judged forward (11/14): Adam's real entries vs production as it ran (props "
            "blend, since 11/8) vs the paper cash arm p70_cap3 (since 11/15), plus late-swap misses; "
