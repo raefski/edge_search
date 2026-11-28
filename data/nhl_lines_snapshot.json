@@ -1,5 +1,5 @@
 {
-"generated_at": "2026-11-28T00:43:45+00:00",
+"generated_at": "2026-11-28T00:58:45+00:00",
 "goalies": {
 "2026-11-27": {
 "ANA": {
@@ -84,7 +84,7 @@
 },
 "SEA": {
 "goalie": "Philipp Grubauer",
-"status": "Likely"
+"status": "Confirmed"
 },
 "SJS": {
 "goalie": "Yaroslav Askarov",
@@ -1674,6 +1674,40 @@
 "pos": "lw",
 "pp": null
 },
+"Conor Sheary": {
+"gtd": false,
+"injury": null,
+"last10": {
+"assists": 1,
+"blocks": 5,
+"gamesPlayed": 10,
+"goals": 3,
+"points": 4,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 14,
+"toiMinutes": 119,
+"toiSeconds": 15
+},
+"last5": {
+"assists": 1,
+"blocks": 2,
+"gamesPlayed": 5,
+"goals": 0,
+"points": 1,
+"powerplayAssists": 0,
+"powerplayGoals": 0,
+"powerplayPoints": 0,
+"shots": 4,
+"toiMinutes": 55,
+"toiSeconds": 0
+},
+"line": "F3",
+"pk": null,
+"pos": "rw",
+"pp": null
+},
 "Conor Timmins": {
 "gtd": false,
 "injury": null,
@@ -1942,7 +1976,7 @@
 "toiSeconds": 43
 },
 "line": "D3",
-"pk": null,
+"pk": "PK2",
 "pos": "rd",
 "pp": null
 },
@@ -2252,40 +2286,6 @@
 "line": "G1",
 "pk": null,
 "pos": "g",
-"pp": null
-},
-"Zach Metsa": {
-"gtd": false,
-"injury": null,
-"last10": {
-"assists": 1,
-"blocks": 7,
-"gamesPlayed": 10,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 8,
-"toiMinutes": 121,
-"toiSeconds": 27
-},
-"last5": {
-"assists": 1,
-"blocks": 6,
-"gamesPlayed": 5,
-"goals": 0,
-"points": 1,
-"powerplayAssists": 0,
-"powerplayGoals": 0,
-"powerplayPoints": 0,
-"shots": 2,
-"toiMinutes": 65,
-"toiSeconds": 45
-},
-"line": "D4",
-"pk": "PK2",
-"pos": "rd",
 "pp": null
 }
 },
